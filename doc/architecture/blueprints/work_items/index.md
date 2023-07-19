@@ -30,11 +30,17 @@ Base type for issue, requirement, test case, incident and task (this list is pla
 
 A set of predefined types for different categories of work items. Currently, the available types are:
 
-- Issue
-- Incident
-- Test case
-- Requirement
-- Task
+- [Incident](/ee/operations/incident_management/incidents.md)
+- [Test case](/ee/ci/test_cases/index.md)
+- [Requirement](/ee/user/project/requirements/index.md)
+- [Task](/ee/user/tasks.md)
+- [OKRs](/ee/user/okrs.md)
+
+Work is underway to convert existing objects to Work Item Types or add new ones:
+
+- [Issue](https://gitlab.com/groups/gitlab-org/-/epics/9584)
+- [Epic](https://gitlab.com/groups/gitlab-org/-/epics/9290)
+- [Ticket](https://gitlab.com/groups/gitlab-org/-/epics/10419)
 
 #### Work Item properties
 
@@ -58,7 +64,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 ### Work Item widget types (updating)
 
 | widget type  | feature flag  |
-|---|---|---|
+|---|---|
 | assignees  | |
 | description | |
 | hierarchy | |
@@ -68,7 +74,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | start and due date | |
 | status\* | |
 | weight | |
-| [notes](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) | work_items_mvc |
+| [notes](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) | |
 
 \* status is not currently a widget, but a part of the root work item, similar to title
 
@@ -119,7 +125,7 @@ Work Items main goal is to enhance the planning toolset to become the most popul
 
 ### Scalability
 
-Currently, different entities like issues, epics, merge requests etc share many similar features but these features are implemented separately for every entity type. This makes implementing new features or refactoring existing ones problematic: for example, if we plan to add new feature to issues and incidents, we would need to implement it separately on issue and incident types respectively. With work items, any new feature is implemented via widgets for all existing types which makes the architecture more scalable.
+Currently, different entities like issues, epics, merge requests etc share many similar features but these features are implemented separately for every entity type. This makes implementing new features or refactoring existing ones problematic: for example, if we plan to add new feature to issues and incidents, we would need to implement it separately on issue and incident types. With work items, any new feature is implemented via widgets for all existing types which makes the architecture more scalable.
 
 ### Flexibility
 

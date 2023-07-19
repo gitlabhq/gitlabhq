@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
+import { createAlert } from '~/alert';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
@@ -15,6 +16,7 @@ import {
   PARALLEL_DIFF_VIEW_TYPE,
   OLD_LINE_TYPE,
 } from '../constants';
+import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '../i18n';
 
 export default {
   components: {
@@ -207,10 +209,22 @@ export default {
         fileHash: this.diffFileHash,
       });
     }),
-    handleSaveNote(note) {
-      return this.saveDiffDiscussion({ note, formData: this.formData }).then(() =>
-        this.handleCancelCommentForm(),
-      );
+    handleSaveNote(note, parentElement, errorCallback) {
+      return this.saveDiffDiscussion({ note, formData: this.formData })
+        .then(() => this.handleCancelCommentForm())
+        .catch((e) => {
+          const reason = e.response?.data?.errors;
+          const errorMessage = reason
+            ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
+            : SOMETHING_WENT_WRONG;
+
+          createAlert({
+            message: errorMessage,
+            parent: parentElement,
+          });
+
+          errorCallback();
+        });
     },
     updateStartLine(line) {
       this.commentLineStart = line;

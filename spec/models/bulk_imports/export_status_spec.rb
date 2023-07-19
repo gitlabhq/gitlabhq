@@ -2,16 +2,28 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ExportStatus do
+RSpec.describe BulkImports::ExportStatus, feature_category: :importers do
   let_it_be(:relation) { 'labels' }
   let_it_be(:import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }
   let_it_be(:entity) { create(:bulk_import_entity, bulk_import: import, source_full_path: 'foo') }
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
 
+  let(:batched) { false }
+  let(:batches) { [] }
   let(:response_double) do
     instance_double(HTTParty::Response,
-      parsed_response: [{ 'relation' => 'labels', 'status' => status, 'error' => 'error!' }]
+      parsed_response: [
+        {
+          'relation' => 'labels',
+          'status' => status,
+          'error' => 'error!',
+          'batched' => batched,
+          'batches' => batches,
+          'batches_count' => 1,
+          'total_objects_count' => 1
+        }
+      ]
     )
   end
 
@@ -186,6 +198,86 @@ RSpec.describe BulkImports::ExportStatus do
 
           expect(subject.error).to eq('Standard Error!')
           expect(subject.failed?).to eq(true)
+        end
+      end
+    end
+  end
+
+  describe 'batching information' do
+    let(:status) { BulkImports::Export::FINISHED }
+
+    describe '#batched?' do
+      context 'when export is batched' do
+        let(:batched) { true }
+
+        it 'returns true' do
+          expect(subject.batched?).to eq(true)
+        end
+      end
+
+      context 'when export is not batched' do
+        it 'returns false' do
+          expect(subject.batched?).to eq(false)
+        end
+      end
+
+      context 'when export batch information is missing' do
+        let(:response_double) do
+          instance_double(HTTParty::Response, parsed_response: [{ 'relation' => 'labels', 'status' => status }])
+        end
+
+        it 'returns false' do
+          expect(subject.batched?).to eq(false)
+        end
+      end
+    end
+
+    describe '#batches_count' do
+      context 'when batches count is present' do
+        it 'returns batches count' do
+          expect(subject.batches_count).to eq(1)
+        end
+      end
+
+      context 'when batches count is missing' do
+        let(:response_double) do
+          instance_double(HTTParty::Response, parsed_response: [{ 'relation' => 'labels', 'status' => status }])
+        end
+
+        it 'returns 0' do
+          expect(subject.batches_count).to eq(0)
+        end
+      end
+    end
+
+    describe '#batch' do
+      context 'when export is batched' do
+        let(:batched) { true }
+        let(:batches) do
+          [
+            { 'relation' => 'labels', 'status' => status, 'batch_number' => 1 },
+            { 'relation' => 'milestones', 'status' => status, 'batch_number' => 2 }
+          ]
+        end
+
+        context 'when batch number is in range' do
+          it 'returns batch information' do
+            expect(subject.batch(1)['relation']).to eq('labels')
+            expect(subject.batch(2)['relation']).to eq('milestones')
+            expect(subject.batch(3)).to eq(nil)
+          end
+        end
+      end
+
+      context 'when batch number is less than 1' do
+        it 'raises error' do
+          expect { subject.batch(0) }.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'when export is not batched' do
+        it 'returns nil' do
+          expect(subject.batch(1)).to eq(nil)
         end
       end
     end

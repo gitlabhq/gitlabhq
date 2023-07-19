@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab for Jira Cloud app **(FREE)**
 
-With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](development_panel.md).
+With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](development_panel.md).
 
 You can use the GitLab for Jira Cloud app to link top-level groups or subgroups. It's not possible to directly link projects or personal namespaces.
 
@@ -33,7 +33,7 @@ To install the GitLab for Jira Cloud app:
 1. In Jira, select **Jira Settings > Apps > Find new apps**, and search for GitLab.
 1. Select **GitLab for Jira Cloud**, and select **Get it now**.
 
-   Alternatively, [get the app directly from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud).
+   Alternatively, [get the app directly from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
 
 1. To go to the configurations page, select **Get started**.
    You can always access this page in **Jira Settings > Apps > Manage apps**.
@@ -46,9 +46,9 @@ For an overview, see
 
 After you add a group, the following data is synced to Jira for all projects in that group:
 
-- New merge requests, branches, and commits
-- Existing merge requests (GitLab 13.8 and later)
-- Existing branches and commits (GitLab 15.11 and later)
+- New and existing merge requests.
+- New branches and commits.
+- Existing branches and commits (GitLab 15.11 and later). You must delete and add any namespaces that were added to the GitLab for Jira Cloud app in GitLab 15.10 and earlier.
 
 ## Update the GitLab for Jira Cloud app
 

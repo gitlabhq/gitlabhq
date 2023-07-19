@@ -16,8 +16,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountUsersCreatingIssue
 
   context 'for 28d time frame' do
     let(:expected_value) { 1 }
-    let(:start) { 30.days.ago.to_s(:db) }
-    let(:finish) { 2.days.ago.to_s(:db) }
+    let(:start) { 30.days.ago.to_fs(:db) }
+    let(:finish) { 2.days.ago.to_fs(:db) }
     let(:expected_query) { "SELECT COUNT(DISTINCT \"issues\".\"author_id\") FROM \"issues\" WHERE \"issues\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'" }
 
     it_behaves_like 'a correct instrumented metric value and query', { time_frame: '28d' }

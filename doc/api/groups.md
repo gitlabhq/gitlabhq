@@ -303,6 +303,7 @@ Parameters:
 | `simple`                               | boolean        | no       | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `owned`                                | boolean        | no       | Limit by projects owned by the current user |
 | `starred`                              | boolean        | no       | Limit by projects starred by the current user |
+| `topic`                                | string         | no       | Return projects matching the topic |
 | `with_issues_enabled`                  | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
 | `with_merge_requests_enabled`          | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
 | `with_shared`                          | boolean        | no       | Include projects shared to this group. Default is `true` |
@@ -822,8 +823,8 @@ Parameters:
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional units of compute for this group. |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly units of compute for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional compute minutes for this group. |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
 | `wiki_access_level` **(PREMIUM)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
 
 ### Options for `default_branch_protection`
@@ -836,7 +837,7 @@ The `default_branch_protection` attribute determines whether users with the Deve
 | `1`   | Partial protection. Users with the Developer or Maintainer role can:  <br>- Push new commits |
 | `2`   | Full protection. Only users with the Maintainer role can:  <br>- Push new commits |
 | `3`   | Protected against pushes. Users with the Maintainer role can: <br>- Push new commits<br>- Force push changes<br>- Accept merge requests<br>Users with the Developer role can:<br>- Accept merge requests|
-| `4`   | Protected against pushes except initial push. User with the Developer rope can: <br>- Push commit to empty repository.<br> Users with the Maintainer role can: <br>- Push new commits<br>- Force push changes<br>- Accept merge requests<br>Users with the Developer role can:<br>- Accept merge requests|
+| `4`   | Protected against pushes except initial push. User with the Developer role can: <br>- Push commit to empty repository.<br> Users with the Maintainer role can: <br>- Push new commits<br>- Force push changes<br>- Accept merge requests<br>Users with the Developer role can:<br>- Accept merge requests|
 
 ## New Subgroup
 
@@ -949,7 +950,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 FLAG:
 On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, `unique_project_download_limit_allowlist` and `auto_ban_user_on_excessive_projects_download` are not available.
-To make them available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+To make them available, an administrator can [enable the feature flag](../administration/feature_flags.md)
 named `limit_unique_project_downloads_per_namespace_user`.
 
 Updates the project group. Only available to group owners and administrators.
@@ -979,11 +980,11 @@ PUT /groups/:id
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional units of compute for this group. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional compute minutes for this group. |
 | `file_template_project_id` **(PREMIUM)**                | integer | no       | The ID of a project to load custom file templates from. |
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
 | `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly units of compute for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
 | `unique_project_download_limit` **(ULTIMATE)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
 | `unique_project_download_limit_interval_in_seconds` **(ULTIMATE)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
 | `unique_project_download_limit_allowlist` **(ULTIMATE)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
@@ -1139,7 +1140,7 @@ Only available to group owners and administrators.
 
 This endpoint:
 
-- On Premium and Ultimate tiers, marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+- On Premium and Ultimate tiers, marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 - On Free tier, removes the group immediately and queues a background job to delete all projects in the group.
 - Deletes a subgroup immediately if the subgroup is marked for deletion (GitLab 15.4 and later). The endpoint does not immediately delete top-level groups.
 
@@ -1304,7 +1305,7 @@ POST /groups/:id/service_accounts/:user_id/personal_access_tokens
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gdk.test:3443/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api" --data "name=service_accounts_token"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api" --data "name=service_accounts_token"
 ```
 
 Example response:
@@ -1333,7 +1334,7 @@ POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rota
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gdk.test:3443/api/v4/groups/35/service_accounts/71/personal_access_tokens/6/rotate"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens/6/rotate"
 ```
 
 Example response:

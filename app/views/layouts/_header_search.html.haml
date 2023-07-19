@@ -9,7 +9,7 @@
       %input{ id: 'search', name: 'search', type: "text", placeholder: s_('GlobalSearch|Search GitLab'),
                                                           class: 'form-control gl-form-input gl-search-box-by-type-input',
                                                           autocomplete: 'off',
-                                                          data: { qa_selector: 'search_box' } }
+                                                          data: { testid: 'search_box' } }
 
     = hidden_field_tag :group_id, header_search_context[:group][:id] if header_search_context[:group]
     = hidden_field_tag :project_id, header_search_context[:project][:id] if header_search_context[:project]

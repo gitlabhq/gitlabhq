@@ -7,6 +7,8 @@ import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navi
 
 Vue.use(Vuex);
 
+const MOCK_NAVIGATION_ENTRIES = Object.entries(MOCK_NAVIGATION);
+
 describe('ScopeLegacyNavigation', () => {
   let wrapper;
 
@@ -55,12 +57,12 @@ describe('ScopeLegacyNavigation', () => {
     });
 
     it('renders all nav item components', () => {
-      expect(findGlNavItems()).toHaveLength(9);
+      expect(findGlNavItems()).toHaveLength(MOCK_NAVIGATION_ENTRIES.length);
     });
 
     it('has all proper links', () => {
       const linkAtPosition = 3;
-      const { link } = MOCK_NAVIGATION[Object.keys(MOCK_NAVIGATION)[linkAtPosition]];
+      const { link } = MOCK_NAVIGATION_ENTRIES[linkAtPosition][1];
 
       expect(findGlNavItems().at(linkAtPosition).attributes('href')).toBe(link);
     });

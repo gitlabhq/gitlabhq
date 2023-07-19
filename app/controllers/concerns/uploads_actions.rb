@@ -110,7 +110,7 @@ module UploadsActions
     if uploader_mounted?
       model.public_send(upload_mount) # rubocop:disable GitlabSecurity/PublicSend
     else
-      build_uploader_from_upload || build_uploader_from_params
+      build_uploader_from_upload
     end
   end
   strong_memoize_attr :uploader
@@ -124,21 +124,6 @@ module UploadsActions
     upload&.retrieve_uploader
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def build_uploader_from_params
-    return unless uploader = build_uploader
-
-    uploader.retrieve_from_store!(params[:filename])
-
-    Gitlab::AppJsonLogger.info(
-      message: 'Deprecated usage of build_uploader_from_params',
-      uploader_class: uploader.class.name,
-      path: params[:filename],
-      exists: uploader.exists?
-    )
-
-    uploader
-  end
 
   def build_uploader
     return unless params[:secret] && params[:filename]

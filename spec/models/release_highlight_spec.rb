@@ -12,12 +12,12 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
   end
 
   after do
-    ReleaseHighlight.instance_variable_set(:@file_paths, nil)
+    described_class.instance_variable_set(:@file_paths, nil)
   end
 
   describe '.paginated_query' do
     context 'with page param' do
-      subject { ReleaseHighlight.paginated_query(page: page) }
+      subject { described_class.paginated_query(page: page) }
 
       context 'when there is another page of results' do
         let(:page) { 3 }
@@ -49,7 +49,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
 
   describe '.paginated' do
     context 'with no page param' do
-      subject { ReleaseHighlight.paginated }
+      subject { described_class.paginated }
 
       it 'uses multiple levels of cache' do
         expect(Rails.cache).to receive(:fetch).with("release_highlight:all_tiers:items:page-1:#{Gitlab.revision}", { expires_in: described_class::CACHE_DURATION }).and_call_original
@@ -100,7 +100,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
   end
 
   describe '.most_recent_item_count' do
-    subject { ReleaseHighlight.most_recent_item_count }
+    subject { described_class.most_recent_item_count }
 
     it 'uses process memory cache' do
       expect(Gitlab::ProcessMemoryCache.cache_backend).to receive(:fetch).with("release_highlight:all_tiers:recent_item_count:#{Gitlab.revision}", expires_in: described_class::CACHE_DURATION)
@@ -110,7 +110,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
 
     context 'when recent release items exist' do
       it 'returns the count from the most recent file' do
-        allow(ReleaseHighlight).to receive(:paginated).and_return(double(:paginated, items: [double(:item)]))
+        allow(described_class).to receive(:paginated).and_return(double(:paginated, items: [double(:item)]))
 
         expect(subject).to eq(1)
       end
@@ -118,7 +118,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
 
     context 'when recent release items do NOT exist' do
       it 'returns nil' do
-        allow(ReleaseHighlight).to receive(:paginated).and_return(nil)
+        allow(described_class).to receive(:paginated).and_return(nil)
 
         expect(subject).to be_nil
       end
@@ -126,7 +126,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
   end
 
   describe '.most_recent_version_digest' do
-    subject { ReleaseHighlight.most_recent_version_digest }
+    subject { described_class.most_recent_version_digest }
 
     it 'uses process memory cache' do
       expect(Gitlab::ProcessMemoryCache.cache_backend).to receive(:fetch).with("release_highlight:all_tiers:most_recent_version_digest:#{Gitlab.revision}", expires_in: described_class::CACHE_DURATION)
@@ -143,7 +143,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
 
     context 'when recent release items do NOT exist' do
       it 'returns nil' do
-        allow(ReleaseHighlight).to receive(:paginated).and_return(nil)
+        allow(described_class).to receive(:paginated).and_return(nil)
 
         expect(subject).to be_nil
       end

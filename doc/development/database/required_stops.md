@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Adding required stops
 
-Required stops should only be added when it is deemed absolutely necessary, due to their
+[Required stops](../../update/index.md#upgrade-paths) should only be added when it is deemed absolutely necessary, because of their
 disruptive effect on customers. Before adding a required stop, consider if any
 alternative approaches exist to avoid a required stop. Sometimes a required
 stop is unavoidable. In those cases, follow the instructions below.
@@ -95,3 +95,9 @@ is identified after release, the following steps must still be completed:
 
 1. Update `Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION` in `lib/gitlab/database.rb` to the
    new required stop versions. Do not change `Gitlab::Database::MIN_SCHEMA_VERSION`.
+1. In the `charts` project, update the
+   [upgrade check hook](https://gitlab.com/gitlab-org/charts/gitlab/-/blame/master/templates/_runcheck.tpl#L32)
+   to the required stop version.
+1. In the `omnibus-gitlab` project, update the
+   [pre-install version check](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/config/templates/package-scripts/preinst.erb#L43)
+   to the required stop version.

@@ -55,6 +55,21 @@ RSpec.describe Gitlab::Database::AsyncIndexes::PostgresAsyncIndex, type: :model,
 
       it_behaves_like 'table_name is invalid'
     end
+
+    context 'when passing a definition with beginning or trailing whitespace' do
+      let(:model) { super().tap { |m| m.definition = definition } }
+      let(:definition) do
+        <<-SQL
+          CREATE UNIQUE INDEX CONCURRENTLY foo_index ON bar_field (uuid);
+        SQL
+      end
+
+      it "strips the definition field" do
+        expect(model).to be_valid
+        model.save!
+        expect(model.definition).to eq(definition.strip)
+      end
+    end
   end
 
   describe 'scopes' do

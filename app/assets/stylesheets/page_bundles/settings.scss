@@ -65,6 +65,8 @@
 }
 
 .settings-content {
+  // #416312: Fix white space at bottom of page
+  position: relative;
   max-height: 1px;
   overflow-y: hidden;
   padding-right: 110px;

@@ -23,4 +23,9 @@
     window.gl.mrWidgetData.user_preferences_gitpod_path = '#{profile_preferences_path(anchor: 'user_gitpod_enabled')}';
     window.gl.mrWidgetData.user_profile_enable_gitpod_path = '#{profile_path(user: { gitpod_enabled: true })}';
 
-#js-vue-mr-widget.mr-widget
+%h2#merge-request-widgets-heading.gl-sr-only
+  = _("Merge request reports")
+#js-vue-mr-widget.mr-widget{
+  role: 'region',
+  'aria-labelledby': 'merge-request-widgets-heading'
+}

@@ -1,7 +1,0 @@
-- title: "Ubuntu 19.10 (Eoan Ermine) package"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: deastman
-  breaking_change: true
-  body: |
-    Ubuntu 19.10 (Eoan Ermine) reached end of life on Friday, July 17, 2020. In GitLab Runner 14.0, Ubuntu 19.10 (Eoan Ermine) is no longer available from our package distribution. Refer to [issue #26036](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/26036) for details.

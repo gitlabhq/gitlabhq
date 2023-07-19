@@ -224,15 +224,46 @@ module Ci
       end
     end
 
-    def downstream_variables
-      calculate_downstream_variables
-        .reverse # variables priority
-        .uniq { |var| var[:key] } # only one variable key to pass
-        .reverse
-    end
-
     def target_revision_ref
       downstream_pipeline_params.dig(:target_revision, :ref)
+    end
+
+    def downstream_variables
+      Gitlab::Ci::Variables::Downstream::Generator.new(self).calculate
+    end
+
+    def variables
+      strong_memoize(:variables) do
+        Gitlab::Ci::Variables::Collection.new
+         .concat(scoped_variables)
+         .concat(pipeline.persisted_variables)
+      end
+    end
+
+    def pipeline_variables
+      pipeline.variables
+    end
+
+    def pipeline_schedule_variables
+      return [] unless pipeline.pipeline_schedule
+
+      pipeline.pipeline_schedule.variables.to_a
+    end
+
+    def forward_yaml_variables?
+      strong_memoize(:forward_yaml_variables) do
+        result = options&.dig(:trigger, :forward, :yaml_variables)
+
+        result.nil? ? FORWARD_DEFAULTS[:yaml_variables] : result
+      end
+    end
+
+    def forward_pipeline_variables?
+      strong_memoize(:forward_pipeline_variables) do
+        result = options&.dig(:trigger, :forward, :pipeline_variables)
+
+        result.nil? ? FORWARD_DEFAULTS[:pipeline_variables] : result
+      end
     end
 
     private
@@ -272,70 +303,6 @@ module Ci
           merge_request: parent_pipeline.merge_request
         }
       }
-    end
-
-    def calculate_downstream_variables
-      expand_variables = scoped_variables
-                           .concat(pipeline.persisted_variables)
-                           .to_runner_variables
-
-      # The order of this list refers to the priority of the variables
-      downstream_yaml_variables(expand_variables) +
-        downstream_pipeline_variables(expand_variables) +
-        downstream_pipeline_schedule_variables(expand_variables)
-    end
-
-    def downstream_yaml_variables(expand_variables)
-      return [] unless forward_yaml_variables?
-
-      yaml_variables.to_a.map do |hash|
-        if hash[:raw]
-          { key: hash[:key], value: hash[:value], raw: true }
-        else
-          { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], expand_variables) }
-        end
-      end
-    end
-
-    def downstream_pipeline_variables(expand_variables)
-      return [] unless forward_pipeline_variables?
-
-      pipeline.variables.to_a.map do |variable|
-        if variable.raw?
-          { key: variable.key, value: variable.value, raw: true }
-        else
-          { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
-        end
-      end
-    end
-
-    def downstream_pipeline_schedule_variables(expand_variables)
-      return [] unless forward_pipeline_variables?
-      return [] unless pipeline.pipeline_schedule
-
-      pipeline.pipeline_schedule.variables.to_a.map do |variable|
-        if variable.raw?
-          { key: variable.key, value: variable.value, raw: true }
-        else
-          { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
-        end
-      end
-    end
-
-    def forward_yaml_variables?
-      strong_memoize(:forward_yaml_variables) do
-        result = options&.dig(:trigger, :forward, :yaml_variables)
-
-        result.nil? ? FORWARD_DEFAULTS[:yaml_variables] : result
-      end
-    end
-
-    def forward_pipeline_variables?
-      strong_memoize(:forward_pipeline_variables) do
-        result = options&.dig(:trigger, :forward, :pipeline_variables)
-
-        result.nil? ? FORWARD_DEFAULTS[:pipeline_variables] : result
-      end
     end
   end
 end

@@ -6,9 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # CI Lint API **(FREE)**
 
-## Validate a CI YAML configuration with a namespace
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.6.
+## Validate the CI/CD configuration for a namespace
 
 Checks if CI/CD YAML configuration is valid. This endpoint has namespace
 specific context.
@@ -17,12 +15,12 @@ specific context.
 POST /projects/:id/ci/lint
 ```
 
-| Attribute  | Type    | Required | Description |
-| ---------- | ------- | -------- | -------- |
-| `content`  | string  | yes      | The CI/CD configuration content. |
-| `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#simulate-a-pipeline), or only do static check. This is false by default. |
-| `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
-| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
+| Attribute      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `content`      | string  | Yes      | The CI/CD configuration content. |
+| `dry_run`      | boolean | No       | Run [pipeline creation simulation](../ci/lint.md#simulate-a-pipeline), or only do static check. Default: `false`. |
+| `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
+| `ref`          | string  | No       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
 
 Example request:
 
@@ -58,8 +56,6 @@ Example responses:
 
 ## Validate a project's CI configuration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.5.
-
 Checks if a project's latest (`HEAD` of the project's default branch)
 `.gitlab-ci.yml` configuration is valid. This endpoint uses all namespace
 specific data available, including variables and local includes.
@@ -68,11 +64,11 @@ specific data available, including variables and local includes.
 GET /projects/:id/ci/lint
 ```
 
-| Attribute  | Type    | Required | Description |
-| ---------- | ------- | -------- | -------- |
-| `dry_run`  | boolean | no       | Run pipeline creation simulation, or only do static check. |
-| `include_jobs`  | boolean    | no       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. This is false by default. |
-| `ref`      | string  | no       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
+| Attribute      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `dry_run`      | boolean | No       | Run pipeline creation simulation, or only do static check. |
+| `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
+| `ref`          | string  | No       | When `dry_run` is `true`, sets the branch or tag to use. Defaults to the project's default branch when not set. |
 
 Example request:
 
@@ -112,18 +108,18 @@ Example responses:
 
 WARNING:
 This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/381669) in GitLab 15.7
-and was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/403256) in 16.0. Use [`POST /projects/:id/ci/lint`](#validate-a-ci-yaml-configuration-with-a-namespace) instead.
+and was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/403256) in 16.0. Use [`POST /projects/:id/ci/lint`](#validate-the-cicd-configuration-for-a-namespace) instead.
 
 Checks if CI/CD YAML configuration is valid. This endpoint validates basic CI/CD
 configuration syntax. It doesn't have any namespace-specific context.
 
 Access to this endpoint does not require authentication when the instance
-[allows new sign ups](../user/admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups)
+[allows new sign ups](../administration/settings/sign_up_restrictions.md#disable-new-sign-ups)
 and:
 
-- Does not have an [allowlist or denylist](../user/admin_area/settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains).
-- Does not [require administrator approval for new sign ups](../user/admin_area/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups).
-- Does not have additional [sign up restrictions](../user/admin_area/settings/sign_up_restrictions.md).
+- Does not have an [allowlist or denylist](../administration/settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains).
+- Does not [require administrator approval for new sign ups](../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups).
+- Does not have additional [sign up restrictions](../administration/settings/sign_up_restrictions.md).
 
 Otherwise, authentication is required.
 
@@ -131,11 +127,11 @@ Otherwise, authentication is required.
 POST /ci/lint
 ```
 
-| Attribute  | Type    | Required | Description |
-| ---------- | ------- | -------- | -------- |
-| `content`              | string     | yes      | The CI/CD configuration content. |
-| `include_merged_yaml`  | boolean    | no       | If the [expanded CI/CD configuration](#yaml-expansion) should be included in the response. |
-| `include_jobs`  | boolean    | no       | If the list of jobs should be included in the response. This is false by default. |
+| Attribute             | Type    | Required | Description |
+|-----------------------|---------|----------|-------------|
+| `content`             | string  | Yes      | The CI/CD configuration content. |
+| `include_merged_yaml` | boolean | No       | If the [expanded CI/CD configuration](#yaml-expansion) should be included in the response. |
+| `include_jobs`        | boolean | No       | If the list of jobs should be included in the response. Default: `false`. |
 
 ```shell
 curl --header "Content-Type: application/json" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/ci/lint" --data '{"content": "{ \"image\": \"ruby:2.6\", \"services\": [\"postgres\"], \"before_script\": [\"bundle install\", \"bundle exec rake db:create\"], \"variables\": {\"DB_NAME\": \"postgres\"}, \"types\": [\"test\", \"deploy\", \"notify\"], \"rspec\": { \"script\": \"rake spec\", \"tags\": [\"ruby\", \"postgres\"], \"only\": [\"branches\"]}}"}'
@@ -189,8 +185,6 @@ Example responses:
   ```
 
 ### YAML expansion
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29568) in GitLab 13.5.
 
 The CI lint returns an expanded version of the configuration. The expansion does not
 work for CI configuration added with [`include: local`](../ci/yaml/index.md#includelocal),

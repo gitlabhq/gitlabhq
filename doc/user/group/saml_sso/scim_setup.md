@@ -38,7 +38,6 @@ You can configure one of the following as an identity provider:
 
 - [Azure Active Directory](#configure-azure-active-directory).
 - [Okta](#configure-okta).
-- [OneLogin](#configure-onelogin).
 
 NOTE:
 Other providers can work with GitLab but they have not been tested and are not supported.
@@ -159,15 +158,6 @@ To configure Okta for SCIM:
 1. Select **Save**.
 1. Assign users in the **Assignments** tab. Assigned users are created and managed in your GitLab group.
 
-### Configure OneLogin
-
-Prerequisites:
-
-- [GitLab is configured](#configure-gitlab).
-
-OneLogin provides a **GitLab (SaaS)** app in their catalog, which includes a SCIM integration. Contact OneLogin if you
-encounter issues.
-
 ## User access
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an [**Enterprise**](../../enterprise_user/index.md) badge in the **Members** view.
@@ -183,7 +173,11 @@ The following diagram describes what happens when you add users to your SCIM app
 graph TD
   A[Add User to SCIM app] -->|IdP sends user info to GitLab| B(GitLab: Does the email exist?)
   B -->|No| C[GitLab creates user with SCIM identity]
-  B -->|Yes| D[GitLab sends message back 'Email exists']
+  B -->|Yes| D(GitLab: Is the user part of the group?)
+  D -->|No| E(GitLab: Is SSO enforcement enabled?)
+  E -->|No| G
+  E -->|Yes| F[GitLab sends message back:\nThe member's email address is not linked to a SAML account]
+  D -->|Yes| G[Associate SCIM identity to user]
 ```
 
 During provisioning:

@@ -19,6 +19,10 @@ Configure Gitaly Cluster using either:
 
 Smaller GitLab installations may need only [Gitaly itself](index.md).
 
+NOTE:
+Gitaly Cluster is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
+[epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+
 ## Requirements
 
 The minimum recommended configuration for a Gitaly Cluster requires:
@@ -1107,8 +1111,8 @@ For more information on Gitaly server configuration, see our
    ```ruby
    # Configure the gitlab-shell API callback URL. Without this, `git push` will
    # fail. This can be your front door GitLab URL or an internal load balancer.
-   # Examples: 'https://gitlab.example.com', 'http://1.2.3.4'
-   gitlab_rails['internal_api_url'] = 'http://GITLAB_HOST'
+   # Examples: 'https://gitlab.example.com', 'http://10.0.2.2'
+   gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
    ```
 
 1. Configure the storage location for Git data by setting `gitaly['configuration'][:storage]` in
@@ -1487,7 +1491,7 @@ repository storage redundancy.
 
 For a replication factor:
 
-- Of `1`: NFS, Gitaly, and Gitaly Cluster have roughly the same storage requirements.
+- Of `1`: Gitaly and Gitaly Cluster have roughly the same storage requirements.
 - More than `1`: The amount of required storage is `used space * replication factor`. `used space`
   should include any planned future growth.
 
@@ -1628,20 +1632,8 @@ You should use [repository-specific primary nodes](#repository-specific-primary-
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3492) in GitLab 13.12, with primary elections run when Praefect starts or the cluster's consensus of a Gitaly node's health changes.
 > - [Changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3543) in GitLab 14.1, primary elections are run lazily.
 
-Gitaly Cluster supports electing repository-specific primary Gitaly nodes. Repository-specific
-Gitaly primary nodes are enabled in `/etc/gitlab/gitlab.rb` by setting
-`praefect['failover_election_strategy'] = 'per_repository'`.
-
-Praefect's [deprecated election strategies](#deprecated-election-strategies):
-
-- Elected a primary Gitaly node for each virtual storage, which was used as the primary node for
-  each repository in the virtual storage.
-- Prevented horizontal scaling of a virtual storage. The primary Gitaly node needed a replica of
-  each repository and thus became the bottleneck.
-
-The `per_repository` election strategy solves this problem by electing a primary Gitaly node separately for each
-repository. Combined with [configurable replication factors](#configure-replication-factor), you can
-horizontally scale storage capacity and distribute write load across Gitaly nodes.
+Gitaly Cluster elects a primary Gitaly node separately for each repository. Combined with
+[configurable replication factors](#configure-replication-factor), you can horizontally scale storage capacity and distribute write load across Gitaly nodes.
 
 Primary elections are run lazily. Praefect doesn't immediately elect a new primary node if the current
 one is unhealthy. A new primary is elected if a request must be served while the current primary is unavailable.

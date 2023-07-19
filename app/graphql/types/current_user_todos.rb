@@ -17,7 +17,8 @@ module Types
 
     def current_user_todos(state: nil)
       state ||= %i[done pending] # TodosFinder treats a `nil` state param as `pending`
-      key = [state, unpresented.class.name]
+      target_type_name = unpresented.try(:todoable_target_type_name) || unpresented.class.name
+      key = [state, target_type_name]
 
       BatchLoader::GraphQL.for(unpresented).batch(default_value: [], key: key) do |targets, loader, args|
         state, klass_name = args[:key]

@@ -22,6 +22,21 @@ This function takes pagination parameters `page` and `per_page` to restrict the 
 GET /users
 ```
 
+| Attribute          | Type    | Required | Description                                                                                                            |
+| ------------------ | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `username`         | string  | no       | Get a single user with a specific username.                                                                            |
+| `extern_uid`       | string  | no       | Get a single user with a specific external authentication provider UID.                                                |
+| `provider`         | string  | no       | The external provider.                                                                                                 |
+| `search`           | string  | no       | Search for a username.                                                                                                |
+| `active`           | boolean | no       | Filters only active users. Default is `false`.                                                                         |
+| `external`         | boolean | no       | Filters only external users. Default is `false`.                                                                       |
+| `exclude_external` | boolean | no       | Filters only non external users. Default is `false`.                                                                   |
+| `blocked`          | boolean | no       | Filters only blocked users. Default is `false`.                                                                        |
+| `created_after`    | DateTime| no       | Returns users created after specified time.                                                                            |
+| `created_before`   | DateTime| no       | Returns users created before specified time.                                                                           |
+| `exclude_internal` | boolean | no       | Filters only non internal users. Default is `false`.                                                                   |
+| `without_project_bots`| boolean | no       | Filters user without project bots. Default is `false`.                                                             |
+
 ```json
 [
   {
@@ -120,6 +135,8 @@ GET /users?without_project_bots=true
 ```plaintext
 GET /users
 ```
+
+You can use all [parameters available for everyone](#for-non-administrator-users) plus these additional parameters available only for administrators.
 
 | Attribute          | Type    | Required | Description                                                                                                           |
 | ------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -266,6 +283,12 @@ For example:
 
 ```plaintext
 GET /users?extern_uid=1234567&provider=github
+```
+
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) have the `scim` provider available:
+
+```plaintext
+GET /users?extern_uid=1234567&provider=scim
 ```
 
 You can search users by creation date time range with:
@@ -493,7 +516,7 @@ over `password`. In addition, `reset_password` and
 
 NOTE:
 From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29888/), `private_profile` defaults to `false`.
-From [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/231301), `private_profile` defaults to the value determined by [this](../user/admin_area/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting.
+From [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/231301), `private_profile` defaults to the value determined by [this](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting.
 
 NOTE:
 From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35604), `bio` defaults to `""` instead of `null`.
@@ -510,12 +533,12 @@ Parameters:
 | `auditor` **(PREMIUM)**               | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.                                                                                                      |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
-| `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
+| `can_create_group`                   | No       | User can create top-level groups - true or false                                                                                                                  |
 | `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#syntax-highlighting-theme)) |
 | `email`                              | Yes      | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional units of compute for this user.                                                                                                 |
+| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional compute minutes for this user.                                                                                                 |
 | `force_random_password`              | No       | Set user password to a random value - true or false (default)                                                                                           |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -524,11 +547,11 @@ Parameters:
 | `note`                               | No       | Administrator notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
-| `private_profile`                    | No       | User's profile is private - true or false. The default value is determined by [this](../user/admin_area/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting. |
+| `private_profile`                    | No       | User's profile is private - true or false. The default value is determined by [this](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting. |
 | `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
-| `shared_runners_minutes_limit` **(PREMIUM)**  | No       | Can be set by administrators only. Maximum number of monthly units of compute for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                                                                                                      |
+| `shared_runners_minutes_limit` **(PREMIUM)**  | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                                                                                                      |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#navigation-theme) for more information)                    |
@@ -565,7 +588,7 @@ Parameters:
 | `email`                              | No       | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional units of compute for this user.                                                                                                 |
+| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional compute minutes for this user.                                                                                                 |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `id`                                 | Yes      | ID of the user                                                                                                                                      |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -579,7 +602,7 @@ Parameters:
 | `pronouns`                           | No       | Pronouns                                                                                                                                                |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | Public email of the user (must be already verified)                                                                                                                            |
-| `shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Maximum number of monthly units of compute for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`.                                                                                                      |
+| `shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`.                                                                                                      |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#navigation-theme) for more information)                    |
@@ -1008,7 +1031,7 @@ Example response:
 }
 ```
 
-## Create Service Account User **(PREMIUM)**
+## Create Service Account User **(PREMIUM SELF)**
 
 > Ability to create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
 
@@ -1061,6 +1084,8 @@ Example response:
 ## List SSH keys
 
 Get a list of the authenticated user's SSH keys.
+
+This function takes pagination parameters `page` and `per_page` to restrict the list of keys.
 
 ```plaintext
 GET /user/keys
@@ -1738,7 +1763,7 @@ Returns:
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` when trying to deactivate a user that is:
   - Blocked by administrator or by LDAP synchronization.
-  - Not [dormant](../user/admin_area/moderate_users.md#automatically-deactivate-dormant-users).
+  - Not [dormant](../administration/moderate_users.md#automatically-deactivate-dormant-users).
   - Internal.
 
 ## Activate user **(FREE SELF)**
@@ -1907,7 +1932,7 @@ Example Responses:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339925) in GitLab 14.3.
 
-Rejects specified user that is [pending approval](../user/admin_area/moderate_users.md#users-pending-approval). Available only for administrators.
+Rejects specified user that is [pending approval](../administration/moderate_users.md#users-pending-approval). Available only for administrators.
 
 ```plaintext
 POST /users/:id/reject
@@ -2051,6 +2076,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17176) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/267553) in GitLab 13.8.
+> - The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
 
 Use this API to create a new personal access token. Token values are returned once so,
 make sure you save it as you can't access it again. This API can only be used by
@@ -2064,7 +2090,7 @@ POST /users/:user_id/personal_access_tokens
 | ------------ | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `user_id`    | integer | yes      | ID of the user                                                                                                       |
 | `name`       | string  | yes      | Name of the personal access token                                                                                    |
-| `expires_at` | date    | no       | Expiration date of the personal access token in ISO format (`YYYY-MM-DD`)                                            |
+| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If no date is set, the expiration is set to the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
 | `scopes`     | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
 
 ```shell
@@ -2243,6 +2269,7 @@ Prerequisites:
 
 - You must be an administrator or have the Owner role of the target namespace or project.
 - For `instance_type`, you must be an administrator of the GitLab instance.
+- An access token with the `create_runner` scope.
 
 Be sure to copy or save the `token` in the response, the value cannot be retrieved again.
 

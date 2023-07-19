@@ -145,13 +145,11 @@ default:
   image:
     name: ruby:2.6
     entrypoint: ["/bin/bash"]
-
   services:
     - name: my-postgres:11.7
       alias: db-postgres
       entrypoint: ["/usr/local/bin/db-postgres"]
       command: ["start"]
-
   before_script:
     - bundle install
 
@@ -240,18 +238,17 @@ variables:
   PGDATA: "/var/lib/postgresql/data"
   POSTGRES_INITDB_ARGS: "--encoding=UTF8 --data-checksums"
 
-services:
-  - name: postgres:11.7
-    alias: db
-    entrypoint: ["docker-entrypoint.sh"]
-    command: ["postgres"]
-
-image:
-  name: ruby:2.6
-  entrypoint: ["/bin/bash"]
-
-before_script:
-  - bundle install
+default:
+  services:
+    - name: postgres:11.7
+      alias: db
+      entrypoint: ["docker-entrypoint.sh"]
+      command: ["postgres"]
+  image:
+    name: ruby:2.6
+    entrypoint: ["/bin/bash"]
+  before_script:
+    - bundle install
 
 test:
   script:
@@ -321,28 +318,26 @@ Before the new extended Docker configuration options, you would need to:
 
 - Create your own image based on the `super/sql:latest` image.
 - Add the default command.
-- Use the image in the job's configuration:
+- Use the image in the job's configuration.
 
-  ```dockerfile
-  # my-super-sql:latest image's Dockerfile
+  - `my-super-sql:latest` image's Dockerfile:
 
-  FROM super/sql:latest
-  CMD ["/usr/bin/super-sql", "run"]
-  ```
+    ```dockerfile
+    FROM super/sql:latest
+    CMD ["/usr/bin/super-sql", "run"]
+    ```
 
-  ```yaml
-  # .gitlab-ci.yml
+  - In the job in the `.gitlab-ci.yml`:
 
-  services:
-    - my-super-sql:latest
-  ```
+    ```yaml
+    services:
+      - my-super-sql:latest
+    ```
 
 After the new extended Docker configuration options, you can
 set a `command` in the `.gitlab-ci.yml` file instead:
 
 ```yaml
-# .gitlab-ci.yml
-
 services:
   - name: super/sql:latest
     command: ["/usr/bin/super-sql", "run"]
@@ -414,7 +409,7 @@ To enable service logging, add the `CI_DEBUG_SERVICES` variable to the project's
 
 ```yaml
 variables:
-    CI_DEBUG_SERVICES: "true"
+  CI_DEBUG_SERVICES: "true"
 ```
 
 Accepted values are:

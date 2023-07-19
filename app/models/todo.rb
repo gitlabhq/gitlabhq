@@ -117,7 +117,18 @@ class Todo < ApplicationRecord
     # target - The value of the `target_type` column, such as `Issue`.
     # state - The value of the `state` column, such as `pending` or `done`.
     def any_for_target?(target, state = nil)
-      state.nil? ? exists?(target: target) : exists?(target: target, state: state)
+      conditions = {}
+
+      if target.respond_to?(:todoable_target_type_name)
+        conditions[:target_type] = target.todoable_target_type_name
+        conditions[:target_id] = target.id
+      else
+        conditions[:target] = target
+      end
+
+      conditions[:state] = state unless state.nil?
+
+      exists?(conditions)
     end
 
     # Updates attributes of a relation of todos to the new state.

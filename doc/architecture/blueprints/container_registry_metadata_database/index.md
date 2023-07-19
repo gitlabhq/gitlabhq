@@ -266,7 +266,7 @@ The expected registry behavior will be covered with integration tests by manipul
 
 ##### Latency
 
-Excessive latency on established connections is hard to detect and debug, as these might not raise an application error or network timeout in normal circumstances but usually precede them.
+Excessive latency on established connections is hard to detect and debug, as these might not raise an application error or network timeout in typical circumstances but usually precede them.
 
 For this reason, the duration of database queries used to serve HTTP API requests should be instrumented using metrics, allowing the detection of unusual variations and trigger alarms accordingly before an excessive latency becomes a timeout or service unavailability.
 

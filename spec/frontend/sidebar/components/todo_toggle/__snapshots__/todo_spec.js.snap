@@ -27,6 +27,7 @@ exports[`SidebarTodo template renders component container element with proper da
     label="Loading"
     size="sm"
     style="display: none;"
+    variant="spinner"
   />
 </button>
 `;

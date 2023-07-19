@@ -3,7 +3,9 @@
 module Projects
   module Ml
     class CandidatesController < ApplicationController
-      before_action :check_feature_enabled, :set_candidate
+      before_action :set_candidate
+      before_action :check_read, only: [:show]
+      before_action :check_write, only: [:destroy]
 
       feature_category :mlops
 
@@ -26,8 +28,12 @@ module Projects
         render_404 unless @candidate.present?
       end
 
-      def check_feature_enabled
+      def check_read
         render_404 unless can?(current_user, :read_model_experiments, @project)
+      end
+
+      def check_write
+        render_404 unless can?(current_user, :write_model_experiments, @project)
       end
     end
   end

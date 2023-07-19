@@ -37,7 +37,7 @@ Supported attributes:
 {
   "approvers": [], // Deprecated in GitLab 12.3, always returns empty
   "approver_groups": [], // Deprecated in GitLab 12.3, always returns empty
-  "approvals_before_merge": 2,
+  "approvals_before_merge": 2, // Deprecated in GitLab 12.3, use Approval Rules instead
   "reset_approvals_on_push": true,
   "selective_code_owner_removals": false,
   "disable_overriding_approvers_per_merge_request": false,
@@ -63,7 +63,7 @@ Supported attributes:
 | Attribute                                        | Type              | Required               | Description                                                                                                                                             |
 |--------------------------------------------------|-------------------|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`                                             | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding).                                                                           |
-| `approvals_before_merge` (deprecated)            | integer           | **{dotted-circle}** No | How many approvals are required before a merge request can be merged. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. |
+| `approvals_before_merge` (deprecated)            | integer           | **{dotted-circle}** No | How many approvals are required before a merge request can be merged. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. Use [Approval Rules](#create-project-level-rule) instead. |
 | `disable_overriding_approvers_per_merge_request` | boolean           | **{dotted-circle}** No | Allow or prevent overriding approvers per merge request.                                                                                                |
 | `merge_requests_author_approval`                 | boolean           | **{dotted-circle}** No | Allow or prevent authors from self approving merge requests; `true` means authors can self approve.                                                     |
 | `merge_requests_disable_committers_approval`     | boolean           | **{dotted-circle}** No | Allow or prevent committers from self approving merge requests.                                                                                         |
@@ -73,7 +73,7 @@ Supported attributes:
 
 ```json
 {
-  "approvals_before_merge": 2,
+  "approvals_before_merge": 2, // Deprecated in GitLab 12.3, use Approval Rules instead
   "reset_approvals_on_push": true,
   "selective_code_owner_removals": false,
   "disable_overriding_approvers_per_merge_request": false,

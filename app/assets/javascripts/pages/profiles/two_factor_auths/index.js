@@ -7,7 +7,9 @@ const twoFactorNode = document.querySelector('.js-two-factor-auth');
 const skippable = twoFactorNode ? parseBoolean(twoFactorNode.dataset.twoFactorSkippable) : false;
 
 if (skippable) {
-  const button = `<br/><a class="btn gl-button btn-sm btn-confirm gl-mt-3" data-qa-selector="configure_it_later_button" data-method="patch" href="${twoFactorNode.dataset.two_factor_skip_url}">Configure it later</a>`;
+  const button = `<div class="gl-alert-actions">
+                    <a class="btn gl-button btn-md btn-confirm gl-alert-action" data-qa-selector="configure_it_later_button" data-method="patch" href="${twoFactorNode.dataset.two_factor_skip_url}">Configure it later</a>
+                  </div>`;
   const flashAlert = document.querySelector('.flash-alert');
   if (flashAlert) {
     // eslint-disable-next-line no-unsanitized/method
@@ -17,7 +19,5 @@ if (skippable) {
 
 mount2faRegistration();
 initWebAuthnRegistration();
-
 initRecoveryCodes();
-
 initManageTwoFactorForm();

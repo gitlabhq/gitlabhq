@@ -152,7 +152,7 @@ without having to [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-
 which in this case would restart Puma and Sidekiq.
 
 For example, a backup may fail with the following errors in the output of the
-[backup command](../../raketasks/backup_restore.md#back-up-gitlab)
+[backup command](../../administration/backup_restore/index.md#back-up-gitlab)
 because the statement timeout was too short:
 
 ```plaintext

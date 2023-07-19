@@ -29,7 +29,7 @@ RSpec.describe CronValidator do
     expect(subject.valid?).to be_falsy
   end
 
-  context 'cron field is not whitelisted' do
+  context 'cron field is not allowlisted' do
     subject do
       Class.new do
         include ActiveModel::Model
@@ -43,7 +43,7 @@ RSpec.describe CronValidator do
     it 'raises an error' do
       subject.cron_partytime = '0 23 * * 5'
 
-      expect { subject.valid? }.to raise_error(StandardError, "Non-whitelisted attribute")
+      expect { subject.valid? }.to raise_error(StandardError, "Non-allowlisted attribute")
     end
   end
 end

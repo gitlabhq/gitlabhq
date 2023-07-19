@@ -19,7 +19,7 @@ projects.
 To view Terraform modules in your project:
 
 1. Go to the project.
-1. On the left sidebar, select **Packages and registries > Terraform modules**.
+1. On the left sidebar, select **Operate > Terraform modules**.
 
 You can search, sort, and filter modules on this page.
 
@@ -162,7 +162,7 @@ Prerequisites:
 
 - You need to [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a personal access token, it must be configured with the `read_api` scope.
 
-Authentication tokens (Job Token or Personal Access Token) can be provided for `terraform` in your `~/.terraformrc` file:
+Authentication tokens (Job Token or Personal Access Token) can be provided for `terraform` in your `~/.terraformrc` or `%APPDATA%/terraform.rc` file:
 
 ```terraform
 credentials "gitlab.com" {
@@ -186,7 +186,7 @@ Where `<namespace>` is the [namespace](../../../user/namespace/index.md) of the 
 
 To download a Terraform module:
 
-1. On the left sidebar, select **Packages and registries > Terraform modules**.
+1. On the left sidebar, select **Operate > Terraform modules**.
 1. Select the name of the module you want to download.
 1. In the **Activity** section, select the name of the module you want to download.
 
@@ -217,7 +217,7 @@ You can delete modules by using [the packages API](../../../api/packages.md#dele
 
 To delete a module in the UI, from your project:
 
-1. On the left sidebar, select **Packages and registries > Terraform modules**.
+1. On the left sidebar, select **Operate > Terraform modules**.
 1. Find the name of the package you want to delete.
 1. Select **Delete**.
 

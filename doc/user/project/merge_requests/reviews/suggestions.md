@@ -7,9 +7,6 @@ type: index, reference
 
 # Suggest changes **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25381) custom commit messages for suggestions in GitLab 13.9 [with a flag](../../../../administration/feature_flags.md) named `suggestions_custom_commit`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/297404) in GitLab 13.10. Feature flag `suggestions_custom_commit` removed.
-
 Reviewers can suggest code changes with a Markdown syntax in merge request diff threads.
 The merge request author (or other users with the appropriate role) can apply any or
 all of the suggestions from the GitLab UI. Applying suggestions adds a commit to the
@@ -43,8 +40,6 @@ merge request, authored by the user who suggested the changes.
 
 ### Multi-line suggestions
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/232339) in GitLab 13.11: suggestions in multi-line comments also become multi-line.
-
 When you review a merge request diff, you can propose changes to multiple lines (up to 200)
 in a single suggestion, by either:
 
@@ -71,6 +66,23 @@ When applied, the suggestion replaces from 3 lines above to 4 lines below the co
 Suggestions for multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line. This allows for up to 200 changed lines per
 suggestion.
+
+#### Using the rich text editor
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a flag](../../../../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../../administration/feature_flags.md) named `content_editor_on_issues`.
+On GitLab.com, this feature is available.
+
+When you insert suggestions, you can use the WYSIWYG
+[rich text editor](https://about.gitlab.com/direction/plan/knowledge/content_editor/) to move
+up and down the source file's line numbers in the UI.
+
+To add or subtract changed lines, next to **From line**, select **+** or **-**.
+
+![Multi-line suggestion preview](img/suggest_changes_v16_2.png)
 
 ## Apply suggestions
 
@@ -155,10 +167,7 @@ For example, to customize the commit message to output
 
 ## Batch suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [Experiment](../../../../policy/experiment-beta-support.md#experiment) with a flag named `batch_suggestions`, disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) in GitLab 13.2.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) in GitLab 13.11. [Feature flag `batch_suggestions`](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) removed.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.
 
 To reduce the number of commits added to your branch, you can apply multiple
 suggestions in a single commit.

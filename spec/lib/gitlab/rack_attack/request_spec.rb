@@ -258,6 +258,11 @@ RSpec.describe Gitlab::RackAttack::Request do
     valid_token = SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH)
     other_token = SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH)
 
+    before do
+      allow(session).to receive(:enabled?).and_return(true)
+      allow(session).to receive(:loaded?).and_return(true)
+    end
+
     where(:session, :env, :expected) do
       {}                           | {}                                     | false
       {}                           | { 'HTTP_X_CSRF_TOKEN' => valid_token } | false

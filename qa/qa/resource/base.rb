@@ -17,7 +17,8 @@ module QA
       class << self
         # Initialize new instance of class without fabrication
         #
-        # @param [Proc] prepare_block
+        # @yieldparam [self] instance of page object
+        # @return [self]
         def init(&prepare_block)
           new.tap(&prepare_block)
         end

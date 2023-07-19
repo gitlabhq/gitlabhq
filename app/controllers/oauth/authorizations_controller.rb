@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
+  include Gitlab::GonHelper
   include InitializesCurrentUserMode
   include Gitlab::Utils::StrongMemoize
 
+  before_action :add_gon_variables
   before_action :verify_confirmed_email!, :verify_admin_allowed!
 
   layout 'profile'

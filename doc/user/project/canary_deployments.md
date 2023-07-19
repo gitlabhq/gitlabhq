@@ -121,7 +121,7 @@ or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md
 
 To use your [deploy board](../../user/project/deploy_boards.md):
 
-1. Go to **Deployments > Environments** for your project.
+1. Go to **Operate > Environments** for your project.
 1. Set the new weight with the dropdown list on the right side.
 1. Confirm your selection.
 
@@ -134,7 +134,7 @@ Here's an example using [GraphiQL](../../api/graphql/getting_started.md#graphiql
    mutation {
      environmentsCanaryIngressUpdate(input:{
        id: "gid://gitlab/Environment/29",              # Your Environment ID. You can get the ID from the URL of the environment page.
-       weight: 45                                      # The new traffic weight. e.g. If you set `45`, 45% of traffic goes to a canary deployment and 55% of traffic goes to a stable deployment.
+       weight: 45                                      # The new traffic weight. for example, If you set `45`, 45% of traffic goes to a canary deployment and 55% of traffic goes to a stable deployment.
      }) {
        errors
      }

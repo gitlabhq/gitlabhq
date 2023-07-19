@@ -7,14 +7,16 @@ import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constant
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { redirectTo, getLocationHash } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
+import WebIdeLink from 'ee_else_ce/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import { addBlameLink } from '~/blob/blob_blame_link';
+import highlightMixin from '~/repository/mixins/highlight_mixin';
 import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
 import userInfoQuery from '../queries/user_info.query.graphql';
@@ -36,7 +38,7 @@ export default {
     CodeIntelligence,
     AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
   },
-  mixins: [getRefMixin, glFeatureFlagMixin()],
+  mixins: [getRefMixin, glFeatureFlagMixin(), highlightMixin],
   inject: {
     originalBranch: {
       default: '',
@@ -81,7 +83,10 @@ export default {
           shouldFetchRawText: Boolean(this.glFeatures.highlightJs),
         };
       },
-      result() {
+      result({ data }) {
+        const blob = data.project?.repository?.blobs?.nodes[0] || {};
+        this.initHighlightWorker(blob);
+
         const urlHash = getLocationHash();
         const plain = this.$route?.query?.plain;
 
@@ -170,7 +175,14 @@ export default {
     },
     blobViewer() {
       const { fileType } = this.viewer;
-      return this.shouldLoadLegacyViewer ? null : loadViewer(fileType, this.isUsingLfs);
+      return this.shouldLoadLegacyViewer
+        ? null
+        : loadViewer(
+            fileType,
+            this.isUsingLfs,
+            this.glFeatures.highlightJsWorker,
+            this.blobInfo.language,
+          );
     },
     shouldLoadLegacyViewer() {
       const isTextFile = this.viewer.fileType === TEXT_FILE_TYPE && !this.glFeatures.highlightJs;
@@ -214,6 +226,9 @@ export default {
     },
     isUsingLfs() {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
+    },
+    projectIdAsNumber() {
+      return getIdFromGraphQLId(this.project?.id);
     },
   },
   watch: {
@@ -345,6 +360,8 @@ export default {
             :gitpod-url="blobInfo.gitpodBlobUrl"
             :show-gitpod-button="gitpodEnabled"
             :gitpod-enabled="currentUser && currentUser.gitpodEnabled"
+            :project-path="projectPath"
+            :project-id="projectIdAsNumber"
             :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"
             :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
             is-blob
@@ -386,7 +403,14 @@ export default {
         :loading="isLoadingLegacyViewer"
         :data-loading="isRenderingLegacyTextViewer"
       />
-      <component :is="blobViewer" v-else :blob="blobInfo" class="blob-viewer" @error="onError" />
+      <component
+        :is="blobViewer"
+        v-else
+        :blob="blobInfo"
+        :chunks="chunks"
+        class="blob-viewer"
+        @error="onError"
+      />
       <code-intelligence
         v-if="blobViewer || legacyViewerLoaded"
         :code-navigation-path="blobInfo.codeNavigationPath"

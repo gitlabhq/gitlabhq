@@ -14,7 +14,11 @@ The instructions on this page guide you through:
 1. Onboarding and initial setup of your GitLab Dedicated instance.
 1. Configuring your GitLab Dedicated instance including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
-Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Panel](../../user/admin_area/index.md).
+Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Panel](../../administration/admin_area.md).
+
+Examples of SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
+These environment settings cannot be changed by tenants.
+GitLab Dedicated Engineers also don't have direct access to tenant environments, except for [break glass situations](../../subscriptions/gitlab_dedicated/index.md#access-controls).
 
 ## Onboarding
 
@@ -68,8 +72,9 @@ To create a KMS key using the AWS Console:
         1. Key material origin: **KMS**
         1. Regionality: **Multi-Region key**
 1. Enter your values for key alias, description, and tags.
-1. Select Key administrators (optionally allow or deny key administrators to delete the key).
-1. For Key usage permissions, add the GitLab AWS account using the **Other AWS accounts** dialog.
+1. Select key administrators.
+1. Optional. Allow or prevent key administrators from deleting the key.
+1. On the **Define key usage permissions** page, under **Other AWS accounts**, add the GitLab AWS account.
 
 The last page asks you to confirm the KMS key policy. It should look similar to the following example, populated with your account IDs and usernames:
 

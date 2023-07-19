@@ -6,6 +6,8 @@ module Atlassian
       class DeploymentEntity < Grape::Entity
         include Gitlab::Routing
 
+        COMMITS_LIMIT = 5_000
+
         format_with(:iso8601, &:iso8601)
 
         expose :schema_version, as: :schemaVersion
@@ -22,9 +24,7 @@ module Atlassian
         expose :environment_entity, as: :environment
 
         def issue_keys
-          return [] unless build&.pipeline.present?
-
-          @issue_keys ||= BuildEntity.new(build.pipeline).issue_keys
+          @issue_keys ||= (issue_keys_from_pipeline + issue_keys_from_commits_since_last_deploy).uniq
         end
 
         private
@@ -74,7 +74,7 @@ module Atlassian
         end
 
         def pipeline_entity
-          PipelineEntity.new(build.pipeline) if build&.pipeline.present?
+          PipelineEntity.new(build.pipeline) if pipeline?
         end
 
         def environment_entity
@@ -83,6 +83,44 @@ module Atlassian
 
         def update_sequence_id
           options[:update_sequence_id] || Client.generate_update_sequence_id
+        end
+
+        def pipeline?
+          build&.pipeline.present?
+        end
+
+        def issue_keys_from_pipeline
+          return [] unless pipeline?
+
+          BuildEntity.new(build.pipeline).issue_keys
+        end
+
+        # Extract Jira issue keys from commits made to the deployment's branch or tag
+        # since the last successful deployment was made to the environment.
+        def issue_keys_from_commits_since_last_deploy
+          return [] if Feature.disabled?(:jira_deployment_issue_keys, project)
+
+          last_deployed_commit = environment
+            .successful_deployments
+            .id_not_in(deployment.id)
+            .ordered
+            .find_by_ref(deployment.ref)
+            &.commit
+
+          commits = project.repository.commits(
+            deployment.ref,
+            before: deployment.commit.created_at,
+            after: last_deployed_commit&.created_at,
+            skip_merges: true,
+            limit: COMMITS_LIMIT
+          )
+
+          # Include this deploy's commit, as the `before:` param in `Repository#list_commits_by` excluded it.
+          commits << deployment.commit
+
+          commits.flat_map do |commit|
+            JiraIssueKeyExtractor.new(commit.message).issue_keys
+          end.compact
         end
       end
     end

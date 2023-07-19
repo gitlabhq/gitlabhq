@@ -55,7 +55,8 @@
             = label_tag :pin_code, _('Enter verification code'), class: "label-bold"
             = text_field_tag :pin_code, nil, autocomplete: 'off', inputmode: 'numeric', class: "form-control gl-form-input", required: true, data: { qa_selector: 'pin_code_field' }
           .gl-mt-3
-            = submit_tag _('Register with two-factor app'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'register_2fa_app_button' }
+            = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { data: { qa_selector: 'register_2fa_app_button' } }) do
+              = _('Register with two-factor app')
 
   %hr
 
@@ -101,7 +102,7 @@
                     - else
                       %span.gl-text-gray-500
                         = _("no name set")
-                  %td= registration[:created_at].to_date.to_s(:medium)
+                  %td= registration[:created_at].to_date.to_fs(:medium)
                   %td
                     = render Pajamas::ButtonComponent.new(variant: :danger,
                       href: registration[:delete_path],

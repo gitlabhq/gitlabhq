@@ -15,7 +15,7 @@ import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secr
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import { getErrorMessages } from '../utils';
+import { createNoteErrorMessages } from '../utils';
 import DiffDiscussionHeader from './diff_discussion_header.vue';
 import DiffWithNote from './diff_with_note.vue';
 import DiscussionActions from './discussion_actions.vue';
@@ -96,6 +96,18 @@ export default {
       'showJumpToNextDiscussion',
       'getUserData',
     ]),
+    diffFile() {
+      const diffFile = this.discussion.diff_file;
+      if (!diffFile) return null;
+
+      return {
+        ...diffFile,
+        view_path: window.location.href.replace(
+          /\/-\/merge_requests.*/,
+          `/-/blob/${diffFile.content_sha}/${diffFile.new_path}`,
+        ),
+      };
+    },
     currentUser() {
       return this.getUserData;
     },
@@ -270,7 +282,7 @@ export default {
         });
     },
     handleSaveError({ response }) {
-      const errorMessage = getErrorMessages(response.data, response.status)[0];
+      const errorMessage = createNoteErrorMessages(response.data, response.status)[0];
 
       createAlert({
         message: errorMessage,
@@ -331,7 +343,7 @@ export default {
                 <li
                   v-else-if="canShowReplyActions && showReplies"
                   data-testid="reply-wrapper"
-                  class="discussion-reply-holder gl-border-t-0! clearfix"
+                  class="discussion-reply-holder gl-border-t-0! gl-pb-5! clearfix"
                   :class="discussionHolderClass"
                 >
                   <discussion-actions
@@ -348,6 +360,7 @@ export default {
                     v-if="isReplying"
                     ref="noteForm"
                     :discussion="discussion"
+                    :diff-file="diffFile"
                     :line="diffLine"
                     :save-button-title="saveButtonTitle"
                     :autosave-key="autosaveKey"

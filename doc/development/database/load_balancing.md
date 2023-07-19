@@ -21,7 +21,7 @@ is implemented in GitLab Rails and Sidekiq.
 
 ## Components
 
-F few Ruby classes are involved in the load balancing process. All of them are
+A few Ruby classes are involved in the load balancing process. All of them are
 in the namespace `Gitlab::Database::LoadBalancing`:
 
 1. `Host`

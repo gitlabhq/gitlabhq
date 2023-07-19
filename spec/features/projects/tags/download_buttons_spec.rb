@@ -10,18 +10,22 @@ RSpec.describe 'Download buttons in tags page', feature_category: :source_code_m
   let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
-    create(:ci_pipeline,
-           project: project,
-           sha: project.commit(tag).sha,
-           ref: tag,
-           status: status)
+    create(
+      :ci_pipeline,
+      project: project,
+      sha: project.commit(tag).sha,
+      ref: tag,
+      status: status
+    )
   end
 
   let!(:build) do
-    create(:ci_build, :success, :artifacts,
-           pipeline: pipeline,
-           status: pipeline.status,
-           name: 'build')
+    create(
+      :ci_build, :success, :artifacts,
+      pipeline: pipeline,
+      status: pipeline.status,
+      name: 'build'
+    )
   end
 
   before do

@@ -11,15 +11,17 @@ module Gitlab
 
       GIT_NAMESPACE = 'git'
 
-      def initialize(signature_text, signed_text, committer_email)
+      def initialize(signature_text, signed_text, signer, committer_email)
         @signature_text = signature_text
         @signed_text = signed_text
+        @signer = signer
         @committer_email = committer_email
       end
 
       def verification_status
         strong_memoize(:verification_status) do
           next :unverified unless all_attributes_present?
+          next :verified_system if verified_by_gitlab?
           next :unverified unless valid_signature_blob?
           next :unknown_key unless signed_by_key
           next :other_user unless committer
@@ -80,6 +82,15 @@ module Gitlab
         rescue SSHData::DecodeError
           nil
         end
+      end
+
+      # If a commit is signed by Gitaly, the Gitaly returns `SIGNER_SYSTEM` as a signer
+      # In order to calculate it, the signature is Verified using the Gitaly's public key:
+      # https://gitlab.com/gitlab-org/gitaly/-/blob/v16.2.0-rc2/internal/gitaly/service/commit/commit_signatures.go#L63
+      #
+      # It is safe to skip verification step if the commit has been signed by Gitaly
+      def verified_by_gitlab?
+        @signer == :SIGNER_SYSTEM
       end
     end
   end

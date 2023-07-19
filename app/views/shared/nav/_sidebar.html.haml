@@ -1,6 +1,6 @@
 %aside.nav-sidebar{ class: ('sidebar-collapsed-desktop' if collapsed_sidebar?), **sidebar_tracking_attributes_by_object(sidebar.container), 'aria-label': sidebar.aria_label }
   .nav-sidebar-inner-scroll
-    %ul.sidebar-top-level-items{ data: { qa_selector: sidebar_qa_selector(sidebar.container) } }
+    %ul.sidebar-top-level-items{ data: { testid: sidebar_qa_selector(sidebar.container) } }
       - if sidebar.render_raw_scope_menu_partial
         = render sidebar.render_raw_scope_menu_partial
       - elsif sidebar.scope_menu

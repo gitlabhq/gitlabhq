@@ -18,6 +18,10 @@ module Gitlab
               url: url
             }.compact
           end
+
+          def ==(other)
+            name == other.name && url == other.url
+          end
         end
       end
     end

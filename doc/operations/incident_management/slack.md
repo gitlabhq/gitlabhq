@@ -37,7 +37,7 @@ Prerequisites:
 1. Authorize GitLab to take actions on behalf of your Slack user.
    Each user must do this before they can use any of the incident slash commands.
 
-   To start the authorization flow, try executing a non-incident [Slack slash command](../../integration/slash_commands.md),
+   To start the authorization flow, try executing a non-incident [Slack slash command](../../user/project/integrations/gitlab_slack_application.md#slash-commands),
    like `/gitlab <project-alias> issue show <id>`.
    The `<project-alias>` you select must be a project that has the GitLab for Slack app set up.
    For more information, see [issue 377548](https://gitlab.com/gitlab-org/gitlab/-/issues/377548).

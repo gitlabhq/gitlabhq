@@ -12,7 +12,6 @@ RSpec.shared_examples 'database events tracking' do
     let(:category) { described_class.to_s }
     let(:label) { described_class.table_name }
     let(:action) { "database_event_#{property}" }
-    let(:feature_flag_name) { :product_intelligence_database_event_tracking }
     let(:record_tracked_attributes) { record.attributes.slice(*described_class::SNOWPLOW_ATTRIBUTES.map(&:to_s)) }
     let(:base_extra) { record_tracked_attributes.merge(project: try(:project), namespace: try(:namespace)) }
 
@@ -46,11 +45,5 @@ RSpec.shared_examples 'database events tracking' do
         let(:property) { 'destroy' }
       end
     end
-  end
-end
-
-RSpec.shared_examples 'database events tracking batch 2' do
-  it_behaves_like 'database events tracking' do
-    let(:feature_flag_name) { :product_intelligence_database_event_tracking_batch2 }
   end
 end

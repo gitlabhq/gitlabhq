@@ -55,6 +55,8 @@ module Gitlab
 
           sv = ServiceDiscovery.new(load_balancer, **configuration.service_discovery)
 
+          load_balancer.service_discovery = sv
+
           sv.perform_service_discovery
 
           sv.start if @start_service_discovery

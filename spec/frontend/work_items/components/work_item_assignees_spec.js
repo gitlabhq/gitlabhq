@@ -274,14 +274,14 @@ describe('WorkItemAssignees component', () => {
   });
 
   describe('when assigning to current user', () => {
-    it('does not show `Assign myself` button if current user is loading', () => {
+    it('does not show `Assign yourself` button if current user is loading', () => {
       createComponent();
       findTokenSelector().trigger('mouseover');
 
       expect(findAssignSelfButton().exists()).toBe(false);
     });
 
-    it('does not show `Assign myself` button if work item has assignees', async () => {
+    it('does not show `Assign yourself` button if work item has assignees', async () => {
       createComponent();
       await waitForPromises();
       findTokenSelector().trigger('mouseover');
@@ -289,7 +289,7 @@ describe('WorkItemAssignees component', () => {
       expect(findAssignSelfButton().exists()).toBe(false);
     });
 
-    it('does now show `Assign myself` button if user is not logged in', async () => {
+    it('does now show `Assign yourself` button if user is not logged in', async () => {
       createComponent({ currentUserQueryHandler: noCurrentUserQueryHandler, assignees: [] });
       await waitForPromises();
       findTokenSelector().trigger('mouseover');
@@ -304,7 +304,7 @@ describe('WorkItemAssignees component', () => {
       return waitForPromises();
     });
 
-    it('renders `Assign myself` button', () => {
+    it('renders `Assign yourself` button', () => {
       findTokenSelector().trigger('mouseover');
       expect(findAssignSelfButton().exists()).toBe(true);
     });

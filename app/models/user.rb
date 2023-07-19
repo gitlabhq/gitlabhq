@@ -60,7 +60,7 @@ class User < ApplicationRecord
   INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
   FEED_TOKEN_PREFIX = 'glft-'
 
-  columns_changing_default :notified_of_own_activity
+  columns_changing_default :project_view
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token }
@@ -170,8 +170,11 @@ class User < ApplicationRecord
   has_many :following_users, foreign_key: :followee_id, class_name: 'Users::UserFollowUser'
   has_many :followers, through: :following_users
 
-  # Groups
+  # Namespaces
   has_many :members
+  has_many :member_namespaces, through: :members
+
+  # Groups
   has_many :group_members, -> { where(requested_at: nil).where("access_level >= ?", Gitlab::Access::GUEST) }, class_name: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :groups_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :group_members, source: :group
@@ -255,6 +258,9 @@ class User < ApplicationRecord
   has_many :project_callouts, class_name: 'Users::ProjectCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
+
+  has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
+  has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users
 
   has_many :metrics_users_starred_dashboards, class_name: 'Metrics::UsersStarredDashboard', inverse_of: :user
 
@@ -1541,7 +1547,7 @@ class User < ApplicationRecord
   end
 
   def full_website_url
-    return "http://#{website_url}" if website_url !~ %r{\Ahttps?://}
+    return "http://#{website_url}" unless %r{\Ahttps?://}.match?(website_url)
 
     website_url
   end
@@ -1827,8 +1833,12 @@ class User < ApplicationRecord
     Project.where(id: events).not_aimed_for_deletion
   end
 
+  # Returns true if the user can be removed, false otherwise.
+  # A user can be removed if they do not own any groups where they are the sole owner
+  # Method `none?` is used to ensure faster retrieval, See https://gitlab.com/gitlab-org/gitlab/-/issues/417105
+
   def can_be_removed?
-    !solo_owned_groups.present?
+    solo_owned_groups.none?
   end
 
   def can_remove_self?
@@ -2063,7 +2073,15 @@ class User < ApplicationRecord
   # override, from Devise
   def lock_access!(opts = {})
     Gitlab::AppLogger.info("Account Locked: username=#{username}")
+    audit_lock_access(reason: opts.delete(:reason))
     super
+  end
+
+  # override, from Devise
+  def unlock_access!(unlocked_by: self)
+    audit_unlock_access(author: unlocked_by)
+
+    super()
   end
 
   # Determine the maximum access level for a group of projects in bulk.
@@ -2103,7 +2121,7 @@ class User < ApplicationRecord
   end
 
   def terms_accepted?
-    return true if project_bot?
+    return true if project_bot? || service_account? || security_policy_bot?
 
     accepted_term_id.present?
   end
@@ -2279,35 +2297,15 @@ class User < ApplicationRecord
       namespace_commit_emails.find_by(namespace: project.root_namespace)
   end
 
-  def spammer?
-    spam_score > Abuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
-  end
-
-  def spam_score
-    abuse_trust_scores.spamcheck.average(:score) || 0.0
-  end
-
-  def telesign_score
-    abuse_trust_scores.telesign.order(created_at: :desc).first&.score || 0.0
-  end
-
-  def arkose_global_score
-    abuse_trust_scores.arkose_global_score.order(created_at: :desc).first&.score || 0.0
-  end
-
-  def arkose_custom_score
-    abuse_trust_scores.arkose_custom_score.order(created_at: :desc).first&.score || 0.0
-  end
-
-  def trust_scores_for_source(source)
-    abuse_trust_scores.where(source: source)
-  end
-
   def abuse_metadata
     {
       account_age: account_age_in_days,
       two_factor_enabled: two_factor_enabled? ? 1 : 0
     }
+  end
+
+  def allow_possible_spam?
+    custom_attributes.by_key(UserCustomAttribute::ALLOW_POSSIBLE_SPAM).exists?
   end
 
   def namespace_commit_email_for_namespace(namespace)
@@ -2330,7 +2328,7 @@ class User < ApplicationRecord
     return super if ::Gitlab::CurrentSettings.email_confirmation_setting_soft?
 
     # Following devise logic for method, we want to return `true`
-    # See: https://github.com/heartcombo/devise/blob/main/lib/devise/models/confirmable.rb#L191-L218
+    # See: https://github.com/heartcombo/devise/blob/ec0674523e7909579a5a008f16fb9fe0c3a71712/lib/devise/models/confirmable.rb#L191-L218
     true
   end
   alias_method :in_confirmation_period?, :confirmation_period_valid?
@@ -2355,7 +2353,8 @@ class User < ApplicationRecord
   private
 
   def block_or_ban
-    if spammer? && account_age_in_days < 7
+    user_scores = Abuse::UserTrustScore.new(self)
+    if user_scores.spammer? && account_age_in_days < 7
       ban_and_report
     else
       block
@@ -2608,6 +2607,12 @@ class User < ApplicationRecord
   def prefix_for_feed_token
     FEED_TOKEN_PREFIX
   end
+
+  # method overriden in EE
+  def audit_lock_access(reason: nil); end
+
+  # method overriden in EE
+  def audit_unlock_access(author: self); end
 end
 
 User.prepend_mod_with('User')

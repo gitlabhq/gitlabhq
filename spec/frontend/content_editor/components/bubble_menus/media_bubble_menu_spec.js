@@ -22,19 +22,19 @@ import {
   PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML,
 } from '../../test_constants';
 
-const TIPTAP_AUDIO_HTML = `<p>
+const TIPTAP_AUDIO_HTML = `<p dir="auto">
   <span class="media-container audio-container"><audio src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></audio><a href="https://gitlab.com/favicon.png" class="with-attachment-icon">gitlab favicon</a></span>
 </p>`;
 
-const TIPTAP_DIAGRAM_HTML = `<p>
-  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon" title="gitlab favicon">
+const TIPTAP_DIAGRAM_HTML = `<p dir="auto">
+  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon">
 </p>`;
 
-const TIPTAP_IMAGE_HTML = `<p>
-  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon" title="gitlab favicon">
+const TIPTAP_IMAGE_HTML = `<p dir="auto">
+  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon">
 </p>`;
 
-const TIPTAP_VIDEO_HTML = `<p>
+const TIPTAP_VIDEO_HTML = `<p dir="auto">
   <span class="media-container video-container"><video src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></video><a href="https://gitlab.com/favicon.png" class="with-attachment-icon">gitlab favicon</a></span>
 </p>`;
 
@@ -101,9 +101,7 @@ describe.each`
 
     const expectLinkButtonsToExist = (exist = true) => {
       expect(wrapper.findComponent(GlLink).exists()).toBe(exist);
-      expect(wrapper.findByTestId('copy-media-src').exists()).toBe(exist);
       expect(wrapper.findByTestId('edit-media').exists()).toBe(exist);
-      expect(wrapper.findByTestId('delete-media').exists()).toBe(exist);
     };
 
     beforeEach(() => {
@@ -128,14 +126,11 @@ describe.each`
       await buildWrapperAndDisplayMenu();
 
       const link = wrapper.findComponent(GlLink);
-      expect(link.attributes()).toEqual(
-        expect.objectContaining({
-          href: `/group1/project1/-/wikis/${filePath}`,
-          'aria-label': filePath,
-          title: filePath,
-          target: '_blank',
-        }),
-      );
+      expect(link.attributes()).toMatchObject({
+        href: `/group1/project1/-/wikis/${filePath}`,
+        'aria-label': filePath,
+        target: '_blank',
+      });
       expect(link.text()).toBe(filePath);
     });
 
@@ -190,28 +185,6 @@ describe.each`
       });
     });
 
-    describe('copy button', () => {
-      it(`copies the canonical link to the ${mediaType} to clipboard`, async () => {
-        await buildWrapperAndDisplayMenu();
-
-        jest.spyOn(navigator.clipboard, 'writeText');
-
-        await wrapper.findByTestId('copy-media-src').vm.$emit('click');
-
-        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(filePath);
-      });
-    });
-
-    describe(`remove ${mediaType} button`, () => {
-      it(`removes the ${mediaType}`, async () => {
-        await buildWrapperAndDisplayMenu();
-
-        await wrapper.findByTestId('delete-media').vm.$emit('click');
-
-        expect(tiptapEditor.getHTML()).toBe('<p>\n  \n</p>');
-      });
-    });
-
     describe(`replace ${mediaType} button`, () => {
       beforeEach(buildWrapperAndDisplayMenu);
 
@@ -252,7 +225,6 @@ describe.each`
 
     describe('edit button', () => {
       let mediaSrcInput;
-      let mediaTitleInput;
       let mediaAltInput;
 
       beforeEach(async () => {
@@ -261,7 +233,6 @@ describe.each`
         await wrapper.findByTestId('edit-media').vm.$emit('click');
 
         mediaSrcInput = wrapper.findByTestId('media-src');
-        mediaTitleInput = wrapper.findByTestId('media-title');
         mediaAltInput = wrapper.findByTestId('media-alt');
       });
 
@@ -269,11 +240,10 @@ describe.each`
         expectLinkButtonsToExist(false);
       });
 
-      it(`shows a form to edit the ${mediaType} src/title/alt`, () => {
+      it(`shows a form to edit the ${mediaType} src/alt`, () => {
         expect(wrapper.findComponent(GlForm).exists()).toBe(true);
 
         expect(mediaSrcInput.element.value).toBe(filePath);
-        expect(mediaTitleInput.element.value).toBe('');
         expect(mediaAltInput.element.value).toBe('test-file');
       });
 
@@ -281,7 +251,6 @@ describe.each`
         beforeEach(async () => {
           mediaSrcInput.setValue('https://gitlab.com/favicon.png');
           mediaAltInput.setValue('gitlab favicon');
-          mediaTitleInput.setValue('gitlab favicon');
 
           contentEditor.resolveUrl.mockResolvedValue('https://gitlab.com/favicon.png');
 
@@ -294,14 +263,11 @@ describe.each`
 
         it(`updates the link to the ${mediaType} in the bubble menu`, () => {
           const link = wrapper.findComponent(GlLink);
-          expect(link.attributes()).toEqual(
-            expect.objectContaining({
-              href: 'https://gitlab.com/favicon.png',
-              'aria-label': 'https://gitlab.com/favicon.png',
-              title: 'https://gitlab.com/favicon.png',
-              target: '_blank',
-            }),
-          );
+          expect(link.attributes()).toMatchObject({
+            href: 'https://gitlab.com/favicon.png',
+            'aria-label': 'https://gitlab.com/favicon.png',
+            target: '_blank',
+          });
           expect(link.text()).toBe('https://gitlab.com/favicon.png');
         });
       });
@@ -310,7 +276,6 @@ describe.each`
         beforeEach(async () => {
           mediaSrcInput.setValue('https://gitlab.com/favicon.png');
           mediaAltInput.setValue('gitlab favicon');
-          mediaTitleInput.setValue('gitlab favicon');
 
           await wrapper.findByTestId('cancel-editing-media').vm.$emit('click');
         });
@@ -324,12 +289,10 @@ describe.each`
           await wrapper.findByTestId('edit-media').vm.$emit('click');
 
           mediaSrcInput = wrapper.findByTestId('media-src');
-          mediaTitleInput = wrapper.findByTestId('media-title');
           mediaAltInput = wrapper.findByTestId('media-alt');
 
           expect(mediaSrcInput.element.value).toBe(filePath);
           expect(mediaAltInput.element.value).toBe('test-file');
-          expect(mediaTitleInput.element.value).toBe('');
         });
       });
     });

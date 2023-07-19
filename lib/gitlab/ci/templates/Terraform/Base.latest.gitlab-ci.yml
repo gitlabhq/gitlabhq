@@ -22,7 +22,7 @@ variables:
   TF_ROOT: ${CI_PROJECT_DIR}  # The relative path to the root directory of the Terraform project
   TF_STATE_NAME: default      # The name of the state file used by the GitLab Managed Terraform state backend
 
-.terraform:fmt: &terraform_fmt
+.terraform:fmt:
   stage: validate
   script:
     - gitlab-terraform fmt
@@ -33,7 +33,7 @@ variables:
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
 
-.terraform:validate: &terraform_validate
+.terraform:validate:
   stage: validate
   script:
     - gitlab-terraform validate
@@ -43,7 +43,7 @@ variables:
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
 
-.terraform:build: &terraform_build
+.terraform:build:
   stage: build
   script:
     - gitlab-terraform plan
@@ -63,7 +63,7 @@ variables:
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
 
-.terraform:deploy: &terraform_deploy
+.terraform:deploy:
   stage: deploy
   script:
     - gitlab-terraform apply
@@ -73,7 +73,7 @@ variables:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
 
-.terraform:destroy: &terraform_destroy
+.terraform:destroy:
   stage: cleanup
   script:
     - gitlab-terraform destroy

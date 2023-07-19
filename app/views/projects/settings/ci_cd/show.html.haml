@@ -33,12 +33,13 @@
 
 = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
-%section.settings.no-animate#js-runners-settings{ class: ('expanded' if expanded || params[:expand_runners]), data: { qa_selector: 'runners_settings_content' } }
+- expand_runners = expanded || params[:expand_runners]
+%section.settings.no-animate#js-runners-settings{ class: ('expanded' if expand_runners), data: { qa_selector: 'runners_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _("Runners")
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
+      = expand_runners ? _('Collapse') : _('Expand')
     %p
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
       = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'

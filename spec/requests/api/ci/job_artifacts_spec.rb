@@ -541,7 +541,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
           let(:download_headers) do
             { 'Content-Transfer-Encoding' => 'binary',
               'Content-Disposition' =>
-              %Q(attachment; filename="#{job_with_artifacts.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}) }
+              %(attachment; filename="#{job_with_artifacts.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}) }
           end
 
           it { expect(response).to have_gitlab_http_status(:ok) }

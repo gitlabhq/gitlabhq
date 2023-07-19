@@ -43,7 +43,13 @@ module Gitlab
         keys = names.map { |name| normalize_key(name, options) }
 
         values = failsafe(:patched_read_multi_mget, returning: {}) do
-          redis.with { |c| pipeline_mget(c, keys) }
+          redis.with do |c|
+            if c.is_a?(Gitlab::Redis::MultiStore)
+              c.with_readonly_pipeline { pipeline_mget(c, keys) }
+            else
+              pipeline_mget(c, keys)
+            end
+          end
         end
 
         names.zip(values).each_with_object({}) do |(name, value), results|

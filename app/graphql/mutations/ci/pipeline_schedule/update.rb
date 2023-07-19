@@ -43,7 +43,7 @@ module Mutations
         def resolve(id:, variables: [], **pipeline_schedule_attrs)
           schedule = authorized_find!(id: id)
 
-          params = pipeline_schedule_attrs.merge(variables_attributes: variables.map(&:to_h))
+          params = pipeline_schedule_attrs.merge(variables_attributes: variable_attributes_for(variables))
 
           service_response = ::Ci::PipelineSchedules::UpdateService
             .new(schedule, current_user, params)
@@ -53,6 +53,18 @@ module Mutations
             pipeline_schedule: schedule,
             errors: service_response.errors
           }
+        end
+
+        private
+
+        def variable_attributes_for(variables)
+          variables.map do |variable|
+            variable.to_h.tap do |hash|
+              hash[:id] = GlobalID::Locator.locate(hash[:id]).id if hash[:id]
+
+              hash[:_destroy] = hash.delete(:destroy)
+            end
+          end
         end
       end
     end

@@ -8,7 +8,7 @@ module QA
           include Bootable
           include SharedAttributes
           def perform(address, *rspec_options)
-            Runtime::Scenario.define(:runner_network, 'airgapped')
+            Runtime::Scenario.define(:network, 'airgapped')
 
             super
           end

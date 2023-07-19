@@ -2,6 +2,23 @@
 
 module Integrations
   class HangoutsChat < BaseChatNotification
+    undef :notify_only_broken_pipelines
+
+    field :webhook,
+      section: SECTION_TYPE_CONNECTION,
+      help: 'https://chat.googleapis.com/v1/spaces…',
+      required: true
+
+    field :notify_only_broken_pipelines,
+      type: 'checkbox',
+      section: SECTION_TYPE_CONFIGURATION
+
+    field :branches_to_be_notified,
+      type: 'select',
+      section: SECTION_TYPE_CONFIGURATION,
+      title: -> { s_('Integrations|Branches for which notifications are to be sent') },
+      choices: -> { branch_choices }
+
     def title
       'Google Chat'
     end
@@ -19,25 +36,15 @@ module Integrations
       s_('Before enabling this integration, create a webhook for the room in Google Chat where you want to receive notifications from this project. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
+    def fields
+      self.class.fields + build_event_channels
+    end
+
     def default_channel_placeholder
     end
 
     def self.supported_events
-      %w[push issue confidential_issue merge_request note confidential_note tag_push
-         pipeline wiki_page]
-    end
-
-    def default_fields
-      [
-        { type: 'text', name: 'webhook', help: 'https://chat.googleapis.com/v1/spaces…' },
-        { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-        {
-          type: 'select',
-          name: 'branches_to_be_notified',
-          title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: self.class.branch_choices
-        }
-      ]
+      %w[push issue confidential_issue merge_request note confidential_note tag_push pipeline wiki_page]
     end
 
     private

@@ -90,7 +90,7 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
         context 'when using default sorting' do
           let!(:label_list)   { create(:list, board: board, label: label, position: 10) }
           let!(:label_list2)  { create(:list, board: board, label: label2, position: 2) }
-          let!(:backlog_list) { create(:backlog_list, board: board) }
+          let(:backlog_list) { board.lists.find_by(list_type: :backlog) }
           let(:closed_list)   { board.lists.find_by(list_type: :closed) }
           let(:lists)         { [backlog_list, label_list2, label_list, closed_list] }
 

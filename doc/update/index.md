@@ -162,22 +162,14 @@ cannot guarantee that upgrading between major versions is seamless.
 
 A *major* upgrade requires the following steps:
 
-1. Start by identifying a [supported upgrade path](#upgrade-paths). This is essential for a successful *major* version upgrade.
-1. Upgrade to the latest minor version of the preceding major version.
-1. Upgrade to the "dot zero" release of the next major version (`X.0.Z`).
-1. Optional. Follow the [upgrade path](#upgrade-paths), and proceed with upgrading to newer releases of that major version.
-
-It's also important to ensure that any [background migrations have been fully completed](background_migrations.md)
-before upgrading to a new major version.
-
-If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**, then
-[ensure all advanced search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version in
-your current version
-before proceeding with the major version upgrade.
-
-If your GitLab instance has any runners associated with it, it is very
-important to upgrade GitLab Runner to match the GitLab minor version that was
-upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
+1. Identify a [supported upgrade path](#upgrade-paths).
+1. Ensure that any [background migrations have been fully completed](background_migrations.md)
+   before upgrading to a new major version.
+1. If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md), then
+   before proceeding with the major version upgrade, [ensure that all advanced search migrations are completed](#checking-for-pending-advanced-search-migrations).
+1. If your GitLab instance has any runners associated with it, it is very
+   important to upgrade them to match the current GitLab version. This ensures
+   [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 
 ## Upgrade paths
 
@@ -185,6 +177,15 @@ Upgrading across multiple GitLab versions in one go is *only possible by accepti
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/) maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). To share feedback and help improve the tool, create an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
+
+Required upgrade stops are versions of GitLab that you must upgrade to before upgrading to later versions. Required upgrade stops allow required background
+migrations to finish.
+
+During GitLab 16.x, we are scheduling two or three required upgrade stops. We will give at least two milestones of notice when we
+schedule a required upgrade stop.
+
+The first planned required upgrade stop is scheduled for GitLab 16.3. If nothing is introduced requiring an upgrade stop, GitLab 16.3 will be treated as a
+regular upgrade.
 
 Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
@@ -284,6 +285,13 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   [backfill `prepared_at` values on the `merge_requests` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865). This
   migration may take multiple days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 16.1.0.
+- Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
+  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
+  - Versions containing fix: GitLab 16.1.3 and later.
+- Geo: Since the migration of project designs to SSF, [missing design repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/414279). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these design repositories. You could be impacted by this issue even if you have not imported projects.
+  - Impacted versions: GitLab versions 16.1.x.
+  - Versions containing fix: GitLab 16.2.0 and later.
+- For self-compiled installations: You must remove any settings related to Puma worker killer from the `puma.rb` configuration file, since those have been [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
 
 ### 16.0.0
 
@@ -294,18 +302,35 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   all queues. This behavior does not apply if you have configured the [routing rules](../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 - Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
   [throw errors on startup](../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
+- Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
+  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
+  - Versions containing fix: GitLab 16.1.3 and later.
+- Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+  - This change applies to installation methods with Linux packages (Omnibus GitLab), GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
 
 ### 15.11.1
 
 - Many [project importers](../user/project/import/index.md) and [group importers](../user/group/import/index.md) now
   require the Maintainer role instead of only requiring the Developer role. For more information, see the documentation
   for any importers you use.
+- Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
+  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
+  - Versions containing fix: GitLab 16.1.3 and later.
+- Geo: A [bug](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841) in the built-in `pg-upgrade` tool prevents upgrading the bundled PostgreSQL database to version 13. This leaves the secondary site in a broken state, and prevents upgrading the Geo installation to GitLab 16.x ([PostgreSQL 12 support has removed in 16.0](deprecations.md#postgresql-12-deprecated) and later releases). This occurs on secondary sites using the bundled PostgreSQL software, running both the secondary main Rails database and tracking database on the same node. There is a manual [workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841#workaround) for those impacted until a fix is backported to 15.11.
+  - Impacted versions: GitLab versions 15.2 - 15.11
+  - Version 16.0 and later are not impacted. Note, 15.11 is a mandatory upgrade stop on the way to 16.0.
 
 ### 15.11.0
 
 - Upgrades to GitLab 15.11 directly from GitLab versions 15.5.0 and earlier on self-managed installs will fail due to a missing migration until the fix for [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) is released in version 15.11.3. Affected users wanting to upgrade to 15.11 can either:
   - Perform an intermediate upgrade to any version between 15.5 and 15.10 before upgrading to 15.11, or
   - Target version 15.11.3 or later.
+- Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
+  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
+  - Versions containing fix: GitLab 16.1.3 and later.
+- Geo: A [bug](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841) in the built-in `pg-upgrade` tool prevents upgrading the bundled PostgreSQL database to version 13. This leaves the secondary site in a broken state, and prevents upgrading the Geo installation to GitLab 16.x ([PostgreSQL 12 support has removed in 16.0](deprecations.md#postgresql-12-deprecated) and later releases). This occurs on secondary sites using the bundled PostgreSQL software, running both the secondary main Rails database and tracking database on the same node. There is a manual [workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841#workaround) for those impacted until a fix is backported to 15.11.
+  - Impacted versions: GitLab versions 15.2 - 15.11
+  - Version 16.0 and later are not impacted. Note, 15.11 is a mandatory upgrade stop on the way to 16.0.
 
 ### 15.10.5
 
@@ -317,6 +342,51 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 - Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
   maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](#gitaly-omnibus-gitlab-configuration-structure-change).
+- You might encounter the following error while upgrading to GitLab 15.10 or later:
+
+  ```shell
+  STDOUT: rake aborted!
+  StandardError: An error has occurred, all later migrations canceled:
+  PG::CheckViolation: ERROR:  check constraint "check_70f294ef54" is violated by some row
+  ```
+
+  This error is caused by a [batched background migration introduced in GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107701)
+  not being finalized before GitLab 15.10. To resolve this error:
+
+  1. Execute the following SQL statement using the database console (`sudo gitlab-psql` for Linux package installs):
+
+     ```sql
+     UPDATE oauth_access_tokens SET expires_in = '7200' WHERE expires_in IS NULL;
+     ```
+
+  1. [Re-run database migrations](../administration/raketasks/maintenance.md#run-incomplete-database-migrations).
+
+- You might also encounter the following error while upgrading to GitLab 15.10 or later:
+
+  ```shell
+  "exception.class": "ActiveRecord::StatementInvalid",
+  "exception.message": "PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...COALESCE(\"lock_version\", 0) + 1 WHERE \"ci_builds\".\"\" IN (SEL...\n
+  ```
+
+  This error is caused by a [batched background migration introduced in GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81410)
+  not being finalized before upgrading to GitLab 15.10 or later. To resolve this error, it is safe to [mark the migration as complete](background_migrations.md#mark-a-batched-migration-finished):
+
+  ```ruby
+  # Start the rails console
+
+  connection = Ci::ApplicationRecord.connection
+
+  Gitlab::Database::SharedModel.using_connection(connection) do
+    migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
+      Gitlab::Database.gitlab_schemas_for_connection(connection), 'NullifyOrphanRunnerIdOnCiBuilds', :ci_builds, :id, [])
+
+    # mark all jobs completed
+    migration.batched_jobs.update_all(status: Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states[:succeeded].value)
+    migration.update_attribute(:status, Gitlab::Database::BackgroundMigration::BatchedMigration.state_machine.states[:finished].value)
+  end
+  ```
+
+For more information, see [issue 415724](https://gitlab.com/gitlab-org/gitlab/-/issues/415724).
 
 ### 15.9.0
 
@@ -780,7 +850,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 - If you run external PostgreSQL, particularly AWS RDS,
   [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
   to avoid the database crashing.
-- The use of encrypted S3 buckets with storage-specific configuration is no longer supported after [removing support for using `background_upload`](removals.md#background-upload-for-object-storage).
+- The use of encrypted S3 buckets with storage-specific configuration is no longer supported after [removing support for using `background_upload`](deprecations.md#background-upload-for-object-storage).
 - The [certificate-based Kubernetes integration (DEPRECATED)](../user/infrastructure/clusters/index.md#certificate-based-kubernetes-integration-deprecated) is disabled by default, but you can be re-enable it through the [`certificate_based_clusters` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) until GitLab 16.0.
 - When you use the GitLab Helm Chart project with a custom `serviceAccount`, ensure it has `get` and `list` permissions for the `serviceAccount` and `secret` resources.
 - The [`custom_hooks_dir`](../administration/server_hooks.md#create-global-server-hooks-for-all-repositories) setting for configuring global server hooks is now configured in

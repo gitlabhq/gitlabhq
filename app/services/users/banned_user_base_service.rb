@@ -12,6 +12,7 @@ module Users
 
       if update_user(user)
         log_event(user)
+        track_event(user)
         success
       else
         messages = user.errors.full_messages
@@ -22,6 +23,9 @@ module Users
     private
 
     attr_reader :current_user
+
+    # Overridden in Users::BanService
+    def track_event(_); end
 
     def state_error(user)
       error(_("You cannot %{action} %{state} users." % { action: action.to_s, state: user.state }), :forbidden)

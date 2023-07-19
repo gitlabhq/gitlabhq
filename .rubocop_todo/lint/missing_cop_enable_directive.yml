@@ -139,7 +139,6 @@ Lint/MissingCopEnableDirective:
     - 'ee/lib/api/ldap_group_links.rb'
     - 'ee/lib/ee/gitlab/background_migration/backfill_project_statistics_container_repository_size.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
-    - 'ee/lib/ee/gitlab/usage_data.rb'
     - 'ee/lib/gitlab/spdx/license.rb'
     - 'ee/spec/helpers/groups/security_features_helper_spec.rb'
     - 'ee/spec/helpers/projects/security/discover_helper_spec.rb'

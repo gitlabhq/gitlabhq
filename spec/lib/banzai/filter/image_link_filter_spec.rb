@@ -9,8 +9,8 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :team_planning
   let(:context) { {} }
 
   def image(path, alt: nil, data_src: nil)
-    alt_tag = alt ? %Q{alt="#{alt}"} : ""
-    data_src_tag = data_src ? %Q{data-src="#{data_src}"} : ""
+    alt_tag = alt ? %{alt="#{alt}"} : ""
+    data_src_tag = data_src ? %{data-src="#{data_src}"} : ""
 
     %(<img src="#{path}" #{alt_tag} #{data_src_tag} />)
   end
@@ -22,7 +22,7 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :team_planning
   end
 
   it 'does not wrap a duplicate link' do
-    doc = filter(%Q(<a href="/whatever">#{image(path)}</a>), context)
+    doc = filter(%(<a href="/whatever">#{image(path)}</a>), context)
 
     expect(doc.to_html).to match %r{^<a href="/whatever"><img[^>]*></a>$}
   end
@@ -34,20 +34,28 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :team_planning
   end
 
   it 'works with inline images' do
-    doc = filter(%Q(<p>test #{image(path)} inline</p>), context)
+    doc = filter(%(<p>test #{image(path)} inline</p>), context)
 
     expect(doc.to_html).to match %r{^<p>test <a[^>]*><img[^>]*></a> inline</p>$}
   end
 
   it 'keep the data-canonical-src' do
-    doc = filter(%q(<img src="http://assets.example.com/6cd/4d7" data-canonical-src="http://example.com/test.png" />), context)
+    doc = filter(
+      %q(<img src="http://assets.example.com/6cd/4d7" data-canonical-src="http://example.com/test.png" />),
+      context
+    )
 
     expect(doc.at_css('img')['src']).to eq doc.at_css('a')['href']
     expect(doc.at_css('img')['data-canonical-src']).to eq doc.at_css('a')['data-canonical-src']
   end
 
   it 'moves the data-diagram* attributes' do
-    doc = filter(%q(<img class="plantuml" src="http://localhost:8080/png/U9npoazIqBLJ24uiIbImKl18pSd91m0rkGMq" data-diagram="plantuml" data-diagram-src="data:text/plain;base64,Qm9iIC0+IFNhcmEgOiBIZWxsbw==">), context)
+    # rubocop:disable Layout/LineLength
+    doc = filter(
+      %q(<img class="plantuml" src="http://localhost:8080/png/U9npoazIqBLJ24uiIbImKl18pSd91m0rkGMq" data-diagram="plantuml" data-diagram-src="data:text/plain;base64,Qm9iIC0+IFNhcmEgOiBIZWxsbw==">),
+      context
+    )
+    # rubocop:enable Layout/LineLength
 
     expect(doc.at_css('a')['data-diagram']).to eq "plantuml"
     expect(doc.at_css('a')['data-diagram-src']).to eq "data:text/plain;base64,Qm9iIC0+IFNhcmEgOiBIZWxsbw=="

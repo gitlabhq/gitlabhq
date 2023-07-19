@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::ArtifactFileReader do
+RSpec.describe Gitlab::Ci::ArtifactFileReader, feature_category: :pipeline_composition do
   let(:job) { create(:ci_build) }
   let(:path) { 'generated.yml' } # included in the ci_build_artifacts.zip
 
@@ -138,8 +138,8 @@ RSpec.describe Gitlab::Ci::ArtifactFileReader do
     end
 
     context 'when job does not have artifacts' do
-      it 'raises ArgumentError' do
-        expect { subject }.to raise_error(ArgumentError, 'Job does not have artifacts')
+      it 'raises an Error' do
+        expect { subject }.to raise_error(described_class::Error, 'Job does not have artifacts')
       end
     end
   end

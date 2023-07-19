@@ -1,5 +1,6 @@
 <script>
 import { getCssClassDimensions } from '~/lib/utils/css_utils';
+import Tracking from '~/tracking';
 import { SUPER_SIDEBAR_PEEK_OPEN_DELAY, SUPER_SIDEBAR_PEEK_CLOSE_DELAY } from '../constants';
 
 export const STATE_CLOSED = 'closed';
@@ -9,6 +10,7 @@ export const STATE_WILL_CLOSE = 'will-close';
 
 export default {
   name: 'SidebarPeek',
+  mixins: [Tracking.mixin()],
   created() {
     // Nothing needs to observe these properties, so they are not reactive.
     this.state = null;
@@ -88,6 +90,10 @@ export default {
     open() {
       if (this.changeState(STATE_OPEN)) {
         this.clearTimers();
+        this.track('nav_peek', {
+          label: 'nav_hover',
+          property: 'nav_sidebar',
+        });
       }
     },
     close() {

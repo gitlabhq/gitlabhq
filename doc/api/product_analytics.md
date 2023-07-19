@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `cube_api_proxy`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../administration/feature_flags.md) named `cube_api_proxy`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 

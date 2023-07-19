@@ -28,7 +28,7 @@ module Sidebars
 
         override :extra_container_html_options
         def extra_container_html_options
-          { 'data-qa-selector': 'profile_account_link' }
+          { 'data-testid': 'profile_account_link' }
         end
       end
     end

@@ -79,6 +79,8 @@ The following triggers are available for Slack notifications:
 | **Wiki page**                                                            | A wiki page is created or updated.                   |
 | **Deployment**                                                           | A deployment starts or finishes.                     |
 | **Alert**                                                                | A new, unique alert is recorded.                     |
+| **Group mention in public**                                              | A group is mentioned in a public context.            |
+| **Group mention in private**                                             | A group is mentioned in a confidential context.      |
 | [**Vulnerability**](../../application_security/vulnerabilities/index.md) | A new, unique vulnerability is recorded.             |
 
 ## Troubleshooting

@@ -3,23 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User sees pipelines from forked project', :js,
-feature_category: :continuous_integration do
+  feature_category: :continuous_integration do
   include ProjectForksHelper
 
   let(:target_project) { create(:project, :public, :repository) }
   let(:user) { target_project.creator }
   let(:forked_project) { fork_project(target_project, nil, repository: true) }
   let!(:merge_request) do
-    create(:merge_request_with_diffs, source_project: forked_project,
-                                      target_project: target_project,
-                                      description: 'Test merge request')
+    create(
+      :merge_request_with_diffs,
+      source_project: forked_project,
+      target_project: target_project,
+      description: 'Test merge request'
+    )
   end
 
   let(:pipeline) do
-    create(:ci_pipeline,
-           project: forked_project,
-           sha: merge_request.diff_head_sha,
-           ref: merge_request.source_branch)
+    create(
+      :ci_pipeline,
+      project: forked_project,
+      sha: merge_request.diff_head_sha,
+      ref: merge_request.source_branch
+    )
   end
 
   before do

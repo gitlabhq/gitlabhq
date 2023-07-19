@@ -145,7 +145,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
       defaults = Gitlab::Kubernetes::KubeClient::DEFAULT_KUBECLIENT_OPTIONS
       expect(client.kubeclient_options[:timeouts]).to eq(defaults[:timeouts])
 
-      client = Gitlab::Kubernetes::KubeClient.new(api_url, timeouts: { read: 7 })
+      client = described_class.new(api_url, timeouts: { read: 7 })
       expect(client.kubeclient_options[:timeouts][:read]).to eq(7)
       expect(client.kubeclient_options[:timeouts][:open]).to eq(defaults[:timeouts][:open])
     end

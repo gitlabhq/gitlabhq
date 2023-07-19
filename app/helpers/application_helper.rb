@@ -124,7 +124,8 @@ module ApplicationHelper
       page: body_data_page,
       page_type_id: controller.params[:id],
       find_file: find_file_path,
-      group: @group&.path
+      group: @group&.path,
+      group_full_path: @group&.full_path
     }.merge(project_data)
   end
 
@@ -135,6 +136,7 @@ module ApplicationHelper
       project_id: @project.id,
       project: @project.path,
       group: @project.group&.path,
+      group_full_path: @project.group&.full_path,
       namespace_id: @project.namespace&.id
     }
   end
@@ -274,15 +276,7 @@ module ApplicationHelper
   end
 
   def stylesheet_link_tag_defer(path)
-    if startup_css_enabled?
-      stylesheet_link_tag(path, media: "print", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
-    else
-      stylesheet_link_tag(path, media: "all", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
-    end
-  end
-
-  def startup_css_enabled?
-    !Feature.enabled?(:remove_startup_css) && !params.has_key?(:no_startup_css)
+    stylesheet_link_tag(path, media: "all", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
   end
 
   def sign_in_with_redirect?
@@ -336,7 +330,7 @@ module ApplicationHelper
     class_names << 'with-system-header' if appearance.show_header?
     class_names << 'with-system-footer' if appearance.show_footer?
 
-    class_names
+    class_names.join(' ')
   end
 
   # Returns active css class when condition returns true
@@ -354,7 +348,7 @@ module ApplicationHelper
 
   def linkedin_url(user)
     name = user.linkedin
-    if name =~ %r{\Ahttps?://(www\.)?linkedin\.com/in/}
+    if %r{\Ahttps?://(www\.)?linkedin\.com/in/}.match?(name)
       name
     else
       "https://www.linkedin.com/in/#{name}"
@@ -363,7 +357,7 @@ module ApplicationHelper
 
   def twitter_url(user)
     name = user.twitter
-    if name =~ %r{\Ahttps?://(www\.)?twitter\.com/}
+    if %r{\Ahttps?://(www\.)?twitter\.com/}.match?(name)
       name
     else
       "https://twitter.com/#{name}"

@@ -112,7 +112,7 @@ export default {
 
 <template>
   <gl-form
-    class="new-note common-note-form gl-mb-6"
+    class="new-note common-note-form"
     data-testid="comment-template-form"
     @submit.prevent="onSubmit"
   >

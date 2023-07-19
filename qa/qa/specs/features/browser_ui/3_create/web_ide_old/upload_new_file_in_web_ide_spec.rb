@@ -8,8 +8,7 @@ module QA
     end
 
     describe 'Upload a file in Web IDE' do
-      let(:file_path) { File.join(Runtime::Path.fixtures_path, 'web_ide', file_name) }
-
+      let(:file_path) { Runtime::Path.fixture('web_ide', file_name) }
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'upload-file-project'

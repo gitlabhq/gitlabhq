@@ -58,6 +58,10 @@ module Projects
       unless remove_repository(project.wiki.repository)
         raise_error(s_('DeleteProject|Failed to remove wiki repository. Please try again or contact administrator.'))
       end
+
+      unless remove_repository(project.design_repository)
+        raise_error(s_('DeleteProject|Failed to remove design repository. Please try again or contact administrator.'))
+      end
     end
 
     def trash_relation_repositories!

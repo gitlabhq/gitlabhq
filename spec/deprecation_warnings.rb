@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../lib/gitlab/utils'
+require 'gitlab/utils/all'
 return if Gitlab::Utils.to_boolean(ENV['SILENCE_DEPRECATIONS'], default: false)
 
 # Enable deprecation warnings by default and make them more visible

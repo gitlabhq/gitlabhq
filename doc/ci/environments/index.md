@@ -32,7 +32,7 @@ There are a few ways to view a list of environments for a given project:
 - On the project's overview page, if at least one environment is available (that is, not stopped).
   ![Number of Environments](img/environments_project_home.png "Incremental counter of available Environments")
 
-- On the left sidebar, select **Deployments > Environments**.
+- On the left sidebar, select **Operate > Environments**.
    The environments are displayed.
 
    ![Environments list](img/environments_list_v14_8.png)
@@ -159,10 +159,10 @@ deploy_review_app:
   environment:
     name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com
-  only:
-    - branches
-  except:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: never
+    - if: $CI_COMMIT_BRANCH
 ```
 
 #### Set a dynamic environment URL
@@ -603,7 +603,7 @@ To stop an environment in the GitLab UI:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Operate > Environments**.
 1. Next to the environment you want to stop, select **Stop**.
-1. On the confirmation dialog box, select **Stop environment**.
+1. On the confirmation dialog, select **Stop environment**.
 
 #### Multiple stop actions for an environment
 
@@ -668,7 +668,7 @@ To delete an environment:
 1. Select **Operate > Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
-1. On the confirmation dialog box, select **Delete environment**.
+1. On the confirmation dialog, select **Delete environment**.
 
 ### Access an environment for preparation or verification purposes
 

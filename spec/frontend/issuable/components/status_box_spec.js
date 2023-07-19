@@ -18,6 +18,8 @@ describe('Merge request status box component', () => {
     ${'merge_request'} | ${'Merged'} | ${'merged'}  | ${'issuable-status-badge-merged'} | ${'info'}    | ${'merge'}
     ${'issue'}         | ${'Open'}   | ${'opened'}  | ${'issuable-status-badge-open'}   | ${'success'} | ${'issues'}
     ${'issue'}         | ${'Closed'} | ${'closed'}  | ${'issuable-status-badge-closed'} | ${'info'}    | ${'issue-closed'}
+    ${'epic'}          | ${'Open'}   | ${'opened'}  | ${'issuable-status-badge-open'}   | ${'success'} | ${'epic'}
+    ${'epic'}          | ${'Closed'} | ${'closed'}  | ${'issuable-status-badge-closed'} | ${'info'}    | ${'epic-closed'}
   `(
     'with issuableType set to "$issuableType" and state set to "$initialState"',
     ({ issuableType, badgeText, initialState, badgeClass, badgeVariant, badgeIcon }) => {

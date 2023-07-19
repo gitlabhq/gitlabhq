@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 We developed the [`gitlab_quality-test_tooling`](https://gitlab.com/gitlab-org/ruby/gems/gitlab_quality-test_tooling) gem that includes several commands to automate test results tracking.
 
-The goal of this gem is to have a consolidated set of tooling that we use accross our various test suite (e.g. GitLab Rails & E2E test suites).
+The goal of this gem is to have a consolidated set of tooling that we use across our various test suite (for example, GitLab Rails & E2E test suites).
 
 The initial motivation and development was tracked by [this epic](https://gitlab.com/groups/gitlab-org/-/epics/10536).
 

@@ -38,19 +38,19 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
       end
 
       it 'highlights and marks unchanged lines' do
-        code = %Q{ <span id="LC7" class="line" lang="ruby">  <span class="k">def</span> <span class="nf">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span></span>\n}
+        code = %{ <span id="LC7" class="line" lang="ruby">  <span class="k">def</span> <span class="nf">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span></span>\n}
 
         expect(subject[2].rich_text).to eq(code)
       end
 
       it 'highlights and marks removed lines' do
-        code = %Q{-<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="s2">"System commands must be given as an array of strings"</span></span>\n}
+        code = %{-<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="s2">"System commands must be given as an array of strings"</span></span>\n}
 
         expect(subject[4].rich_text).to eq(code)
       end
 
       it 'highlights and marks added lines' do
-        code = %Q{+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left addition">RuntimeError</span></span><span class="p"><span class="idiff addition">,</span></span><span class="idiff right addition"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
+        code = %{+<span id="LC9" class="line" lang="ruby">      <span class="k">raise</span> <span class="no"><span class="idiff left addition">RuntimeError</span></span><span class="p"><span class="idiff addition">,</span></span><span class="idiff right addition"> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
 
         expect(subject[5].rich_text).to eq(code)
       end
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
       it 'blobs are highlighted as plain text without loading all data' do
         expect(diff_file.blob).not_to receive(:load_all_data!)
 
-        expect(subject[2].rich_text).to eq(%Q{ <span id="LC7" class="line" lang="">  def popen(cmd, path=nil)</span>\n})
+        expect(subject[2].rich_text).to eq(%{ <span id="LC7" class="line" lang="">  def popen(cmd, path=nil)</span>\n})
         expect(subject[2].rich_text).to be_html_safe
       end
     end

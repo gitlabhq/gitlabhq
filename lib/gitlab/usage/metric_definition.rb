@@ -22,6 +22,10 @@ module Gitlab
         key_path
       end
 
+      def events
+        events_from_new_structure || events_from_old_structure || {}
+      end
+
       def to_h
         attributes
       end
@@ -44,7 +48,7 @@ module Gitlab
 
       def validate!
         unless skip_validation?
-          self.class.schemer.validate(attributes.stringify_keys).each do |error|
+          self.class.schemer.validate(attributes.deep_stringify_keys).each do |error|
             error_message = <<~ERROR_MSG
               Error type: #{error['type']}
               Data: #{error['data']}
@@ -102,6 +106,19 @@ module Gitlab
           @metrics_yaml ||= definitions.values.map(&:to_h).map(&:deep_stringify_keys).to_yaml
         end
 
+        def metric_definitions_changed?
+          return false unless Rails.env.development?
+
+          return false if @last_change_check && @last_change_check > 3.seconds.ago
+
+          @last_change_check = Time.current
+
+          last_change = Dir.glob(paths).map { |f| File.mtime(f) }.max
+          did_change = @last_metric_update != last_change
+          @last_metric_update = last_change
+          did_change
+        end
+
         private
 
         def load_all!
@@ -145,6 +162,20 @@ module Gitlab
 
       def skip_validation?
         !!attributes[:skip_validation] || @skip_validation || attributes[:status] == SKIP_VALIDATION_STATUS
+      end
+
+      def events_from_new_structure
+        events = attributes[:events]
+        return unless events
+
+        events.to_h { |event| [event[:name], event[:unique].to_sym] }
+      end
+
+      def events_from_old_structure
+        options_events = attributes.dig(:options, :events)
+        return unless options_events
+
+        options_events.index_with { nil }
       end
     end
   end

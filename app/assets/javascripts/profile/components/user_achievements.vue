@@ -85,7 +85,7 @@ export default {
         :size="32"
         tabindex="0"
         shape="rect"
-        class="gl-mx-2"
+        class="gl-mx-2 gl-p-1 gl-border-none"
       />
       <br />
       <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info" size="sm">{{

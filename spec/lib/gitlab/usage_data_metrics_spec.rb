@@ -55,7 +55,11 @@ RSpec.describe Gitlab::UsageDataMetrics, :with_license, feature_category: :servi
         let(:metric_files_key_paths) do
           Gitlab::Usage::MetricDefinition
             .definitions
-            .select { |k, v| v.attributes[:data_source] == 'redis_hll' && v.key_path.starts_with?('redis_hll_counters') && v.available? }
+            .select do |_, v|
+              (v.data_source == 'redis_hll' || v.data_source == 'internal_events') &&
+                v.key_path.starts_with?('redis_hll_counters') &&
+                v.available?
+            end
             .keys
             .sort
         end

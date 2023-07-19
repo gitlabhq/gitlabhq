@@ -53,8 +53,26 @@ For more details, see [Secure your application](../user/application_security/ind
 
 ## Security partners
 
-You can integrate GitLab with several security partners. For more information, see
-[Security partner integrations](security_partners/index.md).
+You can integrate GitLab with the following security partners:
+
+<!-- vale gitlab.Spelling = NO -->
+
+- [Anchore](https://docs.anchore.com/current/docs/configuration/integration/ci_cd/gitlab/)
+- [Bridgecrew](https://docs.bridgecrew.io/docs/integrate-with-gitlab-self-managed)
+- [Checkmarx](https://checkmarx.atlassian.net/wiki/spaces/SD/pages/1929937052/GitLab+Integration)
+- [Deepfactor](https://www.deepfactor.io/docs/integrate-deepfactor-scanner-in-your-ci-cd-pipelines/#gitlab)
+- [Fortify](https://www.microfocus.com/en-us/fortify-integrations/gitlab)
+- [GrammaTech](https://www.grammatech.com/codesonar-gitlab-integration)
+- [Indeni](https://docs.cloudrail.app/#/integrations/gitlab)
+- [Jscrambler](https://docs.jscrambler.com/code-integrity/documentation/gitlab-ci-integration)
+- [Mend](https://www.mend.io/gitlab/)
+- [Semgrep](https://semgrep.dev/for/gitlab)
+- [StackHawk](https://docs.stackhawk.com/continuous-integration/gitlab.html)
+- [Tenable](https://docs.tenable.com/tenableio/Content/ContainerSecurity/GetStarted.htm)
+- [Venafi](https://marketplace.venafi.com/xchange/620d2d6ed419fb06a5c5bd36/solution/6292c2ef7550f2ee553cf223)
+- [Veracode](https://community.veracode.com/s/knowledgeitem/gitlab-ci-MCEKSYPRWL35BRTGOVI55SK5RI4A)
+
+<!-- vale gitlab.Spelling = YES -->
 
 ## Continuous integration
 

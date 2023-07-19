@@ -8,7 +8,7 @@ RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_
   let(:project_statistics) { create(:project_statistics) }
   let(:model) { CounterAttributeModel.find(project_statistics.id) }
 
-  it_behaves_like CounterAttribute, [:build_artifacts_size, :commit_count, :packages_size] do
+  it_behaves_like described_class, [:build_artifacts_size, :commit_count, :packages_size] do
     let(:model) { CounterAttributeModel.find(project_statistics.id) }
   end
 

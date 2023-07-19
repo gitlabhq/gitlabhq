@@ -13,7 +13,7 @@ class MergeRequest::Metrics < ApplicationRecord
   before_save :ensure_target_project_id
 
   scope :merged_after, ->(date) { where(arel_table[:merged_at].gteq(date)) }
-  scope :merged_before, ->(date) { where(arel_table[:merged_at].lteq(date)) }
+  scope :merged_before, ->(date) { where(arel_table[:merged_at].lteq(date.is_a?(Time) ? date.end_of_day : date)) }
   scope :with_valid_time_to_merge, -> { where(arel_table[:merged_at].gt(arel_table[:created_at])) }
   scope :by_target_project, ->(project) { where(target_project_id: project) }
 

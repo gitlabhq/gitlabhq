@@ -4,7 +4,7 @@ import { sanitize } from '~/lib/dompurify';
 import { markdownConfig } from '~/lib/utils/text_utility';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { sprintf } from '~/locale';
-import { COMMENT_FORM } from './i18n';
+import { UPDATE_COMMENT_FORM, COMMENT_FORM } from './i18n';
 
 /**
  * Tracks snowplow event when User toggles timeline view
@@ -23,7 +23,7 @@ export const renderMarkdown = (rawMarkdown) => {
   return sanitize(marked(rawMarkdown), markdownConfig);
 };
 
-export const getErrorMessages = (data, status) => {
+export const createNoteErrorMessages = (data, status) => {
   const errors = data?.errors;
 
   if (errors && status === HTTP_STATUS_UNPROCESSABLE_ENTITY) {
@@ -35,4 +35,14 @@ export const getErrorMessages = (data, status) => {
   }
 
   return [COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK];
+};
+
+export const updateNoteErrorMessage = (e) => {
+  const errors = e?.response?.data?.errors;
+
+  if (errors) {
+    return sprintf(UPDATE_COMMENT_FORM.error, { reason: errors.toLowerCase() });
+  }
+
+  return UPDATE_COMMENT_FORM.defaultError;
 };

@@ -43,7 +43,6 @@ Gitlab/DocUrl:
     - 'lib/gitlab/pagination/keyset/unsupported_scope_order.rb'
     - 'lib/gitlab/redis/hll.rb'
     - 'lib/gitlab/slash_commands/presenters/help.rb'
-    - 'lib/gitlab/utils/strong_memoize.rb'
     - 'lib/initializer_connections.rb'
     - 'lib/security/ci_configuration/base_build_action.rb'
     - 'lib/tasks/db_obsolete_ignored_columns.rake'

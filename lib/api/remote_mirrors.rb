@@ -67,7 +67,7 @@ module API
       end
       post ':id/remote_mirrors' do
         create_params = declared_params(include_missing: false)
-        verify_mirror_branches_setting(create_params, user_project)
+        verify_mirror_branches_setting(create_params)
         new_mirror = user_project.remote_mirrors.create(create_params)
 
         if new_mirror.persisted?
@@ -99,7 +99,7 @@ module API
         mirror_params = declared_params(include_missing: false)
         mirror_params[:id] = mirror_params.delete(:mirror_id)
 
-        verify_mirror_branches_setting(mirror_params, user_project)
+        verify_mirror_branches_setting(mirror_params)
         update_params = { remote_mirrors_attributes: mirror_params }
 
         result = ::Projects::UpdateService

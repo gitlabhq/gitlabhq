@@ -172,18 +172,6 @@ module ProjectsHelper
     project.fork_source if project.fork_source && can?(current_user, :read_project, project.fork_source)
   end
 
-  def project_search_tabs?(tab)
-    return false unless @project.present?
-
-    abilities = Array(search_tab_ability_map[tab])
-
-    if @project.respond_to?(:each) # support multi-project select
-      @project.any? { |project| abilities.any? { |ability| can?(current_user, ability, project) } }
-    else
-      abilities.any? { |ability| can?(current_user, ability, @project) }
-    end
-  end
-
   def can_change_visibility_level?(project, current_user)
     can?(current_user, :change_visibility_level, project)
   end
@@ -511,9 +499,9 @@ module ProjectsHelper
 
   def clusters_deprecation_alert_message
     if has_active_license?
-      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. Contact GitLab Support if you have any additional questions.')
+      s_('ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}, or contact GitLab support.')
     else
-      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.')
+      s_('ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}.')
     end
   end
 
@@ -547,7 +535,31 @@ module ProjectsHelper
     project.ssh_url_to_repo
   end
 
+  def can_view_branch_rules?
+    can?(current_user, :maintainer_access, @project)
+  end
+
+  def can_push_code?
+    current_user&.can?(:push_code, @project)
+  end
+
+  def can_admin_associated_clusters?(project)
+    can_admin_project_clusters?(project) || can_admin_group_clusters?(project)
+  end
+
+  def branch_rules_path
+    project_settings_repository_path(@project, anchor: 'js-branch-rules')
+  end
+
   private
+
+  def can_admin_project_clusters?(project)
+    project.clusters.any? && can?(current_user, :admin_cluster, project)
+  end
+
+  def can_admin_group_clusters?(project)
+    project.group && project.group.clusters.any? && can?(current_user, :admin_cluster, project.group)
+  end
 
   def create_merge_request_path(project, source_project, ref, merge_request)
     return if merge_request.present?
@@ -588,41 +600,6 @@ module ProjectsHelper
 
     link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
     s_(str).html_safe % { provider: provider, link_start: link_start, link_end: '</a>'.html_safe }
-  end
-
-  def tab_ability_map
-    {
-      cycle_analytics: :read_cycle_analytics,
-      environments: :read_environment,
-      metrics_dashboards: :metrics_dashboard,
-      milestones: :read_milestone,
-      snippets: :read_snippet,
-      settings: :admin_project,
-      builds: :read_build,
-      clusters: :read_cluster,
-      serverless: :read_cluster,
-      terraform: :read_terraform_state,
-      error_tracking: :read_sentry_issue,
-      alert_management: :read_alert_management_alert,
-      incidents: :read_issue,
-      labels: :read_label,
-      issues: :read_issue,
-      project_members: :read_project_member,
-      wiki: :read_wiki,
-      feature_flags: :read_feature_flag,
-      analytics: :read_analytics
-    }
-  end
-
-  def search_tab_ability_map
-    @search_tab_ability_map ||= tab_ability_map.merge(
-      blobs: :read_code,
-      commits: :read_code,
-      merge_requests: :read_merge_request,
-      notes: [:read_merge_request, :read_code, :read_issue, :read_snippet],
-      users: :read_project_member,
-      wiki_blobs: :read_wiki
-    )
   end
 
   def project_lfs_status(project)
@@ -878,26 +855,6 @@ module ProjectsHelper
       ::Gitlab::CurrentSettings.delete_inactive_projects?
     end
   end
-end
-
-def can_admin_associated_clusters?(project)
-  can_admin_project_clusters?(project) || can_admin_group_clusters?(project)
-end
-
-def can_admin_project_clusters?(project)
-  project.clusters.any? && can?(current_user, :admin_cluster, project)
-end
-
-def can_admin_group_clusters?(project)
-  project.group && project.group.clusters.any? && can?(current_user, :admin_cluster, project.group)
-end
-
-def can_view_branch_rules?
-  can?(current_user, :maintainer_access, @project)
-end
-
-def branch_rules_path
-  project_settings_repository_path(@project, anchor: 'js-branch-rules')
 end
 
 ProjectsHelper.prepend_mod_with('ProjectsHelper')

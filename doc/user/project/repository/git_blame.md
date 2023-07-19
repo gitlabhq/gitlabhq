@@ -21,7 +21,7 @@ Prerequisites:
 
 To view the blame for a file:
 
-1. Go to your project's **Repository > Files**.
+1. Go to your project's **Code > Repository**.
 1. Select the file you want to review.
 1. In the upper-right corner, select **Blame**.
 

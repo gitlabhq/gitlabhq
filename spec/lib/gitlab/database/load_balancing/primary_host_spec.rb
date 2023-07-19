@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost do
     )
   end
 
-  let(:host) { Gitlab::Database::LoadBalancing::PrimaryHost.new(load_balancer) }
+  let(:host) { described_class.new(load_balancer) }
 
   describe '#connection' do
     it 'returns a connection from the pool' do

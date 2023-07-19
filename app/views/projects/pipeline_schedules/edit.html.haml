@@ -5,9 +5,8 @@
 
 %h1.page-title.gl-font-size-h-display
   = _("Edit Pipeline Schedule")
-%hr
 
 - if Feature.enabled?(:pipeline_schedules_vue, @project)
-  #pipeline-schedules-form-edit{ data: { full_path: @project.full_path } }
+  #pipeline-schedules-form-edit{ data: js_pipeline_schedules_form_data(@project, @schedule) }
 - else
   = render "form"

@@ -1,5 +1,5 @@
 <script>
-import scheduleSvg from '@gitlab/svgs/dist/illustrations/schedule-md.svg?raw';
+import SCHEDULE_MD_SVG_URL from '@gitlab/svgs/dist/illustrations/schedule-md.svg?url';
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
@@ -20,15 +20,18 @@ export default {
     ],
     createNew: s__('PipelineSchedules|Create a new pipeline schedule'),
   },
+  SCHEDULE_MD_SVG_URL,
   components: {
     GlEmptyState,
     GlLink,
     GlSprintf,
   },
-  computed: {
-    scheduleSvgPath() {
-      return `data:image/svg+xml;utf8,${encodeURIComponent(scheduleSvg)}`;
+  inject: {
+    newSchedulePath: {
+      default: '',
     },
+  },
+  computed: {
     schedulesHelpPath() {
       return helpPagePath('ci/pipelines/schedules');
     },
@@ -37,9 +40,9 @@ export default {
 </script>
 <template>
   <gl-empty-state
-    :svg-path="scheduleSvgPath"
+    :svg-path="$options.SCHEDULE_MD_SVG_URL"
     :primary-button-text="$options.i18n.createNew"
-    primary-button-link="#"
+    :primary-button-link="newSchedulePath"
   >
     <template #title>
       <h3>

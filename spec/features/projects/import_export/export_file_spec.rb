@@ -5,7 +5,7 @@ require 'spec_helper'
 # Integration test that exports a file using the Import/Export feature
 # It looks up for any sensitive word inside the JSON, so if a sensitive word is found
 # we'll have to either include it adding the model that includes it to the +safe_list+
-# or make sure the attribute is blacklisted in the +import_export.yml+ configuration
+# or make sure the attribute is denylisted in the +import_export.yml+ configuration
 RSpec.describe 'Import/Export - project export integration test', :js, feature_category: :importers do
   include ExportFileHelper
 

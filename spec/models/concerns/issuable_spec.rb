@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issuable do
+RSpec.describe Issuable, feature_category: :team_planning do
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
 

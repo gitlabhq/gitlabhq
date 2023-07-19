@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __ } from '~/locale';
+import Tracking from '~/tracking';
 import { sidebarState } from '../constants';
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import UserBar from './user_bar.vue';
@@ -26,6 +27,7 @@ export default {
     TrialStatusPopover: () =>
       import('ee_component/contextual_sidebar/components/trial_status_popover.vue'),
   },
+  mixins: [Tracking.mixin()],
   i18n: {
     skipToMainContent: __('Skip to main content'),
   },
@@ -68,6 +70,10 @@ export default {
   },
   methods: {
     toggleSidebar() {
+      this.track(isCollapsed() ? 'nav_show' : 'nav_hide', {
+        label: 'nav_toggle_keyboard_shortcut',
+        property: 'nav_sidebar',
+      });
       toggleSuperSidebarCollapsed(!isCollapsed(), true);
     },
     collapseSidebar() {

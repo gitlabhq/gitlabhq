@@ -3,7 +3,7 @@
 require 'simplecov'
 require 'simplecov-cobertura'
 require 'simplecov-lcov'
-require_relative '../lib/gitlab/utils'
+require 'gitlab/utils/all'
 
 module SimpleCovEnv
   extend self
@@ -53,31 +53,40 @@ module SimpleCovEnv
   def configure_profile
     SimpleCov.configure do
       load_profile 'test_frameworks'
-      track_files '{app,config/initializers,config/initializers_before_autoloader,db/post_migrate,haml_lint,lib,rubocop,tooling}/**/*.rb'
 
-      add_filter '/vendor/ruby/'
-      add_filter '/bin/'
-      add_filter 'db/fixtures/development/' # Matches EE files as well
-      add_filter %r|db/migrate/\d{14}_init_schema\.rb\z|
+      add_filter %r{^/(ee/)?(bin|gems|vendor)}
+      add_filter %r{^/(ee/)?db/fixtures/development}
+      add_filter %r{^/(ee/)?db/migrate/\d{14}_init_schema\.rb\z}
 
-      add_group 'Channels',     'app/channels' # Matches EE files as well
-      add_group 'Controllers',  'app/controllers' # Matches EE files as well
-      add_group 'Finders',      'app/finders' # Matches EE files as well
-      add_group 'GraphQL',      'app/graphql' # Matches EE files as well
-      add_group 'Helpers',      'app/helpers' # Matches EE files as well
-      add_group 'Mailers',      'app/mailers' # Matches EE files as well
-      add_group 'Models',       'app/models' # Matches EE files as well
-      add_group 'Policies',     'app/policies' # Matches EE files as well
-      add_group 'Presenters',   'app/presenters' # Matches EE files as well
-      add_group 'Serializers',  'app/serializers' # Matches EE files as well
-      add_group 'Services',     'app/services' # Matches EE files as well
-      add_group 'Uploaders',    'app/uploaders' # Matches EE files as well
-      add_group 'Validators',   'app/validators' # Matches EE files as well
-      add_group 'Workers',      %w[app/jobs app/workers] # Matches EE files as well
-      add_group 'Initializers', %w[config/initializers config/initializers_before_autoloader] # Matches EE files as well
-      add_group 'Migrations',   %w[db/migrate db/optional_migrations db/post_migrate] # Matches EE files as well
-      add_group 'Libraries',    %w[/lib /ee/lib]
-      add_group 'Tooling',      %w[/haml_lint /rubocop /tooling]
+      add_group 'Channels',           %r{^/(ee/)?app/channels}
+      add_group 'Components',         %r{^/(ee/)?app/components}
+      add_group 'Config',             %r{^/(ee/)?config}
+      add_group 'Controllers',        %r{^/(ee/)?app/controllers}
+      add_group 'Elastic migrations', %r{^/(ee/)?elastic}
+      add_group 'Enums',              %r{^/(ee/)?app/enums}
+      add_group 'Events',             %r{^/(ee/)?app/events}
+      add_group 'Experiments',        %r{^/(ee/)?app/experiments}
+      add_group 'Finders',            %r{^/(ee/)?app/finders}
+      add_group 'Fixtures',           %r{^/(ee/)?db/fixtures}
+      add_group 'GraphQL',            %r{^/(ee/)?app/graphql}
+      add_group 'Helpers',            %r{^/(ee/)?app/helpers}
+      add_group 'Libraries',          %r{^/(ee/)?lib}
+      add_group 'Mailers',            %r{^/(ee/)?app/mailers}
+      add_group 'Metrics server',     %r{^/(ee/)?metrics_server}
+      add_group 'Migrations',         %r{^/(ee/)?db/(geo/)?(migrate|optional_migrations|post_migrate)}
+      add_group 'Models',             %r{^/(ee/)?app/models}
+      add_group 'Policies',           %r{^/(ee/)?app/policies}
+      add_group 'Presenters',         %r{^/(ee/)?app/presenters}
+      add_group 'Replicators',        %r{^/(ee/)?app/replicators}
+      add_group 'Seeds',              %r{^/(ee/)?db/seeds}
+      add_group 'Serializers',        %r{^/(ee/)?app/serializers}
+      add_group 'Services',           %r{^/(ee/)?app/services}
+      add_group 'Sidekiq cluster',    %r{^/(ee/)?sidekiq_cluster}
+      add_group 'Tooling',            %r{^/(ee/)?(danger|haml_lint|rubocop|scripts|tooling)}
+      add_group 'Uploaders',          %r{^/(ee/)?app/uploaders}
+      add_group 'Validators',         %r{^/(ee/)?app/validators}
+      add_group 'Views',              %r{^/(ee/)?app/views}
+      add_group 'Workers',            %r{^/(ee/)?app/workers}
 
       merge_timeout 365 * 24 * 3600
     end

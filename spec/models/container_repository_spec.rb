@@ -810,7 +810,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     subject { repository.size }
 
     before do
-      allow(::Gitlab).to receive(:com?).and_return(on_com)
+      allow(::Gitlab).to receive(:com_except_jh?).and_return(on_com)
       allow(repository).to receive(:created_at).and_return(created_at)
     end
 
@@ -1568,7 +1568,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
     context 'on gitlab.com' do
       before do
-        allow(::Gitlab).to receive(:com?).and_return(true)
+        allow(::Gitlab).to receive(:com_except_jh?).and_return(true)
       end
 
       it { is_expected.to eq(true) }
@@ -1576,7 +1576,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
     context 'not on gitlab.com' do
       before do
-        allow(::Gitlab).to receive(:com?).and_return(false)
+        allow(::Gitlab).to receive(:com_except_jh?).and_return(false)
       end
 
       it { is_expected.to eq(false) }

@@ -959,7 +959,7 @@ GfmAutoComplete.Emoji = {
       return `<li>${escapedFieldValue}</li>`;
     }
 
-    return `<li>${escapedFieldValue} ${GfmAutoComplete.glEmojiTag(item.emoji.name)}</li>`;
+    return `<li>${GfmAutoComplete.glEmojiTag(item.emoji.name)} ${escapedFieldValue}</li>`;
   },
   filter(query) {
     if (query.length === 0) {

@@ -35,14 +35,13 @@ module Mutations
         def resolve(project_path:, target_project_path:, direction: nil)
           project = authorized_find!(project_path)
           target_project = Project.find_by_full_path(target_project_path)
-          frozen_outbound = project.frozen_outbound_job_token_scopes?
 
-          if direction == :outbound && frozen_outbound
+          if direction == :outbound
             raise Gitlab::Graphql::Errors::ArgumentError, 'direction: OUTBOUND scope entries can only be removed. ' \
                                                           'Only INBOUND scope can be expanded.'
           end
 
-          direction ||= frozen_outbound ? :inbound : :outbound
+          direction ||= :inbound
 
           result = ::Ci::JobTokenScope::AddProjectService
             .new(project, current_user)

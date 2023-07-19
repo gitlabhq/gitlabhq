@@ -1,0 +1,98 @@
+inherit_gem:
+  gitlab-styles:
+    - rubocop-default.yml
+
+require:
+  - ../../rubocop/rubocop
+  - rubocop-rspec
+
+inherit_mode:
+  merge:
+    - Include
+    - Exclude
+    - AllowedPatterns
+
+AllCops:
+  # Target the current Ruby version. For example, "3.0" or "3.1".
+  TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
+  SuggestExtensions: false
+  NewCops: disable
+
+# This cop doesn't make sense in the context of gems
+CodeReuse/ActiveRecord:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Cop/PutGroupRoutesUnderScope:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Cop/PutProjectRoutesUnderScope:
+  Enabled: false
+
+Gemspec/AvoidExecutingGit:
+  Enabled: true
+
+# We disable this since we support multiple Ruby versions
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Gitlab/DocUrl:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Gitlab/NamespacedClass:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Gitlab/RSpec/AvoidSetup:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Graphql/AuthorizeTypes:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Graphql/Descriptions:
+  Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - spec/**/*.rb
+
+# This cop doesn't make sense in the context of gems
+RSpec/AvoidConditionalStatements:
+  Enabled: false
+
+RSpec/ContextWording:
+  Prefixes:
+  - 'when'
+  - 'with'
+  - 'without'
+  - 'for'
+  - 'and'
+  - 'on'
+  - 'in'
+  - 'as'
+  - 'if'
+
+# This cop doesn't make sense in the context of gems
+RSpec/MissingFeatureCategory:
+  Enabled: false
+
+# Enable once we drop 3.0 support
+Style/HashSyntax:
+  Enabled: false
+
+Style/Lambda:
+  EnforcedStyle: literal
+
+Style/RegexpLiteralMixedPreserve:
+  Enabled: true
+  SupportedStyles:
+    - slashes
+    - percent_r
+    - mixed
+    - mixed_preserve
+  EnforcedStyle: mixed_preserve

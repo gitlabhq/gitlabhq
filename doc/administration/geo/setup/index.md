@@ -34,8 +34,8 @@ If both Geo sites are based on the [1K reference architecture](../../reference_a
    - [Using Linux package PostgreSQL instances](database.md) .
    - [Using external PostgreSQL instances](external_database.md)
 1. [Configure GitLab](../replication/configuration.md) to set the **primary** and **secondary** sites.
-1. Recommended: [Configure unified URLs](../secondary_proxy/index.md) to use a single, unified URL for all Geo sites.
-1. Optional: [Configure Object storage replication](../../object_storage.md)
+1. Recommended: [Configure unified URLs](../secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites) to use a single, unified URL for all Geo sites.
+1. Optional: [Configure Object storage replication](../replication/object_storage.md)
 1. Optional: [Configure a secondary LDAP server](../../auth/ldap/index.md) for the **secondary** sites. See [notes on LDAP](../index.md#ldap).
 1. Optional: [Configure Container Registry for the secondary site](../replication/container_registry.md).
 1. Follow the [Using a Geo Site](../replication/usage.md) guide.

@@ -75,7 +75,7 @@ RSpec.describe 'Pipeline Badge', feature_category: :continuous_integration do
     def expect_badge(status)
       svg = Nokogiri::XML.parse(page.body)
       expect(page.response_headers['Content-Type']).to include('image/svg+xml')
-      expect(svg.at(%Q{text:contains("#{status}")})).to be_truthy
+      expect(svg.at(%{text:contains("#{status}")})).to be_truthy
     end
   end
 end

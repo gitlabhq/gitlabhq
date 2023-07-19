@@ -59,6 +59,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless in_rake_file?(node)
+
           method, file = require_method(node)
           return unless method
 
@@ -69,6 +71,14 @@ module RuboCop
         end
 
         private
+
+        def in_rake_file?(node)
+          File.extname(filepath(node)) == '.rake'
+        end
+
+        def filepath(node)
+          node.location.expression.source_buffer.name
+        end
 
         # Allow `require "foo/rake_task"`
         def requires_task?(file)

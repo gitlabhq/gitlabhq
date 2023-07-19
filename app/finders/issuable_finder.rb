@@ -346,8 +346,7 @@ class IssuableFinder
 
   def use_full_text_search?
     klass.try(:pg_full_text_searchable_columns).present? &&
-      params[:search] =~ FULL_TEXT_SEARCH_TERM_REGEX &&
-      Feature.enabled?(:issues_full_text_search, params.project || params.group)
+      params[:search] =~ FULL_TEXT_SEARCH_TERM_REGEX
   end
 
   def filter_by_full_text_search(items)

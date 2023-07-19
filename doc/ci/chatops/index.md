@@ -49,18 +49,20 @@ When the job runs:
 
 ## Run a CI/CD job
 
-You can run a CI/CD job from chat with the `/project-name run`
-[slash command](../../integration/slash_commands.md).
-
-Prerequisites:
+Prerequisite:
 
 - You must have at least the Developer role for the project.
 
-To run a CI/CD job:
+You can run a CI/CD job on the default branch from chat. To run a CI/CD job:
 
-- In the chat client, enter `/project-name run <job name> <arguments>`.
+- In the chat client, enter `/<project-name> run <job name> <arguments>` where:
+
+  - `<project-name>` is the name of the project.
+  - `<job name>` is the name of the CI/CD job to run.
+  - `<arguments>` is the arguments to pass to the CI/CD job.
 
 ChatOps schedules a pipeline that contains only the specified job.
+Other [slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands) are also available.
 
 ### Exclude a job from ChatOps
 

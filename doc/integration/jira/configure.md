@@ -10,7 +10,7 @@ The Jira issue integration connects one or more GitLab projects to a Jira instan
 
 ## Configure the integration
 
-> Authentication with Jira personal access tokens was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8222) in GitLab 16.0.
+> Authentication with Jira personal access tokens [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8222) in GitLab 16.0.
 
 Prerequisites:
 
@@ -22,7 +22,7 @@ Prerequisites:
   - Jira personal access token (GitLab 16.0 and later).
 
 You can enable the Jira issue integration by configuring your project settings in GitLab.
-You can configure these settings at the [group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration) or at the [instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) for self-managed GitLab.
+You can configure these settings at the [group level](../../administration/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration) or at the [instance level](../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) for self-managed GitLab.
 
 To configure your project settings in GitLab:
 
@@ -81,7 +81,7 @@ To create a Jira Cloud API token:
    profile, select **Account Settings > Security > Create and manage API tokens**.
 
 1. Select **Create API token**.
-1. In the dialog, enter a label for your token and select **Create**.
+1. On the dialog, enter a label for your token and select **Create**.
 
 To copy the API token, select **Copy**.
 

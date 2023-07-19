@@ -1,18 +1,15 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-
 import { GlAlert } from '@gitlab/ui';
-
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-
 import DescriptionForm from '~/design_management/components/design_description/description_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import updateDesignDescriptionMutation from '~/design_management/graphql/mutations/update_design_description.mutation.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-
+import { mockTracking } from 'helpers/tracking_helper';
 import { designFactory, designUpdateFactory } from '../../mock_data/apollo_mock';
 
 jest.mock('~/behaviors/markdown/render_gfm');
@@ -86,6 +83,8 @@ describe('Design description form', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   describe('user has updateDesign permission', () => {
+    let trackingSpy;
+
     const ctrlKey = {
       ctrlKey: true,
     };
@@ -96,6 +95,8 @@ describe('Design description form', () => {
     const errorMessage = 'Could not update description. Please try again.';
 
     beforeEach(() => {
+      trackingSpy = mockTracking(undefined, null, jest.spyOn);
+
       createComponent();
     });
 
@@ -139,19 +140,19 @@ describe('Design description form', () => {
           mockDesign.id,
         )}`,
         markdownDocsPath: '/help/user/markdown',
-        quickActionsDocsPath: '/help/user/project/quick_actions',
       });
     });
 
-    it.each`
+    describe.each`
       isKeyEvent | assertionName              | key       | keyData
       ${true}    | ${'Ctrl + Enter keypress'} | ${'ctrl'} | ${ctrlKey}
       ${true}    | ${'Meta + Enter keypress'} | ${'meta'} | ${metaKey}
       ${false}   | ${'Save button click'}     | ${''}     | ${null}
-    `(
-      'hides form and calls mutation when form is submitted via $assertionName',
-      async ({ isKeyEvent, keyData }) => {
-        const mockDesignUpdateResponseHandler = jest.fn().mockResolvedValue(
+    `('when form is submitted via $assertionName', ({ isKeyEvent, keyData }) => {
+      let mockDesignUpdateResponseHandler;
+
+      beforeEach(async () => {
+        mockDesignUpdateResponseHandler = jest.fn().mockResolvedValue(
           designUpdateFactory({
             description: mockDescription,
             descriptionHtml: `<p data-sourcepos="1:1-1:16" dir="auto">${mockDescription}</p>`,
@@ -171,7 +172,9 @@ describe('Design description form', () => {
         }
 
         await nextTick();
+      });
 
+      it('hides form and calls mutation', async () => {
         expect(mockDesignUpdateResponseHandler).toHaveBeenCalledWith({
           input: {
             description: 'Hello world',
@@ -182,8 +185,16 @@ describe('Design description form', () => {
         await waitForPromises();
 
         expect(findMarkdownEditor().exists()).toBe(false);
-      },
-    );
+      });
+
+      it('tracks submit action', () => {
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
+          context: 'Design',
+          editorType: 'editor_type_plain_text_editor',
+          label: 'editor_tracking',
+        });
+      });
+    });
 
     it('shows error message when mutation fails', async () => {
       const failureHandler = jest.fn().mockRejectedValue(new Error(errorMessage));

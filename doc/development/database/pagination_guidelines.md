@@ -214,7 +214,7 @@ Limit  (cost=137878.89..137881.65 rows=20 width=1309) (actual time=5523.588..552
 (8 rows)
 ```
 
-We can argue that a normal user does not visit these pages, however, API users could easily navigate to very high page numbers (scraping, collecting data).
+We can argue that a typical user does not visit these pages, however, API users could easily navigate to very high page numbers (scraping, collecting data).
 
 ### Keyset pagination
 

@@ -111,6 +111,10 @@ module Issues
       issue.namespace.execute_integrations(issue_data, hooks_scope)
 
       execute_incident_hooks(issue, issue_data) if issue.work_item_type&.incident?
+
+      return unless Feature.enabled?(:group_mentions, issue.project)
+
+      execute_group_mention_hooks(issue, issue_data) if action == 'open'
     end
 
     # We can remove this code after proposal in
@@ -119,6 +123,21 @@ module Issues
       issue_data[:object_kind] = 'incident'
       issue_data[:event_type] = 'incident'
       issue.namespace.execute_integrations(issue_data, :incident_hooks)
+    end
+
+    def execute_group_mention_hooks(issue, issue_data)
+      return unless issue.instance_of?(Issue)
+
+      args = {
+        mentionable_type: 'Issue',
+        mentionable_id: issue.id,
+        hook_data: issue_data,
+        is_confidential: issue.confidential?
+      }
+
+      issue.run_after_commit_or_now do
+        Integrations::GroupMentionWorker.perform_async(args)
+      end
     end
 
     def update_project_counter_caches?(issue)

@@ -18,7 +18,6 @@ Style/StringLiteralsInInterpolation:
     - 'ee/app/models/license.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/lib/ee/api/helpers/issues_helpers.rb'
-    - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/subscriptions/expiring_subscription_message_spec.rb'
     - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'

@@ -2,14 +2,11 @@
 
 class UserPreference < ApplicationRecord
   include IgnorableColumns
-  include SafelyChangeColumnDefault
 
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
   NOTES_FILTERS = { all_notes: 0, only_comments: 1, only_activity: 2 }.freeze
-
-  columns_changing_default :tab_width, :time_display_relative, :render_whitespace_in_code
 
   belongs_to :user
 
@@ -31,7 +28,6 @@ class UserPreference < ApplicationRecord
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
 
   ignore_columns :experience_level, remove_with: '14.10', remove_after: '2021-03-22'
-  ignore_columns :time_format_in_24h, remove_with: '16.2', remove_after: '2023-07-22'
   # 2023-06-22 is after 16.1 release and during 16.2 release https://docs.gitlab.com/ee/development/database/avoiding_downtime_in_migrations.html#ignoring-the-column-release-m
   ignore_columns :use_legacy_web_ide, remove_with: '16.2', remove_after: '2023-06-22'
 

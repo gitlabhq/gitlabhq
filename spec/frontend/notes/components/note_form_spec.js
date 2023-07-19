@@ -7,6 +7,7 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { AT_WHO_ACTIVE_CLASS } from '~/gfm_auto_complete';
 import eventHub from '~/environments/event_hub';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import { noteableDataMock, notesDataMock, discussionMock, note } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
@@ -15,6 +16,7 @@ describe('issue_note_form component', () => {
   let store;
   let wrapper;
   let props;
+  let trackingSpy;
 
   const createComponentWrapper = (propsData = {}, provide = {}) => {
     wrapper = mountExtended(NoteForm, {
@@ -25,6 +27,15 @@ describe('issue_note_form component', () => {
       },
       provide: {
         glFeatures: provide,
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            currentUser: {
+              loading: false,
+            },
+          },
+        },
       },
     });
   };
@@ -43,6 +54,7 @@ describe('issue_note_form component', () => {
       noteBody: 'Magni suscipit eius consectetur enim et ex et commodi.',
       noteId: '545',
     };
+    trackingSpy = mockTracking(undefined, null, jest.spyOn);
   });
 
   describe('noteHash', () => {
@@ -66,13 +78,13 @@ describe('issue_note_form component', () => {
   it('hides content editor switcher if feature flag content_editor_on_issues is off', () => {
     createComponentWrapper({}, { contentEditorOnIssues: false });
 
-    expect(wrapper.text()).not.toContain('Switch to rich text');
+    expect(wrapper.text()).not.toContain('Switch to rich text editing');
   });
 
   it('shows content editor switcher if feature flag content_editor_on_issues is on', () => {
     createComponentWrapper({}, { contentEditorOnIssues: true });
 
-    expect(wrapper.text()).toContain('Switch to rich text');
+    expect(wrapper.text()).toContain('Switch to rich text editing');
   });
 
   describe('conflicts editing', () => {
@@ -213,6 +225,21 @@ describe('issue_note_form component', () => {
 
         expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
       });
+
+      it('tracks event when save button is clicked', () => {
+        createComponentWrapper();
+
+        const textarea = wrapper.find('textarea');
+        textarea.setValue('Foo');
+        const saveButton = wrapper.find('.js-vue-issue-save');
+        saveButton.vm.$emit('click');
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
+          context: 'Issue_note',
+          editorType: 'editor_type_plain_text_editor',
+          label: 'editor_tracking',
+        });
+      });
     });
   });
 
@@ -271,7 +298,9 @@ describe('issue_note_form component', () => {
 
         await nextTick();
 
-        expect(wrapper.emitted('handleFormUpdateAddToReview')).toEqual([['Foo', false]]);
+        expect(wrapper.emitted('handleFormUpdateAddToReview')).toStrictEqual([
+          ['Foo', false, wrapper.vm.$refs.editNoteForm, expect.any(Function)],
+        ]);
       });
     });
   });

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Users with auditor access have read-only access to all groups, projects, and other resources except:
 
-- The [Admin Area](../user/admin_area/index.md).
+- The [Admin Area](../administration/admin_area.md).
 - Project and group settings.
 
 For more information, see [Auditor user permissions and restrictions](#auditor-user-permissions-and-restrictions)
@@ -50,9 +50,9 @@ users with auditor access have the same [permissions](../user/permissions.md) as
 
 If you are signed in with auditor access, you:
 
-- Have full access to projects you own.
-- Have read-only access to projects you aren't a member of.
-- Have [permissions](../user/permissions.md) based on your role to projects you are a member of. For example, if you have the Developer role,
+- Have full access to the projects and groups you own.
+- Have read-only access to the projects and groups you are not a member of.
+- Have [permissions](../user/permissions.md) based on your role to projects and groups you are a member of. For example, if you have the Developer role,
   you can push commits or comment on issues.
 - Can access the same resources using the GitLab UI or API.
 - Can't view the Admin Area, or perform any administration actions.

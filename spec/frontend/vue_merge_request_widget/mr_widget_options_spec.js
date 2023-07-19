@@ -1,5 +1,4 @@
 import { GlBadge, GlLink, GlIcon, GlButton, GlDropdown } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -10,6 +9,7 @@ import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_stat
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
@@ -28,6 +28,8 @@ import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
 import Preparing from '~/vue_merge_request_widget/components/states/mr_widget_preparing.vue';
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
+import WidgetSuggestPipeline from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
+import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
 import getStateSubscription from '~/vue_merge_request_widget/queries/get_state.subscription.graphql';
@@ -76,6 +78,9 @@ describe('MrWidgetOptions', () => {
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
   const findApprovalsWidget = () => wrapper.findComponent(Approvals);
   const findPreparingWidget = () => wrapper.findComponent(Preparing);
+  const findMergedPipelineContainer = () => wrapper.findByTestId('merged-pipeline-container');
+  const findPipelineContainer = () => wrapper.findByTestId('pipeline-container');
+  const findAlertMessage = () => wrapper.findComponent(MrWidgetAlertMessage);
 
   beforeEach(() => {
     gl.mrWidgetData = { ...mockData };
@@ -95,7 +100,12 @@ describe('MrWidgetOptions', () => {
     gl.mrWidgetData = {};
   });
 
-  const createComponent = (mrData = mockData, options = {}, data = {}, fullMount = true) => {
+  const createComponent = ({
+    mrData = mockData,
+    options = {},
+    data = {},
+    mountFn = shallowMountExtended,
+  } = {}) => {
     const mockedApprovalsSubscription = createMockApolloSubscription();
     queryResponse = {
       data: {
@@ -114,7 +124,6 @@ describe('MrWidgetOptions', () => {
     stateQueryHandler = jest.fn().mockResolvedValue(queryResponse);
     stateSubscription = createMockApolloSubscription();
 
-    const mounting = fullMount ? mount : shallowMount;
     const queryHandlers = [
       [approvalsQuery, jest.fn().mockResolvedValue(approvedByCurrentUser)],
       [getStateQuery, stateQueryHandler],
@@ -143,7 +152,7 @@ describe('MrWidgetOptions', () => {
       apolloProvider.defaultClient.setRequestHandler(query, stream);
     });
 
-    wrapper = mounting(MrWidgetOptions, {
+    wrapper = mountFn(MrWidgetOptions, {
       propsData: {
         mrData: { ...mrData },
       },
@@ -165,8 +174,7 @@ describe('MrWidgetOptions', () => {
     wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]');
   const findExtensionLink = (linkHref) =>
     wrapper.find(`[data-testid="widget-extension"] [href="${linkHref}"]`);
-  const findSuggestPipeline = () => wrapper.find('[data-testid="mr-suggest-pipeline"]');
-  const findSuggestPipelineButton = () => findSuggestPipeline().find('button');
+  const findSuggestPipeline = () => wrapper.findComponent(WidgetSuggestPipeline);
   const findWidgetContainer = () => wrapper.findComponent(WidgetContainer);
 
   describe('default', () => {
@@ -175,7 +183,7 @@ describe('MrWidgetOptions', () => {
       return createComponent();
     });
 
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/385238
+    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/385238
     // eslint-disable-next-line jest/no-disabled-tests
     describe.skip('data', () => {
       it('should instantiate Store and Service', () => {
@@ -186,6 +194,7 @@ describe('MrWidgetOptions', () => {
 
     describe('computed', () => {
       describe('componentName', () => {
+        // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/409365
         // eslint-disable-next-line jest/no-disabled-tests
         it.skip.each`
           ${'merged'}      | ${'mr-widget-merged'}
@@ -206,60 +215,18 @@ describe('MrWidgetOptions', () => {
         });
       });
 
-      describe('shouldRenderPipelines', () => {
-        it('should return true when hasCI is true', () => {
+      describe('MrWidgetPipelineContainer', () => {
+        it('should return true when hasCI is true', async () => {
           wrapper.vm.mr.hasCI = true;
-
-          expect(wrapper.vm.shouldRenderPipelines).toBe(true);
+          await nextTick();
+          expect(findPipelineContainer().exists()).toBe(true);
         });
 
-        it('should return false when hasCI is false', () => {
+        it('should return false when hasCI is false', async () => {
           wrapper.vm.mr.hasCI = false;
+          await nextTick();
 
-          expect(wrapper.vm.shouldRenderPipelines).toBe(false);
-        });
-      });
-
-      describe('shouldRenderSourceBranchRemovalStatus', () => {
-        beforeEach(() => {
-          wrapper.vm.mr.state = 'readyToMerge';
-        });
-
-        it('should return true when cannot remove source branch and branch will be removed', () => {
-          wrapper.vm.mr.canRemoveSourceBranch = false;
-          wrapper.vm.mr.shouldRemoveSourceBranch = true;
-
-          expect(wrapper.vm.shouldRenderSourceBranchRemovalStatus).toEqual(true);
-        });
-
-        it('should return false when can remove source branch and branch will be removed', () => {
-          wrapper.vm.mr.canRemoveSourceBranch = true;
-          wrapper.vm.mr.shouldRemoveSourceBranch = true;
-
-          expect(wrapper.vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
-        });
-
-        it('should return false when cannot remove source branch and branch will not be removed', () => {
-          wrapper.vm.mr.canRemoveSourceBranch = false;
-          wrapper.vm.mr.shouldRemoveSourceBranch = false;
-
-          expect(wrapper.vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
-        });
-
-        it('should return false when in merged state', () => {
-          wrapper.vm.mr.canRemoveSourceBranch = false;
-          wrapper.vm.mr.shouldRemoveSourceBranch = true;
-          wrapper.vm.mr.state = 'merged';
-
-          expect(wrapper.vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
-        });
-
-        it('should return false when in nothing to merge state', () => {
-          wrapper.vm.mr.canRemoveSourceBranch = false;
-          wrapper.vm.mr.shouldRemoveSourceBranch = true;
-          wrapper.vm.mr.state = 'nothingToMerge';
-
-          expect(wrapper.vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+          expect(findPipelineContainer().exists()).toBe(false);
         });
       });
 
@@ -320,7 +287,7 @@ describe('MrWidgetOptions', () => {
           });
 
           it('should be false', () => {
-            expect(wrapper.vm.showMergePipelineForkWarning).toEqual(false);
+            expect(findAlertMessage().exists()).toBe(false);
           });
         });
 
@@ -333,7 +300,7 @@ describe('MrWidgetOptions', () => {
           });
 
           it('should be false', () => {
-            expect(wrapper.vm.showMergePipelineForkWarning).toEqual(false);
+            expect(findAlertMessage().exists()).toBe(false);
           });
         });
 
@@ -346,22 +313,30 @@ describe('MrWidgetOptions', () => {
           });
 
           it('should be true', () => {
-            expect(wrapper.vm.showMergePipelineForkWarning).toEqual(true);
+            expect(findAlertMessage().exists()).toBe(true);
           });
         });
       });
 
       describe('formattedHumanAccess', () => {
-        it('when user is a tool admin but not a member of project', () => {
+        it('when user is a tool admin but not a member of project', async () => {
           wrapper.vm.mr.humanAccess = null;
+          wrapper.vm.mr.mergeRequestAddCiConfigPath = 'test';
+          wrapper.vm.mr.hasCI = false;
+          wrapper.vm.mr.isDismissedSuggestPipeline = false;
+          await nextTick();
 
-          expect(wrapper.vm.formattedHumanAccess).toEqual('');
+          expect(findSuggestPipeline().props('humanAccess')).toBe('');
         });
 
-        it('when user a member of the project', () => {
+        it('when user a member of the project', async () => {
           wrapper.vm.mr.humanAccess = 'Owner';
+          wrapper.vm.mr.mergeRequestAddCiConfigPath = 'test';
+          wrapper.vm.mr.hasCI = false;
+          wrapper.vm.mr.isDismissedSuggestPipeline = false;
+          await nextTick();
 
-          expect(wrapper.vm.formattedHumanAccess).toEqual('owner');
+          expect(findSuggestPipeline().props('humanAccess')).toBe('owner');
         });
       });
     });
@@ -570,10 +545,10 @@ describe('MrWidgetOptions', () => {
         beforeEach(() => {
           wrapper.destroy();
 
-          return createComponent(
-            mockData,
-            {},
-            {
+          return createComponent({
+            mrData: mockData,
+            options: {},
+            data: {
               pollInterval: interval,
               startingPollInterval: interval,
               mr: {
@@ -584,8 +559,7 @@ describe('MrWidgetOptions', () => {
                 checkStatus: mockCheckStatus,
               },
             },
-            false,
-          );
+          });
         });
 
         describe('normal polling behavior', () => {
@@ -653,7 +627,7 @@ describe('MrWidgetOptions', () => {
         environment_available: true,
       };
 
-      beforeEach(() => {
+      it('renders multiple deployments', async () => {
         wrapper.vm.mr.deployments.push(
           {
             ...deploymentMockData,
@@ -663,19 +637,10 @@ describe('MrWidgetOptions', () => {
             id: deploymentMockData.id + 1,
           },
         );
-
-        return nextTick();
-      });
-
-      it('renders multiple deployments', () => {
-        expect(wrapper.findAll('.deploy-heading').length).toBe(2);
-      });
-
-      it('renders dropdpown with multiple file changes', () => {
-        expect(
-          wrapper.find('.js-mr-wigdet-deployment-dropdown').findAll('.js-filtered-dropdown-result')
-            .length,
-        ).toEqual(changes.length);
+        await nextTick();
+        expect(findPipelineContainer().props('isPostMerge')).toBe(false);
+        expect(findPipelineContainer().props('mr').deployments).toHaveLength(2);
+        expect(findPipelineContainer().props('mr').postMergeDeployments).toHaveLength(0);
       });
     });
 
@@ -793,7 +758,7 @@ describe('MrWidgetOptions', () => {
         });
 
         it('renders pipeline block', () => {
-          expect(wrapper.find('.js-post-merge-pipeline').exists()).toBe(true);
+          expect(findMergedPipelineContainer().exists()).toBe(true);
         });
 
         describe('with post merge deployments', () => {
@@ -833,7 +798,7 @@ describe('MrWidgetOptions', () => {
           });
 
           it('renders post deployment information', () => {
-            expect(wrapper.find('.js-post-deployment').exists()).toBe(true);
+            expect(findMergedPipelineContainer().exists()).toBe(true);
           });
         });
       });
@@ -846,7 +811,7 @@ describe('MrWidgetOptions', () => {
         });
 
         it('does not render pipeline block', () => {
-          expect(wrapper.find('.js-post-merge-pipeline').exists()).toBe(false);
+          expect(findMergedPipelineContainer().exists()).toBe(false);
         });
       });
 
@@ -858,11 +823,7 @@ describe('MrWidgetOptions', () => {
         });
 
         it('does not render pipeline block', () => {
-          expect(wrapper.find('.js-post-merge-pipeline').exists()).toBe(false);
-        });
-
-        it('does not render post deployment information', () => {
-          expect(wrapper.find('.js-post-deployment').exists()).toBe(false);
+          expect(findMergedPipelineContainer().exists()).toBe(false);
         });
       });
     });
@@ -880,7 +841,6 @@ describe('MrWidgetOptions', () => {
     describe('given feature flag is enabled', () => {
       beforeEach(async () => {
         await createComponent();
-
         wrapper.vm.mr.hasCI = false;
       });
 
@@ -901,7 +861,7 @@ describe('MrWidgetOptions', () => {
       });
 
       it('should allow dismiss of the suggest pipeline message', async () => {
-        await findSuggestPipelineButton().trigger('click');
+        await findSuggestPipeline().vm.$emit('dismiss');
 
         expect(findSuggestPipeline().exists()).toBe(false);
       });
@@ -915,7 +875,7 @@ describe('MrWidgetOptions', () => {
       ${'merged'} | ${true}  | ${'shows'}
       ${'open'}   | ${true}  | ${'shows'}
     `('$showText merge error when state is $state', async ({ state, show }) => {
-      createComponent({ ...mockData, state, mergeError: 'Error!' });
+      createComponent({ mrData: { ...mockData, state, mergeError: 'Error!' } });
 
       await waitForPromises();
 
@@ -927,7 +887,7 @@ describe('MrWidgetOptions', () => {
     beforeEach(() => {
       registerExtension(workingExtension());
 
-      createComponent();
+      createComponent({ mountFn: mountExtended });
     });
 
     afterEach(() => {
@@ -987,7 +947,7 @@ describe('MrWidgetOptions', () => {
 
     it('shows collapse button', async () => {
       registerExtension(workingExtension(true));
-      await createComponent();
+      await createComponent({ mountFn: mountExtended });
 
       expect(findExtensionToggleButton().exists()).toBe(true);
     });
@@ -1026,7 +986,7 @@ describe('MrWidgetOptions', () => {
           ]),
         );
 
-        await createComponent();
+        await createComponent({ mountFn: mountExtended });
         expect(findWidgetTestExtension().html()).toContain(
           'Multi polling test extension reports: parsed, count: 2',
         );
@@ -1048,7 +1008,7 @@ describe('MrWidgetOptions', () => {
           ]),
         );
 
-        await createComponent();
+        await createComponent({ mountFn: mountExtended });
         expect(findWidgetTestExtension().html()).toContain('Test extension loading...');
       });
     });
@@ -1057,7 +1017,7 @@ describe('MrWidgetOptions', () => {
       it('does not make additional requests after poll is successful', async () => {
         registerExtension(pollingExtension);
 
-        await createComponent();
+        await createComponent({ mountFn: mountExtended });
 
         expect(pollRequest).toHaveBeenCalledTimes(1);
       });
@@ -1067,7 +1027,7 @@ describe('MrWidgetOptions', () => {
       it('sets data when polling is complete', async () => {
         registerExtension(pollingFullDataExtension);
 
-        await createComponent();
+        await createComponent({ mountFn: mountExtended });
 
         api.trackRedisHllUserEvent.mockClear();
         api.trackRedisCounterEvent.mockClear();
@@ -1095,14 +1055,14 @@ describe('MrWidgetOptions', () => {
     describe('error', () => {
       it('does not make additional requests after poll has failed', async () => {
         registerExtension(pollingErrorExtension);
-        await createComponent();
+        await createComponent({ mountFn: mountExtended });
 
         expect(pollRequest).toHaveBeenCalledTimes(1);
       });
 
       it('captures sentry error and displays error when poll has failed', async () => {
         registerExtension(pollingErrorExtension);
-        await createComponent();
+        await createComponent({ mountFn: mountExtended });
 
         expect(Sentry.captureException).toHaveBeenCalled();
         expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
@@ -1118,7 +1078,7 @@ describe('MrWidgetOptions', () => {
 
     it('handles collapsed data fetch errors', async () => {
       registerExtension(collapsedDataErrorExtension);
-      await createComponent();
+      await createComponent({ mountFn: mountExtended });
 
       expect(
         wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]').exists(),
@@ -1130,7 +1090,7 @@ describe('MrWidgetOptions', () => {
 
     it('handles full data fetch errors', async () => {
       registerExtension(fullDataErrorExtension);
-      await createComponent();
+      await createComponent({ mountFn: mountExtended });
 
       expect(wrapper.findComponent(StatusIcon).props('iconName')).not.toBe('error');
       wrapper
@@ -1153,7 +1113,7 @@ describe('MrWidgetOptions', () => {
 
     it('triggers view events when mounted', () => {
       registerExtension(workingExtension());
-      createComponent();
+      createComponent({ mountFn: mountExtended });
 
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
@@ -1168,7 +1128,7 @@ describe('MrWidgetOptions', () => {
     describe('expand button', () => {
       it('triggers expand events when clicked', async () => {
         registerExtension(workingExtension());
-        createComponent();
+        createComponent({ mountFn: mountExtended });
 
         await waitForPromises();
 
@@ -1197,7 +1157,7 @@ describe('MrWidgetOptions', () => {
 
     it('triggers the "full report clicked" events when the appropriate button is clicked', () => {
       registerExtension(fullReportExtension);
-      createComponent();
+      createComponent({ mountFn: mountExtended });
 
       api.trackRedisHllUserEvent.mockClear();
       api.trackRedisCounterEvent.mockClear();
@@ -1221,7 +1181,7 @@ describe('MrWidgetOptions', () => {
 
       it("doesn't emit any telemetry events", async () => {
         registerExtension(noTelemetryExtension);
-        createComponent();
+        createComponent({ mountFn: mountExtended });
 
         await waitForPromises();
 
@@ -1249,7 +1209,7 @@ describe('MrWidgetOptions', () => {
     });
 
     it('does not render the Preparing state component by default', async () => {
-      await createComponent();
+      await createComponent({ mountFn: mountExtended });
 
       expect(findApprovalsWidget().exists()).toBe(true);
       expect(findPreparingWidget().exists()).toBe(false);
@@ -1257,9 +1217,11 @@ describe('MrWidgetOptions', () => {
 
     it('renders the Preparing state component when the MR state is initially "preparing"', async () => {
       await createComponent({
-        ...mockData,
-        state: 'opened',
-        detailedMergeStatus: 'PREPARING',
+        mrData: {
+          ...mockData,
+          state: 'opened',
+          detailedMergeStatus: 'PREPARING',
+        },
       });
 
       expect(findApprovalsWidget().exists()).toBe(false);
@@ -1272,31 +1234,29 @@ describe('MrWidgetOptions', () => {
       });
 
       it("shows the Preparing widget when the MR reports it's not ready yet", async () => {
-        await createComponent(
-          {
+        await createComponent({
+          mrData: {
             ...mockData,
             state: 'opened',
             detailedMergeStatus: 'PREPARING',
           },
-          {},
-          {},
-          false,
-        );
+          options: {},
+          data: {},
+        });
 
         expect(wrapper.html()).toContain('mr-widget-preparing-stub');
       });
 
       it('removes the Preparing widget when the MR indicates it has been prepared', async () => {
-        await createComponent(
-          {
+        await createComponent({
+          mrData: {
             ...mockData,
             state: 'opened',
             detailedMergeStatus: 'PREPARING',
           },
-          {},
-          {},
-          false,
-        );
+          options: {},
+          data: {},
+        });
 
         expect(wrapper.html()).toContain('mr-widget-preparing-stub');
 

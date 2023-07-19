@@ -5,7 +5,7 @@ export const mockEmptyResponse = { data: { project: null } };
 
 export const projectData = {
   storage: {
-    totalUsage: '13.8 MiB',
+    totalUsage: '13.4 MiB',
     storageTypes: [
       {
         storageType: {
@@ -24,15 +24,6 @@ export const projectData = {
           description: 'Job artifacts created by CI/CD.',
           helpPath: '/build-artifacts',
           detailsPath: 'http://localhost/frontend-fixtures/builds-project/-/artifacts',
-        },
-        value: 400000,
-      },
-      {
-        storageType: {
-          id: 'pipelineArtifacts',
-          name: 'Pipeline artifacts',
-          description: 'Pipeline artifacts created by CI/CD.',
-          helpPath: '/pipeline-artifacts',
         },
         value: 400000,
       },
@@ -93,7 +84,6 @@ export const projectHelpLinks = {
   containerRegistry: '/container_registry',
   usageQuotas: '/usage-quotas',
   buildArtifacts: '/build-artifacts',
-  pipelineArtifacts: '/pipeline-artifacts',
   lfsObjects: '/lsf-objects',
   packages: '/packages',
   repository: '/repository',

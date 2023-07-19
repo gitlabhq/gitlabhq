@@ -18,4 +18,4 @@
             = error
 
     - c.with_actions do
-      = link_to _('Try to fork again'), new_project_fork_path(@project), title: _("Fork"), class: "btn gl-alert-action btn-info btn-md gl-button"
+      = link_button_to _('Try to fork again'), new_project_fork_path(@project), title: _("Fork"), class: 'gl-alert-action', variant: :confirm

@@ -133,7 +133,7 @@ the team is happy to review and improve upon your content. Review the
 [Documentation guidelines](index.md) before you begin your first documentation MR.
 
 Maintaining a knowledge base separate from the documentation would
-be against the documentation-first methodology, because the content would overlap with
+be against the documentation-first methodology because the content would overlap with
 the documentation.
 
 ## Writing for localization
@@ -190,6 +190,8 @@ Use backticks for:
 
 - [Code blocks](#code-blocks).
 - Error messages.
+- Commands, parameters, and filenames.
+- Values. For example: "In the **Name** text box, type `test`."
 
 ### Markdown Rules
 
@@ -379,7 +381,7 @@ If you use an acronym, spell it out on first use on a page. You do not need to s
 
 ### Numbers
 
-When using numbers in text, spell out zero through nine, and use numbers for 10 and greater. For details, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/numbers).
+For numbers in text, spell out zero through nine and use numbers for 10 and greater. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/numbers).
 
 ## Text
 
@@ -698,6 +700,9 @@ page), use these phrases:
 | No     | `**{dotted-circle}** No` | **{dotted-circle}** No |
 | Yes    | `**{check-circle}** Yes` | **{check-circle}** Yes |
 
+Don't use `**{dotted-circle}**` and `**{check-circle}**` in API documentation.
+Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-template).
+
 ### Footnotes
 
 To indicate a footnote, use the HTML tag `<sup>` with a number.
@@ -821,7 +826,7 @@ For example:
 You can expand on this text by using phrases like
 `For more information about this feature, see...`
 
-Do not to use the following constructions:
+Do not use the following constructions:
 
 - `Learn more about...`
 - `To read more...`.
@@ -878,7 +883,7 @@ If you must use one of these links:
 
 - If the link is to a confidential issue, mention that the issue is visible only to GitLab team members, as in the first example.
 - If the link requires a specific role or permissions, mention that information, as in the second example.
-- Put the link in backticks, so that it does not cause link checkers to fail.
+- Put the link in backticks so that it does not cause link checkers to fail.
 
 Examples:
 
@@ -909,7 +914,7 @@ document to ensure it links to the most recent version of the file.
 
 ## Navigation
 
-When documenting how to navigate through the GitLab UI:
+When documenting how to navigate the GitLab UI:
 
 - Always use location, then action.
   - From the **Visibility** dropdown list (location), select **Public** (action).
@@ -968,13 +973,13 @@ To open either project or group settings:
 To create a project:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 ```
 
 To create a group:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 ```
 
 To open the Admin Area:
@@ -1196,7 +1201,7 @@ include a visual representation to help readers understand it, you can:
   an area of the screen.
 - Create a short video of the interaction and link to it.
 
-## Emojis
+## Emoji
 
 Don't use the Markdown emoji format, for example `:smile:`, for any purpose. Use
 [GitLab SVG icons](#gitlab-svg-icons) instead.
@@ -1546,10 +1551,19 @@ When names change, it is more complicated to search or grep text that has line b
 Tier badges are displayed as orange text next to a topic title. These badges link to the GitLab
 pricing page.
 
-You must assign a tier badge:
+You should assign a tier badge:
 
 - To all H1 topic titles, except the pages under `doc/development/*`.
 - To topic titles that don't apply to the same tier as the H1.
+
+The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
+
+Some pages won't have a tier badge, because no obvious tier badge applies. For example:
+
+- Tutorials.
+- Pages that compare features from different tiers.
+
+#### Add a tier badge
 
 To add a tier badge to a topic title, add the relevant tier badge
 after the title text. For example:

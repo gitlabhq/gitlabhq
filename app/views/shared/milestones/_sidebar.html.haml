@@ -26,7 +26,7 @@
       .value
         %span.value-content{ data: { qa_selector: 'start_date_content' } }
           - if milestone.start_date
-            %span.bold= milestone.start_date.to_s(:medium)
+            %span.bold= milestone.start_date.to_fs(:medium)
           - else
             %span.no-value= s_('MilestoneSidebar|No start date')
 
@@ -63,7 +63,7 @@
       .value.hide-collapsed
         %span.value-content{ data: { qa_selector: 'due_date_content' } }
           - if milestone.due_date
-            %span.bold= milestone.due_date.to_s(:medium)
+            %span.bold= milestone.due_date.to_fs(:medium)
           - else
             %span.no-value= s_('MilestoneSidebar|No due date')
         - remaining_days = remaining_days_in_words(milestone.due_date, milestone.start_date)

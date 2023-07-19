@@ -1,7 +1,0 @@
-- title: "Hardcoded `master` in CI/CD templates"
-  reporter: dhershkovitch
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  breaking_change: true
-  body: |
-    Our CI/CD templates have been updated to no longer use hard-coded references to a `master` branch. In 14.0, they all use a variable that points to your project's configured default branch instead. If your CI/CD pipeline relies on our built-in templates, verify that this change works with your current configuration. For example, if you have a `master` branch and a different default branch, the updates to the templates may cause changes to your pipeline behavior. For more information, [read the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324131).

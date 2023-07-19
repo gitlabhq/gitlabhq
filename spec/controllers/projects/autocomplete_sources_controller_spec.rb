@@ -131,6 +131,10 @@ RSpec.describe Projects::AutocompleteSourcesController do
       end
 
       shared_examples 'all members are returned' do
+        before do
+          stub_feature_flags(disable_all_mention: false)
+        end
+
         it 'returns an array of member object' do
           get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type }
 
@@ -154,6 +158,19 @@ RSpec.describe Projects::AutocompleteSourcesController do
             type: invited_private_member.class.name,
             name: invited_private_member.name,
             avatar_url: invited_private_member.avatar_url)
+        end
+
+        context 'when `disable_all_mention` FF is enabled' do
+          before do
+            stub_feature_flags(disable_all_mention: true)
+          end
+
+          it 'does not return the all mention user' do
+            get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type }
+
+            expect(json_response).not_to include(a_hash_including(
+              { username: 'all', name: 'All Project and Group Members' }))
+          end
         end
       end
 
@@ -180,6 +197,10 @@ RSpec.describe Projects::AutocompleteSourcesController do
       end
 
       shared_examples 'only public members are returned for public project' do
+        before do
+          stub_feature_flags(disable_all_mention: false)
+        end
+
         it 'only returns public members' do
           get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type }
 
@@ -192,6 +213,19 @@ RSpec.describe Projects::AutocompleteSourcesController do
             type: user.class.name,
             name: user.name,
             avatar_url: user.avatar_url)
+        end
+
+        context 'when `disable_all_mention` FF is enabled' do
+          before do
+            stub_feature_flags(disable_all_mention: true)
+          end
+
+          it 'does not return the all mention user' do
+            get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type }
+
+            expect(json_response).not_to include(a_hash_including(
+              { username: 'all', name: 'All Project and Group Members' }))
+          end
         end
       end
 

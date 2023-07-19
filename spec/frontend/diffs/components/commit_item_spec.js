@@ -5,7 +5,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import Component from '~/diffs/components/commit_item.vue';
 import { getTimeago } from '~/lib/utils/datetime_utility';
-import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
 
 const TEST_AUTHOR_NAME = 'test';
 const TEST_AUTHOR_EMAIL = 'test+test@gitlab.com';

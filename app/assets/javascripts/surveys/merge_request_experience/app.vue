@@ -6,6 +6,7 @@ import { s__, __ } from '~/locale';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import SatisfactionRate from '~/surveys/components/satisfaction_rate.vue';
 import Tracking from '~/tracking';
+import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 const steps = [
   {
@@ -50,6 +51,7 @@ export default {
     thanks: s__('MrSurvey|Thank you for your feedback!'),
   },
   gitlabLogo,
+  privacyLink: `${PROMO_URL}/privacy/`,
   data() {
     return {
       visible: false,
@@ -152,7 +154,7 @@ export default {
                 <template #link="{ content }">
                   <a
                     class="gl-text-decoration-underline gl-text-gray-500"
-                    href="https://about.gitlab.com/privacy/"
+                    :href="$options.privacyLink"
                     target="_blank"
                     rel="noreferrer nofollow"
                     v-text="content"

@@ -1,0 +1,6 @@
+test:
+  main:
+    database: gitlab_clickhouse_test
+    url: 'http://localhost:8123'
+    username: clickhouse
+    password: clickhouse

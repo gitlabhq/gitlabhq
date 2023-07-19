@@ -7,9 +7,15 @@ import AwardsList from '~/vue_shared/components/awards_list.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 
+import workItemAwardEmojiQuery from '../graphql/award_emoji.query.graphql';
 import updateAwardEmojiMutation from '../graphql/update_award_emoji.mutation.graphql';
-import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
-import { EMOJI_THUMBSDOWN, EMOJI_THUMBSUP, WIDGET_TYPE_AWARD_EMOJI } from '../constants';
+import {
+  EMOJI_THUMBSDOWN,
+  EMOJI_THUMBSUP,
+  WIDGET_TYPE_AWARD_EMOJI,
+  DEFAULT_PAGE_SIZE_EMOJIS,
+  I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR,
+} from '../constants';
 
 export default {
   defaultAwards: [EMOJI_THUMBSUP, EMOJI_THUMBSDOWN],
@@ -26,15 +32,16 @@ export default {
       type: String,
       required: true,
     },
-    awardEmoji: {
-      type: Object,
-      required: true,
-    },
     workItemIid: {
       type: String,
       required: false,
       default: null,
     },
+  },
+  data() {
+    return {
+      isLoading: false,
+    };
   },
   computed: {
     currentUserId() {
@@ -47,6 +54,10 @@ export default {
      * Parse and convert award emoji list to a format that AwardsList can understand
      */
     awards() {
+      if (!this.awardEmoji) {
+        return [];
+      }
+
       return this.awardEmoji.nodes.map((emoji) => ({
         name: emoji.name,
         user: {
@@ -55,16 +66,56 @@ export default {
         },
       }));
     },
+    pageInfo() {
+      return this.awardEmoji?.pageInfo;
+    },
+    hasNextPage() {
+      return this.pageInfo?.hasNextPage;
+    },
+  },
+  apollo: {
+    awardEmoji: {
+      query: workItemAwardEmojiQuery,
+      variables() {
+        return {
+          iid: this.workItemIid,
+          fullPath: this.workItemFullpath,
+          after: this.after,
+          pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
+        };
+      },
+      update(data) {
+        const widgets = data.workspace?.workItems?.nodes[0].widgets;
+        return widgets?.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI).awardEmoji || {};
+      },
+      skip() {
+        return !this.workItemIid;
+      },
+      result() {
+        if (this.hasNextPage) {
+          this.fetchAwardEmojis();
+        } else {
+          this.isLoading = false;
+        }
+      },
+      error() {
+        this.$emit('error', I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR);
+      },
+    },
   },
   methods: {
-    getAwards() {
-      return this.awardEmoji.nodes.map((emoji) => ({
-        name: emoji.name,
-        user: {
-          id: getIdFromGraphQLId(emoji.user.id),
-          name: emoji.user.name,
-        },
-      }));
+    async fetchAwardEmojis() {
+      this.isLoading = true;
+      try {
+        await this.$apollo.queries.awardEmoji.fetchMore({
+          variables: {
+            pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
+            after: this.pageInfo?.endCursor,
+          },
+        });
+      } catch (error) {
+        this.$emit('error', I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR);
+      }
     },
     isEmojiPresentForCurrentUser(name) {
       return (
@@ -108,8 +159,12 @@ export default {
     },
     updateWorkItemAwardEmojiWidgetCache({ cache, name, toggledOn }) {
       const query = {
-        query: workItemByIidQuery,
-        variables: { fullPath: this.workItemFullpath, iid: this.workItemIid },
+        query: workItemAwardEmojiQuery,
+        variables: {
+          fullPath: this.workItemFullpath,
+          iid: this.workItemIid,
+          pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
+        },
       };
 
       const sourceData = cache.readQuery(query);
@@ -117,7 +172,6 @@ export default {
       const newData = produce(sourceData, (draftState) => {
         const { widgets } = draftState.workspace.workItems.nodes[0];
         const widgetAwardEmoji = widgets.find((widget) => widget.type === WIDGET_TYPE_AWARD_EMOJI);
-
         widgetAwardEmoji.awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
       });
 
@@ -175,7 +229,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-3">
+  <div v-if="!isLoading" class="gl-mt-3">
     <awards-list
       data-testid="work-item-award-list"
       :awards="awards"

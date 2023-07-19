@@ -45,7 +45,7 @@ To delete container images using the GitLab UI:
      by selecting the red **{remove}** **Trash** icon next to the tag you want
      to delete.
 
-1. In the dialog box, select **Remove tag**.
+1. On the dialog, select **Remove tag**.
 
 ## Use the GitLab API
 

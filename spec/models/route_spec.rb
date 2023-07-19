@@ -281,14 +281,14 @@ RSpec.describe Route do
 
         it 'does not delete the original route' do
           # before deleting the route, check its there
-          expect(Route.where(path: offending_route.path).count).to eq(1)
+          expect(described_class.where(path: offending_route.path).count).to eq(1)
 
           expect do
             Group.delete(conflicting_group) # delete group with conflicting route
           end.to change { described_class.count }.by(-1)
 
           # check the conflicting route is gone
-          expect(Route.where(path: offending_route.path).count).to eq(0)
+          expect(described_class.where(path: offending_route.path).count).to eq(0)
           expect(route.path).to eq(offending_route.path)
           expect(route.valid?).to be_truthy
         end

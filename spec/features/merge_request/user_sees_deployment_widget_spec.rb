@@ -39,7 +39,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
         wait_for_requests
 
         assert_env_widget("Deployed to", environment.name)
-        expect(find('.js-deploy-time')['title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
+        expect(find('.js-deploy-time')['title']).to eq(deployment.created_at.to_time.in_time_zone.to_fs(:medium))
       end
 
       context 'when a user created a new merge request with the same SHA' do
@@ -115,8 +115,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
 
     context 'with stop action' do
       let(:manual) do
-        create(:ci_build, :manual, pipeline: pipeline,
-                                   name: 'close_app', environment: environment.name)
+        create(:ci_build, :manual, pipeline: pipeline, name: 'close_app', environment: environment.name)
       end
 
       before do
@@ -146,8 +145,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
 
     context 'with stop action with the review_apps_redeploy_mr_widget feature flag turned on' do
       let(:manual) do
-        create(:ci_build, :manual, pipeline: pipeline,
-               name: 'close_app', environment: environment.name)
+        create(:ci_build, :manual, pipeline: pipeline, name: 'close_app', environment: environment.name)
       end
 
       before do

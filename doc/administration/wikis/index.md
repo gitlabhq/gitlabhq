@@ -26,7 +26,7 @@ is edited again and the content changes.
 
 ### Wiki page content size limit configuration
 
-This setting is not available through the [Admin Area settings](../../user/admin_area/settings/index.md).
+This setting is not available through the [Admin Area settings](../settings/index.md).
 To configure this setting, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 
@@ -76,7 +76,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### Reduce wiki repository size
 
-The wiki counts as part of the [namespace storage size](../../user/admin_area/settings/account_and_limit_settings.md),
+The wiki counts as part of the [namespace storage size](../settings/account_and_limit_settings.md),
 so you should keep your wiki repositories as compact as possible.
 
 For more information about tools to compact repositories,

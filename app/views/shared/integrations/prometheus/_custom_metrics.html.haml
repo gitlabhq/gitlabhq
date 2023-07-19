@@ -11,7 +11,7 @@
       %strong
         = s_('PrometheusService|Custom metrics')
       = gl_badge_tag 0, nil, class: 'gl-ml-2 js-custom-monitored-count'
-      = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'btn gl-button btn-confirm gl-ml-auto js-new-metric-button hidden'
+      = link_button_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'gl-ml-auto js-new-metric-button hidden', variant: :confirm
     - c.with_body do
       .flash-container.hidden
         .flash-warning

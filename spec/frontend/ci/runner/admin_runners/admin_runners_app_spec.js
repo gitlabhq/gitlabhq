@@ -156,7 +156,7 @@ describe('AdminRunnersApp', () => {
       await createComponent({ mountFn: mountExtended });
     });
 
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/414975
+    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/414975
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('fetches counts', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);

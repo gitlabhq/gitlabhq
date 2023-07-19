@@ -83,7 +83,7 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
   validates :name, format: { with: Gitlab::Regex.helm_package_regex }, if: :helm?
-  validates :name, format: { with: Gitlab::Regex.npm_package_name_regex }, if: :npm?
+  validates :name, format: { with: Gitlab::Regex.npm_package_name_regex, message: Gitlab::Regex.npm_package_name_regex_message }, if: :npm?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
   validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
   validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
@@ -94,7 +94,8 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
   validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
   validates :version, format: { with: Gitlab::Regex.helm_version_regex }, if: :helm?
-  validates :version, format: { with: Gitlab::Regex.semver_regex }, if: -> { composer_tag_version? || npm? || terraform_module? }
+  validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
+    if: -> { composer_tag_version? || npm? || terraform_module? }
 
   validates :version,
     presence: true,
@@ -166,16 +167,16 @@ class Packages::Package < ApplicationRecord
   scope :preload_files, -> { preload(:installable_package_files) }
   scope :preload_nuget_files, -> { preload(:installable_nuget_package_files) }
   scope :preload_pipelines, -> { preload(pipelines: :user) }
-  scope :last_of_each_version, -> { where(id: all.last_of_each_version_ids) }
-  scope :last_of_each_version_ids, -> { select('MAX(id) AS id').unscope(where: :id).group(:version) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
   scope :select_distinct_name, -> { select(:name).distinct }
+  scope :select_only_first_by_name, -> { select('DISTINCT ON (name) *') }
 
   # Sorting
   scope :order_created, -> { reorder(created_at: :asc) }
   scope :order_created_desc, -> { reorder(created_at: :desc) }
   scope :order_name, -> { reorder(name: :asc) }
   scope :order_name_desc, -> { reorder(name: :desc) }
+  scope :order_name_desc_version_desc, -> { reorder(name: :desc, version: :desc) }
   scope :order_version, -> { reorder(version: :asc) }
   scope :order_version_desc, -> { reorder(version: :desc) }
   scope :order_type, -> { reorder(package_type: :asc) }

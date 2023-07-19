@@ -28,6 +28,10 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
         7  | 'OR'  | 'redis_hll' | :calculate_metrics_union
         28 | 'OR'  | 'database'  | :calculate_metrics_union
         7  | 'OR'  | 'database'  | :calculate_metrics_union
+        28 | 'AND' | 'internal_events'    | :calculate_metrics_intersections
+        7  | 'AND' | 'internal_events'    | :calculate_metrics_intersections
+        28 | 'OR'  | 'internal_events'    | :calculate_metrics_union
+        7  | 'OR'  | 'internal_events'    | :calculate_metrics_union
       end
 
       with_them do
@@ -152,6 +156,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
       where(:time_frame, :operator, :datasource) do
         '28d' | 'OR' | 'redis_hll'
         '7d'  | 'OR' | 'database'
+        '28d' | 'OR' | 'internal_events'
       end
 
       with_them do

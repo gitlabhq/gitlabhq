@@ -8,4 +8,4 @@
     = render 'form', { f: f }
     .form-actions.gl-display-flex
       = f.submit _('Create New Domain'), class: 'gl-mr-3', pajamas_button: true
-      = link_to _('Cancel'), project_pages_path(@project), class: 'gl-button btn btn-default btn-cancel'
+      = link_button_to _('Cancel'), project_pages_path(@project)

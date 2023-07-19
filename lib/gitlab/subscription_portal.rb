@@ -21,6 +21,14 @@ module Gitlab
     def self.renewal_service_email
       'renewals-service@customers.gitlab.com'
     end
+
+    def self.default_staging_customer_portal_url
+      'https://customers.staging.gitlab.com'
+    end
+
+    def self.default_production_customer_portal_url
+      'https://customers.gitlab.com'
+    end
   end
 end
 

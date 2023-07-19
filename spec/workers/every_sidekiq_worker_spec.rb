@@ -122,11 +122,9 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'AdminEmailsWorker' => 3,
         'Analytics::CodeReviewMetricsWorker' => 3,
         'Analytics::DevopsAdoption::CreateSnapshotWorker' => 3,
-        'Analytics::InstanceStatistics::CounterJobWorker' => 3,
         'Analytics::UsageTrends::CounterJobWorker' => 3,
         'ApprovalRules::ExternalApprovalRulePayloadWorker' => 3,
         'ApproveBlockedPendingApprovalUsersWorker' => 3,
-        'ArchiveTraceWorker' => 3,
         'AuthorizedKeysWorker' => 3,
         'AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker' => 3,
         'AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker' => 3,
@@ -136,7 +134,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'AutoMergeProcessWorker' => 3,
         'BackgroundMigrationWorker' => 3,
         'BackgroundMigration::CiDatabaseWorker' => 3,
-        'BuildFinishedWorker' => 3,
         'BuildHooksWorker' => 3,
         'BuildQueueWorker' => 3,
         'BuildSuccessWorker' => 3,
@@ -144,6 +141,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'BulkImports::ExportRequestWorker' => 5,
         'BulkImports::EntityWorker' => false,
         'BulkImports::PipelineWorker' => false,
+        'BulkImports::PipelineBatchWorker' => false,
         'Chaos::CpuSpinWorker' => 3,
         'Chaos::DbSpinWorker' => 3,
         'Chaos::KillWorker' => false,
@@ -165,6 +163,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::Llm::GenerateConfigWorker' => 3,
         'Ci::PipelineArtifacts::CoverageReportWorker' => 3,
         'Ci::PipelineArtifacts::CreateQualityReportWorker' => 3,
+        'Ci::PipelineCleanupRefWorker' => 3,
         'Ci::PipelineBridgeStatusWorker' => 3,
         'Ci::PipelineSuccessUnlockArtifactsWorker' => 3,
         'Ci::RefDeleteUnlockArtifactsWorker' => 3,
@@ -186,7 +185,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Clusters::Applications::DeactivateIntegrationWorker' => 3,
         'Clusters::Applications::UninstallWorker' => 3,
         'Clusters::Applications::WaitForUninstallAppWorker' => 3,
-        'Clusters::Cleanup::AppWorker' => 3,
         'Clusters::Cleanup::ProjectNamespaceWorker' => 3,
         'Clusters::Cleanup::ServiceAccountWorker' => 3,
         'ContainerExpirationPolicies::CleanupContainerRepositoryWorker' => 0,
@@ -206,10 +204,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'DependencyProxy::CleanupBlobWorker' => 3,
         'DependencyProxy::CleanupManifestWorker' => 3,
         'Deployments::AutoRollbackWorker' => 3,
-        'Deployments::FinishedWorker' => 3,
-        'Deployments::ForwardDeploymentWorker' => 3,
         'Deployments::LinkMergeRequestWorker' => 3,
-        'Deployments::SuccessWorker' => 3,
         'Deployments::UpdateEnvironmentWorker' => 3,
         'Deployments::ApprovalWorker' => 3,
         'DesignManagement::CopyDesignCollectionWorker' => 3,
@@ -251,6 +246,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Geo::RepositoryVerification::Primary::SingleWorker' => false,
         'Geo::RepositoryVerification::Secondary::SingleWorker' => false,
         'Geo::ReverificationBatchWorker' => 0,
+        'Geo::BulkMarkPendingBatchWorker' => 0,
         'Geo::Scheduler::Primary::SchedulerWorker' => false,
         'Geo::Scheduler::SchedulerWorker' => false,
         'Geo::Scheduler::Secondary::SchedulerWorker' => false,
@@ -259,7 +255,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Geo::VerificationTimeoutWorker' => false,
         'Geo::VerificationWorker' => 3,
         'GeoRepositoryDestroyWorker' => 3,
-        'GitGarbageCollectWorker' => false,
         'Gitlab::BitbucketServerImport::AdvanceStageWorker' => 3,
         'Gitlab::BitbucketServerImport::Stage::FinishImportWorker' => 3,
         'Gitlab::BitbucketServerImport::Stage::ImportLfsObjectsWorker' => 3,
@@ -355,8 +350,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'MergeRequestCleanupRefsWorker' => 3,
         'MergeRequestMergeabilityCheckWorker' => 3,
         'MergeRequestResetApprovalsWorker' => 3,
-        'MergeRequests::AssigneesChangeWorker' => 3,
         'MergeRequests::CaptureSuggestedReviewersAcceptedWorker' => 3,
+        'MergeRequests::CleanupRefWorker' => 3,
         'MergeRequests::CreatePipelineWorker' => 3,
         'MergeRequests::DeleteSourceBranchWorker' => 3,
         'MergeRequests::FetchSuggestedReviewersWorker' => 3,
@@ -366,15 +361,12 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'MergeRequests::SyncCodeOwnerApprovalRulesWorker' => 3,
         'MergeTrains::RefreshWorker' => 3,
         'MergeWorker' => 3,
-        'Metrics::Dashboard::PruneOldAnnotationsWorker' => 3,
-        'Metrics::Dashboard::SyncDashboardsWorker' => 3,
         'MigrateExternalDiffsWorker' => 3,
         'Onboarding::IssueCreatedWorker' => 3,
         'Onboarding::PipelineCreatedWorker' => 3,
         'Onboarding::ProgressWorker' => 3,
         'Onboarding::UserAddedWorker' => 3,
         'Namespaces::FreeUserCap::OverLimitNotificationWorker' => false,
-        'Namespaces::RefreshRootStatisticsWorker' => 3,
         'Namespaces::RootStatisticsWorker' => 3,
         'Namespaces::ScheduleAggregationWorker' => 3,
         'Namespaces::FreeUserCap::NotificationClearingWorker' => false,
@@ -412,9 +404,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'ProjectDestroyWorker' => 3,
         'ProjectExportWorker' => false,
         'ProjectImportScheduleWorker' => 1,
-        'ProjectScheduleBulkRepositoryShardMovesWorker' => 3,
         'ProjectTemplateExportWorker' => false,
-        'ProjectUpdateRepositoryStorageWorker' => 3,
         'Projects::DeregisterSuggestedReviewersProjectWorker' => 3,
         'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker' => 3,
         'Projects::GitGarbageCollectWorker' => false,
@@ -447,13 +437,12 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'RequirementsManagement::ProcessRequirementsReportsWorker' => 3,
         'RunPipelineScheduleWorker' => 3,
         'ScanSecurityReportSecretsWorker' => 17,
+        'Search::ElasticGroupAssociationDeletionWorker' => 3,
         'Security::AutoFixWorker' => 3,
         'Security::StoreScansWorker' => 3,
         'Security::TrackSecureScansWorker' => 1,
         'ServiceDeskEmailReceiverWorker' => 3,
         'SetUserStatusBasedOnUserCapSettingWorker' => 3,
-        'SnippetScheduleBulkRepositoryShardMovesWorker' => 3,
-        'SnippetUpdateRepositoryStorageWorker' => 3,
         'Snippets::ScheduleBulkRepositoryShardMovesWorker' => 3,
         'Snippets::UpdateRepositoryStorageWorker' => 3,
         'StageUpdateWorker' => 3,
@@ -481,7 +470,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'VulnerabilityExports::ExportWorker' => 3,
         'WaitForClusterCreationWorker' => 3,
         'WebHookWorker' => 4,
-        'WebHooks::DestroyWorker' => 3,
         'WebHooks::LogExecutionWorker' => 3,
         'Wikis::GitGarbageCollectWorker' => false,
         'WorkItems::ImportWorkItemsCsvWorker' => 3,
@@ -489,6 +477,23 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3,
         'Zoekt::IndexerWorker' => 2
       }.merge(extra_retry_exceptions)
+    end
+
+    it 'defines `retry_exceptions` only for existing workers', if: Gitlab.ee? do
+      removed_workers = retry_exceptions.keys - retry_exception_workers.map { |worker| worker.klass.to_s }
+      message = -> do
+        list = removed_workers.map { |name| "- #{name}" }
+
+        <<~MESSAGE
+          The following workers no longer exist but are defined in `retry_exceptions`:
+
+          #{list.join("\n")}
+
+          Make sure to remove them from `retry_exceptions` because their definition is unnecessary.
+        MESSAGE
+      end
+
+      expect(removed_workers).to be_empty, message
     end
 
     it 'uses the default number of retries for new jobs' do

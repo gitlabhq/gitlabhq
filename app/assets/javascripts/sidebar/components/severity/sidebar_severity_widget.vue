@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlTooltip, GlSprintf } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlTooltip, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { TYPE_INCIDENT } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
@@ -12,8 +12,7 @@ export default {
   components: {
     GlTooltip,
     GlSprintf,
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     SeverityToken,
     SidebarEditableItem,
   },
@@ -57,6 +56,13 @@ export default {
           return [];
       }
     },
+    dropdownItems() {
+      return this.severitiesList.map((severity) => ({
+        text: severity.label,
+        value: severity.value,
+        severity,
+      }));
+    },
     selectedItem() {
       return this.severitiesList.find((severity) => severity.value === this.severity);
     },
@@ -99,7 +105,7 @@ export default {
         });
     },
     showDropdown() {
-      this.$refs.dropdown.show();
+      this.$refs.dropdown.open();
     },
   },
 };
@@ -131,24 +137,20 @@ export default {
       </template>
 
       <template #default>
-        <gl-dropdown
+        <gl-collapsible-listbox
           ref="dropdown"
           class="gl-mt-3"
           block
           :header-text="__('Assign severity')"
-          :text="selectedItem.label"
+          :toggle-text="selectedItem.label"
+          :items="dropdownItems"
+          :selected="severity"
+          @select="updateSeverity"
         >
-          <gl-dropdown-item
-            v-for="option in severitiesList"
-            :key="option.value"
-            data-testid="severityDropdownItem"
-            is-check-item
-            :is-checked="option.value === severity"
-            @click="updateSeverity(option.value)"
-          >
-            <severity-token :severity="option" />
-          </gl-dropdown-item>
-        </gl-dropdown>
+          <template #list-item="{ item }">
+            <severity-token :severity="item.severity" />
+          </template>
+        </gl-collapsible-listbox>
       </template>
     </sidebar-editable-item>
   </div>

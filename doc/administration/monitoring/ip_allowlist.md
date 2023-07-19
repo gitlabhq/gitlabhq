@@ -6,13 +6,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # IP whitelist **(FREE SELF)**
 
-GitLab provides some [monitoring endpoints](../../user/admin_area/monitoring/health_check.md)
+GitLab provides some [monitoring endpoints](health_check.md)
 that provide health check information when probed.
 
 To control access to those endpoints via IP whitelisting, you can add single
 hosts or use IP ranges:
 
-**Omnibus**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Open `/etc/gitlab/gitlab.rb` and add or uncomment the following:
 
@@ -22,9 +24,7 @@ hosts or use IP ranges:
 
 1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab for the changes to take effect.
 
----
-
-**Helm chart**
+:::TabTitle Helm chart (Kubernetes)
 
 You can set the required IPs under the `gitlab.webservice.monitoring.ipWhitelist` key. For example:
 
@@ -37,9 +37,7 @@ gitlab:
          - 0.0.0.0/0 # Default
 ```
 
----
-
-**Source**
+:::TabTitle Self-compiled (source)
 
 1. Edit `config/gitlab.yml`:
 
@@ -52,3 +50,5 @@ gitlab:
    ```
 
 1. Save the file and [restart](../restart_gitlab.md#installations-from-source) GitLab for the changes to take effect.
+
+::EndTabs

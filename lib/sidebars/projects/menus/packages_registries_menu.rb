@@ -98,7 +98,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Model experiments'),
             link: project_ml_experiments_path(context.project),
-            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
             active_routes: { controller: %w[projects/ml/experiments projects/ml/candidates] },
             item_id: :model_experiments
           )

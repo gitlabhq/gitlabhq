@@ -33,18 +33,18 @@ RSpec.describe WikiDirectory do
 
       expect(entries).to match(
         [
-          a_kind_of(WikiDirectory).and(
+          a_kind_of(described_class).and(
             having_attributes(
               slug: 'Home', entries: [homechild]
             )
           ),
           toplevel1,
-          a_kind_of(WikiDirectory).and(
+          a_kind_of(described_class).and(
             having_attributes(
               slug: 'parent1', entries: [
                 child1,
                 child2,
-                a_kind_of(WikiDirectory).and(
+                a_kind_of(described_class).and(
                   having_attributes(
                     slug: 'parent1/subparent',
                     entries: [grandchild1, grandchild2]
@@ -53,7 +53,7 @@ RSpec.describe WikiDirectory do
               ]
             )
           ),
-          a_kind_of(WikiDirectory).and(
+          a_kind_of(described_class).and(
             having_attributes(
               slug: 'parent2',
               entries: [child3]

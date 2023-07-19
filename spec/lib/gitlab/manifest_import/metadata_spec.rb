@@ -4,24 +4,29 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ManifestImport::Metadata, :clean_gitlab_redis_shared_state do
   let(:user) { double(id: 1) }
-  let(:repositories) do
+  let_it_be(:repositories) do
     [
       { id: 'test1', url: 'http://demo.host/test1' },
       { id: 'test2', url: 'http://demo.host/test2' }
     ]
   end
 
-  describe '#save' do
-    it 'stores data in Redis with an expiry of EXPIRY_TIME' do
-      status = described_class.new(user)
-      repositories_key = 'manifest_import:metadata:user:1:repositories'
-      group_id_key = 'manifest_import:metadata:user:1:group_id'
+  let_it_be(:hashtag_repositories_key) { 'manifest_import:metadata:user:{1}:repositories' }
+  let_it_be(:hashtag_group_id_key) { 'manifest_import:metadata:user:{1}:group_id' }
+  let_it_be(:repositories_key) { 'manifest_import:metadata:user:1:repositories' }
+  let_it_be(:group_id_key) { 'manifest_import:metadata:user:1:group_id' }
 
-      status.save(repositories, 2)
+  describe '#save' do
+    let(:status) { described_class.new(user) }
+
+    subject { status.save(repositories, 2) }
+
+    it 'stores data in Redis with an expiry of EXPIRY_TIME' do
+      subject
 
       Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.ttl(repositories_key)).to be_within(5).of(described_class::EXPIRY_TIME)
-        expect(redis.ttl(group_id_key)).to be_within(5).of(described_class::EXPIRY_TIME)
+        expect(redis.ttl(hashtag_repositories_key)).to be_within(5).of(described_class::EXPIRY_TIME)
+        expect(redis.ttl(hashtag_group_id_key)).to be_within(5).of(described_class::EXPIRY_TIME)
       end
     end
   end
@@ -41,6 +46,16 @@ RSpec.describe Gitlab::ManifestImport::Metadata, :clean_gitlab_redis_shared_stat
 
       expect(status.repositories).to eq(repositories)
     end
+
+    it 'reads non-hash-tagged keys if hash-tag keys are missing' do
+      status = described_class.new(user)
+
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.set(repositories_key, Gitlab::Json.dump(repositories))
+      end
+
+      expect(status.repositories).to eq(repositories)
+    end
   end
 
   describe '#group_id' do
@@ -57,6 +72,14 @@ RSpec.describe Gitlab::ManifestImport::Metadata, :clean_gitlab_redis_shared_stat
       status = described_class.new(user, fallback: fallback)
 
       expect(status.group_id).to eq(3)
+    end
+
+    it 'reads non-hash-tagged keys if hash-tag keys are missing' do
+      status = described_class.new(user)
+
+      Gitlab::Redis::SharedState.with { |redis| redis.set(group_id_key, 2) }
+
+      expect(status.group_id).to eq(2)
     end
   end
 end

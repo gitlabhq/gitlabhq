@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
+import { GlSkeletonLoader, GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import Skeleton from '~/observability/components/skeleton/index.vue';
@@ -17,9 +17,9 @@ import {
 describe('Skeleton component', () => {
   let wrapper;
 
-  const SKELETON_VARIANTS = Object.values(SKELETON_VARIANTS_BY_ROUTE);
+  const SKELETON_VARIANTS = [...Object.values(SKELETON_VARIANTS_BY_ROUTE), 'spinner'];
 
-  const findContentWrapper = () => wrapper.findByTestId('observability-wrapper');
+  const findContentWrapper = () => wrapper.findByTestId('content-wrapper');
 
   const findExploreSkeleton = () => wrapper.findComponent(ExploreSkeleton);
 
@@ -42,8 +42,8 @@ describe('Skeleton component', () => {
       mountComponent({ variant: 'explore' });
     });
 
-    describe('loading timers', () => {
-      it('show Skeleton if content is not loaded within CONTENT_WAIT_MS', async () => {
+    describe('showing content', () => {
+      it('shows the skeleton if content is not loaded within CONTENT_WAIT_MS', async () => {
         expect(findExploreSkeleton().exists()).toBe(false);
         expect(findContentWrapper().isVisible()).toBe(false);
 
@@ -55,7 +55,7 @@ describe('Skeleton component', () => {
         expect(findContentWrapper().isVisible()).toBe(false);
       });
 
-      it('does not show the skeleton if content has loaded within CONTENT_WAIT_MS', async () => {
+      it('does not show the skeleton if content loads within CONTENT_WAIT_MS', async () => {
         expect(findExploreSkeleton().exists()).toBe(false);
         expect(findContentWrapper().isVisible()).toBe(false);
 
@@ -73,12 +73,39 @@ describe('Skeleton component', () => {
         expect(findContentWrapper().isVisible()).toBe(true);
         expect(findExploreSkeleton().exists()).toBe(false);
       });
+
+      it('hides the skeleton after content loads', async () => {
+        jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
+
+        await nextTick();
+
+        expect(findExploreSkeleton().exists()).toBe(true);
+        expect(findContentWrapper().isVisible()).toBe(false);
+
+        wrapper.vm.onContentLoaded();
+
+        await nextTick();
+
+        expect(findContentWrapper().isVisible()).toBe(true);
+        expect(findExploreSkeleton().exists()).toBe(false);
+      });
     });
 
-    describe('error timeout', () => {
+    describe('error handling', () => {
       it('shows the error dialog if content has not loaded within TIMEOUT_MS', async () => {
         expect(findAlert().exists()).toBe(false);
         jest.advanceTimersByTime(DEFAULT_TIMERS.TIMEOUT_MS);
+
+        await nextTick();
+
+        expect(findAlert().exists()).toBe(true);
+        expect(findContentWrapper().isVisible()).toBe(false);
+      });
+
+      it('shows the error dialog if content fails to load', async () => {
+        expect(findAlert().exists()).toBe(false);
+
+        wrapper.vm.onError();
 
         await nextTick();
 
@@ -105,6 +132,7 @@ describe('Skeleton component', () => {
       ${'explore'}    | ${'variant is explore'}                           | ${SKELETON_VARIANTS[1]}
       ${'manage'}     | ${'variant is manage'}                            | ${SKELETON_VARIANTS[2]}
       ${'embed'}      | ${'variant is embed'}                             | ${SKELETON_VARIANT_EMBED}
+      ${'spinner'}    | ${'variant is spinner'}                           | ${'spinner'}
       ${'default'}    | ${'variant is not manage, dashboards or explore'} | ${'unknown'}
     `('should render $skeletonType skeleton if $condition', async ({ skeletonType, variant }) => {
       mountComponent({ variant });
@@ -120,6 +148,8 @@ describe('Skeleton component', () => {
       expect(findEmbedSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANT_EMBED);
 
       expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(showsDefaultSkeleton);
+
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(variant === 'spinner');
     });
   });
 

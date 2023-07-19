@@ -5,9 +5,7 @@ require 'spec_helper'
 RSpec.describe Organizations::OrganizationsController, feature_category: :cell do
   let_it_be(:organization) { create(:organization) }
 
-  describe 'GET #directory' do
-    subject(:gitlab_request) { get directory_organization_path(organization) }
-
+  RSpec.shared_examples 'basic organization controller action' do
     before do
       sign_in(user)
     end
@@ -41,5 +39,17 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
         end
       end
     end
+  end
+
+  describe 'GET #show' do
+    subject(:gitlab_request) { get organization_path(organization) }
+
+    it_behaves_like 'basic organization controller action'
+  end
+
+  describe 'GET #groups_and_projects' do
+    subject(:gitlab_request) { get groups_and_projects_organization_path(organization) }
+
+    it_behaves_like 'basic organization controller action'
   end
 end

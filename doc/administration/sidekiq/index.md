@@ -383,7 +383,7 @@ blocking all jobs on that worker from proceeding. If Rugged calls performed by S
 background task processing.
 
 By default, Rugged is used when Git repository data is stored on local storage or on an NFS mount.
-[Using Rugged is recommended when using NFS](../nfs.md#improving-nfs-performance-with-gitlab), but if
+Using Rugged is recommended when using NFS, but if
 you are using local storage, disabling Rugged can improve Sidekiq performance:
 
 ```shell

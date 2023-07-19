@@ -72,4 +72,30 @@ RSpec.describe Gitlab::Cleanup::RemoteUploads do
       subject
     end
   end
+
+  context 'when a bucket prefix is configured' do
+    let(:bucket_prefix) { 'test-prefix' }
+    let(:credentials) do
+      {
+        provider: "AWS",
+        aws_access_key_id: "AWS_ACCESS_KEY_ID",
+        aws_secret_access_key: "AWS_SECRET_ACCESS_KEY",
+        region: "eu-central-1"
+      }
+    end
+
+    let(:config) { { connection: credentials, bucket_prefix: bucket_prefix, remote_directory: 'uploads' } }
+
+    subject { described_class.new.run!(dry_run: false) }
+
+    before do
+      stub_uploads_object_storage(FileUploader, config: config)
+    end
+
+    it 'does not connect to any storage' do
+      expect(::Fog::Storage).not_to receive(:new)
+
+      expect { subject }.to raise_error(/prefixes are not supported/)
+    end
+  end
 end

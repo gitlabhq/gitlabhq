@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { MOCK_GROUP, MOCK_QUERY } from 'jest/search/mock_data';
+import { MOCK_GROUP, MOCK_QUERY, CURRENT_SCOPE } from 'jest/search/mock_data';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { GROUPS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
 import GroupFilter from '~/search/topbar/components/group_filter.vue';
@@ -37,6 +37,7 @@ describe('GroupFilter', () => {
       actions: actionSpies,
       getters: {
         frequentGroups: () => [],
+        currentScope: () => CURRENT_SCOPE,
       },
     });
 
@@ -89,6 +90,7 @@ describe('GroupFilter', () => {
           [GROUP_DATA.queryParam]: null,
           [PROJECT_DATA.queryParam]: null,
           nav_source: null,
+          scope: CURRENT_SCOPE,
         });
 
         expect(visitUrl).toHaveBeenCalled();
@@ -109,6 +111,7 @@ describe('GroupFilter', () => {
           [GROUP_DATA.queryParam]: MOCK_GROUP.id,
           [PROJECT_DATA.queryParam]: null,
           nav_source: null,
+          scope: CURRENT_SCOPE,
         });
 
         expect(visitUrl).toHaveBeenCalled();

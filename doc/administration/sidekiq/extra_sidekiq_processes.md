@@ -105,8 +105,6 @@ concurrency is set to:
 When `min_concurrency` is greater than `max_concurrency`, it is treated as
 being equal to `max_concurrency`.
 
-You can find example values used by GitLab.com by searching for `concurrency:`
-in [the Helm charts](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/master/releases/gitlab/values/gprd.yaml.gotmpl).
 The values vary according to the work each specific deployment of Sidekiq does.
 Any other specialized deployments with processes dedicated to specific queues
 should have the concurrency tuned according to:

@@ -72,7 +72,7 @@ FLAG:
 A `FLAG` note renders on the GitLab documentation site as:
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `example_flag`.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `example_flag`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -80,15 +80,15 @@ This feature is not ready for production use.
 
 | If the feature is...     | Use this text |
 |--------------------------|---------------|
-| Available                | ``On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
-| Unavailable              | ``On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
-| Available to some users  | ``On self-managed GitLab, by default this feature is available to a subset of users. To show or hide the feature for all, ask an administrator to [change the status of the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
-| Available, per-group     | ``On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
-| Unavailable, per-group   | ``On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
-| Available, per-project   | ``On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to [disable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
-| Unavailable, per-project | ``On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
-| Available, per-user      | ``On self-managed GitLab, by default this feature is available. To hide the feature per user, ask an administrator to [disable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
-| Unavailable, per-user    | ``On self-managed GitLab, by default this feature is not available. To make it available per user, ask an administrator to [enable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
+| Available                | ``On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
+| Unavailable              | ``On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
+| Available to some users  | ``On self-managed GitLab, by default this feature is available to a subset of users. To show or hide the feature for all, an administrator can [change the status of the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
+| Available, per-group     | ``On self-managed GitLab, by default this feature is available. To hide the feature per group, an administrator can [disable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
+| Unavailable, per-group   | ``On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
+| Available, per-project   | ``On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
+| Unavailable, per-project | ``On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
+| Available, per-user      | ``On self-managed GitLab, by default this feature is available. To hide the feature per user, an administrator can [disable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
+| Unavailable, per-user    | ``On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can [enable the feature flag](<path to>/administration/feature_flags.md) named `flag_name`.`` |
 
 ### GitLab.com availability information
 
@@ -113,7 +113,7 @@ The following examples show the progression of a feature flag.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `forti_token_cloud`.
+an administrator can [enable the feature flag](../administration/feature_flags.md) named `forti_token_cloud`.
 The feature is not ready for production use.
 ```
 
@@ -125,7 +125,7 @@ When the feature is enabled in production, you can update the version history:
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature per user,
-ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `forti_token_cloud`.
+an administrator can [disable the feature flag](../administration/feature_flags.md) named `forti_token_cloud`.
 ```
 
 And, when the feature is done and fully available to all users:

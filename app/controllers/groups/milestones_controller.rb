@@ -9,6 +9,10 @@ class Groups::MilestonesController < Groups::ApplicationController
   feature_category :team_planning
   urgency :low
 
+  before_action do
+    push_frontend_feature_flag(:content_editor_on_issues, group)
+  end
+
   def index
     respond_to do |format|
       format.html do

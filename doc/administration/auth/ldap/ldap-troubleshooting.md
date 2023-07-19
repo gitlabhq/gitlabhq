@@ -378,7 +378,7 @@ things to debug the situation.
      an LDAP DN as the `Identifier`. If not, this user hasn't signed in with
      LDAP yet and must do so first.
 - You've waited an hour or [the configured interval](ldap_synchronization.md#adjust-ldap-group-sync-schedule) for
-  the group to sync. To speed up the process, either go to the GitLab group **Group information > Members**
+  the group to sync. To speed up the process, either go to the GitLab group **Manage > Members**
   and press **Sync now** (sync one group) or [run the group sync Rake task](../../raketasks/ldap.md#run-a-group-sync)
   (sync all groups).
 
@@ -447,7 +447,7 @@ A displayed error can identify the problem and point to a solution. For example,
 
 ```ruby
 irb(main):018:0> group.members.map(&:errors).map(&:full_messages)
-=> [["The member's email address is not allowed for this group. Go to the group’s &#39;Settings &gt; General&#39; page, and check &#39;Restrict membership by email domain&#39;."]]
+=> [["The member's email address is not allowed for this group. Go to the group's &#39;Settings &gt; General&#39; page, and check &#39;Restrict membership by email domain&#39;."]]
 ```
 
 This error showed that an Administrator chose to [restrict group membership by email domain](../../../user/group/access_and_permissions.md#restrict-group-access-by-domain),
@@ -737,7 +737,7 @@ To resolve this error, you must apply a new license to the GitLab instance witho
 
 1. Remove or comment out the GitLab configuration lines for all non-primary LDAP servers.
 1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so that it temporarily uses only one LDAP server.
-1. Enter the [Rails console and add the license key](../../../user/admin_area/license_file.md#add-a-license-through-the-console).
+1. Enter the [Rails console and add the license key](../../../administration/license_file.md#add-a-license-through-the-console).
 1. Re-enable the additional LDAP servers in the GitLab configuration and reconfigure GitLab again.
 
 ## Users are being removed from group and re-added again

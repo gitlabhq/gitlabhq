@@ -50,10 +50,6 @@ describe('Design management design todo button', () => {
     createComponent();
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('renders TodoButton component', () => {
     expect(wrapper.findComponent(TodoButton).exists()).toBe(true);
   });

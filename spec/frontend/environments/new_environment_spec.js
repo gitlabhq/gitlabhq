@@ -1,5 +1,4 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -7,17 +6,12 @@ import waitForPromises from 'helpers/wait_for_promises';
 import NewEnvironment from '~/environments/components/new_environment.vue';
 import createEnvironment from '~/environments/graphql/mutations/create_environment.mutation.graphql';
 import { createAlert } from '~/alert';
-import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import createMockApollo from '../__helpers__/mock_apollo_helper';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
-
-const newName = 'test';
-const newExternalUrl = 'https://google.ca';
 
 const provide = {
   projectEnvironmentsPath: '/projects/environments',
@@ -32,7 +26,6 @@ const environmentCreateError = {
 
 describe('~/environments/components/new.vue', () => {
   let wrapper;
-  let mock;
 
   const createMockApolloProvider = (mutationResult) => {
     Vue.use(VueApollo);
@@ -47,27 +40,11 @@ describe('~/environments/components/new.vue', () => {
 
   const createWrapperWithApollo = async (mutationResult = environmentCreate) => {
     wrapper = mountExtended(NewEnvironment, {
-      provide: {
-        ...provide,
-        glFeatures: {
-          environmentSettingsToGraphql: true,
-        },
-      },
+      provide,
       apolloProvider: createMockApolloProvider(mutationResult),
     });
 
     await waitForPromises();
-  };
-
-  const createWrapperWithAxios = () => {
-    wrapper = mountExtended(NewEnvironment, {
-      provide: {
-        ...provide,
-        glFeatures: {
-          environmentSettingsToGraphql: false,
-        },
-      },
-    });
   };
 
   const findNameInput = () => wrapper.findByLabelText(__('Name'));
@@ -84,7 +61,7 @@ describe('~/environments/components/new.vue', () => {
 
   describe('default', () => {
     beforeEach(() => {
-      createWrapperWithAxios();
+      createWrapperWithApollo();
     });
 
     it('sets the title to New environment', () => {
@@ -103,61 +80,13 @@ describe('~/environments/components/new.vue', () => {
     });
   });
 
-  describe('when environmentSettingsToGraphql feature is enabled', () => {
-    describe('when mutation successful', () => {
-      beforeEach(() => {
-        createWrapperWithApollo();
-      });
-
-      it('shows loader after form is submitted', async () => {
-        expect(showsLoading()).toBe(false);
-
-        await submitForm();
-
-        expect(showsLoading()).toBe(true);
-      });
-
-      it('submits the new environment on submit', async () => {
-        submitForm();
-        await waitForPromises();
-
-        expect(visitUrl).toHaveBeenCalledWith('path/to/environment');
-      });
-    });
-
-    describe('when failed', () => {
-      beforeEach(async () => {
-        createWrapperWithApollo(environmentCreateError);
-        submitForm();
-        await waitForPromises();
-      });
-
-      it('shows errors on error', () => {
-        expect(createAlert).toHaveBeenCalledWith({ message: 'uh oh!' });
-        expect(showsLoading()).toBe(false);
-      });
-    });
-  });
-
-  describe('when environmentSettingsToGraphql feature is disabled', () => {
+  describe('when mutation successful', () => {
     beforeEach(() => {
-      mock = new MockAdapter(axios);
-      createWrapperWithAxios();
-    });
-
-    afterEach(() => {
-      mock.restore();
+      createWrapperWithApollo();
     });
 
     it('shows loader after form is submitted', async () => {
       expect(showsLoading()).toBe(false);
-
-      mock
-        .onPost(provide.projectEnvironmentsPath, {
-          name: newName,
-          external_url: newExternalUrl,
-        })
-        .reply(HTTP_STATUS_OK, { path: '/test' });
 
       await submitForm();
 
@@ -165,31 +94,22 @@ describe('~/environments/components/new.vue', () => {
     });
 
     it('submits the new environment on submit', async () => {
-      mock
-        .onPost(provide.projectEnvironmentsPath, {
-          name: newName,
-          external_url: newExternalUrl,
-        })
-        .reply(HTTP_STATUS_OK, { path: '/test' });
-
-      await submitForm();
+      submitForm();
       await waitForPromises();
 
-      expect(visitUrl).toHaveBeenCalledWith('/test');
+      expect(visitUrl).toHaveBeenCalledWith('path/to/environment');
+    });
+  });
+
+  describe('when failed', () => {
+    beforeEach(async () => {
+      createWrapperWithApollo(environmentCreateError);
+      submitForm();
+      await waitForPromises();
     });
 
-    it('shows errors on error', async () => {
-      mock
-        .onPost(provide.projectEnvironmentsPath, {
-          name: newName,
-          external_url: newExternalUrl,
-        })
-        .reply(HTTP_STATUS_BAD_REQUEST, { message: ['name taken'] });
-
-      await submitForm();
-      await waitForPromises();
-
-      expect(createAlert).toHaveBeenCalledWith({ message: 'name taken' });
+    it('display errors', () => {
+      expect(createAlert).toHaveBeenCalledWith({ message: 'uh oh!' });
       expect(showsLoading()).toBe(false);
     });
   });

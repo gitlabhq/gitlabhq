@@ -1,0 +1,11 @@
+- title: "OmniAuth Facebook is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
+  announcement_milestone: "16.2"  # (required) The milestone when this feature was first announced as deprecated.
+  announcement_date: "2023-07-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_date: "2024-05-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: hsutor  # (required) GitLab username of the person reporting the change
+  stage: Manage  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416000  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    OmniAuth Facebook support will be removed in GitLab 17.0. The last gem release was in 2021 and it is currently unmaintained. The current usage is less than 0.1%. If you use OmniAuth Facebook, switch to a [supported provider](https://docs.gitlab.com/ee/integration/omniauth.html#supported-providers) in advance of support removal.

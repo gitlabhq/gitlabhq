@@ -95,7 +95,18 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
           get api(route, user)
 
           expect(json_response['create_access_levels']).to include(
-            a_hash_including('access_level_description' => 'Deploy key', 'deploy_key_id' => deploy_key.id)
+            a_hash_including('access_level_description' => deploy_key.title, 'deploy_key_id' => deploy_key.id)
+          )
+        end
+      end
+
+      context 'when a deploy key is not present' do
+        it 'returns null deploy key field' do
+          create(:protected_tag_create_access_level, protected_tag: protected_tag)
+          get api(route, user)
+
+          expect(json_response['create_access_levels']).to include(
+            a_hash_including('deploy_key_id' => nil)
           )
         end
       end

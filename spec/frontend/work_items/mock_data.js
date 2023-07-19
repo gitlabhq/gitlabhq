@@ -68,6 +68,38 @@ export const mockAwardEmojiThumbsDown = {
 
 export const mockAwardsWidget = {
   nodes: [mockAwardEmojiThumbsUp, mockAwardEmojiThumbsDown],
+  pageInfo: {
+    hasNextPage: false,
+    hasPreviousPage: false,
+    startCursor: null,
+    endCursor: null,
+    __typename: 'PageInfo',
+  },
+  __typename: 'AwardEmojiConnection',
+};
+
+export const mockMoreThanDefaultAwardEmojisWidget = {
+  nodes: [
+    mockAwardEmojiThumbsUp,
+    mockAwardEmojiThumbsDown,
+    { ...mockAwardEmojiThumbsUp, name: 'one' },
+    { ...mockAwardEmojiThumbsUp, name: 'two' },
+    { ...mockAwardEmojiThumbsUp, name: 'three' },
+    { ...mockAwardEmojiThumbsUp, name: 'four' },
+    { ...mockAwardEmojiThumbsUp, name: 'five' },
+    { ...mockAwardEmojiThumbsUp, name: 'six' },
+    { ...mockAwardEmojiThumbsUp, name: 'seven' },
+    { ...mockAwardEmojiThumbsUp, name: 'eight' },
+    { ...mockAwardEmojiThumbsUp, name: 'nine' },
+    { ...mockAwardEmojiThumbsUp, name: 'ten' },
+  ],
+  pageInfo: {
+    hasNextPage: true,
+    hasPreviousPage: false,
+    startCursor: null,
+    endCursor: 'endCursor',
+    __typename: 'PageInfo',
+  },
   __typename: 'AwardEmojiConnection',
 };
 
@@ -629,14 +661,10 @@ export const workItemResponseFactory = ({
           ? {
               type: 'CURRENT_USER_TODOS',
               currentUserTodos: {
-                edges: [
+                nodes: [
                   {
-                    node: {
-                      id: 'gid://gitlab/Todo/1',
-                      state: 'pending',
-                      __typename: 'Todo',
-                    },
-                    __typename: 'TodoEdge',
+                    id: 'gid://gitlab/Todo/1',
+                    __typename: 'Todo',
                   },
                 ],
                 __typename: 'TodoConnection',
@@ -799,154 +827,6 @@ export const deleteWorkItemMutationErrorResponse = {
   data: {
     workItemDelete: {
       errors: ['Error'],
-    },
-  },
-};
-
-export const workItemDatesSubscriptionResponse = {
-  data: {
-    issuableDatesUpdated: {
-      id: 'gid://gitlab/WorkItem/1',
-      widgets: [
-        {
-          __typename: 'WorkItemWidgetStartAndDueDate',
-          dueDate: '2022-12-31',
-          startDate: '2022-01-01',
-        },
-      ],
-    },
-  },
-};
-
-export const workItemTitleSubscriptionResponse = {
-  data: {
-    issuableTitleUpdated: {
-      id: 'gid://gitlab/WorkItem/1',
-      title: 'new title',
-    },
-  },
-};
-
-export const workItemDescriptionSubscriptionResponse = {
-  data: {
-    issuableDescriptionUpdated: {
-      id: 'gid://gitlab/WorkItem/1',
-      widgets: [
-        {
-          __typename: 'WorkItemWidgetDescription',
-          type: 'DESCRIPTION',
-          description: 'New description',
-          descriptionHtml: '<p>New description</p>',
-          lastEditedAt: '2022-09-21T06:18:42Z',
-          lastEditedBy: {
-            id: 'gid://gitlab/User/2',
-            name: 'Someone else',
-            webPath: '/not-you',
-          },
-        },
-      ],
-    },
-  },
-};
-
-export const workItemWeightSubscriptionResponse = {
-  data: {
-    issuableWeightUpdated: {
-      id: 'gid://gitlab/WorkItem/1',
-      widgets: [
-        {
-          __typename: 'WorkItemWidgetWeight',
-          weight: 1,
-        },
-      ],
-    },
-  },
-};
-
-export const workItemAssigneesSubscriptionResponse = {
-  data: {
-    issuableAssigneesUpdated: {
-      id: 'gid://gitlab/WorkItem/1',
-      widgets: [
-        {
-          __typename: 'WorkItemAssigneesWeight',
-          assignees: {
-            nodes: [mockAssignees[0]],
-          },
-        },
-      ],
-    },
-  },
-};
-
-export const workItemLabelsSubscriptionResponse = {
-  data: {
-    issuableLabelsUpdated: {
-      id: 'gid://gitlab/WorkItem/1',
-      widgets: [
-        {
-          __typename: 'WorkItemWidgetLabels',
-          type: 'LABELS',
-          allowsScopedLabels: false,
-          labels: {
-            nodes: mockLabels,
-          },
-        },
-      ],
-    },
-  },
-};
-
-export const workItemIterationSubscriptionResponse = {
-  data: {
-    issuableIterationUpdated: {
-      id: 'gid://gitlab/WorkItem/1',
-      widgets: [
-        {
-          __typename: 'WorkItemWidgetIteration',
-          iteration: {
-            description: 'Iteration description',
-            dueDate: '2022-07-29',
-            id: 'gid://gitlab/Iteration/1125',
-            iid: '95',
-            startDate: '2022-06-22',
-            title: 'Iteration subcription title',
-          },
-        },
-      ],
-    },
-  },
-};
-
-export const workItemHealthStatusSubscriptionResponse = {
-  data: {
-    issuableHealthStatusUpdated: {
-      id: 'gid://gitlab/WorkItem/1',
-      widgets: [
-        {
-          __typename: 'WorkItemWidgetHealthStatus',
-          healthStatus: 'needsAttention',
-        },
-      ],
-    },
-  },
-};
-
-export const workItemMilestoneSubscriptionResponse = {
-  data: {
-    issuableMilestoneUpdated: {
-      id: 'gid://gitlab/WorkItem/1',
-      widgets: [
-        {
-          __typename: 'WorkItemWidgetMilestone',
-          type: 'MILESTONE',
-          milestone: {
-            id: 'gid://gitlab/Milestone/1125',
-            expired: false,
-            title: 'Milestone title',
-          },
-        },
-      ],
     },
   },
 };
@@ -2130,6 +2010,9 @@ export const mockWorkItemNotesResponse = {
                         webUrl: 'http://127.0.0.1:3000/root',
                         __typename: 'UserCore',
                       },
+                      awardEmoji: {
+                        nodes: [],
+                      },
                       __typename: 'Note',
                     },
                   ],
@@ -2241,6 +2124,9 @@ export const mockWorkItemNotesByIidResponse = {
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -2293,6 +2179,9 @@ export const mockWorkItemNotesByIidResponse = {
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2347,6 +2236,9 @@ export const mockWorkItemNotesByIidResponse = {
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2460,6 +2352,9 @@ export const mockMoreWorkItemNotesResponse = {
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -2513,6 +2408,9 @@ export const mockMoreWorkItemNotesResponse = {
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -2563,6 +2461,9 @@ export const mockMoreWorkItemNotesResponse = {
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2631,6 +2532,9 @@ export const createWorkItemNoteResponse = {
                   repositionNote: true,
                   __typename: 'NotePermissions',
                 },
+                awardEmoji: {
+                  nodes: [],
+                },
                 __typename: 'Note',
               },
             ],
@@ -2681,6 +2585,9 @@ export const mockWorkItemCommentNote = {
     username: 'root',
     webUrl: 'http://127.0.0.1:3000/root',
     __typename: 'UserCore',
+  },
+  awardEmoji: {
+    nodes: [mockAwardEmojiThumbsDown],
   },
 };
 
@@ -2781,6 +2688,9 @@ export const mockWorkItemNotesResponseWithComments = {
                               repositionNote: true,
                               __typename: 'NotePermissions',
                             },
+                            awardEmoji: {
+                              nodes: [mockAwardEmojiThumbsDown],
+                            },
                             __typename: 'Note',
                           },
                           {
@@ -2820,6 +2730,9 @@ export const mockWorkItemNotesResponseWithComments = {
                               resolveNote: true,
                               repositionNote: true,
                               __typename: 'NotePermissions',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2868,6 +2781,9 @@ export const mockWorkItemNotesResponseWithComments = {
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2945,6 +2861,9 @@ export const workItemNotesCreateSubscriptionResponse = {
                 webUrl: 'http://127.0.0.1:3000/root',
                 __typename: 'UserCore',
               },
+              awardEmoji: {
+                nodes: [],
+              },
               __typename: 'Note',
             },
           ],
@@ -2971,6 +2890,9 @@ export const workItemNotesCreateSubscriptionResponse = {
         username: 'root',
         webUrl: 'http://127.0.0.1:3000/root',
         __typename: 'UserCore',
+      },
+      awardEmoji: {
+        nodes: [],
       },
       __typename: 'Note',
     },
@@ -3016,6 +2938,9 @@ export const workItemNotesUpdateSubscriptionResponse = {
         username: 'root',
         webUrl: 'http://127.0.0.1:3000/root',
         __typename: 'UserCore',
+      },
+      awardEmoji: {
+        nodes: [],
       },
       __typename: 'Note',
     },
@@ -3176,6 +3101,9 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                               },
                               __typename: 'SystemNoteMetadata',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -3238,6 +3166,9 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                                 __typename: 'DescriptionVersion',
                               },
                               __typename: 'SystemNoteMetadata',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -3302,6 +3233,9 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                               },
                               __typename: 'SystemNoteMetadata',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -3346,6 +3280,20 @@ export const getAwardEmojiResponse = (toggledOn) => {
       awardEmojiToggle: {
         errors: [],
         toggledOn,
+      },
+    },
+  };
+};
+
+export const getTodosMutationResponse = (state) => {
+  return {
+    data: {
+      todoMutation: {
+        todo: {
+          id: 'gid://gitlab/Todo/1',
+          state,
+        },
+        errors: [],
       },
     },
   };

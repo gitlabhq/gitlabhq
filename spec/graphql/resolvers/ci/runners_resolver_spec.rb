@@ -9,7 +9,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :runner_fleet d
     let(:obj) { nil }
     let(:args) { {} }
 
-    subject do
+    subject(:resolve_scope) do
       resolve(described_class, obj: obj, ctx: { current_user: user }, args: args,
                                arg_style: :internal)
     end

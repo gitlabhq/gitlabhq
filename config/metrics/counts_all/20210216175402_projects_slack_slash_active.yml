@@ -1,0 +1,20 @@
+---
+data_category: optional
+key_path: usage_activity_by_stage.configure.projects_slack_slash_active
+description: Unique projects with Slack ‘/’ commands enabled
+product_section: dev
+product_stage: manage
+product_group: integrations
+value_type: number
+status: active
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "<13.9"

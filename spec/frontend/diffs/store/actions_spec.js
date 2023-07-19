@@ -11,7 +11,7 @@ import {
   PARALLEL_DIFF_VIEW_TYPE,
   EVT_MR_PREPARED,
 } from '~/diffs/constants';
-import { LOAD_SINGLE_DIFF_FAILED } from '~/diffs/i18n';
+import { LOAD_SINGLE_DIFF_FAILED, BUILDING_YOUR_MR, SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 import * as diffActions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
@@ -87,6 +87,7 @@ describe('DiffsStoreActions', () => {
         a: ['z', 'hash:a'],
         b: ['y', 'hash:a'],
       };
+      const diffViewType = 'inline';
 
       return testAction(
         diffActions.setBaseConfig,
@@ -100,6 +101,7 @@ describe('DiffsStoreActions', () => {
           dismissEndpoint,
           showSuggestPopover,
           mrReviews,
+          diffViewType,
         },
         {
           endpoint: '',
@@ -124,6 +126,7 @@ describe('DiffsStoreActions', () => {
               dismissEndpoint,
               showSuggestPopover,
               mrReviews,
+              diffViewType,
             },
           },
           {
@@ -362,7 +365,7 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_RETRIEVING_BATCHES, payload: false },
           { type: types.SET_BATCH_LOADING_STATE, payload: 'error' },
         ],
-        [{ type: 'startRenderDiffsQueue' }, { type: 'startRenderDiffsQueue' }],
+        [],
       );
     });
   });
@@ -418,9 +421,7 @@ describe('DiffsStoreActions', () => {
 
         expect(createAlert).toHaveBeenCalledTimes(1);
         expect(createAlert).toHaveBeenCalledWith({
-          message: expect.stringMatching(
-            'Building your merge request… This page will update when the build is complete.',
-          ),
+          message: BUILDING_YOUR_MR,
           variant: 'warning',
         });
       });
@@ -482,7 +483,7 @@ describe('DiffsStoreActions', () => {
       await testAction(diffActions.fetchCoverageFiles, {}, { endpointCoverage }, [], []);
       expect(createAlert).toHaveBeenCalledTimes(1);
       expect(createAlert).toHaveBeenCalledWith({
-        message: expect.stringMatching('Something went wrong'),
+        message: SOMETHING_WENT_WRONG,
       });
     });
   });
@@ -660,41 +661,6 @@ describe('DiffsStoreActions', () => {
         ],
         [],
       );
-    });
-  });
-
-  describe('startRenderDiffsQueue', () => {
-    it('should set all files to RENDER_FILE', () => {
-      const state = {
-        diffFiles: [
-          {
-            id: 1,
-            renderIt: false,
-            viewer: {
-              automaticallyCollapsed: false,
-            },
-          },
-          {
-            id: 2,
-            renderIt: false,
-            viewer: {
-              automaticallyCollapsed: false,
-            },
-          },
-        ],
-      };
-
-      const pseudoCommit = (commitType, file) => {
-        expect(commitType).toBe(types.RENDER_FILE);
-        Object.assign(file, {
-          renderIt: true,
-        });
-      };
-
-      diffActions.startRenderDiffsQueue({ state, commit: pseudoCommit });
-
-      expect(state.diffFiles[0].renderIt).toBe(true);
-      expect(state.diffFiles[1].renderIt).toBe(true);
     });
   });
 
@@ -1285,12 +1251,11 @@ describe('DiffsStoreActions', () => {
       $emit = jest.spyOn(eventHub, '$emit');
     });
 
-    it('renders and expands file for the given discussion id', () => {
+    it('expands the file for the given discussion id', () => {
       const localState = state({ collapsed: true, renderIt: false });
 
       diffActions.renderFileForDiscussionId({ rootState, state: localState, commit }, '123');
 
-      expect(commit).toHaveBeenCalledWith('RENDER_FILE', localState.diffFiles[0]);
       expect($emit).toHaveBeenCalledTimes(1);
       expect(commonUtils.scrollToElement).toHaveBeenCalledTimes(1);
     });
@@ -1374,18 +1339,6 @@ describe('DiffsStoreActions', () => {
       );
 
       expect(eventHub.$emit).toHaveBeenCalledWith('refetchDiffData');
-    });
-  });
-
-  describe('setRenderIt', () => {
-    it('commits RENDER_FILE', () => {
-      return testAction(
-        diffActions.setRenderIt,
-        'file',
-        {},
-        [{ type: types.RENDER_FILE, payload: 'file' }],
-        [],
-      );
     });
   });
 
@@ -1513,7 +1466,7 @@ describe('DiffsStoreActions', () => {
                 payload: { filePath: testFilePath, lines: [preparedLine, preparedLine] },
               },
             ],
-            [{ type: 'startRenderDiffsQueue' }],
+            [],
           );
         },
       );

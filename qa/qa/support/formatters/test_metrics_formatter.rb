@@ -35,7 +35,7 @@ module QA
         # @param [Array<RSpec::Core::Example>] examples
         # @return [Array<Hash>]
         def execution_data(examples = nil)
-          @execution_metrics ||= examples.map { |example| test_stats(example) }.compact
+          @execution_metrics ||= examples.filter_map { |example| test_stats(example) }
         end
         alias_method :parse_execution_data, :execution_data
 
@@ -171,11 +171,7 @@ module QA
         #
         # @return [Time]
         def time
-          @time ||= begin
-            return Time.now unless env('CI_PIPELINE_CREATED_AT')
-
-            env('CI_PIPELINE_CREATED_AT').to_time
-          end
+          @time ||= env('CI_PIPELINE_CREATED_AT')&.to_time || Time.now
         end
 
         # Is a merge request execution

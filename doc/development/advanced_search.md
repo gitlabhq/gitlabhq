@@ -167,7 +167,7 @@ These proxy objects would talk to Elasticsearch server directly (see top half of
 
 ![Elasticsearch Architecture](img/elasticsearch_architecture.svg)
 
-In the planned new design, each model would have a pair of corresponding sub-classed proxy objects, in which model-specific logic is located. For example, `Snippet` would have `SnippetClassProxy` and `SnippetInstanceProxy` (being subclass of `Elasticsearch::Model::Proxy::ClassMethodsProxy` and `Elasticsearch::Model::Proxy::InstanceMethodsProxy`, respectively).
+In the planned new design, each model would have a pair of corresponding sub-classed proxy objects, in which model-specific logic is located. For example, `Snippet` would have `SnippetClassProxy` being a subclass of `Elasticsearch::Model::Proxy::ClassMethodsProxy`. `Snippet` would have `SnippetInstanceProxy` being a subclass of `Elasticsearch::Model::Proxy::InstanceMethodsProxy`.
 
 `__elasticsearch__` would represent another layer of proxy object, keeping track of multiple actual proxy objects. It would forward method calls to the appropriate index. For example:
 

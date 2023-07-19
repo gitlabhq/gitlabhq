@@ -35,34 +35,5 @@ namespace :gitlab do
         abort
       end
     end
-
-    desc "Generate removal list from individual files"
-    task :compile_removals do
-      require_relative '../../../../tooling/docs/deprecation_handling'
-      path = Rails.root.join("doc/update/removals.md")
-      File.write(path, Docs::DeprecationHandling.new('removal').render)
-      puts "#{COLOR_CODE_GREEN}INFO: Removals compiled to #{path}.#{COLOR_CODE_RESET}"
-    end
-
-    desc "Check that the removal documentation is up to date"
-    task :check_removals do
-      require_relative '../../../../tooling/docs/deprecation_handling'
-      path = Rails.root.join("doc/update/removals.md")
-      contents = Docs::DeprecationHandling.new('removal').render
-      doc = File.read(path)
-
-      if doc == contents
-        puts "#{COLOR_CODE_GREEN}INFO: Removals documentation is up to date.#{COLOR_CODE_RESET}"
-      else
-        warn <<~EOS
-        #{COLOR_CODE_RED}ERROR: Removals documentation is outdated!#{COLOR_CODE_RESET}
-        To update the removals documentation, either:
-
-        - Run `bin/rake gitlab:docs:compile_removals` and commit the changes to this branch.
-        - Have a technical writer resolve the issue.
-        EOS
-        abort
-      end
-    end
   end
 end

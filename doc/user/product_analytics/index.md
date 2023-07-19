@@ -13,12 +13,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Snowplow integration introduced in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
 FLAG:
-On self-managed GitLab, by default the Snowplow integration is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`.
+On self-managed GitLab, by default the Snowplow integration is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -66,7 +66,7 @@ flowchart TB
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards` and `product_analytics_admin_settings`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards` and `product_analytics_admin_settings`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -114,7 +114,7 @@ To instrument code to collect data, use one or more of the existing SDKs:
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -124,6 +124,29 @@ Specifically product analytics dashboards and visualizations make use of the `cu
 The `cube_analytics` data type connects to the Cube instance defined when [product analytics was enabled](#enable-product-analytics).
 All filters and queries are sent to the Cube instance and the returned data is processed by the
 product analytics data source to be rendered by the appropriate visualizations.
+
+### Filling missing data
+
+- Introduced in GitLab 16.3 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`. Disabled by default.
+
+When [exporting data](#raw-data-export) or [viewing dashboards](../analytics/analytics_dashboards.md#view-project-dashboards),
+if there is no data for a given day, the missing data is autofilled with `0`.
+
+This approach has the following benefits:
+
+- The visualization's day axis matches the selected date range, removing ambiguity about missing data.
+- Data exports have rows for the entire date range, making data analysis easier.
+
+However, this approach also has the following limitations:
+
+- The `day` [granularity](https://cube.dev/docs/product/apis-integrations/rest-api/query-format) must be used.
+  All other granularities are not supported at this time.
+- It only fills a date range defined by the [`inDateRange`](https://cube.dev/docs/product/apis-integrations/rest-api/query-format#indaterange) filter.
+  - The date selector in the UI already uses this filter.
+- The filling of data ignores the query-defined limit. If you set a limit of 10 data points over 20 days, it
+  returns 20 data points, with the missing data filled by `0`.
+
+[Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
 
 ## Funnel analysis
 
@@ -246,3 +269,10 @@ POST /api/v4/projects/PROJECT_ID/product_analytics/request/load?queryType=multi
 ```
 
 If the request is successful, the returned JSON includes an array of rows of results.
+
+## Troubleshooting
+
+### No events are collected
+
+Check your [instrumentation details](#enable-product-analytics),
+and make sure product analytics is enabled and set up correctly.

@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Prometheus::QueryVariables do
 
     it do
       is_expected.to include(environment_filter:
-                             %Q[container_name!="POD",environment="#{slug}"])
+                             %[container_name!="POD",environment="#{slug}"])
     end
 
     context 'without deployment platform' do

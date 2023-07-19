@@ -1,4 +1,5 @@
 - text_style = 'font-size:16px; text-align:center;  line-height:30px;'
+- error_style = 'font-size:13px; text-align:center; line-height:16px; color:#dd2b0e;'
 
 %p{ style: text_style }
   - project_link = link_to(@project.full_name, project_url(@project), style: "color:#3777b0; text-decoration:none;")
@@ -16,3 +17,18 @@
 - if @results[:parse_error]
   %p{ style: text_style }
     = s_('Notify|Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values.')
+
+- preprocess_errors = @results[:preprocess_errors]
+- if preprocess_errors.present?
+
+  - missing_milestone_errors = preprocess_errors.dig(:milestone_errors, :missing) || []
+
+  - if missing_milestone_errors.present?
+    %p{ style: error_style }
+      = s_('Notify|Could not find the following %{column} values in %{project}%{parent_groups_clause}: %{error_lines}') % { error_lines: missing_milestone_errors[:titles].join(', '),
+        column: missing_milestone_errors[:header].downcase, project: @project.full_name,
+        parent_groups_clause: @project.group.present? ? ' or its parent groups' : ''}
+
+- if @results[:error_lines].present? || preprocess_errors.present?
+  %p{ style: text_style }
+    = s_('Notify|Please fix the errors above and try the CSV import again.')

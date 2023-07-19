@@ -54,7 +54,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       end
 
       it 'does not allow draft note creation' do
-        expect { create_draft_note }.to change { DraftNote.count }.by(0)
+        expect { create_draft_note }.not_to change { DraftNote.count }
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
@@ -172,6 +172,33 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         end
       end
     end
+
+    context 'when the draft note is invalid' do
+      let_it_be(:draft_note) { DraftNote.new }
+
+      before do
+        errors = ActiveModel::Errors.new(draft_note)
+        errors.add(:base, 'Error 1')
+        errors.add(:base, 'Error 2')
+
+        allow(draft_note).to receive(:errors).and_return(errors)
+
+        allow_next_instance_of(DraftNotes::CreateService) do |service|
+          allow(service).to receive(:execute).and_return(draft_note)
+        end
+      end
+
+      it 'does not allow draft note creation' do
+        expect { create_draft_note }.not_to change { DraftNote.count }
+      end
+
+      it "returns status 422", :aggregate_failures do
+        create_draft_note
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(response.body).to eq('{"errors":"Error 1 and Error 2"}')
+      end
+    end
   end
 
   describe 'PUT #update' do
@@ -211,6 +238,30 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
 
       expect(draft.note).to eq('This is an updated unpublished comment')
       expect(json_response['note_html']).not_to be_empty
+    end
+
+    context 'when the draft note is invalid' do
+      before do
+        errors = ActiveModel::Errors.new(draft)
+        errors.add(:base, 'Error 1')
+        errors.add(:base, 'Error 2')
+
+        allow_next_found_instance_of(DraftNote) do |instance|
+          allow(instance).to receive(:update).and_return(false)
+          allow(instance).to receive(:errors).and_return(errors)
+        end
+      end
+
+      it 'does not update the draft' do
+        expect { update_draft_note }.not_to change { draft.reload.note }
+      end
+
+      it 'returns status 422', :aggregate_failures do
+        update_draft_note
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(response.body).to eq('{"errors":"Error 1 and Error 2"}')
+      end
     end
   end
 

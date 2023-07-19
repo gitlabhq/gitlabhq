@@ -56,7 +56,7 @@ RSpec.shared_context 'with integration' do
         hash.merge!(k => 'key:value')
       elsif integration == 'packagist' && k == :server
         hash.merge!(k => 'https://packagist.example.com')
-      elsif k =~ /^(.*_url|url|webhook)/
+      elsif /^(.*_url|url|webhook)/.match?(k)
         hash.merge!(k => "http://example.com")
       elsif integration_klass.method_defined?("#{k}?")
         hash.merge!(k => true)

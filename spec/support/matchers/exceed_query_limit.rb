@@ -63,7 +63,7 @@ module ExceedQueryLimitHelpers
     end
   end
 
-  MARGINALIA_ANNOTATION_REGEX = %r{\s*/\*.*\*/}.freeze
+  MARGINALIA_ANNOTATION_REGEX = %r{\s*/\*.*\*/}
 
   DB_QUERY_RE = Regexp.union(
     [

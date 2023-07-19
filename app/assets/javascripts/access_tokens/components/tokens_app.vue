@@ -79,7 +79,7 @@ export default {
 </script>
 
 <template>
-  <div class="js-search-settings-section">
+  <div class="settings-section gl-pt-0! js-search-settings-section">
     <token
       v-for="(tokenData, tokenType) in enabledTokenTypes"
       :key="tokenType"
@@ -89,10 +89,18 @@ export default {
       :copy-button-title="$options.i18n[tokenType].copyButtonTitle"
       :data-testid="$options.htmlAttributes[tokenType].containerTestId"
     >
-      <template #title>{{ $options.i18n[tokenType].label }}</template>
+      <template #title>
+        <div class="settings-sticky-header">
+          <div class="settings-sticky-header-inner">
+            {{ $options.i18n[tokenType].label }}
+          </div>
+        </div>
+      </template>
       <template #description>
-        <p>{{ $options.i18n[tokenType].description }}</p>
-        <p>{{ $options.i18n.canNotAccessOtherData }}</p>
+        <p class="gl-text-secondary">
+          {{ $options.i18n[tokenType].description }}
+          {{ $options.i18n.canNotAccessOtherData }}
+        </p>
       </template>
       <template #input-description>
         <gl-sprintf :message="$options.i18n[tokenType].inputDescription">

@@ -19,12 +19,12 @@ export default {
   locked: {
     icon: 'lock',
     class: 'value',
-    iconClass: 'is-active',
+    displayText: __('Locked'),
   },
   unlocked: {
     class: ['no-value hide-collapsed'],
     icon: 'lock-open',
-    iconClass: '',
+    displayText: __('Unlocked'),
   },
   components: {
     EditForm,
@@ -49,8 +49,6 @@ export default {
     issueCapitalized: __('Issue'),
     mergeRequest: __('merge request'),
     mergeRequestCapitalized: __('Merge request'),
-    locked: __('Locked'),
-    unlocked: __('Unlocked'),
     lockingMergeRequest: __('Locking %{issuableDisplayName}'),
     unlockingMergeRequest: __('Unlocking %{issuableDisplayName}'),
     lockMergeRequest: __('Lock %{issuableDisplayName}'),
@@ -84,10 +82,7 @@ export default {
       return this.getNoteableData.discussion_locked;
     },
     lockStatus() {
-      return this.isLocked ? this.$options.i18n.locked : this.$options.i18n.unlocked;
-    },
-    tooltipLabel() {
-      return this.isLocked ? this.$options.i18n.locked : this.$options.i18n.unlocked;
+      return this.isLocked ? this.$options.locked : this.$options.unlocked;
     },
     lockToggleInProgressText() {
       return this.isLocked ? this.unlockingMergeRequestText : this.lockingMergeRequestText;
@@ -205,7 +200,7 @@ export default {
   </gl-disclosure-dropdown-item>
   <div v-else class="block issuable-sidebar-item lock">
     <div
-      v-gl-tooltip.left.viewport="{ title: tooltipLabel }"
+      v-gl-tooltip.left.viewport="{ title: lockStatus.displayText }"
       class="sidebar-collapsed-icon"
       data-testid="sidebar-collapse-icon"
       @click="toggleForm"
@@ -239,7 +234,7 @@ export default {
       />
 
       <div data-testid="lock-status" class="sidebar-item-value" :class="lockStatus.class">
-        {{ lockStatus }}
+        {{ lockStatus.displayText }}
       </div>
     </div>
   </div>

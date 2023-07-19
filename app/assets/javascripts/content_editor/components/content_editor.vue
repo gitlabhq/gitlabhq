@@ -1,8 +1,9 @@
 <script>
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
-import { GlSprintf, GlLink } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
+import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 import { createContentEditor } from '../services/create_content_editor';
 import { ALERT_EVENT, TIPTAP_AUTOFOCUS_OPTIONS } from '../constants';
 import ContentEditorAlert from './content_editor_alert.vue';
@@ -17,8 +18,7 @@ import LoadingIndicator from './loading_indicator.vue';
 
 export default {
   components: {
-    GlSprintf,
-    GlLink,
+    GlButton,
     LoadingIndicator,
     ContentEditorAlert,
     ContentEditorProvider,
@@ -29,10 +29,18 @@ export default {
     MediaBubbleMenu,
     EditorStateObserver,
     ReferenceBubbleMenu,
+    EditorModeSwitcher,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     renderMarkdown: {
       type: Function,
+      required: true,
+    },
+    markdownDocsPath: {
+      type: String,
       required: true,
     },
     uploadsPath: {
@@ -65,15 +73,20 @@ export default {
       default: false,
       validator: (autofocus) => TIPTAP_AUTOFOCUS_OPTIONS.includes(autofocus),
     },
-    quickActionsDocsPath: {
-      type: String,
+    supportsQuickActions: {
+      type: Boolean,
       required: false,
-      default: '',
+      default: false,
     },
     drawioEnabled: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    codeSuggestionsConfig: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
     editable: {
       type: Boolean,
@@ -129,6 +142,7 @@ export default {
       editable,
       enableAutocomplete,
       autocompleteDataSources,
+      codeSuggestionsConfig,
     } = this;
 
     // This is a non-reactive attribute intentionally since this is a complex object.
@@ -140,6 +154,7 @@ export default {
       drawioEnabled,
       enableAutocomplete,
       autocompleteDataSources,
+      codeSuggestionsConfig,
       tiptapOptions: {
         autofocus,
         editable,
@@ -204,17 +219,15 @@ export default {
         markdown: this.latestMarkdown,
       });
     },
-  },
-  i18n: {
-    quickActionsText: s__(
-      'ContentEditor|For %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd}, type %{keyboardStart}/%{keyboardEnd}.',
-    ),
+    handleEditorModeChanged() {
+      this.$emit('enableMarkdownEditor');
+    },
   },
 };
 </script>
 <template>
   <content-editor-provider :content-editor="contentEditor">
-    <div>
+    <div class="md-area gl-overflow-hidden">
       <editor-state-observer
         @docUpdate="notifyChange"
         @focus="focus"
@@ -225,11 +238,11 @@ export default {
       <div
         data-testid="content-editor"
         data-qa-selector="content_editor_container"
-        class="md-area gl-border-none! gl-shadow-none!"
         :class="{ 'is-focused': focused }"
       >
         <formatting-toolbar
           ref="toolbar"
+          :supports-quick-actions="supportsQuickActions"
           :hide-attachment-button="disableAttachments"
           @enableMarkdownEditor="$emit('enableMarkdownEditor')"
         />
@@ -237,7 +250,7 @@ export default {
           {{ placeholder }}
         </div>
         <tiptap-editor-content
-          class="md gl-px-5"
+          class="md"
           data-testid="content_editor_editablebox"
           :editor="contentEditor.tiptapEditor"
         />
@@ -249,21 +262,19 @@ export default {
         <reference-bubble-menu />
       </div>
       <div
-        v-if="quickActionsDocsPath"
-        class="gl-display-flex gl-align-items-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-4 gl-mx-2 gl-mb-2 gl-bg-gray-10 gl-text-secondary"
+        class="gl-display-flex gl-display-flex gl-flex-direction-row gl-justify-content-space-between gl-align-items-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-2 gl-border-t gl-border-gray-100 gl-text-secondary"
       >
-        <div class="gl-w-full gl-line-height-32 gl-font-sm">
-          <gl-sprintf :message="$options.i18n.quickActionsText">
-            <template #keyboard="{ content }">
-              <kbd>{{ content }}</kbd>
-            </template>
-            <template #quickActionsDocsLink="{ content }">
-              <gl-link :href="quickActionsDocsPath" target="_blank" class="gl-font-sm">{{
-                content
-              }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </div>
+        <editor-mode-switcher size="small" value="richText" @switch="handleEditorModeChanged" />
+        <gl-button
+          v-gl-tooltip
+          icon="markdown-mark"
+          :href="markdownDocsPath"
+          target="_blank"
+          category="tertiary"
+          size="small"
+          title="Markdown is supported"
+          class="gl-px-3!"
+        />
       </div>
     </div>
   </content-editor-provider>

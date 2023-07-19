@@ -55,7 +55,6 @@ import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
 import getStateSubscription from './queries/get_state.subscription.graphql';
-import terraformExtension from './extensions/terraform';
 import accessibilityExtension from './extensions/accessibility';
 import codeQualityExtension from './extensions/code_quality';
 import testReportExtension from './extensions/test_report';
@@ -219,14 +218,6 @@ export default {
     shouldRenderCodeQuality() {
       return this.mr?.codequalityReportsPath;
     },
-    shouldRenderSourceBranchRemovalStatus() {
-      return (
-        !this.mr.canRemoveSourceBranch &&
-        this.mr.shouldRemoveSourceBranch &&
-        !this.mr.isNothingToMergeState &&
-        !this.mr.isMergedState
-      );
-    },
     shouldRenderCollaborationStatus() {
       return this.mr.allowCollaboration && this.mr.isOpen;
     },
@@ -237,9 +228,6 @@ export default {
       return Boolean(
         this.mr.mergePipelinesEnabled && this.mr.sourceProjectId !== this.mr.targetProjectId,
       );
-    },
-    shouldRenderTerraformPlans() {
-      return Boolean(this.mr?.terraformReportsPath);
     },
     shouldRenderTestReport() {
       return Boolean(this.mr?.testResultsPath);
@@ -290,11 +278,6 @@ export default {
       if (newVal !== oldVal && this.shouldRenderMergedPipeline) {
         // init polling
         this.initPostMergeDeploymentsPolling();
-      }
-    },
-    shouldRenderTerraformPlans(newVal) {
-      if (newVal) {
-        this.registerTerraformPlans();
       }
     },
     shouldRenderCodeQuality(newVal) {
@@ -546,11 +529,6 @@ export default {
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;
     },
-    registerTerraformPlans() {
-      if (this.shouldRenderTerraformPlans) {
-        registerExtension(terraformExtension);
-      }
-    },
     registerAccessibilityExtension() {
       if (this.shouldShowAccessibilityReport) {
         registerExtension(accessibilityExtension);
@@ -570,7 +548,7 @@ export default {
 };
 </script>
 <template>
-  <div v-if="!loading" class="mr-state-widget gl-mt-3">
+  <div v-if="!loading" id="widget-state" class="mr-state-widget gl-mt-5">
     <header
       v-if="shouldRenderCollaborationStatus"
       class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100 gl-overflow-hidden mr-widget-workflow gl-mt-0!"
@@ -590,7 +568,11 @@ export default {
       :user-callout-feature-id="mr.suggestPipelineFeatureId"
       @dismiss="dismissSuggestPipelines"
     />
-    <mr-widget-pipeline-container v-if="shouldRenderPipelines" :mr="mr" />
+    <mr-widget-pipeline-container
+      v-if="shouldRenderPipelines"
+      :mr="mr"
+      data-testid="pipeline-container"
+    />
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
       <extensions-container v-if="hasExtensions" :mr="mr" />
@@ -637,6 +619,7 @@ export default {
       class="js-post-merge-pipeline mr-widget-workflow"
       :mr="mr"
       :is-post-merge="true"
+      data-testid="merged-pipeline-container"
     />
   </div>
   <loading v-else />

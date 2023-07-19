@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { GlIcon, GlCard } from '@gitlab/ui';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   issuable1,
   issuable2,
@@ -14,6 +14,7 @@ import {
   linkedIssueTypesTextMap,
   PathIdSeparator,
 } from '~/related_issues/constants';
+import RelatedIssuesList from '~/related_issues/components/related_issues_list.vue';
 
 describe('RelatedIssuesBlock', () => {
   let wrapper;
@@ -21,9 +22,10 @@ describe('RelatedIssuesBlock', () => {
   const findToggleButton = () => wrapper.findByTestId('toggle-links');
   const findRelatedIssuesBody = () => wrapper.findByTestId('related-issues-body');
   const findIssueCountBadgeAddButton = () => wrapper.findByTestId('related-issues-plus-button');
+  const findAllRelatedIssuesList = () => wrapper.findAllComponents(RelatedIssuesList);
+  const findRelatedIssuesList = (index) => findAllRelatedIssuesList().at(index);
 
   const createComponent = ({
-    mountFn = mountExtended,
     pathIdSeparator = PathIdSeparator.Issue,
     issuableType = TYPE_ISSUE,
     canAdmin = false,
@@ -35,7 +37,7 @@ describe('RelatedIssuesBlock', () => {
     autoCompleteEpics = true,
     slots = '',
   } = {}) => {
-    wrapper = mountFn(RelatedIssuesBlock, {
+    wrapper = shallowMountExtended(RelatedIssuesBlock, {
       propsData: {
         pathIdSeparator,
         issuableType,
@@ -76,7 +78,7 @@ describe('RelatedIssuesBlock', () => {
           helpPath: '/help/user/project/issues/related_issues',
         });
 
-        expect(wrapper.find('.card-title').text()).toContain(titleText);
+        expect(wrapper.findByTestId('card-title').text()).toContain(titleText);
         expect(findIssueCountBadgeAddButton().attributes('aria-label')).toBe(addButtonText);
       },
     );
@@ -94,12 +96,9 @@ describe('RelatedIssuesBlock', () => {
     it('displays header text slot data', () => {
       const headerText = '<div>custom header text</div>';
 
-      createComponent({
-        mountFn: shallowMountExtended,
-        slots: { 'header-text': headerText },
-      });
+      createComponent({ slots: { 'header-text': headerText } });
 
-      expect(wrapper.find('.card-title').html()).toContain(headerText);
+      expect(wrapper.findByTestId('card-title').html()).toContain(headerText);
     });
   });
 
@@ -107,10 +106,7 @@ describe('RelatedIssuesBlock', () => {
     it('displays header actions slot data', () => {
       const headerActions = '<button data-testid="custom-button">custom button</button>';
 
-      createComponent({
-        mountFn: shallowMountExtended,
-        slots: { 'header-actions': headerActions },
-      });
+      createComponent({ slots: { 'header-actions': headerActions } });
 
       expect(wrapper.findByTestId('custom-button').html()).toBe(headerActions);
     });
@@ -153,10 +149,6 @@ describe('RelatedIssuesBlock', () => {
   });
 
   describe('showCategorizedIssues prop', () => {
-    const issueList = () => wrapper.findAll('.js-related-issues-token-list-item');
-    const categorizedHeadings = () => wrapper.findAll('h4');
-    const headingTextAt = (index) => categorizedHeadings().at(index).text();
-
     describe('when showCategorizedIssues=true', () => {
       beforeEach(() =>
         createComponent({
@@ -166,25 +158,25 @@ describe('RelatedIssuesBlock', () => {
       );
 
       it('should render issue tokens items', () => {
-        expect(issueList()).toHaveLength(3);
+        expect(findAllRelatedIssuesList()).toHaveLength(3);
       });
 
       it('shows "Blocks" heading', () => {
-        const blocks = linkedIssueTypesTextMap[linkedIssueTypesMap.BLOCKS];
-
-        expect(headingTextAt(0)).toBe(blocks);
+        expect(findRelatedIssuesList(0).props('heading')).toBe(
+          linkedIssueTypesTextMap[linkedIssueTypesMap.BLOCKS],
+        );
       });
 
       it('shows "Is blocked by" heading', () => {
-        const isBlockedBy = linkedIssueTypesTextMap[linkedIssueTypesMap.IS_BLOCKED_BY];
-
-        expect(headingTextAt(1)).toBe(isBlockedBy);
+        expect(findRelatedIssuesList(1).props('heading')).toBe(
+          linkedIssueTypesTextMap[linkedIssueTypesMap.IS_BLOCKED_BY],
+        );
       });
 
       it('shows "Relates to" heading', () => {
-        const relatesTo = linkedIssueTypesTextMap[linkedIssueTypesMap.RELATES_TO];
-
-        expect(headingTextAt(2)).toBe(relatesTo);
+        expect(findRelatedIssuesList(2).props('heading')).toBe(
+          linkedIssueTypesTextMap[linkedIssueTypesMap.RELATES_TO],
+        );
       });
     });
 
@@ -194,8 +186,9 @@ describe('RelatedIssuesBlock', () => {
           showCategorizedIssues: false,
           relatedIssues: [issuable1, issuable2, issuable3],
         });
-        expect(issueList()).toHaveLength(3);
-        expect(categorizedHeadings()).toHaveLength(0);
+        expect(findAllRelatedIssuesList()).toHaveLength(1);
+        expect(findRelatedIssuesList(0).props('relatedIssues')).toHaveLength(3);
+        expect(findRelatedIssuesList(0).props('heading')).toBe('');
       });
     });
   });

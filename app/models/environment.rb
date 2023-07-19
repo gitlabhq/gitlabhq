@@ -18,7 +18,7 @@ class Environment < ApplicationRecord
   belongs_to :cluster_agent, class_name: 'Clusters::Agent', optional: true, inverse_of: :environments
 
   use_fast_destroy :all_deployments
-  nullify_if_blank :external_url
+  nullify_if_blank :external_url, :kubernetes_namespace
 
   has_many :all_deployments, class_name: 'Deployment'
   has_many :deployments, -> { visible }
@@ -70,13 +70,15 @@ class Environment < ApplicationRecord
     length: { maximum: 255 },
     allow_nil: true
 
-  # Currently, the tier presence is validaed for newly created environments.
-  # After the `BackfillEnvironmentTiers` background migration has been completed, we should remove `on: :create`.
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/385253.
-  # Todo: Remove along with FF `validate_environment_tier_presence`.
-  validates :tier, presence: true, on: :create, unless: :validate_environment_tier_present?
+  validates :kubernetes_namespace,
+    allow_nil: true,
+    length: 1..63,
+    format: {
+      with: Gitlab::Regex.kubernetes_namespace_regex,
+      message: Gitlab::Regex.kubernetes_namespace_regex_message
+    }
 
-  validates :tier, presence: true, if: :validate_environment_tier_present?
+  validates :tier, presence: true
 
   validate :safe_external_url
   validate :merge_request_not_changed
@@ -601,10 +603,6 @@ class Environment < ApplicationRecord
     else
       self.class.tiers[:other]
     end
-  end
-
-  def validate_environment_tier_present?
-    Feature.enabled?(:validate_environment_tier_presence, self.project)
   end
 end
 

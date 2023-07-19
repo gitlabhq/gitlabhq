@@ -122,6 +122,59 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
         end
       end
     end
+
+    describe 'GET #topic.atom' do
+      context 'when topic does not exist' do
+        it 'renders a 404 error' do
+          get :topic, format: :atom, params: { topic_name: 'topic1' }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when topic exists' do
+        let(:topic) { create(:topic, name: 'topic1') }
+        let_it_be(:older_project) { create(:project, :public, updated_at: 1.day.ago) }
+        let_it_be(:newer_project) { create(:project, :public, updated_at: 2.days.ago) }
+
+        before do
+          create(:project_topic, project: older_project, topic: topic)
+          create(:project_topic, project: newer_project, topic: topic)
+        end
+
+        it 'renders the template' do
+          get :topic, format: :atom, params: { topic_name: 'topic1' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('topic', layout: :xml)
+        end
+
+        it 'sorts repos by descending creation date' do
+          get :topic, format: :atom, params: { topic_name: 'topic1' }
+
+          expect(assigns(:projects)).to match_array [newer_project, older_project]
+        end
+
+        it 'finds topic by case insensitive name' do
+          get :topic, format: :atom, params: { topic_name: 'TOPIC1' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('topic', layout: :xml)
+        end
+
+        describe 'when topic contains more than 20 projects' do
+          before do
+            create_list(:project, 22, :public, topics: [topic])
+          end
+
+          it 'does not assigns more than 20 projects' do
+            get :topic, format: :atom, params: { topic_name: 'topic1' }
+
+            expect(assigns(:projects).count).to be(20)
+          end
+        end
+      end
+    end
   end
 
   shared_examples "blocks high page numbers" do

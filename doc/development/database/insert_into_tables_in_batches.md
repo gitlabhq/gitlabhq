@@ -141,7 +141,7 @@ the key differences between these classes are listed in the table below.
 | `insert_all!`  | Attribute hashes     | No              | No                 | Yes                               | Yes           |
 
 To summarize, `BulkInsertSafe` moves bulk inserts closer to how ActiveRecord objects
-and inserts would normally behave. However, if all you need is to insert raw data in bulk, then
+and inserts would usually behave. However, if all you need is to insert raw data in bulk, then
 `insert_all` is more efficient.
 
 ## Insert `has_many` associations in bulk

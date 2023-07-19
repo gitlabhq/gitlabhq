@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlFormGroup, GlAlert, GlTooltipDirective } from '@gitlab/ui';
-
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -9,7 +8,7 @@ import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { toggleMarkCheckboxes } from '~/behaviors/markdown/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import updateDesignDescriptionMutation from '../../graphql/mutations/update_design_description.mutation.graphql';
 import { UPDATE_DESCRIPTION_ERROR } from '../../utils/error_messages';
 
@@ -110,6 +109,11 @@ export default {
     async updateDesignDescription() {
       this.isSubmitting = true;
 
+      if (this.$refs.markdownEditor) {
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        trackSavedUsingEditor(this.$refs.markdownEditor.isContentEditorActive, 'Design');
+      }
+
       try {
         const designDescriptionInput = { description: this.descriptionText, id: this.design.id };
 
@@ -165,6 +169,7 @@ export default {
         </gl-alert>
       </div>
       <markdown-editor
+        ref="markdownEditor"
         :value="descriptionText"
         :render-markdown-path="markdownPreviewPath"
         :markdown-docs-path="$options.markdownDocsPath"

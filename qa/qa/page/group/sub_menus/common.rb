@@ -13,7 +13,7 @@ module QA
 
             base.class_eval do
               view 'app/views/shared/nav/_sidebar.html.haml' do
-                element :group_sidebar, 'qa_selector: sidebar_qa_selector(sidebar.container)' # rubocop:disable QA/ElementWithPattern
+                element :group_sidebar, 'testid: sidebar_qa_selector(sidebar.container)' # rubocop:disable QA/ElementWithPattern
               end
             end
           end

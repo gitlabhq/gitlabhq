@@ -21,8 +21,8 @@ module Gitlab
 
         def deactivated
           ephemeral_response(text: <<~MESSAGE)
-            You are not allowed to perform the given chatops command since
-            your account has been deactivated by your administrator.
+            You are not allowed to perform the given ChatOps command. Most likely
+            your #{Gitlab.config.gitlab.url} account needs to be reactivated.
 
             Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}
           MESSAGE

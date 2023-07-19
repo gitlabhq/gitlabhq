@@ -37,8 +37,6 @@ module Mutations
 
           parse_gid(**args)
 
-          check_feature_flag(**args)
-
           super
         end
 
@@ -77,28 +75,6 @@ module Mutations
             GitlabSchema.parse_gid(args[:group_id], expected_type: ::Group)
           when 'project_type'
             GitlabSchema.parse_gid(args[:project_id], expected_type: ::Project)
-          end
-        end
-
-        def check_feature_flag(**args)
-          case args[:runner_type]
-          when 'instance_type'
-            if Feature.disabled?(:create_runner_workflow_for_admin, current_user)
-              raise Gitlab::Graphql::Errors::ResourceNotAvailable,
-                '`create_runner_workflow_for_admin` feature flag is disabled.'
-            end
-          when 'group_type'
-            namespace = find_object(**args).sync
-            if Feature.disabled?(:create_runner_workflow_for_namespace, namespace)
-              raise Gitlab::Graphql::Errors::ResourceNotAvailable,
-                '`create_runner_workflow_for_namespace` feature flag is disabled.'
-            end
-          when 'project_type'
-            project = find_object(**args).sync
-            if project && Feature.disabled?(:create_runner_workflow_for_namespace, project.namespace)
-              raise Gitlab::Graphql::Errors::ResourceNotAvailable,
-                '`create_runner_workflow_for_namespace` feature flag is disabled.'
-            end
           end
         end
       end

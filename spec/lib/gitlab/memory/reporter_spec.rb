@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures, feature_category: 
         end
 
         context 'when cause was compression command failing' do
-          let(:error_message) { "StandardError: exit 1: cat:" }
+          let(:error_message) { "StandardError.+exit 1: cat:" }
 
           before do
             stub_const('Gitlab::Memory::Reporter::COMPRESS_CMD', %w[cat --bad-flag])

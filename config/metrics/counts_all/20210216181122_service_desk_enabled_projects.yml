@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage.plan.service_desk_enabled_projects
-description: Count creator ids from projects with service desk enabled
+description: Count unique users who created projects (creator_id) with service desk enabled
 product_section: ops
 product_stage: monitor
 product_group: respond

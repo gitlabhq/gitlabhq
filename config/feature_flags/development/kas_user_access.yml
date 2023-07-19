@@ -1,8 +1,0 @@
----
-name: kas_user_access
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104504'
-rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391201'
-milestone: '15.10'
-type: development
-group: group::environments
-default_enabled: true

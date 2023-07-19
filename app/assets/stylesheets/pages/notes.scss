@@ -100,8 +100,11 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         margin-left: 2.5rem;
         border: 1px solid $border-color;
         border-radius: $gl-border-radius-base;
-        background-color: $white;
         padding: $gl-padding-4 $gl-padding-8;
+      }
+
+      &:not(.target) .timeline-content:not(.flash-container) {
+        background-color: $white;
       }
 
       &.draft-note .timeline-content:not(.flash-container) {
@@ -139,9 +142,12 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
               border-top: 1px solid $border-color;
               border-top-left-radius: $gl-border-radius-base;
               border-top-right-radius: $gl-border-radius-base;
-              background-color: $white;
               padding: $gl-padding-4 $gl-padding-8;
             }
+          }
+
+          &:not(.target) .timeline-content:not(.flash-container) {
+            background-color: $white;
           }
 
           &.draft-note .timeline-content:not(.flash-container) {
@@ -236,15 +242,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   > .note-discussion {
     .card {
       border: 0;
-    }
-  }
-
-  .discussion-toggle-replies {
-    border-top: 0;
-    border-radius: 4px 4px 0 0;
-
-    &.collapsed {
-      border-radius: 4px;
     }
   }
 
@@ -1090,6 +1087,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
           margin-left: 0;
           border-left: 0;
           border-right: 0;
+          border-radius: 0 !important;
         }
 
         .discussion-reply-holder {

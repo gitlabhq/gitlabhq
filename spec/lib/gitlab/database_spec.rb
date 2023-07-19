@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Database, feature_category: :database do
         before do
           # CI config might not be configured
           allow(ActiveRecord::Base.configurations).to receive(:configs_for)
-            .with(env_name: 'test', name: 'ci', include_replicas: true)
+            .with(env_name: 'test', name: 'ci', include_hidden: true)
             .and_return(ci_db_config)
         end
 
@@ -215,7 +215,7 @@ RSpec.describe Gitlab::Database, feature_category: :database do
       expect(Kernel)
         .to receive(:warn)
         .with(/You are using PostgreSQL/)
-        .exactly(Gitlab::Database.database_base_models.length)
+        .exactly(described_class.database_base_models.length)
         .times
 
       subject
@@ -432,21 +432,21 @@ RSpec.describe Gitlab::Database, feature_category: :database do
 
   describe '.database_base_models_with_gitlab_shared' do
     before do
-      Gitlab::Database.instance_variable_set(:@database_base_models_with_gitlab_shared, nil)
+      described_class.instance_variable_set(:@database_base_models_with_gitlab_shared, nil)
     end
 
     it 'memoizes the models' do
-      expect { Gitlab::Database.database_base_models_with_gitlab_shared }.to change { Gitlab::Database.instance_variable_get(:@database_base_models_with_gitlab_shared) }.from(nil)
+      expect { described_class.database_base_models_with_gitlab_shared }.to change { Gitlab::Database.instance_variable_get(:@database_base_models_with_gitlab_shared) }.from(nil)
     end
   end
 
   describe '.database_base_models_using_load_balancing' do
     before do
-      Gitlab::Database.instance_variable_set(:@database_base_models_using_load_balancing, nil)
+      described_class.instance_variable_set(:@database_base_models_using_load_balancing, nil)
     end
 
     it 'memoizes the models' do
-      expect { Gitlab::Database.database_base_models_using_load_balancing }.to change { Gitlab::Database.instance_variable_get(:@database_base_models_using_load_balancing) }.from(nil)
+      expect { described_class.database_base_models_using_load_balancing }.to change { Gitlab::Database.instance_variable_get(:@database_base_models_using_load_balancing) }.from(nil)
     end
   end
 

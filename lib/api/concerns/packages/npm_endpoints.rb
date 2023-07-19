@@ -21,12 +21,18 @@ module API
         included do
           helpers ::API::Helpers::Packages::DependencyProxyHelpers
 
+          rescue_from ActiveRecord::RecordInvalid do |e|
+            render_structured_api_error!({ message: e.message, error: e.message }, 400)
+          end
+
           before do
             require_packages_enabled!
             authenticate_non_get!
           end
 
           helpers do
+            include Gitlab::Utils::StrongMemoize
+
             params :package_name do
               requires :package_name, type: String, file_path: true, desc: 'Package name',
                 documentation: { example: 'mypackage' }
@@ -51,6 +57,12 @@ module API
             def generate_metadata_service(packages)
               ::Packages::Npm::GenerateMetadataService.new(params[:package_name], packages)
             end
+
+            def metadata_cache
+              ::Packages::Npm::MetadataCache
+                .find_by_package_name_and_project_id(params[:package_name], project.id)
+            end
+            strong_memoize_attr :metadata_cache
           end
 
           params do
@@ -80,7 +92,7 @@ module API
               packages = ::Packages::Npm::PackageFinder.new(package_name, project: project)
                                                        .execute
 
-              not_found! if packages.empty?
+              not_found!('Package') if packages.empty?
 
               track_package_event(:list_tags, :npm, project: project, namespace: project.namespace)
 
@@ -122,6 +134,8 @@ module API
 
                 track_package_event(:create_tag, :npm, project: project, namespace: project.namespace)
 
+                enqueue_sync_metadata_cache_worker(project, package_name)
+
                 ::Packages::Npm::CreateTagService.new(package, tag).execute
 
                 no_content!
@@ -155,6 +169,8 @@ module API
                 not_found!('Package tag') unless package_tag
 
                 track_package_event(:delete_tag, :npm, project: project, namespace: project.namespace)
+
+                enqueue_sync_metadata_cache_worker(project, package_name)
 
                 ::Packages::RemoveTagService.new(package_tag).execute
 
@@ -201,6 +217,17 @@ module API
               authorize_read_package!(project)
 
               not_found!('Packages') if packages.empty?
+
+              if endpoint_scope == :project && Feature.enabled?(:npm_metadata_cache, project)
+                if metadata_cache&.file&.exists?
+                  metadata_cache.touch_last_downloaded_at
+                  present_carrierwave_file!(metadata_cache.file)
+
+                  break
+                end
+
+                enqueue_sync_metadata_cache_worker(project, package_name)
+              end
 
               present ::Packages::Npm::PackagePresenter.new(generate_metadata_service(packages).execute),
                 with: ::API::Entities::NpmPackage

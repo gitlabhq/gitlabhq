@@ -81,7 +81,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
                   track_action: 'click_link_new_project',
                   track_label: 'plus_menu_dropdown',
                   track_property: 'navigation_top',
-                  qa_selector: 'global_new_project_link'
+                  testid: 'global_new_project_link'
                 }
               )
             )
@@ -104,7 +104,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
                   track_action: 'click_link_new_group',
                   track_label: 'plus_menu_dropdown',
                   track_property: 'navigation_top',
-                  qa_selector: 'global_new_group_link'
+                  testid: 'global_new_group_link'
                 }
               )
             )
@@ -127,7 +127,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
                   track_action: 'click_link_new_snippet_parent',
                   track_label: 'plus_menu_dropdown',
                   track_property: 'navigation_top',
-                  qa_selector: 'global_new_snippet_link'
+                  testid: 'global_new_snippet_link'
                 }
               )
             )
@@ -256,7 +256,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
                   track_action: 'click_link_new_issue',
                   track_label: 'plus_menu_dropdown',
                   track_property: 'navigation_top',
-                  qa_selector: 'new_issue_link'
+                  testid: 'new_issue_link'
                 }
               )
             )
@@ -340,7 +340,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               track_action: 'click_link_new_issue',
               track_label: 'plus_menu_dropdown',
               track_property: 'navigation_top',
-              qa_selector: 'new_issue_link'
+              testid: 'new_issue_link'
             }
           )
         )

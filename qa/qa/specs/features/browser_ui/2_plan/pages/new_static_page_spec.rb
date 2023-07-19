@@ -30,19 +30,12 @@ module QA
       end
 
       before do
-        # Pages Menu Experiment currently progress https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98044
-        # Update spec along with Feature Flag Removal.
-        Runtime::Feature.disable(:show_pages_in_deployments_menu)
         Flow::Login.sign_in
         Resource::ProjectRunner.fabricate_via_api! do |runner|
           runner.project = project
           runner.executor = :docker
         end
         pipeline.visit!
-      end
-
-      after do
-        Runtime::Feature.enable(:show_pages_in_deployments_menu)
       end
 
       it 'creates a Pages website',
@@ -57,7 +50,7 @@ module QA
         end
 
         Page::Project::Menu.perform(&:go_to_pages_settings)
-        Page::Project::Settings::Pages.perform(&:go_to_access_page)
+        Page::Project::Deployments::Pages.perform(&:go_to_access_page)
 
         Support::Waiter.wait_until(
           sleep_interval: 2,

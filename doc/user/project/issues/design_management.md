@@ -202,12 +202,12 @@ Archived designs are not permanently lost. You can browse
 
 ## Markdown and rich text editors for descriptions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `content_editor_on_issues`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+On self-managed GitLab, by default the rich text editor is available. To hide it, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `content_editor_on_issues`.
+On GitLab.com, this feature is available.
 
 When this feature is enabled, you can use the Markdown and rich text editor in design descriptions.
 It's the same editor you use for comments across GitLab.
@@ -251,7 +251,7 @@ Prerequisites:
 To delete a comment from a design:
 
 1. On the comment you want to delete, select **More actions** **{ellipsis_v}** **> Delete comment**.
-1. On the confirmation dialog box, select **Delete comment**.
+1. On the confirmation dialog, select **Delete comment**.
 
 ## Resolve a discussion thread on a design
 

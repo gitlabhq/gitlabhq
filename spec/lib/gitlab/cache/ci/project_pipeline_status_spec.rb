@@ -188,9 +188,11 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
 
       pipeline_status.store_in_cache
       read_sha, read_status = Gitlab::Redis::Cache.with { |redis| redis.hmget(cache_key, :sha, :status) }
+      ttl = Gitlab::Redis::Cache.with { |redis| redis.ttl(cache_key) }
 
       expect(read_sha).to eq('123456')
       expect(read_status).to eq('failed')
+      expect(ttl).to be > 0
     end
   end
 
@@ -254,12 +256,22 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
     end
 
     describe '#load_from_cache' do
+      subject { pipeline_status.load_from_cache }
+
       it 'reads the status from redis_cache' do
-        pipeline_status.load_from_cache
+        subject
 
         expect(pipeline_status.sha).to eq(sha)
         expect(pipeline_status.status).to eq(status)
         expect(pipeline_status.ref).to eq(ref)
+      end
+
+      it 'refreshes ttl' do
+        subject
+
+        ttl = Gitlab::Redis::Cache.with { |redis| redis.ttl(cache_key) }
+
+        expect(ttl).to be > 0
       end
 
       context 'when status is empty string' do
@@ -271,7 +283,7 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
         end
 
         it 'reads the status as nil' do
-          pipeline_status.load_from_cache
+          subject
 
           expect(pipeline_status.status).to eq(nil)
         end

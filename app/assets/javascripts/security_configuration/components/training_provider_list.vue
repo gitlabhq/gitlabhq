@@ -247,7 +247,7 @@ export default {
               :label="__('Training mode')"
               label-position="hidden"
               :disabled="!securityTrainingEnabled"
-              data-qa-selector="security_training_toggle"
+              data-testid="security-training-toggle"
               :data-qa-training-provider="provider.name"
               @change="toggleProvider(provider)"
             />

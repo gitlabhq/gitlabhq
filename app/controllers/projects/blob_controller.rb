@@ -49,6 +49,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:highlight_js, @project)
+    push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
   end
@@ -160,6 +161,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def check_for_ambiguous_ref
+    return if Feature.enabled?(:redirect_with_ref_type, @project)
+
     @ref_type = ref_type
 
     if @ref_type == ExtractsRef::BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref)
@@ -169,7 +172,17 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def commit
-    @commit ||= @repository.commit(@ref)
+    if Feature.enabled?(:redirect_with_ref_type, @project)
+      response = ::ExtractsRef::RequestedRef.new(@repository, ref_type: ref_type, ref: @ref).find
+      @commit = response[:commit]
+      @ref_type = response[:ref_type]
+
+      if response[:ambiguous]
+        return redirect_to(project_blob_path(@project, File.join(@ref_type ? @ref : @commit.id, @path), ref_type: @ref_type))
+      end
+    else
+      @commit ||= @repository.commit(@ref)
+    end
 
     return render_404 unless @commit
   end

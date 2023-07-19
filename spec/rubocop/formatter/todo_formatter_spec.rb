@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable RSpec/VerifiedDoubles
 
 require 'fast_spec_helper'
@@ -10,7 +11,7 @@ require 'tmpdir'
 require_relative '../../../rubocop/formatter/todo_formatter'
 require_relative '../../../rubocop/todo_dir'
 
-RSpec.describe RuboCop::Formatter::TodoFormatter do
+RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
   let(:stdout) { StringIO.new }
   let(:tmp_dir) { Dir.mktmpdir }
   let(:real_tmp_dir) { File.join(tmp_dir, 'real') }
@@ -97,6 +98,40 @@ RSpec.describe RuboCop::Formatter::TodoFormatter do
       YAML
     end
 
+    context 'with existing HAML exclusions' do
+      before do
+        todo_dir.write('B/TooManyOffenses', <<~YAML)
+          ---
+          B/TooManyOffenses:
+            Exclude:
+              - 'd.rb'
+              - 'app/views/project.html.haml.rb'
+              - 'app/views/project.haml.rb'
+              - 'app/views/project.text.haml.rb'
+              - 'app/views/unrelated.html.haml.rb.ext'
+              - 'app/views/unrelated.html.haml.ext'
+              - 'app/views/unrelated.html.haml'
+        YAML
+
+        todo_dir.inspect_all
+      end
+
+      it 'does not remove them' do
+        run_formatter
+
+        expect(todo_yml('B/TooManyOffenses')).to eq(<<~YAML)
+          ---
+          B/TooManyOffenses:
+            Exclude:
+              - 'a.rb'
+              - 'app/views/project.haml.rb'
+              - 'app/views/project.html.haml.rb'
+              - 'app/views/project.text.haml.rb'
+              - 'c.rb'
+        YAML
+      end
+    end
+
     context 'when cop previously not explicitly disabled' do
       before do
         todo_dir.write('B/TooManyOffenses', <<~YAML)
@@ -105,6 +140,8 @@ RSpec.describe RuboCop::Formatter::TodoFormatter do
             Exclude:
               - 'x.rb'
         YAML
+
+        todo_dir.inspect_all
       end
 
       it 'does not disable cop' do
@@ -158,6 +195,8 @@ RSpec.describe RuboCop::Formatter::TodoFormatter do
             Exclude:
               - 'x.rb'
         YAML
+
+        todo_dir.inspect_all
       end
 
       it 'keeps cop disabled' do

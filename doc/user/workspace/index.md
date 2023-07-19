@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. On GitLab.com, this feature is available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. On GitLab.com, this feature is available. The feature is not ready for production use.
 
 WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
@@ -18,6 +18,8 @@ This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subj
 A workspace is a virtual sandbox environment for your code in GitLab. You can use workspaces to create and manage isolated development environments for your GitLab projects. These environments ensure that different projects don't interfere with each other.
 
 Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project. Workspaces use the AMD64 architecture.
+
+For a demo of this feature, see [GitLab Workspaces Demo](https://go.gitlab.com/qtu66q).
 
 ## Set up a workspace
 
@@ -59,6 +61,17 @@ To create a workspace:
 
 The workspace might take a few minutes to start. To access the workspace, under **Preview**, select the workspace link.
 You also have access to the terminal and can install any necessary dependencies.
+
+## Deleting data associated with a workspace
+
+When you delete a project, agent, user, or token associated with a workspace:
+
+- The workspace is deleted from the user interface.
+- In the Kubernetes cluster, the running workspace resources become orphaned.
+
+To clean up orphaned resources, an administrator must manually delete the workspace in Kubernetes.
+
+For more information about our plans to change the current behavior, see [issue 414384](https://gitlab.com/gitlab-org/gitlab/-/issues/414384).
 
 ## Devfile
 
@@ -159,3 +172,17 @@ You can provide your own container image, which can run as any Linux user ID. It
 GitLab uses the Linux root group ID permission to create, update, or delete files in a container. The container runtime used by the Kubernetes cluster must ensure all containers have a default Linux group ID of `0`.
 
 If you have a container image that does not support arbitrary user IDs, you cannot create, update, or delete files in a workspace. To create a container image that supports arbitrary user IDs, see the [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
+
+## Troubleshooting
+
+When working with workspaces, you might encounter the following issues.
+
+### `Failed to renew lease` when creating a workspace
+
+You might not be able to create a workspace due to a known issue in the GitLab agent for Kubernetes. The following error message might appear in the agent's log:
+
+```plaintext
+{"level":"info","time":"2023-01-01T00:00:00.000Z","msg":"failed to renew lease gitlab-agent-remote-dev-dev/agent-123XX-lock: timed out waiting for the condition\n","agent_id":XXXX}
+```
+
+This issue occurs when an agent instance cannot renew its leadership lease, which results in the shutdown of leader-only modules including the `remote_development` module. To resolve this issue, restart the agent instance.

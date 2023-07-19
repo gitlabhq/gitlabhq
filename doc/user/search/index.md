@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Searching in GitLab **(FREE)**
 
-GitLab has two types of searches available: _basic_ and _advanced_.
+GitLab has two types of searches available: **basic** and **advanced**.
 
 Both types of search are the same, except when you are searching through code.
 
@@ -27,16 +27,15 @@ can limit the search scope by disabling the following [`ops` feature flags](../.
 | Issues | `global_search_issues_tab` | When enabled, global search includes issues. |
 | Merge requests | `global_search_merge_requests_tab` | When enabled, global search includes merge requests. |
 | Users | `global_search_users_tab` | When enabled, global search includes users. |
-| Wiki | `global_search_wiki_tab` | When enabled, global search includes project wikis (not [group wikis](../project/wiki/group.md)). |
+| Wiki | `global_search_wiki_tab` | When enabled, global search includes project and [group wikis](../project/wiki/group.md). |
 
-All global search scopes are enabled by default on GitLab.com
-and self-managed instances.
+All global search scopes are enabled by default on self-managed instances.
 
 ## Global search validation
 
 Global search ignores and logs as abusive any search with:
 
-- Fewer than 2 characters
+- Fewer than two characters
 - A term longer than 100 characters (URL search terms must not exceed 200 characters)
 - A stop word only (for example, `the`, `and`, or `if`)
 - An unknown `scope`
@@ -48,29 +47,36 @@ Global search only flags with an error any search that includes more than:
 - 4096 characters
 - 64 terms
 
-## Perform a search
+## Search in all GitLab
 
-To start a search, in the upper-right corner of the screen, in the search bar, type your search query.
-You must type at least two characters.
+To search in all GitLab:
 
-![search navbar](img/search_navbar_v15_7.png)
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**).
+1. Type your search query. You must type at least two characters.
+1. Press <kbd>Enter</kbd> to search, or select from the list.
 
-After the results are displayed, you can modify the search, select a different type of data to
-search, or choose a specific group or project.
+The results are displayed. To filter the results, on the left sidebar, select a filter.
 
-![search scope](img/search_scope_v15_7.png)
+## Search in a project
 
-## Search in code
-
-To search through code or other documents in a project:
+To search in a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and type the string you want to search for.
-1. Press **Enter**.
+1. Select **Search GitLab** (**{search}**) again and type the string you want to search for.
+1. Press <kbd>Enter</kbd> to search, or select from the list.
+
+The results are displayed. To filter the results, on the left sidebar, select a filter.
+
+## Search for code
+
+To search for code in a project:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Search GitLab** (**{search}**) again and type the code you want to search for.
+1. Press <kbd>Enter</kbd> to search, or select from the list.
 
 Code search shows only the first result in the file.
-
-To search across all of GitLab, ask your administrator to enable [advanced search](advanced_search.md).
+To search for code in all GitLab, ask your administrator to enable [advanced search](advanced_search.md).
 
 ### View Git blame from code search
 
@@ -82,8 +88,6 @@ where the results were found.
 1. From the code search result, hover over the line number.
 1. On the left, select **View blame**.
 
-![code search results](img/code_search_git_blame_v15_1.png)
-
 ### Filter code search results by language
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342651) in GitLab 15.10.
@@ -93,7 +97,33 @@ To filter code search results by one or more languages:
 1. On the code search page, on the left sidebar, select one or more languages.
 1. On the left sidebar, select **Apply**.
 
-## Search for projects by full path
+## Exclude search results
+
+### From archived projects
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. On GitLab.com, this feature is not available.
+
+Archived projects are included in search results by default. To exclude archived projects, ensure the `search_projects_hide_archived` flag is enabled.
+
+To include archived projects with `search_projects_hide_archived` enabled, you must add the parameter `include_archived=true` to the URL.
+
+### From issues in archived projects
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124846) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `search_issues_hide_archived_projects`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named `search_issues_hide_archived_projects`. On GitLab.com, this feature is not available.
+
+Issues in archived projects are included in search results by default. To exclude issues in archived projects, ensure the `search_issues_hide_archived_projects` flag is enabled.
+
+To include issues in archived projects with `search_issues_hide_archived_projects` enabled, you must add the parameter `include_archived=true` to the URL.
+
+## Search for a project by full path
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114932) in GitLab 15.11. Feature flag `full_path_project_search` removed.
@@ -101,79 +131,55 @@ To filter code search results by one or more languages:
 You can search for a project by entering its full path (including the namespace it belongs to) in the search box.
 As you type the project path, [autocomplete suggestions](#autocomplete-suggestions) are displayed.
 
-For example, the search query:
+For example:
 
 - `gitlab-org/gitlab` searches for the `gitlab` project in the `gitlab-org` namespace.
 - `gitlab-org/` displays autocomplete suggestions for projects that belong to the `gitlab-org` namespace.
 
-### Exclude archived projects from project search results
+## Search for a commit SHA
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. On GitLab.com, this feature is not available.
-
-Archived projects are included in project search results by default. To exclude archived projects, ensure the `search_projects_hide_archived` flag is enabled.
-
-To include archived projects with `search_projects_hide_archived` enabled, you must add the parameter `include_archived=true` to the URL.
-
-## Search for a SHA
-
-You can search for a commit SHA.
+To search for a commit SHA:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and type the SHA.
+1. Select **Search GitLab** (**{search}**) again and type the commit SHA you want to search for.
+1. Press <kbd>Enter</kbd> to search, or select from the list.
 
 If a single result is returned, GitLab redirects to the commit result
 and gives you the option to return to the search results page.
 
-![project SHA search redirect](img/project_search_sha_redirect.png)
+## Search for specific terms
 
-## Searching for specific terms
-
-> - [Removed support for partial matches in issue searches](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
-> - Feature flag [`issues_full_text_search` enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.10.
-> - Feature flag [`issues_full_text_search` enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 15.2.
+> - [Support for partial matches in issue search](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913) removed in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124703) in GitLab 16.2. Feature flag `issues_full_text_search` removed.
 
 You can filter issues and merge requests by specific terms included in titles or descriptions.
 
 - Syntax
   - Searches look for all the words in a query, in any order. For example: searching
     issues for `display bug` returns all issues matching both those words, in any order.
-  - To find the exact term, use double quotes: `"display bug"`
+  - To find the exact term, use double quotes: `"display bug"`.
 - Limitation
-  - For performance reasons, terms shorter than 3 chars are ignored. For example: searching
+  - For performance reasons, terms shorter than three characters are ignored. For example: searching
     issues for `included in titles` is same as `included titles`
   - Search is limited to 4096 characters and 64 terms per query.
   - When searching issues, partial matches are not allowed. For example: searching for `play` will
     not return issues that have the word `display`. But variations of words match, so searching
     for `displays` also returns issues that have the word `display`.
 
-## Retrieve search results as feed
+## Run a search from history
 
-> Feeds for merge requests were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66336) in GitLab 14.3.
-
-GitLab provides RSS feeds of search results for your project. To subscribe to the
-RSS feed of search results:
-
-1. Go to your project's page.
-1. On the left sidebar, select **Issues** or **Merge requests**.
-1. Perform a search.
-1. Select the feed symbol **{rss}** to display the results as an RSS feed in Atom format.
-
-The URL of the result contains both a feed token, and your search query.
-You can add this URL to your feed reader.
-
-## Search history
-
-Search history is available for issues and merge requests, and is stored locally
+You can run a search from history for issues and merge requests. Search history is stored locally
 in your browser. To run a search from history:
 
-1. In the top menu, select **Issues** or **Merge requests**.
-1. To the left of the search bar, select **Recent searches**, and select a search from the list.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. To view recent searches:
 
-## Removing search filters
+   - For issues, on the left sidebar, select **Plan > Issues**. Above the list, to the left of the search box, select (**{history}**).
+   - For merge requests, on the left sidebar, select **Code > Merge requests**. Above the list, to the left of the search box, select **Recent searches**.
+
+1. From the dropdown list, select a search.
+
+## Remove search filters
 
 Individual filters can be removed by selecting the filter's (x) button or backspacing. The entire search filter can be cleared by selecting the search box's (x) button or via <kbd>⌘</kbd> (Mac) + <kbd>⌫</kbd>.
 
@@ -181,9 +187,9 @@ To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Control</
 
 ## Autocomplete suggestions
 
-In the search bar, you can view autocomplete suggestions for:
+In the search box, you can view autocomplete suggestions for:
 
-- [Projects](#search-for-projects-by-full-path) and groups
+- [Projects](#search-for-a-project-by-full-path) and groups
 - Users
 - Various help pages (try and type **API help**)
 - Project feature pages (try and type **milestones**)
@@ -195,13 +201,6 @@ In the search bar, you can view autocomplete suggestions for:
 
 ## Search settings
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8 [with a flag](../../administration/feature_flags.md) named `search_settings_in_page`. Disabled by default.
-> - [Added](https://gitlab.com/groups/gitlab-org/-/epics/4842) to Group, Administrator, and User settings in GitLab 13.9.
-> - [Feature flag `search_settings_in_page` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
-
 You can search inside a Project, Group, Administrator, or User's settings by entering
 a search term in the search box located at the top of the page. The search results
 appear highlighted in the sections that match the search term.
-
-![Search project settings](img/project_search_general_settings_v13_8.png)

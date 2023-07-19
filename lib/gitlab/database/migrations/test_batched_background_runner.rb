@@ -57,6 +57,20 @@ module Gitlab
                     job_arguments: migration.job_arguments
                   )
 
+                  # If no rows match, the next_bounds are nil.
+                  # This will only happen if there are zero rows to match from the current sampling point to the end
+                  # of the table
+                  # Simulate the approach in the actual background migration worker by not sampling a batch
+                  # from this range.
+                  # (The actual worker would finish the migration, but we may find batches that can be sampled elsewhere
+                  # in the table)
+                  if next_bounds.nil?
+                    # If the migration has no work to do across the entire table, sampling can get stuck
+                    # in a loop if we don't mark the attempted batches as completed
+                    completed_batches << (batch_start..(batch_start + migration.batch_size))
+                    next
+                  end
+
                   batch_min, batch_max = next_bounds
 
                   job = migration.create_batched_job!(batch_min, batch_max)
@@ -65,7 +79,7 @@ module Gitlab
 
                   job
                 end
-              end
+              end.reject(&:nil?) # Remove skipped batches from the lazy list of batches to test
 
               job_class_name = migration.job_class_name
 

@@ -6,7 +6,7 @@ info: For assistance with this tutorial, see https://about.gitlab.com/handbook/p
 
 # Tutorial: Make your first Git commit
 
-This tutorial is going to teach you a little bit about how Git works. It walks
+This tutorial will teach you a little bit about how Git works. It walks
 you through the steps of creating your own project, editing a file, and
 committing changes to a Git repository from the command line.
 

@@ -145,7 +145,7 @@ module Packages
       end
 
       def metadata
-        ::Packages::Nuget::MetadataExtractionService.new(@package_file.id).execute
+        ::Packages::Nuget::MetadataExtractionService.new(@package_file.id).execute.payload
       end
       strong_memoize_attr :metadata
 

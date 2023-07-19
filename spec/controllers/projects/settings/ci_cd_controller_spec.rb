@@ -65,9 +65,8 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
       end
 
       context 'with group runners' do
-        let_it_be(:group) { create :group }
-        let_it_be(:project) { create :project, group: group }
-        let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+        let(:project) { other_project }
+        let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
         it 'sets group runners' do
           subject

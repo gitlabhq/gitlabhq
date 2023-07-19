@@ -13,8 +13,8 @@ module Gitlab
     module ClassMethods
       include Gitlab::Utils::StrongMemoize
 
-      def decode_jwt(encoded_message, jwt_secret = secret, issuer: nil, iat_after: nil)
-        options = { algorithm: 'HS256' }
+      def decode_jwt(encoded_message, jwt_secret = secret, algorithm: 'HS256', issuer: nil, iat_after: nil)
+        options = { algorithm: algorithm }
         options = options.merge(iss: issuer, verify_iss: true) if issuer.present?
         options = options.merge(verify_iat: true) if iat_after.present?
 

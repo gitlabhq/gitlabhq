@@ -1,8 +1,8 @@
 - page_title _('Enter admin mode')
 - add_page_specific_style 'page_bundles/login'
 
-.row.justify-content-center
-  .col-md-5.new-session-forms-container
+.row.gl-mt-5.justify-content-center
+  .col-md-5
     .login-page
       #signin-container{ class: ('borderless' if Feature.enabled?(:restyle_login_page, @project)) }
         - if any_form_based_providers_enabled?

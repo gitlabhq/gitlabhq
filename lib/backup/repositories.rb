@@ -58,8 +58,11 @@ module Backup
     end
 
     def enqueue_consecutive_projects
-      project_relation.find_each(batch_size: 1000) do |project|
-        enqueue_project(project)
+      cross_join_issue = "https://gitlab.com/gitlab-org/gitlab/-/issues/417467"
+      ::Gitlab::Database.allow_cross_joins_across_databases(url: cross_join_issue) do
+        project_relation.find_each(batch_size: 1000) do |project|
+          enqueue_project(project)
+        end
       end
     end
 

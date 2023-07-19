@@ -68,17 +68,5 @@ RSpec.describe EnvironmentHelper, feature_category: :environment_management do
         graphql_etag_key: environment.etag_cache_key
       }.to_json)
     end
-
-    context 'when metrics dashboard feature is available' do
-      before do
-        stub_feature_flags(remove_monitor_metrics: false)
-      end
-
-      it 'includes metrics path' do
-        expect(Gitlab::Json.parse(subject)).to include(
-          'environment_metrics_path' => project_metrics_dashboard_path(project, environment: environment)
-        )
-      end
-    end
   end
 end

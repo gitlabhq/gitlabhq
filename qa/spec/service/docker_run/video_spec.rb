@@ -4,7 +4,7 @@ module QA
   RSpec.describe Service::DockerRun::Video do
     include QA::Support::Helpers::StubEnv
 
-    let(:rspec_config) { instance_double('RSpec::Core::Configuration', append_after: nil, prepend_before: nil) }
+    let(:rspec_config) { instance_double('RSpec::Core::Configuration', prepend_before: nil, prepend_after: nil) }
     let(:video_recorder_image) { 'presidenten/selenoid-manual-video-recorder' }
     let(:video_recorder_version) { 'latest' }
     let(:selenoid_browser_image) { 'selenoid/chrome' }
@@ -12,6 +12,7 @@ module QA
     let(:remote_grid) { 'selenoid:4444' }
     let(:record_video) { 'true' }
     let(:use_selenoid) { 'true' }
+    let(:allure_report) { 'false' }
     let(:docs_link) do
       'https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/running_against_remote_grid.md#testing-with-selenoid'
     end
@@ -55,6 +56,7 @@ module QA
       stub_env('QA_REMOTE_GRID', remote_grid)
       stub_env('USE_SELENOID', use_selenoid)
       stub_env('QA_RECORD_VIDEO', record_video)
+      stub_env('QA_GENERATE_ALLURE_REPORT', allure_report)
 
       allow(RSpec).to receive(:configure).and_yield(rspec_config)
       allow(described_class).to receive(:get_container_name)
@@ -173,7 +175,29 @@ module QA
             .with(/Test failure video recording setup complete!/)
           expect(RSpec).to have_received(:configure)
           expect(rspec_config).to have_received(:prepend_before)
-          expect(rspec_config).to have_received(:append_after)
+          expect(rspec_config).to have_received(:prepend_after)
+        end
+      end
+
+      context 'with generate_allure_report' do
+        let(:rspec_config) do
+          instance_double('RSpec::Core::Configuration',
+            prepend_before: nil,
+            prepend_after: nil,
+            append_after: nil)
+        end
+
+        let(:allure_report) { 'true' }
+
+        it 'performs configuration with allure report' do
+          aggregate_failures do
+            expect(QA::Runtime::Logger).to have_received(:info)
+              .with(/Test failure video recording setup complete!/)
+            expect(RSpec).to have_received(:configure).twice
+            expect(rspec_config).to have_received(:prepend_before)
+            expect(rspec_config).to have_received(:prepend_after)
+            expect(rspec_config).to have_received(:append_after)
+          end
         end
       end
     end

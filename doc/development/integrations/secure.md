@@ -577,8 +577,8 @@ All other attributes are optional.
 
 ##### SAST
 
-The `location` of a SAST vulnerability must have a `file` and a `start_line` field,
-giving the path of the affected file, and the affected line number, respectively.
+The `location` of a SAST vulnerability must have a `file` that gives the path of the affected file and 
+a `start_line` field with the affected line number.
 It may also have an `end_line`, a `class`, and a `method`.
 
 For instance, here is the `location` object for a security flaw found
@@ -626,18 +626,13 @@ This is addressed in [issue #7586](https://gitlab.com/gitlab-org/gitlab/-/issues
 
 See also [deduplication process](../../user/application_security/vulnerability_report/pipeline.md#deduplication-process).
 
-##### Severity and confidence
+##### Severity
 
-The `severity` field describes how much the vulnerability impacts the software,
-whereas the `confidence` field describes how reliable the assessment of the vulnerability is.
+The `severity` field describes how badly the vulnerability impacts the software.
 The severity is used to sort the vulnerabilities in the security dashboard.
 
 The severity ranges from `Info` to `Critical`, but it can also be `Unknown`.
 Valid values are: `Unknown`, `Info`, `Low`, `Medium`, `High`, or `Critical`
-
-The confidence ranges from `Low` to `Confirmed`, but it can also be `Unknown`,
-`Experimental` or even `Ignore` if the vulnerability is to be ignored.
-Valid values are: `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, or `Confirmed`
 
 `Unknown` values means that data is unavailable to determine it's actual value. Therefore, it may be `high`, `medium`, or `low`,
 and needs to be investigated. We have [provided a chart](../../user/application_security/sast/analyzers.md#data-provided-by-analyzers)

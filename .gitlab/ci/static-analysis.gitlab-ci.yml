@@ -134,10 +134,10 @@ rubocop:
         unset CI_SLACK_WEBHOOK_URL
         run_timed_command "fail_on_warnings bundle exec rake rubocop:check:graceful"
       else
-        cat "${RSPEC_CHANGED_FILES_PATH}" | ruby -e 'print $stdin.read.split(" ").select { |f| File.exist?(f) }.join(" ")' > "$RUBOCOP_TARGET_FILES"
+        select_existing_files < "${RSPEC_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"
         # Skip running RuboCop if there's no target files
         if [ -s "${RUBOCOP_TARGET_FILES}" ]; then
-          run_timed_command "fail_on_warnings bundle exec rubocop --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})"
+          run_timed_command "fail_on_warnings bundle exec rubocop --config .rubocop.yml --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})"
         else
           echoinfo "Nothing interesting changed for RuboCop. Skipping."
         fi
@@ -177,7 +177,7 @@ feature-flags-usage:
   script:
     # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
     # the cache would prevent these files from being created.
-    - run_timed_command "fail_on_warnings bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false"
+    - run_timed_command "fail_on_warnings bundle exec rubocop --config .rubocop.yml --only Gitlab/MarkUsedFeatureFlags --cache false"
   artifacts:
     expire_in: 31d
     when: always
@@ -199,7 +199,7 @@ semgrep-appsec-custom-rules:
         --include app --include lib --include workhorse \
         --exclude '*_test.go' --exclude spec --exclude qa > gl-sast-report.json || true
   variables:
-    CUSTOM_RULES_URL: https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/raw/main/appsec-pings/rules.yml
+    CUSTOM_RULES_URL: https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/raw/main/gitlab-sast-rules/rules.yml
   artifacts:
     paths:
       - gl-sast-report.json
@@ -217,3 +217,31 @@ ping-appsec-for-sast-findings:
   script:
     - apk add jq curl
     - scripts/process_custom_semgrep_results.sh
+
+trigger-depsaster:
+  extends: .static-analysis:rules:trigger-depsaster
+  stage: lint
+  variables:
+    MERGE_REQUEST_PROJECT_ID: $CI_MERGE_REQUEST_PROJECT_ID
+    MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
+  trigger:
+    project: "gitlab-com/gl-security/appsec/tooling/depsaster"
+  allow_failure: true
+
+ping-appsec-for-dependency-review:
+  stage: lint
+  needs: []
+  variables:
+    GIT_CHECKOUT: "false"
+    DISABLE_MENTIONS: "false"
+    DISABLE_SCORING: "true"
+    DISABLE_COMMENTING: "false"
+    DEPENDENCY_REVIEW_BOT_CI_REG: "${CI_REGISTRY}/gitlab-com/gl-security/appsec/tooling/depscore/master"
+  extends: [".ping-appsec-for-dependency-review:rules", ".use-docker-in-docker"]
+  before_script:
+    - apk add jq curl
+    - DEPENDENCY_REVIEW_BOT_UNAME=$(curl --header "PRIVATE-TOKEN:$DEPENDENCY_REVIEW_PAT" "https://gitlab.com/api/v4/user" | jq -r '.username')
+    - echo "$DEPENDENCY_REVIEW_PAT" | docker login --password-stdin -u "$DEPENDENCY_REVIEW_BOT_UNAME" -- "$DEPENDENCY_REVIEW_BOT_CI_REG"
+  script:
+    - docker run --interactive --rm "$DEPENDENCY_REVIEW_BOT_CI_REG:latest" -t "$DEPENDENCY_REVIEW_PAT" -p "$CI_PROJECT_ID" -m "$CI_MERGE_REQUEST_IID" -s "$DISABLE_SCORING" -a "$DISABLE_MENTIONS" -c "$DISABLE_COMMENTING"
+  allow_failure: true

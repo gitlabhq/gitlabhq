@@ -650,7 +650,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
       context 'when there are no deployments and builds' do
         it do
-          expect(subject_method(environment)).to eq(Deployment.none)
+          expect(subject_method(environment)).to eq(described_class.none)
         end
       end
 
@@ -663,7 +663,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         end
 
         it do
-          expect(subject_method(environment)).to eq(Deployment.none)
+          expect(subject_method(environment)).to eq(described_class.none)
         end
       end
 
@@ -1285,7 +1285,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         let(:build_status) { :created }
 
         it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %Q{Status cannot transition via \"create\"} }
+          let(:error_message) { %{Status cannot transition via \"create\"} }
         end
       end
 
@@ -1315,7 +1315,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         let(:build_status) { :created }
 
         it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %Q{Status cannot transition via \"create\"} }
+          let(:error_message) { %{Status cannot transition via \"create\"} }
         end
       end
 
@@ -1323,7 +1323,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         let(:build_status) { :running }
 
         it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %Q{Status cannot transition via \"run\"} }
+          let(:error_message) { %{Status cannot transition via \"run\"} }
         end
       end
 

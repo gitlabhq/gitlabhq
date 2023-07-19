@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAML API **(PREMIUM SAAS)**
+# SAML API **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
@@ -35,7 +35,7 @@ response attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/identities" --header "<PRIVATE-TOKEN>"
+curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/identities" --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
 ```
 
 Example response:
@@ -67,7 +67,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/sydney_jones" --header "<PRIVATE TOKEN>"
+curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/sydney_jones" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
 ```
 
 Example response:
@@ -102,6 +102,6 @@ Example request:
 
 ```shell
 curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/saml/sydney_jones" \
---header "<PRIVATE TOKEN>" \
---form "extern_uid=sydney_jones_new" \
+--header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
+--form "extern_uid=sydney_jones_new"
 ```

@@ -86,7 +86,7 @@ RSpec.describe 'dev rake tasks' do
     end
 
     def expect_connections_to_be_terminated
-      expect(Gitlab::Database::EachDatabase).to receive(:each_database_connection)
+      expect(Gitlab::Database::EachDatabase).to receive(:each_connection)
         .with(include_shared: false)
         .and_call_original
 

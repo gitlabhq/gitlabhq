@@ -5,10 +5,11 @@ import {
   GlSkeletonLoader,
   GlButton,
   GlEmptyState,
+  GlIntersectionObserver,
 } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -18,12 +19,8 @@ import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
-import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
-import WorkItemState from '~/work_items/components/work_item_state.vue';
+import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
-import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
-import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
-import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
@@ -31,20 +28,13 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import workItemDatesSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
-import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
-import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
-import workItemMilestoneSubscription from '~/work_items/graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
+import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 
 import {
   mockParent,
-  workItemDatesSubscriptionResponse,
   workItemByIidResponseFactory,
-  workItemTitleSubscriptionResponse,
-  workItemAssigneesSubscriptionResponse,
-  workItemMilestoneSubscriptionResponse,
   objectiveType,
   mockWorkItemCommentNote,
 } from '../mock_data';
@@ -63,16 +53,11 @@ describe('WorkItemDetail component', () => {
     canDelete: true,
   });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
-  const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
-  const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
-  const milestoneSubscriptionHandler = jest
-    .fn()
-    .mockResolvedValue(workItemMilestoneSubscriptionResponse);
-  const assigneesSubscriptionHandler = jest
-    .fn()
-    .mockResolvedValue(workItemAssigneesSubscriptionResponse);
   const showModalHandler = jest.fn();
   const { id } = workItemQueryResponse.data.workspace.workItems.nodes[0];
+  const workItemUpdatedSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue({ data: { workItemUpdated: null } });
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -81,42 +66,39 @@ describe('WorkItemDetail component', () => {
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
-  const findWorkItemState = () => wrapper.findComponent(WorkItemState);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
-  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
-  const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
-  const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
-  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
-  const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
+  const findWorkItemAttributesWrapper = () => wrapper.findComponent(WorkItemAttributesWrapper);
+  const findParent = () => wrapper.findByTestId('work-item-parent');
   const findParentButton = () => findParent().findComponent(GlButton);
-  const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
-  const findWorkItemType = () => wrapper.find('[data-testid="work-item-type"]');
+  const findCloseButton = () => wrapper.findByTestId('work-item-close');
+  const findWorkItemType = () => wrapper.findByTestId('work-item-type');
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
   const findModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findWorkItemTodos = () => wrapper.findComponent(WorkItemTodos);
+  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
+  const findStickyHeader = () => wrapper.findByTestId('work-item-sticky-header');
+  const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
+  const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
+  const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
 
   const createComponent = ({
     isModal = false,
     updateInProgress = false,
     workItemIid = '1',
     handler = successHandler,
-    subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     error = undefined,
     workItemsMvc2Enabled = false,
   } = {}) => {
     const handlers = [
       [workItemByIidQuery, handler],
-      [workItemTitleSubscription, subscriptionHandler],
-      [workItemDatesSubscription, datesSubscriptionHandler],
-      [workItemAssigneesSubscription, assigneesSubscriptionHandler],
-      [workItemMilestoneSubscription, milestoneSubscriptionHandler],
+      [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
       confidentialityMock,
     ];
 
-    wrapper = shallowMount(WorkItemDetail, {
+    wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo(handlers),
       isLoggedIn: isLoggedIn(),
       propsData: {
@@ -163,12 +145,17 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('when there is no `workItemIid` prop', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent({ workItemIid: null });
+      await waitForPromises();
     });
 
     it('skips the work item query', () => {
       expect(successHandler).not.toHaveBeenCalled();
+    });
+
+    it('skips the work item updated subscription', () => {
+      expect(workItemUpdatedSubscriptionHandler).not.toHaveBeenCalled();
     });
   });
 
@@ -179,7 +166,6 @@ describe('WorkItemDetail component', () => {
 
     it('renders skeleton loader', () => {
       expect(findSkeleton().exists()).toBe(true);
-      expect(findWorkItemState().exists()).toBe(false);
       expect(findWorkItemTitle().exists()).toBe(false);
     });
   });
@@ -192,7 +178,6 @@ describe('WorkItemDetail component', () => {
 
     it('does not render skeleton', () => {
       expect(findSkeleton().exists()).toBe(false);
-      expect(findWorkItemState().exists()).toBe(true);
       expect(findWorkItemTitle().exists()).toBe(true);
     });
 
@@ -202,6 +187,10 @@ describe('WorkItemDetail component', () => {
 
     it('renders todos widget if logged in', () => {
       expect(findWorkItemTodos().exists()).toBe(true);
+    });
+
+    it('calls the work item updated subscription', () => {
+      expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({ id });
     });
   });
 
@@ -488,159 +477,6 @@ describe('WorkItemDetail component', () => {
     expect(findAlert().text()).toBe(updateError);
   });
 
-  describe('subscriptions', () => {
-    it('calls the title subscription', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(titleSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
-    });
-
-    describe('assignees subscription', () => {
-      describe('when the assignees widget exists', () => {
-        it('calls the assignees subscription', async () => {
-          createComponent();
-          await waitForPromises();
-
-          expect(assigneesSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
-        });
-      });
-
-      describe('when the assignees widget does not exist', () => {
-        it('does not call the assignees subscription', async () => {
-          const response = workItemByIidResponseFactory({ assigneesWidgetPresent: false });
-          const handler = jest.fn().mockResolvedValue(response);
-          createComponent({ handler });
-          await waitForPromises();
-
-          expect(assigneesSubscriptionHandler).not.toHaveBeenCalled();
-        });
-      });
-    });
-
-    describe('dates subscription', () => {
-      describe('when the due date widget exists', () => {
-        it('calls the dates subscription', async () => {
-          createComponent();
-          await waitForPromises();
-
-          expect(datesSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
-        });
-      });
-
-      describe('when the due date widget does not exist', () => {
-        it('does not call the dates subscription', async () => {
-          const response = workItemByIidResponseFactory({ datesWidgetPresent: false });
-          const handler = jest.fn().mockResolvedValue(response);
-          createComponent({ handler });
-          await waitForPromises();
-
-          expect(datesSubscriptionHandler).not.toHaveBeenCalled();
-        });
-      });
-    });
-  });
-
-  describe('assignees widget', () => {
-    it('renders assignees component when widget is returned from the API', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(findWorkItemAssignees().exists()).toBe(true);
-    });
-
-    it('does not render assignees component when widget is not returned from the API', async () => {
-      createComponent({
-        handler: jest
-          .fn()
-          .mockResolvedValue(workItemByIidResponseFactory({ assigneesWidgetPresent: false })),
-      });
-      await waitForPromises();
-
-      expect(findWorkItemAssignees().exists()).toBe(false);
-    });
-  });
-
-  describe('labels widget', () => {
-    it.each`
-      description                                               | labelsWidgetPresent | exists
-      ${'renders when widget is returned from API'}             | ${true}             | ${true}
-      ${'does not render when widget is not returned from API'} | ${false}            | ${false}
-    `('$description', async ({ labelsWidgetPresent, exists }) => {
-      const response = workItemByIidResponseFactory({ labelsWidgetPresent });
-      const handler = jest.fn().mockResolvedValue(response);
-      createComponent({ handler });
-      await waitForPromises();
-
-      expect(findWorkItemLabels().exists()).toBe(exists);
-    });
-  });
-
-  describe('dates widget', () => {
-    describe.each`
-      description                               | datesWidgetPresent | exists
-      ${'when widget is returned from API'}     | ${true}            | ${true}
-      ${'when widget is not returned from API'} | ${false}           | ${false}
-    `('$description', ({ datesWidgetPresent, exists }) => {
-      it(`${datesWidgetPresent ? 'renders' : 'does not render'} due date component`, async () => {
-        const response = workItemByIidResponseFactory({ datesWidgetPresent });
-        const handler = jest.fn().mockResolvedValue(response);
-        createComponent({ handler });
-        await waitForPromises();
-
-        expect(findWorkItemDueDate().exists()).toBe(exists);
-      });
-    });
-
-    it('shows an error message when it emits an `error` event', async () => {
-      createComponent();
-      await waitForPromises();
-      const updateError = 'Failed to update';
-
-      findWorkItemDueDate().vm.$emit('error', updateError);
-      await waitForPromises();
-
-      expect(findAlert().text()).toBe(updateError);
-    });
-  });
-
-  describe('milestone widget', () => {
-    it.each`
-      description                                               | milestoneWidgetPresent | exists
-      ${'renders when widget is returned from API'}             | ${true}                | ${true}
-      ${'does not render when widget is not returned from API'} | ${false}               | ${false}
-    `('$description', async ({ milestoneWidgetPresent, exists }) => {
-      const response = workItemByIidResponseFactory({ milestoneWidgetPresent });
-      const handler = jest.fn().mockResolvedValue(response);
-      createComponent({ handler });
-      await waitForPromises();
-
-      expect(findWorkItemMilestone().exists()).toBe(exists);
-    });
-
-    describe('milestone subscription', () => {
-      describe('when the milestone widget exists', () => {
-        it('calls the milestone subscription', async () => {
-          createComponent();
-          await waitForPromises();
-
-          expect(milestoneSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
-        });
-      });
-
-      describe('when the assignees widget does not exist', () => {
-        it('does not call the milestone subscription', async () => {
-          const response = workItemByIidResponseFactory({ milestoneWidgetPresent: false });
-          const handler = jest.fn().mockResolvedValue(response);
-          createComponent({ handler });
-          await waitForPromises();
-
-          expect(milestoneSubscriptionHandler).not.toHaveBeenCalled();
-        });
-      });
-    });
-  });
-
   it('calls the work item query', async () => {
     createComponent();
     await waitForPromises();
@@ -794,6 +630,78 @@ describe('WorkItemDetail component', () => {
 
     it('does not renders if not logged in', () => {
       expect(findWorkItemTodos().exists()).toBe(false);
+    });
+  });
+
+  describe('work item attributes wrapper', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('renders the work item attributes wrapper', () => {
+      expect(findWorkItemAttributesWrapper().exists()).toBe(true);
+    });
+
+    it('shows an error message when it emits an `error` event', async () => {
+      const updateError = 'Failed to update';
+
+      findWorkItemAttributesWrapper().vm.$emit('error', updateError);
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe(updateError);
+    });
+  });
+
+  describe('work item two column view', () => {
+    describe('when `workItemsMvc2Enabled` is false', () => {
+      beforeEach(async () => {
+        createComponent({ workItemsMvc2Enabled: false });
+        await waitForPromises();
+      });
+
+      it('does not have the `work-item-overview` class', () => {
+        expect(findWorkItemTwoColumnViewContainer().classes()).not.toContain('work-item-overview');
+      });
+
+      it('does not have sticky header', () => {
+        expect(findIntersectionObserver().exists()).toBe(false);
+        expect(findStickyHeader().exists()).toBe(false);
+      });
+
+      it('does not have right sidebar', () => {
+        expect(findRightSidebar().exists()).toBe(false);
+      });
+    });
+
+    describe('when `workItemsMvc2Enabled` is true', () => {
+      beforeEach(async () => {
+        createComponent({ workItemsMvc2Enabled: true });
+        await waitForPromises();
+      });
+
+      it('has the `work-item-overview` class', () => {
+        expect(findWorkItemTwoColumnViewContainer().classes()).toContain('work-item-overview');
+      });
+
+      it('does not show sticky header by default', () => {
+        expect(findStickyHeader().exists()).toBe(false);
+      });
+
+      it('has the sticky header when the page is scrolled', async () => {
+        expect(findIntersectionObserver().exists()).toBe(true);
+
+        global.pageYOffset = 100;
+        triggerPageScroll();
+
+        await nextTick();
+
+        expect(findStickyHeader().exists()).toBe(true);
+      });
+
+      it('has the right sidebar', () => {
+        expect(findRightSidebar().exists()).toBe(true);
+      });
     });
   });
 });

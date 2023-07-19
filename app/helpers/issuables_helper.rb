@@ -43,14 +43,10 @@ module IssuablesHelper
     due_date_with_remaining_days(milestone[:due_date], milestone[:start_date])
   end
 
-  def sidebar_due_date_tooltip_label(due_date)
-    [_('Due date'), due_date_with_remaining_days(due_date)].compact.join('<br/>')
-  end
-
   def due_date_with_remaining_days(due_date, start_date = nil)
     return unless due_date
 
-    "#{due_date.to_s(:medium)} (#{remaining_days_in_words(due_date, start_date)})"
+    "#{due_date.to_fs(:medium)} (#{remaining_days_in_words(due_date, start_date)})"
   end
 
   def multi_label_name(current_labels, default_label)

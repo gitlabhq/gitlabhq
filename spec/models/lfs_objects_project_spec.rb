@@ -31,7 +31,7 @@ RSpec.describe LfsObjectsProject do
 
       expect do
         result = described_class.link_to_project!(subject.lfs_object, subject.project)
-        expect(result).to be_a(LfsObjectsProject)
+        expect(result).to be_a(described_class)
       end.not_to change { described_class.count }
     end
 

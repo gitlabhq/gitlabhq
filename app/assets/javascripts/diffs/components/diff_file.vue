@@ -25,7 +25,7 @@ import {
   FILE_DIFF_POSITION_TYPE,
 } from '../constants';
 import eventHub from '../event_hub';
-import { DIFF_FILE, GENERIC_ERROR, CONFLICT_TEXT } from '../i18n';
+import { DIFF_FILE, SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED, CONFLICT_TEXT } from '../i18n';
 import { collapsedType, getShortShaFromFile } from '../utils/diff_file';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffFileHeader from './diff_file_header.vue';
@@ -88,11 +88,6 @@ export default {
       required: false,
       default: true,
     },
-    preRender: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   idState() {
     return {
@@ -104,7 +99,7 @@ export default {
   },
   i18n: {
     ...DIFF_FILE,
-    genericError: GENERIC_ERROR,
+    genericError: SOMETHING_WENT_WRONG,
   },
   computed: {
     ...mapState('diffs', [
@@ -122,7 +117,7 @@ export default {
       return getShortShaFromFile(this.file);
     },
     showLoadingIcon() {
-      return this.idState.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
+      return this.idState.isLoadingCollapsedDiff;
     },
     hasDiff() {
       return hasDiff(this.file);
@@ -177,9 +172,6 @@ export default {
     showLocalFileReviews() {
       return Boolean(gon.current_user_id);
     },
-    codequalityDiffForFile() {
-      return this.codequalityDiff?.files?.[this.file.file_path] || [];
-    },
     isCollapsed() {
       if (collapsedType(this.file) !== DIFF_FILE_MANUAL_COLLAPSE) {
         return this.viewDiffsFileByFile ? false : this.file.viewer?.automaticallyCollapsed;
@@ -194,9 +186,8 @@ export default {
     },
     showFileDiscussions() {
       return (
-        this.glFeatures.commentOnFiles &&
         !this.file.viewer?.manuallyCollapsed &&
-        (this.fileDiscussions.length || this.file.drafts.length || this.file.hasCommentForm)
+        (this.fileDiscussions.length || this.file.drafts?.length || this.file.hasCommentForm)
       );
     },
     diffFileHash() {
@@ -206,8 +197,6 @@ export default {
   watch: {
     'file.id': {
       handler: function fileIdHandler() {
-        if (this.preRender) return;
-
         this.manageViewedEffects();
       },
     },
@@ -220,7 +209,6 @@ export default {
           newHash &&
           oldHash &&
           !this.hasDiff &&
-          !this.preRender &&
           !this.idState.hasLoadedCollapsedDiff
         ) {
           this.requestDiff();
@@ -229,14 +217,10 @@ export default {
     },
   },
   created() {
-    if (this.preRender) return;
-
     notesEventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
     eventHub.$on(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   mounted() {
-    if (this.preRender) return;
-
     if (this.hasDiff) {
       this.postRender();
     }
@@ -244,15 +228,12 @@ export default {
     this.manageViewedEffects();
   },
   beforeDestroy() {
-    if (this.preRender) return;
-
     eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   methods: {
     ...mapActions('diffs', [
       'loadCollapsedDiff',
       'assignDiscussionsToDiff',
-      'setRenderIt',
       'setFileCollapsedByUser',
       'saveDiffDiscussion',
       'toggleFileCommentForm',
@@ -316,10 +297,6 @@ export default {
         .then(() => {
           idState.isLoadingCollapsedDiff = false;
           idState.hasLoadedCollapsedDiff = true;
-
-          if (this.file.file_hash === file.file_hash) {
-            this.setRenderIt(this.file);
-          }
         })
         .then(() => {
           if (this.file.file_hash !== file.file_hash) return;
@@ -345,7 +322,7 @@ export default {
     hideForkMessage() {
       this.idState.forkMessageVisible = false;
     },
-    handleSaveNote(note) {
+    handleSaveNote(note, parentElement, errorCallback) {
       this.saveDiffDiscussion({
         note,
         formData: {
@@ -354,7 +331,22 @@ export default {
           diffFile: this.file,
           positionType: FILE_DIFF_POSITION_TYPE,
         },
+      }).catch((e) => {
+        const reason = e.response?.data?.errors;
+        const errorMessage = reason
+          ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
+          : SOMETHING_WENT_WRONG;
+
+        createAlert({
+          message: errorMessage,
+          parent: parentElement,
+        });
+
+        errorCallback();
       });
+    },
+    handleSaveDraftNote(note, _, parentElement, errorCallback) {
+      this.addToReview(note, this.$options.FILE_DIFF_POSITION_TYPE, parentElement, errorCallback);
     },
   },
   CONFLICT_TEXT,
@@ -364,15 +356,14 @@ export default {
 
 <template>
   <div
-    :id="!preRender && active && file.file_hash"
+    :id="file.file_hash"
     :class="{
-      'is-active': currentDiffFileId === file.file_hash,
       'comments-disabled': Boolean(file.brokenSymlink),
       'has-body': showBody,
       'is-virtual-scrolling': isVirtualScrollingEnabled,
     }"
     :data-path="file.new_path"
-    class="diff-file file-holder gl-border-none"
+    class="diff-file file-holder gl-border-none gl-mb-0! gl-pb-5"
   >
     <diff-file-header
       :can-current-user-fork="canCurrentUserFork"
@@ -383,7 +374,6 @@ export default {
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"
-      :codequality-diff="codequalityDiffForFile"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
       :class="hasBodyClasses.header"
       @toggleFile="handleToggle({ viaUserInteraction: true })"
@@ -412,7 +402,7 @@ export default {
     </div>
     <template v-else>
       <div
-        :id="!preRender && active && `diff-content-${file.file_hash}`"
+        :id="`diff-content-${file.file_hash}`"
         :class="hasBodyClasses.contentByHash"
         data-testid="content-area"
       >
@@ -463,7 +453,7 @@ export default {
             </template>
           </gl-sprintf>
         </gl-alert>
-        <div v-if="showFileDiscussions" class="gl-border-b" data-testid="file-discussions">
+        <div v-if="showFileDiscussions" data-testid="file-discussions">
           <div class="diff-file-discussions-wrapper">
             <diff-discussions
               v-if="fileDiscussions.length"
@@ -485,9 +475,7 @@ export default {
               class="gl-py-3 gl-px-5"
               data-testid="file-note-form"
               @handleFormUpdate="handleSaveNote"
-              @handleFormUpdateAddToReview="
-                (note) => addToReview(note, $options.FILE_DIFF_POSITION_TYPE)
-              "
+              @handleFormUpdateAddToReview="handleSaveDraftNote"
               @cancelForm="toggleFileCommentForm(file.file_path)"
             />
           </div>
@@ -538,20 +526,3 @@ export default {
     </template>
   </div>
 </template>
-
-<style>
-@keyframes shadow-fade {
-  from {
-    box-shadow: 0 0 4px #919191;
-  }
-
-  to {
-    box-shadow: 0 0 0 #dfdfdf;
-  }
-}
-
-.diff-file.is-active {
-  box-shadow: 0 0 0 #dfdfdf;
-  animation: shadow-fade 1.2s 0.1s 1;
-}
-</style>

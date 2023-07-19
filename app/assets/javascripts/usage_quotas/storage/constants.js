@@ -38,11 +38,6 @@ export const PROJECT_STORAGE_TYPES = [
     description: s__('UsageQuota|Job artifacts created by CI/CD.'),
   },
   {
-    id: 'pipelineArtifacts',
-    name: __('Pipeline artifacts'),
-    description: s__('UsageQuota|Pipeline artifacts created by CI/CD.'),
-  },
-  {
     id: 'lfsObjects',
     name: __('LFS'),
     description: s__('UsageQuota|Audio samples, videos, datasets, and graphics.'),
@@ -70,18 +65,18 @@ export const PROJECT_STORAGE_TYPES = [
 ];
 
 export const projectHelpPaths = {
-  containerRegistry: helpPagePath(
-    'user/packages/container_registry/reduce_container_registry_storage',
-  ),
   usageQuotas: helpPagePath('user/usage_quotas'),
   usageQuotasNamespaceStorageLimit: helpPagePath('user/usage_quotas', {
     anchor: 'namespace-storage-limit',
   }),
+  lfsObjects: helpPagePath('/user/project/repository/reducing_the_repo_size_using_git', {
+    anchor: 'repository-cleanup',
+  }),
+  containerRegistry: helpPagePath(
+    'user/packages/container_registry/reduce_container_registry_storage',
+  ),
   buildArtifacts: helpPagePath('ci/pipelines/job_artifacts', {
     anchor: 'when-job-artifacts-are-deleted',
-  }),
-  pipelineArtifacts: helpPagePath('/ci/pipelines/pipeline_artifacts', {
-    anchor: 'when-pipeline-artifacts-are-deleted',
   }),
   packages: helpPagePath('user/packages/package_registry/index.md', {
     anchor: 'reduce-storage-usage',

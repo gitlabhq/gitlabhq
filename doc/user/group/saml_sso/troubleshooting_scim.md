@@ -38,7 +38,7 @@ The following are possible solutions for problems where users cannot sign in:
 
 To check if a user's SAML `NameId` matches their SCIM `externalId`:
 
-- Administrators can use the Admin Area to [list SCIM identities for a user](../../admin_area/index.md#user-identities).
+- Administrators can use the Admin Area to [list SCIM identities for a user](../../../administration/admin_area.md#user-identities).
 - Group owners can see the list of users and the identifier stored for each user in the group SAML SSO Settings page.
 - You can use the [SCIM API](../../../api/scim.md) to manually retrieve the `external_uid` GitLab has stored for users and compare the value for each user from the [SAML API](../../../api/saml.md) .
 - Have the user use a [SAML Tracer](troubleshooting.md#saml-debugging-tools) and compare the `external_uid` to
@@ -182,7 +182,7 @@ In your Okta SCIM application, check that the SCIM **Base URL** is correct and p
 SCIM API endpoint URL. Check the following documentation to find information on this URL for:
 
 - [GitLab.com groups](scim_setup.md#configure-gitlab).
-- [Self-managed GitLab instances](../../admin_area/settings/scim_setup.md#configure-gitlab).
+- [Self-managed GitLab instances](../../../administration/settings/scim_setup.md#configure-gitlab).
 
 For self-managed GitLab instances, ensure that GitLab is publicly available so Okta can connect to it. If needed,
 you can [allow access to Okta IP addresses](https://help.okta.com/en-us/Content/Topics/Security/ip-address-allow-listing.htm)

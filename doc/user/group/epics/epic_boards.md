@@ -107,8 +107,8 @@ To remove a list from an epic board:
 
 1. On the top of the list you want to remove, select the **List settings** icon (**{settings}**).
    The list settings sidebar opens on the right.
-1. Select **Remove list**. A confirmation dialog appears.
-1. Select **OK**.
+1. Select **Remove list**.
+1. On the confirmation dialog, select **OK**.
 
 ### Create an epic from an epic board
 

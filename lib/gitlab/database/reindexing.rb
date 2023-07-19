@@ -20,7 +20,7 @@ module Gitlab
       end
 
       def self.invoke(database = nil)
-        Gitlab::Database::EachDatabase.each_database_connection do |connection, connection_name|
+        Gitlab::Database::EachDatabase.each_connection do |connection, connection_name|
           next if database && database.to_s != connection_name.to_s
 
           Gitlab::Database::SharedModel.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
@@ -59,6 +59,7 @@ module Gitlab
       # most bloated indexes for reindexing.
       def self.perform_with_heuristic(candidate_indexes = Gitlab::Database::PostgresIndex.reindexing_support, maximum_records: DEFAULT_INDEXES_PER_INVOCATION)
         IndexSelection.new(candidate_indexes).take(maximum_records).each do |index|
+          Gitlab::Database::CiBuildsPartitioning.new.execute
           Coordinator.new(index).perform
         end
       end

@@ -18,25 +18,25 @@ RSpec.describe Note, ResolvableNote do
 
     describe '.potentially_resolvable' do
       it 'includes diff and discussion notes on merge requests' do
-        expect(Note.potentially_resolvable).to match_array([note3, note4, note6])
+        expect(described_class.potentially_resolvable).to match_array([note3, note4, note6])
       end
     end
 
     describe '.resolvable' do
       it 'includes non-system diff and discussion notes on merge requests' do
-        expect(Note.resolvable).to match_array([note3, note4])
+        expect(described_class.resolvable).to match_array([note3, note4])
       end
     end
 
     describe '.resolved' do
       it 'includes resolved non-system diff and discussion notes on merge requests' do
-        expect(Note.resolved).to match_array([note3])
+        expect(described_class.resolved).to match_array([note3])
       end
     end
 
     describe '.unresolved' do
       it 'includes non-resolved non-system diff and discussion notes on merge requests' do
-        expect(Note.unresolved).to match_array([note4])
+        expect(described_class.unresolved).to match_array([note4])
       end
     end
   end

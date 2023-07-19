@@ -217,7 +217,7 @@ Finished in 18.19 seconds (files took 4.8 seconds to load)
 ```
 
 You can limit the specs that are run by passing any arguments `RSpec` would
-normally take.
+usually take.
 
 ### Using Stackprof in production
 

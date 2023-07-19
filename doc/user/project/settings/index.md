@@ -41,26 +41,16 @@ To assign topics to a project:
 1. Select **Save changes**.
 
 If you're an instance administrator, you can administer all project topics from the
-[Admin Area's Topics page](../../admin_area/index.md#administering-topics).
+[Admin Area's Topics page](../../../administration/admin_area.md#administering-topics).
+
+NOTE:
+The assigned topics are visible only to users with access to the project, but everyone can see which topics exist on the GitLab instance. Do not include sensitive information in the name of a topic.
 
 ## Add a compliance framework to a project **(PREMIUM)**
 
-[Compliance frameworks](../../group/compliance_frameworks.md) can be assigned to projects within group that has a
-compliance framework using either:
-
-- The GitLab UI:
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-  1. Select **Settings** > **General**.
-  1. Expand **Compliance frameworks**.
-  1. Select a compliance framework.
-  1. Select **Save changes**.
-- In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) and later, using the
-  [GraphQL API](../../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework). If you create
-  compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user has the
-  correct permissions. The GitLab UI presents a read-only view to discourage this behavior.
-
-NOTE:
-Frameworks can not be added to projects in personal namespaces.
+You can
+[add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)
+in a group that has a compliance framework.
 
 ## Configure project visibility, features, and permissions
 
@@ -94,7 +84,6 @@ Use the toggles to enable or disable features in the project.
 | **Wiki**                         | **{check-circle}** Yes | Enables a separate system for [documentation](../wiki/index.md).
 | **Snippets**                     | **{check-circle}** Yes | Enables [sharing of code and text](../../snippets.md).
 | **Pages**                        | **{check-circle}** Yes | Allows you to [publish static websites](../pages/index.md).
-| **Metrics Dashboard**            | **{check-circle}** Yes | Control access to [metrics dashboard](../integrations/prometheus.md).
 | **Releases**                     | **{check-circle}** Yes | Control access to [Releases](../releases/index.md).
 | **Environments**                 | **{check-circle}** Yes | Control access to [Environments and Deployments](../../../ci/environments/index.md).
 | **Feature flags**                | **{check-circle}** Yes | Control access to [Feature flags](../../../operations/feature_flags.md).
@@ -124,6 +113,23 @@ When you disable a feature, the following additional features are also disabled:
 
 - Metrics dashboard access requires reading project environments and deployments.
   Users with access to the metrics dashboard can also access environments and deployments.
+
+### Manage project access through LDAP groups
+
+You can [use LDAP to manage group membership](../../group/access_and_permissions.md#manage-group-memberships-via-ldap).
+
+You cannot use LDAP groups to manage project access, but you can use the following
+workaround.
+
+Prerequisites:
+
+- You must [integrate LDAP with GitLab](../../../administration/auth/ldap/index.md).
+- You must be an administrator.
+
+1. [Create a group](../../group/index.md#create-a-group) to track membership of your project.
+1. [Set up LDAP synchronization](../../../administration/auth/ldap/ldap_synchronization.md) for that group.
+1. To use LDAP groups to manage access to a project, [add the LDAP-synchronized group as a member](../members/index.md#add-groups-to-a-project)
+   to the project.
 
 ## Disable CVE identifier request in issues **(FREE SAAS)**
 
@@ -272,7 +278,7 @@ To transfer a project:
 You are redirected to the project's new page and GitLab applies a redirect. For more information about repository redirects, see [What happens when a repository path changes](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 NOTE:
-If you are an administrator, you can also use the [administration interface](../../admin_area/index.md#administering-projects)
+If you are an administrator, you can also use the [administration interface](../../../administration/admin_area.md#administering-projects)
 to move any project to any namespace.
 
 ### Transferring a GitLab SaaS project to a different subscription tier
@@ -302,7 +308,7 @@ To delete a project:
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Delete this project** section, select **Delete project**.
-1. In the confirmation message text field, enter the name of the project as instructed, and select **Yes, delete project**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
 This action deletes the project and all associated resources (such as issues and merge requests).
 
@@ -338,7 +344,7 @@ To immediately delete a project marked for deletion:
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Delete this project** section, select **Delete project**.
-1. In the confirmation message text field, enter the name of the project as instructed, as select **Yes, delete project**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
 ## Restore a project **(PREMIUM)**
 

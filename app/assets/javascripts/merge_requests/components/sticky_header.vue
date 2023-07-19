@@ -113,14 +113,14 @@ export default {
         class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-px-5 gl-w-full"
         :class="{ 'gl-max-w-container-xl': !isFluidLayout }"
       >
-        <div class="gl-w-full gl-display-flex gl-align-items-center">
+        <div class="gl-w-full gl-display-flex gl-align-items-baseline">
           <status-box :initial-state="getNoteableData.state" issuable-type="merge_request" />
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
             class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-mr-4 gl-text-black-normal"
           ></a>
-          <div class="gl-display-flex gl-align-items-center">
+          <div class="gl-display-flex gl-align-items-baseline">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">
               <template #copyButton>
                 <clipboard-button
@@ -129,7 +129,7 @@ export default {
                   size="small"
                   category="tertiary"
                   tooltip-placement="bottom"
-                  class="gl-m-0! gl-mx-1! js-source-branch-copy"
+                  class="gl-m-0! gl-mx-1! js-source-branch-copy gl-align-self-center"
                 />
               </template>
               <template #source>

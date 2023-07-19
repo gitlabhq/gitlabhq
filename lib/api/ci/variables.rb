@@ -63,6 +63,7 @@ module API
           optional :raw, type: Boolean, desc: 'Whether the variable will be expanded'
           optional :variable_type, type: String, values: ::Ci::Variable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
           optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
+          optional :description, type: String, desc: 'The description of the variable'
         end
         post ':id/variables' do
           variable = ::Ci::ChangeVariableService.new(
@@ -95,6 +96,7 @@ module API
           optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production' do
             optional :environment_scope, type: String, desc: 'The environment scope of a variable'
           end
+          optional :description, type: String, desc: 'The description of the variable'
         end
         # rubocop: disable CodeReuse/ActiveRecord
         put ':id/variables/:key' do

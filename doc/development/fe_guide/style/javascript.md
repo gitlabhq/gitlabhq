@@ -331,8 +331,23 @@ Only export the constants as a collection (array, or object) when there is a nee
 
 ## Error handling
 
-When catching a server-side error, you should use the error message
-utility function contained in `app/assets/javascripts/lib/utils/error_message.js`.
+For internal server errors when the server returns `500`, you should return a
+generic error message.
+
+When the backend returns errors, the errors should be
+suitable to display back to the user.
+
+If for some reason, it is difficult to do so, as a last resort, you can
+select particular error messages with prefixing:
+
+1. Ensure that the backend prefixes the error messages to be displayed with:
+
+   ```ruby
+   Gitlab::Utils::ErrorMessage.to_user_facing('Example user-facing error-message')
+   ```
+
+1. Use the error message utility function contained in `app/assets/javascripts/lib/utils/error_message.js`.
+
 This utility accepts two parameters: the error object received from the server response and a
 default error message. The utility examines the message in the error object for a prefix that
 indicates whether the message is meant to be user-facing or not. If the message is intended
@@ -347,7 +362,6 @@ onError(error) {
 }
 ```
 
-To benefit from this parsing mechanism, the utility user should ensure that the server-side
-code is aware of this utility's usage and prefixes the error messages where appropriate
-before sending them back to the user. See
-[Error handling for API](../../api_styleguide.md#error-handling) for more information.
+Note that this prefixing must not be used for API responses. Instead follow the
+[REST API](../../../api/rest/index.md#data-validation-and-error-reporting),
+or [GraphQL guides](../../api_graphql_styleguide.md#error-handling) on how to consume error objects.

@@ -130,7 +130,7 @@ exports[`Comment templates list item component renders list item 1`] = `
   </div>
    
   <div
-    class="gl-mt-3 gl-font-monospace"
+    class="gl-mt-3 gl-font-monospace gl-white-space-pre-wrap"
   >
     /assign_reviewer
   </div>

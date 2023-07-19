@@ -5,14 +5,6 @@ module NamespacesHelper
     params.dig(:project, :namespace_id) || params[:namespace_id]
   end
 
-  def namespace_icon(namespace, size = 40)
-    if namespace.is_a?(Group)
-      group_icon_url(namespace)
-    else
-      avatar_icon_for_user(namespace.owner, size)
-    end
-  end
-
   def cascading_namespace_settings_popover_data(attribute, group, settings_path_helper)
     locked_by_ancestor = group.namespace_settings.public_send("#{attribute}_locked_by_ancestor?") # rubocop:disable GitlabSecurity/PublicSend
 

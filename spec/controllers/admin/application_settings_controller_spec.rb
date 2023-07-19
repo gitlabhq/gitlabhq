@@ -487,6 +487,43 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
   end
 
+  describe 'GET #slack_app_manifest_download', feature_category: :integrations do
+    before do
+      sign_in(admin)
+    end
+
+    subject { get :slack_app_manifest_download }
+
+    it 'downloads the GitLab for Slack app manifest' do
+      allow(Slack::Manifest).to receive(:to_h).and_return({ foo: 'bar' })
+
+      subject
+
+      expect(response.body).to eq('{"foo":"bar"}')
+      expect(response.headers['Content-Disposition']).to eq(
+        'attachment; filename="slack_manifest.json"; filename*=UTF-8\'\'slack_manifest.json'
+      )
+    end
+  end
+
+  describe 'GET #slack_app_manifest_share', feature_category: :integrations do
+    before do
+      sign_in(admin)
+    end
+
+    subject { get :slack_app_manifest_share }
+
+    it 'redirects the user to the Slack Manifest share URL' do
+      allow(Slack::Manifest).to receive(:to_h).and_return({ foo: 'bar' })
+
+      subject
+
+      expect(response).to redirect_to(
+        "https://api.slack.com/apps?new_app=1&manifest_json=%7B%22foo%22%3A%22bar%22%7D"
+      )
+    end
+  end
+
   describe 'GET #service_usage_data', feature_category: :service_ping do
     before do
       stub_usage_data_connections

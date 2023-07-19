@@ -1,0 +1,9 @@
+mutation workItemTodoCreate($input: TodoCreateInput!) {
+  todoMutation: todoCreate(input: $input) {
+    todo {
+      id
+      state
+    }
+    errors
+  }
+}

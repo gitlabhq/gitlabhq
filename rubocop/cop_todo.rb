@@ -22,6 +22,10 @@ module RuboCop
       @offense_count += offense_count
     end
 
+    def add_files(files)
+      @files.merge(files)
+    end
+
     def autocorrectable?
       @cop_class&.support_autocorrect?
     end

@@ -6,7 +6,7 @@
 # - category
 # - action
 # - namespace
-# Optionaly, the context can contain:
+# Optionally, the context can contain:
 # - project
 # - property
 # - user

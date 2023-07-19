@@ -54,7 +54,7 @@ RSpec.shared_examples 'issues move service' do |group|
 
   context 'when moving to backlog' do
     let(:milestone) { create(:milestone, project: project) }
-    let!(:backlog)  { create(:backlog_list, board: board1) }
+    let!(:backlog)  { board1.lists.backlog.first }
 
     let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development, testing, regression], milestone: milestone) }
     let(:params) { { board_id: board1.id, from_list_id: list2.id, to_list_id: backlog.id } }

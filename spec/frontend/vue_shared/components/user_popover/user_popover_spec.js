@@ -31,6 +31,7 @@ const DEFAULT_PROPS = {
     name: 'Administrator',
     location: 'Vienna',
     localTime: '2:30 PM',
+    webUrl: '/root',
     bot: false,
     bio: null,
     workInformation: null,
@@ -71,11 +72,11 @@ describe('User Popover Component', () => {
     });
   };
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = (props = {}, target = findTarget()) => {
     wrapper = mountExtended(UserPopover, {
       propsData: {
         ...DEFAULT_PROPS,
-        target: findTarget(),
+        target,
         ...props,
       },
     });
@@ -516,6 +517,37 @@ describe('User Popover Component', () => {
 
     it('does not render the toggle follow button', () => {
       expect(findToggleFollowButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when current user is assignee/reviewer in a Merge Request', () => {
+    const { id, username, webUrl } = DEFAULT_PROPS.user;
+    const target = document.createElement('a');
+    target.setAttribute('href', webUrl);
+    target.classList.add('js-user-link');
+    target.dataset.currentUserId = id;
+    target.dataset.currentUsername = username;
+
+    it('renders popover with warning when user unable to merge', () => {
+      target.dataset.cannotMerge = 'true';
+
+      createWrapper({}, target);
+
+      const cannotMergeWarning = wrapper.findByTestId('cannot-merge');
+
+      expect(cannotMergeWarning.exists()).toBe(true);
+      expect(cannotMergeWarning.text()).toContain('Cannot merge');
+      expect(cannotMergeWarning.findComponent(GlIcon).props('name')).toBe('warning-solid');
+    });
+
+    it('renders popover without any warning when user is able to merge', () => {
+      delete target.dataset.cannotMerge;
+
+      createWrapper({}, target);
+
+      const cannotMergeWarning = wrapper.findByTestId('cannot-merge');
+
+      expect(cannotMergeWarning.exists()).toBe(false);
     });
   });
 });

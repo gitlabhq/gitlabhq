@@ -6,7 +6,6 @@ module Gitlab
       class RelationFactory < Base::RelationFactory
         OVERRIDES = {
           labels: :group_labels,
-          priorities: :label_priorities,
           label: :group_label,
           parent: :epic,
           iterations_cadences: 'Iterations::Cadence'

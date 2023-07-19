@@ -1,6 +1,6 @@
 // Common
 .diff-file {
-  padding-bottom: $gl-padding;
+  margin-bottom: $gl-padding;
 
   &.has-body {
     .file-title {
@@ -864,19 +864,6 @@ table.code {
   }
 }
 
-// Remove border from collapsed replies widget only on diffs
-.diff-grid-comments {
-  .replies-widget-collapsed {
-    border-bottom: 0;
-  }
-  // Rounded border radius only on diff comments with no replies
-  .discussion-collapsible {
-    .discussion-reply-holder:first-of-type {
-      border-radius: $gl-border-radius-base;
-    }
-  }
-}
-
 .discussion-body .image .frame {
   position: relative;
 }
@@ -886,13 +873,6 @@ table.code {
 
   .notes {
     border-radius: $border-radius-default;
-  }
-}
-
-.parallel {
-  .discussion-collapsible {
-    margin: $gl-padding;
-    margin-top: 0;
   }
 }
 

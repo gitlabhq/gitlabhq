@@ -23,14 +23,10 @@ module API
 
     helpers ::API::Helpers::PackagesHelpers
     helpers ::API::Helpers::Packages::DependencyProxyHelpers
+    helpers ::API::Helpers::Packages::Maven
     helpers ::API::Helpers::Packages::Maven::BasicAuthHelpers
 
     helpers do
-      params :path_and_file_name do
-        requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
-        requires :file_name, type: String, desc: 'Package file name', documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
-      end
-
       def path_exists?(path)
         return false if path.blank?
 

@@ -6,7 +6,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
 
-  it_behaves_like 'a BulkInsertSafe model', MergeRequestDiffCommit do
+  it_behaves_like 'a BulkInsertSafe model', described_class do
     let(:valid_items_for_bulk_insertion) do
       build_list(:merge_request_diff_commit, 10) do |mr_diff_commit|
         mr_diff_commit.merge_request_diff = create(:merge_request_diff)
@@ -82,7 +82,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
 
       described_class.create_bulk(diff.id, [commits.first])
 
-      commit_row = MergeRequestDiffCommit
+      commit_row = described_class
         .find_by(merge_request_diff_id: diff.id, relative_order: 0)
 
       commit_user_row =

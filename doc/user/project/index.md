@@ -12,7 +12,7 @@ You can create a project in many ways in GitLab.
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
@@ -41,7 +41,7 @@ Anyone can [contribute a built-in template](../../development/project_templates.
 
 To create a project from a built-in template:
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. From the list of templates:
@@ -68,10 +68,10 @@ For this reason, the creation date of imported objects can be older than the cre
 
 Custom project templates are available at:
 
-- The [instance-level](../../user/admin_area/custom_project_templates.md)
+- The [instance-level](../../administration/custom_project_templates.md)
 - The [group-level](../../user/group/custom_project_templates.md)
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Instance** or **Group** tab.
 1. From the list of templates:
@@ -96,7 +96,7 @@ HIPAA Audit Protocol published by the U.S Department of Health and Human Service
 
 To create a project from the HIPAA Audit Protocol template:
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. Locate the **HIPAA Audit Protocol** template:

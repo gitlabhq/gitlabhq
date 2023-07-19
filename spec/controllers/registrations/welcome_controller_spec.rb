@@ -117,7 +117,7 @@ RSpec.describe Registrations::WelcomeController, feature_category: :system_acces
         end
 
         context 'when the new user already has more than 1 accepted group membership' do
-          it 'redirects to the most recent membership group activty page' do
+          it 'redirects to the most recent membership group activity page' do
             member2 = create(:group_member, user: user)
 
             expect(subject).to redirect_to(activity_group_path(member2.source))

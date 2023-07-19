@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe "User merges a merge request", :js, feature_category: :code_review_workflow do
+  include ContentEditorHelpers
+
   let(:user) { project.first_owner }
 
   before do
@@ -29,6 +31,7 @@ RSpec.describe "User merges a merge request", :js, feature_category: :code_revie
       create(:merge_request, source_project: project, source_branch: 'branch-1')
 
       visit(merge_request_path(merge_request))
+      close_rich_text_promo_popover_if_present
 
       expect(page).to have_css('.js-merge-counter', text: '2')
 

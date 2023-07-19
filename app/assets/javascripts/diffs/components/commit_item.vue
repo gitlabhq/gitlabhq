@@ -2,7 +2,7 @@
 import { GlButtonGroup, GlButton, GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
-import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -133,7 +133,7 @@ export default {
           />
         </div>
         <div
-          class="commit-detail flex-list gl-display-flex gl-justify-content-space-between gl-align-items-flex-start gl-flex-grow-1 gl-min-w-0"
+          class="commit-detail flex-list gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-grow-1 gl-min-w-0"
         >
           <div class="commit-content" data-qa-selector="commit_content">
             <a

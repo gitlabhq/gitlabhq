@@ -80,13 +80,7 @@ To use this option, select **Only mirror protected branches** when you create a 
 
 > - Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
-
-FLAG:
-On self-managed GitLab, by default the field `mirror_branch_regex` is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)
-named `mirror_only_branches_match_regex`.
-On GitLab.com, this feature is available.
-
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
 To mirror only branches with names matching an [re2 regular expression](https://github.com/google/re2/wiki/Syntax),
 enter a regular expression into the **Mirror specific branches** field. Branches with names that
 do not match the regular expression are not mirrored.
@@ -100,6 +94,9 @@ You can also manually trigger an update:
 - At most once every five minutes on GitLab.com.
 - According to [the pull mirroring interval limit](../../../../administration/instance_limits.md#pull-mirroring-interval)
   set by the administrator on self-managed instances.
+
+NOTE:
+[GitLab Silent Mode](../../../../administration/silent_mode/index.md) disables both push and pull updates.
 
 ### Force an update
 
@@ -209,8 +206,8 @@ Older versions of SSH may require you to remove `-E md5` from the command.
 ## Related topics
 
 - Configure a [Pull Mirroring Interval](../../../../administration/instance_limits.md#pull-mirroring-interval)
-- [Disable mirrors for a project](../../../admin_area/settings/visibility_and_access_controls.md#enable-project-mirroring)
-- [Secrets file and mirroring](../../../../raketasks/backup_restore.md#when-the-secrets-file-is-lost)
+- [Disable mirrors for a project](../../../../administration/settings/visibility_and_access_controls.md#enable-project-mirroring)
+- [Secrets file and mirroring](../../../../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost)
 
 ## Troubleshooting
 
@@ -224,11 +221,16 @@ If you receive this message while mirroring to a GitHub repository:
 13:Received RST_STREAM with error code 2
 ```
 
-Your GitHub settings might be set to block pushes that expose your email address
-used in commits. To fix this problem, either:
+One of these issues might be occurring:
 
-- Set your GitHub email address to public.
-- Disable the [Block command line pushes that expose my email](https://github.com/settings/emails) setting.
+1. Your GitHub settings might be set to block pushes that expose your email address
+   used in commits. To fix this problem, either:
+   - Set your GitHub email address to public.
+   - Disable the [Block command line pushes that expose my email](https://github.com/settings/emails)
+     setting.
+1. Your repository exceeds GitHub's file size limit of 100 MB. To fix this problem,
+   check the file size limit configured for on GitHub, and consider using
+   [Git Large File Storage](https://git-lfs.github.com) to manage large files.
 
 ### Deadline Exceeded
 
@@ -320,7 +322,7 @@ fail nor succeed. They also do not leave a clear log. To check for this problem:
    end
    ```
 
-1. After you run the command, the [background jobs page](../../../admin_area/index.md#background-jobs)
+1. After you run the command, the [background jobs page](../../../../administration/admin_area.md#background-jobs)
    should show new mirroring jobs being scheduled, especially when
    [triggered manually](#update-a-mirror).
 

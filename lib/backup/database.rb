@@ -63,7 +63,7 @@ module Backup
         progress.flush
       end
     ensure
-      ::Gitlab::Database::EachDatabase.each_database_connection(
+      ::Gitlab::Database::EachDatabase.each_connection(
         only: base_models_for_backup.keys, include_shared: false
       ) do |connection, _|
         Gitlab::Database::TransactionTimeoutSettings.new(connection).restore_timeouts
@@ -259,7 +259,7 @@ module Backup
       @database_to_snapshot_id = {}
 
       if @database_to_snapshot_id.empty?
-        ::Gitlab::Database::EachDatabase.each_database_connection(
+        ::Gitlab::Database::EachDatabase.each_connection(
           only: base_models_for_backup.keys, include_shared: false
         ) do |connection, database_name|
           @database_to_snapshot_id[database_name] = nil

@@ -5,14 +5,14 @@
 .gl-mb-3.gl-p-4{ class: (borderless ? '' : 'gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base') }
   = yield :omniauth_providers_top if show_omniauth_providers
 
-  = gitlab_ui_form_for(resource, as: form_resource_name, url: url, html: { class: 'new_user gl-show-field-errors js-arkose-labs-form', 'aria-live' => 'assertive' }, data: { testid: 'signup-form' }) do |f|
+  = gitlab_ui_form_for(resource, as: form_resource_name, url: url, html: { class: 'gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }}, data: { testid: 'signup-form' }) do |f|
     .devise-errors
       = render 'devise/shared/error_messages', resource: resource
     - if Gitlab::CurrentSettings.invisible_captcha_enabled
       = invisible_captcha nonce: true, autocomplete: SecureRandom.alphanumeric(12)
     .name.form-row
       .col.form-group
-        = f.label :first_name, _('First name'), for: 'new_user_first_name', class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
+        = f.label :first_name, _('First name'), for: 'new_user_first_name'
         = f.text_field :first_name,
           class: 'form-control gl-form-input top js-block-emoji js-validate-length',
           data: { max_length: max_first_name_length,
@@ -21,7 +21,7 @@
           required: true,
           title: _('This field is required.')
       .col.form-group
-        = f.label :last_name, _('Last name'), for: 'new_user_last_name', class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
+        = f.label :last_name, _('Last name'), for: 'new_user_last_name'
         = f.text_field :last_name,
           class: 'form-control gl-form-input top js-block-emoji js-validate-length',
           data: { max_length: max_last_name_length,
@@ -30,7 +30,7 @@
           required: true,
           title: _('This field is required.')
     .username.form-group
-      = f.label :username, class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
+      = f.label :username, _('Username')
       = f.text_field :username,
         class: 'form-control gl-form-input middle js-block-emoji js-validate-length js-validate-username',
         data: signup_username_data_attributes,
@@ -41,7 +41,7 @@
       %p.validation-success.gl-text-green-600.gl-field-error-ignore.gl-mt-2.field-validation.hide= _('Username is available.')
       %p.validation-pending.gl-field-error-ignore.gl-mt-2.field-validation.hide= _('Checking username availability...')
     .form-group
-      = f.label :email, class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
+      = f.label :email, _('Email')
       = f.email_field :email,
         class: 'form-control gl-form-input middle js-validate-email',
         data: { qa_selector: 'new_user_email_field' },
@@ -52,7 +52,7 @@
       -# This is used for providing entry to Jihu on email verification
       = render_if_exists 'devise/shared/signup_email_additional_info'
     .form-group.gl-mb-5
-      = f.label :password, class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
+      = f.label :password, _('Password')
       %input.form-control.gl-form-input.js-password{ data: { id: "#{form_resource_name}_password",
         title: s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length },
         minimum_password_length: @minimum_password_length,
@@ -62,18 +62,16 @@
       %p.gl-field-hint-valid.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
       = render_if_exists 'shared/password_requirements_list'
     = render_if_exists 'devise/shared/phone_verification', form: f
-    %div
 
-    - if arkose_labs_enabled?
-      = render_if_exists 'devise/registrations/arkose_labs'
-    - elsif show_recaptcha_sign_up?
-      = recaptcha_tags nonce: content_security_policy_nonce
+    .form-group
+      - if arkose_labs_enabled?
+        = render_if_exists 'devise/registrations/arkose_labs'
+      - elsif show_recaptcha_sign_up?
+        = recaptcha_tags nonce: content_security_policy_nonce
 
-    .submit-container.gl-mt-5
-      = f.submit button_text, pajamas_button: true, class: 'gl-w-full', data: { qa_selector: 'new_user_register_button' }
-    - if Gitlab::CurrentSettings.sign_in_text.present? && Feature.enabled?(:restyle_login_page, @project)
-      .gl-pt-5
-        = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { qa_selector: 'new_user_register_button' }}) do
+      = button_text
+
     = render 'devise/shared/terms_of_service_notice', button_text: button_text
 
   = yield :omniauth_providers_bottom if show_omniauth_providers

@@ -338,7 +338,7 @@ RSpec.describe ContainerRegistry::Client do
 
     with_them do
       before do
-        allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
+        allow(::Gitlab).to receive(:com_except_jh?).and_return(is_on_dot_com)
         stub_registry_tags_support(registry_tags_support_enabled)
         stub_application_setting(container_registry_features: container_registry_features)
       end
@@ -403,7 +403,7 @@ RSpec.describe ContainerRegistry::Client do
 
     with_them do
       before do
-        allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
+        allow(::Gitlab).to receive(:com_except_jh?).and_return(is_on_dot_com)
         stub_container_registry_config(enabled: registry_enabled, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
         stub_registry_tags_support(registry_tags_support_enabled)
         stub_application_setting(container_registry_features: container_registry_features)

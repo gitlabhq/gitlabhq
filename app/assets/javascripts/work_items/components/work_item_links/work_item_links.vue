@@ -113,7 +113,7 @@ export default {
       return this.parentIssue?.milestone;
     },
     children() {
-      return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
+      return findHierarchyWidgetChildren(this.workItem);
     },
     canUpdate() {
       return this.workItem?.userPermissions.updateWorkItem || false;
@@ -205,10 +205,7 @@ export default {
   >
     <template #header>{{ $options.i18n.title }}</template>
     <template #header-suffix>
-      <span
-        class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3 gl-font-weight-bold gl-text-gray-500"
-        data-testid="children-count"
-      >
+      <span class="gl-new-card-count" data-testid="children-count">
         <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2" />
         {{ childrenCountLabel }}
       </span>
@@ -236,52 +233,53 @@ export default {
       </gl-dropdown>
     </template>
     <template #body>
-      <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
-
-      <template v-else>
-        <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">
-          <p class="gl-px-3 gl-py-2 gl-mb-0 gl-text-gray-500">
-            {{ $options.i18n.emptyStateMessage }}
-          </p>
-        </div>
-        <work-item-links-form
-          v-if="isShownAddForm"
-          ref="wiLinksForm"
-          data-testid="add-links-form"
-          :issuable-gid="issuableGid"
-          :work-item-iid="iid"
-          :children-ids="childrenIds"
-          :parent-confidential="confidential"
-          :parent-iteration="issuableIteration"
-          :parent-milestone="issuableMilestone"
-          :form-type="formType"
-          :parent-work-item-type="workItem.workItemType.name"
-          @cancel="hideAddForm"
-        />
-        <work-item-children-wrapper
-          :children="children"
-          :can-update="canUpdate"
-          :work-item-id="issuableGid"
-          :work-item-iid="iid"
-          @error="error = $event"
-          @show-modal="openChild"
-        />
-        <work-item-detail-modal
-          ref="modal"
-          :work-item-id="activeChild.id"
-          :work-item-iid="activeChild.iid"
-          @close="closeModal"
-          @workItemDeleted="handleWorkItemDeleted(activeChild)"
-          @openReportAbuse="openReportAbuseDrawer"
-        />
-        <abuse-category-selector
-          v-if="isReportDrawerOpen && reportAbusePath"
-          :reported-user-id="reportedUserId"
-          :reported-from-url="reportedUrl"
-          :show-drawer="isReportDrawerOpen"
-          @close-drawer="toggleReportAbuseDrawer(false)"
-        />
-      </template>
+      <div class="gl-new-card-content">
+        <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
+        <template v-else>
+          <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">
+            <p class="gl-new-card-empty">
+              {{ $options.i18n.emptyStateMessage }}
+            </p>
+          </div>
+          <work-item-links-form
+            v-if="isShownAddForm"
+            ref="wiLinksForm"
+            data-testid="add-links-form"
+            :issuable-gid="issuableGid"
+            :work-item-iid="iid"
+            :children-ids="childrenIds"
+            :parent-confidential="confidential"
+            :parent-iteration="issuableIteration"
+            :parent-milestone="issuableMilestone"
+            :form-type="formType"
+            :parent-work-item-type="workItem.workItemType.name"
+            @cancel="hideAddForm"
+          />
+          <work-item-children-wrapper
+            :children="children"
+            :can-update="canUpdate"
+            :work-item-id="issuableGid"
+            :work-item-iid="iid"
+            @error="error = $event"
+            @show-modal="openChild"
+          />
+          <work-item-detail-modal
+            ref="modal"
+            :work-item-id="activeChild.id"
+            :work-item-iid="activeChild.iid"
+            @close="closeModal"
+            @workItemDeleted="handleWorkItemDeleted(activeChild)"
+            @openReportAbuse="openReportAbuseDrawer"
+          />
+          <abuse-category-selector
+            v-if="isReportDrawerOpen && reportAbusePath"
+            :reported-user-id="reportedUserId"
+            :reported-from-url="reportedUrl"
+            :show-drawer="isReportDrawerOpen"
+            @close-drawer="toggleReportAbuseDrawer(false)"
+          />
+        </template>
+      </div>
     </template>
   </widget-wrapper>
 </template>

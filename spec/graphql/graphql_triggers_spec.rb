@@ -20,7 +20,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         issuable
       )
 
-      GraphqlTriggers.issuable_assignees_updated(issuable)
+      described_class.issuable_assignees_updated(issuable)
     end
   end
 
@@ -32,7 +32,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         issuable
       ).and_call_original
 
-      GraphqlTriggers.issuable_title_updated(issuable)
+      described_class.issuable_title_updated(issuable)
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         issuable
       ).and_call_original
 
-      GraphqlTriggers.issuable_description_updated(issuable)
+      described_class.issuable_description_updated(issuable)
     end
   end
 
@@ -62,7 +62,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         issuable
       )
 
-      GraphqlTriggers.issuable_labels_updated(issuable)
+      described_class.issuable_labels_updated(issuable)
     end
   end
 
@@ -74,7 +74,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         issuable
       ).and_call_original
 
-      GraphqlTriggers.issuable_dates_updated(issuable)
+      described_class.issuable_dates_updated(issuable)
     end
   end
 
@@ -86,7 +86,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         issuable
       ).and_call_original
 
-      GraphqlTriggers.issuable_milestone_updated(issuable)
+      described_class.issuable_milestone_updated(issuable)
     end
   end
 
@@ -100,7 +100,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         merge_request
       ).and_call_original
 
-      GraphqlTriggers.merge_request_reviewers_updated(merge_request)
+      described_class.merge_request_reviewers_updated(merge_request)
     end
   end
 
@@ -114,7 +114,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         merge_request
       ).and_call_original
 
-      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+      described_class.merge_request_merge_status_updated(merge_request)
     end
   end
 
@@ -128,7 +128,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         merge_request
       ).and_call_original
 
-      GraphqlTriggers.merge_request_approval_state_updated(merge_request)
+      described_class.merge_request_approval_state_updated(merge_request)
     end
   end
 
@@ -140,7 +140,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
         issuable
       ).and_call_original
 
-      GraphqlTriggers.work_item_updated(issuable)
+      described_class.work_item_updated(issuable)
     end
 
     context 'when triggered with an Issue' do
@@ -154,7 +154,7 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
           work_item
         ).and_call_original
 
-        GraphqlTriggers.work_item_updated(issue)
+        described_class.work_item_updated(issue)
       end
     end
   end

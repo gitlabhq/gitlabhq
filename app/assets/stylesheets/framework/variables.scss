@@ -10,7 +10,7 @@ $default-transition-duration: 0.15s;
 $contextual-sidebar-width: 256px;
 $contextual-sidebar-collapsed-width: 56px;
 $toggle-sidebar-height: 48px;
-$super-sidebar-width: 256px;
+$super-sidebar-width: 16rem;
 $super-sidebar-z-index: 600;
 $super-sidebar-skip-to-z-index: 601;
 $super-sidebar-overlay-z-index: 599;
@@ -467,7 +467,6 @@ $ide-statusbar-height: 25px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $container-text-max-width: 540px;
-$gl-avatar-size: 40px;
 $border-radius-default: 4px;
 $border-radius-small: 2px;
 $border-radius-large: 8px;
@@ -502,8 +501,9 @@ $pages-group-name-color: #4c4e54;
 /*
  * Calculated heights
  */
-$calc-application-bars-height: calc(var(--system-header-height) + var(--performance-bar-height));
-$calc-application-header-height: calc(#{$header-height} + #{$calc-application-bars-height} + var(--top-bar-height));
+$calc-system-headers-height: calc(var(--system-header-height) + var(--performance-bar-height));
+$calc-application-bars-height: calc(#{$header-height} + #{$calc-system-headers-height});
+$calc-application-header-height: calc(#{$calc-application-bars-height} + var(--top-bar-height));
 $calc-application-footer-height: var(--system-footer-height);
 $calc-application-viewport-height: calc(100vh - #{$calc-application-header-height} - #{$calc-application-footer-height});
 
@@ -568,10 +568,12 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 
 /*
  * Fonts
+ * The --default-mono-font and --default-regular-font variables give users
+ * a way to override our font choices for them.
  */
-$monospace-font: 'GitLab Mono', 'JetBrains Mono', 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas',
+$monospace-font: var(--default-mono-font, 'GitLab Mono'), 'JetBrains Mono', 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas',
   'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular-font: 'GitLab Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans',
+$regular-font: var(--default-regular-font, 'GitLab Sans'), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans',
   Ubuntu, Cantarell, 'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
   'Segoe UI Symbol', 'Noto Color Emoji';
 $gl-monospace-font: $monospace-font;
@@ -704,7 +706,6 @@ $environment-logs-difference-md-up: calc(#{$header-height} + #{$environment-logs
 * Avatar
 */
 $avatar-radius: 50%;
-$gl-avatar-size: 40px;
 $gl-avatar-border-opacity: 0.1;
 
 /*

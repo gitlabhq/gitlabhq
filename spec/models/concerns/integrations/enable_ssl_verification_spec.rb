@@ -19,5 +19,5 @@ RSpec.describe Integrations::EnableSslVerification do
 
   let(:integration) { described_class.new }
 
-  include_context Integrations::EnableSslVerification
+  include_context described_class
 end

@@ -11,8 +11,10 @@ import {
   findPage,
   bindSuperSidebarCollapsedEvents,
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 
 const { xl, sm } = breakpoints;
+let trackingSpy = null;
 
 jest.mock('~/lib/utils/common_utils', () => ({
   getCookie: jest.fn(),
@@ -27,6 +29,15 @@ const pageHasCollapsedClass = (hasClass) => {
   }
 };
 
+const tracksCollapse = (shouldTrack) => {
+  if (shouldTrack) {
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_hide', {
+      label: 'browser_resize',
+      property: 'nav_sidebar',
+    });
+  }
+};
+
 describe('Super Sidebar Collapsed State Manager', () => {
   beforeEach(() => {
     setHTMLFixture(`
@@ -34,10 +45,12 @@ describe('Super Sidebar Collapsed State Manager', () => {
         <aside class="super-sidebar"></aside>
       </div>
     `);
+    trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
   });
 
   afterEach(() => {
     resetHTMLFixture();
+    unmockTracking();
   });
 
   describe('toggleSuperSidebarCollapsed', () => {
@@ -109,14 +122,20 @@ describe('Super Sidebar Collapsed State Manager', () => {
       });
 
       it.each`
-        initialWindowWidth | updatedWindowWidth | hasClassBeforeResize | hasClassAfterResize
-        ${xl}              | ${sm}              | ${false}             | ${true}
-        ${sm}              | ${xl}              | ${true}              | ${false}
-        ${xl}              | ${xl}              | ${false}             | ${false}
-        ${sm}              | ${sm}              | ${true}              | ${true}
+        initialWindowWidth | updatedWindowWidth | hasClassBeforeResize | hasClassAfterResize | sendsTrackingEvent
+        ${xl}              | ${sm}              | ${false}             | ${true}             | ${true}
+        ${sm}              | ${xl}              | ${true}              | ${false}            | ${false}
+        ${xl}              | ${xl}              | ${false}             | ${false}            | ${false}
+        ${sm}              | ${sm}              | ${true}              | ${true}             | ${false}
       `(
         'when changing width from $initialWindowWidth to $updatedWindowWidth expect page to have collapsed class before resize to be $hasClassBeforeResize and after resize to be $hasClassAfterResize',
-        ({ initialWindowWidth, updatedWindowWidth, hasClassBeforeResize, hasClassAfterResize }) => {
+        ({
+          initialWindowWidth,
+          updatedWindowWidth,
+          hasClassBeforeResize,
+          hasClassAfterResize,
+          sendsTrackingEvent,
+        }) => {
           getCookie.mockReturnValue(undefined);
           window.innerWidth = initialWindowWidth;
           initSuperSidebarCollapsedState();
@@ -129,6 +148,7 @@ describe('Super Sidebar Collapsed State Manager', () => {
           window.dispatchEvent(new Event('resize'));
 
           pageHasCollapsedClass(hasClassAfterResize);
+          tracksCollapse(sendsTrackingEvent);
         },
       );
     });

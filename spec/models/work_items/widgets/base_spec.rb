@@ -16,4 +16,10 @@ RSpec.describe WorkItems::Widgets::Base do
 
     it { is_expected.to eq(:base) }
   end
+
+  describe '.process_quick_action_param' do
+    subject { described_class.process_quick_action_param(:label_ids, [1, 2]) }
+
+    it { is_expected.to eq({ label_ids: [1, 2] }) }
+  end
 end

@@ -33,6 +33,10 @@ export default {
       required: false,
       default: false,
     },
+    hasEnvScopeQuery: {
+      type: Boolean,
+      required: true,
+    },
     isLoading: {
       type: Boolean,
       required: false,
@@ -107,6 +111,7 @@ export default {
         :are-environments-loading="areEnvironmentsLoading"
         :are-scoped-variables-available="areScopedVariablesAvailable"
         :environments="environments"
+        :has-env-scope-query="hasEnvScopeQuery"
         :hide-environment-scope="hideEnvironmentScope"
         :variables="variables"
         :mode="mode"

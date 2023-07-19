@@ -1,6 +1,6 @@
 <script>
 import { GlChart } from '@gitlab/ui/dist/charts';
-import { dataVizBlue500 } from '@gitlab/ui/scss_to_js/scss_variables';
+import { DATA_VIZ_BLUE_500 } from '@gitlab/ui/dist/tokens/js/tokens';
 import { hexToRgba } from '@gitlab/ui/dist/utils/utils';
 import { isNumber } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
@@ -109,7 +109,7 @@ export default {
           {
             data: yData,
             type: 'bar',
-            itemStyle: { color: hexToRgba(dataVizBlue500, 0.5) },
+            itemStyle: { color: hexToRgba(DATA_VIZ_BLUE_500, 0.5) },
           },
         ],
         tooltip: {

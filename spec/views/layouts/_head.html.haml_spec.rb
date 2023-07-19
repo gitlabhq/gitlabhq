@@ -44,13 +44,13 @@ RSpec.describe 'layouts/_head' do
     it 'adds a link dns-prefetch tag' do
       render
 
-      expect(rendered).to match(%Q(<link href="#{asset_host}" rel="dns-prefetch">))
+      expect(rendered).to match(%(<link href="#{asset_host}" rel="dns-prefetch">))
     end
 
     it 'adds a link preconnect tag' do
       render
 
-      expect(rendered).to match(%Q(<link crossorigin="" href="#{asset_host}" rel="preconnect">))
+      expect(rendered).to match(%(<link crossorigin="" href="#{asset_host}" rel="preconnect">))
     end
   end
 
@@ -59,7 +59,7 @@ RSpec.describe 'layouts/_head' do
 
     render
 
-    expect(rendered).to match('<link rel="stylesheet" media="all" href="/stylesheets/highlight/themes/solarised-light.css" />')
+    expect(rendered).to match('<link rel="stylesheet" href="/stylesheets/highlight/themes/solarised-light.css" media="all" />')
   end
 
   context 'when an asset_host is set and snowplow url is set', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346542' do
@@ -82,7 +82,7 @@ RSpec.describe 'layouts/_head' do
     it 'adds a link preconnect tag' do
       render
 
-      expect(rendered).to match(%Q(<link crossorigin="" href="#{snowplow_collector_hostname}" rel="preconnect">))
+      expect(rendered).to match(%(<link crossorigin="" href="#{snowplow_collector_hostname}" rel="preconnect">))
     end
   end
 

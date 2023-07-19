@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestone do
+RSpec.describe Milestone, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:group) { create(:group) }
@@ -146,11 +146,11 @@ RSpec.describe Milestone do
     let_it_be(:milestone) { create(:milestone, project: project) }
 
     it 'returns true for a predefined Milestone ID' do
-      expect(Milestone.predefined_id?(described_class::Upcoming.id)).to be true
+      expect(described_class.predefined_id?(described_class::Upcoming.id)).to be true
     end
 
     it 'returns false for a Milestone ID that is not predefined' do
-      expect(Milestone.predefined_id?(milestone.id)).to be false
+      expect(described_class.predefined_id?(milestone.id)).to be false
     end
   end
 
@@ -730,6 +730,46 @@ RSpec.describe Milestone do
 
     it 'ensures that lock_version and optimistic locking is enabled' do
       expect(milestone.lock_version).to be_present
+    end
+  end
+
+  describe '#check_for_spam?' do
+    let_it_be(:milestone) { build_stubbed(:milestone, project: project) }
+
+    subject { milestone.check_for_spam? }
+
+    context 'when spammable attribute title has changed' do
+      before do
+        milestone.title = 'New title'
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when spammable attribute description has changed' do
+      before do
+        milestone.description = 'New description'
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when spammable attribute has changed but parent is private' do
+      before do
+        milestone.title = 'New title'
+        milestone.parent.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when no spammable attribute has changed' do
+      before do
+        milestone.title = milestone.title_was
+        milestone.description = milestone.description_was
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 end

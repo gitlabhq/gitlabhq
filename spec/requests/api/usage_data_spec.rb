@@ -164,6 +164,61 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     end
   end
 
+  describe 'POST /usage_data/track_event' do
+    let(:endpoint) { '/usage_data/track_event' }
+    let(:known_event) { 'i_compliance_dashboard' }
+    let(:unknown_event) { 'unknown' }
+    let(:namespace_id) { 123 }
+    let(:project_id) { 123 }
+
+    context 'without CSRF token' do
+      it 'returns forbidden' do
+        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(false)
+
+        post api(endpoint, user), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'usage_data_api feature not enabled' do
+      it 'returns not_found' do
+        stub_feature_flags(usage_data_api: false)
+
+        post api(endpoint, user), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'without authentication' do
+      it 'returns 401 response' do
+        post api(endpoint), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'with authentication' do
+      before do
+        stub_application_setting(usage_ping_enabled: true)
+        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
+      end
+
+      context 'with correct params' do
+        it 'returns status ok' do
+          expect(Gitlab::InternalEvents).to receive(:track_event).with(known_event, anything)
+          # allow other events to also get triggered
+          allow(Gitlab::InternalEvents).to receive(:track_event)
+
+          post api(endpoint, user), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+  end
+
   describe 'GET /usage_data/metric_definitions' do
     let(:endpoint) { '/usage_data/metric_definitions' }
     let(:metric_yaml) do

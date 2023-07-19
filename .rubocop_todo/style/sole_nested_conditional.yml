@@ -8,7 +8,6 @@ Style/SoleNestedConditional:
     - 'app/controllers/projects/blob_controller.rb'
     - 'app/helpers/nav_helper.rb'
     - 'app/models/concerns/cache_markdown_field.rb'
-    - 'app/models/external_pull_request.rb'
     - 'app/models/issue.rb'
     - 'app/models/network/graph.rb'
     - 'app/models/packages/package.rb'

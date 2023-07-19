@@ -15,6 +15,13 @@ module API
       expose :ref
       expose :startline
       expose :project_id
+      expose :group_id, if: ->(object) { object.is_a?(Gitlab::Search::FoundWikiPage) }
+
+      private
+
+      def group_id
+        object.group&.id
+      end
     end
   end
 end

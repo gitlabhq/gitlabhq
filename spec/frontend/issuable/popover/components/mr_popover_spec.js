@@ -64,7 +64,7 @@ describe('MR Popover', () => {
       apolloProvider: createMockApollo([[mergeRequestQuery, queryResponse]]),
       propsData: {
         target: document.createElement('a'),
-        projectPath: 'foo/bar',
+        namespacePath: 'foo/bar',
         iid: '1',
         cachedTitle: 'Cached Title',
       },

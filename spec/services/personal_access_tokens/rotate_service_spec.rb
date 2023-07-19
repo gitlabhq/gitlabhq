@@ -25,6 +25,13 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
       expect(new_token).not_to be_revoked
     end
 
+    it 'saves the previous token as previous PAT attribute' do
+      response
+
+      new_token = response.payload[:personal_access_token]
+      expect(new_token.previous_personal_access_token).to eql(token)
+    end
+
     context 'when user tries to rotate already revoked token' do
       let_it_be(:token, reload: true) { create(:personal_access_token, :revoked) }
 

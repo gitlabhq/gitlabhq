@@ -6,9 +6,7 @@ RSpec.describe 'project commit pipelines', :js, feature_category: :continuous_in
   let(:project) { create(:project, :repository) }
 
   before do
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.sha,
-                         ref: 'master')
+    create(:ci_pipeline, project: project, sha: project.commit.sha, ref: 'master')
 
     user = create(:user)
     project.add_maintainer(user)

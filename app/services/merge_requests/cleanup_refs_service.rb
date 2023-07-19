@@ -16,7 +16,6 @@ module MergeRequests
       @merge_request = merge_request
       @repository = merge_request.project.repository
       @ref_path = merge_request.ref_path
-      @merge_ref_path = merge_request.merge_ref_path
       @ref_head_sha = @repository.commit(merge_request.ref_path)&.id
       @merge_ref_sha = merge_request.merge_ref_head&.id
     end
@@ -42,7 +41,7 @@ module MergeRequests
 
     private
 
-    attr_reader :repository, :ref_path, :merge_ref_path, :ref_head_sha, :merge_ref_sha
+    attr_reader :repository, :ref_path, :ref_head_sha, :merge_ref_sha
 
     def scheduled?
       merge_request.cleanup_schedule.present? && merge_request.cleanup_schedule.scheduled_at <= Time.current
@@ -79,7 +78,7 @@ module MergeRequests
     end
 
     def delete_refs
-      repository.delete_refs(ref_path, merge_ref_path)
+      merge_request.schedule_cleanup_refs
     end
 
     def update_schedule

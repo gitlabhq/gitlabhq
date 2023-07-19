@@ -137,6 +137,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_one(:banned_user) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
+    it { is_expected.to have_many(:member_namespaces) }
     it { is_expected.to have_many(:project_members) }
     it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }
@@ -184,6 +185,15 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:abuse_trust_scores).class_name('Abuse::TrustScore') }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
+
+    it do
+      is_expected.to have_many(:organization_users).class_name('Organizations::OrganizationUser').inverse_of(:user)
+    end
+
+    it do
+      is_expected.to have_many(:organizations)
+                       .through(:organization_users).class_name('Organizations::Organization').inverse_of(:users)
+    end
 
     it do
       is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)
@@ -358,13 +368,13 @@ RSpec.describe User, feature_category: :user_profile do
       context 'when password is updated' do
         context 'default behaviour' do
           it 'enqueues the `password changed` email' do
-            user.password = User.random_password
+            user.password = described_class.random_password
 
             expect { user.save! }.to have_enqueued_mail(DeviseMailer, :password_change)
           end
 
           it 'does not enqueue the `admin changed your password` email' do
-            user.password = User.random_password
+            user.password = described_class.random_password
 
             expect { user.save! }.not_to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
           end
@@ -372,21 +382,21 @@ RSpec.describe User, feature_category: :user_profile do
 
         context '`admin changed your password` email' do
           it 'is enqueued only when explicitly allowed' do
-            user.password = User.random_password
+            user.password = described_class.random_password
             user.send_only_admin_changed_your_password_notification!
 
             expect { user.save! }.to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
           end
 
           it '`password changed` email is not enqueued if it is explicitly allowed' do
-            user.password = User.random_password
+            user.password = described_class.random_password
             user.send_only_admin_changed_your_password_notification!
 
             expect { user.save! }.not_to have_enqueued_mail(DeviseMailer, :password_changed)
           end
 
           it 'is not enqueued if sending notifications on password updates is turned off as per Devise config' do
-            user.password = User.random_password
+            user.password = described_class.random_password
             user.send_only_admin_changed_your_password_notification!
 
             allow(Devise).to receive(:send_password_change_notification).and_return(false)
@@ -412,7 +422,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when email is changed to another before performing the job that sends confirmation instructions for previous email change request' do
         it "mentions the recipient's email in the message body", :aggregate_failures do
-          same_user = User.find(user.id)
+          same_user = described_class.find(user.id)
           same_user.update!(email: unconfirmed_email)
 
           user.update!(email: another_unconfirmed_email)
@@ -537,7 +547,7 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it 'does not check if the user is a new record' do
-          user = User.new(username: 'newuser')
+          user = described_class.new(username: 'newuser')
 
           expect(user.new_record?).to eq(true)
           expect(user).not_to receive(:namespace_move_dir_allowed)
@@ -1171,7 +1181,7 @@ RSpec.describe User, feature_category: :user_profile do
       let(:random_password) { described_class.random_password }
 
       before do
-        expect(User).to receive(:password_length).and_return(88..128)
+        expect(described_class).to receive(:password_length).and_return(88..128)
       end
 
       context 'length' do
@@ -1405,7 +1415,7 @@ RSpec.describe User, feature_category: :user_profile do
 
   context 'strip attributes' do
     context 'name' do
-      let(:user) { User.new(name: ' John Smith ') }
+      let(:user) { described_class.new(name: ' John Smith ') }
 
       it 'strips whitespaces on validation' do
         expect { user.valid? }.to change { user.name }.to('John Smith')
@@ -1677,7 +1687,7 @@ RSpec.describe User, feature_category: :user_profile do
           end
 
           it 'returns the correct highest role' do
-            users = User.includes(:user_highest_role).where(id: [user.id, another_user.id])
+            users = described_class.includes(:user_highest_role).where(id: [user.id, another_user.id])
 
             expect(users.collect { |u| [u.id, u.highest_role] }).to contain_exactly(
               [user.id, Gitlab::Access::MAINTAINER],
@@ -2054,7 +2064,7 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe '#generate_password' do
     it 'does not generate password by default' do
-      password = User.random_password
+      password = described_class.random_password
       user = create(:user, password: password)
 
       expect(user.password).to eq(password)
@@ -2741,9 +2751,9 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:admin_issue_board_list) { create_list(:user, 12, :admin, :with_sign_ins) }
 
     it 'returns up to the ten most recently active instance admins' do
-      active_admins_in_recent_sign_in_desc_order = User.admins.active.order_recent_sign_in.limit(10)
+      active_admins_in_recent_sign_in_desc_order = described_class.admins.active.order_recent_sign_in.limit(10)
 
-      expect(User.instance_access_request_approvers_to_be_notified).to eq(active_admins_in_recent_sign_in_desc_order)
+      expect(described_class.instance_access_request_approvers_to_be_notified).to eq(active_admins_in_recent_sign_in_desc_order)
     end
   end
 
@@ -2946,56 +2956,6 @@ RSpec.describe User, feature_category: :user_profile do
         key = create(:personal_key)
 
         expect(key.user.require_ssh_key?).to eq(false)
-      end
-    end
-  end
-
-  describe '#spammer?' do
-    let_it_be(:user) { create(:user) }
-
-    context 'when the user is a spammer' do
-      before do
-        allow(user).to receive(:spam_score).and_return(0.9)
-      end
-
-      it 'classifies the user as a spammer' do
-        expect(user).to be_spammer
-      end
-    end
-
-    context 'when the user is not a spammer' do
-      before do
-        allow(user).to receive(:spam_score).and_return(0.1)
-      end
-
-      it 'does not classify the user as a spammer' do
-        expect(user).not_to be_spammer
-      end
-    end
-  end
-
-  describe '#spam_score' do
-    let_it_be(:user) { create(:user) }
-
-    context 'when the user is a spammer' do
-      before do
-        create(:abuse_trust_score, user: user, score: 0.8)
-        create(:abuse_trust_score, user: user, score: 0.9)
-      end
-
-      it 'returns the expected score' do
-        expect(user.spam_score).to be_within(0.01).of(0.85)
-      end
-    end
-
-    context 'when the user is not a spammer' do
-      before do
-        create(:abuse_trust_score, user: user, score: 0.1)
-        create(:abuse_trust_score, user: user, score: 0.0)
-      end
-
-      it 'returns the expected score' do
-        expect(user.spam_score).to be_within(0.01).of(0.05)
       end
     end
   end
@@ -4497,7 +4457,7 @@ RSpec.describe User, feature_category: :user_profile do
         it { is_expected.to include(group) }
 
         it 'avoids N+1 queries' do
-          fresh_user = User.find(user.id)
+          fresh_user = described_class.find(user.id)
           control_count = ActiveRecord::QueryRecorder.new do
             fresh_user.solo_owned_groups
           end.count
@@ -6145,7 +6105,9 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when the user is a spammer' do
         before do
-          allow(user).to receive(:spammer?).and_return(true)
+          user_scores = Abuse::UserTrustScore.new(user)
+          allow(Abuse::UserTrustScore).to receive(:new).and_return(user_scores)
+          allow(user_scores).to receive(:spammer?).and_return(true)
         end
 
         context 'when the user account is less than 7 days old' do
@@ -6154,7 +6116,7 @@ RSpec.describe User, feature_category: :user_profile do
           it 'creates an abuse report with the correct data' do
             expect { subject }.to change { AbuseReport.count }.from(0).to(1)
             expect(AbuseReport.last.attributes).to include({
-              reporter_id: User.security_bot.id,
+              reporter_id: described_class.security_bot.id,
               user_id: user.id,
               category: "spam",
               message: 'Potential spammer account deletion'
@@ -6175,7 +6137,7 @@ RSpec.describe User, feature_category: :user_profile do
           end
 
           context 'when there is an existing abuse report' do
-            let!(:abuse_report) { create(:abuse_report, user: user, reporter: User.security_bot, message: 'Existing') }
+            let!(:abuse_report) { create(:abuse_report, user: user, reporter: described_class.security_bot, message: 'Existing') }
 
             it 'updates the abuse report' do
               subject
@@ -6228,6 +6190,29 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'does not update the note' do
           expect { user.delete_async(deleted_by: deleted_by) }.not_to change { user.note }
+        end
+      end
+
+      describe '#allow_possible_spam?' do
+        context 'when no custom attribute is set' do
+          it 'is false' do
+            expect(user.allow_possible_spam?).to be_falsey
+          end
+        end
+
+        context 'when the custom attribute is set' do
+          before do
+            user.custom_attributes.upsert_custom_attributes(
+              [{
+                user_id: user.id,
+                key: UserCustomAttribute::ALLOW_POSSIBLE_SPAM,
+                value: "test"
+              }])
+          end
+
+          it '#allow_possible_spam? is true' do
+            expect(user.allow_possible_spam?).to be_truthy
+          end
         end
       end
     end
@@ -6414,9 +6399,8 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe '#required_terms_not_accepted?' do
     let(:user) { build(:user) }
-    let(:project_bot) { create(:user, :project_bot) }
 
-    subject { user.required_terms_not_accepted? }
+    subject(:required_terms_not_accepted) { user.required_terms_not_accepted? }
 
     context 'when terms are not enforced' do
       it { is_expected.to be_falsey }
@@ -6428,17 +6412,25 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       it 'is not accepted by the user' do
-        expect(subject).to be_truthy
+        expect(required_terms_not_accepted).to be_truthy
       end
 
       it 'is accepted by the user' do
         accept_terms(user)
 
-        expect(subject).to be_falsey
+        expect(required_terms_not_accepted).to be_falsey
       end
 
-      it 'auto accepts the term for project bots' do
-        expect(project_bot.required_terms_not_accepted?).to be_falsey
+      context "with bot users" do
+        %i[project_bot service_account security_policy_bot].each do |user_type|
+          context "when user is #{user_type}" do
+            let(:user) { build(:user, user_type) }
+
+            it 'auto accepts the terms' do
+              expect(required_terms_not_accepted).to be_falsey
+            end
+          end
+        end
       end
     end
   end
@@ -7690,7 +7682,7 @@ RSpec.describe User, feature_category: :user_profile do
 
         context 'when confirmation period is expired' do
           before do
-            travel_to(User.allow_unconfirmed_access_for.from_now + 1.day)
+            travel_to(described_class.allow_unconfirmed_access_for.from_now + 1.day)
           end
 
           it { is_expected.to be(true) }
@@ -8107,72 +8099,6 @@ RSpec.describe User, feature_category: :user_profile do
 
           expect(emails).to eq(project_commit_email)
         end
-      end
-    end
-  end
-
-  describe '#telesign_score' do
-    let_it_be(:user1) { create(:user) }
-    let_it_be(:user2) { create(:user) }
-
-    context 'when the user has a telesign risk score' do
-      before do
-        create(:abuse_trust_score, user: user1, score: 12.0, source: :telesign)
-        create(:abuse_trust_score, user: user1, score: 24.0, source: :telesign)
-      end
-
-      it 'returns the latest score' do
-        expect(user1.telesign_score).to be(24.0)
-      end
-    end
-
-    context 'when the user does not have a telesign risk score' do
-      it 'defaults to zero' do
-        expect(user2.telesign_score).to be(0.0)
-      end
-    end
-  end
-
-  describe '#arkose_global_score' do
-    let_it_be(:user1) { create(:user) }
-    let_it_be(:user2) { create(:user) }
-
-    context 'when the user has an arkose global risk score' do
-      before do
-        create(:abuse_trust_score, user: user1, score: 12.0, source: :arkose_global_score)
-        create(:abuse_trust_score, user: user1, score: 24.0, source: :arkose_global_score)
-      end
-
-      it 'returns the latest score' do
-        expect(user1.arkose_global_score).to be(24.0)
-      end
-    end
-
-    context 'when the user does not have an arkose global risk score' do
-      it 'defaults to zero' do
-        expect(user2.arkose_global_score).to be(0.0)
-      end
-    end
-  end
-
-  describe '#arkose_custom_score' do
-    let_it_be(:user1) { create(:user) }
-    let_it_be(:user2) { create(:user) }
-
-    context 'when the user has an arkose custom risk score' do
-      before do
-        create(:abuse_trust_score, user: user1, score: 12.0, source: :arkose_custom_score)
-        create(:abuse_trust_score, user: user1, score: 24.0, source: :arkose_custom_score)
-      end
-
-      it 'returns the latest score' do
-        expect(user1.arkose_custom_score).to be(24.0)
-      end
-    end
-
-    context 'when the user does not have an arkose custom risk score' do
-      it 'defaults to zero' do
-        expect(user2.arkose_custom_score).to be(0.0)
       end
     end
   end

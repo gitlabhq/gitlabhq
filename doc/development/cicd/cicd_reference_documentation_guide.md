@@ -125,7 +125,7 @@ can include changes introduced in different GitLab versions. For example:
 **Additional details**:
 
 - The expiration time period begins when the artifact is uploaded and stored on GitLab.
-  If the expiry time is not defined, it defaults to the [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration).
+  If the expiry time is not defined, it defaults to the [instance wide setting](../../administration/settings/continuous_integration.md#default-artifacts-expiration).
 - To override the expiration date and protect artifacts from being automatically deleted:
   - Select **Keep** on the job page.
   - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22761), set the value of

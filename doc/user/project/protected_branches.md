@@ -116,7 +116,7 @@ The protected branch displays in the list of protected branches.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to
+To make it available, an administrator can
 [enable the feature flag](../../administration/feature_flags.md)
 named `group_protected_branches`. On GitLab.com, this feature is not available.
 
@@ -360,8 +360,7 @@ branches by using the GitLab web interface:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Code > Branches**.
 1. Next to the branch you want to delete, select **Delete** (**{remove}**).
-1. On the confirmation dialog, type the branch name.
-1. Select **Yes, delete protected branch**.
+1. On the confirmation dialog, enter the branch name and select **Yes, delete protected branch**.
 
 Protected branches can only be deleted by using GitLab either from the UI or API.
 This prevents accidentally deleting a branch through local Git commands or

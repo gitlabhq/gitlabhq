@@ -23,8 +23,6 @@ In brief, this is what you need to upload your website in GitLab Pages:
 1. Domain of the instance: domain name that is used for GitLab Pages
    (ask your administrator).
 1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`](../../../ci/yaml/index.md#pages) in the root directory of your repository.
-1. A directory called `public` in your site's repository containing the content
-   to be published.
 1. GitLab Runner enabled for the project.
 
 ## GitLab Pages on GitLab.com
@@ -67,10 +65,7 @@ You can configure redirects for your site using a `_redirects` file. For more in
 To remove your pages:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Settings > Pages**.
-
-   If this path is not visible, select **Deployments > Pages**.
-   [This location is part of an experiment](index.md#menu-position-test).
+1. On the left sidebar, select **Deploy > Pages**.
 1. Select **Remove pages**.
 
 ## Subdomains of subdomains
@@ -97,19 +92,14 @@ you can create your project first and access it under `http(s)://namespace.examp
 ## Enable unique domains
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9347) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `pages_unique_domain`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388151) in GitLab 15.11.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `pages_unique_domain`.
-On GitLab.com, by default this feature is available.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/388151) in GitLab 15.11.
 
 By default, every project in a group shares the same domain, for example, `group.gitlab.io`. This means that cookies are also shared for all projects in a group.
 
 To ensure your project uses a unique Pages domain, enable the unique domains feature for the project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Settings > Pages**.
+1. On the left sidebar, select **Deploy > Pages**.
 1. Select the **Use unique domain** checkbox.
 1. Select **Save changes**.
 
@@ -277,6 +267,35 @@ instead. Here are some examples of what happens given the above Pages site:
 
 When `public/data/index.html` exists, it takes priority over the `public/data.html` file
 for both the `/data` and `/data/` URL paths.
+
+## Customize the default folder
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/859) in GitLab 16.1 with a Pages flag named `FF_CONFIGURABLE_ROOT_DIR`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1073) in GitLab 16.1.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/890) in GitLab 16.2.
+
+By default, the [artifact](../../../ci/jobs/job_artifacts.md) folder
+that contains the static files of your site needs to have the name `public`.
+
+To change that folder name to any other value, add a `publish` property to your
+`pages` job configuration in `.gitlab-ci.yml`.
+
+The following example publishes a folder named `dist` instead:
+
+```yaml
+pages:
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist
+  publish: dist
+```
+
+If you're using a folder name other than `public`you must specify
+the directory to be deployed with Pages both as an artifact, and under the
+`publish` property. The reason you need both is that you can define multiple paths
+as artifacts, and GitLab doesn't know which one you want to deploy.
 
 ## Known issues
 

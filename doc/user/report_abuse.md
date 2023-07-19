@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can report abuse from other GitLab users to GitLab administrators.
 
-A GitLab administrator [can then choose](admin_area/review_abuse_reports.md) to:
+A GitLab administrator [can then choose](../administration/review_abuse_reports.md) to:
 
 - Remove the user, which deletes them from the instance.
 - Block the user, which denies them access to the instance.
@@ -66,4 +66,4 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Related topics
 
-- [Abuse reports administration documentation](admin_area/review_abuse_reports.md)
+- [Abuse reports administration documentation](../administration/review_abuse_reports.md)

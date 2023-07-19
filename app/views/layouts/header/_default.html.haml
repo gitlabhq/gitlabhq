@@ -1,7 +1,7 @@
 - has_impersonation_link = header_link?(:admin_impersonation)
 - user_status_data = user_status_properties(current_user)
 
-%header.navbar.navbar-gitlab.navbar-expand-sm.js-navbar{ data: { qa_selector: 'navbar' } }
+%header.navbar.navbar-gitlab.navbar-expand-sm.js-navbar{ data: { testid: 'navbar' } }
   %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
   .container-fluid
     .header-content.js-header-content
@@ -12,7 +12,7 @@
             = brand_header_logo
         .gl-display-flex.gl-align-items-center
           - if Gitlab.com_and_canary?
-            = gl_badge_tag({ variant: :success, size: :sm }, { href: Gitlab::Saas.canary_toggle_com_url, data: { qa_selector: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer', class: 'canary-badge' }) do
+            = gl_badge_tag({ variant: :success, size: :sm }, { href: Gitlab::Saas.canary_toggle_com_url, data: { testid: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer', class: 'canary-badge' }) do
               = _('Next')
 
         - if current_user
@@ -47,7 +47,7 @@
           - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
               = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues js-prefetch-document', aria: { label: _('Issues') },
-                data: { qa_selector: 'issues_shortcut_button', toggle: 'tooltip', placement: 'bottom',
+                data: { testid: 'issues_shortcut_button', toggle: 'tooltip', placement: 'bottom',
                 track_label: 'main_navigation',
                 track_action: 'click_issues_link',
                 track_property: 'navigation_top',
@@ -60,7 +60,7 @@
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
               - top_level_link = assigned_mrs_dashboard_path
               = link_to top_level_link, class: 'dashboard-shortcuts-merge_requests has-tooltip', title: _('Merge requests'), aria: { label: _('Merge requests') },
-                data: { qa_selector: 'merge_requests_shortcut_button',
+                data: { testid: 'merge_requests_shortcut_button',
                 toggle: "dropdown",
                 placement: 'bottom',
                 track_label: 'merge_requests_menu',
@@ -92,7 +92,7 @@
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
               = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos js-prefetch-document',
-                data: { qa_selector: 'todos_shortcut_button', toggle: 'tooltip', placement: 'bottom',
+                data: { testid: 'todos_shortcut_button', toggle: 'tooltip', placement: 'bottom',
                 track_label: 'main_navigation',
                 track_action: 'click_to_do_link',
                 track_property: 'navigation_top',
@@ -115,16 +115,16 @@
             %li.nav-item.gl-display-none.gl-sm-display-block
               = render "layouts/nav/top_nav"
           - if header_link?(:user_dropdown)
-            %li.nav-item.header-user.js-nav-user-dropdown.dropdown{ data: { qa_selector: 'user_menu', testid: 'user-menu' }, class: ('mr-0' if has_impersonation_link) }
+            %li.nav-item.header-user.js-nav-user-dropdown.dropdown{ data: { testid: 'user-dropdown' }, class: ('mr-0' if has_impersonation_link) }
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown", track_label: "profile_dropdown", track_action: "click_dropdown", track_property: "navigation_top" } do
-                = render Pajamas::AvatarComponent.new(current_user, size: 24, class: 'header-user-avatar', avatar_options: { data: { qa_selector: 'user_avatar_content' } })
+                = render Pajamas::AvatarComponent.new(current_user, size: 24, class: 'header-user-avatar', avatar_options: { data: { testid: 'user_avatar_content' } })
                 = render_if_exists 'layouts/header/user_notification_dot', project: project, namespace: group
                 = sprite_icon('chevron-down', css_class: 'caret-down')
               .dropdown-menu.dropdown-menu-right
                 = render 'layouts/header/current_user_dropdown'
           - if has_impersonation_link
             %li.nav-item.impersonation.ml-0
-              = render Pajamas::ButtonComponent.new(href: admin_impersonation_path, icon: 'incognito', button_options: { title: _('Stop impersonation'), class: 'impersonation-btn', aria: { label: _('Stop impersonation') }, data: { method: :delete, toggle: 'tooltip', placement: 'bottom', container: 'body', qa_selector: 'stop_impersonation_link' } })
+              = render Pajamas::ButtonComponent.new(href: admin_impersonation_path, icon: 'incognito', button_options: { title: _('Stop impersonation'), class: 'impersonation-btn', aria: { label: _('Stop impersonation') }, data: { method: :delete, toggle: 'tooltip', placement: 'bottom', container: 'body', testid: 'stop_impersonation_btn' } })
           - if header_link?(:sign_in)
             - if allow_signup?
               %li.nav-item
@@ -133,7 +133,7 @@
             %li.nav-item{ class: 'gl-flex-grow-0! gl-flex-basis-half!' }
               = link_to _('Sign in'), new_session_path(:user, redirect_to_referer: 'yes')
 
-      %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: 'gl-border-none!', data: { testid: 'top-nav-responsive-toggle', qa_selector: 'mobile_navbar_button' } }
+      %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: 'gl-border-none!', data: { testid: 'mobile_navbar_button' } }
         %span.sr-only= _('Toggle navigation')
         %span.more-icon.gl-px-3.gl-font-sm.gl-font-weight-bold
           %span.gl-pr-2= _('Menu')

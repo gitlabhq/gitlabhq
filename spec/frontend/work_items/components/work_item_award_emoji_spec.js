@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 
@@ -9,36 +9,67 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import AwardList from '~/vue_shared/components/awards_list.vue';
 import WorkItemAwardEmoji from '~/work_items/components/work_item_award_emoji.vue';
 import updateAwardEmojiMutation from '~/work_items/graphql/update_award_emoji.mutation.graphql';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { EMOJI_THUMBSUP, EMOJI_THUMBSDOWN } from '~/work_items/constants';
+import workItemAwardEmojiQuery from '~/work_items/graphql/award_emoji.query.graphql';
+import {
+  EMOJI_THUMBSUP,
+  EMOJI_THUMBSDOWN,
+  DEFAULT_PAGE_SIZE_EMOJIS,
+  I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR,
+} from '~/work_items/constants';
 
 import {
   workItemByIidResponseFactory,
   mockAwardsWidget,
   mockAwardEmojiThumbsUp,
   getAwardEmojiResponse,
+  mockMoreThanDefaultAwardEmojisWidget,
 } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/work_items/constants', () => ({
+  ...jest.requireActual('~/work_items/constants'),
+  DEFAULT_PAGE_SIZE_EMOJIS: 5,
+}));
+
 Vue.use(VueApollo);
 
 describe('WorkItemAwardEmoji component', () => {
   let wrapper;
   let mockApolloProvider;
 
-  const errorMessage = 'Failed to update the award';
+  const mutationErrorMessage = 'Failed to update the award';
+
   const workItemQueryResponse = workItemByIidResponseFactory();
-  const workItemQueryAddAwardEmojiResponse = workItemByIidResponseFactory({
-    awardEmoji: { ...mockAwardsWidget, nodes: [mockAwardEmojiThumbsUp] },
-  });
-  const workItemQueryRemoveAwardEmojiResponse = workItemByIidResponseFactory({
-    awardEmoji: { ...mockAwardsWidget, nodes: [] },
-  });
+  const mockWorkItem = workItemQueryResponse.data.workspace.workItems.nodes[0];
+
+  const awardEmojiQuerySuccessHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const awardEmojiQueryEmptyHandler = jest.fn().mockResolvedValue(
+    workItemByIidResponseFactory({
+      awardEmoji: {
+        ...mockAwardsWidget,
+        nodes: [],
+      },
+    }),
+  );
+  const awardEmojiQueryThumbsUpHandler = jest.fn().mockResolvedValue(
+    workItemByIidResponseFactory({
+      awardEmoji: {
+        ...mockAwardsWidget,
+        nodes: [mockAwardEmojiThumbsUp],
+      },
+    }),
+  );
+  const awardEmojiQueryFailureHandler = jest
+    .fn()
+    .mockRejectedValue(new Error(I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR));
+
   const awardEmojiAddSuccessHandler = jest.fn().mockResolvedValue(getAwardEmojiResponse(true));
   const awardEmojiRemoveSuccessHandler = jest.fn().mockResolvedValue(getAwardEmojiResponse(false));
-  const awardEmojiUpdateFailureHandler = jest.fn().mockRejectedValue(new Error(errorMessage));
-  const mockWorkItem = workItemQueryResponse.data.workspace.workItems.nodes[0];
-  const mockAwardEmojiDifferentUserThumbsUp = {
+  const awardEmojiUpdateFailureHandler = jest
+    .fn()
+    .mockRejectedValue(new Error(mutationErrorMessage));
+
+  const mockAwardEmojiDifferentUser = {
     name: 'thumbsup',
     __typename: 'AwardEmoji',
     user: {
@@ -49,35 +80,37 @@ describe('WorkItemAwardEmoji component', () => {
   };
 
   const createComponent = ({
-    awardMutationHandler = awardEmojiAddSuccessHandler,
-    workItem = mockWorkItem,
+    awardEmojiQueryHandler = awardEmojiQuerySuccessHandler,
+    awardEmojiMutationHandler = awardEmojiAddSuccessHandler,
     workItemIid = '1',
-    awardEmoji = { ...mockAwardsWidget, nodes: [] },
   } = {}) => {
-    mockApolloProvider = createMockApollo([[updateAwardEmojiMutation, awardMutationHandler]]);
-
-    mockApolloProvider.clients.defaultClient.writeQuery({
-      query: workItemByIidQuery,
-      variables: { fullPath: workItem.project.fullPath, iid: workItemIid },
-      data: {
-        ...workItemQueryResponse.data,
-        workspace: {
-          __typename: 'Project',
-          id: 'gid://gitlab/Project/1',
-          workItems: {
-            nodes: [workItem],
+    mockApolloProvider = createMockApollo(
+      [
+        [workItemAwardEmojiQuery, awardEmojiQueryHandler],
+        [updateAwardEmojiMutation, awardEmojiMutationHandler],
+      ],
+      {},
+      {
+        typePolicies: {
+          WorkItemWidgetAwardEmoji: {
+            fields: {
+              // If we add any key args, the awardEmoji field becomes awardEmoji({"first":10}) and
+              // kills any possibility to handle it on the widget level without hardcoding a string.
+              awardEmoji: {
+                keyArgs: false,
+              },
+            },
           },
         },
       },
-    });
+    );
 
     wrapper = shallowMount(WorkItemAwardEmoji, {
       isLoggedIn: isLoggedIn(),
       apolloProvider: mockApolloProvider,
       propsData: {
-        workItemId: workItem.id,
-        workItemFullpath: workItem.project.fullPath,
-        awardEmoji,
+        workItemId: 'gid://gitlab/WorkItem/1',
+        workItemFullpath: 'test-project-path',
         workItemIid,
       },
     });
@@ -85,17 +118,23 @@ describe('WorkItemAwardEmoji component', () => {
 
   const findAwardsList = () => wrapper.findComponent(AwardList);
 
-  beforeEach(() => {
+  beforeEach(async () => {
     isLoggedIn.mockReturnValue(true);
     window.gon = {
       current_user_id: 5,
       current_user_fullname: 'Dave Smith',
     };
 
-    createComponent();
+    await createComponent();
   });
 
-  it('renders the award-list component with default props', () => {
+  it('renders the award-list component with default props', async () => {
+    createComponent({
+      awardEmojiQueryHandler: awardEmojiQueryEmptyHandler,
+    });
+
+    await waitForPromises();
+
     expect(findAwardsList().exists()).toBe(true);
     expect(findAwardsList().props()).toEqual({
       boundary: '',
@@ -108,8 +147,6 @@ describe('WorkItemAwardEmoji component', () => {
   });
 
   it('renders awards-list component with awards present', () => {
-    createComponent({ awardEmoji: mockAwardsWidget });
-
     expect(findAwardsList().props('awards')).toEqual([
       {
         name: EMOJI_THUMBSUP,
@@ -128,13 +165,32 @@ describe('WorkItemAwardEmoji component', () => {
     ]);
   });
 
-  it('renders awards list given by multiple users', () => {
+  it('emits error when there is an error while fetching award emojis', async () => {
     createComponent({
+      awardEmojiQueryHandler: awardEmojiQueryFailureHandler,
+    });
+
+    await waitForPromises();
+
+    expect(wrapper.emitted('error')).toEqual([[I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR]]);
+  });
+
+  it('renders awards list given by multiple users', async () => {
+    const mockWorkItemAwardEmojiDifferentUser = workItemByIidResponseFactory({
       awardEmoji: {
         ...mockAwardsWidget,
-        nodes: [mockAwardEmojiThumbsUp, mockAwardEmojiDifferentUserThumbsUp],
+        nodes: [mockAwardEmojiThumbsUp, mockAwardEmojiDifferentUser],
       },
     });
+    const awardEmojiWithDifferentUsersQueryHandler = jest
+      .fn()
+      .mockResolvedValue(mockWorkItemAwardEmojiDifferentUser);
+
+    createComponent({
+      awardEmojiQueryHandler: awardEmojiWithDifferentUsersQueryHandler,
+    });
+
+    await waitForPromises();
 
     expect(findAwardsList().props('awards')).toEqual([
       {
@@ -155,20 +211,18 @@ describe('WorkItemAwardEmoji component', () => {
   });
 
   it.each`
-    expectedAssertion | awardEmojiMutationHandler         | mockAwardEmojiNodes         | workItem
-    ${'added'}        | ${awardEmojiAddSuccessHandler}    | ${[]}                       | ${workItemQueryRemoveAwardEmojiResponse.data.workspace.workItems.nodes[0]}
-    ${'removed'}      | ${awardEmojiRemoveSuccessHandler} | ${[mockAwardEmojiThumbsUp]} | ${workItemQueryAddAwardEmojiResponse.data.workspace.workItems.nodes[0]}
+    expectedAssertion | awardEmojiMutationHandler         | awardEmojiQueryHandler
+    ${'added'}        | ${awardEmojiAddSuccessHandler}    | ${awardEmojiQueryEmptyHandler}
+    ${'removed'}      | ${awardEmojiRemoveSuccessHandler} | ${awardEmojiQueryThumbsUpHandler}
   `(
     'calls mutation when an award emoji is $expectedAssertion',
-    ({ awardEmojiMutationHandler, mockAwardEmojiNodes, workItem }) => {
+    async ({ awardEmojiMutationHandler, awardEmojiQueryHandler }) => {
       createComponent({
-        awardMutationHandler: awardEmojiMutationHandler,
-        awardEmoji: {
-          ...mockAwardsWidget,
-          nodes: mockAwardEmojiNodes,
-        },
-        workItem,
+        awardEmojiMutationHandler,
+        awardEmojiQueryHandler,
       });
+
+      await waitForPromises();
 
       findAwardsList().vm.$emit('award', EMOJI_THUMBSUP);
 
@@ -183,21 +237,24 @@ describe('WorkItemAwardEmoji component', () => {
 
   it('emits error when the update mutation fails', async () => {
     createComponent({
-      awardMutationHandler: awardEmojiUpdateFailureHandler,
+      awardEmojiMutationHandler: awardEmojiUpdateFailureHandler,
+      awardEmojiQueryHandler: awardEmojiQueryEmptyHandler,
     });
+
+    await waitForPromises();
 
     findAwardsList().vm.$emit('award', EMOJI_THUMBSUP);
 
     await waitForPromises();
 
-    expect(wrapper.emitted('error')).toEqual([[errorMessage]]);
+    expect(wrapper.emitted('error')).toEqual([[mutationErrorMessage]]);
   });
 
   describe('when user is not logged in', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       isLoggedIn.mockReturnValue(false);
 
-      createComponent();
+      await createComponent();
     });
 
     it('renders the component with required props and canAwardEmoji false', () => {
@@ -213,14 +270,12 @@ describe('WorkItemAwardEmoji component', () => {
       };
     });
 
-    it('calls mutation succesfully and adds the award emoji with proper user details', () => {
+    it('calls mutation succesfully and adds the award emoji with proper user details', async () => {
       createComponent({
-        awardMutationHandler: awardEmojiAddSuccessHandler,
-        awardEmoji: {
-          ...mockAwardsWidget,
-          nodes: [mockAwardEmojiThumbsUp],
-        },
+        awardEmojiMutationHandler: awardEmojiAddSuccessHandler,
       });
+
+      await waitForPromises();
 
       findAwardsList().vm.$emit('award', EMOJI_THUMBSUP);
 
@@ -229,6 +284,64 @@ describe('WorkItemAwardEmoji component', () => {
           awardableId: mockWorkItem.id,
           name: EMOJI_THUMBSUP,
         },
+      });
+    });
+  });
+
+  describe('pagination', () => {
+    describe('when there is no next page', () => {
+      const awardEmojiQuerySingleItemHandler = jest.fn().mockResolvedValue(
+        workItemByIidResponseFactory({
+          awardEmoji: {
+            ...mockAwardsWidget,
+            nodes: [mockAwardEmojiThumbsUp],
+          },
+        }),
+      );
+
+      it('fetch more award emojis should not be called', async () => {
+        createComponent({ awardEmojiQueryHandler: awardEmojiQuerySingleItemHandler });
+        await waitForPromises();
+
+        expect(awardEmojiQuerySingleItemHandler).toHaveBeenCalledWith({
+          fullPath: 'test-project-path',
+          iid: '1',
+          pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
+          after: undefined,
+        });
+        expect(awardEmojiQuerySingleItemHandler).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('when there is next page', () => {
+      const awardEmojisQueryMoreThanDefaultHandler = jest.fn().mockResolvedValueOnce(
+        workItemByIidResponseFactory({
+          awardEmoji: mockMoreThanDefaultAwardEmojisWidget,
+        }),
+      );
+
+      it('fetch more award emojis should be called', async () => {
+        createComponent({
+          awardEmojiQueryHandler: awardEmojisQueryMoreThanDefaultHandler,
+        });
+        await waitForPromises();
+
+        expect(awardEmojisQueryMoreThanDefaultHandler).toHaveBeenCalledWith({
+          fullPath: 'test-project-path',
+          iid: '1',
+          pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
+          after: 'endCursor',
+        });
+
+        await nextTick();
+
+        expect(awardEmojisQueryMoreThanDefaultHandler).toHaveBeenCalledWith({
+          fullPath: 'test-project-path',
+          iid: '1',
+          pageSize: DEFAULT_PAGE_SIZE_EMOJIS,
+          after: mockMoreThanDefaultAwardEmojisWidget.pageInfo.endCursor,
+        });
+        expect(awardEmojisQueryMoreThanDefaultHandler).toHaveBeenCalledTimes(2);
       });
     });
   });

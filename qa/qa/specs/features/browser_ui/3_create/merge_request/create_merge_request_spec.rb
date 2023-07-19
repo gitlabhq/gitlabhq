@@ -46,7 +46,7 @@ module QA
 
         label = Resource::ProjectLabel.fabricate_via_api! do |label|
           label.project = project
-          label.title = 'label'
+          label.title = 'foo::label'
         end
 
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|

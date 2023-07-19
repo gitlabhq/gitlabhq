@@ -17,7 +17,7 @@ module Mutations
                  description: 'Whether the integration is receiving alerts.'
 
         argument :api_url, GraphQL::Types::String,
-                 required: true,
+                 required: false,
                  description: 'Endpoint at which Prometheus can be queried.'
 
         def resolve(args)

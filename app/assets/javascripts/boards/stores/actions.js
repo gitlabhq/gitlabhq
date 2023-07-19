@@ -743,11 +743,11 @@ export default {
         },
       })
       .then(({ data }) => {
-        if (data.createIssue.errors.length) {
+        if (data.createIssuable.errors.length) {
           throw new Error();
         }
 
-        const rawIssue = data.createIssue?.issue;
+        const rawIssue = data.createIssuable?.issuable;
         const formattedIssue = formatIssue(rawIssue);
         dispatch('removeListItem', { listId: list.id, itemId: placeholderId });
         dispatch('addListItem', { list, item: formattedIssue, position: 0 });

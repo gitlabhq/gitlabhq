@@ -14,6 +14,11 @@ module API
       expose :enforcement_limit, documentation: { type: 'integer', example: 15000 }
       expose :generic_packages_max_file_size, documentation: { type: 'integer', example: 5368709120 }
       expose :helm_max_file_size, documentation: { type: 'integer', example: 5242880 }
+      expose :limits_history, documentation: {
+        type: 'object',
+        example: '{"enforcement_limit"=>[{"timestamp"=>1686909124, "user_id"=>1, "username"=>"x", "value"=>5}],
+                   "notification_limit"=>[{"timestamp"=>1686909124, "user_id"=>2, "username"=>"y", "value"=>7}]}'
+      }
       expose :maven_max_file_size, documentation: { type: 'integer', example: 3221225472 }
       expose :notification_limit, documentation: { type: 'integer', example: 15000 }
       expose :npm_max_file_size, documentation: { type: 'integer', example: 524288000 }

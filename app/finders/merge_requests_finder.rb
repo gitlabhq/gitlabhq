@@ -73,6 +73,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_deployments(items)
     items = by_reviewer(items)
     items = by_source_project_id(items)
+    items = items.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417462")
 
     by_approved(items)
   end

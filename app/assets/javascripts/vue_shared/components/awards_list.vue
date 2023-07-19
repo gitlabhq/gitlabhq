@@ -184,6 +184,7 @@ export default {
       class="gl-mr-3 gl-my-2"
       :class="awardList.classes"
       :title="awardList.title"
+      :data-emoji-name="awardList.name"
       data-testid="award-button"
       @click="handleAward(awardList.name)"
     >
@@ -209,7 +210,6 @@ export default {
         @hidden="setIsMenuOpen(false)"
       >
         <template #button-content>
-          <span class="gl-sr-only">{{ __('Add reaction') }}</span>
           <span class="reaction-control-icon reaction-control-icon-neutral">
             <gl-icon name="slight-smile" />
           </span>

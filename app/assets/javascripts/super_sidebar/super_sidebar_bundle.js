@@ -65,13 +65,23 @@ export const initSuperSidebar = () => {
 
   if (!el) return false;
 
-  const { rootPath, sidebar, toggleNewNavEndpoint, forceDesktopExpandedSidebar } = el.dataset;
+  const {
+    rootPath,
+    sidebar,
+    toggleNewNavEndpoint,
+    forceDesktopExpandedSidebar,
+    commandPalette,
+  } = el.dataset;
 
   bindSuperSidebarCollapsedEvents(forceDesktopExpandedSidebar);
   initSuperSidebarCollapsedState(parseBoolean(forceDesktopExpandedSidebar));
 
   const sidebarData = JSON.parse(sidebar);
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
+
+  const commandPaletteData = JSON.parse(commandPalette);
+  const projectFilesPath = commandPaletteData.project_files_url;
+  const projectBlobPath = commandPaletteData.project_blob_url;
   const commandPaletteCommands = sidebarData.create_new_menu_groups || [];
   const commandPaletteLinks = convertObjectPropsToCamelCase(sidebarData.current_menu_items || []);
 
@@ -91,6 +101,8 @@ export const initSuperSidebar = () => {
       commandPaletteLinks,
       autocompletePath,
       searchContext,
+      projectFilesPath,
+      projectBlobPath,
     },
     store: createStore({
       searchPath,

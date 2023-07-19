@@ -5,9 +5,9 @@ require 'gitlab-dangerfiles'
 require 'danger'
 require 'danger/plugins/internal/helper'
 require 'gitlab/dangerfiles/spec_helper'
+require 'gitlab/rspec/all'
 
 require_relative '../../../danger/plugins/project_helper'
-require_relative '../../../spec/support/helpers/stub_env'
 
 RSpec.describe Tooling::Danger::ProjectHelper do
   include StubENV
@@ -65,6 +65,11 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'config/foo.js'                    | [:frontend]
       'config/deep/foo.js'               | [:frontend]
 
+      'app/components/pajamas/empty_state_component.html.haml'    | [:frontend, :backend]
+      'ee/app/components/pajamas/empty_state_component.html.haml' | [:frontend, :backend]
+      'app/components/diffs/overflow_warning_component.html.haml' | [:frontend, :backend]
+      'app/components/layouts/horizontal_section_component.rb'    | [:frontend, :backend]
+
       'ee/app/assets/foo'                | [:frontend]
       'ee/app/views/foo'                 | [:frontend, :backend]
       'ee/spec/frontend/bar'             | [:frontend]
@@ -80,6 +85,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       '.rubocop.yml'               | [:backend]
       '.rubocop_todo.yml'          | [:backend]
       '.rubocop_todo/cop/name.yml' | [:backend]
+      'gems/foo/.rubocop.yml'      | [:backend]
       'spec/foo'                   | [:backend]
       'spec/foo/bar'               | [:backend]
 
@@ -112,7 +118,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
       'scripts/glfm/bar.rb'                                   | [:backend]
       'scripts/glfm/bar.js'                                   | [:frontend]
-      'scripts/remote_development/run-smoke-test-suite.sh'    | [:remote_development]
+      'scripts/remote_development/run-smoke-test-suite.sh'    | [:remote_development_be]
       'scripts/lib/glfm/bar.rb'                               | [:backend]
       'scripts/lib/glfm/bar.js'                               | [:frontend]
       'scripts/bar.rb'                                        | [:backend, :tooling]
@@ -136,6 +142,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'tooling/bin/find_foss_tests'                           | [:tooling]
       '.codeclimate.yml'                                      | [:tooling]
       '.gitlab/CODEOWNERS'                                    | [:tooling]
+      'gems/gem.gitlab-ci.yml'                                | [:tooling]
+      'gems/config/rubocop.yml'                               | [:tooling]
 
       'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | [:ci_template]
       'lib/gitlab/ci/templates/dotNET-Core.yml'               | [:ci_template]

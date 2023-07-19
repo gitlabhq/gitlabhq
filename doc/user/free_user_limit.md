@@ -7,9 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Free user limit **(FREE SAAS)**
 
 A five-user limit applies to newly created top-level namespaces with
-private visibility on GitLab SaaS. For existing namespaces, this limit
-is being rolled out gradually. Impacted users are notified in
-GitLab.com at least 60 days before the limit is applied.
+private visibility on GitLab SaaS. For existing namespaces created before December 28, 2022, the limit was applied on June 13, 2023.
 
 When the five-user limit is applied, top-level private namespaces
 exceeding the user limit are placed in a read-only state. These

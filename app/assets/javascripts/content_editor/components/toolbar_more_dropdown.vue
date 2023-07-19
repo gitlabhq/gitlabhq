@@ -15,10 +15,6 @@ export default {
       toggleId: uniqueId('dropdown-toggle-btn-'),
       items: [
         {
-          text: __('Comment'),
-          action: () => this.insert('comment'),
-        },
-        {
           text: __('Code block'),
           action: () => this.insert('codeBlock'),
         },

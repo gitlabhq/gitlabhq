@@ -26,7 +26,7 @@ To connect a remote machine to the Web IDE, you must:
 
 To generate Let's Encrypt certificates:
 
-1. Create an `A` record to point a domain to your remote machine (for example, from `example.remote.gitlab.dev` to `1.2.3.4`).
+1. Create an `A` record to point a domain to your remote machine (for example, from `example.remote.gitlab.dev` to `10.0.2.2`).
 1. Install [Certbot](https://certbot.eff.org/) to enable HTTPS:
 
    ```shell

@@ -61,8 +61,9 @@ the Docker commands, but needs permission to do so.
 1. In GitLab, add `docker info` to `.gitlab-ci.yml` to verify that Docker is working:
 
    ```yaml
-   before_script:
-     - docker info
+   default:
+     before_script:
+       - docker info
 
    build_image:
      script:
@@ -155,7 +156,12 @@ To use Docker-in-Docker with TLS enabled:
    `docker:20.10.16-dind` service:
 
    ```yaml
-   image: docker:20.10.16
+   default:
+     image: docker:20.10.16
+     services:
+       - docker:20.10.16-dind
+     before_script:
+       - docker info
 
    variables:
      # When you use the dind service, you must instruct Docker to talk with
@@ -173,12 +179,6 @@ To use Docker-in-Docker with TLS enabled:
      # `/certs/client` to share between the service and job
      # container, thanks to volume mount from config.toml
      DOCKER_TLS_CERTDIR: "/certs"
-
-   services:
-     - docker:20.10.16-dind
-
-   before_script:
-     - docker info
 
    build:
      stage: build
@@ -215,7 +215,12 @@ You can now use `docker` in the job script. You should include the
 `docker:20.10.16-dind` service:
 
 ```yaml
-image: docker:20.10.16
+default:
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - docker info
 
 variables:
   # When using dind service, you must instruct docker to talk with the
@@ -234,12 +239,6 @@ variables:
   #
   # This instructs Docker not to start over TLS.
   DOCKER_TLS_CERTDIR: ""
-
-services:
-  - docker:20.10.16-dind
-
-before_script:
-  - docker info
 
 build:
   stage: build
@@ -280,7 +279,12 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
    `docker:20.10.16-dind` service:
 
    ```yaml
-   image: docker:20.10.16
+   default:
+     image: docker:20.10.16
+     services:
+       - docker:20.10.16-dind
+     before_script:
+       - docker info
 
    variables:
      # When using dind service, you must instruct Docker to talk with
@@ -306,12 +310,6 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
      # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4125
      DOCKER_TLS_VERIFY: 1
      DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
-
-   services:
-     - docker:20.10.16-dind
-
-   before_script:
-     - docker info
 
    build:
      stage: build
@@ -352,9 +350,10 @@ Docker-in-Docker is the recommended configuration, but you should be aware of th
 To use Docker commands in your CI/CD jobs, you can bind-mount `/var/run/docker.sock` into the
 container. Docker is then available in the context of the image.
 
-> If you bind the Docker socket and you are [using GitLab Runner 11.11 or later](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1261),
-> you can no longer use `docker:20.10.16-dind` as a service.
-> Volume bindings also affect services, making them incompatible.
+If you bind the Docker socket and you are
+[using GitLab Runner 11.11 or later](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1261),
+you can no longer use `docker:20.10.16-dind` as a service. Volume bindings also affect services,
+making them incompatible.
 
 To make Docker available in the context of the image, you need to mount
 `/var/run/docker.sock` into the launched containers. To do this with the Docker
@@ -390,11 +389,10 @@ sudo gitlab-runner register -n \
   --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 ```
 
-> If you want to use more complex Docker-in-Docker configurations, like it is necessary to run Code Quality checks with
-> Code Climate, you need to ensure that the paths to the build directory are the same on the host as well as inside the
-> Docker container.
-> See section "[Improve Code Quality performance with private runners](../testing/code_quality.md#improve-code-quality-performance-with-private-runners)"
-> in the Code Quality documentation.
+To use more complex Docker-in-Docker configurations, such as is necessary to run Code Quality checks
+with Code Climate, you need to ensure that the paths to the build directory are the same on the host
+as well as inside the Docker container. For more details, see
+[Improve Code Quality performance with private runners](../testing/code_quality.md#improve-code-quality-performance-with-private-runners).
 
 #### Enable registry mirror for `docker:dind` service
 
@@ -558,10 +556,10 @@ You do not need to include the `docker:20.10.16-dind` service, like you do when
 you use the Docker-in-Docker executor:
 
 ```yaml
-image: docker:20.10.16
-
-before_script:
-  - docker info
+default:
+  image: docker:20.10.16
+  before_script:
+    - docker info
 
 build:
   stage: build
@@ -639,8 +637,8 @@ and [using the OverlayFS storage driver](https://docs.docker.com/storage/storage
 To build Docker images without enabling privileged mode on the runner, you can
 use one of these alternatives:
 
-- [`kaniko`](using_kaniko.md)
-- [`buildah`](https://github.com/containers/buildah)
+- [`kaniko`](using_kaniko.md).
+- [`buildah`](https://github.com/containers/buildah). There is a [known issue](https://github.com/containers/buildah/issues/4049) with running as non-root, you might need this [workaround](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#configure-setfcap) if you are using OpenShift Runner.
 
 For example, with `buildah`:
 
@@ -703,10 +701,10 @@ This issue can occur when the service's image name
 [includes a registry hostname](../../ci/services/index.md#available-settings-for-services). For example:
 
 ```yaml
-image: docker:20.10.16
-
-services:
-  - registry.hub.docker.com/library/docker:20.10.16-dind
+default:
+  image: docker:20.10.16
+  services:
+    - registry.hub.docker.com/library/docker:20.10.16-dind
 ```
 
 A service's hostname is [derived from the full image name](../../ci/services/index.md#accessing-the-services).
@@ -714,14 +712,14 @@ However, the shorter service hostname `docker` is expected.
 To allow service resolution and access, add an explicit alias for the service name `docker`:
 
 ```yaml
-image: docker:20.10.16
-
-services:
-  - name: registry.hub.docker.com/library/docker:20.10.16-dind
-    alias: docker
+default:
+  image: docker:20.10.16
+  services:
+    - name: registry.hub.docker.com/library/docker:20.10.16-dind
+      alias: docker
 ```
 
-### Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password
+### Error: `Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password`
 
 This error appears when you use the deprecated variable, `CI_BUILD_TOKEN`. To prevent users from receiving this error, you should:
 

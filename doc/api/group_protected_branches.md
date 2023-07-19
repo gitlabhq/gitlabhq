@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110603) in GitLab 15.9 [with a flag](../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `group_protected_branches`.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `group_protected_branches`.
 On GitLab.com, this feature is not available.
 
 ## Valid access levels

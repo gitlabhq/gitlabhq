@@ -9,38 +9,37 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab uses Gems as a tool to improve code reusability and modularity
 in a monolithic codebase.
 
-Sometimes we create libraries within our codebase that we want to
-extract, either because their functionality is highly isolated,
-we want to use them in other applications
-ourselves, or we think it would benefit the wider community.
-Extracting code to a gem also means that we can be sure that the gem
-does not contain any hidden dependencies on our application code.
+We extract libraries from our codebase when their functionality
+is highly isolated and we want to use them in other applications
+ourselves or we think it would benefit the wider community.
 
-## When to use Gems
+Extracting code to a gem also ensures that the gem does not contain any hidden 
+dependencies on our application code.
 
-Gems should be used always when implementing functions that can be considered isolated,
-that are decoupled from the business logic of GitLab and can be developed separately. Consider the
-following examples where Gem logic could be placed:
+Gems should always be used when implementing functionality that can be considered isolated,
+that are decoupled from the business logic of GitLab and can be developed separately.
 
-The best example where we can look for opportunities to introduce new gems
+The best place in a Rails codebase with opportunities to extract new gems
 is the [lib/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/) folder.
 
-The **lib/** folder is a mix of code that is generic/universal, GitLab-specific, and tightly integrated with the rest of the codebase.
+Our **lib/** folder is a mix of code that is generic/universal, GitLab-specific, and tightly integrated with the rest of the codebase.
 
-If you cannot find a good place for your code in **lib/** you should strongly
-consider creating the new Gem [In the same repo](#in-the-same-repo).
+In order to decide whether to extract part of the codebase as a Gem, ask yourself the following questions:
 
-## In the same repo
+1. Is this code generic or universal that can be done as a separate and small project?
+1. Do I expect it to be used internally outside of the Monolith?
+1. Is this useful for the wider community that we should consider releasing as a separate component?
 
-**Our GitLab Gems should be always put in `gems/` of GitLab monorepo.**
+If the answer is **Yes** for any of the questions above, you should strongly consider creating a new Gem.
 
-That gives us the advantages of gems (modular code, quicker to run tests in development).
-and prevents complexity (coordinating changes across repos, new permissions, multiple projects, etc.).
+You can always start by creating a new Gem [in the same repo](#in-the-same-repo) and later evaluate whether to migrate it to a separate repository, when it is intended
+to be used by a wider community.
 
-Gems stored in the same repo should be referenced in `Gemfile` with the `path:` syntax.
-They should not be published to RubyGems.
+WARNING:
+To prevent malicious actors from name-squatting the extracted Gems, follow the instructions 
+to [reserve a gem name](#reserve-a-gem-name).
 
-### Advantages
+## Advantages of using Gems
 
 Using Gems can provide several benefits for code maintenance:
 
@@ -58,11 +57,102 @@ Using Gems can provide several benefits for code maintenance:
   Since the gem is packaged, not changed too often, it also allows us to run those tests less frequently improving
   CI testing time.
 
-### To Do
+## Gem naming
 
-#### Desired use cases
+Gems can fall under three different case:
 
-The `gitlab-utils` is a Gem containing as of set of class that implement common intrisic functions
+- `unique_gem`: Don't include `gitlab` in the gem name if the gem doesn't include anything specific to GitLab
+- `existing_gem-gitlab`: When you fork and modify/extend a publicly available gem, add the `-gitlab` suffix, according to [Rubygems' convention](https://guides.rubygems.org/name-your-gem/)
+- `gitlab-unique_gem`: Include a `gitlab-` prefix to gems that are only useful in the context of GitLab projects.
+
+Examples of existing gems:
+
+- `y-rb`: Ruby bindings for yrs. Yrs "wires" is a Rust port of the Yjs framework.
+- `activerecord-gitlab`: Adds GitLab-specific patches to the `activerecord` public gem.
+- `gitlab-rspec` and `gitlab-utils`: GitLab-specific set of classes to help in a particular context, or re-use code.
+
+## In the same repo
+
+**When extracting Gems from existing codebase, put them in `gems/` of the GitLab monorepo**
+
+That gives us the advantages of gems (modular code, quicker to run tests in development).
+and prevents complexity (coordinating changes across repos, new permissions, multiple projects, etc.).
+
+Gems stored in the same repo should be referenced in `Gemfile` with the `path:` syntax.
+
+WARNING:
+To prevent malicious actors from name-squatting the extracted Gems, follow the instructions 
+to [reserve a gem name](#reserve-a-gem-name).
+
+### Create and use a new Gem
+
+You can see example adding a new gem: [!121676](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121676).
+
+1. Pick a good name for the gem, by following the [Gem naming](#gem-naming) convention.
+1. Create the new gem in `gems/<name-of-gem>` with `bundle gem gems/<name-of-gem> --no-exe --no-coc --no-ext --no-mit`.
+1. Remove the `.git` folder in `gems/<name-of-gem>` with `rm -rf gems/<name-of-gem>/.git`.
+1. Edit `gems/<name-of-gem>/README.md` to provide a simple description of the Gem.
+1. Edit `gems/<name-of-gem>/<name-of-gem>.gemspec` and fill the details about the Gem as in the following example:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   require_relative "lib/name/of/gem/version"
+
+   Gem::Specification.new do |spec|
+     spec.name = "<name-of-gem>"
+     spec.version = Name::Of::Gem::Version::VERSION
+     spec.authors = ["group::tenant-scale"]
+     spec.email = ["engineering@gitlab.com"]
+
+     spec.summary = "Gem summary"
+     spec.description = "A more descriptive text about what the gem is doing."
+     spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/<name-of-gem>"
+     spec.license = "MIT"
+     spec.required_ruby_version = ">= 3.0"
+     spec.metadata["rubygems_mfa_required"] = "true"
+
+     spec.files = Dir['lib/**/*.rb']
+     spec.require_paths = ["lib"]
+   end
+   ```
+
+1. Update `gems/<name-of-gem>/.rubocop.yml` with:
+
+   ```yaml
+   inherit_from:
+     - ../config/rubocop.yml
+   ```
+
+1. Configure CI for a newly added Gem:
+
+   - Add `gems/<name-of-gem>/.gitlab-ci.yml`:
+
+     ```yaml
+     include:
+       - local: gems/gem.gitlab-ci.yml
+         inputs:
+           gem_name: "<name-of-gem>"
+     ```
+
+   - To `.gitlab/ci/gitlab-gems.gitlab-ci.yml` add:
+
+     ```yaml
+     include:
+       - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+         inputs:
+           gem_name: "<name-of-gem>"
+     ```
+
+1. Reference Gem in `Gemfile` with:
+
+   ```ruby
+   gem '<name-of-gem>', path: 'gems/<name-of-gem>'
+   ```
+
+### Examples of Gem extractions
+
+The `gitlab-utils` is a Gem containing as of set of class that implement common intrinsic functions
 used by GitLab developers, like `strong_memoize` or `Gitlab::Utils.to_boolean`.
 
 The `gitlab-database-schema-migrations` is a potential Gem containing our extensions to Rails
@@ -72,7 +162,7 @@ or potentially be upstreamed.
 
 The `gitlab-database-load-balancing` similar to previous is a potential Gem to implement GitLab specific
 load balancing to Rails database handling. Since this is rather complex and highly specific code
-maintaing it's complexity in a isolated and well tested Gem would help with removing this complexity
+maintaining its complexity in a isolated and well tested Gem would help with removing this complexity
 from a big monolithic codebase.
 
 The `gitlab-flipper` is another potential Gem implementing all our custom extensions to support feature
@@ -81,18 +171,10 @@ usage, adding consistency checks and various helpers to track owners of feature 
 not really part of GitLab business logic and could be used to better track our implementation
 of Flipper and possibly much easier change it to dogfood [GitLab Feature Flags](../operations/feature_flags.md).
 
-The `gitlab-ci-reports-parsers` is a potential Gem that could implement all various parsers for various formats.
-The parsed output would be transformed into objects that could then be used by GitLab the application
-to store it in the database. This functionality could be an additional Gem since it is isolated,
-rarely changed, and GitLab Rails only consumes the data.
-
-The same pattern could be applied to all other type of parsers, like security vulnerabilities, or any
-other complex structures that need to be transformed into a form that is consumed by GitLab Rails.
-
-The `gitlab-active_record` is a gem adding GitLab specific Active Record patches.
+The `activerecord-gitlab` is a gem adding GitLab specific Active Record patches.
 It is very well desired for such to be managed separately to isolate complexity.
 
-#### Other potential use cases
+### Other potential use cases
 
 The `gitlab-ci-config` is a potential Gem containing all our CI code used to parse `.gitlab-ci.yml`.
 This code is today lightly interlocked with GitLab the application due to lack of proper abstractions.
@@ -100,103 +182,6 @@ However, moving this to dedicated Gem could allow us to build various adapters t
 with GitLab the application. The interface would for example define an adapter to resolve `includes:`.
 Once we would have a `gitlab-ci-config` Gem it could be used within GitLab and outside of GitLab Rails
 and [GitLab CLI](https://gitlab.com/gitlab-org/cli).
-
-### Create and use a new Gem
-
-You can see example adding new Gem: [!121676](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121676).
-
-1. Create a new Ruby Gem in `gems/gitlab-<name-of-gem>` with `bundle gem gems/gitlab-<name-of-gem> --no-exe --no-coc --no-ext --no-mit`.
-1. Edit or remove `gitlab-<name-of-gem>/README.md` to provide a simple one paragraph description of the Gem.
-1. Edit `gitlab-<name-of-gem>/gitlab-<name-of-gem>.gemspec` and fill the details about the Gem as in the following example:
-
-    ```ruby
-    Gem::Specification.new do |spec|
-      spec.name = "gitlab-<name-of-gem>"
-      spec.version = Gitlab::NameOfGem::VERSION
-      spec.authors = ["group::tenant-scale"]
-      spec.email = ["engineering@gitlab.com"]
-
-      spec.summary = "GitLab's RSpec extensions"
-      spec.description = "A set of useful helpers to configure RSpec with various stubs and CI configs."
-      spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-<name-of-gem>"
-      spec.required_ruby_version = ">= 2.6.0"
-    end
-    ```
-
-1. Update `gems/gitlab-<name-of-gem>/.rubocop` with:
-
-    ```yaml
-    inherit_from:
-      - ../../.rubocop.yml
-
-    CodeReuse/ActiveRecord:
-      Enabled: false
-
-    AllCops:
-      TargetRubyVersion: 3.0
-
-    Naming/FileName:
-      Exclude:
-        - spec/**/*.rb
-    ```
-
-1. Configure CI for a newly added Gem:
-
-- Add `gems/gitlab-<name-of-gem>/.gitlab-ci.yml`:
-
-    ```yaml
-    workflow:
-      rules:
-        - if: $CI_MERGE_REQUEST_ID
-
-    rspec:
-      image: "ruby:${RUBY_VERSION}"
-      cache:
-        key: gitlab-<name-of-gem>
-        paths:
-          - gitlab-<name-of-gem>/vendor/ruby
-      before_script:
-        - cd vendor/gems/bundler-checksum
-        - ruby -v                                   # Print out ruby version for debugging
-        - gem install bundler --no-document         # Bundler is not installed with the image
-        - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
-        - bundle config set with 'development'
-        - bundle config set --local frozen 'true'   # Disallow Gemfile.lock changes on CI
-        - bundle config                             # Show bundler configuration
-        - bundle install -j $(nproc)
-      script:
-        - bundle exec rspec
-      parallel:
-        matrix:
-          - RUBY_VERSION: ["2.7", "3.0", "3.1", "3.2"]
-    ```
-
-- To `.gitlab/ci/rules.gitlab-ci.yml` add:
-
-    ```yaml
-    .gems:rules:gitlab-<name-of-gem>:
-      rules:
-        - <<: *if-merge-request
-          changes: ["gems/gitlab-<name-of-gem>/**/*"]
-    ```
-
-- To `.gitlab/ci/gitlab-gems.gitlab-ci.yml` add:
-
-    ```yaml
-    gems gitlab-<name-of-gem>:
-      extends:
-        - .gems:rules:gitlab-<name-of-gem>
-      needs: []
-      trigger:
-        include: gems/gitlab-<name-of-gem>/.gitlab-ci.yml
-        strategy: depend
-    ```
-
-1. Reference Gem in `Gemfile` with:
-
-    ```ruby
-    gem 'gitlab-<name-of-gem>', path: 'gems/gitlab-<name-of-gem>'
-    ```
 
 ## In the external repo
 
@@ -319,3 +304,13 @@ to store them in monorepo:
   - It is expected that vendored gems might be published by third-party.
   - Those Gems will not be published by us to RubyGems.
   - Those Gems will be referenced via `path:` in `Gemfile`, since we cannot depend on RubyGems.
+
+## Reserve a gem name
+
+We reserve a gem name as a precaution **before publishing any public code that contains a new gem**, to avoid name-squatters taking over the name in RubyGems.
+
+To reserve a gem name, follow the steps to [Create and publish a Ruby gem](#create-and-publish-a-ruby-gem), with the following changes:
+
+- Use `0.0.0` as the version.
+- Include a single file `lib/NAME.rb` with the content `raise "Reserved for GitLab"`.
+- Perform the `build` and `publish`, and check <https://rubygems.org/gems/> to confirm it succeeded.

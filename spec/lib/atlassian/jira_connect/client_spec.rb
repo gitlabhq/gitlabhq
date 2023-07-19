@@ -214,13 +214,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
   end
 
   describe '#store_deploy_info' do
-    let_it_be(:environment) { create(:environment, name: 'DEV', project: project) }
-    let_it_be(:deployments) do
-      pipelines.map do |p|
-        build = create(:ci_build, environment: environment.name, pipeline: p, project: project)
-        create(:deployment, deployable: build, environment: environment)
-      end
-    end
+    let_it_be(:deployments) { create_list(:deployment, 1) }
 
     let(:schema) do
       Atlassian::Schemata.deploy_info_payload
@@ -252,18 +246,22 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
       subject.send(:store_deploy_info, project: project, deployments: deployments)
     end
 
-    it 'only sends information about relevant MRs' do
+    it 'calls the API if issue keys are found' do
       expect(subject).to receive(:post).with(
-        '/rest/deployments/0.1/bulk', { deployments: have_attributes(size: 8) }
+        '/rest/deployments/0.1/bulk', { deployments: have_attributes(size: 1) }
       ).and_call_original
 
       subject.send(:store_deploy_info, project: project, deployments: deployments)
     end
 
-    it 'does not call the API if there is nothing to report' do
+    it 'does not call the API if no issue keys are found' do
+      allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
+        allow(entity).to receive(:issue_keys).and_return([])
+      end
+
       expect(subject).not_to receive(:post)
 
-      subject.send(:store_deploy_info, project: project, deployments: deployments.take(1))
+      subject.send(:store_deploy_info, project: project, deployments: deployments)
     end
 
     context 'when there are errors' do

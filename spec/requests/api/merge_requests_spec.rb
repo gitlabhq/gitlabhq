@@ -2,7 +2,8 @@
 
 require "spec_helper"
 
-RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :source_code_management do
+RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :source_code_management,
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/418757' do
   include ProjectForksHelper
 
   let_it_be(:base_time) { Time.now }
@@ -60,13 +61,14 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
 
         context 'with merge status recheck projection' do
-          it 'does not enqueue a merge status recheck' do
+          it 'does not check mergeability', :sidekiq_inline do
             expect(check_service_class).not_to receive(:new)
 
-            get(api(endpoint_path), params: { with_merge_status_recheck: true })
+            get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
 
             expect_successful_response_with_paginated_array
             expect(mr_entity['merge_status']).to eq('unchecked')
+            expect(merge_request.reload.merge_status).to eq('unchecked')
           end
         end
       end
@@ -112,16 +114,32 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           end
 
           context 'with merge status recheck projection' do
-            it 'checks mergeability asynchronously' do
-              expect_next_instances_of(check_service_class, (1..2)) do |service|
-                expect(service).not_to receive(:execute)
-                expect(service).to receive(:async_execute).and_call_original
+            context 'with batched_api_mergeability_checks FF on' do
+              it 'checks mergeability asynchronously in batch', :sidekiq_inline do
+                get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
+
+                expect_successful_response_with_paginated_array
+
+                expect(merge_request.reload.merge_status).to eq('can_be_merged')
+              end
+            end
+
+            context 'with batched_api_mergeability_checks FF off' do
+              before do
+                stub_feature_flags(batched_api_mergeability_checks: false)
               end
 
-              get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
+              it 'checks mergeability asynchronously' do
+                expect_next_instances_of(check_service_class, (1..2)) do |service|
+                  expect(service).not_to receive(:execute)
+                  expect(service).to receive(:async_execute).and_call_original
+                end
 
-              expect_successful_response_with_paginated_array
-              expect(mr_entity['merge_status']).to eq('checking')
+                get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
+
+                expect_successful_response_with_paginated_array
+                expect(mr_entity['merge_status']).to eq('checking')
+              end
             end
           end
 
@@ -139,13 +157,14 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         context 'with a reporter role' do
           context 'with merge status recheck projection' do
-            it 'does not enqueue a merge status recheck' do
+            it 'does not check mergeability', :sidekiq_inline do
               expect(check_service_class).not_to receive(:new)
 
               get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
 
               expect_successful_response_with_paginated_array
               expect(mr_entity['merge_status']).to eq('unchecked')
+              expect(merge_request.reload.merge_status).to eq('unchecked')
             end
           end
 
@@ -154,17 +173,33 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
               stub_feature_flags(restrict_merge_status_recheck: false)
             end
 
-            context 'with merge status recheck projection' do
-              it 'does enqueue a merge status recheck' do
-                expect_next_instances_of(check_service_class, (1..2)) do |service|
-                  expect(service).not_to receive(:execute)
-                  expect(service).to receive(:async_execute).and_call_original
-                end
-
+            context 'with batched_api_mergeability_checks FF on' do
+              it 'checks mergeability asynchronously in batch', :sidekiq_inline do
                 get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
 
                 expect_successful_response_with_paginated_array
-                expect(mr_entity['merge_status']).to eq('checking')
+
+                expect(merge_request.reload.merge_status).to eq('can_be_merged')
+              end
+            end
+
+            context 'with batched_api_mergeability_checks FF off' do
+              before do
+                stub_feature_flags(batched_api_mergeability_checks: false)
+              end
+
+              context 'with merge status recheck projection' do
+                it 'does enqueue a merge status recheck' do
+                  expect_next_instances_of(check_service_class, (1..2)) do |service|
+                    expect(service).not_to receive(:execute)
+                    expect(service).to receive(:async_execute).and_call_original
+                  end
+
+                  get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
+
+                  expect_successful_response_with_paginated_array
+                  expect(mr_entity['merge_status']).to eq('checking')
+                end
               end
             end
           end

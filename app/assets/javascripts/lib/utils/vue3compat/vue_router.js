@@ -26,24 +26,26 @@ const mode = (value, options) => {
 
 const base = () => null;
 
-const toNewCatchAllPath = (path) => {
-  if (path === '*') return '/:pathMatch(.*)*';
+const toNewCatchAllPath = (path, { isRoot } = {}) => {
+  if (path === '*') {
+    const prefix = isRoot ? '/' : '';
+    return `${prefix}:pathMatch(.*)*`;
+  }
   return path;
 };
 
-const routes = (value) => {
+const transformRoutes = (value, _routerOptions, transformOptions = { isRoot: true }) => {
   if (!value) return null;
-  const newRoutes = value.reduce(function handleRoutes(acc, route) {
+  const newRoutes = value.map(function handleRoutes(route) {
     const newRoute = {
       ...route,
-      path: toNewCatchAllPath(route.path),
+      path: toNewCatchAllPath(route.path, transformOptions),
     };
     if (route.children) {
-      newRoute.children = route.children.reduce(handleRoutes, []);
+      newRoute.children = transformRoutes(route.children, _routerOptions, { isRoot: false }).routes;
     }
-    acc.push(newRoute);
-    return acc;
-  }, []);
+    return newRoute;
+  });
   return { routes: newRoutes };
 };
 
@@ -59,7 +61,7 @@ const scrollBehavior = (value) => {
 const transformers = {
   mode,
   base,
-  routes,
+  routes: transformRoutes,
   scrollBehavior,
 };
 
@@ -107,7 +109,15 @@ export default class VueRouterCompat {
             installed.set(app, new WeakSet());
           }
           installed.get(app).add(router);
+
+          // Since we're doing "late initialization" we might already have RouterLink
+          // for example, from router stubs. We need to maintain it
+          const originalRouterLink = this.$.appContext.components.RouterLink;
+          delete this.$.appContext.components.RouterLink;
           this.$.appContext.app.use(this.$options.router);
+          if (originalRouterLink) {
+            this.$.appContext.components.RouterLink = originalRouterLink;
+          }
         }
       },
     });

@@ -39,7 +39,6 @@ describe('CrmOrganizationToken', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  let fakeApollo;
 
   const getBaseToken = () => wrapper.findComponent(BaseToken);
 
@@ -58,8 +57,8 @@ describe('CrmOrganizationToken', () => {
     listeners = {},
     queryHandler = searchGroupCrmOrganizationsQueryHandler,
   } = {}) => {
-    fakeApollo = createMockApollo([[searchCrmOrganizationsQuery, queryHandler]]);
     wrapper = mount(CrmOrganizationToken, {
+      apolloProvider: createMockApollo([[searchCrmOrganizationsQuery, queryHandler]]),
       propsData: {
         config,
         value,
@@ -74,13 +73,8 @@ describe('CrmOrganizationToken', () => {
       },
       stubs,
       listeners,
-      apolloProvider: fakeApollo,
     });
   };
-
-  afterEach(() => {
-    fakeApollo = null;
-  });
 
   describe('methods', () => {
     describe('fetchOrganizations', () => {
@@ -159,9 +153,7 @@ describe('CrmOrganizationToken', () => {
       });
 
       it('calls `createAlert` when request fails', async () => {
-        mountComponent();
-
-        jest.spyOn(wrapper.vm.$apollo, 'query').mockRejectedValue({});
+        mountComponent({ queryHandler: jest.fn().mockRejectedValue({}) });
 
         getBaseToken().vm.$emit('fetch-suggestions');
         await waitForPromises();
@@ -172,9 +164,7 @@ describe('CrmOrganizationToken', () => {
       });
 
       it('sets `loading` to false when request completes', async () => {
-        mountComponent();
-
-        jest.spyOn(wrapper.vm.$apollo, 'query').mockRejectedValue({});
+        mountComponent({ queryHandler: jest.fn().mockRejectedValue({}) });
 
         getBaseToken().vm.$emit('fetch-suggestions');
 
@@ -194,13 +184,7 @@ describe('CrmOrganizationToken', () => {
         value: { data: '1' },
       });
 
-      const baseTokenEl = wrapper.findComponent(BaseToken);
-
-      expect(baseTokenEl.exists()).toBe(true);
-      expect(baseTokenEl.props()).toMatchObject({
-        suggestions: mockCrmOrganizations,
-        getActiveTokenValue: wrapper.vm.getActiveOrganization,
-      });
+      expect(getBaseToken().props('suggestions')).toEqual(mockCrmOrganizations);
     });
 
     it.each(mockCrmOrganizations)('renders token item when value is selected', (organization) => {
@@ -269,12 +253,9 @@ describe('CrmOrganizationToken', () => {
 
     it('emits listeners in the base-token', () => {
       const mockInput = jest.fn();
-      mountComponent({
-        listeners: {
-          input: mockInput,
-        },
-      });
-      wrapper.findComponent(BaseToken).vm.$emit('input', [{ data: 'mockData', operator: '=' }]);
+      mountComponent({ listeners: { input: mockInput } });
+
+      getBaseToken().vm.$emit('input', [{ data: 'mockData', operator: '=' }]);
 
       expect(mockInput).toHaveBeenLastCalledWith([{ data: 'mockData', operator: '=' }]);
     });

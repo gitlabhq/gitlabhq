@@ -1,7 +1,9 @@
 <script>
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { mapParallel } from 'ee_else_ce/diffs/components/diff_row_utils';
+import { sprintf } from '~/locale';
+import { createAlert } from '~/alert';
+import { mapParallel, mapParallelNoSast } from 'ee_else_ce/diffs/components/diff_row_utils';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { diffViewerModes } from '~/ide/constants';
@@ -12,7 +14,9 @@ import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_d
 import NoteForm from '~/notes/components/note_form.vue';
 import eventHub from '~/notes/event_hub';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
+import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '../i18n';
 import { getDiffMode } from '../store/utils';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffView from './diff_view.vue';
@@ -32,7 +36,7 @@ export default {
     UserAvatarLink,
     DiffFileDrafts,
   },
-  mixins: [diffLineNoteFormMixin, draftCommentsMixin],
+  mixins: [diffLineNoteFormMixin, draftCommentsMixin, glFeatureFlagsMixin()],
   props: {
     diffFile: {
       type: Object,
@@ -51,6 +55,7 @@ export default {
       'getCommentFormForDiffFile',
       'diffLines',
       'fileLineCodequality',
+      'fileLineSast',
     ]),
     ...mapGetters(['getNoteableData', 'noteableType', 'getUserData']),
     diffMode() {
@@ -87,8 +92,11 @@ export default {
       return this.getUserData;
     },
     mappedLines() {
-      // TODO: Do this data generation when we receive a response to save a computed property being created
-      return this.diffLines(this.diffFile).map(mapParallel(this)) || [];
+      if (this.glFeatures.sastReportsInInlineDiff) {
+        return this.diffLines(this.diffFile).map(mapParallel(this)) || [];
+      }
+
+      return this.diffLines(this.diffFile).map(mapParallelNoSast(this)) || [];
     },
     imageDiscussions() {
       return this.diffFile.discussions.filter(
@@ -103,7 +111,7 @@ export default {
   },
   methods: {
     ...mapActions('diffs', ['saveDiffDiscussion', 'closeDiffFileCommentForm']),
-    handleSaveNote(note) {
+    handleSaveNote(note, parentElement, errorCallback) {
       this.saveDiffDiscussion({
         note,
         formData: {
@@ -116,6 +124,18 @@ export default {
           width: this.diffFileCommentForm.width,
           height: this.diffFileCommentForm.height,
         },
+      }).catch((e) => {
+        const reason = e.response?.data?.errors;
+        const errorMessage = reason
+          ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
+          : SOMETHING_WENT_WRONG;
+
+        createAlert({
+          message: errorMessage,
+          parent: parentElement,
+        });
+
+        errorCallback();
       });
     },
   },
@@ -143,7 +163,7 @@ export default {
         {{ __('Contains only whitespace changes.') }}
         <gl-button
           category="tertiary"
-          variant="info"
+          variant="confirm"
           size="small"
           class="gl-ml-3"
           data-testid="diff-load-file-button"

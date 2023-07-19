@@ -13,12 +13,21 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # NOTE: When incrementing the major or minor version here, also increment activerecord_version
 # in vendor/gems/attr_encrypted/attr_encrypted.gemspec until we resolve
 # https://gitlab.com/gitlab-org/gitlab/-/issues/375713
-gem 'rails', '~> 6.1.7.2'
+#
+# See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
+gem 'rails', '~> 7.0.6'
+
+gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab'
 
 gem 'bootsnap', '~> 1.16.0', require: false
 
 gem 'openssl', '~> 3.0'
 gem 'ipaddr', '~> 1.2.5'
+
+# GitLab Monorepo Gems
+group :monorepo do
+  gem 'gitlab-utils', path: 'gems/gitlab-utils'
+end
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 3.0'
@@ -61,7 +70,7 @@ gem 'omniauth-gitlab', '~> 4.0.0', path: 'vendor/gems/omniauth-gitlab' # See ven
 gem 'omniauth-google-oauth2', '~> 1.1'
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 2.1.0'
-gem 'omniauth-shibboleth-redux', '~> 2.0'
+gem 'omniauth-shibboleth-redux', '~> 2.0', require: 'omniauth-shibboleth'
 gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.4.0', path: 'vendor/gems/omniauth_crowd' # See vendor/gems/omniauth_crowd/README.md
 gem 'omniauth_openid_connect', '~> 0.6.1'
@@ -106,7 +115,7 @@ gem 'gpgme', '~> 2.0.22'
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap'
-gem 'net-ldap', '~> 0.18.0'
+gem 'net-ldap', '~> 0.17.1'
 
 # API
 gem 'grape', '~> 1.7.0'
@@ -173,9 +182,9 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.175.0'
+gem 'aws-sdk-core', '~> 3.178.0'
 gem 'aws-sdk-cloudformation', '~> 1'
-gem 'aws-sdk-s3', '~> 1.126.0'
+gem 'aws-sdk-s3', '~> 1.130.0'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
 gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections
 
@@ -240,7 +249,7 @@ gem 'rainbow', '~> 3.0'
 gem 'ruby-progressbar', '~> 1.10'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '~> 1.6.0'
+gem 're2', '~> 1.7.0'
 
 # Misc
 
@@ -317,6 +326,7 @@ gem 'sassc-rails', '~> 2.1.0'
 gem 'autoprefixer-rails', '10.2.5.1'
 gem 'terser', '1.0.2'
 
+gem 'click_house-client', path: 'gems/click_house-client', require: 'click_house/client'
 gem 'addressable', '~> 2.8'
 gem 'tanuki_emoji', '~> 0.6'
 gem 'gon', '~> 6.4.0'
@@ -338,6 +348,8 @@ gem 'sentry-sidekiq', '~> 5.8.0'
 #
 gem 'pg_query', '~> 4.2.1'
 
+gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation'
+
 gem 'premailer-rails', '~> 1.10.3'
 
 gem 'gitlab-labkit', '~> 0.33.0'
@@ -346,7 +358,7 @@ gem 'thrift', '>= 0.16.0'
 # I18n
 gem 'ruby_parser', '~> 3.20', require: false
 gem 'rails-i18n', '~> 7.0'
-gem 'gettext_i18n_rails', '~> 1.8.0'
+gem 'gettext_i18n_rails', '~> 1.11.0'
 gem 'gettext_i18n_rails_js', '~> 1.3'
 gem 'gettext', '~> 3.3', require: false, group: :development
 
@@ -363,12 +375,12 @@ gem 'snowplow-tracker', '~> 0.8.0'
 
 # Metrics
 gem 'webrick', '~> 1.8.1', require: false
-gem 'prometheus-client-mmap', '~> 0.25', require: 'prometheus/client'
+gem 'prometheus-client-mmap', '~> 0.26', '>= 0.26.1', require: 'prometheus/client'
 
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.4.2', require: false
+  gem 'lefthook', '~> 1.4.3', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 
@@ -406,7 +418,7 @@ group :development, :test do
   gem 'spring', '~> 4.1.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 10.0.0', require: false
+  gem 'gitlab-styles', '~> 10.1.0', require: false
 
   gem 'haml_lint', '~> 0.40.0', require: false
   gem 'bundler-audit', '~> 0.7.0.1', require: false
@@ -432,7 +444,7 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 3.10.0', require: false
+  gem 'gitlab-dangerfiles', '~> 3.11.0', require: false
 end
 
 group :development, :test, :coverage do
@@ -447,6 +459,12 @@ group :development, :test, :omnibus do
   gem 'license_finder', '~> 7.0', require: false
 end
 
+# Gems required in various pipelines
+group :development, :test, :monorepo do
+  gem 'gitlab-rspec', path: 'gems/gitlab-rspec'
+  gem 'rspec_flaky', path: 'gems/rspec_flaky'
+end
+
 group :test do
   gem 'fuubar', '~> 2.2.0'
   gem 'rspec-retry', '~> 0.6.2'
@@ -454,10 +472,9 @@ group :test do
   gem 'rspec-benchmark', '~> 0.6.0'
   gem 'rspec-parameterized', '~> 1.0', require: false
 
-  gem 'capybara', '~> 3.39', '>= 3.39.1'
+  gem 'capybara', '~> 3.39', '>= 3.39.2'
   gem 'capybara-screenshot', '~> 1.0.26'
-  # 4.9.1 drops Ruby 2.7 support. We can upgrade further after we drop Ruby 2.7 support.
-  gem 'selenium-webdriver', '= 4.9.0'
+  gem 'selenium-webdriver', '= 4.10.0'
 
   gem 'graphlyte', '~> 1.0.0'
 
@@ -466,7 +483,7 @@ group :test do
   gem 'webmock', '~> 3.18.1'
   gem 'rails-controller-testing'
   gem 'concurrent-ruby', '~> 1.1'
-  gem 'test-prof', '~> 1.2.1'
+  gem 'test-prof', '~> 1.2.2'
   gem 'rspec_junit_formatter'
   gem 'guard-rspec'
   gem 'axe-core-rspec'
@@ -474,7 +491,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false
 
-  gem 'gitlab_quality-test_tooling', '~> 0.8.1', require: false
+  gem 'gitlab_quality-test_tooling', '~> 0.9.1', require: false
 end
 
 gem 'octokit', '~> 4.15'
@@ -509,14 +526,14 @@ gem 'ssh_data', '~> 1.3'
 gem 'spamcheck', '~> 1.3.0'
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 16.1.0-rc2'
+gem 'gitaly', '~> 16.2.0-rc2'
 
 # KAS GRPC protocol definitions
-gem 'kas-grpc', '~> 0.1.0'
+gem 'kas-grpc', '~> 0.2.0'
 
-gem 'grpc', '~> 1.42.0'
+gem 'grpc', '~> 1.55.0'
 
-gem 'google-protobuf', '~> 3.23', '>= 3.23.3'
+gem 'google-protobuf', '~> 3.23', '>= 3.23.4'
 
 gem 'toml-rb', '~> 2.2.0'
 
@@ -561,6 +578,7 @@ gem 'lockbox', '~> 1.1.1'
 gem 'valid_email', '~> 0.1'
 
 # JSON
+gem 'jsonb_accessor', '~> 1.3.10'
 gem 'json', '~> 2.6.3'
 gem 'json_schemer', '~> 0.2.18'
 gem 'oj', '~> 3.13.21'
@@ -575,7 +593,7 @@ gem 'ipaddress', '~> 0.8.3'
 
 gem 'parslet', '~> 1.8'
 
-gem 'ipynbdiff', path: 'vendor/gems/ipynbdiff'
+gem 'ipynbdiff', path: 'gems/ipynbdiff', require: 'ipynb_diff'
 
 gem 'ed25519', '~> 1.3.0'
 
@@ -590,7 +608,7 @@ gem 'cvss-suite', '~> 3.0.1', require: 'cvss_suite'
 gem 'arr-pm', '~> 0.0.12'
 
 # Remote Development
-gem 'devfile', '~> 0.0.19.pre.alpha1'
+gem 'devfile', '~> 0.0.20.pre.alpha1'
 
 # Apple plist parsing
 gem 'CFPropertyList', '~> 3.0.0'

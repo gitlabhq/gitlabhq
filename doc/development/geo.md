@@ -111,7 +111,7 @@ projects that need updating. Those projects can be:
   timestamp that is more recent than the `last_repository_successful_sync_at`
   timestamp in the `Geo::ProjectRegistry` model.
 - Manual: The administrator can manually flag a repository to resync in the
-  [Geo Admin Area](../user/admin_area/geo_sites.md).
+  [Geo Admin Area](../administration/geo_sites.md).
 
 When we fail to fetch a repository on the secondary `RETRIES_BEFORE_REDOWNLOAD`
 times, Geo does a so-called _re-download_. It will do a clean clone
@@ -425,18 +425,17 @@ not used, so sessions and so on, aren't shared between sites.
 ## Object Storage
 
 GitLab can optionally use Object Storage to store data it would
-otherwise store on disk. These things can be:
+otherwise store on disk. For example:
 
 - LFS Objects
 - CI Job Artifacts
 - Uploads
 
-Objects that are stored in object storage, are not handled by Geo. Geo
-ignores items in object storage. Either:
+By default, Geo does not replicate objects that are stored in object storage. Depending on the situation and needs of the customer, they can:
 
-- The object storage layer should take care of its own geographical
-  replication.
-- All secondary sites should use the same storage site.
+- [Enable GitLab-managed object storage replication](../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication).
+- Use their cloud provider's built-in services to replicate object storage across Geo sites.
+- Configure secondary Geo sites to access the same object storage endpoint as the primary site.
 
 ## Verification
 
@@ -467,7 +466,7 @@ basically hashes all Git refs together and stores that hash in the
 The **secondary** site does the same to calculate the hash of its
 clone, and compares the hash with the value the **primary** site
 calculated. If there is a mismatch, Geo will mark this as a mismatch
-and the administrator can see this in the [Geo Admin Area](../user/admin_area/geo_sites.md).
+and the administrator can see this in the [Geo Admin Area](../administration/geo_sites.md).
 
 ## Geo proxying
 
@@ -679,7 +678,14 @@ on, check out our [self-service framework](geo/framework.md).
 
 ### GET:Geo pipeline
 
-As part of the [e2e:package-and-test](testing_guide/end_to_end/index.md#using-the-package-and-test-job) pipeline, there is an option to manually trigger a job named `GET:Geo`. This pipeline uses [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to spin up a
+After triggering a successful [e2e:package-and-test-ee](testing_guide/end_to_end/index.md#using-the-package-and-test-job) pipeline, you can manually trigger a job named `GET:Geo`:
+
+1. In the [GitLab project](https://gitlab.com/gitlab-org/gitlab), select the **Pipelines** tab of a merge request. 
+1. Select the `Stage: qa` stage on the latest pipeline to expand and list all the related jobs.
+1. Select `trigger-omnibus` to view the [Omnibus GitLab Mirror](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror) pipeline corresponding to the merge request.
+1. The `GET:Geo` job can be found and triggered under the `trigger-qa` stage.
+
+This pipeline uses [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to spin up a
 [1k](../administration/reference_architectures/1k_users.md) Geo installation,
 and run the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) Geo scenario against the instance.
 When working on Geo features, it is a good idea to ensure the `qa-geo` job passes in a triggered `GET:Geo pipeline`.
@@ -694,7 +700,7 @@ see the [QA documentation](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa
 
 The pipeline involves the interaction of multiple different projects:
 
-- [GitLab](https://gitlab.com/gitlab-org/gitlab) - The [`e2e:package-and-test` job](testing_guide/end_to_end/index.md#using-the-package-and-test-job) is launched from merge requests in this project.
+- [GitLab](https://gitlab.com/gitlab-org/gitlab) - The [`e2e:package-and-test-ee` job](testing_guide/end_to_end/index.md#using-the-package-and-test-job) is launched from merge requests in this project.
 - [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab) - Builds relevant artifacts containing the changes from the triggering merge request pipeline.
 - [GET-Configs/Geo](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit-configs/Geo) - Coordinates the lifecycle of a short-lived Geo installation that can be evaluated.
 - [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - Contains the necessary logic for creating and destroying Geo installations. Used by `GET-Configs/Geo`.

@@ -26,15 +26,15 @@ export default {
       class="gl-px-5 gl-py-3 label-filter-menu-item"
     >
       <gl-form-checkbox
-        class="label-with-color-checkbox gl-display-inline-flex gl-h-5 gl-min-h-5"
+        class="label-with-color-checkbox gl-display-inline-flex gl-min-h-5"
         :value="label.key"
       >
         <span
           data-testid="label-color-indicator"
-          class="gl-rounded-base gl-w-5 gl-h-5 gl-display-inline-block gl-vertical-align-bottom gl-mr-3"
+          class="gl-rounded-base gl-min-w-5 gl-h-5 gl-display-inline-block gl-vertical-align-bottom gl-mr-3"
           :style="{ 'background-color': label.color }"
         ></span>
-        <span class="gl-reset-text-align gl-m-0 gl-p-0 label-title">{{
+        <span class="gl-reset-text-align gl-m-0 gl-p-0 label-title gl-word-break-all">{{
           label.title
         }}</span></gl-form-checkbox
       >

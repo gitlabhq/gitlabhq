@@ -9,7 +9,6 @@ include:
     ref: 7.2.3
     file:
       - /ci/base.gitlab-ci.yml
-      - /ci/allure-report.yml
       - /ci/knapsack-report.yml
 
 stages:
@@ -86,15 +85,6 @@ stages:
       - qa/knapsack/*.json
     expire_in: 1 day
 
-.e2e-test-report:
-  extends:
-    - .generate-allure-report-base
-  stage: report
-  variables:
-    GITLAB_AUTH_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
-    ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
-    ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
-
 .upload-knapsack-report:
   extends:
     - .generate-knapsack-report-base
@@ -148,6 +138,7 @@ stages:
     STATUS_SYM: ☠️
     STATUS: failed
     TYPE: "($QA_RUN_TYPE) "
+    ALLURE_JOB_NAME: $QA_RUN_TYPE
   when: always
   script:
     - |
@@ -157,6 +148,12 @@ stages:
       fi
     - bundle exec prepare-stage-reports --input-files "${QA_RSPEC_XML_FILE_PATTERN}"
     - !reference [.notify-slack-qa, script]
+
+.failure-videos:
+  variables:
+    USE_SELENOID: "true"
+    QA_RECORD_VIDEO: "true"
+    QA_REMOTE_GRID: "selenoid:4444"
 
 # ==========================================
 # Pre stage

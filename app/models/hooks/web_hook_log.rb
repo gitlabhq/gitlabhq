@@ -66,7 +66,7 @@ class WebHookLog < ApplicationRecord
 
   def redact_user_emails
     self.request_data.deep_transform_values! do |value|
-      value.to_s =~ URI::MailTo::EMAIL_REGEXP ? _('[REDACTED]') : value
+      URI::MailTo::EMAIL_REGEXP.match?(value.to_s) ? _('[REDACTED]') : value
     end
   end
 

@@ -1,4 +1,5 @@
 import { __, s__ } from '~/locale';
+import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 export const RUNNER_TYPENAME = 'CiRunner'; // __typename
 
@@ -90,6 +91,7 @@ export const I18N_PAUSED_DESCRIPTION = s__('Runners|Not accepting jobs');
 export const I18N_RESUME = __('Resume');
 export const I18N_RESUME_TOOLTIP = s__('Runners|Resume accepting jobs');
 
+export const I18N_DELETE = s__('Runners|Delete');
 export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
@@ -116,9 +118,6 @@ export const I18N_CREATE_RUNNER_LINK = s__(
 export const I18N_STILL_USING_REGISTRATION_TOKENS = s__('Runners|Still using registration tokens?');
 export const I18N_CONTACT_ADMIN_TO_REGISTER = s__(
   'Runners|To register new runners, contact your administrator.',
-);
-export const I18N_FOLLOW_REGISTRATION_INSTRUCTIONS = s__(
-  'Runners|Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner.',
 );
 
 // No runners found
@@ -271,12 +270,10 @@ export const DEFAULT_PLATFORM = LINUX_PLATFORM;
 
 // Runner docs are in a separate repository and are not shipped with GitLab
 // they are rendered as external URLs.
-export const INSTALL_HELP_URL = 'https://docs.gitlab.com/runner/install';
-export const EXECUTORS_HELP_URL = 'https://docs.gitlab.com/runner/executors/';
-export const SERVICE_COMMANDS_HELP_URL =
-  'https://docs.gitlab.com/runner/commands/#service-related-commands';
-export const CHANGELOG_URL = 'https://gitlab.com/gitlab-org/gitlab-runner/blob/main/CHANGELOG.md';
-export const DOCKER_HELP_URL = 'https://docs.gitlab.com/runner/install/docker.html';
-export const KUBERNETES_HELP_URL = 'https://docs.gitlab.com/runner/install/kubernetes.html';
-export const RUNNER_MANAGERS_HELP_URL =
-  'https://docs.gitlab.com/runner/fleet_scaling/#workers-executors-and-autoscaling-capabilities';
+export const INSTALL_HELP_URL = `${DOCS_URL}/runner/install`;
+export const EXECUTORS_HELP_URL = `${DOCS_URL}/runner/executors/`;
+export const SERVICE_COMMANDS_HELP_URL = `${DOCS_URL}/runner/commands/#service-related-commands`;
+export const CHANGELOG_URL = `https://gitlab.com/gitlab-org/gitlab-runner/blob/main/CHANGELOG.md`;
+export const DOCKER_HELP_URL = `${DOCS_URL}/runner/install/docker.html`;
+export const KUBERNETES_HELP_URL = `${DOCS_URL}/runner/install/kubernetes.html`;
+export const RUNNER_MANAGERS_HELP_URL = `${DOCS_URL}/runner/fleet_scaling/#workers-executors-and-autoscaling-capabilities`;

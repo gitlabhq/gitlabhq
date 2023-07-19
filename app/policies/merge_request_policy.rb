@@ -16,6 +16,10 @@ class MergeRequestPolicy < IssuablePolicy
     prevent :accept_merge_request
   end
 
+  rule { can?(:read_merge_request) }.policy do
+    enable :generate_diff_summary
+  end
+
   rule { can_approve }.policy do
     enable :approve_merge_request
   end
@@ -41,6 +45,10 @@ class MergeRequestPolicy < IssuablePolicy
 
   rule { can?(:admin_merge_request) }.policy do
     enable :set_merge_request_metadata
+  end
+
+  rule { llm_bot }.policy do
+    enable :generate_diff_summary
   end
 
   private

@@ -203,6 +203,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - [Disaster recovery](disaster_recovery/index.md) for multi-secondary sites causes downtime due to the complete re-synchronization and re-configuration of all non-promoted secondaries.
 - For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
 - Git push over SSH against a secondary site does not work for pushes over 1.86 GB. [GitLab issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109) tracks this bug.
+- Backups [cannot be run on secondaries](replication/troubleshooting.md#message-error-canceling-statement-due-to-conflict-with-recovery).
 
 ### Limitations on replication/verification
 
@@ -217,7 +218,7 @@ If you try to view replication data on the primary site, you receive a warning t
 The only way to view projects replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/projects`.
 An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4623) to fix this limitation.
 
-Keep in mind that mentioned URLs don't work when [Admin Mode](../../user/admin_area/settings/sign_in_restrictions.md#admin-mode) is enabled.
+Keep in mind that mentioned URLs don't work when [Admin Mode](../settings/sign_in_restrictions.md#admin-mode) is enabled.
 
 When using Unified URL, visiting the secondary site directly means you must route your requests to the secondary site. Exactly how this might be done depends on your networking configuration. If using DNS to route requests to the appropriate site, then you can, for example, edit your local machine's `/etc/hosts` file to route your requests to the desired secondary site. If the Geo sites are all behind a load balancer, then depending on the load balancer, you might be able to configure all requests from your IP to go to a particular secondary site.
 

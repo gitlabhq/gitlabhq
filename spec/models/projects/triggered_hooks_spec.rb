@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::TriggeredHooks do
+RSpec.describe Projects::TriggeredHooks, feature_category: :webhooks do
   let_it_be(:project) { create(:project) }
 
   let_it_be(:universal_push_hook) { create(:project_hook, project: project, push_events: true) }
@@ -10,6 +10,7 @@ RSpec.describe Projects::TriggeredHooks do
   let_it_be(:issues_hook) { create(:project_hook, project: project, issues_events: true, push_events: false) }
 
   let(:wh_service) { instance_double(::WebHookService, async_execute: true) }
+  let(:data) { { some: 'data', as: 'json' } }
 
   def run_hooks(scope, data)
     hooks = described_class.new(scope, data)
@@ -18,8 +19,6 @@ RSpec.describe Projects::TriggeredHooks do
   end
 
   it 'executes hooks by scope' do
-    data = { some: 'data', as: 'json' }
-
     expect_hook_execution(issues_hook, data, 'issue_hooks')
 
     run_hooks(:issue_hooks, data)
@@ -40,6 +39,40 @@ RSpec.describe Projects::TriggeredHooks do
     expect_hook_execution(universal_push_hook, data, 'push_hooks')
 
     run_hooks(:push_hooks, data)
+  end
+
+  context 'with emoji hooks' do
+    let_it_be(:emoji_hook) { create(:project_hook, project: project, emoji_events: true) }
+
+    it 'executes hook' do
+      expect_hook_execution(emoji_hook, data, 'emoji_hooks')
+
+      run_hooks(:emoji_hooks, data)
+    end
+
+    context 'when emoji_webhooks feature flag is disabled' do
+      before do
+        stub_feature_flags(emoji_webhooks: false)
+      end
+
+      it 'does not execute the hook' do
+        expect(WebHookService).not_to receive(:new)
+
+        run_hooks(:emoji_hooks, data)
+      end
+    end
+
+    context 'when emoji_webhooks feature flag is enabled for the project' do
+      before do
+        stub_feature_flags(emoji_webhooks: emoji_hook.project)
+      end
+
+      it 'executes the hook' do
+        expect_hook_execution(emoji_hook, data, 'emoji_hooks')
+
+        run_hooks(:emoji_hooks, data)
+      end
+    end
   end
 
   def expect_hook_execution(hook, data, scope)

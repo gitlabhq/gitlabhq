@@ -11,11 +11,9 @@ RSpec.describe Namespace::PackageSetting do
     it { is_expected.to validate_presence_of(:namespace) }
 
     describe '#maven_duplicates_allowed' do
-      it { is_expected.to allow_value(true).for(:maven_duplicates_allowed) }
-      it { is_expected.to allow_value(false).for(:maven_duplicates_allowed) }
+      it { is_expected.to allow_value(true, false).for(:maven_duplicates_allowed) }
       it { is_expected.not_to allow_value(nil).for(:maven_duplicates_allowed) }
-      it { is_expected.to allow_value(true).for(:generic_duplicates_allowed) }
-      it { is_expected.to allow_value(false).for(:generic_duplicates_allowed) }
+      it { is_expected.to allow_value(true, false).for(:generic_duplicates_allowed) }
       it { is_expected.not_to allow_value(nil).for(:generic_duplicates_allowed) }
     end
 

@@ -2,6 +2,6 @@
 
 module RssHelper
   def rss_url_options
-    { format: :atom, feed_token: current_user.try(:feed_token) }
+    { format: :atom, feed_token: generate_feed_token(:atom) }
   end
 end

@@ -74,7 +74,6 @@ describe('Discussion navigation mixin', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
     resetHTMLFixture();
   });
 

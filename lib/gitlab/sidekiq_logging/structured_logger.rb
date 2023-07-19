@@ -78,6 +78,8 @@ module Gitlab
 
         job_status = if job_exception
                        'fail'
+                     elsif job['dropped']
+                       'dropped'
                      elsif job['deferred']
                        'deferred'
                      else
@@ -87,11 +89,18 @@ module Gitlab
         payload['message'] = "#{message}: #{job_status}: #{payload['duration_s']} sec"
         payload['job_status'] = job_status
         payload['job_deferred_by'] = job['deferred_by'] if job['deferred']
+        payload['deferred_count'] = job['deferred_count'] if job['deferred']
 
         Gitlab::ExceptionLogFormatter.format!(job_exception, payload) if job_exception
 
         db_duration = ActiveRecord::LogSubscriber.runtime
         payload['db_duration_s'] = Gitlab::Utils.ms_to_round_sec(db_duration)
+
+        job_urgency = payload['class'].safe_constantize&.get_urgency.to_s
+        unless job_urgency.empty?
+          payload['urgency'] = job_urgency
+          payload['target_duration_s'] = Gitlab::Metrics::SidekiqSlis.execution_duration_for_urgency(job_urgency)
+        end
 
         payload
       end

@@ -6,6 +6,7 @@ module API
       module Npm
         include Gitlab::Utils::StrongMemoize
         include ::API::Helpers::PackagesHelpers
+        extend ::Gitlab::Utils::Override
 
         NPM_ENDPOINT_REQUIREMENTS = {
           package_name: API::NO_SLASH_URL_PART_REGEX
@@ -55,8 +56,7 @@ module API
           when :group
             finder = ::Packages::Npm::PackageFinder.new(
               params[:package_name],
-              namespace: group,
-              last_of_each_version: false
+              namespace: group
             )
 
             finder.last&.project_id
@@ -77,14 +77,19 @@ module API
 
             finder = ::Packages::Npm::PackageFinder.new(
               package_name,
-              namespace: namespace,
-              last_of_each_version: false
+              namespace: namespace
             )
 
             finder.last&.project_id
           end
         end
         strong_memoize_attr :project_id_or_nil
+
+        def enqueue_sync_metadata_cache_worker(project, package_name)
+          return unless Feature.enabled?(:npm_metadata_cache, project)
+
+          ::Packages::Npm::CreateMetadataCacheWorker.perform_async(project.id, package_name)
+        end
 
         private
 
@@ -101,6 +106,20 @@ module API
           group
         end
         strong_memoize_attr :group
+
+        override :not_found!
+        def not_found!(resource = nil)
+          reason = "#{resource} not found"
+          message = "404 #{reason}".titleize
+          render_structured_api_error!({ message: message, error: reason }, 404)
+        end
+
+        override :bad_request_missing_attribute!
+        def bad_request_missing_attribute!(attribute)
+          reason = "\"#{attribute}\" not given"
+          message = "400 Bad request - #{reason}"
+          render_structured_api_error!({ message: message, error: reason }, 400)
+        end
       end
     end
   end

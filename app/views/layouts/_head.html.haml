@@ -3,12 +3,11 @@
 - omit_og = sign_in_with_redirect?
 %head{ omit_og ? { } : { prefix: "og: http://ogp.me/ns#" } }
   %meta{ charset: "utf-8" }
-
-  %title= page_title(site_name)
-
-  = render 'layouts/loading_hints'
-
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
+  %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }
+  %title= page_title(site_name)
+  = Gon::Base.render_data(nonce: content_security_policy_nonce)
+  = yield :project_javascripts
 
   = render 'layouts/startup_js'
   = yield :startup_js
@@ -18,14 +17,9 @@
 
   = yield :prefetch_asset_tags
 
-  = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
-
-  - if startup_css_enabled?
-    = render 'layouts/startup_css', { startup_filename: local_assigns.fetch(:startup_filename, nil) }
-  - else
-    - diffs_colors = user_diffs_colors
-    = stylesheet_link_tag "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
-    = render 'layouts/diffs_colors_css', diffs_colors if diffs_colors.present? || request.path == profile_preferences_path
+  - diffs_colors = user_diffs_colors
+  = stylesheet_link_tag "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
+  = render 'layouts/diffs_colors_css', diffs_colors if diffs_colors.present? || request.path == profile_preferences_path
 
   - if user_application_theme == 'gl-dark'
     %meta{ name: 'color-scheme', content: 'dark light' }
@@ -43,13 +37,9 @@
 
   = stylesheet_link_tag_defer "highlight/themes/#{user_color_scheme}"
 
-  - if startup_css_enabled?
-    = render 'layouts/startup_css_activation'
-
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
   = render 'layouts/snowplow'
-
-  = Gon::Base.render_data(nonce: content_security_policy_nonce)
+  = render 'layouts/loading_hints'
 
   = render_if_exists 'layouts/header/translations'
   - if Feature.enabled?(:enable_new_sentry_clientside_integration, current_user) && Gitlab::CurrentSettings.sentry_enabled
@@ -63,8 +53,6 @@
   = webpack_bundle_tag 'super_sidebar' if show_super_sidebar?
 
   = webpack_controller_bundle_tags
-
-  = yield :project_javascripts
 
   - unless omit_og
     -# Open Graph - http://ogp.me/
@@ -84,15 +72,12 @@
     %meta{ property: 'twitter:image', content: page_image }
     = page_card_meta_tags
 
-  %meta{ name: "description", content: page_description }
-
-  %link{ rel: 'manifest', href: manifest_path(format: :json) }
-  %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }
-  %meta{ name: 'theme-color', content: user_theme_primary_color }
-
   = csrf_meta_tags
   = csp_meta_tag
   = action_cable_meta_tag
+
+  %link{ rel: 'manifest', href: manifest_path(format: :json) }
+  = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
   -# Apple Safari/iOS home screen icons
   = favicon_link_tag 'apple-touch-icon.png', rel: 'apple-touch-icon'
@@ -106,3 +91,5 @@
   = render 'layouts/matomo' if extra_config.has_key?('matomo_url') && extra_config.has_key?('matomo_site_id')
   -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/gitlab/-/issues/184)
   = render_if_exists "layouts/frontend_monitor"
+  %meta{ name: "description", content: page_description }
+  %meta{ name: 'theme-color', content: user_theme_primary_color }

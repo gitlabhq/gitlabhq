@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_review_workflow do
   include NoteInteractionHelpers
+  include ContentEditorHelpers
 
   let_it_be(:project) { create(:project, :repository) }
 
@@ -13,8 +14,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
   end
 
   let!(:note) do
-    create(:note_on_merge_request, :with_attachment, noteable: merge_request,
-                                                     project: project)
+    create(:note_on_merge_request, :with_attachment, noteable: merge_request, project: project)
   end
 
   before do
@@ -22,6 +22,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
     sign_in(user)
 
     visit project_merge_request_path(project, merge_request)
+    close_rich_text_promo_popover_if_present
   end
 
   subject { page }
@@ -47,8 +48,8 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
       it 'has enable submit button, preview button and saves content to local storage' do
         page.within('.js-main-target-form') do
           page.within('[data-testid="comment-button"]') do
-            expect(page).to have_css('.split-content-button')
-            expect(page).not_to have_css('.split-content-button[disabled]')
+            expect(page).to have_css('.gl-button')
+            expect(page).not_to have_css('.disabled')
           end
           expect(page).to have_css('.js-md-preview-button', visible: true)
         end
@@ -131,16 +132,16 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
 
   describe 'when previewing a note' do
     it 'shows the toolbar buttons when editing a note' do
-      page.within('.js-main-target-form') do
-        expect(page).to have_css('.md-header-toolbar')
+      page.within('.js-main-target-form .md-header-toolbar') do
+        expect(page).to have_css('button', count: 16)
       end
     end
 
     it 'hides the toolbar buttons when previewing a note' do
       wait_for_requests
       click_button("Preview")
-      page.within('.js-main-target-form') do
-        expect(page).not_to have_css('.md-header-toolbar')
+      page.within('.js-main-target-form .md-header-toolbar') do
+        expect(page).to have_css('button', count: 1)
       end
     end
   end

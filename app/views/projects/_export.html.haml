@@ -20,10 +20,12 @@
       %li= _('Webhooks')
       %li= _('Any encrypted tokens')
   - if project.export_status == :finished
-    = link_to _('Download export'), download_export_project_path(project),
-            rel: 'nofollow', download: '', method: :get, class: "btn gl-button btn-default", data: { qa_selector: 'download_export_link' }
-    = link_to _('Generate new export'), generate_new_export_project_path(project),
-            method: :post, class: "btn gl-button btn-default"
+    = render Pajamas::ButtonComponent.new(href: download_export_project_path(project),
+      method: :get,
+      button_options: { ref: 'nofollow', download: '', data: { qa_selector: 'download_export_link' } }) do
+      = _('Download export')
+    = render Pajamas::ButtonComponent.new(href: generate_new_export_project_path(project), method: :post) do
+      = _('Generate new export')
   - else
-    = link_to _('Export project'), export_project_path(project),
-          method: :post, class: "btn gl-button btn-default", data: { qa_selector: 'export_project_link' }
+    = render Pajamas::ButtonComponent.new(href: export_project_path(project), method: :post, button_options: { data: { qa_selector: 'export_project_link' } }) do
+      = _('Export project')

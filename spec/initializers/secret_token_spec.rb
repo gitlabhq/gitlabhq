@@ -7,8 +7,8 @@ RSpec.describe 'create_tokens' do
   include StubENV
 
   let(:secrets) { ActiveSupport::OrderedOptions.new }
-  let(:hex_key) { /\h{128}/.freeze }
-  let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m.freeze }
+  let(:hex_key) { /\h{128}/ }
+  let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m }
 
   before do
     allow(Rails).to receive_message_chain(:application, :secrets).and_return(secrets)

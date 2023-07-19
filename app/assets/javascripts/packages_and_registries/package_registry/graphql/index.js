@@ -22,6 +22,7 @@ export const apolloProvider = new VueApollo({
                 merge: mergeVariables,
               },
               packageFiles: {
+                keyArgs: ['id'],
                 merge: mergeVariables,
               },
             },

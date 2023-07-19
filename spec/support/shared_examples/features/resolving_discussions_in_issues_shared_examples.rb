@@ -24,6 +24,6 @@ RSpec.shared_examples 'creating an issue for a thread' do
     expect(discussion.resolved?).to eq(true)
 
     # Issue title inludes MR title
-    expect(page).to have_content(%Q(Follow-up from "#{merge_request.title}"))
+    expect(page).to have_content(%(Follow-up from "#{merge_request.title}"))
   end
 end

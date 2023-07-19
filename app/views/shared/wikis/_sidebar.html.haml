@@ -32,5 +32,5 @@
               = render partial: entry.to_partial_path, object: entry, locals: { context: 'sidebar' }
       .block.w-100
         - if @sidebar_limited
-          = link_to wiki_path(@wiki, action: :pages), class: 'btn gl-button btn-block', data: { qa_selector: 'view_all_pages_button' } do
+          = link_button_to wiki_path(@wiki, action: :pages), data: { qa_selector: 'view_all_pages_button' }, block: true do
             = s_("Wiki|View All Pages")

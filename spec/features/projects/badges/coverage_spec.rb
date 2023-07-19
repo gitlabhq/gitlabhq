@@ -190,14 +190,21 @@ RSpec.describe 'test coverage badge', feature_category: :code_testing do
   end
 
   def show_test_coverage_badge(job: nil, min_good: nil, min_acceptable: nil, min_medium: nil)
-    visit coverage_project_badges_path(project, ref: :master, job: job, min_good: min_good,
-                                                min_acceptable: min_acceptable, min_medium: min_medium, format: :svg)
+    visit coverage_project_badges_path(
+      project,
+      ref: :master,
+      job: job,
+      min_good: min_good,
+      min_acceptable: min_acceptable,
+      min_medium: min_medium,
+      format: :svg
+    )
   end
 
   def expect_coverage_badge(coverage)
     svg = Nokogiri::XML.parse(page.body)
     expect(page.response_headers['Content-Type']).to include('image/svg+xml')
-    expect(svg.at(%Q{text:contains("#{coverage}")})).to be_truthy
+    expect(svg.at(%{text:contains("#{coverage}")})).to be_truthy
   end
 
   def expect_coverage_badge_color(color)

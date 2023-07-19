@@ -1,7 +1,0 @@
-- title: "WIP merge requests renamed 'draft merge requests'"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: phikai
-  breaking_change: true
-  body: |
-    The WIP (work in progress) status for merge requests signaled to reviewers that the merge request in question wasn't ready to merge. We've renamed the WIP feature to **Draft**, a more inclusive and self-explanatory term. **Draft** clearly communicates the merge request in question isn't ready for review, and makes no assumptions about the progress being made toward it. **Draft** also reduces the cognitive load for new users, non-English speakers, and anyone unfamiliar with the WIP acronym.

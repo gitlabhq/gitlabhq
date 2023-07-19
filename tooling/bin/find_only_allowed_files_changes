@@ -3,6 +3,8 @@
 
 require_relative '../lib/tooling/find_changes'
 
+ALLOWED_FILE_TYPES = ['.js', '.vue', '.md', '.scss'].freeze
+
 if Tooling::FindChanges.new(from: :api).only_allowed_files_changed
   puts "Only files with extensions #{ALLOWED_FILE_TYPES.join(', ')} were changed"
   exit 0

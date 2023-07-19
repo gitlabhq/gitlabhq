@@ -4,6 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
 import { getUserProjects } from '~/rest_api';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
 import OverviewTab from '~/profile/components/overview_tab.vue';
 import ActivityTab from '~/profile/components/activity_tab.vue';
 import GroupsTab from '~/profile/components/groups_tab.vue';
@@ -60,16 +61,28 @@ describe('ProfileTabs', () => {
   });
 
   describe('when personal projects API request is successful', () => {
-    beforeEach(async () => {
+    it('passes correct props to `OverviewTab` component', async () => {
       getUserProjects.mockResolvedValueOnce({ data: projects });
       createComponent();
       await waitForPromises();
-    });
 
-    it('passes correct props to `OverviewTab` component', () => {
       expect(wrapper.findComponent(OverviewTab).props()).toMatchObject({
         personalProjects: convertObjectPropsToCamelCase(projects, { deep: true }),
         personalProjectsLoading: false,
+      });
+    });
+
+    describe('when projects do not have `visibility` key', () => {
+      it('sets visibility to public', async () => {
+        const [{ visibility, ...projectWithoutVisibility }] = projects;
+
+        getUserProjects.mockResolvedValueOnce({ data: [projectWithoutVisibility] });
+        createComponent();
+        await waitForPromises();
+
+        expect(wrapper.findComponent(OverviewTab).props('personalProjects')[0].visibility).toBe(
+          VISIBILITY_LEVEL_PUBLIC_STRING,
+        );
       });
     });
   });

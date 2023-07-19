@@ -38,9 +38,11 @@ class ProjectsController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:highlight_js, @project)
+    push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:ci_namespace_catalog_experimental, @project)
+    push_frontend_feature_flag(:service_desk_custom_email, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
@@ -172,7 +174,9 @@ class ProjectsController < Projects::ApplicationController
       flash.now[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
     end
 
-    if ambiguous_ref?(@project, @ref)
+    if Feature.enabled?(:redirect_with_ref_type, @project)
+      @ref_type = 'heads'
+    elsif ambiguous_ref?(@project, @ref)
       branch = @project.repository.find_branch(@ref)
 
       # The files view would render a ref other than the default branch

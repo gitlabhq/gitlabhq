@@ -28,7 +28,7 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
       get_result = client.get(challenge: challenge)
 
       get_result['clientExtensionResults'] = {}
-      service = Webauthn::AuthenticateService.new(user, get_result.to_json, challenge)
+      service = described_class.new(user, get_result.to_json, challenge)
 
       expect(service.execute).to eq true
     end
@@ -41,7 +41,7 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
         get_result = other_client.get(challenge: challenge)
 
         get_result['clientExtensionResults'] = {}
-        service = Webauthn::AuthenticateService.new(user, get_result.to_json, challenge)
+        service = described_class.new(user, get_result.to_json, challenge)
 
         expect(service.execute).to eq false
       end
@@ -49,7 +49,7 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
 
     context 'when device response includes invalid json' do
       it 'returns false' do
-        service = Webauthn::AuthenticateService.new(user, 'invalid JSON', '')
+        service = described_class.new(user, 'invalid JSON', '')
         expect(service.execute).to eq false
       end
     end

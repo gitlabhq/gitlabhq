@@ -1,0 +1,10 @@
+query getGroupEnvironments($fullPath: ID!, $first: Int, $search: String) {
+  group(fullPath: $fullPath) {
+    id
+    environmentScopes(first: $first, search: $search) {
+      nodes {
+        name
+      }
+    }
+  }
+}

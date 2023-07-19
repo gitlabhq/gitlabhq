@@ -10,4 +10,5 @@
       npm_instance_url: package_registry_instance_url(:npm),
       project_list_url: project_packages_path(@project),
       settings_path: show_package_registry_settings(@project) ? project_settings_packages_and_registries_path(@project) : '',
+      can_delete_packages: can_delete_packages?(@project).to_s,
       group_list_url: '' } }

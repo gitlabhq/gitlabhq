@@ -36,6 +36,15 @@ RSpec.describe Emails::Issues, feature_category: :team_planning do
       expect(subject).to have_body_text "23, 34, 58"
     end
 
+    it "shows issuable errors with column" do
+      @results = { success: 0, error_lines: [], parse_error: false,
+                   preprocess_errors:
+                     { milestone_errors: { missing: { header: 'Milestone', titles: %w[15.10 15.11] } } } }
+
+      expect(subject).to have_body_text "Could not find the following milestone values in \
+#{project.full_name}: 15.10, 15.11"
+    end
+
     context 'with header and footer' do
       let(:results) { { success: 165, error_lines: [], parse_error: false } }
 

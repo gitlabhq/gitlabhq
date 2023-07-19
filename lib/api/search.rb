@@ -59,6 +59,8 @@ module API
       end
 
       def search(additional_params = {})
+        return Kaminari.paginate_array([]) if @project.present? && !project_scope_allowed?
+
         search_service = search_service(additional_params)
         if search_service.global_search? && !search_service.global_search_enabled_for_scope?
           forbidden!('Global Search is disabled for this scope')
@@ -95,6 +97,10 @@ module API
         )
       end
 
+      def project_scope_allowed?
+        ::Search::Navigation.new(user: current_user, project: @project).tab_enabled_for_project?(params[:scope].to_sym)
+      end
+
       def snippets?
         %w(snippet_titles).include?(params[:scope]).to_s
       end
@@ -108,9 +114,7 @@ module API
       end
 
       def verify_search_scope!(resource:)
-        # In EE we have additional validation requirements for searches.
-        # Defining this method here as a noop allows us to easily extend it in
-        # EE, without having to modify this file directly.
+        # no-op
       end
 
       def search_type(additional_params = {})

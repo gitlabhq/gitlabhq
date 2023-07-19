@@ -16,7 +16,7 @@ import {
 import * as Sentry from '@sentry/browser';
 import { isEqual, isEmpty, omit } from 'lodash';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL, DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 import {
   integrationTypes,
   integrationSteps,
@@ -38,6 +38,7 @@ export default {
   placeholders: {
     prometheus: targetPrometheusUrlPlaceholder,
   },
+  incidentManagementDocsLink: `${DOCS_URL_IN_EE_DIR}/operations/incident_management/integrations.html#configuration`,
   JSON_VALIDATE_DELAY,
   typeSet,
   integrationSteps,
@@ -121,14 +122,12 @@ export default {
         name: '',
         token: '',
         url: '',
-        apiUrl: '',
       },
       activeTabIndex: this.tabIndex,
       currentIntegration: null,
       parsedPayload: [],
       validationState: {
         name: true,
-        apiUrl: true,
       },
       pricingLink: `${PROMO_URL}/pricing`,
     };
@@ -187,20 +186,14 @@ export default {
       );
     },
     isFormDirty() {
-      const { type, active, name, apiUrl, payloadAlertFields = [], payloadAttributeMappings = [] } =
+      const { type, active, name, payloadAlertFields = [], payloadAttributeMappings = [] } =
         this.currentIntegration || {};
-      const {
-        name: formName,
-        apiUrl: formApiUrl,
-        active: formActive,
-        type: formType,
-      } = this.integrationForm;
+      const { name: formName, active: formActive, type: formType } = this.integrationForm;
 
       const isDirty =
         type !== formType ||
         active !== formActive ||
         name !== formName ||
-        apiUrl !== formApiUrl ||
         !isEqual(this.parsedPayload, payloadAlertFields) ||
         !isEqual(this.mapping, this.getCleanMapping(payloadAttributeMappings));
 
@@ -210,24 +203,18 @@ export default {
       return this.isFormValid && this.isFormDirty;
     },
     dataForSave() {
-      const { name, apiUrl, active } = this.integrationForm;
+      const { name, active } = this.integrationForm;
       const customMappingVariables = {
         payloadAttributeMappings: this.mapping,
         payloadExample: this.samplePayload.json || '{}',
       };
 
-      const variables = this.isHttp
-        ? { name, active, ...customMappingVariables }
-        : { apiUrl, active };
+      const variables = this.isHttp ? { name, active, ...customMappingVariables } : { active };
 
       return { type: this.integrationForm.type, variables };
     },
     testAlertModal() {
       return this.isFormDirty ? testAlertModalId : null;
-    },
-    prometheusUrlInvalidFeedback() {
-      const { blankUrlError, invalidUrlError } = i18n.integrationFormSteps.prometheusFormUrl;
-      return this.integrationForm.apiUrl?.length ? invalidUrlError : blankUrlError;
     },
   },
   watch: {
@@ -246,13 +233,12 @@ export default {
         type,
         active,
         url,
-        apiUrl,
         token,
         payloadExample,
         payloadAlertFields,
         payloadAttributeMappings,
       } = val;
-      this.integrationForm = { type, name, active, url, apiUrl, token };
+      this.integrationForm = { type, name, active, url, token };
 
       if (this.showMappingBuilder) {
         this.resetPayloadAndMappingConfirmed = false;
@@ -269,14 +255,6 @@ export default {
     },
     validateName() {
       this.validationState.name = Boolean(this.integrationForm.name?.length);
-    },
-    validateApiUrl() {
-      try {
-        const parsedUrl = new URL(this.integrationForm.apiUrl);
-        this.validationState.apiUrl = ['http:', 'https:'].includes(parsedUrl.protocol);
-      } catch (e) {
-        this.validationState.apiUrl = false;
-      }
     },
     isValidNonEmptyJSON(JSONString) {
       if (JSONString) {
@@ -297,14 +275,12 @@ export default {
     },
     triggerValidation() {
       if (this.isHttp) {
-        this.validationState.apiUrl = true;
         this.validateName();
         if (!this.validationState.name) {
           this.$refs.integrationName.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       } else if (this.isPrometheus) {
         this.validationState.name = true;
-        this.validateApiUrl();
       }
     },
     sendTestAlert() {
@@ -331,7 +307,6 @@ export default {
       this.integrationForm.type = integrationTypes.none.value;
       this.integrationForm.name = '';
       this.integrationForm.active = false;
-      this.integrationForm.apiUrl = '';
       this.samplePayload = {
         json: null,
         error: null,
@@ -489,28 +464,6 @@ export default {
               class="gl-mt-4 gl-font-weight-normal"
             />
           </gl-form-group>
-
-          <gl-form-group
-            v-if="isPrometheus"
-            class="gl-my-4"
-            :label="$options.i18n.integrationFormSteps.prometheusFormUrl.label"
-            label-for="api-url"
-            :invalid-feedback="prometheusUrlInvalidFeedback"
-            :state="validationState.apiUrl"
-          >
-            <gl-form-input
-              id="api-url"
-              v-model="integrationForm.apiUrl"
-              type="text"
-              :placeholder="$options.placeholders.prometheus"
-              data-qa-selector="prometheus_url_field"
-              @input="validateApiUrl"
-            />
-            <span class="gl-text-gray-400">
-              {{ $options.i18n.integrationFormSteps.prometheusFormUrl.help }}
-            </span>
-          </gl-form-group>
-
           <template v-if="showMappingBuilder">
             <gl-form-group
               data-testid="sample-payload-section"
@@ -617,7 +570,7 @@ export default {
       >
         <alert-settings-form-help-block
           :message="viewCredentialsHelpMsg"
-          link="https://docs.gitlab.com/ee/operations/incident_management/integrations.html#configuration"
+          :link="$options.incidentManagementDocsLink"
         />
 
         <gl-form-group id="integration-webhook">

@@ -295,7 +295,7 @@ There are two ways to remove a Conan package from the GitLab Package Registry.
 
 - From the GitLab user interface:
 
-  Go to your project's **Packages and registries > Package Registry**. Remove the
+  Go to your project's **Deploy > Package Registry**. Remove the
   package by selecting **Remove repository** (**{remove}**).
 
 ## Search for Conan packages in the Package Registry

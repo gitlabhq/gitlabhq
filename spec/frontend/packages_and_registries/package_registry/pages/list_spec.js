@@ -219,7 +219,11 @@ describe('PackagesListApp', () => {
       await waitForPromises();
 
       expect(resolver).toHaveBeenCalledWith(
-        expect.objectContaining({ before: pagination().startCursor, last: GRAPHQL_PAGE_SIZE }),
+        expect.objectContaining({
+          first: null,
+          before: pagination().startCursor,
+          last: GRAPHQL_PAGE_SIZE,
+        }),
       );
     });
   });

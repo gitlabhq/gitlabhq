@@ -246,7 +246,7 @@ malicious code can compromise both masked and protected variables.
 
 Variable values are encrypted using [`aes-256-cbc`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
 and stored in the database. This data can only be read and decrypted with a
-valid [secrets file](../../raketasks/backup_restore.md#when-the-secrets-file-is-lost).
+valid [secrets file](../../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost).
 
 ### Mask a CI/CD variable
 
@@ -882,3 +882,22 @@ WARNING:
 If you add `CI_DEBUG_TRACE` as a local variable to runners, debug logs generate and are visible
 to all users with access to job logs. The permission levels are not checked by the runner,
 so you should only use the variable in GitLab itself.
+
+## Known issues and workarounds
+
+These are some know issues with CI/CD variables, and where applicable, known workarounds.
+
+### "argument list too long"
+
+This issue occurs when the combined length of all CI/CD variables defined for a job exceeds the limit imposed by the
+shell where the job executes. This includes the names and values of pre-defined and user defined variables. This limit
+is typically referred to as `ARG_MAX`, and is shell and operating system dependent. This issue also occurs when the
+content of a single [File-type](#use-file-type-cicd-variables) variable exceeds `ARG_MAX`.
+
+For more information, see [issue 392406](https://gitlab.com/gitlab-org/gitlab/-/issues/392406#note_1414219596).
+
+As a workaround you can either:
+
+- Use [File-type](#use-file-type-cicd-variables) CI/CD variables for large environment variables where possible.
+- If a single large variable is larger than `ARG_MAX`, try using [Secure Files](../secure_files/index.md), or
+bring the file to the job through some other mechanism.

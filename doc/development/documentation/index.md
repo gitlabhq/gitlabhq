@@ -223,7 +223,7 @@ merge it as early as possible.
 ### Linking to `/help`
 
 When you're building a new feature, you may need to link to the documentation
-from the GitLab application. This is normally done in files inside the
+from the GitLab application. This is usually done in files inside the
 `app/views/` directory, with the help of the `help_page_path` helper method.
 
 The `help_page_path` contains the path to the document you want to link to,

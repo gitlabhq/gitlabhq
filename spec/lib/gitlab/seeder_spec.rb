@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Seeder do
     subject { described_class }
 
     it 'has not_mass_generated scope' do
-      expect { Namespace.not_mass_generated }.to raise_error(NoMethodError)
+      expect { described_class.not_mass_generated }.to raise_error(NoMethodError)
 
       Gitlab::Seeder.quiet do
         expect { Namespace.not_mass_generated }.not_to raise_error

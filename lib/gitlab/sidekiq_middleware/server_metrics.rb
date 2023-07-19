@@ -18,7 +18,7 @@ module Gitlab
       SIDEKIQ_QUEUE_DURATION_BUCKETS = [10, 60].freeze
 
       # These labels from Gitlab::SidekiqMiddleware::MetricsHelper are included in SLI metrics
-      SIDEKIQ_SLI_LABELS = [:worker, :feature_category, :urgency].freeze
+      SIDEKIQ_SLI_LABELS = [:worker, :feature_category, :urgency, :external_dependencies].freeze
 
       class << self
         include ::Gitlab::SidekiqMiddleware::MetricsHelper
@@ -64,7 +64,8 @@ module Gitlab
             end
           end
 
-          Gitlab::Metrics::SidekiqSlis.initialize_slis!(possible_sli_labels) if ::Feature.enabled?(:sidekiq_execution_application_slis)
+          Gitlab::Metrics::SidekiqSlis.initialize_execution_slis!(possible_sli_labels) if ::Feature.enabled?(:sidekiq_execution_application_slis)
+          Gitlab::Metrics::SidekiqSlis.initialize_queueing_slis!(possible_sli_labels) if ::Feature.enabled?(:sidekiq_queueing_application_slis)
         end
       end
 
@@ -146,6 +147,11 @@ module Gitlab
             sli_labels = labels.slice(*SIDEKIQ_SLI_LABELS)
             Gitlab::Metrics::SidekiqSlis.record_execution_apdex(sli_labels, monotonic_time) if job_succeeded
             Gitlab::Metrics::SidekiqSlis.record_execution_error(sli_labels, !job_succeeded)
+          end
+
+          if ::Feature.enabled?(:sidekiq_queueing_application_slis)
+            sli_labels = labels.slice(*SIDEKIQ_SLI_LABELS)
+            Gitlab::Metrics::SidekiqSlis.record_queueing_apdex(sli_labels, queue_duration) if queue_duration
           end
         end
       end

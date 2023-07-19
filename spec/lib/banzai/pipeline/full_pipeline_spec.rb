@@ -28,7 +28,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
     end
 
     it 'escapes the data-original attribute on a reference' do
-      markdown = %Q{[">bad things](#{issue.to_reference})}
+      markdown = %{[">bad things](#{issue.to_reference})}
       result = described_class.to_html(markdown, project: project)
       expect(result).to include(%{data-original='\"&amp;gt;bad things'})
     end

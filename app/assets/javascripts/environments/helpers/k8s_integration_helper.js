@@ -1,4 +1,5 @@
 import { differenceInSeconds } from '~/lib/utils/datetime_utility';
+import { CLUSTER_AGENT_ERROR_MESSAGES } from '../constants';
 
 export function generateServicePortsString(ports) {
   if (!ports?.length) return '';
@@ -138,4 +139,10 @@ export function getCronJobsStatuses(items) {
     ...(suspended.length && { suspended }),
     ...(ready.length && { ready }),
   };
+}
+
+export function humanizeClusterErrors(reason) {
+  const errorReason = reason.toLowerCase();
+  const errorMessage = CLUSTER_AGENT_ERROR_MESSAGES[errorReason];
+  return errorMessage || CLUSTER_AGENT_ERROR_MESSAGES.other;
 }

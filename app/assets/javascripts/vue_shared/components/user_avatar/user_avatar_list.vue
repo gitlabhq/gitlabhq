@@ -81,6 +81,8 @@ export default {
       :img-alt="item.name"
       :tooltip-text="item.name"
       :img-size="imgSize"
+      :popover-user-id="item.id"
+      :popover-username="item.username"
       img-css-classes="gl-mr-3"
     />
     <template v-if="hasBreakpoint">

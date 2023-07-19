@@ -1,15 +1,20 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { NEW_CODE_QUALITY_FINDINGS } from '../i18n';
-import DiffCodeQualityItem from './diff_code_quality_item.vue';
+import { NEW_CODE_QUALITY_FINDINGS, NEW_SAST_FINDINGS } from '../i18n';
+import DiffInlineFindings from './diff_inline_findings.vue';
 
 export default {
   i18n: {
-    newFindings: NEW_CODE_QUALITY_FINDINGS,
+    newCodeQualityFindings: NEW_CODE_QUALITY_FINDINGS,
+    newSastFindings: NEW_SAST_FINDINGS,
   },
-  components: { GlButton, DiffCodeQualityItem },
+  components: { GlButton, DiffInlineFindings },
   props: {
     codeQuality: {
+      type: Array,
+      required: true,
+    },
+    sast: {
       type: Array,
       required: true,
     },
@@ -22,19 +27,18 @@ export default {
     data-testid="diff-codequality"
     class="gl-relative codequality-findings-list gl-border-top-1 gl-border-bottom-1 gl-bg-gray-10 gl-text-black-normal gl-pl-5 gl-pt-4 gl-pb-4"
   >
-    <h4
-      data-testid="diff-codequality-findings-heading"
-      class="gl-mt-0 gl-mb-0 gl-font-base gl-font-regular"
-    >
-      {{ $options.i18n.newFindings }}
-    </h4>
-    <ul class="gl-list-style-none gl-mb-0 gl-p-0">
-      <diff-code-quality-item
-        v-for="finding in codeQuality"
-        :key="finding.description"
-        :finding="finding"
-      />
-    </ul>
+    <diff-inline-findings
+      v-if="codeQuality.length"
+      :title="$options.i18n.newCodeQualityFindings"
+      :findings="codeQuality"
+    />
+
+    <diff-inline-findings
+      v-if="sast.length"
+      :title="$options.i18n.newSastFindings"
+      :findings="sast"
+    />
+
     <gl-button
       data-testid="diff-codequality-close"
       category="tertiary"

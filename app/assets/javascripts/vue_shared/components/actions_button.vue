@@ -45,8 +45,12 @@ export default {
     :category="category"
     :toggle-text="toggleText"
     data-qa-selector="action_dropdown"
+    fluid-width
+    block
+    @shown="$emit('shown')"
+    @hidden="$emit('hidden')"
   >
-    <gl-disclosure-dropdown-group>
+    <gl-disclosure-dropdown-group class="edit-dropdown-group-width">
       <gl-disclosure-dropdown-item
         v-for="action in actions"
         :key="action.key"
@@ -65,5 +69,6 @@ export default {
         </template>
       </gl-disclosure-dropdown-item>
     </gl-disclosure-dropdown-group>
+    <slot></slot>
   </gl-disclosure-dropdown>
 </template>

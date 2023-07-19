@@ -35,7 +35,7 @@ module QA
       end
 
       def read_fixture(fixture_path, file_name)
-        File.read(File.join(Runtime::Path.fixtures_path, fixture_path, file_name))
+        File.read(Runtime::Path.fixture(fixture_path, file_name))
       end
 
       private

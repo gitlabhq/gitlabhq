@@ -510,7 +510,9 @@ class Group < Namespace
                               members_with_parents(only_active_users: false)
                             end
 
-    members_from_hiearchy.all_owners.left_outer_joins(:user).merge(User.without_project_bot)
+    members_from_hiearchy.all_owners.left_outer_joins(:user)
+      .merge(User.without_project_bot)
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455")
   end
 
   def ldap_synced?
@@ -663,13 +665,24 @@ class Group < Namespace
   # 2. They belong to a project that belongs to the group
   # 3. They belong to a sub-group or project in such sub-group
   # 4. They belong to an ancestor group
-  def direct_and_indirect_users
+  # 5. They belong to a group that is shared with this group, if share_with_groups is true
+  def direct_and_indirect_users(share_with_groups: false)
+    members = if share_with_groups
+                # We only need :user_id column, but
+                # `members_from_self_and_ancestor_group_shares` needs more
+                # columns to make the CTE query work.
+                GroupMember.from_union([
+                  direct_and_indirect_members.select(:user_id, :source_type, :type),
+                  members_from_self_and_ancestor_group_shares.reselect(:user_id, :source_type, :type)
+                ])
+              else
+                direct_and_indirect_members
+              end
+
     User.from_union([
-                      User
-                        .where(id: direct_and_indirect_members.select(:user_id))
-                        .reorder(nil),
-                      project_users_with_descendants
-                    ])
+      User.where(id: members.select(:user_id)).reorder(nil),
+      project_users_with_descendants
+    ])
   end
 
   # Returns all users (also inactive) that are members of the group because:
@@ -683,7 +696,7 @@ class Group < Namespace
                         .where(id: direct_and_indirect_members_with_inactive.select(:user_id))
                         .reorder(nil),
                       project_users_with_descendants
-                    ])
+                    ]).allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455") # failed in spec/tasks/gitlab/user_management_rake_spec.rb
   end
 
   def users_count
@@ -696,6 +709,7 @@ class Group < Namespace
     User
       .joins(projects: :group)
       .where(namespaces: { id: self_and_descendants.select(:id) })
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455")
   end
 
   # Return the highest access level for a user
@@ -802,8 +816,11 @@ class Group < Namespace
   end
 
   def execute_integrations(data, hooks_scope)
-    # NOOP
-    # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
+    return unless Feature.enabled?(:group_mentions, self)
+
+    integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
+      integration.async_execute(data)
+    end
   end
 
   def preload_shared_group_links
@@ -811,16 +828,6 @@ class Group < Namespace
       records: [self],
       associations: { shared_with_group_links: [shared_with_group: :route] }
     ).call
-  end
-
-  def update_shared_runners_setting!(state)
-    raise ArgumentError unless SHARED_RUNNERS_SETTINGS.include?(state)
-
-    case state
-    when SR_DISABLED_AND_UNOVERRIDABLE then disable_shared_runners! # also disallows override
-    when SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE then disable_shared_runners_and_allow_override!
-    when SR_ENABLED then enable_shared_runners! # set both to true
-    end
   end
 
   def first_owner
@@ -969,12 +976,14 @@ class Group < Namespace
   end
 
   def max_member_access(user_ids)
-    Gitlab::SafeRequestLoader.execute(
-      resource_key: max_member_access_for_resource_key(User),
-      resource_ids: user_ids,
-      default_value: Gitlab::Access::NO_ACCESS
-    ) do |user_ids|
-      members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455") do
+      Gitlab::SafeRequestLoader.execute(
+        resource_key: max_member_access_for_resource_key(User),
+        resource_ids: user_ids,
+        default_value: Gitlab::Access::NO_ACCESS
+      ) do |user_ids|
+        members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
+      end
     end
   end
 
@@ -1055,45 +1064,6 @@ class Group < Namespace
     Arel::Nodes::As.new(
       Arel::Nodes::NamedFunction.new('LEAST', args),
       Arel::Nodes::SqlLiteral.new(column_alias))
-  end
-
-  def disable_shared_runners!
-    update!(
-      shared_runners_enabled: false,
-      allow_descendants_override_disabled_shared_runners: false)
-
-    group_ids = descendants
-    unless group_ids.empty?
-      Group.by_id(group_ids).update_all(
-        shared_runners_enabled: false,
-        allow_descendants_override_disabled_shared_runners: false)
-    end
-
-    all_projects.update_all(shared_runners_enabled: false)
-  end
-
-  def disable_shared_runners_and_allow_override!
-    # enabled -> disabled_and_overridable
-    if shared_runners_enabled?
-      update!(
-        shared_runners_enabled: false,
-        allow_descendants_override_disabled_shared_runners: true)
-
-      group_ids = descendants
-      unless group_ids.empty?
-        Group.by_id(group_ids).update_all(shared_runners_enabled: false)
-      end
-
-      all_projects.update_all(shared_runners_enabled: false)
-
-    # disabled_and_unoverridable -> disabled_and_overridable
-    else
-      update!(allow_descendants_override_disabled_shared_runners: true)
-    end
-  end
-
-  def enable_shared_runners!
-    update!(shared_runners_enabled: true)
   end
 
   def runners_token_prefix

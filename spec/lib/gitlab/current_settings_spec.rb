@@ -276,7 +276,7 @@ RSpec.describe Gitlab::CurrentSettings do
 
   describe '#current_application_settings?', :use_clean_rails_memory_store_caching do
     before do
-      allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_call_original
+      allow(described_class).to receive(:current_application_settings?).and_call_original
     end
 
     it 'returns true when settings exist' do

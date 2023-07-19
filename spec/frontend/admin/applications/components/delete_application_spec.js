@@ -1,6 +1,7 @@
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { stubComponent } from 'helpers/stub_component';
 import DeleteApplication from '~/admin/applications/components/delete_application.vue';
 
 const path = 'application/path/1';
@@ -14,6 +15,11 @@ describe('DeleteApplication', () => {
   const createComponent = () => {
     wrapper = shallowMount(DeleteApplication, {
       stubs: {
+        GlModal: stubComponent(GlModal, {
+          methods: {
+            show: jest.fn(),
+          },
+        }),
         GlSprintf,
       },
     });
@@ -36,7 +42,6 @@ describe('DeleteApplication', () => {
 
   describe('the modal component', () => {
     beforeEach(() => {
-      wrapper.vm.$refs.deleteModal.show = jest.fn();
       document.querySelector('.js-application-delete-button').click();
     });
 

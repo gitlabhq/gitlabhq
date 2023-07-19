@@ -9,6 +9,8 @@ module Gitlab
       class ProjectPipelineStatus
         include Gitlab::Utils::StrongMemoize
 
+        STATUS_KEY_TTL = 8.hours
+
         attr_accessor :sha, :status, :ref, :project, :loaded
 
         def self.load_for_project(project)
@@ -89,12 +91,17 @@ module Gitlab
             self.sha, self.status, self.ref = redis.hmget(cache_key, :sha, :status, :ref)
 
             self.status = nil if self.status.empty?
+
+            redis.expire(cache_key, STATUS_KEY_TTL)
           end
         end
 
         def store_in_cache
           with_redis do |redis|
-            redis.mapped_hmset(cache_key, { sha: sha, status: status, ref: ref })
+            redis.pipelined do |p|
+              p.mapped_hmset(cache_key, { sha: sha, status: status, ref: ref })
+              p.expire(cache_key, STATUS_KEY_TTL)
+            end
           end
         end
 

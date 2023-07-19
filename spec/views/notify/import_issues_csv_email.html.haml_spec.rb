@@ -8,6 +8,10 @@ RSpec.describe 'notify/import_issues_csv_email.html.haml' do
   let(:correct_results) { { success: 3, parse_error: false } }
   let(:errored_results) { { success: 3, error_lines: [5, 6, 7], parse_error: false } }
   let(:parse_error_results) { { success: 0, parse_error: true } }
+  let(:milestone_error_results) do
+    { success: 0,
+      preprocess_errors: { milestone_errors: { missing: { header: 'Milestone', titles: %w[15.10 15.11] } } } }
+  end
 
   before do
     assign(:user, user)
@@ -56,6 +60,31 @@ a delimited text file that uses a comma to separate values.")
 
       expect(rendered).to have_content("Error parsing CSV file. \
 Please make sure it has the correct format: a delimited text file that uses a comma to separate values.")
+    end
+  end
+
+  context 'when preprocess errors reported while importing' do
+    before do
+      assign(:results, milestone_error_results)
+    end
+
+    it 'renders with project name error' do
+      render
+
+      expect(rendered).to have_content("Could not find the following milestone values in \
+#{project.full_name}: 15.10, 15.11")
+    end
+
+    context 'with a project in a group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      it 'renders with group clause error' do
+        render
+
+        expect(rendered).to have_content("Could not find the following milestone values in #{project.full_name} \
+or its parent groups: 15.10, 15.11")
+      end
     end
   end
 end

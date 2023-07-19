@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../../../tooling/lib/tooling/find_changes'
-require_relative '../../../support/helpers/stub_env'
+require 'gitlab/rspec/all'
 require 'json'
 require 'tempfile'
 

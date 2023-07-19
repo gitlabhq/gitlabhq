@@ -25,8 +25,8 @@ require_relative '../lib/system_check/helpers'
 require 'omniauth'
 require 'omniauth-github'
 require 'etc'
+require 'gitlab/utils/all'
 require_relative '../lib/gitlab/access'
-require_relative '../lib/gitlab/utils'
 
 unless defined?(License)
   # This is needed to allow use of `Gitlab::ImportSources.values` in `1_settings.rb`.

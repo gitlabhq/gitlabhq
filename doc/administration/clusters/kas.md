@@ -142,10 +142,9 @@ For details, see [how to use the GitLab-KAS chart](https://docs.gitlab.com/chart
 
 ## Kubernetes API proxy cookie
 
-> Introduced in GitLab 15.10 [with feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104504) in GitLab 15.10 [with feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`. Disabled by default.
+> - Feature flags `kas_user_access` and `kas_user_access_project` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123479) in GitLab 16.1.
+> - Feature flags `kas_user_access` and `kas_user_access_project` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
 
 KAS proxies Kubernetes API requests to the GitLab agent with either:
 

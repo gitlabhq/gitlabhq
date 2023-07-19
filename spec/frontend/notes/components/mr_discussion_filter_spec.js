@@ -67,7 +67,7 @@ describe('Merge request discussion filter component', () => {
   it('lists current filters', () => {
     createComponent();
 
-    expect(wrapper.findAllComponents(GlListboxItem).length).toBe(MR_FILTER_OPTIONS.length);
+    expect(wrapper.findAllComponents(GlListboxItem)).toHaveLength(MR_FILTER_OPTIONS.length);
   });
 
   it('updates store when selecting filter', async () => {
@@ -106,5 +106,31 @@ describe('Merge request discussion filter component', () => {
     await nextTick();
 
     expect(wrapper.findComponent(GlButton).text()).toBe(expectedText);
+  });
+
+  it('when clicking de-select it de-selects all options', async () => {
+    createComponent();
+
+    wrapper.find('[data-testid="listbox-reset-button"]').vm.$emit('click');
+
+    await nextTick();
+
+    expect(wrapper.findAll('[aria-selected="true"]')).toHaveLength(0);
+  });
+
+  it('when clicking select all it selects all options', async () => {
+    createComponent();
+
+    wrapper.find('[data-testid="listbox-item-approval"]').vm.$emit('select', false);
+
+    await nextTick();
+
+    expect(wrapper.findAll('[aria-selected="true"]')).toHaveLength(9);
+
+    wrapper.find('[data-testid="listbox-select-all-button"]').vm.$emit('click');
+
+    await nextTick();
+
+    expect(wrapper.findAll('[aria-selected="true"]')).toHaveLength(10);
   });
 });

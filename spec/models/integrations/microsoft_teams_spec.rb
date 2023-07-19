@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::MicrosoftTeams do
+RSpec.describe Integrations::MicrosoftTeams, feature_category: :integrations do
   it_behaves_like "chat integration", "Microsoft Teams" do
     let(:client) { ::MicrosoftTeams::Notifier }
     let(:client_arguments) { webhook_url }

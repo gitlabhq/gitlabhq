@@ -27,6 +27,7 @@ itself: # project
     - mirror_overwrites_diverged_branches
     - mirror_trigger_builds
     - mirror_user_id
+    - mirror_branch_regex
     - only_mirror_protected_branches
     - pages_https_only
     - pending_delete
@@ -42,7 +43,7 @@ itself: # project
     - runners_token_encrypted
     - storage_version
     - topic_list
-    - mirror_branch_regex
+    - verification_checksum
   remapped_attributes:
     avatar: avatar_url
     build_allow_git_fetch: build_git_strategy

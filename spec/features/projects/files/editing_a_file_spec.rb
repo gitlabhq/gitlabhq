@@ -13,16 +13,14 @@ RSpec.describe 'Projects > Files > User wants to edit a file', feature_category:
       commit_message: "Committing First Update",
       file_path: ".gitignore",
       file_content: "First Update",
-      last_commit_sha: Gitlab::Git::Commit.last_for_path(project.repository, project.default_branch,
-                                                         ".gitignore").sha
+      last_commit_sha: Gitlab::Git::Commit.last_for_path(project.repository, project.default_branch, ".gitignore").sha
     }
   end
 
   context 'when the user has write access' do
     before do
       sign_in user
-      visit project_edit_blob_path(project,
-                                             File.join(project.default_branch, '.gitignore'))
+      visit project_edit_blob_path(project, File.join(project.default_branch, '.gitignore'))
     end
 
     it 'file has been updated since the user opened the edit page' do
@@ -43,8 +41,7 @@ RSpec.describe 'Projects > Files > User wants to edit a file', feature_category:
       before do
         forked_project
         sign_in user
-        visit project_edit_blob_path(project,
-                                               File.join(project.default_branch, '.gitignore'))
+        visit project_edit_blob_path(project, File.join(project.default_branch, '.gitignore'))
       end
 
       context 'and the forked project is ahead of the upstream project' do

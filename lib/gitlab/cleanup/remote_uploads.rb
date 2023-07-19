@@ -17,6 +17,13 @@ module Gitlab
           return
         end
 
+        if bucket_prefix.present?
+          error_message = "Uploads are configured with a bucket prefix '#{bucket_prefix}'.\n"
+          error_message += "Unfortunately, prefixes are not supported for this Rake task.\n"
+          # At the moment, Fog does not provide a cloud-agnostic way of iterating through a bucket with a prefix.
+          raise error_message
+        end
+
         logger.info "Looking for orphaned remote uploads to remove#{'. Dry run' if dry_run}..."
 
         each_orphan_file do |file|
@@ -76,6 +83,10 @@ module Gitlab
 
       def configuration
         Gitlab.config.uploads.object_store
+      end
+
+      def bucket_prefix
+        configuration.bucket_prefix
       end
     end
   end

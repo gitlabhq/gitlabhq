@@ -12,7 +12,7 @@ module UsersHelper
     # The user.status can be nil when the user has no status, so we need to protect against that case.
     # iso8601 is the official RFC supported format for frontend parsing of date:
     # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date
-    user.status&.clear_status_at&.to_s(:iso8601)
+    user.status&.clear_status_at&.to_fs(:iso8601)
   end
 
   def user_link(user)
@@ -190,7 +190,9 @@ module UsersHelper
       user_activity_path: user_activity_path(user, :json),
       utc_offset: local_timezone_instance(user.timezone).now.utc_offset,
       user_id: user.id,
-      snippets_empty_state: image_path('illustrations/empty-state/empty-snippets-md.svg')
+      snippets_empty_state: image_path('illustrations/empty-state/empty-snippets-md.svg'),
+      new_snippet_path: (new_snippet_path if can?(current_user, :create_snippet)),
+      follow_empty_state: image_path('illustrations/empty-state/empty-friends-md.svg')
     }
   end
 

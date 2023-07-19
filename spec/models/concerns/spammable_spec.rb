@@ -71,8 +71,8 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
         expect(issue.check_for_spam?(user: issue.author)).to eq(true)
       end
 
-      it 'returns false for other visibility levels' do
-        expect(issue.check_for_spam?(user: issue.author)).to eq(false)
+      it 'returns true for other visibility levels' do
+        expect(issue.check_for_spam?(user: issue.author)).to eq(true)
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
       end
 
       context 'when the model is spam' do
-        where(model: [:issue, :merge_request, :snippet, :spammable_model])
+        where(model: [:issue, :merge_request, :note, :snippet, :spammable_model])
 
         with_them do
           subject do
@@ -94,21 +94,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
 
           it 'has an error related to spam on the model' do
             expect(subject.errors.messages[:base])
-              .to match_array /Your #{subject.class.model_name.human.downcase} has been recognized as spam./
-          end
-        end
-
-        context 'when the spammable model is a Note' do
-          subject do
-            Note.new.tap do |m|
-              m.spam!
-              m.invalidate_if_spam
-            end
-          end
-
-          it 'has an error related to spam on the model' do
-            expect(subject.errors.messages[:base])
-              .to match_array /Your comment has been recognized as spam./
+              .to match_array /Your #{subject.spammable_entity_type} has been recognized as spam./
           end
         end
       end
@@ -293,7 +279,9 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
     end
 
     describe '#allow_possible_spam?' do
-      subject { issue.allow_possible_spam? }
+      let_it_be(:user) { build(:user) }
+
+      subject { spammable_model.allow_possible_spam?(user) }
 
       context 'when the `allow_possible_spam` application setting is turned off' do
         it { is_expected.to eq(false) }

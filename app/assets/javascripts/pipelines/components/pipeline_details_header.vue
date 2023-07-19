@@ -17,6 +17,7 @@ import { __, s__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
   LOAD_FAILURE,
@@ -30,7 +31,6 @@ import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutatio
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import getPipelineQuery from '../graphql/queries/get_pipeline_header_data.query.graphql';
-import TimeAgo from './pipelines_list/time_ago.vue';
 import { getQueryHeaders } from './graph/utils';
 
 const DELETE_MODAL_ID = 'pipeline-delete-modal';
@@ -54,7 +54,7 @@ export default {
     GlLoadingIcon,
     GlModal,
     GlSprintf,
-    TimeAgo,
+    TimeAgoTooltip,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -84,12 +84,14 @@ export default {
     ),
     stuckBadgeText: s__('Pipelines|stuck'),
     stuckBadgeTooltip: s__('Pipelines|This pipeline is stuck'),
-    computeCreditsTooltip: s__('Pipelines|Total amount of compute credits used for the pipeline'),
+    computeMinutesTooltip: s__('Pipelines|Total amount of compute minutes used for the pipeline'),
     totalJobsTooltip: s__('Pipelines|Total number of jobs for the pipeline'),
     retryPipelineText: __('Retry'),
     cancelPipelineText: __('Cancel pipeline'),
     deletePipelineText: __('Delete'),
     clipboardTooltip: __('Copy commit SHA'),
+    createdText: s__('Pipelines|created'),
+    finishedText: s__('Pipelines|finished'),
   },
   errorTexts: {
     [LOAD_FAILURE]: __('We are currently unable to fetch data for the pipeline header.'),
@@ -135,7 +137,7 @@ export default {
       required: false,
       default: '',
     },
-    computeCredits: {
+    computeMinutes: {
       type: String,
       required: false,
       default: '',
@@ -310,8 +312,8 @@ export default {
 
       return cancelable && userPermissions.updatePipeline;
     },
-    showComputeCredits() {
-      return this.isFinished && this.computeCredits !== '0.0';
+    showComputeMinutes() {
+      return this.isFinished && this.computeMinutes !== '0.0';
     },
   },
   methods: {
@@ -387,7 +389,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-my-4">
+  <div class="gl-my-4" data-testid="pipeline-details-header">
     <gl-alert
       v-if="hasError"
       class="gl-mb-4"
@@ -402,17 +404,17 @@ export default {
     <gl-loading-icon v-if="loading" class="gl-text-left" size="lg" />
     <div
       v-else
-      class="gl-display-flex gl-justify-content-space-between"
+      class="gl-display-flex gl-justify-content-space-between gl-flex-wrap"
       data-qa-selector="pipeline_details_header"
     >
       <div>
-        <h3 v-if="name" class="gl-mt-0 gl-mb-2" data-testid="pipeline-name">{{ name }}</h3>
-        <h3 v-else class="gl-mt-0 gl-mb-2" data-testid="pipeline-commit-title">
+        <h3 v-if="name" class="gl-mt-0 gl-mb-3" data-testid="pipeline-name">{{ name }}</h3>
+        <h3 v-else class="gl-mt-0 gl-mb-3" data-testid="pipeline-commit-title">
           {{ commitTitle }}
         </h3>
         <div>
           <ci-badge-link :status="detailedStatus" />
-          <div class="gl-ml-2 gl-mb-2 gl-display-inline-block gl-h-6">
+          <div class="gl-ml-2 gl-mb-3 gl-display-inline-block gl-h-6">
             <gl-link
               v-if="user"
               :href="user.webUrl"
@@ -441,16 +443,17 @@ export default {
               :title="$options.i18n.clipboardTooltip"
               size="small"
             />
-            <time-ago
-              v-if="isFinished"
-              :pipeline="pipeline"
-              class="gl-display-inline gl-mb-0"
-              :display-calendar-icon="false"
-              font-size="gl-font-md"
-            />
+            <span v-if="inProgress" data-testid="pipeline-created-time-ago">
+              {{ $options.i18n.createdText }}
+              <time-ago-tooltip :time="pipeline.createdAt" />
+            </span>
+            <span v-if="isFinished" data-testid="pipeline-finished-time-ago">
+              {{ $options.i18n.finishedText }}
+              <time-ago-tooltip :time="pipeline.finishedAt" />
+            </span>
           </div>
         </div>
-        <div v-safe-html="refText" class="gl-mb-2" data-testid="pipeline-ref-text"></div>
+        <div v-safe-html="refText" class="gl-mb-3" data-testid="pipeline-ref-text"></div>
         <div>
           <gl-badge
             v-if="badges.schedule"
@@ -527,7 +530,6 @@ export default {
             :title="$options.i18n.detachedBadgeTooltip"
             variant="info"
             size="sm"
-            data-qa-selector="merge_request_badge_tag"
           >
             {{ $options.i18n.detachedBadgeText }}
           </gl-badge>
@@ -550,14 +552,14 @@ export default {
             {{ totalJobsText }}
           </span>
           <span
-            v-if="showComputeCredits"
+            v-if="showComputeMinutes"
             v-gl-tooltip
-            :title="$options.i18n.computeCreditsTooltip"
+            :title="$options.i18n.computeMinutesTooltip"
             class="gl-ml-2"
-            data-testid="compute-credits"
+            data-testid="compute-minutes"
           >
             <gl-icon name="quota" />
-            {{ computeCredits }}
+            {{ computeMinutes }}
           </span>
           <span v-if="inProgress" class="gl-ml-2" data-testid="pipeline-running-text">
             <gl-icon name="timer" />
@@ -569,7 +571,7 @@ export default {
           </span>
         </div>
       </div>
-      <div>
+      <div class="gl-mt-5 gl-lg-mt-0">
         <gl-button
           v-if="canRetryPipeline"
           v-gl-tooltip

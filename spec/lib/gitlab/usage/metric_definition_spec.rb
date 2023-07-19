@@ -178,6 +178,45 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     end
   end
 
+  describe '#events' do
+    context 'when metric is not event based' do
+      it 'returns empty hash' do
+        expect(definition.events).to eq({})
+      end
+    end
+
+    context 'when metric is using old format' do
+      let(:attributes) { { options: { events: ['my_event'] } } }
+
+      it 'returns a correct hash' do
+        expect(definition.events).to eq({ 'my_event' => nil })
+      end
+    end
+
+    context 'when metric is using new format' do
+      let(:attributes) { { events: [{ name: 'my_event', unique: 'user_id' }] } }
+
+      it 'returns a correct hash' do
+        expect(definition.events).to eq({ 'my_event' => :user_id })
+      end
+    end
+
+    context 'when metric is using both formats' do
+      let(:attributes) do
+        {
+          options: {
+            events: ['a_event']
+          },
+          events: [{ name: 'my_event', unique: 'project_id' }]
+        }
+      end
+
+      it 'uses the new format' do
+        expect(definition.events).to eq({ 'my_event' => :project_id })
+      end
+    end
+  end
+
   describe '#valid_service_ping_status?' do
     context 'when metric has active status' do
       it 'has to return true' do
@@ -303,6 +342,73 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       write_metric(metric2, other_path, other_yaml_content)
 
       is_expected.to eq([attributes, other_attributes].map(&:deep_stringify_keys).to_yaml)
+    end
+  end
+
+  describe '.metric_definitions_changed?', :freeze_time do
+    let(:metric1) { Dir.mktmpdir('metric1') }
+    let(:metric2) { Dir.mktmpdir('metric2') }
+
+    before do
+      allow(Rails).to receive_message_chain(:env, :development?).and_return(is_dev)
+      allow(described_class).to receive(:paths).and_return(
+        [
+          File.join(metric1, '**', '*.yml'),
+          File.join(metric2, '**', '*.yml')
+        ]
+      )
+
+      write_metric(metric1, path, yaml_content)
+      write_metric(metric2, path, yaml_content)
+    end
+
+    after do
+      FileUtils.rm_rf(metric1)
+      FileUtils.rm_rf(metric2)
+    end
+
+    context 'in development', :freeze_time do
+      let(:is_dev) { true }
+
+      it 'has changes on the first invocation' do
+        expect(described_class.metric_definitions_changed?).to be_truthy
+      end
+
+      context 'when no files are changed' do
+        it 'does not have changes on the second invocation' do
+          described_class.metric_definitions_changed?
+
+          expect(described_class.metric_definitions_changed?).to be_falsy
+        end
+      end
+
+      context 'when file is changed' do
+        it 'has changes on the next invocation when more than 3 seconds have passed' do
+          described_class.metric_definitions_changed?
+
+          write_metric(metric1, path, yaml_content)
+          travel_to 10.seconds.from_now
+
+          expect(described_class.metric_definitions_changed?).to be_truthy
+        end
+
+        it 'does not have changes on the next invocation when less than 3 seconds have passed' do
+          described_class.metric_definitions_changed?
+
+          write_metric(metric1, path, yaml_content)
+          travel_to 1.second.from_now
+
+          expect(described_class.metric_definitions_changed?).to be_falsy
+        end
+      end
+
+      context 'in production' do
+        let(:is_dev) { false }
+
+        it 'does not detect changes' do
+          expect(described_class.metric_definitions_changed?).to be_falsy
+        end
+      end
     end
   end
 end

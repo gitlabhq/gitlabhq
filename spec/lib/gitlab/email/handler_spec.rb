@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Email::Handler do
         described_class.for(email, address).class
       end
 
-      expect(matched_handlers.uniq).to match_array(Gitlab::Email::Handler.handlers)
+      expect(matched_handlers.uniq).to match_array(described_class.handlers)
     end
 
     it 'can pick exactly one handler for each address' do

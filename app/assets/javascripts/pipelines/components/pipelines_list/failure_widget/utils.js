@@ -13,3 +13,7 @@ export const sortJobsByStatus = (jobs = []) => {
     return 1;
   });
 };
+
+export const graphqlEtagPipelinePath = (graphqlPath, pipelineId) => {
+  return `${graphqlPath}pipelines/id/${pipelineId}`;
+};

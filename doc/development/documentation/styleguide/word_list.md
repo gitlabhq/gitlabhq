@@ -152,7 +152,7 @@ Instead of:
 - This feature enables users to add files to their repository.
 
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
-[View details in the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
 
 ## analytics
 
@@ -169,8 +169,8 @@ Instead of **and/or**, use **or** or rewrite the sentence to spell out both opti
 
 ## and so on
 
-Do not use **and so on**. Instead, be more specific. For details, see
-[the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
+Do not use **and so on**. Instead, be more specific. For more information, see the
+[Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
 
 ## area
 
@@ -284,7 +284,7 @@ CI/CD is always uppercase. No need to spell it out on first use.
 
 ## CI/CD minutes
 
-Do not use **CI/CD minutes**. This term was renamed to [**units of compute**](#units-of-compute).
+Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#compute-minutes).
 
 ## click
 
@@ -318,15 +318,29 @@ Use **compute** for the resources used by runners to run CI/CD jobs.
 
 Related terms:
 
-- [**units of compute**](#units-of-compute): How compute usage is calculated. For example, `400 units of compute`.
-- [**compute quota**](../../../ci/pipelines/cicd_minutes.md): The limit of units of compute that a namespace can use each month.
-- **compute usage**: The number of units of compute that the namespace has used from the monthly quota.
+- [**compute minutes**](#compute-minutes): How compute usage is calculated. For example, `400 compute minutes`.
+- [**compute quota**](../../../ci/pipelines/cicd_minutes.md): The limit of compute minutes that a namespace can use each month.
+- **compute usage**: The number of compute minutes that the namespace has used from the monthly quota.
+
+## compute minutes
+
+Use **compute minutes** instead of these (or similar) terms:
+
+- **CI/CD minutes**
+- **CI minutes**
+- **pipeline minutes**
+- **CI pipeline minutes**
+- **pipeline minutes**
+
+For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
 
 ## confirmation dialog
 
-Use **confirmation dialog** to describe the dialog box that asks you to confirm your action. For example:
+Use **confirmation dialog** to describe the dialog that asks you to confirm an action. For example:
 
 - On the confirmation dialog, select **OK**.
+
+Do not use **confirmation box** or **confirmation dialog box**. See also [**dialog**](#dialog).
 
 ## Container Registry
 
@@ -387,9 +401,29 @@ When writing about the Developer role:
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
 
+## dialog
+
+Use **dialog** rather than any of these alternatives:
+
+- **dialog box**
+- **modal**
+- **modal dialog**
+- **modal window**
+- **pop-up**
+- **pop-up window**
+- **window**
+
+See also [**confirmation dialog**](#confirmation-dialog). For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/dialog-box-dialog-dialogue).
+
+When the dialog is the location of an action, use **on** as a preposition. For example:
+
+- On the **Grant permission** dialog, select **Group**.
+
+See also [**on**](#on).
+
 ## disable
 
-See [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
+See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## disallow
@@ -439,17 +473,30 @@ Do not use **easily**. If the user doesn't find the process to be easy, we lose 
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
 
+## ellipsis
+
+When documenting UI text, if the UI includes an ellipsis, do not include the ellipsis in the documentation.
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
+
+Use:
+
+- **Create new**
+
+Instead of:
+
+- **Create new...**
+
 ## email
 
 Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
-## emojis
+## emoji
 
-Use **emojis** to refer to the plural form of **emoji**.
+Use **emoji** to refer to the plural form of **emoji**.
 
 ## enable
 
-See [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
+See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
 Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## enter
@@ -680,7 +727,7 @@ Instead of:
 
 ## I
 
-Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml))
+Do not use first-person singular. Use **you** or rewrite the phrase instead.
 
 ## i.e.
 
@@ -862,15 +909,27 @@ Do not use `master`. Use `main` when you need a sample [default branch name](#de
 
 ## may, might
 
-**Might** means something has the probability of occurring. **May** gives permission to do something. Consider **can** instead of **may**.
+**Might** means something has the probability of occurring. Might is often used in troubleshooting documentation.
+
+**May** gives permission to do something. Consider **can** instead of **may**.
+
+Consider rewording phrases that use these terms. These terms often indicate possibility and doubt, and technical writing strives to be precise.
+
+See also [you can](#you-can).
+
+Use:
+
+- The `committed_date` and `authored_date` fields are generated from different sources, and might not be identical.
+- A typical pipeline consists of four stages, executed in the following order:
+
+Instead of:
+
+- The `committed_date` and `authored_date` fields are generated from different sources, and may not be identical.
+- A typical pipeline might consist of four stages, executed in the following order:
 
 ## MB, megabytes
 
 For **MB** and **GB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
-
-## me, myself, mine
-
-Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml))
 
 ## member
 
@@ -1009,15 +1068,12 @@ For more information, see the
 
 ## on
 
-When documenting how to select high-level UI elements, use the word **on**.
+When documenting high-level UI elements, use **on** as a preposition. For example:
 
-Use:
+- On the left sidebar, select **Settings > CI/CD**.
+- On the **Grant permission** dialog, select **Group**.
 
-- `On the left sidebar...`
-
-Instead of:
-
-- Do not: `From the left sidebar...` or `In the left sidebar...`
+Do not use **from** or **in**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/f/from-vs-on).
 
 ## once
 
@@ -1098,7 +1154,7 @@ Use lowercase for **personal access token**.
 
 ## please
 
-Do not use **please**. For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+Do not use **please**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
 
 ## Premium
 
@@ -1453,9 +1509,9 @@ Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) 
 
 ## type
 
-Use **type** when the cursor remains in the field you're typing in. For example,
-in a search dialog, you begin typing and the field populates results. You do not
-click out of the field.
+Use **type** when the cursor remains where you're typing. For example,
+in a search box, you begin typing and search results appear. You do not
+click out of the search box.
 
 For example:
 
@@ -1470,25 +1526,13 @@ See also [**enter**](#enter).
 Use **Ultimate**, in uppercase, for the subscription tier. When you refer to **Ultimate**
 in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
 
-## units of compute
-
-Use **units of compute** instead of these (or similar) terms:
-
-- **CI/CD minutes**
-- **CI minutes**
-- **pipeline minutes**
-- **CI pipeline minutes**
-- **pipeline minutes**
-
-For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
-
 ## units of measurement
 
 Use a space between the number and the unit of measurement. For example, **128 GB**.
 ([Vale](../testing.md#vale) rule: [`Units.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Units.yml))
 
-For other guidance, follow
-[the Microsoft style guidelines](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+For more information, see the
+[Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
 
 ## update
 
@@ -1524,7 +1568,7 @@ If the UI element is not in a corner, use **upper left** and **upper right**.
 
 Do not use **top left** and **top right**.
 
-For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/upper-left-upper-right).
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/upper-left-upper-right).
 
 ## useful
 
@@ -1571,7 +1615,7 @@ Instead of:
 
 - While job 1 can run quickly, job 2 is more precise.
 
-For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/w/while).
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/w/while).
 
 ## whilst
 
@@ -1616,6 +1660,7 @@ For example:
 - Use code review analytics to view merge request data.
 - Create a board to organize your team tasks.
 - Configure variables to restrict pushes to a repository.
+- Add links to external accounts you have, like Skype and Twitter.
 
 Use **you can** for optional actions. For example:
 

@@ -146,7 +146,7 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
         expect { described_class.create!(fully_qualified_table_name: table, primary_key_value: 5) }.not_to raise_error
 
         # after processing old records
-        LooseForeignKeys::DeletedRecord.for_partition(1).update_all(status: :processed)
+        described_class.for_partition(1).update_all(status: :processed)
 
         partition_manager.sync_partitions
 

@@ -9,8 +9,7 @@ RSpec.describe 'User deletes feature flag', :js, feature_category: :feature_flag
   let(:project) { create(:project, namespace: user.namespace) }
 
   let!(:feature_flag) do
-    create_flag(project, 'ci_live_trace', false,
-                description: 'For live trace feature')
+    create_flag(project, 'ci_live_trace', false, description: 'For live trace feature')
   end
 
   before do

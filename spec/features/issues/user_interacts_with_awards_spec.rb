@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User interacts with awards', feature_category: :team_planning do
   include MobileHelpers
+  include ContentEditorHelpers
 
   let(:user) { create(:user) }
 
@@ -16,6 +17,7 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
       sign_in(user)
 
       visit(project_issue_path(project, issue))
+      close_rich_text_promo_popover_if_present
     end
 
     it 'toggles the thumbsup award emoji', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27959' do

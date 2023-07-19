@@ -461,9 +461,11 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
 
   describe 'new subgroup / project button' do
     let_it_be(:group, reload: true) do
-      create(:group,
-             project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS,
-             subgroup_creation_level: Gitlab::Access::OWNER_SUBGROUP_ACCESS)
+      create(
+        :group,
+        project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS,
+        subgroup_creation_level: Gitlab::Access::OWNER_SUBGROUP_ACCESS
+      )
     end
 
     before do

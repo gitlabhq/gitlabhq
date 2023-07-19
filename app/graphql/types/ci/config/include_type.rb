@@ -15,22 +15,22 @@ module Types
         field :location,
               GraphQL::Types::String,
               null: true,
-              description: 'File location. It can be masked if it contains masked variables, e.g., ' \
-                           '".gitlab/ci/build-images.gitlab-ci.yml".'
+              description: 'File location. It can be masked if it contains masked variables. For example, ' \
+                           '`".gitlab/ci/build-images.gitlab-ci.yml"`.'
 
         field :blob,
               GraphQL::Types::String,
               null: true,
-              description: 'File blob location. It can be masked if it contains masked variables, e.g., ' \
-                            '"https://gitlab.com/gitlab-org/gitlab/-/blob/e52d6d0246d7375291850e61f0abc101fbda9dc2' \
-                            '/.gitlab/ci/build-images.gitlab-ci.yml".'
+              description: 'File blob location. It can be masked if it contains masked variables. For example, ' \
+                            '`"https://gitlab.com/gitlab-org/gitlab/-/blob/e52d6d0246d7375291850e61f0abc101fbda9dc2' \
+                            '/.gitlab/ci/build-images.gitlab-ci.yml"`.'
 
         field :raw,
               GraphQL::Types::String,
               null: true,
-              description: 'File raw location. It can be masked if it contains masked variables, e.g., ' \
-                            '"https://gitlab.com/gitlab-org/gitlab/-/raw/e52d6d0246d7375291850e61f0abc101fbda9dc2' \
-                            '/.gitlab/ci/build-images.gitlab-ci.yml".'
+              description: 'File raw location. It can be masked if it contains masked variables. For example, ' \
+                            '`"https://gitlab.com/gitlab-org/gitlab/-/raw/e52d6d0246d7375291850e61f0abc101fbda9dc2' \
+                            '/.gitlab/ci/build-images.gitlab-ci.yml"`.'
 
         field :extra, # rubocop:disable Graphql/JSONType
               GraphQL::Types::JSON,

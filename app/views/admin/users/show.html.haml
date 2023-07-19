@@ -42,8 +42,7 @@
               %span.light= _('Secondary email:')
               %strong
                 = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-              = link_to remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: "btn btn-sm btn-danger gl-button btn-icon float-right", title: _('Remove secondary email'), id: "remove_email_#{email.id}" do
-                = sprite_icon('close', size: 16, css_class: 'gl-icon')
+              = link_button_to nil, remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: 'float-right', title: _('Remove secondary email'), id: "remove_email_#{email.id}", variant: :danger, size: :small, icon: 'close'
           %li
             %span.light ID:
             %strong{ data: { qa_selector: 'user_id_content' } }
@@ -58,7 +57,7 @@
             %strong{ class: @user.two_factor_enabled? ? 'cgreen' : 'cred' }
               - if @user.two_factor_enabled?
                 = _('Enabled')
-                = link_to _('Disable'), disable_two_factor_admin_user_path(@user), aria: { label: _('Disable') }, data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :patch, class: 'btn gl-button btn-sm btn-danger float-right', title: _('Disable Two-factor Authentication')
+                = link_button_to _('Disable'), disable_two_factor_admin_user_path(@user), aria: { label: _('Disable') }, data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :patch, class: 'float-right', title: _('Disable Two-factor Authentication'), variant: :danger, size: :small
               - else
                 = _('Disabled')
 
@@ -86,12 +85,12 @@
           %li
             %span.light= _('Member since:')
             %strong
-              = @user.created_at.to_s(:medium)
+              = @user.created_at.to_fs(:medium)
           - if @user.confirmed_at
             %li
               %span.light= _('Confirmed at:')
               %strong
-                = @user.confirmed_at.to_s(:medium)
+                = @user.confirmed_at.to_fs(:medium)
           - else
             %li
               %span.ligh= _('Confirmed:')
@@ -106,7 +105,7 @@
           %li
             %span.light= _('Current sign-in at:')
             %strong
-              = @user.current_sign_in_at&.to_s(:medium) || _('never')
+              = @user.current_sign_in_at&.to_fs(:medium) || _('never')
 
           %li
             %span.light= _('Last sign-in IP:')
@@ -116,7 +115,7 @@
           %li
             %span.light= _('Last sign-in at:')
             %strong
-              = @user.last_sign_in_at&.to_s(:medium) || _('never')
+              = @user.last_sign_in_at&.to_fs(:medium) || _('never')
 
           %li
             %span.light= _('Sign-in count:')

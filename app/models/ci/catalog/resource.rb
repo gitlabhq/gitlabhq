@@ -19,6 +19,8 @@ module Ci
 
       delegate :avatar_path, :description, :name, :star_count, :forks_count, to: :project
 
+      enum state: { draft: 0, published: 1 }
+
       def versions
         project.releases.order_released_desc
       end

@@ -61,7 +61,7 @@ pdf:
     expire_in: 1 week
 ```
 
-If `expire_in` is not defined, the [instance-wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration)
+If `expire_in` is not defined, the [instance-wide setting](../../administration/settings/continuous_integration.md#default-artifacts-expiration)
 is used.
 
 To prevent artifacts from expiring, you can select **Keep** from the job details page.
@@ -193,7 +193,7 @@ job:
 > - [Improved performance](https://gitlab.com/gitlab-org/gitlab/-/issues/387765) in GitLab 15.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/407475) in GitLab 16.0. Feature flag `artifacts_management_page` removed.
 
-You can view all artifacts stored in a project from the **CI/CD > Artifacts** page.
+You can view all artifacts stored in a project from the **Build > Artifacts** page.
 This list displays all jobs and their associated artifacts. Expand an entry to access
 all artifacts associated with a job, including:
 
@@ -351,7 +351,7 @@ Artifacts in old pipelines continue to be kept until a new pipeline runs for the
 Then the artifacts in the earlier pipeline for that ref are allowed to expire too.
 
 You can disable this behavior for all projects on a self-managed instance in the
-[instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+[instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 
 When **Keep artifacts from most recent successful jobs** is enabled, artifacts are always kept for [blocked](job_control.md#types-of-manual-jobs)
 pipelines. These artifacts expire only after the blocking job is triggered and the pipeline completes.

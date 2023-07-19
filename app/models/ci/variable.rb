@@ -14,6 +14,7 @@ module Ci
 
     alias_attribute :secret_value, :value
 
+    validates :description, length: { maximum: 255 }, allow_blank: true
     validates :key, uniqueness: {
       scope: [:project_id, :environment_scope],
       message: "(%{value}) has already been taken"

@@ -403,7 +403,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def migrated?
-    Gitlab.com?
+    Gitlab.com_except_jh?
   end
 
   def last_import_step_done_at
@@ -526,7 +526,7 @@ class ContainerRepository < ApplicationRecord
 
   def size
     strong_memoize(:size) do
-      next unless Gitlab.com?
+      next unless Gitlab.com_except_jh?
       next if self.created_at.before?(MIGRATION_PHASE_1_STARTED_AT) && self.migration_state != 'import_done'
       next unless gitlab_api_client.supports_gitlab_api?
 

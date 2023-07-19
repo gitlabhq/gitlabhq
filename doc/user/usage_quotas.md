@@ -181,7 +181,7 @@ Storage types that add to the total namespace storage are:
 
 - Git repository
 - Git LFS
-- Artifacts
+- Job artifacts
 - Container registry
 - Package registry
 - Dependency proxy

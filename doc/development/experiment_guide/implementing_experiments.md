@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 [Examples](https://gitlab.com/gitlab-org/growth/growth/-/wikis/GLEX-Framework-code-examples)
 
 Start by generating a feature flag using the `bin/feature-flag` command as you
-normally would for a development feature flag, making sure to use `experiment` for
+usually would for a development feature flag, making sure to use `experiment` for
 the type. For the sake of documentation let's name our feature flag (and experiment)
 `pill_color`.
 
@@ -280,7 +280,7 @@ about contexts now.
 
 We can assume we run the experiment in one or a few places, but
 track events potentially in many places. The tracking call remains the same, with
-the arguments you would normally use when
+the arguments you would usually use when
 [tracking events using snowplow](../snowplow/index.md). The easiest example
 of tracking an event in Ruby would be:
 

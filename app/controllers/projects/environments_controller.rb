@@ -12,12 +12,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     push_frontend_feature_flag(:environment_details_vue, @project)
   end
 
-  before_action only: [:index] do
-    push_frontend_feature_flag(:kas_user_access_project, @project)
-  end
-
-  before_action only: [:edit, :new] do
-    push_frontend_feature_flag(:environment_settings_to_graphql, @project)
+  before_action only: [:index, :edit, :new] do
+    push_frontend_feature_flag(:kubernetes_namespace_for_environment)
   end
 
   before_action :authorize_read_environment!
@@ -28,7 +24,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :cancel_auto_stop]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
-  before_action :set_kas_cookie, only: [:index], if: -> { current_user && request.format.html? }
+  before_action :set_kas_cookie, only: [:index, :edit, :new], if: -> { current_user && request.format.html? }
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   track_event :index, :folder, :show, :new, :edit, :create, :update, :stop, :cancel_auto_stop, :terminal,

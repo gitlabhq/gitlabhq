@@ -4,27 +4,27 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Content Editor development guidelines
+# Rich text editor development guidelines
 
-The Content Editor is a UI component that provides a WYSIWYG editing
+The rich text editor is a UI component that provides a WYSIWYG editing
 experience for [GitLab Flavored Markdown](../../user/markdown.md) in the GitLab application.
 It also serves as the foundation for implementing Markdown-focused editors
 that target other engines, like static site generators.
 
 We use [Tiptap 2.0](https://tiptap.dev/) and [ProseMirror](https://prosemirror.net/)
-to build the Content Editor. These frameworks provide a level of abstraction on top of
+to build the rich text editor. These frameworks provide a level of abstraction on top of
 the native
 [`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content) web technology.
 
 ## Usage guide
 
-Follow these instructions to include the Content Editor in a feature.
+Follow these instructions to include the rich text editor in a feature.
 
-1. [Include the Content Editor component](#include-the-content-editor-component).
+1. [Include the rich text editor component](#include-the-rich-text-editor-component).
 1. [Set and get Markdown](#set-and-get-markdown).
 1. [Listen for changes](#listen-for-changes).
 
-### Include the Content Editor component
+### Include the rich text editor component
 
 Import the `ContentEditor` Vue component. We recommend using asynchronous named imports to
 take advantage of caching, as the ContentEditor is a big dependency.
@@ -43,7 +43,7 @@ export default {
 </script>
 ```
 
-The Content Editor requires two properties:
+The rich text editor requires two properties:
 
 - `renderMarkdown` is an asynchronous function that returns the response (String) of invoking the
 [Markdown API](../../api/markdown.md).
@@ -95,7 +95,7 @@ export default {
 
 ### Listen for changes
 
-You can still react to changes in the Content Editor. Reacting to changes helps
+You can still react to changes in the rich text editor. Reacting to changes helps
 you know if the document is empty or dirty. Use the `@change` event handler for
 this purpose.
 
@@ -131,7 +131,7 @@ export default {
 
 ## Implementation guide
 
-The Content Editor is composed of three main layers:
+The rich text editor is composed of three main layers:
 
 - **The editing tools UI**, like the toolbar and the table structure editor. They
   display the editor's state and mutate it by dispatching commands.
@@ -163,7 +163,7 @@ We implement [node views](https://tiptap.dev/guide/node-views/vue/#node-views-wi
 to provide inline editing tools for some content types, like tables and images. Node views
 allow separating the presentation of a content type from its
 [model](https://prosemirror.net/docs/guide/#doc.data_structures). Using a Vue component in
-the presentation layer enables sophisticated editing experiences in the Content Editor.
+the presentation layer enables sophisticated editing experiences in the rich text editor.
 Node views are located in `~/content_editor/components/wrappers`.
 
 #### Dispatch commands
@@ -248,19 +248,19 @@ export default {
 
 The Tiptap [Editor](https://tiptap.dev/api/editor) class manages
 the editor's state and encapsulates all the business logic that powers
-the Content Editor. The Content Editor constructs a new instance of this class and
+the rich text editor. The rich text editor constructs a new instance of this class and
 provides all the necessary extensions to support
 [GitLab Flavored Markdown](../../user/markdown.md).
 
 #### Implement new extensions
 
-Extensions are the building blocks of the Content Editor. You can learn how to implement
+Extensions are the building blocks of the rich text editor. You can learn how to implement
 new ones by reading [the Tiptap guide](https://tiptap.dev/guide/custom-extensions).
 We recommend checking the list of built-in [nodes](https://tiptap.dev/api/nodes) and
 [marks](https://tiptap.dev/api/marks) before implementing a new extension
 from scratch.
 
-Store the Content Editor extensions in the `~/content_editor/extensions` directory.
+Store the rich text editor extensions in the `~/content_editor/extensions` directory.
 When using a Tiptap built-in extension, wrap it in a ES6 module inside this directory:
 
 ```javascript
@@ -313,11 +313,11 @@ by first rendering the Markdown as HTML using the [Markdown API endpoint](../../
 
 ```mermaid
 sequenceDiagram
-    participant A as Content Editor
-    participant E as Tiptap Object
-    participant B as Markdown Serializer
+    participant A as rich text editor
+    participant E as Tiptap object
+    participant B as Markdown serializer
     participant C as Markdown API
-    participant D as ProseMirror Parser
+    participant D as ProseMirror parser
     A->>B: deserialize(markdown)
     B->>C: render(markdown)
     C-->>B: html
@@ -343,13 +343,13 @@ classes documentation before implementing a serializer:
 
 ```mermaid
 sequenceDiagram
-    participant A as Content Editor
-    participant B as Markdown Serializer
+    participant A as rich text editor
+    participant B as Markdown serializer
     participant C as ProseMirror Markdown
     A->>B: serialize(document)
     B->>C: serialize(document, serializers)
-    C-->>A: markdown string
+    C-->>A: Markdown string
 ```
 
 `prosemirror-markdown` requires implementing a serializer function for each content type supported
-by the Content Editor. We implement serializers in `~/content_editor/services/markdown_serializer.js`.
+by the rich text editor. We implement serializers in `~/content_editor/services/markdown_serializer.js`.

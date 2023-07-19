@@ -364,7 +364,8 @@ RSpec.describe IssuesHelper do
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
         new_project_path: new_project_path(namespace_id: group.id),
         rss_path: '#',
-        sign_in_path: new_user_session_path
+        sign_in_path: new_user_session_path,
+        group_id: group.id
       }
 
       expect(helper.group_issues_list_data(group, current_user)).to include(expected)

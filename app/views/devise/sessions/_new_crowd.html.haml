@@ -7,7 +7,7 @@
     = f.text_field :username, name: :username, autocomplete: :username, class: 'form-control gl-form-input', title: _('This field is required.'), autofocus: 'autofocus', required: true
   .form-group
     = f.label :password, _('Password')
-    = f.text_field :vue_password_placeholder, class: 'form-control gl-form-input js-password', data: { id: "#{:crowd}_password", name: 'password' }
+    %input.form-control.gl-form-input.js-password{ data: { id: 'crowd_password', name: 'password' } }
 
   - if render_remember_me
     = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { name: :remember_me, autocomplete: 'off' }

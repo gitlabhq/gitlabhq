@@ -257,7 +257,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
     end
 
     it 'drops detached partitions for each database' do
-      expect(Gitlab::Database::EachDatabase).to receive(:each_database_connection).and_yield
+      expect(Gitlab::Database::EachDatabase).to receive(:each_connection).and_yield
 
       expect { described_class.drop_detached_partitions }
         .to change { Postgresql::DetachedPartition.count }.from(2).to(0)

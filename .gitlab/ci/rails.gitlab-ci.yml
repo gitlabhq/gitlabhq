@@ -115,6 +115,18 @@ rspec background_migration pg14 praefect:
     - .praefect-with-db
     - .rails:rules:praefect-with-db
 
+rspec migration pg14 clusterwide-db:
+  extends:
+    - rspec migration pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
+
+rspec background_migration pg14 clusterwide-db:
+  extends:
+    - rspec background_migration pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
+
 rspec unit pg14:
   extends:
     - .rspec-base-pg14
@@ -138,6 +150,12 @@ rspec unit pg14 single-db-ci-connection:
     - rspec unit pg14
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
+
+rspec unit pg14 clusterwide-db:
+  extends:
+    - rspec unit pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
 
 rspec unit pg14 praefect:
   extends:
@@ -168,6 +186,12 @@ rspec integration pg14 single-db-ci-connection:
     - rspec integration pg14
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
+
+rspec integration pg14 clusterwide-db:
+  extends:
+    - rspec integration pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
 
 rspec integration pg14 praefect:
   extends:
@@ -200,6 +224,12 @@ rspec system pg14 single-db-ci-connection:
     - rspec system pg14
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
+
+rspec system pg14 clusterwide-db:
+  extends:
+    - rspec system pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
 
 rspec system pg14 praefect:
   extends:
@@ -235,6 +265,11 @@ rspec fast_spec_helper:
     - fast_spec_helper_specs=$(git grep -l -E '^require.*fast_spec_helper')
     # Load fast_spec_helper as well just in case there are no specs available.
     - bin/rspec --dry-run spec/fast_spec_helper.rb $fast_spec_helper_specs
+
+rspec unit clickhouse:
+  extends:
+    - .rspec-base-pg14-clickhouse23
+    - .rails:rules:clickhouse-changes
 
 gitlab:setup:
   extends: .db-job-base
@@ -275,7 +310,7 @@ rspec:deprecations:
   script:
     - grep -h -R "keyword" deprecations/ | awk '{$1=$1};1' | sort | uniq -c | sort
     - grep -R "keyword" deprecations/ | wc
-    - run_timed_command "fail_on_warnings bundle exec rubocop --only Lint/LastKeywordArgument --parallel"
+    - run_timed_command "fail_on_warnings bundle exec rubocop --config .rubocop.yml --only Lint/LastKeywordArgument --parallel"
   artifacts:
     expire_in: 31d
     when: always
@@ -326,6 +361,10 @@ rspec:artifact-collector remainder:
       optional: true
     - job: rspec background_migration pg14 # 4 jobs
       optional: true
+  rules:
+    - !reference ['.rails:rules:ee-and-foss-integration', rules]
+    - !reference ['.rails:rules:ee-and-foss-migration', rules]
+    - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
 
 rspec:artifact-collector as-if-foss unit:
   extends:
@@ -351,6 +390,10 @@ rspec:artifact-collector as-if-foss remainder:
       optional: true
     - job: rspec background_migration pg14-as-if-foss # 4 jobs
       optional: true
+  rules:
+    - !reference ['.rails:rules:as-if-foss-integration', rules]
+    - !reference ['.rails:rules:as-if-foss-migration', rules]
+    - !reference ['.rails:rules:as-if-foss-background-migration', rules]
 
 rspec:artifact-collector single-redis:
   extends:
@@ -370,6 +413,7 @@ rspec:artifact-collector system single-redis:
 rspec:artifact-collector ee single-redis:
   extends:
     - .artifact-collector
+    - .rails:rules:single-redis
   needs:
     - job: rspec-ee unit pg14 single-redis # 18 jobs
       optional: true
@@ -392,6 +436,12 @@ rspec:artifact-collector ee:
       optional: true
     - job: rspec-ee system pg14 # 10 jobs
       optional: true
+  rules:
+    - !reference ['.rails:rules:ee-only-migration', rules]
+    - !reference ['.rails:rules:ee-only-background-migration', rules]
+    - !reference ['.rails:rules:ee-only-unit', rules]
+    - !reference ['.rails:rules:ee-only-integration', rules]
+    - !reference ['.rails:rules:ee-only-system', rules]
 
 rspec:coverage:
   extends:
@@ -569,25 +619,37 @@ rspec migration pg14-as-if-foss single-db:
   extends:
     - rspec migration pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec background_migration pg14-as-if-foss single-db:
   extends:
     - rspec background_migration pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec migration pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec migration pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
 
 rspec background_migration pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec background_migration pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
+
+rspec migration pg14-as-if-foss clusterwide-db:
+  extends:
+    - rspec migration pg14-as-if-foss
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
+
+rspec background_migration pg14-as-if-foss clusterwide-db:
+  extends:
+    - rspec background_migration pg14-as-if-foss
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
 
 rspec unit pg14-as-if-foss:
   extends:
@@ -599,13 +661,19 @@ rspec unit pg14-as-if-foss single-db:
   extends:
     - rspec unit pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec unit pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec unit pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
+
+rspec unit pg14-as-if-foss clusterwide-db:
+  extends:
+    - rspec unit pg14-as-if-foss
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
 
 rspec integration pg14-as-if-foss:
   extends:
@@ -617,13 +685,19 @@ rspec integration pg14-as-if-foss single-db:
   extends:
     - rspec integration pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec integration pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec integration pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
+
+rspec integration pg14-as-if-foss clusterwide-db:
+  extends:
+    - rspec integration pg14-as-if-foss
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
 
 rspec system pg14-as-if-foss:
   extends:
@@ -635,13 +709,19 @@ rspec system pg14-as-if-foss single-db:
   extends:
     - rspec system pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec system pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec system pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
+
+rspec system pg14-as-if-foss clusterwide-db:
+  extends:
+    - rspec system pg14-as-if-foss
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
 
 rspec-ee migration pg14:
   extends:
@@ -680,6 +760,18 @@ rspec-ee background_migration pg14 single-db-ci-connection:
     - rspec-ee background_migration pg14
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
+
+rspec-ee migration pg14 clusterwide-db:
+  extends:
+    - rspec-ee migration pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
+
+rspec-ee background_migration pg14 clusterwide-db:
+  extends:
+    - rspec-ee background_migration pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
 
 rspec-ee migration pg14 praefect:
   extends:
@@ -722,6 +814,12 @@ rspec-ee unit pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
 
+rspec-ee unit pg14 clusterwide-db:
+  extends:
+    - rspec-ee unit pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
+
 rspec-ee integration pg14:
   extends:
     - .rspec-ee-base-pg14
@@ -751,6 +849,12 @@ rspec-ee integration pg14 single-db-ci-connection:
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
 
+rspec-ee integration pg14 clusterwide-db:
+  extends:
+    - rspec-ee integration pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
+
 rspec-ee system pg14:
   extends:
     - .rspec-ee-base-pg14
@@ -779,6 +883,12 @@ rspec-ee system pg14 single-db-ci-connection:
     - rspec-ee system pg14
     - .single-db-ci-connection-rspec
     - .rails:rules:single-db-ci-connection
+
+rspec-ee system pg14 clusterwide-db:
+  extends:
+    - rspec-ee system pg14
+    - .clusterwide-db
+    - .rails:rules:clusterwide-db
 # EE: default refs (MRs, default branch, schedules) jobs #
 ##################################################
 
@@ -1085,7 +1195,7 @@ rspec-ee system pg15 es8:
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--tag ~quarantine --tag ~zoekt"
+    - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
 
 rspec fail-fast:
   extends:

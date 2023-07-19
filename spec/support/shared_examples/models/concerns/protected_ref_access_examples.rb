@@ -6,16 +6,34 @@ RSpec.shared_examples 'protected ref access' do |association|
   let_it_be(:project) { create(:project) }
   let_it_be(:protected_ref) { create(association, project: project) } # rubocop:disable Rails/SaveBang
 
-  it { is_expected.to validate_inclusion_of(:access_level).in_array(described_class.allowed_access_levels) }
+  describe 'validations' do
+    subject { build(described_class.model_name.singular) }
 
-  it { is_expected.to validate_presence_of(:access_level) }
+    context 'when role?' do
+      it { is_expected.to validate_inclusion_of(:access_level).in_array(described_class.allowed_access_levels) }
 
-  context 'when not role?' do
-    before do
-      allow(subject).to receive(:role?).and_return(false)
+      it { is_expected.to validate_presence_of(:access_level) }
+
+      it do
+        is_expected.to validate_uniqueness_of(:access_level)
+          .scoped_to("#{described_class.module_parent.model_name.singular}_id")
+      end
     end
 
-    it { is_expected.not_to validate_presence_of(:access_level) }
+    context 'when not role?' do
+      before do
+        allow(subject).to receive(:role?).and_return(false)
+      end
+
+      it { is_expected.not_to validate_presence_of(:access_level) }
+
+      it { is_expected.not_to validate_inclusion_of(:access_level).in_array(described_class.allowed_access_levels) }
+
+      it do
+        is_expected.not_to validate_uniqueness_of(:access_level)
+          .scoped_to("#{described_class.module_parent.model_name.singular}_id")
+      end
+    end
   end
 
   describe '::human_access_levels' do

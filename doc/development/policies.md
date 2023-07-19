@@ -18,7 +18,7 @@ Permissions are broken into two parts: `conditions` and `rules`. Conditions are 
 
 ### Conditions
 
-Conditions are defined by the `condition` method, and are given a name and a block. The block is executed in the context of the policy object - so it can access `@user` and `@subject`, as well as call any methods defined on the policy. Note that `@user` may be nil (in the anonymous case), but `@subject` is guaranteed to be a real instance of the subject class.
+Conditions are defined by the `condition` method, and are given a name and a block. The block is executed in the context of the policy object - so it can access `@user` and `@subject`, as well as call any methods defined on the policy. `@user` may be nil (in the anonymous case), but `@subject` is guaranteed to be a real instance of the subject class.
 
 ```ruby
 class FooPolicy < BasePolicy
@@ -42,7 +42,7 @@ Conditions are cached according to their scope. Scope and ordering is covered la
 
 ### Rules
 
-A `rule` is a logical combination of conditions and other rules, that are configured to enable or prevent certain abilities. It is important to note that the rule configuration is static - a rule's logic cannot touch the database or know about `@user` or `@subject`. This allows us to cache only at the condition level. Rules are specified through the `rule` method, which takes a block of DSL configuration, and returns an object that responds to `#enable` or `#prevent`:
+A `rule` is a logical combination of conditions and other rules, that are configured to enable or prevent certain abilities. The rule configuration is static - a rule's logic cannot touch the database or know about `@user` or `@subject`. This allows us to cache only at the condition level. Rules are specified through the `rule` method, which takes a block of DSL configuration, and returns an object that responds to `#enable` or `#prevent`:
 
 ```ruby
 class FooPolicy < BasePolicy
@@ -67,7 +67,7 @@ Within the rule DSL, you can use:
 - A regular word mentions a condition by name - a rule that is in effect when that condition is truthy.
 - `~` indicates negation, also available as `negate`.
 - `&` and `|` are logical combinations, also available as `all?(...)` and `any?(...)`.
-- `can?(:other_ability)` delegates to the rules that apply to `:other_ability`. Note that this is distinct from the instance method `can?`, which can check dynamically - this only configures a delegation to another ability.
+- `can?(:other_ability)` delegates to the rules that apply to `:other_ability`. This is distinct from the instance method `can?`, which can check dynamically - this only configures a delegation to another ability.
 
 `~`, `&` and `|` operators are overridden methods in
 [`DeclarativePolicy::Rule::Base`](https://gitlab.com/gitlab-org/declarative-policy/-/blob/main/lib/declarative_policy/rule.rb).
@@ -104,8 +104,9 @@ An example debug output would look as follows:
 
 Each line represents a rule that was evaluated. There are a few things to note:
 
-1. The `-` or `+` symbol indicates whether the rule block was evaluated to be
-   `false` or `true`, respectively.
+1. The `-` symbol indicates the rule block was evaluated to be
+   `false`. A `+` symbol indicates the rule block was evaluated to be
+   `true`.
 1. The number inside the brackets indicates the score.
 1. The last part of the line (for example, `@john : Issue/1`) shows the username
    and subject for that rule.
@@ -124,7 +125,7 @@ heuristic of how expensive they are to calculate. The sorting is
 dynamic and cache-aware, so that previously calculated conditions are
 considered first, before computing other conditions.
 
-Note that the score is chosen by a developer via the `score:` parameter
+The score is chosen by a developer via the `score:` parameter
 in a `condition` to denote how expensive evaluating this rule would be
 relative to other rules.
 
@@ -173,7 +174,7 @@ class FooPolicy < BasePolicy
 end
 ```
 
-includes all rules from `ProjectPolicy`. The delegated conditions are evaluated with the correct delegated subject, and are sorted along with the regular rules in the policy. Note that only the relevant rules for a particular ability are actually considered.
+includes all rules from `ProjectPolicy`. The delegated conditions are evaluated with the correct delegated subject, and are sorted along with the regular rules in the policy. Only the relevant rules for a particular ability are actually considered.
 
 ### Overrides
 

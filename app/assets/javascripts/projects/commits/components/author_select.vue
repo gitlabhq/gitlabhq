@@ -1,27 +1,18 @@
 <script>
-import {
-  GlDropdown,
-  GlDropdownSectionHeader,
-  GlDropdownItem,
-  GlSearchBoxByType,
-  GlDropdownDivider,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlAvatar, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import { mapState, mapActions } from 'vuex';
-import { redirectTo, queryToObject } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
-import { __ } from '~/locale';
+import { mapActions, mapState } from 'vuex';
+import { queryToObject, visitUrl } from '~/lib/utils/url_utility';
+import { n__, __ } from '~/locale';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 const tooltipMessage = __('Searching by both author and message is currently not supported.');
 
 export default {
   name: 'AuthorSelect',
   components: {
-    GlDropdown,
-    GlDropdownSectionHeader,
-    GlDropdownItem,
-    GlSearchBoxByType,
-    GlDropdownDivider,
+    GlAvatar,
+    GlCollapsibleListbox,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -35,9 +26,9 @@ export default {
   data() {
     return {
       hasSearchParam: false,
-      searchTerm: '',
-      authorInput: '',
       currentAuthor: '',
+      searchTerm: '',
+      searching: false,
     };
   },
   computed: {
@@ -45,8 +36,32 @@ export default {
     dropdownText() {
       return this.currentAuthor || __('Author');
     },
+    dropdownItems() {
+      const commitAuthorOptions = this.commitsAuthors.map((author) => ({
+        value: author.name,
+        text: author.name,
+        secondaryText: author.username,
+        avatarUrl: author.avatar_url,
+      }));
+      if (this.searchTerm) return commitAuthorOptions;
+
+      const defaultOptions = {
+        text: '',
+        options: [{ text: __('Any Author'), value: '' }],
+        textSrOnly: true,
+      };
+      const authorOptionsGroup = {
+        text: 'authors',
+        options: commitAuthorOptions,
+        textSrOnly: true,
+      };
+      return [defaultOptions, authorOptionsGroup];
+    },
     tooltipTitle() {
       return this.hasSearchParam && tooltipMessage;
+    },
+    searchSummarySrText() {
+      return n__('%d author', '%d authors', this.commitsAuthors.length);
     },
   },
   mounted() {
@@ -73,9 +88,7 @@ export default {
   },
   methods: {
     ...mapActions(['fetchAuthors']),
-    selectAuthor(author) {
-      const { name: user } = author || {};
-
+    selectAuthor(user) {
       // Follow up issue "Remove usage of $.fadeIn from the codebase"
       // > https://gitlab.com/gitlab-org/gitlab/-/issues/214395
 
@@ -89,13 +102,19 @@ export default {
       commitListElement.style.transition = 'opacity 200ms';
 
       if (!user) {
-        return redirectTo(this.commitsPath); // eslint-disable-line import/no-deprecated
+        return visitUrl(this.commitsPath);
       }
 
-      return redirectTo(`${this.commitsPath}?author=${user}`); // eslint-disable-line import/no-deprecated
+      return visitUrl(`${this.commitsPath}?author=${user}`);
     },
-    searchAuthors() {
-      this.fetchAuthors(this.authorInput);
+    searchAuthors: debounce(async function debouncedSearch() {
+      this.searching = true;
+      await this.fetchAuthors(this.searchTerm);
+      this.searching = false;
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
+    handleSearch(input) {
+      this.searchTerm = input;
+      this.searchAuthors();
     },
     setSearchParam(value) {
       this.hasSearchParam = Boolean(value);
@@ -105,36 +124,45 @@ export default {
 </script>
 
 <template>
-  <div ref="dropdownContainer" v-gl-tooltip :title="tooltipTitle" :disabled="!hasSearchParam">
-    <gl-dropdown
-      :text="dropdownText"
+  <div ref="listboxContainer" v-gl-tooltip :title="tooltipTitle" :disabled="!hasSearchParam">
+    <gl-collapsible-listbox
+      v-model="currentAuthor"
+      block
+      is-check-centered
+      searchable
+      class="gl-mt-3 gl-sm-mt-0"
+      :items="dropdownItems"
+      :header-text="__('Search by author')"
+      :toggle-text="dropdownText"
+      :search-placeholder="__('Search')"
+      :searching="searching"
       :disabled="hasSearchParam"
-      toggle-class="gl-py-3 gl-border-0"
-      class="w-100 gl-mt-3 mt-sm-0"
+      @search="handleSearch"
+      @select="selectAuthor"
     >
-      <gl-dropdown-section-header>
-        {{ __('Search by author') }}
-      </gl-dropdown-section-header>
-      <gl-dropdown-divider />
-      <gl-search-box-by-type
-        v-model.trim="authorInput"
-        :placeholder="__('Search')"
-        @input="searchAuthors"
-      />
-      <gl-dropdown-item :is-checked="!currentAuthor" @click="selectAuthor(null)">
-        {{ __('Any Author') }}
-      </gl-dropdown-item>
-      <gl-dropdown-divider />
-      <gl-dropdown-item
-        v-for="author in commitsAuthors"
-        :key="author.id"
-        :is-checked="author.name === currentAuthor"
-        :avatar-url="author.avatar_url"
-        :secondary-text="author.username"
-        @click="selectAuthor(author)"
-      >
-        {{ author.name }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      <template #search-summary-sr-only>
+        {{ searchSummarySrText }}
+      </template>
+      <template #list-item="{ item }">
+        <span class="gl-display-flex gl-align-items-center">
+          <gl-avatar
+            v-if="item.avatarUrl"
+            class="gl-mr-3"
+            :size="32"
+            :entity-name="item.text"
+            :src="item.avatarUrl"
+            :alt="item.text"
+          />
+          <span
+            class="gl-display-flex gl-flex-direction-column gl-overflow-hidden gl-overflow-break-word"
+          >
+            {{ item.text }}
+            <span v-if="item.secondaryText" class="gl-text-secondary">
+              {{ item.secondaryText }}
+            </span>
+          </span>
+        </span>
+      </template>
+    </gl-collapsible-listbox>
   </div>
 </template>

@@ -340,8 +340,8 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           end
         end
 
-        let_it_be(:expected_html) { %Q(a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
-        let_it_be(:expected_template_html) { %Q(some text #{expected_html}) }
+        let_it_be(:expected_html) { %(a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
+        let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
         it_behaves_like 'a service desk notification email'
         it_behaves_like 'a service desk notification email with template content', 'new_note'
@@ -357,7 +357,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           end
 
           context 'when upload name is not changed in markdown' do
-            let_it_be(:expected_template_html) { %Q(some text a new comment with <strong>#{filename}</strong>) }
+            let_it_be(:expected_template_html) { %(some text a new comment with <strong>#{filename}</strong>) }
 
             it_behaves_like 'a service desk notification email', 1
             it_behaves_like 'a service desk notification email with template content', 'new_note', 1
@@ -366,9 +366,9 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           context 'when upload name is changed in markdown' do
             let_it_be(:upload_name_in_markdown) { 'Custom name' }
             let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "a new comment with [#{upload_name_in_markdown}](#{upload_path})") }
-            let_it_be(:expected_text) { %Q(a new comment with [#{upload_name_in_markdown}](#{upload_path})) }
-            let_it_be(:expected_html) { %Q(a new comment with <strong>#{upload_name_in_markdown} (#{filename})</strong>) }
-            let_it_be(:expected_template_html) { %Q(some text #{expected_html}) }
+            let_it_be(:expected_text) { %(a new comment with [#{upload_name_in_markdown}](#{upload_path})) }
+            let_it_be(:expected_html) { %(a new comment with <strong>#{upload_name_in_markdown} (#{filename})</strong>) }
+            let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
             it_behaves_like 'a service desk notification email', 1
             it_behaves_like 'a service desk notification email with template content', 'new_note', 1
@@ -392,16 +392,16 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
             let_it_be(:upload_1) { create(:upload, :issuable_upload, :with_file, model: note.project, path: path_1, secret: secret_1) }
 
-            let_it_be(:expected_html) { %Q(a new comment with <strong>#{filename}</strong> <strong>#{filename_1}</strong>) }
-            let_it_be(:expected_template_html) { %Q(some text #{expected_html}) }
+            let_it_be(:expected_html) { %(a new comment with <strong>#{filename}</strong> <strong>#{filename_1}</strong>) }
+            let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
             it_behaves_like 'a service desk notification email', 2
             it_behaves_like 'a service desk notification email with template content', 'new_note', 2
           end
 
           context 'when not all uploads processed correct' do
-            let_it_be(:expected_html) { %Q(a new comment with <strong>#{filename}</strong> <a href="#{project.web_url}#{upload_path_1}" data-canonical-src="#{upload_path_1}" data-link="true" class="gfm">#{filename_1}</a>) }
-            let_it_be(:expected_template_html) { %Q(some text #{expected_html}) }
+            let_it_be(:expected_html) { %(a new comment with <strong>#{filename}</strong> <a href="#{project.web_url}#{upload_path_1}" data-canonical-src="#{upload_path_1}" data-link="true" class="gfm">#{filename_1}</a>) }
+            let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
             it_behaves_like 'a service desk notification email', 1
             it_behaves_like 'a service desk notification email with template content', 'new_note', 1
@@ -417,7 +417,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).with(StandardError, project_id: note.project_id)
         end
 
-        let_it_be(:expected_template_html) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
+        let_it_be(:expected_template_html) { %(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
 
         it_behaves_like 'a service desk notification email with template content', 'new_note'
       end
@@ -430,7 +430,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).with(StandardError, project_id: note.project_id)
         end
 
-        let_it_be(:expected_template_html) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
+        let_it_be(:expected_template_html) { %(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
 
         it_behaves_like 'a service desk notification email with template content', 'new_note'
       end

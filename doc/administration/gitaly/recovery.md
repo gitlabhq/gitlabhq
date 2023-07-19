@@ -432,6 +432,11 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 > - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5658) in GitLab 14.4.
 > - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5789) in GitLab 14.6, support for immediate replication.
 
+WARNING:
+Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), you can't add repositories to the
+Praefect tracking database with Praefect-generated replica paths (`@cluster`). These repositories are not associated with the repository path used by GitLab and are
+inaccessible.
+
 The `track-repository` Praefect sub-command adds repositories on disk to the Praefect tracking database to be tracked.
 
 ```shell
@@ -483,6 +488,11 @@ This command fails if:
 ### Manually add many repositories to the tracking database
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6319) in GitLab 15.4.
+
+WARNING:
+Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), you can't add repositories to the
+Praefect tracking database with Praefect-generated replica paths (`@cluster`). These repositories are not associated with the repository path used by GitLab and are
+inaccessible.
 
 Migrations using the API automatically add repositories to the Praefect tracking database.
 

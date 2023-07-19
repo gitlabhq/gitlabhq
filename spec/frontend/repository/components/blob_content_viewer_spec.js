@@ -11,7 +11,7 @@ import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
-import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
+import WebIdeLink from 'ee_else_ce/vue_shared/components/web_ide_link.vue';
 import ForkSuggestion from '~/repository/components/fork_suggestion.vue';
 import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
@@ -51,6 +51,8 @@ let blobInfoMockResolver;
 let userInfoMockResolver;
 let projectInfoMockResolver;
 let applicationInfoMockResolver;
+
+Vue.use(Vuex);
 
 const mockAxios = new MockAdapter(axios);
 
@@ -150,6 +152,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
         ...inject,
         glFeatures: {
           highlightJs,
+          highlightJsWorker: false,
         },
       },
     }),
@@ -403,7 +406,7 @@ describe('Blob content viewer component', () => {
 
       await waitForPromises();
 
-      expect(loadViewer).toHaveBeenCalledWith(viewer, false);
+      expect(loadViewer).toHaveBeenCalledWith(viewer, false, false, 'javascript');
       expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
     });
   });

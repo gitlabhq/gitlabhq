@@ -18,7 +18,33 @@ most to least severe:
 - `Info`
 - `Unknown`
 
-Most GitLab vulnerability analyzers are wrappers around popular open source scanning tools. Each
+GitLab analyzers make an effort to fit the severity descriptions below, but they may not always be correct. Analyzers and scanners provided by third-party vendors may not follow the same classification.
+
+## Critical severity
+
+Vulnerabilities identified at the Critical Severity level should be investigated immediately. Vulnerabilities at this level assume exploitation of the flaw could lead to full system or data compromise. Examples of critical severity flaws are Command/Code Injection and SQL Injection. Typically these flaws are rated with CVSS 3.1 between 9.0-10.0. 
+
+## High severity
+
+High severity vulnerabilities can be characterized as flaws that may lead to an attacker accessing application resources or unintended exposure of data. Examples of high severity flaws are External XML Entity Injection (XXE), Server Side Request Forgery (SSRF), Local File Include/Path Traversal and certain forms of Cross-Site Scripting (XSS). Typically these flaws are rated with CVSS 3.1 between 7.0-8.9.
+
+## Medium severity
+
+Medium severity vulnerabilities usually arise from misconfiguration of systems or lack of security controls. Exploitation of these vulnerabilities may lead to accessing a restricted amount of data or could be used in conjunction with other flaws to gain unintended access to systems or resources. Examples of medium severity flaws are reflected XSS, incorrect HTTP session handling, and missing security controls. Typically these flaws are rated with CVSS 3.1 between 4.0-6.9.
+
+## Low severity
+
+Low severity vulnerabilities contain flaws that may not be directly exploitable but introduce unnecessary weakness to an application or system. These flaws are usually due to missing security controls, or unnecessary disclose information about the application environment. Examples of low severity vulnerabilities are missing cookie security directives, verbose error or exception messages. Typically these flaws are rated with CVSS 3.1 between 1.0-3.9.
+
+## Info severity
+
+Info level severity vulnerabilities contain information that may have value, but are not necessarily associated to a particular flaw or weakness. Typically these issues do not have a CVSS rating.
+
+## Unknown severity
+
+Issues identified at this level do not have enough context to clearly demonstrate severity.  
+
+GitLab vulnerability analyzers include popular open source scanning tools. Each
 open source scanning tool provides their own native vulnerability severity level value. These values
 can be one of the following:
 

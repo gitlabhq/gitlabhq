@@ -165,8 +165,8 @@ module FormHelper
   def multiple_assignees_dropdown_options(options)
     new_options = options.dup
 
-    new_options[:title] = _('Select assignee(s)')
-    new_options[:data][:'dropdown-header'] = 'Assignee(s)'
+    new_options[:title] = _('Select assignees')
+    new_options[:data][:'dropdown-header'] = 'Assignees'
     new_options[:data][:'max-select'] = ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
 
     new_options
@@ -175,8 +175,8 @@ module FormHelper
   def multiple_reviewers_dropdown_options(options)
     new_options = options.dup
 
-    new_options[:title] = _('Select reviewer(s)')
-    new_options[:data][:'dropdown-header'] = _('Reviewer(s)')
+    new_options[:title] = _('Select reviewers')
+    new_options[:data][:'dropdown-header'] = _('Reviewers')
 
     new_options[:data][:'max-select'] = ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
 

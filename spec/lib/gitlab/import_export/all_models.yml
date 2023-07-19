@@ -72,6 +72,10 @@ issues:
 - issuable_resource_links
 work_item_type:
 - issues
+- namespace
+- work_items
+- widget_definitions
+- enabled_widget_definitions
 events:
 - author
 - project
@@ -139,6 +143,7 @@ milestone:
 - boards
 - milestone_releases
 - releases
+- user_agent_detail
 snippets:
 - author
 - project
@@ -249,6 +254,8 @@ merge_request_diff:
 - merge_request_diff_commits
 - merge_request_diff_detail
 - merge_request_diff_files
+- merge_request_diff_llm_summary
+- merge_request_review_llm_summaries
 merge_request_diff_commits:
 - merge_request_diff
 - commit_author
@@ -807,6 +814,9 @@ project:
 - design_management_repository
 - design_management_repository_state
 - compliance_standards_adherence
+- scan_result_policy_reads
+- project_state
+- security_policy_bots
 award_emoji:
 - awardable
 - user

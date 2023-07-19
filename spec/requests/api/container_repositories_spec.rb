@@ -119,7 +119,7 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
         let(:created_at) { ::ContainerRepository::MIGRATION_PHASE_1_STARTED_AT + 3.months }
 
         before do
-          allow(::Gitlab).to receive(:com?).and_return(on_com)
+          allow(::Gitlab).to receive(:com_except_jh?).and_return(on_com)
           repository.update_column(:created_at, created_at)
         end
 

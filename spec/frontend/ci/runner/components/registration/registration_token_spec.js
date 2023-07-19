@@ -7,7 +7,7 @@ import { mockRegistrationToken } from '../../mock_data';
 
 describe('RegistrationToken', () => {
   let wrapper;
-  let showToast;
+  const showToastMock = jest.fn();
 
   Vue.use(GlToast);
 
@@ -21,9 +21,12 @@ describe('RegistrationToken', () => {
         ...props,
       },
       ...options,
+      mocks: {
+        $toast: {
+          show: showToastMock,
+        },
+      },
     });
-
-    showToast = wrapper.vm.$toast ? jest.spyOn(wrapper.vm.$toast, 'show') : null;
   };
 
   it('Displays value and copy button', () => {
@@ -58,8 +61,14 @@ describe('RegistrationToken', () => {
     it('shows a copied message', () => {
       findInputCopyToggleVisibility().vm.$emit('copy');
 
-      expect(showToast).toHaveBeenCalledTimes(1);
-      expect(showToast).toHaveBeenCalledWith('Registration token copied!');
+      expect(showToastMock).toHaveBeenCalledTimes(1);
+      expect(showToastMock).toHaveBeenCalledWith('Registration token copied!');
+    });
+
+    it('emits a copy event', () => {
+      findInputCopyToggleVisibility().vm.$emit('copy');
+
+      expect(wrapper.emitted('copy')).toHaveLength(1);
     });
   });
 
@@ -76,9 +85,7 @@ describe('RegistrationToken', () => {
     });
 
     it('passes slots to the input component', () => {
-      const slot = findInputCopyToggleVisibility().vm.$scopedSlots[slotName];
-
-      expect(slot()[0].text).toBe(slotContent);
+      expect(findInputCopyToggleVisibility().text()).toBe(slotContent);
     });
   });
 });

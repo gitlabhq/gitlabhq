@@ -75,10 +75,13 @@ export default {
   computed: {
     selected: {
       set(value) {
-        this.$emit('input', value);
         this.selectedValue = value;
         this.selectedText =
           value === null ? null : this.items.find((item) => item.value === value).text;
+        this.$emit('input', {
+          value: this.selectedValue,
+          text: this.selectedText,
+        });
       },
       get() {
         return this.selectedValue;
@@ -161,7 +164,7 @@ export default {
     },
     onReset() {
       this.selected = null;
-      this.$emit('input', null);
+      this.$emit('input', {});
     },
     onBottomReached() {
       this.fetchEntities(this.page + 1);

@@ -90,7 +90,7 @@ in a safe place.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212312) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `forti_authenticator`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per user, ask an administrator to
+On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`. On GitLab.com, this
 feature is not available.
 
@@ -218,7 +218,7 @@ On your GitLab server:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212313) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per user, ask an administrator to
+On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`. On GitLab.com, this
 feature is not available. The feature is not ready for production use.
 
@@ -277,13 +277,13 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 > - Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `webauthn_without_topt`. [Enabled on GitLab.com and self-managed by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232671).
 
 FLAG:
-On self-managed GitLab, by default, WebAuthn devices are available. To disable the feature, ask an administrator to
+On self-managed GitLab, by default, WebAuthn devices are available. To disable the feature, an administrator can
 [disable the feature flag](../../../administration/feature_flags.md) named `webauthn`. If you disable the WebAuthn
 feature flag after WebAuthn devices have been registered, these devices are not usable until you re-enable this feature.
 On GitLab.com, WebAuthn devices are available.
 
 FLAG:
-On self-managed GitLab, by default, optional one-time password authentication for WebAuthn devices is not available. To enable the feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `webauthn_without_totp`.
+On self-managed GitLab, by default, optional one-time password authentication for WebAuthn devices is not available. To enable the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webauthn_without_totp`.
 On GitLab.com, this feature is available.
 
 WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:
@@ -465,7 +465,7 @@ a GitLab global administrator disable 2FA for your account:
 
 ## Information for GitLab administrators **(FREE SELF)**
 
-- Take care that 2FA keeps working after [restoring a GitLab backup](../../../raketasks/backup_restore.md).
+- Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/index.md).
 - To ensure 2FA authorizes correctly with a time-based one-time password (TOTP) server, synchronize your GitLab
   server's time using a service like NTP. Otherwise, authorization can always fail because of time differences.
 - The GitLab WebAuthn implementation does _not_ work when the GitLab instance is accessed from multiple hostnames
@@ -501,7 +501,7 @@ This error occurs in the following scenarios:
 - You do not have 2FA enabled but an administrator has enabled the
   [enforce 2FA for all users](../../../security/two_factor_authentication.md#enforce-2fa-for-all-users) setting.
 - You do not have 2FA enabled, but an administrator has disabled the
-  [password authentication enabled for Git over HTTP(S)](../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled)
+  [password authentication enabled for Git over HTTP(S)](../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
   setting.
 
 Instead you can authenticate:

@@ -754,8 +754,8 @@ This file is located at:
 
 This log records:
 
-- Requests over the [Rate Limit](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
-- [Protected paths](../../user/admin_area/settings/protected_paths.md) abusive requests.
+- Requests over the [Rate Limit](../settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
+- [Protected paths](../settings/protected_paths.md) abusive requests.
 - In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and later,
   user ID and username, if available.
 
@@ -1129,7 +1129,7 @@ GitLab also tracks [Prometheus metrics for Praefect](../gitaly/monitoring.md#mon
 
 For Omnibus installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
 
-This log is populated when a [GitLab backup is created](../../raketasks/backup_restore.md). You can use this log to understand how the backup process performed.
+This log is populated when a [GitLab backup is created](../../administration/backup_restore/index.md). You can use this log to understand how the backup process performed.
 
 ## Performance bar stats
 

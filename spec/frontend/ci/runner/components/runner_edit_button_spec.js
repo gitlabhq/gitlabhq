@@ -1,18 +1,25 @@
-import { shallowMount, mount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import RunnerEditButton from '~/ci/runner/components/runner_edit_button.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { I18N_EDIT } from '~/ci/runner/constants';
 
 describe('RunnerEditButton', () => {
   let wrapper;
 
+  const findButton = () => wrapper.findComponent(GlButton);
   const getTooltipValue = () => getBinding(wrapper.element, 'gl-tooltip').value;
 
-  const createComponent = ({ attrs = {}, mountFn = shallowMount } = {}) => {
+  const createComponent = ({ props = {}, mountFn = shallowMount, ...options } = {}) => {
     wrapper = mountFn(RunnerEditButton, {
-      attrs,
+      propsData: {
+        href: '/edit',
+        ...props,
+      },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
+      ...options,
     });
   };
 
@@ -21,17 +28,24 @@ describe('RunnerEditButton', () => {
   });
 
   it('Displays Edit text', () => {
-    expect(wrapper.attributes('aria-label')).toBe('Edit');
+    expect(wrapper.attributes('aria-label')).toBe(I18N_EDIT);
   });
 
   it('Displays Edit tooltip', () => {
-    expect(getTooltipValue()).toBe('Edit');
+    expect(getTooltipValue()).toBe(I18N_EDIT);
   });
 
   it('Renders a link and adds an href attribute', () => {
-    createComponent({ attrs: { href: '/edit' }, mountFn: mount });
+    expect(findButton().attributes('href')).toBe('/edit');
+  });
 
-    expect(wrapper.element.tagName).toBe('A');
-    expect(wrapper.attributes('href')).toBe('/edit');
+  describe('When no href is provided', () => {
+    beforeEach(() => {
+      createComponent({ props: { href: null } });
+    });
+
+    it('does not render', () => {
+      expect(wrapper.html()).toBe('');
+    });
   });
 });

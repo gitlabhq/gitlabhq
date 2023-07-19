@@ -45,7 +45,7 @@ Each image runs a specific version of macOS and Xcode.
 | (none, awaiting macOS 13) | `beta`        |
 
 NOTE:
-Each time you run a job that requires tooling or dependencies not available in the base image, those items must be added to the newly provisioned build VM increasing the total job duration.
+If your job requires tooling or dependencies not available in our available images, those can only be installed in the job execution.
 
 ## Image update policy
 
@@ -88,9 +88,6 @@ test:
     - echo "running scripts in the test job"
 ```
 
-NOTE:
-You can specify a different Xcode image to run a job. To do so, replace the value for the `image` keyword with the value of the [virtual machine image name](#supported-macos-images) from the list of available images. The default value is our latest image.
-
 ## Code signing iOS Projects with fastlane
 
 Before you can integrate GitLab with Apple services, install to a device, or deploy to the Apple App Store, you must [code sign](https://developer.apple.com/support/code-signing/) your application.
@@ -106,22 +103,22 @@ Related topics:
 - [Code Signing Best Practice Guide](https://codesigning.guide/)
 - [fastlane authentication with Apple Services guide](https://docs.fastlane.tools/getting-started/ios/authentication/)
 
-## Known Limitations and Usage Constraints
-
-- If the VM image does not include the specific software version you need for your job, then the job execution time will increase as the required software needs to be fetched and installed.
-- At this time, it is not possible to bring your own OS image.
-- The keychain for user `gitlab` is not publicly available. You must create a keychain instead.
-
 ## Optimizing Homebrew
 
 By default, Homebrew checks for updates at the start of any operation. Homebrew has a
-release cycle that may be more frequent than the GitLab MacOS image release cycle. This
+release cycle that may be more frequent than the GitLab macOS image release cycle. This
 difference in release cycles may cause steps that call `brew` to take extra time to complete
 while Homebrew makes updates.
 
-To reduce build time due to unintended Homebrew updates, set the `HOMEBREW_NO_AUTO_UPDATE` variable in  `.gitlab-ci.yml` :
+To reduce build time due to unintended Homebrew updates, set the `HOMEBREW_NO_AUTO_UPDATE` variable in `.gitlab-ci.yml`:
 
 ```yaml
 variables:
   HOMEBREW_NO_AUTO_UPDATE: 1
 ```
+
+## Known issues and usage constraints
+
+- If the VM image does not include the specific software version you need for your job, the required software must be fetched and installed. This causes an increase in job execution time.
+- It is not possible to bring your own OS image.
+- The keychain for user `gitlab` is not publicly available. You must create a keychain instead.

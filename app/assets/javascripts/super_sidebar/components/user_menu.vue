@@ -11,11 +11,12 @@ import { s__, __, sprintf } from '~/locale';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import Tracking from '~/tracking';
 import PersistentUserCallout from '~/persistent_user_callout';
-import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
+import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 import UserNameGroup from './user_name_group.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
-const DROPDOWN_X_OFFSET = -211;
+const DROPDOWN_X_OFFSET_BASE = -211;
+const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_OFFSET;
 
 export default {
   feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409005',
@@ -47,7 +48,7 @@ export default {
     SafeHtml,
   },
   mixins: [Tracking.mixin()],
-  inject: ['toggleNewNavEndpoint'],
+  inject: ['toggleNewNavEndpoint', 'isImpersonating'],
   props: {
     data: {
       required: true,
@@ -89,7 +90,7 @@ export default {
         text: this.$options.i18n.editProfile,
         href: this.data.settings.profile_path,
         extraAttrs: {
-          'data-qa-selector': 'edit_profile_link',
+          'data-testid': 'edit_profile_link',
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_edit_profile',
         },
@@ -149,7 +150,7 @@ export default {
             href: this.data.sign_out_link,
             extraAttrs: {
               'data-method': 'post',
-              'data-qa-selector': 'sign_out_link',
+              'data-testid': 'sign_out_link',
               class: 'sign-out-link',
             },
           },
@@ -188,6 +189,12 @@ export default {
     showNotificationDot() {
       return this.data.pipeline_minutes?.show_notification_dot;
     },
+    dropdownOffset() {
+      return {
+        mainAxis: DROPDOWN_Y_OFFSET,
+        crossAxis: this.isImpersonating ? DROPDOWN_X_OFFSET_IMPERSONATING : DROPDOWN_X_OFFSET_BASE,
+      };
+    },
   },
   methods: {
     onShow() {
@@ -221,7 +228,6 @@ export default {
       });
     },
   },
-  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
 };
 </script>
 
@@ -229,9 +235,8 @@ export default {
   <div>
     <gl-disclosure-dropdown
       ref="userDropdown"
-      :dropdown-offset="$options.dropdownOffset"
+      :dropdown-offset="dropdownOffset"
       data-testid="user-dropdown"
-      data-qa-selector="user_menu"
       :auto-close="false"
       @shown="onShow"
     >
@@ -243,7 +248,7 @@ export default {
             :entity-name="data.name"
             :src="data.avatar_url"
             aria-hidden="true"
-            data-qa-selector="user_avatar_content"
+            data-testid="user_avatar_content"
           />
           <span
             v-if="showNotificationDot"

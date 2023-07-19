@@ -100,7 +100,7 @@ module ExtractsRef
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def tree
-    @tree ||= @repo.tree(@commit.id, @path) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @tree ||= @repo.tree(@commit.id, @path, ref_type: ref_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def extract_ref_path

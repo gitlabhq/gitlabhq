@@ -16,7 +16,7 @@ class ClusterNameValidator < ActiveModel::EachValidator
         record.errors.add(attribute, " is invalid syntax")
       end
 
-      unless value =~ Gitlab::Regex.kubernetes_namespace_regex
+      unless Gitlab::Regex.kubernetes_namespace_regex.match(value)
         record.errors.add(attribute, Gitlab::Regex.kubernetes_namespace_regex_message)
       end
     end

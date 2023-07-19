@@ -1011,7 +1011,7 @@ Puma. All these components should run as different system users to GitLab
 (for example, `postgres`, `redis`, and `www-data`, instead of `git`).
 
 As the `git` user it starts Sidekiq and Puma (a simple Ruby HTTP server
-running on port `8080` by default). Under the GitLab user there are normally 4
+running on port `8080` by default). Under the GitLab user there are usually 4
 processes: `puma master` (1 process), `puma cluster worker`
 (2 processes), `sidekiq` (1 process).
 
@@ -1067,7 +1067,7 @@ Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [v
 
 GitLab (includes Puma and Sidekiq logs):
 
-- `/home/git/gitlab/log/` contains `application.log`, `production.log`, `sidekiq.log`, `puma.stdout.log`, `git_json.log` and `puma.stderr.log` normally.
+- `/home/git/gitlab/log/` usually contains `application.log`, `production.log`, `sidekiq.log`, `puma.stdout.log`, `git_json.log` and `puma.stderr.log`.
 
 GitLab Shell:
 

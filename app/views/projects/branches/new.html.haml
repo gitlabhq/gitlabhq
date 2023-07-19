@@ -20,4 +20,4 @@
       = _('Existing branch name, tag, or commit SHA')
   = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { type: 'submit', class: 'gl-mr-3' }) do
     = _('Create branch')
-  = link_to _('Cancel'), project_branches_path(@project), class: 'gl-button btn btn-default btn-cancel'
+  = link_button_to _('Cancel'), project_branches_path(@project)

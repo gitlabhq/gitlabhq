@@ -186,7 +186,7 @@ describe('AlertManagementTable', () => {
       expect(findSeverityFields().at(0).text()).toBe('Critical');
     });
 
-    it('renders Unassigned when no assignee(s) present', () => {
+    it('renders Unassigned when no assignees present', () => {
       mountComponent({
         data: { alerts: { list: mockAlerts }, alertsCount, errored: false },
         loading: false,

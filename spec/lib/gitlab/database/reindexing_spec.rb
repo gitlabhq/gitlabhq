@@ -99,14 +99,14 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
     end
 
     before do
-      allow(Gitlab::Database::Reindexing).to receive(:cleanup_leftovers!)
-      allow(Gitlab::Database::Reindexing).to receive(:perform_from_queue).and_return(0)
-      allow(Gitlab::Database::Reindexing).to receive(:perform_with_heuristic).and_return(0)
+      allow(described_class).to receive(:cleanup_leftovers!)
+      allow(described_class).to receive(:perform_from_queue).and_return(0)
+      allow(described_class).to receive(:perform_with_heuristic).and_return(0)
     end
 
     it 'cleans up leftovers, before consuming the queue' do
-      expect(Gitlab::Database::Reindexing).to receive(:cleanup_leftovers!).ordered
-      expect(Gitlab::Database::Reindexing).to receive(:perform_from_queue).ordered
+      expect(described_class).to receive(:cleanup_leftovers!).ordered
+      expect(described_class).to receive(:perform_from_queue).ordered
 
       subject
     end
@@ -120,8 +120,8 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
         let(:limit) { 1 }
 
         it 'does not perform reindexing with heuristic' do
-          expect(Gitlab::Database::Reindexing).to receive(:perform_from_queue).and_return(limit)
-          expect(Gitlab::Database::Reindexing).not_to receive(:perform_with_heuristic)
+          expect(described_class).to receive(:perform_from_queue).and_return(limit)
+          expect(described_class).not_to receive(:perform_with_heuristic)
 
           subject
         end
@@ -131,8 +131,8 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
         let(:limit) { 2 }
 
         it 'continues if the queue did not have enough records' do
-          expect(Gitlab::Database::Reindexing).to receive(:perform_from_queue).ordered.and_return(1)
-          expect(Gitlab::Database::Reindexing).to receive(:perform_with_heuristic).with(maximum_records: 1).ordered
+          expect(described_class).to receive(:perform_from_queue).ordered.and_return(1)
+          expect(described_class).to receive(:perform_with_heuristic).with(maximum_records: 1).ordered
 
           subject
         end

@@ -84,6 +84,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
 > - The `token` attribute was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
+> - The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
 
 Create a [project access token](../user/project/settings/project_access_tokens.md).
 
@@ -105,7 +106,7 @@ POST projects/:id/access_tokens
 | `name` | String | yes | Name of the project access token                                                                                                               |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token)                               |
 | `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Defaults to `40`. |
-| `expires_at` | Date | no | Token expires at midnight UTC on that date                                                                                                  |
+| `expires_at` | Date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

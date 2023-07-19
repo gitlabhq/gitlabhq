@@ -11,6 +11,7 @@ module Gitlab
       include Migrations::ConstraintsHelpers
       include Migrations::ExtensionHelpers
       include Migrations::SidekiqHelpers
+      include Migrations::RedisHelpers
       include DynamicModelHelpers
       include RenameTableHelpers
       include AsyncIndexes::MigrationHelpers

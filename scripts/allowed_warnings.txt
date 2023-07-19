@@ -27,3 +27,11 @@ ruby\/2\.7\.0\/net\/protocol\.rb:66: warning: previous definition of ProtocRetry
 # fine in both Ruby 2 and Ruby 3, it's unlikely it'll change again.
 # This can be removed when support for Ruby 2 is dropped.
 warning: Pattern matching is experimental, and the behavior may change in future versions of Ruby!
+
+# As of Ruby 3.1, one-line typesafe/destructuring pattern matching via "rightward assignment" has
+# been included for multiple years with no significant negative feedback or indications of removal.
+# In the event that it is removed in a future Ruby release, the changes required to fix it are
+# isolated and minor, and will have no fundamental effect on the logic. See the section
+# "Rightward assignment pattern matching and destructuring with types" in
+# ee/lib/remote_development/README.md for more information and context.
+warning: One-line pattern matching is experimental, and the behavior may change in future versions of Ruby!

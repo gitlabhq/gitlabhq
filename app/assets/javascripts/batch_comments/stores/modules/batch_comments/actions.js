@@ -3,6 +3,7 @@ import { createAlert } from '~/alert';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
+import { updateNoteErrorMessage } from '~/notes/utils';
 import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';
 import service from '../../../services/drafts_service';
 import * as types from './mutation_types';
@@ -18,10 +19,8 @@ export const addDraftToDiscussion = ({ commit }, { endpoint, data }) =>
       commit(types.ADD_NEW_DRAFT, res);
       return res;
     })
-    .catch(() => {
-      createAlert({
-        message: __('An error occurred adding a draft to the thread.'),
-      });
+    .catch((e) => {
+      throw e.response;
     });
 
 export const createNewDraft = ({ commit, dispatch }, { endpoint, data }) =>
@@ -37,10 +36,8 @@ export const createNewDraft = ({ commit, dispatch }, { endpoint, data }) =>
 
       return res;
     })
-    .catch(() => {
-      createAlert({
-        message: __('An error occurred adding a new draft.'),
-      });
+    .catch((e) => {
+      throw e.response;
     });
 
 export const deleteDraft = ({ commit, getters }, draft) =>
@@ -113,7 +110,7 @@ export const updateDiscussionsAfterPublish = async ({ dispatch, getters, rootGet
 
 export const updateDraft = (
   { commit, getters },
-  { note, noteText, resolveDiscussion, position, callback },
+  { note, noteText, resolveDiscussion, position, flashContainer, callback, errorCallback },
 ) => {
   const params = {
     draftId: note.id,
@@ -129,11 +126,14 @@ export const updateDraft = (
     .then((res) => res.data)
     .then((data) => commit(types.RECEIVE_DRAFT_UPDATE_SUCCESS, data))
     .then(callback)
-    .catch(() =>
+    .catch((e) => {
       createAlert({
-        message: __('An error occurred while updating the comment'),
-      }),
-    );
+        message: updateNoteErrorMessage(e),
+        parent: flashContainer,
+      });
+
+      errorCallback();
+    });
 };
 
 export const scrollToDraft = ({ dispatch, rootGetters }, draft) => {

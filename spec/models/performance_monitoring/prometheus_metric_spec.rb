@@ -16,7 +16,7 @@ RSpec.describe PerformanceMonitoring::PrometheusMetric do
     subject { described_class.from_json(json_content) }
 
     it 'creates a PrometheusMetric object' do
-      expect(subject).to be_a PerformanceMonitoring::PrometheusMetric
+      expect(subject).to be_a described_class
       expect(subject.id).to eq(json_content['id'])
       expect(subject.unit).to eq(json_content['unit'])
       expect(subject.label).to eq(json_content['label'])

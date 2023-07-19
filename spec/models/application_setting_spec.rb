@@ -59,8 +59,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value("dev.gitlab.com").for(:commit_email_hostname) }
     it { is_expected.not_to allow_value("@dev.gitlab").for(:commit_email_hostname) }
 
-    it { is_expected.to allow_value(true).for(:container_expiration_policies_enable_historic_entries) }
-    it { is_expected.to allow_value(false).for(:container_expiration_policies_enable_historic_entries) }
+    it { is_expected.to allow_value(true, false).for(:container_expiration_policies_enable_historic_entries) }
     it { is_expected.not_to allow_value(nil).for(:container_expiration_policies_enable_historic_entries) }
 
     it { is_expected.to allow_value("myemail@gitlab.com").for(:lets_encrypt_notification_email) }
@@ -100,8 +99,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_numericality_of(:container_registry_cleanup_tags_service_max_list_size).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_data_repair_detail_worker_max_concurrency).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_expiration_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to allow_value(true).for(:container_registry_expiration_policies_caching) }
-    it { is_expected.to allow_value(false).for(:container_registry_expiration_policies_caching) }
+    it { is_expected.to allow_value(true, false).for(:container_registry_expiration_policies_caching) }
 
     it { is_expected.to validate_numericality_of(:container_registry_import_max_tags_count).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_import_max_retries).only_integer.is_greater_than_or_equal_to(0) }
@@ -134,8 +132,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
-    it { is_expected.to allow_value(true).for(:wiki_asciidoc_allow_uri_includes) }
-    it { is_expected.to allow_value(false).for(:wiki_asciidoc_allow_uri_includes) }
+    it { is_expected.to allow_value(true, false).for(:wiki_asciidoc_allow_uri_includes) }
     it { is_expected.not_to allow_value(nil).for(:wiki_asciidoc_allow_uri_includes) }
     it { is_expected.to validate_presence_of(:max_artifacts_size) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
@@ -148,8 +145,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_presence_of(:max_terraform_state_size_bytes) }
     it { is_expected.to validate_numericality_of(:max_terraform_state_size_bytes).only_integer.is_greater_than_or_equal_to(0) }
 
-    it { is_expected.to allow_value(true).for(:user_defaults_to_private_profile) }
-    it { is_expected.to allow_value(false).for(:user_defaults_to_private_profile) }
+    it { is_expected.to allow_value(true, false).for(:user_defaults_to_private_profile) }
     it { is_expected.not_to allow_value(nil).for(:user_defaults_to_private_profile) }
 
     it { is_expected.to allow_values([true, false]).for(:deny_all_requests_except_allowed) }
@@ -250,16 +246,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
     it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
 
-    it { is_expected.to allow_value(true).for(:bulk_import_enabled) }
-    it { is_expected.to allow_value(false).for(:bulk_import_enabled) }
+    it { is_expected.to allow_value(true, false).for(:bulk_import_enabled) }
     it { is_expected.not_to allow_value(nil).for(:bulk_import_enabled) }
 
-    it { is_expected.to allow_value(true).for(:allow_runner_registration_token) }
-    it { is_expected.to allow_value(false).for(:allow_runner_registration_token) }
+    it { is_expected.to allow_value(true, false).for(:allow_runner_registration_token) }
     it { is_expected.not_to allow_value(nil).for(:allow_runner_registration_token) }
 
-    it { is_expected.to allow_value(true).for(:gitlab_dedicated_instance) }
-    it { is_expected.to allow_value(false).for(:gitlab_dedicated_instance) }
+    it { is_expected.to allow_value(true, false).for(:gitlab_dedicated_instance) }
     it { is_expected.not_to allow_value(nil).for(:gitlab_dedicated_instance) }
 
     it { is_expected.not_to allow_value(random: :value).for(:database_apdex_settings) }
@@ -490,6 +483,37 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
         it { is_expected.to allow_value('secret-access-key').for(:eks_secret_access_key) }
         it { is_expected.not_to allow_value(nil).for(:eks_secret_access_key) }
+      end
+    end
+
+    describe 'GitLab for Slack app settings' do
+      before do
+        setting.slack_app_enabled = slack_app_enabled
+      end
+
+      context 'when GitLab for Slack app is disabled' do
+        let(:slack_app_enabled) { false }
+
+        it { is_expected.to allow_value(nil).for(:slack_app_id) }
+        it { is_expected.to allow_value(nil).for(:slack_app_secret) }
+        it { is_expected.to allow_value(nil).for(:slack_app_signing_secret) }
+        it { is_expected.to allow_value(nil).for(:slack_app_verification_token) }
+      end
+
+      context 'when GitLab for Slack app is enabled' do
+        let(:slack_app_enabled) { true }
+
+        it { is_expected.to allow_value('123456789a').for(:slack_app_id) }
+        it { is_expected.not_to allow_value(nil).for(:slack_app_id) }
+
+        it { is_expected.to allow_value('secret').for(:slack_app_secret) }
+        it { is_expected.not_to allow_value(nil).for(:slack_app_secret) }
+
+        it { is_expected.to allow_value('signing-secret').for(:slack_app_signing_secret) }
+        it { is_expected.not_to allow_value(nil).for(:slack_app_signing_secret) }
+
+        it { is_expected.to allow_value('token').for(:slack_app_verification_token) }
+        it { is_expected.not_to allow_value(nil).for(:slack_app_verification_token) }
       end
     end
 
@@ -1569,7 +1593,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       it 'ignores the plaintext token' do
         subject
 
-        ApplicationSetting.update_all(static_objects_external_storage_auth_token: 'Test')
+        described_class.update_all(static_objects_external_storage_auth_token: 'Test')
 
         setting.reload
         expect(setting[:static_objects_external_storage_auth_token]).to be_nil

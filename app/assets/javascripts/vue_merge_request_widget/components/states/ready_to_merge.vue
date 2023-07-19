@@ -27,7 +27,6 @@ import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import {
   AUTO_MERGE_STRATEGIES,
-  WARNING,
   MT_MERGE_STRATEGY,
   PIPELINE_FAILED_STATE,
   STATE_MACHINE,
@@ -42,7 +41,6 @@ import CommitMessageDropdown from './commit_message_dropdown.vue';
 import SquashBeforeMerge from './squash_before_merge.vue';
 import MergeFailedPipelineConfirmationDialog from './merge_failed_pipeline_confirmation_dialog.vue';
 
-const PIPELINE_RUNNING_STATE = 'running';
 const PIPELINE_PENDING_STATE = 'pending';
 const PIPELINE_SUCCESS_STATE = 'success';
 
@@ -133,8 +131,6 @@ export default {
     GlFormCheckbox,
     GlSkeletonLoader,
     MergeFailedPipelineConfirmationDialog,
-    MergeTrainHelperIcon: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_train_helper_icon.vue'),
     MergeImmediatelyConfirmationDialog: () =>
       import(
         'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
@@ -176,14 +172,11 @@ export default {
     };
   },
   computed: {
-    stateData() {
-      return this.state;
-    },
     hasCI() {
-      return this.stateData.hasCI || this.stateData.hasCi;
+      return this.state.hasCI || this.state.hasCi;
     },
     isAutoMergeAvailable() {
-      return !isEmpty(this.stateData.availableAutoMergeStrategies);
+      return !isEmpty(this.state.availableAutoMergeStrategies);
     },
     pipeline() {
       return this.state.headPipeline;
@@ -246,30 +239,11 @@ export default {
 
       return PIPELINE_SUCCESS_STATE;
     },
-    iconClass() {
-      if (this.shouldRenderMergeTrainHelperIcon && !this.mr.preventMerge) {
-        return PIPELINE_RUNNING_STATE;
-      }
-
-      if (
-        this.status === PIPELINE_FAILED_STATE ||
-        !this.commitMessage.length ||
-        !this.isMergeAllowed ||
-        this.mr.preventMerge
-      ) {
-        return WARNING;
-      }
-
-      return PIPELINE_SUCCESS_STATE;
-    },
     mergeButtonText() {
       if (this.isMergingImmediately) {
         return __('Merge in progress');
       }
-      if (this.isAutoMergeAvailable && !this.autoMergeLabelsEnabled) {
-        return this.autoMergeTextLegacy;
-      }
-      if (this.isAutoMergeAvailable && this.autoMergeLabelsEnabled) {
+      if (this.isAutoMergeAvailable) {
         return this.autoMergeText;
       }
 
@@ -279,9 +253,6 @@ export default {
 
       return __('Merge');
     },
-    autoMergeLabelsEnabled() {
-      return window.gon?.features?.autoMergeLabelsMrWidget;
-    },
     showAutoMergeHelperText() {
       return (
         !(this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) &&
@@ -289,7 +260,7 @@ export default {
       );
     },
     hasPipelineMustSucceedConflict() {
-      return !this.hasCI && this.stateData.onlyAllowMergeIfPipelineSucceeds;
+      return !this.hasCI && this.state.onlyAllowMergeIfPipelineSucceeds;
     },
     isNotClosed() {
       return this.mr.state !== STATUS_CLOSED;
@@ -322,12 +293,7 @@ export default {
       return this.preferredAutoMergeStrategy === MT_MERGE_STRATEGY && this.isPipelineFailed;
     },
     shouldShowMergeControls() {
-      return (
-        (this.isMergeAllowed || this.isAutoMergeAvailable) &&
-        (this.stateData.userPermissions?.canMerge || this.mr.canMerge) &&
-        !this.mr.mergeOngoing &&
-        !this.mr.autoMergeEnabled
-      );
+      return this.state.userPermissions?.canMerge && this.mr.state === 'readyToMerge';
     },
     sourceBranchDeletedText() {
       const isPreMerge = this.mr.state !== STATUS_MERGED;
@@ -352,6 +318,11 @@ export default {
       return {
         title: this.autoMergePopoverSettings.title,
       };
+    },
+  },
+  watch: {
+    'mr.state': function mrStateWatcher() {
+      this.isMakingRequest = false;
     },
   },
   mounted() {
@@ -441,8 +412,6 @@ export default {
           }
 
           this.updateGraphqlState();
-
-          this.isMakingRequest = false;
         })
         .catch(() => {
           this.isMakingRequest = false;
@@ -511,13 +480,13 @@ export default {
   },
   i18n: {
     mergeCommitTemplateHintText: s__(
-      'mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more.%{linkEnd}',
+      'mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more%{linkEnd}.',
     ),
     squashCommitTemplateHintText: s__(
-      'mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more.%{linkEnd}',
+      'mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more%{linkEnd}.',
     ),
     mergeAndSquashCommitTemplatesHintText: s__(
-      'mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more.%{linkEnd}',
+      'mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more%{linkEnd}.',
     ),
     sourceDivergedFromTargetText: s__('mrWidget|The source branch is %{link} the target branch'),
     divergedCommits: (count) => n__('%d commit behind', '%d commits behind', count),
@@ -619,9 +588,8 @@ export default {
                             :href="commitTemplateHelpPage"
                             class="inline-link"
                             target="_blank"
+                            >{{ content }}</gl-link
                           >
-                            {{ content }}
-                          </gl-link>
                         </template>
                       </gl-sprintf>
                     </p>
@@ -692,35 +660,21 @@ export default {
                   >
                     {{ __('Merge immediately') }}
                   </gl-dropdown-item>
-                  <merge-immediately-confirmation-dialog
-                    ref="confirmationDialog"
-                    :docs-url="mr.mergeImmediatelyDocsPath"
-                    @mergeImmediately="onMergeImmediatelyConfirmation"
-                  />
                 </gl-dropdown>
-                <merge-train-failed-pipeline-confirmation-dialog
-                  :visible="isPipelineFailedModalVisibleMergeTrain"
-                  @startMergeTrain="onStartMergeTrainConfirmation"
-                  @cancel="isPipelineFailedModalVisibleMergeTrain = false"
-                />
-                <merge-failed-pipeline-confirmation-dialog
-                  :visible="isPipelineFailedModalVisibleNormalMerge"
-                  @mergeWithFailedPipeline="onMergeWithFailedPipelineConfirmation"
-                  @cancel="isPipelineFailedModalVisibleNormalMerge = false"
-                />
               </gl-button-group>
-              <merge-train-helper-icon
-                v-if="shouldRenderMergeTrainHelperIcon && !autoMergeLabelsEnabled"
-                class="gl-mx-3"
-              />
-              <template v-if="showAutoMergeHelperText && autoMergeLabelsEnabled">
+              <template v-if="showAutoMergeHelperText">
                 <div
                   class="gl-ml-4 gl-text-gray-500 gl-font-sm"
                   data-qa-selector="auto_merge_helper_text"
+                  data-testid="auto-merge-helper-text"
                 >
                   {{ autoMergeHelperText }}
                 </div>
-                <help-popover class="gl-ml-2" :options="autoMergeHelpPopoverOptions">
+                <help-popover
+                  class="gl-ml-2"
+                  :options="autoMergeHelpPopoverOptions"
+                  data-testid="auto-merge-helper-text-icon"
+                >
                   <gl-sprintf :message="autoMergePopoverSettings.bodyText">
                     <template #link="{ content }">
                       <gl-link
@@ -784,6 +738,21 @@ export default {
           </div>
         </div>
       </div>
+      <merge-immediately-confirmation-dialog
+        ref="confirmationDialog"
+        :docs-url="mr.mergeImmediatelyDocsPath"
+        @mergeImmediately="onMergeImmediatelyConfirmation"
+      />
+      <merge-train-failed-pipeline-confirmation-dialog
+        :visible="isPipelineFailedModalVisibleMergeTrain"
+        @startMergeTrain="onStartMergeTrainConfirmation"
+        @cancel="isPipelineFailedModalVisibleMergeTrain = false"
+      />
+      <merge-failed-pipeline-confirmation-dialog
+        :visible="isPipelineFailedModalVisibleNormalMerge"
+        @mergeWithFailedPipeline="onMergeWithFailedPipelineConfirmation"
+        @cancel="isPipelineFailedModalVisibleNormalMerge = false"
+      />
     </template>
   </div>
 </template>

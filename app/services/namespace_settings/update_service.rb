@@ -23,6 +23,12 @@ module NamespaceSettings
         param_key: :new_user_signups_cap,
         user_policy: :change_new_user_signups_cap
       )
+      validate_settings_param_for_root_group(
+        param_key: :default_branch_protection,
+        user_policy: :update_default_branch_protection
+      )
+
+      handle_default_branch_protection unless settings_params[:default_branch_protection].blank?
 
       if group.namespace_settings
         group.namespace_settings.attributes = settings_params
@@ -32,6 +38,17 @@ module NamespaceSettings
     end
 
     private
+
+    def handle_default_branch_protection
+      # We are migrating default_branch_protection from an integer
+      # column to a jsonb column. While completing the rest of the
+      # work, we want to start translating the updates sent to the
+      # existing column into the json. Eventually, we will be updating
+      # the jsonb column directly and deprecating the original update
+      # path. Until then, we want to sync up both columns.
+      protection = Gitlab::Access::BranchProtection.new(settings_params.delete(:default_branch_protection).to_i)
+      settings_params[:default_branch_protection_defaults] = protection.to_hash
+    end
 
     def validate_resource_access_token_creation_allowed_param
       return if settings_params[:resource_access_token_creation_allowed].nil?

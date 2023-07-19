@@ -4,6 +4,8 @@ require 'spec_helper'
 require 'support/helpers/rails_helpers'
 
 RSpec.describe Gitlab::Instrumentation::Redis do
+  include RedisHelpers
+
   def stub_storages(method, value)
     described_class::STORAGES.each do |storage|
       allow(storage).to receive(method) { value }
@@ -30,20 +32,22 @@ RSpec.describe Gitlab::Instrumentation::Redis do
   it_behaves_like 'aggregation of redis storage data', :write_bytes
 
   describe '.payload', :request_store do
+    let_it_be(:redis_store_class) { define_helper_redis_store_class }
+
     before do
       # If this is the first spec in a spec run that uses Redis, there
       # will be an extra SELECT command to choose the right database. We
       # don't want to make the spec less precise, so we force that to
       # happen (if needed) first, then clear the counts.
-      Gitlab::Redis::Sessions.with { |redis| redis.info }
+      redis_store_class.with { |redis| redis.info }
       RequestStore.clear!
 
       stub_rails_env('staging') # to avoid raising CrossSlotError
-      Gitlab::Redis::Sessions.with { |redis| redis.mset('cache-test', 321, 'cache-test-2', 321) }
+      redis_store_class.with { |redis| redis.mset('cache-test', 321, 'cache-test-2', 321) }
       Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-        Gitlab::Redis::Sessions.with { |redis| redis.mget('cache-test', 'cache-test-2') }
+        redis_store_class.with { |redis| redis.mget('cache-test', 'cache-test-2') }
       end
-      Gitlab::Redis::SharedState.with { |redis| redis.set('shared-state-test', 123) }
+      Gitlab::Redis::Queues.with { |redis| redis.set('shared-state-test', 123) }
     end
 
     it 'returns payload filtering out zeroed values' do
@@ -64,11 +68,11 @@ RSpec.describe Gitlab::Instrumentation::Redis do
         redis_sessions_read_bytes: be >= 0,
         redis_sessions_write_bytes: be >= 0,
 
-        # Shared state results
-        redis_shared_state_calls: 1,
-        redis_shared_state_duration_s: be >= 0,
-        redis_shared_state_read_bytes: be >= 0,
-        redis_shared_state_write_bytes: be >= 0
+        # Queues results
+        redis_queues_calls: 1,
+        redis_queues_duration_s: be >= 0,
+        redis_queues_read_bytes: be >= 0,
+        redis_queues_write_bytes: be >= 0
       }
 
       expect(described_class.payload).to include(expected_payload)

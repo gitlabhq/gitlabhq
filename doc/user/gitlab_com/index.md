@@ -26,15 +26,23 @@ GitLab.com uses the default [SSH key restrictions](../../security/ssh_keys_restr
 
 ## SSH host keys fingerprints
 
-Below are the fingerprints for SSH host keys on GitLab.com. The first time you
-connect to a GitLab.com repository, one of these keys is displayed in the output.
+Go to the current instance configuration to see the SSH host key fingerprints on
+GitLab.com.
+
+1. Sign in to GitLab.
+1. On the left sidebar, select **Help** (**{question-o}**) > **Help**.
+1. On the Help page, select **Check the current instance configuration**.
+
+In the instance configuration, you see the **SSH host key fingerprints**:
 
 | Algorithm        | MD5 (deprecated) | SHA256  |
 |------------------|------------------|---------|
+| ECDSA            | `f1:d0:fb:46:73:7a:70:92:5a:ab:5d:ef:43:e2:1c:35` | `HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw` |
 | ED25519          | `2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16` | `eUXGGm1YGsMAS7vkcx6JOJdOGHPem5gQp4taiCfCLB8` |
 | RSA              | `b6:03:0e:39:97:9e:d0:e7:24:ce:a3:77:3e:01:42:09` | `ROQFvPThGrW4RuWLoL9tq9I9zJ42fK4XywyRtbOz/EQ` |
-| DSA (deprecated) | `7a:47:81:3a:ee:89:89:64:33:ca:44:52:3d:30:d4:87` | `p8vZBUOR0XQz6sYiaWSMLmh0t9i8srqYKool/Xfdfqw` |
-| ECDSA            | `f1:d0:fb:46:73:7a:70:92:5a:ab:5d:ef:43:e2:1c:35` | `HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw` |
+
+The first time you connect to a GitLab.com repository, one of these keys is
+displayed in the output.
 
 ## SSH `known_hosts` entries
 
@@ -61,11 +69,11 @@ and has its own dedicated IP addresses:
 
 The IP addresses for `mg.gitlab.com` are subject to change at any time.
 
-### Service Desk custom mailbox
+### Service Desk alias email address
 
 On GitLab.com, there's a mailbox configured for Service Desk with the email address:
 `contact-project+%{key}@incoming.gitlab.com`. To use this mailbox, configure the
-[custom suffix](../project/service_desk.md#configure-a-custom-email-address-suffix) in project
+[custom suffix](../project/service_desk.md#configure-a-suffix-for-service-desk-alias-email) in project
 settings.
 
 ## Backups
@@ -156,8 +164,8 @@ the related documentation.
 
 | Setting                                                                          | GitLab.com                                                                                                                | Default (self-managed) |
 |----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|------------------------|
-| Artifacts maximum size (compressed)                                              | 1 GB                                                                                                                      | See [Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size). |
-| Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)               | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry). | See [Default artifacts expiration](../admin_area/settings/continuous_integration.md#default-artifacts-expiration). |
+| Artifacts maximum size (compressed)                                              | 1 GB                                                                                                                      | See [Maximum artifacts size](../../administration/settings/continuous_integration.md#maximum-artifacts-size). |
+| Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)               | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry). | See [Default artifacts expiration](../../administration/settings/continuous_integration.md#default-artifacts-expiration). |
 | Scheduled Pipeline Cron                                                          | `*/5 * * * *`                                                                                                             | See [Pipeline schedules advanced configuration](../../administration/cicd.md#change-maximum-scheduled-pipeline-frequency). |
 | Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `100000` for Ultimate.                                                 | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
 | Maximum CI/CD subscriptions to a project                                         | `2`                                                                                                                       | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project). |
@@ -191,11 +199,11 @@ varies by format:
 ## Account and limit settings
 
 GitLab.com has the following account limits enabled. If a setting is not listed,
-the default value [is the same as for self-managed instances](../admin_area/settings/account_and_limit_settings.md):
+the default value [is the same as for self-managed instances](../../administration/settings/account_and_limit_settings.md):
 
 | Setting                       | GitLab.com default |
 |-------------------------------|--------------------|
-| [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB |
+| [Repository size including LFS](../../administration/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB |
 | [Maximum import size](../project/settings/import_export.md#import-a-project-and-its-data)                   | 5 GB  |
 | Maximum attachment size       | 100 MB              |
 
@@ -216,7 +224,7 @@ The import sources that are available by default depend on which GitLab you use:
 
 - GitLab.com: all available import sources are enabled by default.
 - GitLab self-managed: no import sources are enabled by default and must be
-  [enabled](../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+  [enabled](../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
 
 | Import source                                                                                       | GitLab.com default     | GitLab self-managed default |
 |:----------------------------------------------------------------------------------------------------|:-----------------------|:----------------------------|
@@ -343,7 +351,7 @@ after the limits change in January, 2021:
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and
-[raw endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
+[raw endpoints](../../administration/settings/rate_limits_on_raw_endpoints.md).
 
 GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
@@ -355,8 +363,8 @@ for GitLab.com, see
 
 For information on rate limiting responses, see:
 
-- [List of headers on responses to blocked requests](../admin_area/settings/user_and_ip_rate_limits.md#response-headers).
-- [Customizable response text](../admin_area/settings/user_and_ip_rate_limits.md#use-a-custom-rate-limit-response).
+- [List of headers on responses to blocked requests](../../administration/settings/user_and_ip_rate_limits.md#response-headers).
+- [Customizable response text](../../administration/settings/user_and_ip_rate_limits.md#use-a-custom-rate-limit-response).
 
 ### Protected paths throttle
 
@@ -366,7 +374,7 @@ paths that exceed 10 requests per **minute** per IP address.
 See the source below for which paths are protected. This includes user creation,
 user confirmation, user sign in, and password reset.
 
-[User and IP rate limits](../admin_area/settings/user_and_ip_rate_limits.md#response-headers)
+[User and IP rate limits](../../administration/settings/user_and_ip_rate_limits.md#response-headers)
 includes a list of the headers responded to blocked requests.
 
 See [Protected Paths](../admin_area/settings/protected_paths.md) for more details.

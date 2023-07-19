@@ -7,7 +7,7 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
     it { expect(subject.category).to eq(:chat) }
   end
 
-  describe 'validations' do
+  describe 'Validations' do
     before do
       subject.active = active
 
@@ -112,9 +112,9 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
     end
 
     context 'when the data object has a label' do
-      let_it_be(:label) { create(:label, project: project, name: 'Bug') }
-      let_it_be(:label_2) { create(:label, project: project, name: 'Community contribution') }
-      let_it_be(:label_3) { create(:label, project: project, name: 'Backend') }
+      let_it_be(:label) { build(:label, project: project, name: 'Bug') }
+      let_it_be(:label_2) { build(:label, project: project, name: 'Community contribution') }
+      let_it_be(:label_3) { build(:label, project: project, name: 'Backend') }
       let_it_be(:issue) { create(:labeled_issue, project: project, labels: [label, label_2, label_3]) }
       let_it_be(:note) { create(:note, noteable: issue, project: project) }
 

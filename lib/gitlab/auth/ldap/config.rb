@@ -264,7 +264,7 @@ module Gitlab
           return {} unless options['tls_options']
 
           # Dup so we don't overwrite the original value
-          custom_options = options['tls_options'].dup.delete_if { |_, value| value.nil? || value.blank? }
+          custom_options = options['tls_options'].to_hash.delete_if { |_, value| value.nil? || value.blank? }
           custom_options.symbolize_keys!
 
           if custom_options[:cert]

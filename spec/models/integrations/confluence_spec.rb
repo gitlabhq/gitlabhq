@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Confluence do
+RSpec.describe Integrations::Confluence, feature_category: :integrations do
   let_it_be(:project) { create(:project) }
 
   describe 'Validations' do
@@ -49,10 +49,11 @@ RSpec.describe Integrations::Confluence do
     end
 
     context 'when the project wiki is not enabled' do
-      it 'returns nil when both active or inactive', :aggregate_failures do
-        project = create(:project, :wiki_disabled)
-        subject.project = project
+      before do
+        allow(project).to receive(:wiki_enabled?).and_return(false)
+      end
 
+      it 'returns nil when both active or inactive', :aggregate_failures do
         [true, false].each do |active|
           subject.active = active
 

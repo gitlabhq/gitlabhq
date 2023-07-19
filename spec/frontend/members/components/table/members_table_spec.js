@@ -221,9 +221,11 @@ describe('MembersTable', () => {
             'col-actions',
             'gl-display-none!',
             'gl-lg-display-table-cell!',
+            'gl-vertical-align-middle!',
           ]);
           expect(findTableCellByMemberId('Actions', members[1].id).classes()).toStrictEqual([
             'col-actions',
+            'gl-vertical-align-middle!',
           ]);
         });
       });

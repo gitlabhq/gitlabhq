@@ -38,6 +38,8 @@ require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
 require 'axe-rspec'
 
+require 'rspec_flaky'
+
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
   ENV['RSPEC_PROFILING']
@@ -100,6 +102,32 @@ RSpec.configure do |config|
     end
   end
 
+  config.after do |example|
+    # We fail early if we detect a PG::QueryCanceled error
+    #
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/402915
+    if example.exception && example.exception.message.include?('PG::QueryCanceled')
+      ENV['RSPEC_BYPASS_SYSTEM_EXIT_PROTECTION'] = 'true'
+
+      warn
+      warn "********************************************************************************************"
+      warn "********************************************************************************************"
+      warn "********************************************************************************************"
+      warn "*                                                                                          *"
+      warn "* We have detected a PG::QueryCanceled error in the specs, so we're failing early.         *"
+      warn "* Please retry this job.                                                                   *"
+      warn "*                                                                                          *"
+      warn "* See https://gitlab.com/gitlab-org/gitlab/-/issues/402915 for more info.                  *"
+      warn "*                                                                                          *"
+      warn "********************************************************************************************"
+      warn "********************************************************************************************"
+      warn "********************************************************************************************"
+      warn
+
+      exit 3
+    end
+  end
+
   config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_spec\.rb\z}) do |metadata|
     location = metadata[:location]
 
@@ -124,7 +152,7 @@ RSpec.configure do |config|
 
     # Admin controller specs get auto admin mode enabled since they are
     # protected by the 'EnforcesAdminAuthentication' concern
-    metadata[:enable_admin_mode] = true if location =~ %r{(ee)?/spec/controllers/admin/}
+    metadata[:enable_admin_mode] = true if %r{(ee)?/spec/controllers/admin/}.match?(location)
   end
 
   config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_docs\.rb\z}) do |metadata|
@@ -202,11 +230,7 @@ RSpec.configure do |config|
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 
-  require_relative '../tooling/rspec_flaky/config'
-
   if RspecFlaky::Config.generate_report?
-    require_relative '../tooling/rspec_flaky/listener'
-
     config.reporter.register_listener(
       RspecFlaky::Listener.new,
       :example_passed,
@@ -312,6 +336,9 @@ RSpec.configure do |config|
       # most cases. We do test the email verification flow in the appropriate specs.
       stub_feature_flags(require_email_verification: false)
 
+      # Keep-around refs should only be turned off for specific projects/repositories.
+      stub_feature_flags(disable_keep_around_refs: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags
@@ -407,7 +434,7 @@ RSpec.configure do |config|
       Gitlab::SidekiqMiddleware.server_configurator(
         metrics: false, # The metrics don't go anywhere in tests
         arguments_logger: false, # We're not logging the regular messages for inline jobs
-        defer_jobs: false # We're not deferring jobs for inline tests
+        skip_jobs: false # We're not skipping jobs for inline tests
       ).call(chain)
       chain.add DisableQueryLimit
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore

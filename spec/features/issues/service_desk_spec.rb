@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planning do
+RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_desk do
   let(:project) { create(:project, :private, service_desk_enabled: true) }
 
   let_it_be(:user) { create(:user) }
@@ -15,6 +15,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planni
 
     project.add_maintainer(user)
     sign_in(user)
+    stub_feature_flags(service_desk_vue_list: false)
   end
 
   describe 'navigation to service desk' do
@@ -174,6 +175,70 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planni
             expect(page).to have_text('For help setting up the Service Desk for your instance, please contact an administrator.')
           end
         end
+      end
+    end
+
+    context 'when service_desk_vue_list feature flag is enabled' do
+      before do
+        stub_feature_flags(service_desk_vue_list: true)
+        stub_feature_flags(frontend_caching: true)
+      end
+
+      context 'when there are issues' do
+        let_it_be(:project) { create(:project, :private, service_desk_enabled: true) }
+        let_it_be(:other_user) { create(:user) }
+        let_it_be(:service_desk_issue) { create(:issue, project: project, title: 'Help from email', author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
+        let_it_be(:other_user_issue) { create(:issue, project: project, author: other_user) }
+
+        describe 'service desk info content' do
+          before do
+            visit service_desk_project_issues_path(project)
+          end
+
+          it 'displays the small info box, documentation, a button to configure service desk, and the address' do
+            aggregate_failures do
+              expect(page).to have_link('Learn more', href: help_page_path('user/project/service_desk'))
+              expect(page).not_to have_link('Enable Service Desk')
+              expect(page).to have_content(project.service_desk_address)
+            end
+          end
+        end
+
+        describe 'issues list' do
+          before do
+            visit service_desk_project_issues_path(project)
+          end
+
+          it 'only displays issues created by support bot' do
+            expect(page).to have_selector('.issues-list .issue', count: 1)
+            expect(page).to have_text('Help from email')
+            expect(page).not_to have_text('Unrelated issue')
+          end
+
+          it 'shows service_desk_reply_to in issues list' do
+            expect(page).to have_text('by GitLab Support Bot')
+          end
+        end
+      end
+    end
+
+    context 'for feature flags' do
+      let(:service_desk_issue) { create(:issue, project: project, author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
+
+      before do
+        visit project_issue_path(project, service_desk_issue)
+      end
+
+      it 'pushes the service_desk_ticket feature flag to frontend when available' do
+        stub_feature_flags(service_desk_ticket: true)
+
+        expect(page).to have_pushed_frontend_feature_flags(serviceDeskTicket: true)
+      end
+
+      it 'does not push the service_desk_ticket feature flag to frontend when not available' do
+        stub_feature_flags(service_desk_ticket: false)
+
+        expect(page).not_to have_pushed_frontend_feature_flags(serviceDeskTicket: false)
       end
     end
   end

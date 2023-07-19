@@ -302,7 +302,7 @@ Now you're ready to push changes from the community fork to the main GitLab repo
    ![Create merge request banner](img/mr_button.png)
 
    Select **Create merge request**.
-   If you don't see this message, on the left sidebar, select **Merge requests > New merge request**.
+   If you don't see this message, on the left sidebar, select **Code > Merge requests > New merge request**.
 
 1. Take a look at the branch names. You should be merging from your branch
    in the community fork to the `master` branch in the GitLab repository.

@@ -76,6 +76,7 @@ In addition:
 - On the group's page, the project is listed on the **Shared projects** tab.
 - On the project's **Members** page, the group is listed on the **Groups** tab.
 - Each user is assigned a maximum role.
+- Members who have the **Project Invite** badge next to their profile on the usage quota page count towards the billable members of the shared project's top-level group.
 
 ## Maximum role
 

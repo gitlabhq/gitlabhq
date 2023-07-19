@@ -42,7 +42,7 @@
 // Override Bootstrap class with offset for system-header and
 // performance bar when present
 .fixed-top {
-  top: $calc-application-bars-height;
+  top: $calc-system-headers-height;
 }
 
 .gl-children-ml-sm-3 > * {
@@ -125,24 +125,6 @@
 .gl-sm-mb-5 {
   @include gl-media-breakpoint-down(md) {
     margin-bottom: $gl-spacing-scale-5;
-  }
-}
-
-.gl-md-w-15 {
-  @include gl-media-breakpoint-up(md) {
-    width: $gl-spacing-scale-15;
-  }
-}
-
-.gl-md-w-20 {
-  @include gl-media-breakpoint-up(md) {
-    width: $gl-spacing-scale-20;
-  }
-}
-
-.gl-md-w-30 {
-  @include gl-media-breakpoint-up(md) {
-    width: $gl-spacing-scale-30;
   }
 }
 

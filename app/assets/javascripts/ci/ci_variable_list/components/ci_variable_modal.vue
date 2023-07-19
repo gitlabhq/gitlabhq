@@ -93,6 +93,10 @@ export default {
       required: false,
       default: false,
     },
+    hasEnvScopeQuery: {
+      type: Boolean,
+      required: true,
+    },
     mode: {
       type: String,
       required: true,
@@ -147,7 +151,7 @@ export default {
       return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
     },
     environmentsList() {
-      if (this.glFeatures?.ciLimitEnvironmentScope) {
+      if (this.hasEnvScopeQuery) {
         return this.environments;
       }
 
@@ -385,6 +389,7 @@ export default {
             <ci-environments-dropdown
               v-if="areScopedVariablesAvailable"
               :are-environments-loading="areEnvironmentsLoading"
+              :has-env-scope-query="hasEnvScopeQuery"
               :selected-environment-scope="variable.environmentScope"
               :environments="environmentsList"
               @select-environment="setEnvironmentScope"

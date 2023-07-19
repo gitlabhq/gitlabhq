@@ -190,7 +190,7 @@ keys must be manually replicated to the **secondary** site.
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
+   ## https://docs.gitlab.com/ee/administration/geo_nodes.html#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
@@ -332,7 +332,7 @@ the **primary** site. After you sign in:
 1. Verify that it's correctly identified as a **secondary** Geo site, and that
    Geo is enabled.
 
-The initial replication may take some time. The status of the site or the ‘backfill’ may still in progress. You
+The initial replication may take some time. The status of the site or the 'backfill' may still in progress. You
 can monitor the synchronization process on each Geo site from the **primary**
 site's **Geo Sites** dashboard in your browser.
 

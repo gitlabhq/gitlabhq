@@ -75,16 +75,6 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
       allow(InfluxDB2::Client).to receive(:new) { influx_client }
     end
 
-    context 'with non skipped spec' do
-      it 'adds flaky test data' do
-        formatter.start(nil)
-        formatter.example_finished(rspec_example_notification)
-
-        expect(rspec_example).to have_received(:set_flaky)
-        expect(rspec_example).to have_received(:parameter).with('pass_rate', '50%')
-      end
-    end
-
     context 'with skipped spec' do
       let(:status) { :pending }
 

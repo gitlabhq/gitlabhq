@@ -14,6 +14,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Custom HTTP headers API [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366524) in GitLab 15.3. [Feature flag `streaming_audit_event_headers`](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) removed.
 > - User-specified verification token API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360813) in GitLab 15.4.
 > - APIs for custom HTTP headers for instance level streaming destinations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404560) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
+> - User-specified destination name API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413894) in GitLab 16.2.
 
 Audit event streaming destinations can be maintained using a GraphQL API.
 
@@ -38,6 +40,7 @@ mutation {
     errors
     externalAuditEventDestination {
       id
+      name
       destinationUrl
       verificationToken
       group {
@@ -59,6 +62,28 @@ mutation {
     errors
     externalAuditEventDestination {
       id
+      name
+      destinationUrl
+      verificationToken
+      group {
+        name
+      }
+    }
+  }
+}
+```
+
+You can optionally specify your own destination name (instead of the default GitLab-generated one) using the GraphQL
+`externalAuditEventDestinationCreate`
+mutation. Name length must not exceed 72 characters and trailing whitespace are not trimmed. This value should be unique scoped to a group. For example:
+
+```graphql
+mutation {
+  externalAuditEventDestinationCreate(input: { destinationUrl: "https://mydomain.io/endpoint/ingest", name: "destination-name-here", groupPath: "my-group" }) {
+    errors
+    externalAuditEventDestination {
+      id
+      name
       destinationUrl
       verificationToken
       group {
@@ -90,11 +115,12 @@ The header is created if the returned `errors` object is empty.
 
 ### Instance streaming destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md) named
-`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
+`ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
 
@@ -110,6 +136,7 @@ mutation {
     instanceExternalAuditEventDestination {
       destinationUrl
       id
+      name
       verificationToken
     }
   }
@@ -120,6 +147,24 @@ Event streaming is enabled if:
 
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
+
+You can optionally specify your own destination name (instead of the default GitLab-generated one) using the GraphQL
+`instanceExternalAuditEventDestinationCreate`
+mutation. Name length must not exceed 72 characters and trailing whitespace are not trimmed. This value should be unique. For example:
+
+```graphql
+mutation {
+  instanceExternalAuditEventDestinationCreate(input: { destinationUrl: "https://mydomain.io/endpoint/ingest", name: "destination-name-here"}) {
+    errors
+    instanceExternalAuditEventDestination {
+      destinationUrl
+      id
+      name
+      verificationToken
+    }
+  }
+}
+```
 
 Instance administrators can add an HTTP header using the GraphQL `auditEventsStreamingInstanceHeadersCreate` mutation. You can retrieve the destination ID
 by [listing all the streaming destinations](#list-streaming-destinations) for the instance or from the mutation above.
@@ -144,6 +189,39 @@ mutation {
 
 The header is created if the returned `errors` object is empty.
 
+### Google Cloud Logging streaming
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+
+Prerequisites:
+
+- Owner role for a top-level group.
+- A Google Cloud project with the necessary permissions to create service accounts and enable Google Cloud Logging.
+
+To enable streaming and add a configuration, use the
+`googleCloudLoggingConfigurationCreate` mutation in the GraphQL API.
+
+```graphql
+mutation {
+  googleCloudLoggingConfigurationCreate(input: { groupPath: "my-group", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events" } ) {
+    errors
+    googleCloudLoggingConfiguration {
+      id
+      googleProjectIdName
+      logIdName
+      privateKey
+      clientEmail
+    }
+    errors
+  }
+}
+```
+
+Event streaming is enabled if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
 ## List streaming destinations
 
 List new streaming destinations for top-level groups or an entire instance.
@@ -166,6 +244,7 @@ query {
         destinationUrl
         verificationToken
         id
+        name
         headers {
           nodes {
             key
@@ -184,11 +263,12 @@ If the resulting list is empty, then audit streaming is not enabled for that gro
 
 ### Instance streaming destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md) named
-`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
+`ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
 
@@ -202,6 +282,7 @@ query {
   instanceExternalAuditEventDestinations {
     nodes {
       id
+      name
       destinationUrl
       verificationToken
       headers {
@@ -217,6 +298,38 @@ query {
 ```
 
 If the resulting list is empty, then audit streaming is not enabled for the instance.
+
+You need the ID values returned by this query for the update and delete mutations.
+
+### Google Cloud Logging configurations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+
+Prerequisite:
+
+- Owner role for a top-level group.
+
+You can view a list of streaming configurations for a top-level group using the `googleCloudLoggingConfigurations` query
+type.
+
+```graphql
+query {
+  group(fullPath: "my-group") {
+    id
+    googleCloudLoggingConfigurations {
+      nodes {
+        id
+        logIdName
+        googleProjectIdName
+        privateKey
+        clientEmail
+      }
+    }
+  }
+}
+```
+
+If the resulting list is empty, then audit streaming is not enabled for the group.
 
 You need the ID values returned by this query for the update and delete mutations.
 
@@ -236,8 +349,20 @@ by [listing all the custom HTTP headers](#list-streaming-destinations) for the g
 
 ```graphql
 mutation {
-  externalAuditEventDestinationDestroy(input: { id: destination }) {
+  externalAuditEventDestinationUpdate(input: { 
+    id:"gid://gitlab/AuditEvents::ExternalAuditEventDestination/1", 
+    destinationUrl: "https://www.new-domain.com/webhook",
+    name: "destination-name"} ) {
     errors
+    externalAuditEventDestination {
+      id
+      name
+      destinationUrl
+      verificationToken
+      group {
+        name
+      }
+    }
   }
 }
 ```
@@ -262,11 +387,12 @@ The header is deleted if the returned `errors` object is empty.
 
 ### Instance streaming destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md) named
-`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
+`ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
 
@@ -278,11 +404,15 @@ by [listing all the external destinations](#list-streaming-destinations) for the
 
 ```graphql
 mutation {
-  instanceExternalAuditEventDestinationUpdate(input: { id: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1", destinationUrl: "https://www.new-domain.com/webhook"}) {
+  instanceExternalAuditEventDestinationUpdate(input: { 
+    id: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1",
+    destinationUrl: "https://www.new-domain.com/webhook",
+    name: "destination-name"}) {
     errors
     instanceExternalAuditEventDestination {
       destinationUrl
       id
+      name
       verificationToken
     }
   }
@@ -312,6 +442,40 @@ mutation {
 ```
 
 The header is updated if the returned `errors` object is empty.
+
+### Google Cloud Logging configurations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+
+Prerequisite:
+
+- Owner role for a top-level group.
+
+To update streaming configuration for a top-level group, use the
+`googleCloudLoggingConfigurationUpdate` mutation type. You can retrieve the configuration ID
+by [listing all the external destinations](#list-streaming-destinations).
+
+```graphql
+mutation {
+  googleCloudLoggingConfigurationUpdate(
+    input: {id: "gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events"}
+  ) {
+    errors
+    googleCloudLoggingConfiguration {
+      id
+      logIdName
+      privateKey
+      googleProjectIdName
+      clientEmail
+    }
+  }
+}
+```
+
+Streaming configuration is updated if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
 
 ## Delete streaming destinations
 
@@ -357,11 +521,12 @@ The header is deleted if the returned `errors` object is empty.
 
 ### Instance streaming destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+> - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md) named
-`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
+`ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
 
@@ -380,6 +545,45 @@ mutation {
 ```
 
 Streaming destination is deleted if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
+To remove an HTTP header, use the GraphQL `auditEventsStreamingInstanceHeadersDestroy` mutation.
+To retrieve the header ID,
+[list all the custom HTTP headers](#list-streaming-destinations) for the instance.
+
+```graphql
+mutation {
+  auditEventsStreamingInstanceHeadersDestroy(input: { headerId: "gid://gitlab/AuditEvents::Streaming::InstanceHeader/<id>" }) {
+    errors
+  }
+}
+```
+
+The header is deleted if the returned `errors` object is empty.
+
+### Google Cloud Logging configurations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+
+Prerequisite:
+
+- Owner role for a top-level group.
+
+Users with the Owner role for a group can delete streaming configurations using the
+`googleCloudLoggingConfigurationDestroy` mutation type. You can retrieve the configurations ID
+by [listing all the streaming destinations](#list-streaming-destinations) for the group.
+
+```graphql
+mutation {
+  googleCloudLoggingConfigurationDestroy(input: { id: "gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1" }) {
+    errors
+  }
+}
+```
+
+Streaming configuration is deleted if:
 
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.

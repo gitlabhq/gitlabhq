@@ -131,7 +131,7 @@ After sharing the `Frontend` group with the `Engineering` group:
 - The **Groups** tab lists the `Engineering` group.
 - The **Groups** tab lists a group regardless of whether it is a public or private group.
 - All direct members of the `Engineering` group have access to the `Frontend` group. Direct members of `Engineering` that gain access to the `Frontend` group keep their same access level as in `Engineering`, but up to the maximum access level selected when sharing the group. Inherited members of the `Engineering` group do not gain access to the `Frontend` group.
-- All direct members of the `Engineering` group count towards the billable members of the `Frontend` group.
+- Direct members of the `Engineering` group who have the **Group Invite** badge next to their profile on the group's usage quota page count towards the billable members of the `Frontend` group.
 
 ## Remove a shared group
 
@@ -338,7 +338,7 @@ To enable group file templates:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can
 [enable the feature flag](../../administration/feature_flags.md) named `support_group_level_merge_checks_setting`. On GitLab.com, this feature is not
 available.
 
@@ -434,11 +434,8 @@ for the ability to set merge request approval rules for groups is tracked in
 
 WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
-Due to high demand, this feature may have unscheduled downtime and Code Suggestions in IDEs may be delayed.
-Code Suggestions may produce
-[low-quality or incomplete suggestions](../project/repository/code_suggestions.md#model-accuracy-and-quality).
 Beta users should read about the [known limitations](../project/repository/code_suggestions.md#known-limitations).
-We look forward to hearing your feedback.
+We look forward to hearing your [feedback](../project/repository/code_suggestions.md#feedback).
 
 You can give all users in a group and its subgroups access to [Code Suggestions](../project/repository/code_suggestions.md).
 

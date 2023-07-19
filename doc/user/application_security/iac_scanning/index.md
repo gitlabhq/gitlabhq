@@ -250,6 +250,7 @@ kics-iac-sast:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`.
 > - Enabled by default in 15.10. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2.
 
 To help you focus on the vulnerabilities that are still relevant, GitLab IaC Scanning automatically [resolves](../vulnerabilities/index.md#vulnerability-status-values) vulnerabilities when:
 
@@ -270,15 +271,10 @@ pipelines tab on merge requests by [setting `artifacts: paths`](../../../ci/yaml
 
 ## Troubleshooting
 
-### IaC debug logging
+### Debug-level logging
 
-To help troubleshoot IaC jobs, you can increase the [Secure scanner log verbosity](../sast/index.md#logging-level)
-by using a global CI/CD variable set to `debug`:
-
-```yaml
-variables:
-  SECURE_LOG_LEVEL: "debug"
-```
+Debug-level logging can help when troubleshooting. For details, see
+[debug-level logging](../index.md#debug-level-logging).
 
 ### IaC Scanning findings show as `No longer detected` unexpectedly
 

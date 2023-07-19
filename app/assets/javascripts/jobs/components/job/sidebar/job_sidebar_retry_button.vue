@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDropdown, GlDropdownItem, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlModalDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { JOB_SIDEBAR_COPY } from '~/jobs/constants';
 
@@ -10,8 +10,7 @@ export default {
   },
   components: {
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -32,6 +31,21 @@ export default {
   },
   computed: {
     ...mapGetters(['hasForwardDeploymentFailure']),
+    dropdownItems() {
+      return [
+        {
+          text: this.$options.i18n.runAgainJobButtonLabel,
+          href: this.href,
+          extraAttrs: {
+            'data-method': 'post',
+          },
+        },
+        {
+          text: this.$options.i18n.updateVariables,
+          action: () => this.$emit('updateVariablesClicked'),
+        },
+      ];
+    },
   },
 };
 </script>
@@ -45,20 +59,14 @@ export default {
     icon="retry"
     data-testid="retry-job-button"
   />
-  <gl-dropdown
+  <gl-disclosure-dropdown
     v-else-if="isManualJob"
     icon="retry"
     category="primary"
-    :right="true"
+    placement="right"
     variant="confirm"
-  >
-    <gl-dropdown-item :href="href" data-method="post">
-      {{ $options.i18n.runAgainJobButtonLabel }}
-    </gl-dropdown-item>
-    <gl-dropdown-item @click="$emit('updateVariablesClicked')">
-      {{ $options.i18n.updateVariables }}
-    </gl-dropdown-item>
-  </gl-dropdown>
+    :items="dropdownItems"
+  />
   <gl-button
     v-else
     :href="href"

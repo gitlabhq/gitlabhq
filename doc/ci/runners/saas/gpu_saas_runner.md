@@ -15,9 +15,9 @@ GitLab provides GPU-enabled runners only on Linux. For more information about ho
 
 The following machine types are available for GPU-enabled runners on Linux x86-64.
 
-| Runner Tag                             | vCPUs | Memory | Storage | GPU                                |
-|----------------------------------------|-------|--------|---------|------------------------------------|
-| `saas-linux-medium-amd64-gpu-standard` | 4     | 16 GB  | 50 GB   | 1 Nvidia Tesla T4 GPU (or similar) |
+| Runner Tag                             | vCPUs | Memory | Storage | GPU                            | GPU Memory |
+|----------------------------------------|-------|--------|---------|--------------------------------|------------|
+| `saas-linux-medium-amd64-gpu-standard` | 4     | 15 GB  | 50 GB   | 1 Nvidia Tesla T4 (or similar) | 16 GB      |
 
 ## Container images with GPU drivers
 

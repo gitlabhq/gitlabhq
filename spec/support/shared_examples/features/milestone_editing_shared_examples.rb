@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'milestone handling version conflicts' do
-  it 'warns about version conflict when milestone has been updated in the background' do
+  it 'warns about version conflict when milestone has been updated in the background', :js do
+    wait_for_all_requests
+
     # Update the milestone in the background in order to trigger a version conflict
     milestone.update!(title: "New title")
 

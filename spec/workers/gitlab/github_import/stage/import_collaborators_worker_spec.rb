@@ -16,7 +16,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
     let(:push_rights_granted) { true }
 
     before do
-      settings.write({ collaborators_import: stage_enabled })
+      settings.write({ optional_stages: { collaborators_import: stage_enabled } })
       allow(client).to receive(:repository).with(project.import_source)
         .and_return({ permissions: { push: push_rights_granted } })
     end

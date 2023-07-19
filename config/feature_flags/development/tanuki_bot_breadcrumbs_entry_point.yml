@@ -1,0 +1,8 @@
+---
+name: tanuki_bot_breadcrumbs_entry_point
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123530
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416423
+milestone: '16.2'
+type: development
+group: group::foundations
+default_enabled: false

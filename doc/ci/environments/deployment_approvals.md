@@ -163,9 +163,10 @@ require `Administrator` to approve every deployment job in `Production`.
 
 ![multiple approval rules](img/multiple_approval_rules_v16_0.png)
 
-### Allow self-approval **(PREMIUM)**
+### Allow self-approval
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381418) in GitLab 15.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381418) in GitLab 15.8.
+> - Automatic approval [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124638) in GitLab 16.2 due to [usability issues](https://gitlab.com/gitlab-org/gitlab/-/issues/391258).
 
 By default, the user who triggers a deployment pipeline can't also approve the deployment job.
 To allow self-approval of a deployment job:
@@ -174,9 +175,6 @@ To allow self-approval of a deployment job:
 1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Approval options**, select the **Allow pipeline triggerer to approve deployment** checkbox.
-
-When a pipeline runs, deployment jobs are automatically approved in the pipeline if the user who
-triggered the deployment is allowed to approve.
 
 ## Approve or reject a deployment
 

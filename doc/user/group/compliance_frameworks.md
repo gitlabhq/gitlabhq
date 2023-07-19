@@ -11,8 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can create a compliance framework that is a label to identify that your project has certain compliance
 requirements or needs additional oversight. The label can optionally enforce
-[compliance pipeline configuration](#compliance-pipelines) to the projects on which it is
-[applied](../project/settings/index.md#add-a-compliance-framework-to-a-project).
+[compliance pipeline configuration](#compliance-pipelines) to the projects on which it is applied.
 
 Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks:
 
@@ -23,6 +22,33 @@ Compliance frameworks are created on top-level groups. Group owners can create, 
 
 Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
 or deleted at the subgroup or project level. Project owners can choose a framework to apply to their projects.
+
+## Add a compliance framework to a project
+
+Prerequisite:
+
+- The group to which the project belongs must have a compliance framework.
+
+To assign a compliance framework to a project:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings** > **General**.
+1. Expand **Compliance frameworks**.
+1. Select a compliance framework.
+1. Select **Save changes**.
+
+NOTE:
+Frameworks cannot be added to projects in personal namespaces.
+
+### GraphQL API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) in GitLab 14.2.
+
+You can use the [GraphQL API](../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework) to add a
+compliance framework to a project.
+
+If you create compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user
+has the correct permissions. The GitLab UI presents a read-only view to discourage this behavior.
 
 ## Default compliance frameworks
 
@@ -104,6 +130,10 @@ However, the compliance pipeline configuration can reference the `.gitlab-ci.yml
 - Jobs and variables defined in the compliance pipeline can't be changed by variables in the labeled project's
   `.gitlab-ci.yml` file.
 
+NOTE:
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414004), project pipelines must be included first at the top of compliance pipeline configuration
+to prevent projects overriding settings downstream.
+
 For more information, see:
 
 - [Example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
@@ -151,6 +181,13 @@ The following example `.compliance-gitlab-ci.yml` includes the `include` keyword
 configuration is also executed.
 
 ```yaml
+include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
+  - project: '$CI_PROJECT_PATH'
+    file: '$CI_CONFIG_PATH'
+    ref: '$CI_COMMIT_SHA' # Must be defined or MR pipelines always use the use default branch
+    rules:
+      - if: $CI_PROJECT_PATH != "my-group/project-1" # Must be the hardcoded path to the project that hosts this configuration.
+
 # Allows compliance team to control the ordering and interweaving of stages/jobs.
 # Stages without jobs defined will remain hidden.
 stages:
@@ -210,13 +247,6 @@ audit trail:
     - echo "running $FOO"
   after_script:
     - "# No after scripts."
-
-include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
-  - project: '$CI_PROJECT_PATH'
-    file: '$CI_CONFIG_PATH'
-    ref: '$CI_COMMIT_SHA' # Must be defined or MR pipelines always use the use default branch
-    rules:
-      - if: $CI_PROJECT_PATH != "my-group/project-1" # Must be the hardcoded path to the project that hosts this configuration.
 ```
 
 The `rules` configuration in the `include` definition avoids circular inclusion in case the compliance pipeline must be able to run in the host project itself.
@@ -333,20 +363,6 @@ Therefore, in projects with compliance frameworks, you should replace
 This alternative ensures the compliance pipeline does not re-start the parent pipeline.
 
 ## Troubleshooting
-
-### Cannot remove compliance framework from a project
-
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390626), if you move a project, its compliance
-framework becomes orphaned and can't be removed. To manually remove a compliance framework from a project, run the
-following GraphQL mutation with your project's ID:
-
-```graphql
-mutation {
-  projectSetComplianceFramework(input: {projectId: "gid://gitlab/Project/1234567", complianceFrameworkId: null}) {
-    errors
-  }
-}
-```
 
 ### Compliance jobs are overwritten by target repository
 

@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Omnibus based packages and images **(FREE SELF)**
+# Packages and images from the Linux package **(FREE SELF)**
 
 Below you can find some basic information on why GitLab provides packages and
 a Docker image that come with bundled dependencies.
@@ -19,7 +19,7 @@ We have a few core goals with these packages:
 1. Support for a wide variety of operating systems
 1. Wide support of cloud service providers
 
-## Omnibus GitLab Architecture
+## Linux package architecture
 
 GitLab in its core is a Ruby on Rails project. However, GitLab as a whole
 application is more complex and has multiple components. If these components are
@@ -72,7 +72,7 @@ Some drawbacks of a package with bundled dependencies:
 1. Duplication with possibly existing software.
 1. Less flexibility in configuration.
 
-## Why would you install an omnibus package when you can use a system package?
+## Why would you install a package from the Linux package when you can use a system package?
 
 The answer can be simplified to: less maintenance required. Instead of handling
 multiple packages that *can* break existing functionality if the versions are
@@ -83,23 +83,24 @@ Keeping configuration in sync can be error prone.
 
 If you have the skill set to maintain all current dependencies and enough time
 to handle any future dependencies that might get introduced, the above listed
-reasons might not be good enough for you to not use the omnibus package.
+reasons might not be good enough for you to not use a package from the Linux package.
 
 There are two things to keep in mind before going down this route:
 
 1. Getting support for any problems
    you encounter might be more difficult due to the number of possibilities that exist
    when using a library version that is not tested by majority of users.
-1. Omnibus package also allows shutting off of any services that you do not need,
+1. Packages from the Linux package also allow shutting off of any services that you do not need,
    if you need to run a component independently. For example, you can use a
-   [non-bundled PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server) with the omnibus package.
+   [non-bundled PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server)
+   with a Linux package installation.
 
-Keep in mind that a non-standard solution like the omnibus package
+Keep in mind that a non-standard solution like the Linux package
 might be a better fit when the application has a number of moving parts.
 
 ## Docker image with multiple services
 
-[GitLab Docker image](../../install/docker.md#gitlab-docker-images) is based on the omnibus package.
+[GitLab Docker image](../../install/docker.md#gitlab-docker-images) is based on the Linux package.
 
 Considering that container spawned from this image contains multiple processes,
 these types of containers are also referred to as 'fat containers'.

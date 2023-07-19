@@ -26,8 +26,9 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 - `gitlab_main`: describes all tables that are being stored in the `main:` database (for example, like `projects`, `users`).
 - `gitlab_ci`: describes all CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`).
 - `gitlab_geo`: describes all Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`).
-- `gitlab_shared`: describe all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`.
-- `gitlab_internal`: describe all internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`).
+- `gitlab_shared`: describes all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`.
+- `gitlab_internal`: describes all internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`).
+- `gitlab_pm`: describes all tables that store `package_metadata` (it is an alias for `gitlab_main`).
 - `...`: more schemas to be introduced with additional decomposed databases
 
 The usage of schema enforces the base class to be used:
@@ -36,6 +37,7 @@ The usage of schema enforces the base class to be used:
 - `Ci::ApplicationRecord` for `gitlab_ci`
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
+- `PackageMetadata::ApplicationRecord` for `gitlab_pm`
 
 ### The impact of `gitlab_schema`
 
@@ -69,6 +71,10 @@ all decomposed databases.
 
 `gitlab_internal` describes Rails-defined tables (like `schema_migrations` or `ar_internal_metadata`), as well as internal PostgreSQL tables (for example, `pg_attribute`). Its primary purpose is to [support other databases](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85842#note_943453682), like Geo, that
 might be missing some of those application-defined `gitlab_shared` tables (like `loose_foreign_keys_deleted_records`), but are valid Rails databases.
+
+### The special purpose of `gitlab_pm`
+
+`gitlab_pm` stores package metadata describing public repositories. This data is used for the License Compliance and Dependency Scanning product categories and is maintained by the [Composition Analysis Group](https://about.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis). It is an alias for `gitlab_main` intended to make it easier to route to a different database in the future.
 
 ## Migrations
 
@@ -597,6 +603,13 @@ to limit the modes where tests can run, and skip them on any other modes.
 | `skip_if_database_exists(:ci)`              | On **single-db** and **single-db-ci-connection**   |
 | `skip_if_multiple_databases_are_setup(:ci)` | Only on **single-db**   |
 | `skip_if_multiple_databases_not_setup(:ci)` | On **single-db-ci-connection** and **multiple databases** |
+
+## Testing for multiple databases, including main_clusterwide
+
+By default, we do not setup the `main_clusterwide` connection in CI pipelines. However, if you add the label `~"pipeline:run-clusterwide-db"`, the pipelines will run with 3 connections, `main`, `ci` and `main_clusterwide`.
+
+NOTE:
+This setup is not completely ready yet, and running pipelines in the setup may fail some jobs. As of July 2023, this is only used by  **group::tenant scale**  to test out changes while building [Cells](../../architecture/blueprints/cells/index.md).
 
 ## Locking writes on the tables that don't belong to the database schemas
 

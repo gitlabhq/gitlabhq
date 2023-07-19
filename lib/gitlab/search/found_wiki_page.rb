@@ -14,7 +14,8 @@ module Gitlab
       # @param found_blob [Gitlab::Search::FoundBlob]
       def initialize(found_blob)
         super
-        @wiki = found_blob.project.wiki
+
+        @wiki ||= found_blob.project.wiki
       end
 
       def to_ability_name
@@ -23,3 +24,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Search::FoundWikiPage.prepend_mod_with('Gitlab::Search::FoundWikiPage')

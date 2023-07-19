@@ -30,8 +30,10 @@ A new subscription must be purchased and applied as needed.
 ## Choose a GitLab tier
 
 Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose
-the features which fit your budget. For information on what features are available
-at each tier for each product, see the [GitLab self-managed feature comparison](https://about.gitlab.com/pricing/feature-comparison/).
+the features that fit your budget. 
+
+For more details, see
+[a comparison of self-managed features available in each tier](https://about.gitlab.com/pricing/feature-comparison/).
 
 ## Find your subscription
 

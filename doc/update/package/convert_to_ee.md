@@ -22,7 +22,7 @@ that may require Support intervention.
 
 The steps can be summed up to:
 
-1. Make a [GitLab backup](../../raketasks/backup_gitlab.md).
+1. Make a [GitLab backup](../../administration/backup_restore/backup_gitlab.md).
 
 1. Find the currently installed GitLab version:
 
@@ -69,7 +69,7 @@ The steps can be summed up to:
    If you want to use `dpkg`/`rpm` instead of `apt-get`/`yum`, go through the first
    step to find the current GitLab version, then follow
    [Upgrade using a manually-downloaded package](index.md#upgrade-using-a-manually-downloaded-package),
-   and then [add your license](../../user/admin_area/license.md).
+   and then [add your license](../../administration/license.md).
 
 1. Install the `gitlab-ee` package. The install automatically
    uninstalls the `gitlab-ce` package on your GitLab server. `reconfigure`
@@ -99,7 +99,7 @@ The steps can be summed up to:
    sudo gitlab-ctl reconfigure
    ```
 
-1. Now activate GitLab Enterprise Edition by [adding your license](../../user/admin_area/license.md).
+1. Now activate GitLab Enterprise Edition by [adding your license](../../administration/license.md).
 
 1. After you confirm that GitLab is working as expected, you may remove the old
    Community Edition repository:

@@ -3,6 +3,8 @@
 module Gitlab
   module Ci
     class JwtV2 < Jwt
+      include Gitlab::Utils::StrongMemoize
+
       DEFAULT_AUD = Settings.gitlab.base_url
       GITLAB_HOSTED_RUNNER = 'gitlab-hosted'
       SELF_HOSTED_RUNNER = 'self-hosted'
@@ -48,31 +50,35 @@ module Gitlab
           sha: pipeline.sha
         }
 
-        if Feature.enabled?(:ci_jwt_v2_ref_uri_claim, pipeline.project)
+        if project_config&.source == :repository_source
           additional_claims[:ci_config_ref_uri] = ci_config_ref_uri
+          additional_claims[:ci_config_sha] = pipeline.sha
         end
 
         super.merge(additional_claims)
       end
 
       def ci_config_ref_uri
-        project_config = Gitlab::Ci::ProjectConfig.new(
+        "#{project_config&.url}@#{pipeline.source_ref_path}"
+      rescue StandardError => e
+        # We don't want endpoints relying on this code to fail if there's an error here.
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, pipeline_id: pipeline.id)
+        nil
+      end
+
+      def project_config
+        Gitlab::Ci::ProjectConfig.new(
           project: project,
           sha: pipeline.sha,
           pipeline_source: pipeline.source&.to_sym,
           pipeline_source_bridge: pipeline.source_bridge
         )
-
-        return unless project_config&.source == :repository_source
-
-        "#{project_config.url}@#{pipeline.source_ref_path}"
-
-        # Errors are rescued to mitigate risk. This can be removed if no errors are observed.
-        # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117923#note_1387660746 for context.
       rescue StandardError => e
+        # We don't want endpoints relying on this code to fail if there's an error here.
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, pipeline_id: pipeline.id)
         nil
       end
+      strong_memoize_attr(:project_config)
 
       def runner_environment
         return unless runner

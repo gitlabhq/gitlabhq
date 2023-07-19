@@ -9,14 +9,16 @@ import {
 } from '@gitlab/ui';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { STATUS_OPEN } from '~/issues/constants';
+import { issuableStatusText, STATUS_OPEN } from '~/issues/constants';
 import { isExternal } from '~/lib/utils/url_utility';
 import { n__, sprintf } from '~/locale';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 
 export default {
   components: {
+    ConfidentialityBadge,
     GlIcon,
     GlBadge,
     GlButton,
@@ -77,8 +79,16 @@ export default {
       required: false,
       default: false,
     },
+    workspaceType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
+    badgeText() {
+      return issuableStatusText[this.issuableState];
+    },
     badgeVariant() {
       return this.issuableState === STATUS_OPEN ? 'success' : 'info';
     },
@@ -109,6 +119,7 @@ export default {
   },
   methods: {
     handleRightSidebarToggleClick() {
+      this.$emit('toggle');
       if (this.toggleSidebarButtonEl) {
         this.toggleSidebarButtonEl.dispatchEvent(new Event('click'));
       }
@@ -118,21 +129,23 @@ export default {
 </script>
 
 <template>
-  <div class="detail-page-header">
+  <div class="detail-page-header gl-flex-direction-column gl-sm-flex-direction-row">
     <div class="detail-page-header-body">
       <gl-badge class="issuable-status-badge gl-mr-3" :variant="badgeVariant">
         <gl-icon v-if="statusIcon" :name="statusIcon" :class="statusIconClass" />
-        <span class="gl-display-none gl-sm-display-block"><slot name="status-badge"></slot></span>
+        <span class="gl-display-none gl-sm-display-block gl-ml-2">
+          <slot name="status-badge">{{ badgeText }}</slot>
+        </span>
       </gl-badge>
-      <div class="issuable-meta gl-display-flex! gl-align-items-center">
-        <div v-if="blocked || confidential" class="gl-display-inline-block">
-          <div v-if="blocked" data-testid="blocked" class="issuable-warning-icon inline">
-            <gl-icon name="lock" :aria-label="__('Blocked')" />
-          </div>
-          <div v-if="confidential" data-testid="confidential" class="issuable-warning-icon inline">
-            <gl-icon name="eye-slash" :aria-label="__('Confidential')" />
-          </div>
+      <div class="issuable-meta gl-display-flex! gl-align-items-center gl-flex-wrap">
+        <div v-if="blocked" data-testid="blocked" class="issuable-warning-icon inline">
+          <gl-icon name="lock" :aria-label="__('Blocked')" />
         </div>
+        <confidentiality-badge
+          v-if="confidential"
+          :issuable-type="issuableType"
+          :workspace-type="workspaceType"
+        />
         <span>
           <template v-if="showWorkItemTypeIcon">
             <work-item-type-icon :work-item-type="issuableType" show-text />
@@ -182,10 +195,7 @@ export default {
         @click="handleRightSidebarToggleClick"
       />
     </div>
-    <div
-      data-testid="header-actions"
-      class="detail-page-header-actions gl-display-flex gl-md-display-block"
-    >
+    <div data-testid="header-actions" class="detail-page-header-actions gl-display-flex">
       <slot name="header-actions"></slot>
     </div>
   </div>

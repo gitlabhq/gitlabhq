@@ -10,6 +10,7 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
   let_it_be_with_reload(:key) { create(:key, usage_type: :signing, key: public_key_text, user: user) }
 
   let(:signed_text) { 'This message was signed by an ssh key' }
+  let(:signer) { :SIGNER_USER }
 
   let(:signature_text) do
     # ssh-keygen -Y sign -n git -f id_test message.txt
@@ -27,6 +28,7 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
     described_class.new(
       signature_text,
       signed_text,
+      signer,
       committer_email
     )
   end
@@ -264,6 +266,15 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
 
       it 'reports other_user status' do
         expect(signature.verification_status).to eq(:other_user)
+      end
+    end
+
+    context 'when signature created by GitLab' do
+      let(:signer) { :SIGNER_SYSTEM }
+
+      it 'reports verified_system status' do
+        expect(signature.verification_status).to eq(:verified_system)
+        expect(signature.key_fingerprint).to eq('dw7gPSvYtkCBU+BbTolbbckUEX3sL6NsGIJTQ4PYEnM')
       end
     end
   end

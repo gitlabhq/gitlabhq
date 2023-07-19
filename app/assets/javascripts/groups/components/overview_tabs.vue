@@ -3,13 +3,17 @@ import { GlTabs, GlTab, GlSearchBoxByType, GlSorting, GlSortingItem } from '@git
 import { isString, debounce } from 'lodash';
 import { __ } from '~/locale';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import GroupsStore from '../store/groups_store';
 import GroupsService from '../service/groups_service';
+import ArchivedProjectsService from '../service/archived_projects_service';
 import {
   ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
   ACTIVE_TAB_SHARED,
   ACTIVE_TAB_ARCHIVED,
+  SORTING_ITEM_NAME,
   OVERVIEW_TABS_SORTING_ITEMS,
+  OVERVIEW_TABS_ARCHIVED_PROJECTS_SORTING_ITEMS,
 } from '../constants';
 import eventHub from '../event_hub';
 import GroupsApp from './app.vue';
@@ -17,7 +21,6 @@ import SubgroupsAndProjectsEmptyState from './empty_states/subgroups_and_project
 import SharedProjectsEmptyState from './empty_states/shared_projects_empty_state.vue';
 import ArchivedProjectsEmptyState from './empty_states/archived_projects_empty_state.vue';
 
-const [SORTING_ITEM_NAME] = OVERVIEW_TABS_SORTING_ITEMS;
 const MIN_SEARCH_LENGTH = 3;
 
 export default {
@@ -32,32 +35,38 @@ export default {
     SharedProjectsEmptyState,
     ArchivedProjectsEmptyState,
   },
-  inject: ['endpoints', 'initialSort'],
+  inject: ['endpoints', 'initialSort', 'groupId'],
   data() {
     const tabs = [
       {
         title: this.$options.i18n[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
         key: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
-        emptyStateComponent: SubgroupsAndProjectsEmptyState,
+        emptyStateComponent: markRaw(SubgroupsAndProjectsEmptyState),
         lazy: this.$route.name !== ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
-        service: new GroupsService(this.endpoints[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]),
+        service: new GroupsService(
+          this.endpoints[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
+          this.initialSort,
+        ),
         store: new GroupsStore({ showSchemaMarkup: true }),
+        sortingItems: OVERVIEW_TABS_SORTING_ITEMS,
       },
       {
         title: this.$options.i18n[ACTIVE_TAB_SHARED],
         key: ACTIVE_TAB_SHARED,
-        emptyStateComponent: SharedProjectsEmptyState,
+        emptyStateComponent: markRaw(SharedProjectsEmptyState),
         lazy: this.$route.name !== ACTIVE_TAB_SHARED,
-        service: new GroupsService(this.endpoints[ACTIVE_TAB_SHARED]),
+        service: new GroupsService(this.endpoints[ACTIVE_TAB_SHARED], this.initialSort),
         store: new GroupsStore(),
+        sortingItems: OVERVIEW_TABS_SORTING_ITEMS,
       },
       {
         title: this.$options.i18n[ACTIVE_TAB_ARCHIVED],
         key: ACTIVE_TAB_ARCHIVED,
-        emptyStateComponent: ArchivedProjectsEmptyState,
+        emptyStateComponent: markRaw(ArchivedProjectsEmptyState),
         lazy: this.$route.name !== ACTIVE_TAB_ARCHIVED,
-        service: new GroupsService(this.endpoints[ACTIVE_TAB_ARCHIVED]),
+        service: new ArchivedProjectsService(this.groupId, this.initialSort),
         store: new GroupsStore(),
+        sortingItems: OVERVIEW_TABS_ARCHIVED_PROJECTS_SORTING_ITEMS,
       },
     ];
     return {
@@ -79,15 +88,30 @@ export default {
   mounted() {
     this.search = this.$route.query?.filter || '';
 
-    const sortQueryStringValue = this.$route.query?.sort || this.initialSort;
-    const sort =
-      OVERVIEW_TABS_SORTING_ITEMS.find((sortOption) =>
-        [sortOption.asc, sortOption.desc].includes(sortQueryStringValue),
-      ) || SORTING_ITEM_NAME;
+    const { sort, isAscending } = this.getActiveSort();
+
     this.sort = sort;
-    this.isAscending = sort.asc === sortQueryStringValue;
+    this.isAscending = isAscending;
   },
   methods: {
+    getActiveSort() {
+      const sortQueryStringValue = this.$route.query?.sort || this.initialSort;
+      const sort = this.activeTab.sortingItems.find((sortOption) =>
+        [sortOption.asc, sortOption.desc].includes(sortQueryStringValue),
+      );
+
+      if (!sort) {
+        return {
+          sort: SORTING_ITEM_NAME,
+          isAscending: true,
+        };
+      }
+
+      return {
+        sort,
+        isAscending: sort.asc === sortQueryStringValue,
+      };
+    },
     handleTabInput(tabIndex) {
       if (tabIndex === this.activeTabIndex) {
         return;
@@ -105,7 +129,23 @@ export default {
         ? this.$route.params.group.split('/')
         : this.$route.params.group;
 
-      this.$router.push({ name: tab.key, params: { group: groupParam }, query: this.$route.query });
+      const { sort, isAscending } = this.getActiveSort();
+
+      this.sort = sort;
+      this.isAscending = isAscending;
+
+      const sortQuery = isAscending ? sort.asc : sort.desc;
+
+      const query = {
+        ...this.$route.query,
+        ...(this.$route.query?.sort && { sort: sortQuery }),
+      };
+
+      this.$router.push({
+        name: tab.key,
+        params: { group: groupParam },
+        query,
+      });
     },
     handleSearchOrSortChange() {
       // Update query string
@@ -164,7 +204,6 @@ export default {
     [ACTIVE_TAB_ARCHIVED]: __('Archived projects'),
     searchPlaceholder: __('Search'),
   },
-  OVERVIEW_TABS_SORTING_ITEMS,
 };
 </script>
 
@@ -203,7 +242,7 @@ export default {
               @sortDirectionChange="handleSortDirectionChange"
             >
               <gl-sorting-item
-                v-for="sortingItem in $options.OVERVIEW_TABS_SORTING_ITEMS"
+                v-for="sortingItem in activeTab.sortingItems"
                 :key="sortingItem.label"
                 :active="sortingItem === sort"
                 @click="handleSortingItemClick(sortingItem)"

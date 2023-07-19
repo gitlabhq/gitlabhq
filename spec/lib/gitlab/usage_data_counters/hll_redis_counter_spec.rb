@@ -18,28 +18,71 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     # depending on which day of the week test is run.
     # Monday 6th of June
     described_class.clear_memoization(:known_events)
+    described_class.clear_memoization(:known_events_names)
     reference_time = Time.utc(2020, 6, 1)
     travel_to(reference_time) { example.run }
     described_class.clear_memoization(:known_events)
+    described_class.clear_memoization(:known_events_names)
   end
 
   describe '.known_events' do
-    let(:ce_temp_dir) { Dir.mktmpdir }
-    let(:ce_temp_file) { Tempfile.new(%w[common .yml], ce_temp_dir) }
     let(:ce_event) { { "name" => "ce_event" } }
 
-    before do
-      stub_const("#{described_class}::KNOWN_EVENTS_PATH", File.expand_path('*.yml', ce_temp_dir))
-      File.open(ce_temp_file.path, "w+b") { |f| f.write [ce_event].to_yaml }
+    context 'with use_metric_definitions_for_events_list disabled' do
+      let(:ce_temp_dir) { Dir.mktmpdir }
+      let(:ce_temp_file) { Tempfile.new(%w[common .yml], ce_temp_dir) }
+
+      before do
+        stub_feature_flags(use_metric_definitions_for_events_list: false)
+        stub_const("#{described_class}::KNOWN_EVENTS_PATH", File.expand_path('*.yml', ce_temp_dir))
+        File.open(ce_temp_file.path, "w+b") { |f| f.write [ce_event].to_yaml }
+      end
+
+      after do
+        ce_temp_file.unlink
+        FileUtils.remove_entry(ce_temp_dir) if Dir.exist?(ce_temp_dir)
+      end
+
+      it 'returns ce events' do
+        expect(described_class.known_events).to include(ce_event)
+      end
     end
 
-    after do
-      ce_temp_file.unlink
-      FileUtils.remove_entry(ce_temp_dir) if Dir.exist?(ce_temp_dir)
-    end
+    context 'with use_metric_definitions_for_events_list enabled' do
+      let(:removed_ce_event) { { "name" => "removed_ce_event" } }
+      let(:metric_definition) do
+        Gitlab::Usage::MetricDefinition.new('ce_metric',
+          {
+            key_path: 'ce_metric_weekly',
+            status: 'active',
+            options: {
+              events: [ce_event['name']]
+            }
+          })
+      end
 
-    it 'returns ce events' do
-      expect(described_class.known_events).to include(ce_event)
+      let(:removed_metric_definition) do
+        Gitlab::Usage::MetricDefinition.new('removed_ce_metric',
+          {
+            key_path: 'removed_ce_metric_weekly',
+            status: 'removed',
+            options: {
+              events: [removed_ce_event['name']]
+            }
+          })
+      end
+
+      before do
+        allow(Gitlab::Usage::MetricDefinition).to receive(:all).and_return([metric_definition, removed_metric_definition])
+      end
+
+      it 'returns ce events' do
+        expect(described_class.known_events).to include(ce_event)
+      end
+
+      it 'does not return removed events' do
+        expect(described_class.known_events).not_to include(removed_ce_event)
+      end
     end
   end
 

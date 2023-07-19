@@ -1,0 +1,8 @@
+---
+name: phone_verification_for_low_risk_users
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124090
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415674
+milestone: '16.2'
+type: experiment
+group: group::anti-abuse
+default_enabled: false

@@ -181,7 +181,7 @@ class ApplicationController < ActionController::Base
 
     payload[:queue_duration_s] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
 
-    payload[:response_bytes] = response.body_parts.sum(&:bytesize) if Feature.enabled?(:log_response_length)
+    payload[:response_bytes] = response.body_parts.sum(&:bytesize)
 
     store_cloudflare_headers!(payload, request)
   end

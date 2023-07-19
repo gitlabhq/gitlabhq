@@ -144,9 +144,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
 
   context 'when a new merge request has a pipeline' do
     let!(:pipeline) do
-      create(:ci_pipeline, sha: project.commit('fix').id,
-                           ref: 'fix',
-                           project: project)
+      create(:ci_pipeline, sha: project.commit('fix').id, ref: 'fix', project: project)
     end
 
     it 'shows pipelines for a new merge request' do

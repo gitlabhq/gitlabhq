@@ -7,7 +7,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PipelineDetailsHeader from '~/pipelines/components/pipeline_details_header.vue';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/pipelines/constants';
-import TimeAgo from '~/pipelines/components/pipelines_list/time_ago.vue';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import cancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '~/pipelines/graphql/mutations/delete_pipeline.mutation.graphql';
@@ -59,19 +58,20 @@ describe('Pipeline details header', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findStatus = () => wrapper.findComponent(CiBadgeLink);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findTimeAgo = () => wrapper.findComponent(TimeAgo);
   const findAllBadges = () => wrapper.findAllComponents(GlBadge);
+  const findDeleteModal = () => wrapper.findComponent(GlModal);
+  const findCreatedTimeAgo = () => wrapper.findByTestId('pipeline-created-time-ago');
+  const findFinishedTimeAgo = () => wrapper.findByTestId('pipeline-finished-time-ago');
   const findPipelineName = () => wrapper.findByTestId('pipeline-name');
   const findCommitTitle = () => wrapper.findByTestId('pipeline-commit-title');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
-  const findComputeCredits = () => wrapper.findByTestId('compute-credits');
+  const findComputeMinutes = () => wrapper.findByTestId('compute-minutes');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
   const findPipelineRunningText = () => wrapper.findByTestId('pipeline-running-text').text();
   const findPipelineRefText = () => wrapper.findByTestId('pipeline-ref-text').text();
   const findRetryButton = () => wrapper.findByTestId('retry-pipeline');
   const findCancelButton = () => wrapper.findByTestId('cancel-pipeline');
   const findDeleteButton = () => wrapper.findByTestId('delete-pipeline');
-  const findDeleteModal = () => wrapper.findComponent(GlModal);
   const findPipelineUserLink = () => wrapper.findByTestId('pipeline-user-link');
   const findPipelineDuration = () => wrapper.findByTestId('pipeline-duration-text');
 
@@ -89,7 +89,7 @@ describe('Pipeline details header', () => {
   const defaultProps = {
     name: 'Ruby 3.0 master branch pipeline',
     totalJobs: '50',
-    computeCredits: '0.65',
+    computeMinutes: '0.65',
     yamlErrors: 'errors',
     failureReason: 'pipeline failed',
     badges: {
@@ -216,28 +216,36 @@ describe('Pipeline details header', () => {
   });
 
   describe('finished pipeline', () => {
-    it('displays compute credits when not zero', async () => {
+    it('displays compute minutes when not zero', async () => {
       createComponent();
 
       await waitForPromises();
 
-      expect(findComputeCredits().text()).toBe('0.65');
+      expect(findComputeMinutes().text()).toBe('0.65');
     });
 
-    it('does not display compute credits when zero', async () => {
-      createComponent(defaultHandlers, { ...defaultProps, computeCredits: '0.0' });
+    it('does not display compute minutes when zero', async () => {
+      createComponent(defaultHandlers, { ...defaultProps, computeMinutes: '0.0' });
 
       await waitForPromises();
 
-      expect(findComputeCredits().exists()).toBe(false);
+      expect(findComputeMinutes().exists()).toBe(false);
     });
 
-    it('displays time ago', async () => {
+    it('does not display created time ago', async () => {
       createComponent();
 
       await waitForPromises();
 
-      expect(findTimeAgo().exists()).toBe(true);
+      expect(findCreatedTimeAgo().exists()).toBe(false);
+    });
+
+    it('displays finished time ago', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findFinishedTimeAgo().exists()).toBe(true);
     });
 
     it('displays pipeline duartion text', async () => {
@@ -258,12 +266,12 @@ describe('Pipeline details header', () => {
       await waitForPromises();
     });
 
-    it('does not display compute credits', () => {
-      expect(findComputeCredits().exists()).toBe(false);
+    it('does not display compute minutes', () => {
+      expect(findComputeMinutes().exists()).toBe(false);
     });
 
-    it('does not display time ago', () => {
-      expect(findTimeAgo().exists()).toBe(false);
+    it('does not display finished time ago', () => {
+      expect(findFinishedTimeAgo().exists()).toBe(false);
     });
 
     it('does not display pipeline duration text', () => {
@@ -272,6 +280,10 @@ describe('Pipeline details header', () => {
 
     it('displays pipeline running text', () => {
       expect(findPipelineRunningText()).toBe('In progress, queued for 3,600 seconds');
+    });
+
+    it('displays created time ago', () => {
+      expect(findCreatedTimeAgo().exists()).toBe(true);
     });
   });
 

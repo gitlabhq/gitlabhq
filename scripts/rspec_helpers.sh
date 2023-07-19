@@ -20,19 +20,19 @@ function retrieve_tests_metadata() {
 }
 
 function update_tests_metadata() {
-  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
-  local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}")/"
+  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
+  local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
 
-  echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
+  echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
 
-  scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ${knapsack_folder_path}rspec*.json
+  scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}" ${knapsack_folder_path:-unknown_folder}rspec*.json
 
   export FLAKY_RSPEC_GENERATE_REPORT="true"
-  scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ${rspec_flaky_folder_path}all_*.json
+  scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_file}" ${rspec_flaky_folder_path:-unknown_folder}all_*.json
 
   # Prune flaky tests that weren't flaky in the last 7 days, *after* updating the flaky tests detected
   # in this pipeline, so that first_flaky_at for tests that are still flaky is maintained.
-  scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
+  scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
 
   if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
     if [[ -n "$RSPEC_PROFILING_PGSSLKEY" ]]; then
@@ -70,10 +70,10 @@ function update_tests_mapping() {
     return 0
   fi
 
-  scripts/generate-test-mapping "${RSPEC_TESTS_MAPPING_PATH}" crystalball/rspec*.yml
-  scripts/pack-test-mapping "${RSPEC_TESTS_MAPPING_PATH}" "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
-  gzip "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
-  rm -f crystalball/rspec*.yml "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
+  scripts/generate-test-mapping "${RSPEC_TESTS_MAPPING_PATH:-unknown_file}" crystalball/rspec*.yml
+  scripts/pack-test-mapping "${RSPEC_TESTS_MAPPING_PATH:-unknown_file}" "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
+  gzip "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
+  rm -f crystalball/rspec*.yml "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
 }
 
 function crystalball_rspec_data_exists() {
@@ -123,7 +123,46 @@ function rspec_simple_job_with_retry () {
 function rspec_db_library_code() {
   local db_files="spec/lib/gitlab/database/"
 
-  rspec_simple_job_with_retry "-- ${db_files}"
+  rspec_simple_job_with_retry "--tag ~click_house -- ${db_files}"
+}
+
+# Below is the list of options (https://linuxcommand.org/lc3_man_pages/seth.html)
+#
+#   allexport    same as -a
+#   braceexpand  same as -B
+#   emacs        use an emacs-style line editing interface
+#   errexit      same as -e
+#   errtrace     same as -E
+#   functrace    same as -T
+#   hashall      same as -h
+#   histexpand   same as -H
+#   history      enable command history
+#   ignoreeof    the shell will not exit upon reading EOF
+#   interactive-comments
+#                 allow comments to appear in interactive commands
+#   keyword      same as -k
+#   monitor      same as -m
+#   noclobber    same as -C
+#   noexec       same as -n
+#   noglob       same as -f
+#   nolog        currently accepted but ignored
+#   notify       same as -b
+#   nounset      same as -u
+#   onecmd       same as -t
+#   physical     same as -P
+#   pipefail     the return value of a pipeline is the status of
+#                 the last command to exit with a non-zero status,
+#                 or zero if no command exited with a non-zero status
+#   posix        change the behavior of bash where the default
+#                 operation differs from the Posix standard to
+#                 match the standard
+#   privileged   same as -p
+#   verbose      same as -v
+#   vi           use a vi-style line editing interface
+#   xtrace       same as -x
+function debug_shell_options() {
+  echoinfo "Shell set options (set -o) enabled:"
+  echoinfo "$(set -o | grep 'on$')"
 }
 
 function debug_rspec_variables() {
@@ -151,21 +190,34 @@ function debug_rspec_variables() {
 function handle_retry_rspec_in_new_process() {
   local rspec_run_status="${1}"
 
+  if [[ $rspec_run_status -eq 3 ]]; then
+    echoerr "Not retrying failing examples since we failed early on purpose!"
+    exit 1
+  fi
+
   if [[ $rspec_run_status -eq 2 ]]; then
     echoerr "Not retrying failing examples since there were errors happening outside of the RSpec examples!"
-  elif [[ $rspec_run_status -eq 1 ]]; then
-    # Experiment to retry failed examples in a new RSpec process: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148
-    if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" == "true" ]]; then
-      retry_failed_rspec_examples
-      rspec_run_status=$?
-    else
-      echoerr "Not retrying failing examples since \$RETRY_FAILED_TESTS_IN_NEW_PROCESS != 'true'!"
+    exit 1
+  fi
+
+  if [[ $rspec_run_status -eq 1 ]]; then
+    if is_rspec_last_run_results_file_missing; then
+      exit 1
     fi
+
+    local failed_examples_count=$(grep -c " failed" "${RSPEC_LAST_RUN_RESULTS_FILE}")
+    if [[ "${failed_examples_count}" -eq "${RSPEC_FAIL_FAST_THRESHOLD}" ]]; then
+      echoerr "Not retrying failing examples since we reached the maximum number of allowed test failures!"
+      exit 1
+    fi
+
+    retry_failed_rspec_examples
+    rspec_run_status=$?
   else
     echosuccess "No examples to retry, congrats!"
   fi
 
-  exit $rspec_run_status
+  exit "${rspec_run_status}"
 }
 
 function rspec_paralellized_job() {
@@ -222,6 +274,7 @@ function rspec_paralellized_job() {
   fi
 
   debug_rspec_variables
+  debug_shell_options
 
   if [[ -n "${rspec_tests_mapping_enabled}" ]]; then
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_TESTS_FILTER_FILE}" || rspec_run_status=$?
@@ -237,9 +290,12 @@ function rspec_paralellized_job() {
 function retry_failed_rspec_examples() {
   local rspec_run_status=0
 
-  # Sometimes the file isn't created or is empty. In that case we exit(1) ourselves, otherwise, RSpec would
-  # not run any examples an exit successfully, actually hiding failed tests!
-  if [[ ! -f "${RSPEC_LAST_RUN_RESULTS_FILE}" ]] || [[ ! -s "${RSPEC_LAST_RUN_RESULTS_FILE}" ]]; then
+  if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" != "true" ]]; then
+    echoerr "Not retrying failing examples since \$RETRY_FAILED_TESTS_IN_NEW_PROCESS != 'true'!"
+    exit 1
+  fi
+
+  if is_rspec_last_run_results_file_missing; then
     exit 1
   fi
 
@@ -315,7 +371,7 @@ function rspec_rerun_previous_failed_tests() {
   local test_file_count_threshold=${RSPEC_PREVIOUS_FAILED_TEST_FILE_COUNT_THRESHOLD:-10}
   local matching_tests_file=${1}
   local rspec_opts=${2}
-  local test_files="$(cat "${matching_tests_file}")"
+  local test_files="$(select_existing_files < "${matching_tests_file}")"
   local test_file_count=$(wc -w "${matching_tests_file}" | awk {'print $1'})
 
   if [[ "${test_file_count}" -gt "${test_file_count_threshold}" ]]; then
@@ -395,14 +451,14 @@ function cleanup_individual_job_reports() {
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
   local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}")/"
 
-  rm -rf ${knapsack_folder_path}rspec*.json \
-    ${rspec_flaky_folder_path}all_*.json \
-    ${rspec_flaky_folder_path}new_*.json \
-    ${rspec_flaky_folder_path}skipped_flaky_tests_*_report.txt \
-    ${rspec_flaky_folder_path}retried_tests_*_report.txt \
-    ${RSPEC_LAST_RUN_RESULTS_FILE} \
-    ${RSPEC_PROFILING_FOLDER_PATH}/**/*
-  rmdir ${RSPEC_PROFILING_FOLDER_PATH} || true
+  rm -rf ${knapsack_folder_path:-unknown_folder}rspec*.json \
+    ${rspec_flaky_folder_path:-unknown_folder}all_*.json \
+    ${rspec_flaky_folder_path:-unknown_folder}new_*.json \
+    ${rspec_flaky_folder_path:-unknown_folder}skipped_flaky_tests_*_report.txt \
+    ${rspec_flaky_folder_path:-unknown_folder}retried_tests_*_report.txt \
+    ${RSPEC_LAST_RUN_RESULTS_FILE:-unknown_folder} \
+    ${RSPEC_PROFILING_FOLDER_PATH:-unknown_folder}/**/*
+  rmdir ${RSPEC_PROFILING_FOLDER_PAT:-unknown_folder} || true
 }
 
 function generate_flaky_tests_reports() {
@@ -416,4 +472,14 @@ function generate_flaky_tests_reports() {
   find ${rspec_flaky_folder_path} -type f -name 'retried_tests_*_report.txt' -exec cat {} + >> "${RETRIED_TESTS_REPORT_PATH}"
 
   cleanup_individual_job_reports
+}
+
+function is_rspec_last_run_results_file_missing() {
+  # Sometimes the file isn't created or is empty.
+  if [[ ! -f "${RSPEC_LAST_RUN_RESULTS_FILE}" ]] || [[ ! -s "${RSPEC_LAST_RUN_RESULTS_FILE}" ]]; then
+    echoerr "The file set inside RSPEC_LAST_RUN_RESULTS_FILE ENV variable does not exist or is empty. As a result, we won't retry failed specs."
+    return 0
+  else
+    return 1
+  fi
 }

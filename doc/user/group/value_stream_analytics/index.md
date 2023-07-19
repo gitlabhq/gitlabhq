@@ -45,8 +45,8 @@ Value stream analytics offers different features at the project and group level 
 |Total time chart|Yes|Yes|No|
 |Task by type chart|Yes|No|No|
 |DORA Metrics|Yes|Yes|No|
-|Cycle time and lead time summary (Key metrics)|Yes|Yes|No|
-|New issues, commits, and deploys (Key metrics)|Yes, excluding commits|Yes|Yes|
+|Cycle time and lead time summary (Lifecycle metrics)|Yes|Yes|No|
+|New issues, commits, and deploys (Lifecycle metrics)|Yes, excluding commits|Yes|Yes|
 |Uses aggregated backend|Yes|Yes|No|
 |Date filter behavior|Filters items [finished within the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046)|Filters items by creation date.|Filters items by creation date.|
 |Authorization|At least reporter|At least reporter|Can be public|
@@ -253,9 +253,9 @@ For the "Tasks by type" chart, only the Date range and Project selector filters 
 
 The **Overview** page in value stream analytics displays key metrics of the DevSecOps lifecycle performance for projects and groups.
 
-### Key metrics
+### Lifecycle metrics
 
-Value stream analytics includes the following key metrics:
+Value stream analytics includes the following lifecycle metrics:
 
 - **Lead time**: Median time from when the issue was created to when it was closed.
 - **Cycle time**: Median time from first commit to issue closed. GitLab measures cycle time from the earliest commit of a
@@ -290,21 +290,21 @@ NOTE:
 In GitLab 13.9 and later, deployment frequency metrics are calculated based on when the deployment was finished.
 In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on when the deployment was created.
 
-## View key and DORA metrics
+## View lifecycle and DORA metrics
 
 Prerequisite:
 
 - To view deployment metrics, you must have a
 [production environment configured](#how-value-stream-analytics-identifies-the-production-environment).
 
-To view key lifecycle metrics:
+To view lifecycle metrics:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
 1. Select **Analyze > Value stream analytics**.
-   Key metrics display below the **Filter results** text box.
+   Lifecycle metrics display below the **Filter results** text box.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
-      Based on the filter you select, the dashboard automatically aggregates key metrics and displays the status of the value stream.
+      Based on the filter you select, the dashboard automatically aggregates lifecycle metrics and displays the status of the value stream.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
    1. To adjust the date range:
@@ -315,7 +315,7 @@ To view the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
 1. Select **Analyze > Value stream analytics**.
-1. Below the **Filter results** text box, in the **Key metrics** row, select **Value Streams Dashboard / DORA**.
+1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
 1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
    (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 

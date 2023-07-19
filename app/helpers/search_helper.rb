@@ -373,17 +373,10 @@ module SearchHelper
   def users_autocomplete(term, limit = 5)
     return [] unless current_user && Ability.allowed?(current_user, :read_users_list)
 
-    users = if Feature.enabled?(:autocomplete_users_use_search_service)
-              ::SearchService
-              .new(current_user, { scope: 'users', per_page: limit, search: term })
-              .search_objects
-            else
-              is_current_user_admin = current_user.can_admin_all_resources?
-              scope = is_current_user_admin ? User.all : User.without_forbidden_states
-              scope.search(term, with_private_emails: is_current_user_admin, use_minimum_char_limit: false).limit(limit)
-            end
-
-    users.map do |user|
+    ::SearchService
+      .new(current_user, { scope: 'users', per_page: limit, search: term })
+      .search_objects
+      .map do |user|
       {
         category: "Users",
         id: user.id,
@@ -471,65 +464,15 @@ module SearchHelper
     result
   end
 
-  def show_code_search_tab?
-    return true if project_search_tabs?(:blobs)
-
-    @project.nil? && search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_code_tab)
-  end
-
-  def show_wiki_search_tab?
-    return true if project_search_tabs?(:wiki_blobs)
-
-    @project.nil? && search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_wiki_tab)
-  end
-
-  def show_commits_search_tab?
-    return true if project_search_tabs?(:commits)
-
-    @project.nil? && search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_commits_tab)
-  end
-
-  def show_issues_search_tab?
-    return true if project_search_tabs?(:issues)
-
-    @project.nil? && feature_flag_tab_enabled?(:global_search_issues_tab)
-  end
-
-  def show_merge_requests_search_tab?
-    return true if project_search_tabs?(:merge_requests)
-
-    @project.nil? && feature_flag_tab_enabled?(:global_search_merge_requests_tab)
-  end
-
-  def show_comments_search_tab?
-    return true if project_search_tabs?(:notes)
-
-    @project.nil? && search_service.show_elasticsearch_tabs?
-  end
-
-  def show_snippets_search_tab?
-    search_service.show_snippets? && @project.nil? && feature_flag_tab_enabled?(:global_search_snippet_titles_tab)
-  end
-
-  # search page scope navigation
-  def search_navigation
+  def nav_options
     {
-      projects: {       sort: 1, label: _("Projects"),                 data: { qa_selector: 'projects_tab' }, condition: @project.nil? },
-      blobs: {          sort: 2, label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: show_code_search_tab? },
-      #  sort: 3 is reserved for EE items
-      issues: {         sort: 4, label: _("Issues"),                   condition: show_issues_search_tab? },
-      merge_requests: { sort: 5, label: _("Merge requests"),           condition: show_merge_requests_search_tab? },
-      wiki_blobs: {     sort: 6, label: _("Wiki"),                     condition: show_wiki_search_tab? },
-      commits: {        sort: 7, label: _("Commits"),                  condition: show_commits_search_tab? },
-      notes: {          sort: 8, label: _("Comments"),                 condition: show_comments_search_tab? },
-      milestones: {     sort: 9, label: _("Milestones"),               condition: project_search_tabs?(:milestones) || @project.nil? },
-      users: {          sort: 10, label: _("Users"),                   condition: show_user_search_tab? },
-      snippet_titles: { sort: 11, label: _("Titles and Descriptions"), search: { snippets: true, group_id: nil, project_id: nil }, condition: show_snippets_search_tab? }
+      show_snippets: search_service.show_snippets?
     }
   end
 
   def search_navigation_json
-    sorted_navigation = search_navigation.sort_by { |_, h| h[:sort] }
+    search_navigation = Search::Navigation.new(user: current_user, project: @project, group: @group, options: nav_options)
+    sorted_navigation = search_navigation.tabs.sort_by { |_, h| h[:sort] }
 
     sorted_navigation.each_with_object({}) do |(key, value), hash|
       hash[key] = search_filter_link_json(key, value[:label], value[:data], value[:search]) if value[:condition]
@@ -611,14 +554,6 @@ module SearchHelper
     simple_search_highlight_and_truncate(issuable.description, search_term, highlighter: '<span class="gl-text-gray-900 gl-font-weight-bold">\1</span>')
   end
 
-  def show_user_search_tab?
-    return project_search_tabs?(:users) if @project
-    return false unless can?(current_user, :read_users_list)
-    return true if @group
-
-    Feature.enabled?(:global_search_users_tab, current_user, type: :ops)
-  end
-
   def issuable_state_to_badge_class(issuable)
     # Closed is considered "danger" for MR so we need to handle separately
     if issuable.is_a?(::MergeRequest)
@@ -647,10 +582,6 @@ module SearchHelper
     end
   end
 
-  def feature_flag_tab_enabled?(flag)
-    @group.present? || Feature.enabled?(flag, current_user, type: :ops)
-  end
-
   def sanitized_search_params
     sanitized_params = params.dup
 
@@ -663,6 +594,10 @@ module SearchHelper
     end
 
     sanitized_params
+  end
+
+  def wiki_blob_link(wiki_blob)
+    project_wiki_path(wiki_blob.project, wiki_blob.basename)
   end
 end
 

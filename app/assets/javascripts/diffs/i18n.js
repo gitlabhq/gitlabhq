@@ -1,6 +1,5 @@
 import { __, s__ } from '~/locale';
 
-export const GENERIC_ERROR = __('Something went wrong on our end. Please try again!');
 export const LOAD_SINGLE_DIFF_FAILED = s__(
   "MergeRequest|Can't fetch the diff needed to update this view. Please reload this page.",
 );
@@ -58,3 +57,18 @@ export const CONFLICT_TEXT = {
 export const HIDE_COMMENTS = __('Hide comments');
 
 export const NEW_CODE_QUALITY_FINDINGS = __('New code quality findings');
+export const NEW_SAST_FINDINGS = __('New Security findings');
+
+export const BUILDING_YOUR_MR = __(
+  'Building your merge request… This page will update when the build is complete.',
+);
+export const SOMETHING_WENT_WRONG = __('Something went wrong on our end. Please try again!');
+export const SAVING_THE_COMMENT_FAILED = s__(
+  'MergeRequests|Your comment could not be submitted because %{reason}.',
+);
+export const ERROR_LOADING_FULL_DIFF = s__(
+  'MergeRequest|Error loading full diff. Please try again.',
+);
+export const ERROR_DISMISSING_SUGESTION_POPOVER = s__(
+  'MergeRequest|Error dismissing suggestion popover. Please try again.',
+);

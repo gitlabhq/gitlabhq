@@ -47,10 +47,6 @@ describe('ProfilePreferences component', () => {
     );
   }
 
-  function findIntegrationsDivider() {
-    return wrapper.findByTestId('profile-preferences-integrations-rule');
-  }
-
   function findIntegrationsHeading() {
     return wrapper.findByTestId('profile-preferences-integrations-heading');
   }
@@ -86,21 +82,17 @@ describe('ProfilePreferences component', () => {
   it('should not render Integrations section', () => {
     wrapper = createComponent();
     const views = wrapper.findAllComponents(IntegrationView);
-    const divider = findIntegrationsDivider();
     const heading = findIntegrationsHeading();
 
-    expect(divider.exists()).toBe(false);
     expect(heading.exists()).toBe(false);
     expect(views).toHaveLength(0);
   });
 
   it('should render Integration section', () => {
     wrapper = createComponent({ provide: { integrationViews } });
-    const divider = findIntegrationsDivider();
     const heading = findIntegrationsHeading();
     const views = wrapper.findAllComponents(IntegrationView);
 
-    expect(divider.exists()).toBe(true);
     expect(heading.exists()).toBe(true);
     expect(views).toHaveLength(integrationViews.length);
   });

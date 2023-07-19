@@ -8,7 +8,7 @@ type: reference, api
 # Repository files API **(FREE)**
 
 You can fetch, create, update, and delete files in your repository with this API.
-You can also [configure rate limits](../user/admin_area/settings/files_api_rate_limits.md)
+You can also [configure rate limits](../administration/settings/files_api_rate_limits.md)
 for this API.
 
 ## Available scopes for personal access tokens
@@ -19,6 +19,7 @@ in the following table.
 | Scope | Description |
 | ----- | ----------- |
 | `api` | Allows read-write access to the repository files. |
+| `read_api` | Allows read access to the repository files. |
 | `read_repository` | Allows read-access to the repository files. |
 
 ## Get file from repository

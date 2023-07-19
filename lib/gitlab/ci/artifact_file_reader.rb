@@ -14,7 +14,8 @@ module Gitlab
       def initialize(job)
         @job = job
 
-        raise ArgumentError, 'Job does not have artifacts' unless @job.artifacts?
+        raise Error, 'Job doesnt exist' unless @job
+        raise Error, 'Job does not have artifacts' unless @job.artifacts?
 
         validate!
       end

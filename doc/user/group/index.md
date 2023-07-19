@@ -38,7 +38,7 @@ Like projects, a group can be configured to limit the visibility of it to:
 - All authenticated users.
 - Only explicit group members.
 
-The restriction for [visibility levels](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
+The restriction for [visibility levels](../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 on the application setting level also applies to groups. If set to internal, the explore page is
 empty for anonymous users. The group page has a visibility level icon.
 
@@ -67,7 +67,7 @@ This page shows groups that you are a member of:
 
 To create a group:
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Create group**.
 1. Enter a name for the group in **Group name**. For a list of words that cannot be used as group names, see
    [reserved names](../reserved_names.md).
@@ -107,7 +107,7 @@ A group can also be removed from the groups dashboard:
 
 This action removes the group. It also adds a background job to delete all projects in the group.
 
-In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
 In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
@@ -160,6 +160,30 @@ Any group owner can approve or decline the request.
 If you change your mind before your request is approved, select
 **Withdraw Access Request**.
 
+## View group members
+
+To view a group's members:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
+
+A table displays the member's:
+
+- **Account** name and username
+- **Source** of their [membership](../project/members/index.md#membership-types).
+   For transparency, GitLab displays all membership sources of group members.
+   Members who have multiple membership sources are displayed and counted as separate members.
+   For example, if a member has been added to the group both directly and through inheritance,
+   the member is displayed twice in the **Members** table, with different sources,
+   and is counted as two individual members of the group.
+- [**Max role**](../project/members/index.md#which-roles-you-can-assign) in the group
+- **Expiration** date of their group membership
+- **Activity** related to their account
+
+NOTE:
+The display of group members' **Source** might be inconsistent.
+For more information, see [issue 414557](https://gitlab.com/gitlab-org/gitlab/-/issues/414557).
+
 ## Filter and sort members in a group
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
@@ -187,7 +211,7 @@ In lists of group members, entries can display the following badges:
 
 ### Search a group
 
-You can search for members by name, username, or email.
+You can search for members by name, username, or [public email](../profile/index.md#set-your-public-email).
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Manage > Members**.
@@ -283,4 +307,4 @@ To change the role that can create projects under a group:
 1. Select the desired option in the **Roles allowed to create projects** dropdown list.
 1. Select **Save changes**.
 
-To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
+To change this setting globally, see [Default project creation protection](../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).

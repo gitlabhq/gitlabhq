@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
-    describe 'PyPI Repository' do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+    describe 'PyPI Repository',
+      quarantine: {
+        only: { job: %w[relative_url airgapped] },
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417592',
+        type: :investigating
+      } do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
@@ -30,7 +35,11 @@ module QA
       end
 
       let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }
-      let(:personal_access_token) { use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: Runtime::Env.personal_access_token, project: project) }
+
+      let!(:personal_access_token) do
+        use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: Runtime::Env.personal_access_token, project: project)
+      end
+
       let(:gitlab_address_with_port) { "#{uri.scheme}://#{uri.host}:#{uri.port}" }
       let(:gitlab_host_with_port) do
         # Don't specify port if it is a standard one

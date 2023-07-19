@@ -5,9 +5,11 @@ import { s__ } from '~/locale';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
+import eventHub from '~/boards/eventhub';
 import { listsQuery } from 'ee_else_ce/boards/constants';
 import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
+import errorQuery from '../graphql/client/error.query.graphql';
 
 export default {
   i18n: {
@@ -38,6 +40,7 @@ export default {
       addColumnFormVisible: false,
       isShowingEpicsSwimlanes: Boolean(queryToObject(window.location.search).group_by),
       apolloError: null,
+      error: null,
     };
   },
   apollo: {
@@ -75,6 +78,10 @@ export default {
         this.apolloError = this.$options.i18n.fetchError;
       },
     },
+    error: {
+      query: errorQuery,
+      update: (data) => data.boardsAppError,
+    },
   },
 
   computed: {
@@ -106,11 +113,16 @@ export default {
   },
   created() {
     window.addEventListener('popstate', refreshCurrentPage);
+    eventHub.$on('updateBoard', this.refetchLists);
   },
   destroyed() {
     window.removeEventListener('popstate', refreshCurrentPage);
+    eventHub.$off('updateBoard', this.refetchLists);
   },
   methods: {
+    refetchLists() {
+      this.$apollo.queries.boardListsApollo.refetch();
+    },
     setActiveId(id) {
       this.activeListId = id;
     },
@@ -145,7 +157,7 @@ export default {
       :is-swimlanes-on="isSwimlanesOn"
       :filter-params="filterParams"
       :board-lists-apollo="boardListsApollo"
-      :apollo-error="apolloError"
+      :apollo-error="apolloError || error"
       :list-query-variables="listQueryVariables"
       @setActiveList="setActiveId"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"

@@ -104,7 +104,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
 
         download_artifact
 
-        expect(response.headers['Content-Disposition']).to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+        expect(response.headers['Content-Disposition']).to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
       end
     end
 
@@ -135,7 +135,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
           download_artifact(file_type: 'archive')
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.headers['Content-Disposition']).to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+          expect(response.headers['Content-Disposition']).to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
         end
       end
     end
@@ -168,7 +168,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
 
             download_artifact(file_type: file_type)
 
-            expect(response.headers['Content-Disposition']).to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+            expect(response.headers['Content-Disposition']).to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
           end
         end
 
@@ -264,7 +264,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers['Content-Disposition'])
-            .to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+            .to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
         end
       end
     end

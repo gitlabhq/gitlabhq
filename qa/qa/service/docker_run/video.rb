@@ -29,6 +29,7 @@ module QA
 
             if @recorder_container_name.present? && @browser_container_hostname
               configure_rspec
+              configure_rspec_allure if QA::Runtime::Env.generate_allure_report?
 
               QA::Runtime::Logger.info("Test failure video recording setup complete!")
             else
@@ -69,17 +70,60 @@ module QA
             QA::Runtime::Logger.warn("Video deletion error: #{e}")
           end
 
+          def record?(example)
+            example.metadata[:file_path].include?("/browser_ui/")
+          end
+
+          def save?(example)
+            example.exception || QA::Runtime::Env.save_all_videos?
+          end
+
+          def retrieve_video(example)
+            return unless record?(example) && example.exception
+
+            # We need to wait until the video is finished processing by checking the size
+            QA::Support::Waiter.wait_until(max_duration: 30, sleep_interval: 1) do
+              size =
+                shell("docker exec #{@recorder_container_name} sh -c 'stat -c %s /data/#{@current_recording_name}.mp4'")
+              size.to_i > 1024
+            end
+
+            shell("docker cp #{@recorder_container_name}:/data/#{@current_recording_name}.mp4 tmp/")
+
+            "#{shell('pwd')}/tmp/#{@current_recording_name}.mp4"
+          rescue StandardError => e
+            QA::Runtime::Logger.warn("Video retrieval error: #{e}")
+          end
+
           private
 
           def configure_rspec
             RSpec.configure do |config|
               config.prepend_before do |example|
-                QA::Service::DockerRun::Video.start_recording(example)
+                QA::Service::DockerRun::Video.start_recording(example) if QA::Service::DockerRun::Video.record?(example)
               end
 
+              config.prepend_after do |example|
+                if QA::Service::DockerRun::Video.record?(example)
+                  QA::Service::DockerRun::Video.stop_recording
+                  QA::Service::DockerRun::Video.delete_video unless QA::Service::DockerRun::Video.save?(example)
+                end
+              end
+            end
+          end
+
+          def configure_rspec_allure
+            RSpec.configure do |config|
               config.append_after do |example|
-                QA::Service::DockerRun::Video.stop_recording
-                QA::Service::DockerRun::Video.delete_video unless example.exception
+                video_path = QA::Service::DockerRun::Video.retrieve_video(example)
+                if video_path
+                  Allure.add_attachment(
+                    name: 'video',
+                    source: File.open(video_path),
+                    type: 'video/mp4',
+                    test_case: true
+                  )
+                end
               end
             end
           end

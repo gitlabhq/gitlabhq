@@ -804,15 +804,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let!(:package2) { create(:npm_package, version: '1.0.1') }
     let!(:package3) { create(:npm_package, version: '1.0.1') }
 
-    describe '.last_of_each_version' do
-      subject { described_class.last_of_each_version }
-
-      it 'includes only latest package per version' do
-        is_expected.to include(package1, package3)
-        is_expected.not_to include(package2)
-      end
-    end
-
     describe '.has_version' do
       subject { described_class.has_version }
 
@@ -1023,6 +1014,32 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  describe '.select_only_first_by_name' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package1) { create(:package, name: 'p1', created_at: 1000, project: project) }
+    let_it_be(:package2) { create(:package, name: 'p1', created_at: 1001, project: project) }
+    let_it_be(:package3) { create(:package, name: 'p2', project: project) }
+
+    subject { described_class.order_name_desc_version_desc.select_only_first_by_name }
+
+    it 'returns only the most recent package by name' do
+      is_expected.to eq([package3, package2])
+    end
+  end
+
+  describe '.order_name_desc_version_desc' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package1) { create(:package, name: 'p1', created_at: 1000, project: project) }
+    let_it_be(:package2) { create(:package, name: 'p1', created_at: 1001, project: project) }
+    let_it_be(:package3) { create(:package, name: 'p2', project: project) }
+
+    subject { described_class.order_name_desc_version_desc }
+
+    it 'sorts packages by name desc and created desc' do
+      is_expected.to eq([package3, package2, package1])
+    end
+  end
+
   context 'sorting' do
     let_it_be(:project) { create(:project, name: 'aaa') }
     let_it_be(:project2) { create(:project, name: 'bbb') }
@@ -1032,22 +1049,22 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let_it_be(:package4) { create(:package, project: project) }
 
     it 'orders packages by their projects name ascending' do
-      expect(Packages::Package.order_project_name).to eq([package1, package4, package2, package3])
+      expect(described_class.order_project_name).to eq([package1, package4, package2, package3])
     end
 
     it 'orders packages by their projects name descending' do
-      expect(Packages::Package.order_project_name_desc).to eq([package2, package3, package1, package4])
+      expect(described_class.order_project_name_desc).to eq([package2, package3, package1, package4])
     end
 
     shared_examples 'order_project_path scope' do
       it 'orders packages by their projects path asc, then package id asc' do
-        expect(Packages::Package.order_project_path).to eq([package1, package4, package2, package3])
+        expect(described_class.order_project_path).to eq([package1, package4, package2, package3])
       end
     end
 
     shared_examples 'order_project_path_desc scope' do
       it 'orders packages by their projects path desc, then package id desc' do
-        expect(Packages::Package.order_project_path_desc).to eq([package3, package2, package4, package1])
+        expect(described_class.order_project_path_desc).to eq([package3, package2, package4, package1])
       end
     end
 

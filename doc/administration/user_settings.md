@@ -14,7 +14,7 @@ By default, new users can create top-level groups. To disable new users'
 ability to create top-level groups (does not affect existing users' setting), GitLab administrators can modify this setting:
 
 - In GitLab 15.5 and later, using either:
-  - The [GitLab UI](../user/admin_area/settings/account_and_limit_settings.md#prevent-new-users-from-creating-top-level-groups).
+  - The [GitLab UI](../administration/settings/account_and_limit_settings.md#prevent-new-users-from-creating-top-level-groups).
   - The [application setting API](../api/settings.md#change-application-settings).
 - In GitLab 15.4 and earlier, in a configuration file by following the steps in this section.
 
@@ -44,7 +44,7 @@ For self-compiled installations:
 
 Administrators can:
 
-- Use the Admin Area to [prevent an existing user from creating top-level groups](../user/admin_area/index.md#prevent-a-user-from-creating-groups).
+- Use the Admin Area to [prevent an existing user from creating top-level groups](../administration/admin_area.md#prevent-a-user-from-creating-groups).
 - Use the [modify an existing user API endpoint](../api/users.md#user-modification) to change the `can_create_group` setting.
 
 ## Prevent users from changing their usernames

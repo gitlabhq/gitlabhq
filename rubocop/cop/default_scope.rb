@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # Cop that blacklists the use of `default_scope`.
+    # Cop that denylists the use of `default_scope`.
     class DefaultScope < RuboCop::Cop::Base
       MSG = <<~EOF
         Do not use `default_scope`, as it does not follow the principle of

@@ -55,6 +55,8 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       organization
       jobTitle
       createdAt
+      pronouns
+      ide
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -77,13 +79,13 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
     let(:username) { requested_user.username }
 
     let(:query) do
-      %(
+      <<~GQL
         query {
           user(username: "#{username}") {
             name
           }
         }
-      )
+      GQL
     end
 
     subject(:user_name) { GitlabSchema.execute(query, context: { current_user: current_user }).as_json.dig('data', 'user', 'name') }
@@ -252,6 +254,42 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
 
     it 'returns user namespace_commit_emails' do
       is_expected.to have_graphql_type(Types::Users::NamespaceCommitEmailType.connection_type)
+    end
+  end
+
+  describe 'ide field' do
+    subject { described_class.fields['ide'] }
+
+    it 'returns ide' do
+      is_expected.to have_graphql_type(Types::IdeType)
+    end
+
+    context 'code suggestions enabled' do
+      let(:current_user) { create(:user) }
+      let(:query) do
+        <<~GQL
+        query {
+          currentUser {
+            ide {
+              codeSuggestionsEnabled
+            }
+          }
+        }
+        GQL
+      end
+
+      subject(:code_suggestions_enabled) do
+        GitlabSchema.execute(query, context: { current_user: current_user })
+          .as_json
+          .dig('data', 'currentUser', 'ide', 'codeSuggestionsEnabled')
+      end
+
+      it 'returns code suggestions enabled' do
+        allow(current_user).to receive(:can?).with(:access_code_suggestions).and_return(true)
+
+        expect(current_user).to receive(:can?).with(:access_code_suggestions).and_return(true)
+        expect(code_suggestions_enabled).to be true
+      end
     end
   end
 end

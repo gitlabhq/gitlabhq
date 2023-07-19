@@ -219,8 +219,8 @@ end
 
 **How do we test?**
 
-1. Check if the user avatar appears in the top navigation.
-1. Check if the user avatar *does not* appear in the top navigation.
+1. Check if the user avatar appears in the left sidebar.
+1. Check if the user avatar *does not* appear in the left sidebar.
 
 Behind the scenes, `be_signed_in` is a
 [predicate matcher](https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/predicates/)

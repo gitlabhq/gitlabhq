@@ -4,7 +4,7 @@ import AccessDropdown from './components/access_dropdown.vue';
 
 export const initAccessDropdown = (el) => {
   if (!el) {
-    return false;
+    return null;
   }
 
   const { label, disabled, preselectedItems } = el.dataset;

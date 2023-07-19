@@ -21,7 +21,7 @@ class AbstractPathValidator < ActiveModel::EachValidator
   end
 
   def validate_each(record, attribute, value)
-    unless value =~ self.class.format_regex
+    unless self.class.format_regex.match?(value)
       record.errors.add(attribute, self.class.format_error_message)
       return
     end

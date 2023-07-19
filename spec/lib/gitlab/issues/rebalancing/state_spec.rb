@@ -160,12 +160,11 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
       before do
         generate_and_cache_issues_ids(count: 3)
         rebalance_caching.cache_current_index(123)
-        rebalance_caching.cache_current_project_id(456)
         rebalance_caching.track_new_running_rebalance
       end
 
       it 'removes cache keys' do
-        expect(check_existing_keys).to eq(4)
+        expect(check_existing_keys).to eq(3)
 
         rebalance_caching.cleanup_cache
 

@@ -9,9 +9,9 @@ module QA
         token = @personal_access_tokens[username]
 
         log_message = if token
-                        %Q[Retrieved cached token for username: #{username}, last six chars of token:#{token[-6..]}]
+                        %[Retrieved cached token for username: #{username}, last six chars of token:#{token[-6..]}]
                       else
-                        %Q[No cached token found for username: #{username}]
+                        %[No cached token found for username: #{username}]
                       end
 
         QA::Runtime::Logger.info(log_message)
@@ -20,7 +20,7 @@ module QA
       end
 
       def self.set_token_for_username(username, token)
-        QA::Runtime::Logger.info(%Q[Caching token for username: #{username}, last six chars of token:#{token[-6..]}])
+        QA::Runtime::Logger.info(%[Caching token for username: #{username}, last six chars of token:#{token[-6..]}])
         @personal_access_tokens[username] = token
       end
     end

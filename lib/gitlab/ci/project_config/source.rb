@@ -5,7 +5,6 @@ module Gitlab
     class ProjectConfig
       class Source
         include Gitlab::Utils::StrongMemoize
-        extend ::Gitlab::Utils::Override
 
         def initialize(project, sha, custom_content, pipeline_source, pipeline_source_bridge)
           @project = project

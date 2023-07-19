@@ -16,11 +16,6 @@ module Sidebars
           add_item(merge_requests_menu_item)
           add_item(ci_cd_menu_item)
           add_item(packages_and_registries_menu_item)
-
-          if Feature.disabled?(:show_pages_in_deployments_menu, context.current_user, type: :experiment)
-            add_item(pages_menu_item)
-          end
-
           add_item(monitor_menu_item)
           add_item(usage_quotas_menu_item)
 
@@ -128,19 +123,6 @@ module Sidebars
             link: project_settings_packages_and_registries_path(context.project),
             active_routes: { controller: :packages_and_registries },
             item_id: :packages_and_registries
-          )
-        end
-
-        def pages_menu_item
-          unless context.project.pages_available?
-            return ::Sidebars::NilMenuItem.new(item_id: :pages)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Pages'),
-            link: project_pages_path(context.project),
-            active_routes: { path: 'pages#show' },
-            item_id: :pages
           )
         end
 

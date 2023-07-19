@@ -95,6 +95,29 @@
     "options": {
       "type": "object"
     },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "unique"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "unique": {
+            "type": "string",
+            "enum": [
+              "user.id",
+              "project.id",
+              "namespace.id"
+            ]
+          }
+        }
+      }
+    },
     "time_frame": {
       "type": "string",
       "enum": [
@@ -112,7 +135,8 @@
         "redis_hll",
         "prometheus",
         "system",
-        "license"
+        "license",
+        "internal_events"
       ]
     },
     "data_category": {

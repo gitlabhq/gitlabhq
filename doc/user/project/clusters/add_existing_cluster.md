@@ -66,7 +66,7 @@ to grant access.
 To add a Kubernetes cluster to your project, group, or instance:
 
 1. Navigate to your:
-   1. Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level cluster.
+   1. Project's **{cloud-gear}** **Operate > Kubernetes clusters** page, for a project-level cluster.
    1. Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    1. **Main menu > Admin > Kubernetes** page, for an instance-level cluster.
 1. On the **Kubernetes clusters** page, select the **Connect with a certificate** option from the **Actions** dropdown list.

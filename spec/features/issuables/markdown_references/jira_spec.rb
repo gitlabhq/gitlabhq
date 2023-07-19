@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe "Jira", :js, feature_category: :team_planning do
+  include ContentEditorHelpers
+
   let(:user) { create(:user) }
   let(:actual_project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, target_project: actual_project, source_project: actual_project) }
@@ -24,6 +26,7 @@ RSpec.describe "Jira", :js, feature_category: :team_planning do
       sign_in(user)
 
       visit(merge_request_path(merge_request))
+      close_rich_text_promo_popover_if_present
 
       build_note
     end

@@ -4,21 +4,17 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages administration for source installations **(FREE SELF)**
+# GitLab Pages administration for self-compiled installations **(FREE SELF)**
 
 NOTE:
 Before attempting to enable GitLab Pages, first make sure you have
 [installed GitLab](../../install/installation.md) successfully.
 
-This document explains how to configure GitLab Pages when you have installed
-GitLab from source and not the Omnibus packages.
+This document explains how to configure GitLab Pages for self-compiled GitLab installations.
 
-You are encouraged to read the [Omnibus documentation](index.md) as it provides
-invaluable information about the configuration of GitLab Pages.
+For more information about configuring GitLab Pages for Linux Package installations (recommended), see the [Linux package documentation](index.md).
 
-We also highly recommend that you use the Omnibus GitLab packages. We
-optimize them specifically for GitLab, and we take care of upgrading GitLab
-Pages to the latest supported version.
+The advantage of using the Linux package installation is that it contains the latest supported version of GitLab Pages.
 
 ## How GitLab Pages works
 
@@ -491,7 +487,7 @@ To change this value:
 
 ## Backup
 
-Pages are part of the [regular backup](../../raketasks/backup_restore.md) so there is nothing to configure.
+Pages are part of the [regular backup](../../administration/backup_restore/index.md) so there is nothing to configure.
 
 ## Security
 

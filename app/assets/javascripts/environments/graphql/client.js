@@ -8,6 +8,7 @@ import environmentToStopQuery from './queries/environment_to_stop.query.graphql'
 import k8sPodsQuery from './queries/k8s_pods.query.graphql';
 import k8sServicesQuery from './queries/k8s_services.query.graphql';
 import k8sWorkloadsQuery from './queries/k8s_workloads.query.graphql';
+import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
 import { resolvers } from './resolvers';
 import typeDefs from './typedefs.graphql';
 
@@ -158,6 +159,14 @@ export const apolloProvider = (endpoint) => {
         spec: {
           suspend: false,
         },
+      },
+    },
+  });
+  cache.writeQuery({
+    query: k8sNamespacesQuery,
+    data: {
+      metadata: {
+        name: null,
       },
     },
   });

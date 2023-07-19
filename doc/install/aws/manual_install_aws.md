@@ -268,7 +268,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 1. Select **Configure Health Check** and set up a health check for your EC2 instances.
    1. For **Ping Protocol**, select HTTP.
    1. For **Ping Port**, enter 80.
-   1. For **Ping Path** - we recommend that you [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-groups.html#elb-vpc-nacl) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health Check endpoints](../../user/admin_area/monitoring/health_check.md)
+   1. For **Ping Path** - we recommend that you [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-groups.html#elb-vpc-nacl) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health Check endpoints](../../administration/monitoring/health_check.md)
    1. Keep the default **Advanced Details** or adjust them according to your needs.
 1. Select **Add EC2 Instances** - don't add anything as we create an Auto Scaling Group later to manage instances for us.
 1. Select **Add Tags** and add any tags you need.
@@ -741,7 +741,7 @@ GitLab provides its own integrated monitoring solution based on Prometheus.
 For more information about how to set it up, see
 [GitLab Prometheus](../../administration/monitoring/prometheus/index.md).
 
-GitLab also has various [health check endpoints](../../user/admin_area/monitoring/health_check.md)
+GitLab also has various [health check endpoints](../../administration/monitoring/health_check.md)
 that you can ping and get reports.
 
 ## GitLab Runner
@@ -754,16 +754,16 @@ Read more on configuring an
 
 ## Backup and restore
 
-GitLab provides [a tool to back up](../../raketasks/backup_restore.md)
+GitLab provides [a tool to back up](../../administration/backup_restore/index.md)
 and restore its Git data, database, attachments, LFS objects, and so on.
 
 Some important things to know:
 
 - The backup/restore tool **does not** store some configuration files, like secrets; you
-  must [configure this yourself](../../raketasks/backup_gitlab.md#storing-configuration-files).
+  must [configure this yourself](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - By default, the backup files are stored locally, but you can
-  [backup GitLab using S3](../../raketasks/backup_gitlab.md#using-amazon-s3).
-- You can [exclude specific directories form the backup](../../raketasks/backup_gitlab.md#excluding-specific-directories-from-the-backup).
+  [backup GitLab using S3](../../administration/backup_restore/backup_gitlab.md#using-amazon-s3).
+- You can [exclude specific directories form the backup](../../administration/backup_restore/backup_gitlab.md#excluding-specific-directories-from-the-backup).
 
 ### Backing up GitLab
 
@@ -781,9 +781,9 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 ### Restoring GitLab from a backup
 
-To restore GitLab, first review the [restore documentation](../../raketasks/backup_restore.md#restore-gitlab),
+To restore GitLab, first review the [restore documentation](../../administration/backup_restore/index.md#restore-gitlab),
 and primarily the restore prerequisites. Then, follow the steps under the
-[Linux package installations section](../../raketasks/restore_gitlab.md#restore-for-omnibus-gitlab-installations).
+[Linux package installations section](../../administration/backup_restore/restore_gitlab.md#restore-for-omnibus-gitlab-installations).
 
 ## Updating GitLab
 
@@ -833,7 +833,7 @@ to request additional material:
   Geo is the solution for widely distributed development teams.
 - [Linux package](https://docs.gitlab.com/omnibus/) - Everything you must know
   about administering your GitLab instance.
-- [Add a license](../../user/admin_area/license.md):
+- [Add a license](../../administration/license.md):
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 

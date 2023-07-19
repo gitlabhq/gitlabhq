@@ -1,0 +1,10 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+RSpec/InstanceVariable:
+  Exclude:
+    - spec/**/*.rb
+
+Gitlab/ChangeTimezone:
+  Exclude:
+    - spec/gitlab/rspec/time_travel_spec.rb

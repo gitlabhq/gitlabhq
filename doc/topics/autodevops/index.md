@@ -174,7 +174,7 @@ To enable Auto DevOps for your instance:
 
 When enabled, Auto DevOps attempts to run pipelines in every project. If the
 pipeline fails in a particular project, it disables itself.
-GitLab administrators can change this in the [Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops).
+GitLab administrators can change this in the [Auto DevOps settings](../../administration/settings/continuous_integration.md#auto-devops).
 
 If a [CI/CD configuration file](../../ci/yaml/index.md) is present,
 it remains unchanged and Auto DevOps does not affect it.

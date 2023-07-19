@@ -1,0 +1,73 @@
+# frozen_string_literal: true
+
+module Gitlab
+  module Schema
+    module Validation
+      class PgTypes
+        TYPES = {
+          'bool' => 'boolean',
+          'bytea' => 'bytea',
+          'char' => '"char"',
+          'int8' => 'bigint',
+          'int2' => 'smallint',
+          'int4' => 'integer',
+          'regproc' => 'regproc',
+          'text' => 'text',
+          'oid' => 'oid',
+          'tid' => 'tid',
+          'xid' => 'xid',
+          'cid' => 'cid',
+          'json' => 'json',
+          'xml' => 'xml',
+          'pg_node_tree' => 'pg_node_tree',
+          'pg_ndistinct' => 'pg_ndistinct',
+          'pg_dependencies' => 'pg_dependencies',
+          'pg_mcv_list' => 'pg_mcv_list',
+          'xid8' => 'xid8',
+          'path' => 'path',
+          'polygon' => 'polygon',
+          'float4' => 'real',
+          'float8' => 'double precision',
+          'circle' => 'circle',
+          'money' => 'money',
+          'macaddr' => 'macaddr',
+          'inet' => 'inet',
+          'cidr' => 'cidr',
+          'macaddr8' => 'macaddr8',
+          'aclitem' => 'aclitem',
+          'bpchar' => 'character',
+          'varchar' => 'character varying',
+          'date' => 'date',
+          'time' => 'time without time zone',
+          'timestamp' => 'timestamp without time zone',
+          'timestamptz' => 'timestamp with time zone',
+          'interval' => 'interval',
+          'timetz' => 'time with time zone',
+          'bit' => 'bit',
+          'varbit' => 'bit varying',
+          'numeric' => 'numeric',
+          'refcursor' => 'refcursor',
+          'regprocedure' => 'regprocedure',
+          'regoper' => 'regoper',
+          'regoperator' => 'regoperator',
+          'regclass' => 'regclass',
+          'regcollation' => 'regcollation',
+          'regtype' => 'regtype',
+          'regrole' => 'regrole',
+          'regnamespace' => 'regnamespace',
+          'uuid' => 'uuid',
+          'pg_lsn' => 'pg_lsn',
+          'tsvector' => 'tsvector',
+          'gtsvector' => 'gtsvector',
+          'tsquery' => 'tsquery',
+          'regconfig' => 'regconfig',
+          'regdictionary' => 'regdictionary',
+          'jsonb' => 'jsonb',
+          'jsonpath' => 'jsonpath',
+          'txid_snapshot' => 'txid_snapshot',
+          'pg_snapshot' => 'pg_snapshot'
+        }.freeze
+      end
+    end
+  end
+end

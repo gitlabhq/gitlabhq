@@ -158,6 +158,12 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
 
         it { is_expected.not_to be_empty }
 
+        it 'has a work_item_type' do
+          issue = subject.first
+
+          expect(issue['work_item_type']).to eq('base_type' => 'task')
+        end
+
         it 'has issue comments' do
           notes = subject.first['notes']
 
@@ -481,7 +487,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
       group: group,
       approvals_before_merge: 1)
 
-    issue = create(:issue, assignees: [user], project: project)
+    issue = create(:issue, :task, assignees: [user], project: project)
     snippet = create(:project_snippet, project: project)
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)

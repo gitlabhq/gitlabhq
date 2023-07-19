@@ -238,6 +238,16 @@ describe('RoleDropdown', () => {
       it('does not call updateMemberRole', () => {
         expect(actions.updateMemberRole).not.toHaveBeenCalled();
       });
+
+      it('re-enables dropdown', async () => {
+        await waitForPromises();
+
+        expect(findListbox().props('disabled')).toBe(false);
+      });
+
+      it('resets selected dropdown item', () => {
+        expect(findListbox().props('selected')).toBe(member.validRoles.Owner);
+      });
     });
   });
 });

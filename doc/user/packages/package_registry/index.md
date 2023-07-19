@@ -26,7 +26,7 @@ Learn how to use the GitLab Package Registry to build your own custom package wo
 You can view packages for your project or group.
 
 1. Go to the project or group.
-1. Go to **Packages and registries > Package Registry**.
+1. Go to **Deploy > Package Registry**.
 
 You can search, sort, and filter packages on this page. You can share your search results by copying
 and pasting the URL from your browser.
@@ -131,7 +131,7 @@ You can also remove the Package Registry for your project specifically:
    **Packages** feature.
 1. Select **Save changes**.
 
-The **Packages and registries > Package Registry** entry is removed from the sidebar.
+The **Deploy > Package Registry** entry is removed from the sidebar.
 
 ## Package Registry visibility permissions
 
@@ -161,7 +161,7 @@ Registry disables all Package Registry operations.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To disable it,
-ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `package_registry_access_level`.
+an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `package_registry_access_level`.
 
 If you want to allow anyone (everyone on the internet) to pull from the Package Registry, no matter what the project visibility is, you can use the additional toggle `Allow anyone to pull from Package Registry` that appears when the project visibility is Private or Internal.
 

@@ -12,7 +12,7 @@ the Google Cloud Platform. This solution uses an
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
 
 These SaaS runners are in [Beta](../../../policy/experiment-beta-support.md#beta)
-and aren't recomended for production workloads.
+and aren't recommended for production workloads.
 
 We want to keep iterating to get Windows runners in a stable state and
 [generally available](../../../policy/experiment-beta-support.md#generally-available-ga).
@@ -57,15 +57,14 @@ Below is a sample `.gitlab-ci.yml` file that shows how to start using the runner
   tags:
     - shared-windows
     - windows-1809
+  before_script:
+    - Set-Variable -Name "time" -Value (date -Format "%H:%m")
+    - echo ${time}
+    - echo "started by ${GITLAB_USER_NAME}"
 
 stages:
   - build
   - test
-
-before_script:
- - Set-Variable -Name "time" -Value (date -Format "%H:%m")
- - echo ${time}
- - echo "started by ${GITLAB_USER_NAME}"
 
 build:
   extends:

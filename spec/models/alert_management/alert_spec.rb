@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe AlertManagement::Alert do
+RSpec.describe AlertManagement::Alert, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:project2) { create(:project) }
-  let_it_be(:triggered_alert, reload: true) { create(:alert_management_alert, :triggered, project: project) }
-  let_it_be(:acknowledged_alert, reload: true) { create(:alert_management_alert, :acknowledged, project: project) }
-  let_it_be(:resolved_alert, reload: true) { create(:alert_management_alert, :resolved, project: project2) }
-  let_it_be(:ignored_alert, reload: true) { create(:alert_management_alert, :ignored, project: project2) }
+  let_it_be_with_refind(:triggered_alert) { create(:alert_management_alert, :triggered, project: project) }
+  let_it_be_with_refind(:acknowledged_alert) { create(:alert_management_alert, :acknowledged, project: project) }
+  let_it_be_with_refind(:resolved_alert) { create(:alert_management_alert, :resolved, project: project2) }
+  let_it_be_with_refind(:ignored_alert) { create(:alert_management_alert, :ignored, project: project2) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -168,7 +168,7 @@ RSpec.describe AlertManagement::Alert do
       let_it_be(:alert) { triggered_alert }
       let_it_be(:assignee) { create(:user) }
 
-      subject { AlertManagement::Alert.for_assignee_username(assignee_username) }
+      subject { described_class.for_assignee_username(assignee_username) }
 
       before_all do
         alert.update!(assignees: [assignee])
@@ -269,7 +269,7 @@ RSpec.describe AlertManagement::Alert do
       alert.update!(title: 'Title', description: 'Desc', service: 'Service', monitoring_tool: 'Monitor')
     end
 
-    subject { AlertManagement::Alert.search(query) }
+    subject { described_class.search(query) }
 
     context 'does not contain search string' do
       let(:query) { 'something else' }

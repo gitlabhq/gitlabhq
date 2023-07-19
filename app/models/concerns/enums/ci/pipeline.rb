@@ -85,7 +85,8 @@ module Enums
           external_project_source: 5,
           bridge_source: 6,
           parameter_source: 7,
-          compliance_source: 8
+          compliance_source: 8,
+          security_policies_default_source: 9
         }
       end
     end

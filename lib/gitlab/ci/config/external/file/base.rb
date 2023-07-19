@@ -90,15 +90,7 @@ module Gitlab
             end
 
             def load_and_validate_expanded_hash!
-              context.logger.instrument(:config_file_fetch_content_hash) do
-                content_result # calling the method loads YAML then memoizes the content result
-              end
-
-              context.logger.instrument(:config_file_interpolate_result) do
-                interpolator.interpolate!
-              end
-
-              return validate_interpolation! unless interpolator.valid?
+              return errors.push("`#{masked_location}`: #{content_result.error}") unless content_result.valid?
 
               context.logger.instrument(:config_file_expand_content_includes) do
                 expanded_content_hash # calling the method expands then memoizes the result
@@ -109,36 +101,24 @@ module Gitlab
 
             protected
 
-            def content_result
-              ::Gitlab::Ci::Config::Yaml
-                .load_result!(content, project: context.project)
-            end
-            strong_memoize_attr :content_result
-
             def content_inputs
               # TODO: remove support for `with` syntax in 16.1, see https://gitlab.com/gitlab-org/gitlab/-/issues/408369
               # In the interim prefer `inputs` over `with` while allow either syntax.
               params.to_h.slice(:inputs, :with).each_value.first
             end
-            strong_memoize_attr :content_inputs
 
-            def content_hash
-              interpolator.interpolate!
-
-              interpolator.to_hash
+            def content_result
+              context.logger.instrument(:config_file_fetch_content_hash) do
+                ::Gitlab::Ci::Config::Yaml::Loader.new(content, inputs: content_inputs, current_user: context.user).load
+              end
             end
-            strong_memoize_attr :content_hash
-
-            def interpolator
-              Yaml::Interpolator.new(content_result, content_inputs, context)
-            end
-            strong_memoize_attr :interpolator
+            strong_memoize_attr :content_result
 
             def expanded_content_hash
-              return if content_hash.blank?
+              return if content_result.content.blank?
 
               strong_memoize(:expanded_content_hash) do
-                expand_includes(content_hash)
+                expand_includes(content_result.content)
               end
             end
 
@@ -146,12 +126,6 @@ module Gitlab
               if to_hash.blank?
                 errors.push("Included file `#{masked_location}` does not have valid YAML syntax!")
               end
-            end
-
-            def validate_interpolation!
-              return if interpolator.valid?
-
-              errors.push("`#{masked_location}`: #{interpolator.error_message}")
             end
 
             def expand_includes(hash)

@@ -8,6 +8,9 @@ module Ci
     include ::Checksummable
     include ::Gitlab::ExclusiveLeaseHelpers
     include ::Gitlab::OptimisticLocking
+    include SafelyChangeColumnDefault
+
+    columns_changing_default :partition_id
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id, inverse_of: :trace_chunks
 
@@ -166,7 +169,7 @@ module Ci
         raise FailedToPersistDataError, 'Modifed build trace chunk detected' if has_changes_to_save?
 
         self.class.with_read_consistency(build) do
-          reset.then(&:unsafe_persist_data!)
+          reset.unsafe_persist_data!
         end
       end
     rescue FailedToObtainLockError
@@ -242,7 +245,7 @@ module Ci
       ##
       # We need to so persist data then save a new store identifier before we
       # remove data from the previous store to make this operation
-      # trasnaction-safe. `unsafe_set_data! calls `save!` because of this
+      # transaction-safe. `unsafe_set_data! calls `save!` because of this
       # reason.
       #
       # TODO consider using callbacks and state machine to remove old data

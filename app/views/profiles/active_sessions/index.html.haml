@@ -1,16 +1,15 @@
 - page_title _('Active Sessions')
 - @force_desktop_expanded_sidebar = true
 
-.row.gl-mt-3.js-search-settings-section
-  .col-lg-4.profile-settings-sidebar
-    %h4.gl-mt-0
-      = page_title
-    %p
-      = _('This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize.')
-  .col-lg-8
-    .gl-mb-3
+.settings-section.js-search-settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = page_title
+  %p.gl-text-secondary
+    = _('This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize.')
 
-      = render Pajamas::CardComponent.new(card_options: { class: 'gl-border-0' }, body_options: { class: 'gl-p-0' }) do |c|
-        - c.with_body do
-          %ul.list-group.list-group-flush
-            = render partial: 'profiles/active_sessions/active_session', collection: @sessions
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-border-0' }, body_options: { class: 'gl-p-0' }) do |c|
+    - c.with_body do
+      %ul.list-group.list-group-flush
+        = render partial: 'profiles/active_sessions/active_session', collection: @sessions

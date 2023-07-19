@@ -25,6 +25,8 @@ RSpec.shared_examples 'pipeline status changes email' do
   end
 
   shared_examples_for 'renders the pipeline status changes email correctly' do
+    let(:pipeline_name_or_id) { pipeline.name || "##{pipeline.id}" }
+
     context 'pipeline with user' do
       it 'renders the email correctly' do
         render
@@ -33,11 +35,12 @@ RSpec.shared_examples 'pipeline status changes email' do
         expect(rendered).to have_content pipeline.project.name
         expect(rendered).to have_content pipeline.git_commit_message.truncate(50).gsub(/\s+/, ' ')
         expect(rendered).to have_content pipeline.commit.author_name
-        expect(rendered).to have_content "##{pipeline.id}"
+        expect(rendered).to have_content pipeline_name_or_id
         expect(rendered).to have_content pipeline.user.name
 
         if status == :failed
           expect(rendered).to have_content build.name
+          expect(rendered).to include("#{build.project.full_path}/-/jobs/#{build.id}") unless build.is_a?(Ci::Bridge)
         end
       end
 
@@ -56,11 +59,12 @@ RSpec.shared_examples 'pipeline status changes email' do
         expect(rendered).to have_content pipeline.project.name
         expect(rendered).to have_content pipeline.git_commit_message.truncate(50).gsub(/\s+/, ' ')
         expect(rendered).to have_content pipeline.commit.author_name
-        expect(rendered).to have_content "##{pipeline.id}"
+        expect(rendered).to have_content pipeline_name_or_id
         expect(rendered).to have_content "by API"
 
         if status == :failed
           expect(rendered).to have_content build.name
+          expect(rendered).to include("#{build.project.full_path}/-/jobs/#{build.id}") unless build.is_a?(Ci::Bridge)
         end
       end
     end

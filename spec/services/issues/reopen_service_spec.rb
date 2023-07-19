@@ -68,6 +68,12 @@ RSpec.describe Issues::ReopenService, feature_category: :team_planning do
         expect { execute }.not_to change { issue.incident_management_timeline_events.count }
       end
 
+      it 'does not call GroupMentionWorker' do
+        expect(Integrations::GroupMentionWorker).not_to receive(:perform_async)
+
+        issue
+      end
+
       context 'issue is incident type' do
         let(:issue) { create(:incident, :closed, project: project) }
         let(:current_user) { user }

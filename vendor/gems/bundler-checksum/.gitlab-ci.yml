@@ -1,24 +1,10 @@
-workflow:
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
+include:
+  - local: gems/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "bundler-checksum"
+      gem_path_prefix: "vendor/gems/"
 
 rspec:
-  image: "ruby:${RUBY_VERSION}"
-  cache:
-    key: bundler-checksum
-    paths:
-      - vendor/gems/bundler-checksum/vendor/ruby
-  before_script:
-    - cd vendor/gems/bundler-checksum
-    - ruby -v                                   # Print out ruby version for debugging
-    - gem install bundler --no-document         # Bundler is not installed with the image
-    - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
-    - bundle config set with 'development'
-    - bundle config set --local frozen 'true'   # Disallow Gemfile.lock changes on CI
-    - bundle config                             # Show bundler configuration
-    - bundle install -j $(nproc)
+  extends: .ruby_matrix
   script:
     - pushd test/project_with_checksum_lock && scripts/test
-  parallel:
-    matrix:
-      - RUBY_VERSION: ["2.7", "3.0", "3.1", "3.2"]

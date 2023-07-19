@@ -7,6 +7,9 @@ module Ci
     include Ci::HasStatus
     include Gitlab::OptimisticLocking
     include Presentable
+    include SafelyChangeColumnDefault
+
+    columns_changing_default :partition_id
 
     partitionable scope: :pipeline
 
@@ -148,7 +151,7 @@ module Ci
     end
 
     def manual_playable?
-      blocked? || skipped?
+      blocked?
     end
 
     # This will be removed with ci_remove_ensure_stage_service

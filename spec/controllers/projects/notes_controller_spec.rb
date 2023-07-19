@@ -39,6 +39,12 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
     specify { expect(get(:index, params: request_params)).to have_request_urgency(:medium) }
 
+    it 'sets the correct feature category' do
+      get :index, params: request_params
+
+      expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('team_planning')
+    end
+
     it 'passes last_fetched_at from headers to NotesFinder and MergeIntoNotesService' do
       last_fetched_at = Time.zone.at(3.hours.ago.to_i) # remove nanoseconds
 
@@ -149,6 +155,12 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
           expect(note_json[:discussion_line_code]).to be_nil
         end
 
+        it 'sets the correct feature category' do
+          get :index, params: params
+
+          expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('source_code_management')
+        end
+
         context 'when user cannot read commit' do
           before do
             allow(Ability).to receive(:allowed?).and_call_original
@@ -164,7 +176,29 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
       end
     end
 
-    context 'for a regular note' do
+    context 'for a snippet note' do
+      let(:project_snippet) { create(:project_snippet, project: project) }
+      let!(:note) { create(:note_on_project_snippet, project: project, noteable: project_snippet) }
+
+      let(:params) { request_params.merge(target_type: 'project_snippet', target_id: project_snippet.id, html: true) }
+
+      it 'responds with the expected attributes' do
+        get :index, params: params
+
+        expect(note_json[:id]).to eq(note.id)
+        expect(note_json[:discussion_html]).to be_nil
+        expect(note_json[:diff_discussion_html]).to be_nil
+        expect(note_json[:discussion_line_code]).to be_nil
+      end
+
+      it 'sets the correct feature category' do
+        get :index, params: params
+
+        expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('source_code_management')
+      end
+    end
+
+    context 'for a merge request note' do
       let!(:note) { create(:note_on_merge_request, project: project) }
 
       let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id, html: true) }
@@ -177,6 +211,12 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
         expect(note_json[:discussion_html]).to be_nil
         expect(note_json[:diff_discussion_html]).to be_nil
         expect(note_json[:discussion_line_code]).to be_nil
+      end
+
+      it 'sets the correct feature category' do
+        get :index, params: params
+
+        expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('code_review_workflow')
       end
     end
 
@@ -251,6 +291,68 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
     describe 'making the creation request' do
       before do
         create!
+      end
+
+      it 'sets the correct feature category' do
+        create!
+
+        expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('code_review_workflow')
+      end
+
+      context 'on an issue' do
+        let(:request_params) do
+          {
+            note: { note: note_text, noteable_id: issue.id, noteable_type: 'Issue' },
+            namespace_id: project.namespace,
+            project_id: project,
+            target_type: 'issue',
+            target_id: issue.id
+          }
+        end
+
+        it 'sets the correct feature category' do
+          create!
+
+          expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('team_planning')
+        end
+      end
+
+      context 'on a commit' do
+        let(:commit_id) { RepoHelpers.sample_commit.id }
+        let(:request_params) do
+          {
+            note: { note: note_text, commit_id: commit_id, noteable_type: 'Commit' },
+            namespace_id: project.namespace,
+            project_id: project,
+            target_type: 'commit',
+            target_id: commit_id
+          }
+        end
+
+        it 'sets the correct feature category' do
+          create!
+
+          expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('source_code_management')
+        end
+      end
+
+      context 'on a project snippet' do
+        let(:project_snippet) { create(:project_snippet, project: project) }
+        let(:request_params) do
+          {
+            note: { note: note_text, noteable_id: project_snippet.id, noteable_type: 'ProjectSnippet' },
+            namespace_id: project.namespace,
+            project_id: project,
+            target_type: 'project_snippet',
+            target_id: project_snippet.id
+          }
+        end
+
+        it 'sets the correct feature category' do
+          create!
+
+          expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('source_code_management')
+        end
       end
 
       context 'the project is publically available' do

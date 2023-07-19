@@ -3,6 +3,8 @@
 module Analytics
   module CycleAnalytics
     class Stage < ApplicationRecord
+      MAX_STAGES_PER_VALUE_STREAM = 15
+
       self.table_name = :analytics_cycle_analytics_group_stages
 
       include DatabaseEventTracking
@@ -10,6 +12,8 @@ module Analytics
       include Analytics::CycleAnalytics::Parentable
 
       validates :name, uniqueness: { scope: [:group_id, :group_value_stream_id] }
+      validate :max_stages_count, on: :create
+
       belongs_to :value_stream, class_name: 'Analytics::CycleAnalytics::ValueStream',
         foreign_key: :group_value_stream_id, inverse_of: :stages
 
@@ -49,6 +53,15 @@ module Analytics
         name
         group_value_stream_id
       ].freeze
+
+      private
+
+      def max_stages_count
+        return unless value_stream
+        return unless value_stream.stages.count >= MAX_STAGES_PER_VALUE_STREAM
+
+        errors.add(:value_stream, _('Maximum number of stages per value stream exceeded'))
+      end
     end
   end
 end

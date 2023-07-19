@@ -15,12 +15,12 @@ To subscribe to GitLab for a GitLab self-managed installation:
 
 1. Go to the [Customers Portal](https://customers.gitlab.com/) and purchase a GitLab self-managed plan.
 1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
-   You must [add this code to your GitLab instance](../../user/admin_area/license.md).
+   You must [add this code to your GitLab instance](../../administration/license.md).
 
 NOTE:
 If you're purchasing a subscription for an existing **Free** GitLab self-managed
 instance, ensure you're purchasing enough seats to
-[cover your users](../../user/admin_area/index.md#administering-users).
+[cover your users](../../administration/admin_area.md#administering-users).
 
 ### Subscription seats
 
@@ -47,10 +47,10 @@ The lists of users are displayed.
 A _billable user_ counts against the number of subscription seats. Every user is considered a
 billable user, with the following exceptions:
 
-- [Deactivated users](../../user/admin_area/moderate_users.md#deactivate-a-user) and
-  [blocked users](../../user/admin_area/moderate_users.md#block-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
+- [Deactivated users](../../administration/moderate_users.md#deactivate-a-user) and
+  [blocked users](../../administration/moderate_users.md#block-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
   count toward overages in the subscribed seat count.
-- Users who are [pending approval](../../user/admin_area/moderate_users.md#users-pending-approval).
+- Users who are [pending approval](../../administration/moderate_users.md#users-pending-approval).
 - Users with only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
 - Users with only the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
 - Users without project or group memberships on an Ultimate subscription.
@@ -101,7 +101,7 @@ The user must not be assigned any other role, anywhere in the instance.
 NOTE:
 If a user creates a project, they are assigned the Maintainer or Owner role.
 To prevent a user from creating projects, as an administrator, you can mark the user
-as [external](../../user/admin_area/external_users.md).
+as [external](../../administration/external_users.md).
 
 ## Tips for managing users and subscription seats
 
@@ -114,14 +114,14 @@ Managing the number of users against the number of subscription seats can be a c
 
 GitLab has several features which can help you manage the number of users:
 
-- Enable the [**Require administrator approval for new sign ups**](../../user/admin_area/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups)
+- Enable the [**Require administrator approval for new sign ups**](../../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups)
   option.
 - Enable `block_auto_created_users` for new sign-ups via [LDAP](../../administration/auth/ldap/index.md#basic-configuration-settings) or [OmniAuth](../../integration/omniauth.md#configure-common-settings).
-- Enable the [User cap](../../user/admin_area/settings/sign_up_restrictions.md#user-cap)
+- Enable the [User cap](../../administration/settings/sign_up_restrictions.md#user-cap)
   option. **Available in GitLab 13.7 and later**.
-- [Disable new sign-ups](../../user/admin_area/settings/sign_up_restrictions.md), and instead manage new
+- [Disable new sign-ups](../../administration/settings/sign_up_restrictions.md), and instead manage new
   users manually.
-- View a breakdown of users by role in the [Users statistics](../../user/admin_area/index.md#users-statistics) page.
+- View a breakdown of users by role in the [Users statistics](../../administration/admin_area.md#users-statistics) page.
 
 ## Subscription data synchronization
 
@@ -132,7 +132,7 @@ To enable subscription data synchronization you must have:
 
 - GitLab Enterprise Edition (EE), version 14.1 or later.
 - Connection to the internet, and must not have an offline environment.
-- [Activated](../../user/admin_area/license.md) your instance with an activation code.
+- [Activated](../../administration/license.md) your instance with an activation code.
 
 When your instance is activated, and data is synchronized, the following processes are automated:
 
@@ -345,7 +345,7 @@ A payment receipt is emailed to you, which you can also access in the Customers 
 
 If your subscription was activated with an activation code, the additional seats are reflected in
 your instance immediately. If you're using a license file, you receive an updated file.
-To add the seats, [add the license file](../../user/admin_area/license_file.md)
+To add the seats, [add the license file](../../administration/license_file.md)
 to your instance.
 
 ### Renew subscription manually
@@ -354,7 +354,7 @@ Starting 30 days before a subscription expires, a banner with the expiry date di
 
 You should follow these steps during renewal:
 
-1. Prior to the renewal date, prune any inactive or unwanted users by [blocking them](../../user/admin_area/moderate_users.md#block-a-user).
+1. Prior to the renewal date, prune any inactive or unwanted users by [blocking them](../../administration/moderate_users.md#block-a-user).
 1. Determine if you have a need for user growth in the upcoming subscription.
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and select the **Renew** button beneath your existing subscription.
 The **Renew** button remains disabled (grayed-out) until 15 days before a subscription expires.
@@ -367,7 +367,7 @@ You can hover your mouse on the **Renew** button to see the date when it will be
 1. Enter the number of [users over subscription](#users-over-subscription) in the second box for the user overage incurred in your previous subscription term.
 1. Review your renewal details and complete the payment process.
 1. An activation code for the renewal term is available on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy activation code** to get a copy.
-1. [Add the activation code](../../user/admin_area/license.md) to your instance.
+1. [Add the activation code](../../administration/license.md) to your instance.
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
@@ -421,19 +421,20 @@ The following is emailed to you:
   [**View invoices**](https://customers.gitlab.com/receipts).
 - A new activation code for your license.
 
-[Add the activation code](../../user/admin_area/license.md) to your instance.
+[Add the activation code](../../administration/license.md) to your instance.
 The new tier takes effect when the new license is activated.
 
 ## Add or change the contacts for your subscription
 
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
 
-To change the contacts:
+For information about how to transfer ownership of the Customers Portal account to another person, see
+[Change account owner information](../customers_portal.md#change-account-owner-information).
+
+To add a secondary contact for your subscription:
 
 1. Ensure an account exists in the
    [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
-1. Verify you have access to at least one of
-   [these requirements](https://about.gitlab.com/handbook/support/license-and-renewals/workflows/customersdot/associating_purchases.html).
 1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
 
 ## Subscription expiry
@@ -450,7 +451,7 @@ before this occurs.
 
 ## Activate a license file or key
 
-If you have a license file or key, you can activate it [in the Admin Area](../../user/admin_area/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
+If you have a license file or key, you can activate it [in the Admin Area](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
 
 ## Contact Support
 

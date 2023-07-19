@@ -22,22 +22,18 @@ describe('UsersChart', () => {
   let queryHandler;
 
   const createComponent = ({
-    loadingError = false,
-    loading = false,
     users = [],
     additionalData = [],
+    handler = mockQueryResponse({ key: 'users', data: users, additionalData }),
   } = {}) => {
-    queryHandler = mockQueryResponse({ key: 'users', data: users, loading, additionalData });
+    queryHandler = handler;
 
-    return shallowMount(UsersChart, {
+    wrapper = shallowMount(UsersChart, {
+      apolloProvider: createMockApollo([[usersQuery, queryHandler]]),
       props: {
         startDate: new Date(2020, 9, 26),
         endDate: new Date(2020, 10, 1),
         totalDataPoints: mockCountsData2.length,
-      },
-      apolloProvider: createMockApollo([[usersQuery, queryHandler]]),
-      data() {
-        return { loadingError };
       },
     });
   };
@@ -48,7 +44,7 @@ describe('UsersChart', () => {
 
   describe('while loading', () => {
     beforeEach(() => {
-      wrapper = createComponent({ loading: true });
+      createComponent({ loading: true });
     });
 
     it('displays the skeleton loader', () => {
@@ -62,7 +58,7 @@ describe('UsersChart', () => {
 
   describe('without data', () => {
     beforeEach(async () => {
-      wrapper = createComponent({ users: [] });
+      createComponent({ users: [] });
       await nextTick();
     });
 
@@ -81,7 +77,7 @@ describe('UsersChart', () => {
 
   describe('with data', () => {
     beforeEach(async () => {
-      wrapper = createComponent({ users: mockCountsData2 });
+      createComponent({ users: mockCountsData2 });
       await waitForPromises();
     });
 
@@ -102,11 +98,17 @@ describe('UsersChart', () => {
 
   describe('with errors', () => {
     beforeEach(async () => {
-      wrapper = createComponent({ loadingError: true });
+      createComponent();
       await nextTick();
     });
 
-    it('renders an error message', () => {
+    it('renders an error message', async () => {
+      createComponent({
+        handler: jest.fn().mockRejectedValue({}),
+      });
+
+      await waitForPromises();
+
       expect(findAlert().text()).toBe(
         'Could not load the user chart. Please refresh the page to try again.',
       );
@@ -124,42 +126,37 @@ describe('UsersChart', () => {
   describe('when fetching more data', () => {
     describe('when the fetchMore query returns data', () => {
       beforeEach(async () => {
-        wrapper = createComponent({
+        createComponent({
           users: mockCountsData2,
           additionalData: mockCountsData1,
         });
 
-        jest.spyOn(wrapper.vm.$apollo.queries.users, 'fetchMore');
         await nextTick();
       });
 
       it('requests data twice', () => {
         expect(queryHandler).toHaveBeenCalledTimes(2);
       });
-
-      it('calls fetchMore', () => {
-        expect(wrapper.vm.$apollo.queries.users.fetchMore).toHaveBeenCalledTimes(1);
-      });
     });
 
     describe('when the fetchMore query throws an error', () => {
       beforeEach(async () => {
-        wrapper = createComponent({
+        createComponent({
           users: mockCountsData2,
           additionalData: mockCountsData1,
         });
 
-        jest
-          .spyOn(wrapper.vm.$apollo.queries.users, 'fetchMore')
-          .mockImplementation(jest.fn().mockRejectedValue());
         await waitForPromises();
       });
 
       it('calls fetchMore', () => {
-        expect(wrapper.vm.$apollo.queries.users.fetchMore).toHaveBeenCalledTimes(1);
+        expect(queryHandler).toHaveBeenCalledTimes(2);
       });
 
-      it('renders an error message', () => {
+      it('renders an error message', async () => {
+        createComponent({ handler: jest.fn().mockRejectedValue({}) });
+        await waitForPromises();
+
         expect(findAlert().text()).toBe(
           'Could not load the user chart. Please refresh the page to try again.',
         );

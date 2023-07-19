@@ -209,7 +209,6 @@ export default {
       :invalid-feedback="invalidFeedbackMessage"
       :state="validationState"
       data-testid="form-group"
-      label-cols="auto"
       label-class="gl-pt-3!"
       :label="$options.i18n.projectLabel"
       :label-for="$options.projectSelectLabelId"

@@ -124,6 +124,10 @@ module API
         merge_requests.each { |mr| mr.check_mergeability(async: true) }
       end
 
+      def batch_process_mergeability_checks(merge_requests)
+        ::MergeRequests::MergeabilityCheckBatchService.new(merge_requests, current_user).execute
+      end
+
       params :merge_requests_params do
         use :merge_requests_base_params
         use :optional_merge_requests_search_params
@@ -177,8 +181,16 @@ module API
       get ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
         validate_search_rate_limit! if declared_params[:search].present?
         merge_requests = find_merge_requests(group_id: user_group.id, include_subgroups: true)
+        options = serializer_options_for(merge_requests).merge(group: user_group)
 
-        present merge_requests, serializer_options_for(merge_requests).merge(group: user_group)
+        if !options[:skip_merge_status_recheck] && ::Feature.enabled?(:batched_api_mergeability_checks, user_group)
+          batch_process_mergeability_checks(merge_requests)
+
+          # NOTE: skipping individual mergeability checks in the presenter
+          options[:skip_merge_status_recheck] = true
+        end
+
+        present merge_requests, options
       end
     end
 

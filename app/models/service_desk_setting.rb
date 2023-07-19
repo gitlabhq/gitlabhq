@@ -21,6 +21,7 @@ class ServiceDeskSetting < ApplicationRecord
   validates :project_id, presence: true
   validate :valid_issue_template
   validate :valid_project_key
+  validate :custom_email_enabled_state
   validates :outgoing_name, length: { maximum: 255 }, allow_blank: true
   validates :project_key,
     length: { maximum: 255 },
@@ -83,6 +84,14 @@ class ServiceDeskSetting < ApplicationRecord
   def valid_project_key
     if projects_with_same_slug_and_key_exists?
       errors.add(:project_key, 'already in use for another service desk address.')
+    end
+  end
+
+  def custom_email_enabled_state
+    return unless custom_email_enabled?
+
+    if custom_email_verification.blank? || !custom_email_verification.finished?
+      errors.add(:custom_email_enabled, 'cannot be enabled until verification process has finished.')
     end
   end
 

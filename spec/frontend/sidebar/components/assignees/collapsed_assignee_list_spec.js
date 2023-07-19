@@ -194,7 +194,7 @@ describe('CollapsedAssigneeList component', () => {
     ${[busyUser, canMergeUser]} | ${1} | ${1}     | ${`${busyUser.name} (Busy), ${canMergeUser.name} (1/2 can merge)`}
     ${[busyUser]}               | ${1} | ${0}     | ${`${busyUser.name} (Busy) (cannot merge)`}
     ${[canMergeUser]}           | ${0} | ${1}     | ${`${canMergeUser.name}`}
-    ${[]}                       | ${0} | ${0}     | ${'Assignee(s)'}
+    ${[]}                       | ${0} | ${0}     | ${'Assignees'}
   `(
     'with $users.length users, $busy is busy and $canMerge that can merge',
     ({ users, expected }) => {

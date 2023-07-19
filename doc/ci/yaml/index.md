@@ -163,7 +163,7 @@ The time limit to resolve all files is 30 seconds.
     pipeline run, the new pipeline uses the changed configuration.
 - You can have up to 150 includes per pipeline by default, including [nested](includes.md#use-nested-includes). Additionally:
   - In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) self-managed users can
-    change the [maximum includes](../../user/admin_area/settings/continuous_integration.md#maximum-includes) value.
+    change the [maximum includes](../../administration/settings/continuous_integration.md#maximum-includes) value.
   - In [GitLab 15.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367150) you can have up to 150 includes.
     In nested includes, the same file can be included multiple times, but duplicated includes
     count towards the limit.
@@ -353,7 +353,7 @@ The order of the items in `stages` defines the execution order for jobs:
 
 If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
 There must be at least one other job in a different stage. `.pre` and `.post` stages
-can be used in [required pipeline configuration](../../user/admin_area/settings/continuous_integration.md#required-pipeline-configuration)
+can be used in [required pipeline configuration](../../administration/settings/continuous_integration.md#required-pipeline-configuration)
 to define compliance jobs that must run before or after project pipeline jobs.
 
 **Keyword type**: Global keyword.
@@ -843,7 +843,7 @@ they expire and are deleted. The `expire_in` setting does not affect:
 
 - Artifacts from the latest job, unless keeping the latest job artifacts is disabled
   [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
-  or [instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+  or [instance-wide](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 
 After their expiry, artifacts are deleted hourly by default (using a cron job), and are not
 accessible anymore.
@@ -875,7 +875,7 @@ job:
 **Additional details**:
 
 - The expiration time period begins when the artifact is uploaded and stored on GitLab.
-  If the expiry time is not defined, it defaults to the [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration).
+  If the expiry time is not defined, it defaults to the [instance wide setting](../../administration/settings/continuous_integration.md#default-artifacts-expiration).
 - To override the expiration date and protect artifacts from being automatically deleted:
   - Select **Keep** on the job page.
   - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22761), set the value of
@@ -963,7 +963,7 @@ job:
 
 WARNING:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `non_public_artifacts`. On
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named `non_public_artifacts`. On
 GitLab.com, this feature is not available. Due to [issue 413822](https://gitlab.com/gitlab-org/gitlab/-/issues/413822),
 the keyword can be used when the feature flag is disabled, but the feature does not work.
 Do not attempt to use this feature when the feature flag is disabled, and always test
@@ -2039,10 +2039,16 @@ job_with_id_tokens:
       aud:
         - https://gcp.com
         - https://aws.com
+    SIGSTORE_ID_TOKEN:
+      aud: sigstore
   script:
     - command_to_authenticate_with_gitlab $ID_TOKEN_1
     - command_to_authenticate_with_aws $ID_TOKEN_2
 ```
+
+**Related topics**:
+
+- [Keyless signing with Sigstore](signing_examples.md).
 
 ### `image`
 
@@ -2718,7 +2724,7 @@ when to add jobs to pipelines.
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
   | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
-  | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **CI/CD > Pipelines** section. |
+  | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
 
 **Example of `only:refs` and `except:refs`**:
 
@@ -2896,6 +2902,12 @@ in the project.
 Use `pages` to define a [GitLab Pages](../../user/project/pages/index.md) job that
 uploads static content to GitLab. The content is then published as a website.
 
+You must:
+
+- Define [`artifacts`](#artifacts) with a path to the content directory, which is
+  `public` by default.
+- Use [`publish`](#pagespublish) if want to use a different content directory.
+
 **Keyword type**: Job name.
 
 **Example of `pages`**:
@@ -2904,9 +2916,7 @@ uploads static content to GitLab. The content is then published as a website.
 pages:
   stage: deploy
   script:
-    - mkdir .public
-    - cp -r * .public
-    - mv .public public
+    - mv my-html-content public
   artifacts:
     paths:
       - public
@@ -2915,15 +2925,38 @@ pages:
   environment: production
 ```
 
-This example moves all files from the root of the project to the `public/` directory.
-The `.public` workaround is so `cp` does not also copy `public/` to itself in an infinite loop.
+This example moves all files from a `my-html-content/` directory to the `public/` directory.
+This directory is exported as an artifact and published with GitLab Pages.
 
-**Additional details**:
+#### `pages:publish`
 
-You must:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
 
-- Place any static content in a `public/` directory.
-- Define [`artifacts`](#artifacts) with a path to the `public/` directory.
+Use `publish` to configure the content directory of a [`pages` job](#pages).
+
+**Keyword type**: Job keyword. You can use it only as part of a `pages` job.
+
+**Possible inputs**: A path to a directory containing the Pages content.
+
+**Example of `publish`**:
+
+```yaml
+pages:
+  stage: deploy
+  script:
+    - npx @11ty/eleventy --input=path/to/eleventy/root --output=dist
+  artifacts:
+    paths:
+      - dist
+  publish: dist
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
+```
+
+This example uses [Eleventy](https://www.11ty.dev) to generate a static website and
+output the generated HTML files into a the `dist/` directory. This directory is exported
+as an artifact and published with GitLab Pages.
 
 ### `parallel`
 
@@ -2955,6 +2988,11 @@ This example creates 5 jobs that run in parallel, named `test 1/5` to `test 5/5`
 
 - Every parallel job has a `CI_NODE_INDEX` and `CI_NODE_TOTAL`
   [predefined CI/CD variable](../variables/index.md#predefined-cicd-variables) set.
+- A pipeline with jobs that use `parallel` might:
+  - Create more jobs running in parallel than available runners. Excess jobs are queued
+    and marked `pending` while waiting for an available runner.
+  - Create too many jobs, and the pipeline fails with a `job_activity_limit_exceeded` error.
+    The maximum number of jobs that can exist in active pipelines is [limited at the instance-level](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines).
 
 **Related topics**:
 
@@ -3076,7 +3114,7 @@ release_job:
 This example creates a release:
 
 - When you push a Git tag.
-- When you add a Git tag in the UI at **Repository > Tags**.
+- When you add a Git tag in the UI at **Code > Tags**.
 
 **Additional details**:
 
@@ -3120,8 +3158,7 @@ CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitl
 To create a release when a new tag is added to the project:
 
 - Use the `$CI_COMMIT_TAG` CI/CD variable as the `tag_name`.
-- Use [`rules:if`](#rulesif) or [`only: tags`](#onlyrefs--exceptrefs) to configure
-  the job to run only for new tags.
+- Use [`rules:if`](#rulesif) to configure the job to run only for new tags.
 
 ```yaml
 job:
@@ -3133,7 +3170,7 @@ job:
     - if: $CI_COMMIT_TAG
 ```
 
-To create a release and a new tag at the same time, your [`rules`](#rules) or [`only`](#only--except)
+To create a release and a new tag at the same time, your [`rules`](#rules)
 should **not** configure the job to run only for new tags. A semantic versioning example:
 
 ```yaml
@@ -3702,7 +3739,8 @@ If the rule matches, then the job is a manual job with `allow_failure: true`.
 
 #### `rules:needs`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31581) in GitLab 16.0 [with a flag](../../user/feature_flags.md) named `introduce_rules_with_needs`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31581) in GitLab 16.0 [with a flag](../../user/feature_flags.md) named `introduce_rules_with_needs`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/408871) in GitLab 16.2. Feature flag `introduce_rules_with_needs` removed.
 
 Use `needs` in rules to update a job's [`needs`](#needs) for specific conditions. When a condition matches a rule, the job's `needs` configuration is completely replaced with the `needs` in the rule.
 
@@ -4752,6 +4790,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example, `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

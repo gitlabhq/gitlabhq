@@ -33,12 +33,13 @@ module QA
 
         def clear_current_selection_if_present
           expand_select_list unless dropdown_open?
+          Support::WaitForRequests.wait_for_requests
 
-          if has_css?('button[data-testid="listbox-reset-button"]')
+          if has_css?('button[data-testid="listbox-reset-button"]', wait: 0)
             find('button[data-testid="listbox-reset-button"]').click
-          elsif dropdown_open?
-            expand_select_list
           end
+
+          expand_select_list if dropdown_open?
         end
 
         def search_item(item_text)

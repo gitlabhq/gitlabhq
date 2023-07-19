@@ -97,9 +97,12 @@ module Banzai
       def find_users_for_groups(ids)
         return [] if ids.empty?
 
-        User.joins(:group_members).where(members: {
-          source_id: Namespace.where(id: ids).where('mentions_disabled IS NOT TRUE').select(:id)
-        }).to_a
+        cross_join_issue = "https://gitlab.com/gitlab-org/gitlab/-/issues/417466"
+        ::Gitlab::Database.allow_cross_joins_across_databases(url: cross_join_issue) do
+          User.joins(:group_members).where(members: {
+            source_id: Namespace.where(id: ids).where('mentions_disabled IS NOT TRUE').select(:id)
+          }).to_a
+        end
       end
 
       def find_users_for_projects(ids)

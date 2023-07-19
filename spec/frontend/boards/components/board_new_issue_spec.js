@@ -1,25 +1,49 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import BoardNewItem from '~/boards/components/board_new_item.vue';
 import ProjectSelect from '~/boards/components/project_select.vue';
 import eventHub from '~/boards/eventhub';
+import groupBoardQuery from '~/boards/graphql/group_board.query.graphql';
+import projectBoardQuery from '~/boards/graphql/project_board.query.graphql';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 
-import { mockList, mockGroupProjects, mockIssue, mockIssue2 } from '../mock_data';
+import {
+  mockList,
+  mockGroupProjects,
+  mockIssue,
+  mockIssue2,
+  mockProjectBoardResponse,
+  mockGroupBoardResponse,
+} from '../mock_data';
 
 Vue.use(Vuex);
+Vue.use(VueApollo);
 
 const addListNewIssuesSpy = jest.fn().mockResolvedValue();
 const mockActions = { addListNewIssue: addListNewIssuesSpy };
 
+const projectBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockProjectBoardResponse);
+const groupBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockGroupBoardResponse);
+
+const mockApollo = createMockApollo([
+  [projectBoardQuery, projectBoardQueryHandlerSuccess],
+  [groupBoardQuery, groupBoardQueryHandlerSuccess],
+]);
+
 const createComponent = ({
-  state = { selectedProject: mockGroupProjects[0] },
+  state = {},
   actions = mockActions,
   getters = { getBoardItemsByList: () => () => [] },
   isGroupBoard = true,
+  data = { selectedProject: mockGroupProjects[0] },
+  provide = {},
 } = {}) =>
   shallowMount(BoardNewIssue, {
+    apolloProvider: mockApollo,
     store: new Vuex.Store({
       state,
       actions,
@@ -27,13 +51,19 @@ const createComponent = ({
     }),
     propsData: {
       list: mockList,
+      boardId: 'gid://gitlab/Board/1',
     },
+    data: () => data,
     provide: {
       groupId: 1,
       fullPath: mockGroupProjects[0].fullPath,
       weightFeatureAvailable: false,
       boardWeight: null,
       isGroupBoard,
+      boardType: 'group',
+      isEpicBoard: false,
+      isApolloBoard: false,
+      ...provide,
     },
     stubs: {
       BoardNewItem,
@@ -136,5 +166,34 @@ describe('Issue boards new issue form', () => {
 
       expect(projectSelect.exists()).toBe(false);
     });
+  });
+
+  describe('Apollo boards', () => {
+    it.each`
+      boardType            | queryHandler                       | notCalledHandler
+      ${WORKSPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
+      ${WORKSPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
+    `(
+      'fetches $boardType board and emits addNewIssue event',
+      async ({ boardType, queryHandler, notCalledHandler }) => {
+        wrapper = createComponent({
+          provide: {
+            boardType,
+            isProjectBoard: boardType === WORKSPACE_PROJECT,
+            isGroupBoard: boardType === WORKSPACE_GROUP,
+            isApolloBoard: true,
+          },
+        });
+
+        await nextTick();
+        findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
+
+        await nextTick();
+
+        expect(queryHandler).toHaveBeenCalled();
+        expect(notCalledHandler).not.toHaveBeenCalled();
+        expect(wrapper.emitted('addNewIssue')[0][0]).toMatchObject({ title: 'Foo' });
+      },
+    );
   });
 });

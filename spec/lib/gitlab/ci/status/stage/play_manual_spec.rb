@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Stage::PlayManual do
+RSpec.describe Gitlab::Ci::Status::Stage::PlayManual, feature_category: :continuous_integration do
   let(:stage) { double('stage') }
   let(:play_manual) { described_class.new(stage) }
 
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::PlayManual do
     context 'when stage is skipped' do
       let(:stage) { create(:ci_stage, status: :skipped) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to be_falsy }
     end
 
     context 'when stage is manual' do

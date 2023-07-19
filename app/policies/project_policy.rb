@@ -253,11 +253,11 @@ class ProjectPolicy < BasePolicy
     !Gitlab.config.terraform_state.enabled
   end
 
-  condition(:create_runner_workflow_enabled) do
-    Feature.enabled?(:create_runner_workflow_for_namespace, project.namespace)
-  end
-
   condition(:namespace_catalog_available) { namespace_catalog_available? }
+
+  condition(:created_and_owned_by_banned_user, scope: :subject) do
+    Feature.enabled?(:hide_projects_of_banned_users) && @subject.created_and_owned_by_banned_user?
+  end
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
@@ -886,10 +886,6 @@ class ProjectPolicy < BasePolicy
     enable :read_code
   end
 
-  rule { ~create_runner_workflow_enabled }.policy do
-    prevent :create_runner
-  end
-
   # Should be matched with GroupPolicy#read_internal_note
   rule { admin | can?(:reporter_access) }.enable :read_internal_note
 
@@ -907,6 +903,14 @@ class ProjectPolicy < BasePolicy
 
   rule { model_experiments_enabled }.policy do
     enable :read_model_experiments
+  end
+
+  rule { can?(:reporter_access) & model_experiments_enabled }.policy do
+    enable :write_model_experiments
+  end
+
+  rule { ~admin & created_and_owned_by_banned_user }.policy do
+    prevent :read_project
   end
 
   private

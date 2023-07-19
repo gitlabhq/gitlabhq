@@ -28,6 +28,21 @@ RSpec.describe Environments::UpdateService, feature_category: :environment_manag
       expect(response.payload[:environment]).to eq(environment)
     end
 
+    context 'when setting a kubernetes namespace to the environment' do
+      let(:params) { { kubernetes_namespace: 'default' } }
+
+      it 'updates the kubernetes namespace' do
+        expect { subject }.to change { environment.reload.kubernetes_namespace }.to('default')
+      end
+
+      it 'returns successful response' do
+        response = subject
+
+        expect(response).to be_success
+        expect(response.payload[:environment]).to eq(environment)
+      end
+    end
+
     context 'when setting a cluster agent to the environment' do
       let_it_be(:agent_management_project) { create(:project) }
       let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }

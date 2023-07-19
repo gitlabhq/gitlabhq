@@ -37,9 +37,15 @@ publish:
 
     # Compare the version in package.json to all published versions.
     # If the package.json version has not yet been published, run `npm publish`.
+    # If $SIGSTORE_ID_TOKEN is set this template will generate a provenance
+    # document. For more information refer to the documentation: https://docs.gitlab.com/ee/ci/yaml/signing_examples/
     - |
       if [[ "$(npm view ${NPM_PACKAGE_NAME} versions)" != *"'${NPM_PACKAGE_VERSION}'"* ]]; then
-        npm publish
+        if [[ -n "${SIGSTORE_ID_TOKEN}" ]]; then
+          npm publish --provenance
+        else
+          npm publish
+        fi
         echo "Successfully published version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} to GitLab's NPM registry: ${CI_PROJECT_URL}/-/packages"
       else
         echo "Version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} has already been published, so no new version has been published."

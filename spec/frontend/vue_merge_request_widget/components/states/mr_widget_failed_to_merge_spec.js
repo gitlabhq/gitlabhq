@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import MrWidgetFailedToMerge from '~/vue_merge_request_widget/components/states/mr_widget_failed_to_merge.vue';
 import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
@@ -8,16 +8,13 @@ describe('MRWidgetFailedToMerge', () => {
   const dummyIntervalId = 1337;
   let wrapper;
 
-  const createComponent = (props = {}, data = {}) => {
-    wrapper = shallowMount(MrWidgetFailedToMerge, {
+  const createComponent = (props = {}, mountFn = shallowMount) => {
+    wrapper = mountFn(MrWidgetFailedToMerge, {
       propsData: {
         mr: {
           mergeError: 'Merge error happened',
         },
         ...props,
-      },
-      data() {
-        return data;
       },
     });
   };
@@ -121,7 +118,9 @@ describe('MRWidgetFailedToMerge', () => {
 
   describe('while it is refreshing', () => {
     it('renders Refresing now', async () => {
-      createComponent({}, { isRefreshing: true });
+      createComponent({});
+
+      wrapper.vm.refresh();
 
       await nextTick();
 
@@ -138,8 +137,10 @@ describe('MRWidgetFailedToMerge', () => {
       createComponent();
     });
 
-    it('renders warning icon and disabled merge button', () => {
-      expect(wrapper.find('.js-ci-status-icon-warning')).not.toBeNull();
+    it('renders failed icon', () => {
+      createComponent({}, mount);
+
+      expect(wrapper.find('[data-testid="status-failed-icon"]').exists()).toBe(true);
     });
 
     it('renders given error', () => {

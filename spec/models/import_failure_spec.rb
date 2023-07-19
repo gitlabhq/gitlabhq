@@ -12,15 +12,15 @@ RSpec.describe ImportFailure do
     let_it_be(:unrelated_failure) { create(:import_failure, project: project) }
 
     it 'returns failures with external_identifiers' do
-      expect(ImportFailure.with_external_identifiers).to match_array([github_import_failure])
+      expect(described_class.with_external_identifiers).to match_array([github_import_failure])
     end
 
     it 'returns failures for the given correlation ID' do
-      expect(ImportFailure.failures_by_correlation_id(correlation_id)).to match_array([hard_failure, soft_failure])
+      expect(described_class.failures_by_correlation_id(correlation_id)).to match_array([hard_failure, soft_failure])
     end
 
     it 'returns hard failures for the given correlation ID' do
-      expect(ImportFailure.hard_failures_by_correlation_id(correlation_id)).to eq([hard_failure])
+      expect(described_class.hard_failures_by_correlation_id(correlation_id)).to eq([hard_failure])
     end
 
     it 'orders hard failures by newest first' do

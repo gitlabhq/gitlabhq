@@ -58,11 +58,11 @@ The following table lists project permissions available for each role:
 | Action                                                                                                                                                                               | Guest    | Reporter | Developer | Maintainer | Owner    |
 |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|----------|-----------|------------|----------|
 | [Analytics](analytics/index.md):<br>View [issue analytics](analytics/issue_analytics.md)                                                                                             | ✓        | ✓        | ✓         | ✓          | ✓        |
-| [Analytics](analytics/index.md):<br>View [merge request analytics](analytics/merge_request_analytics.md)                                                                             | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [value stream analytics](group/value_stream_analytics/index.md)                                                                               | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [DORA metrics](analytics/ci_cd_analytics.md)                                                                                                |          | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [CI/CD analytics](analytics/ci_cd_analytics.md)                                                                                             |          | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [code review analytics](analytics/code_review_analytics.md)                                                                                 |          | ✓        | ✓         | ✓          | ✓        |
+| [Analytics](analytics/index.md):<br>View [merge request analytics](analytics/merge_request_analytics.md)                                                                             |         | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [repository analytics](analytics/repository_analytics.md)                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>View licenses in [dependency list](application_security/dependency_list/index.md)                                          |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Create and run [on-demand DAST scans](application_security/dast/proxy-based.md#on-demand-scans)                                  |          |          | ✓         | ✓          | ✓        |
@@ -223,7 +223,7 @@ The following table lists project permissions available for each role:
 
 <!-- markdownlint-disable MD029 -->
 
-1. On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](admin_area/external_users.md) must be given explicit access even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available.
+1. On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available.
 2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
 3. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
 4. If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers.
@@ -401,13 +401,13 @@ The following table lists group permissions available for each role:
 | View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (3) |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
-| Manage [subscriptions, and purchase storage and units of compute](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |
+| Manage [subscriptions, and purchase storage and compute minutes](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->
 
 1. Groups can be set to allow either Owners, or Owners and users with the Maintainer role, to [create subgroups](group/subgroups/index.md#create-a-subgroup).
 2. Default project creation role can be changed at:
-   - The [instance level](admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
+   - The [instance level](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
    - The [group level](group/index.md#specify-who-can-add-projects-to-a-group).
 3. Does not apply to subgroups.
 4. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".

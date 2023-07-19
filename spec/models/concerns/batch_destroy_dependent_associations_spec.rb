@@ -27,7 +27,7 @@ RSpec.describe BatchDestroyDependentAssociations do
     let_it_be(:build) { create(:ci_build, project: project) }
     let_it_be(:notification_setting) { create(:notification_setting, project: project) }
     let_it_be(:note) { create(:note, project: project) }
-    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:merge_request) { create(:merge_request, :skip_diff_creation, source_project: project) }
 
     it 'destroys multiple notes' do
       create(:note, project: project)

@@ -6,13 +6,11 @@ import {
   scrollToElement,
 } from '~/lib/utils/common_utils';
 import { createAlert, VARIANT_WARNING } from '~/alert';
-import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
-import { __, s__ } from '~/locale';
 import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
@@ -52,9 +50,15 @@ import {
   EVT_MR_PREPARED,
   FILE_DIFF_POSITION_TYPE,
 } from '../constants';
-import { DISCUSSION_SINGLE_DIFF_FAILED, LOAD_SINGLE_DIFF_FAILED } from '../i18n';
+import {
+  DISCUSSION_SINGLE_DIFF_FAILED,
+  LOAD_SINGLE_DIFF_FAILED,
+  BUILDING_YOUR_MR,
+  SOMETHING_WENT_WRONG,
+  ERROR_LOADING_FULL_DIFF,
+  ERROR_DISMISSING_SUGESTION_POPOVER,
+} from '../i18n';
 import eventHub from '../event_hub';
-import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
 import { getDerivedMergeRequestInformation } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
@@ -84,6 +88,7 @@ export const setBaseConfig = ({ commit }, options) => {
     defaultSuggestionCommitMessage,
     viewDiffsFileByFile,
     mrReviews,
+    diffViewType,
   } = options;
   commit(types.SET_BASE_CONFIG, {
     endpoint,
@@ -98,6 +103,7 @@ export const setBaseConfig = ({ commit }, options) => {
     defaultSuggestionCommitMessage,
     viewDiffsFileByFile,
     mrReviews,
+    diffViewType,
   });
 
   Array.from(new Set(Object.values(mrReviews).flat())).forEach((id) => {
@@ -171,7 +177,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
   };
   const hash = window.location.hash.replace('#', '').split('diff-content-').pop();
   let totalLoaded = 0;
-  let scrolledVirtualScroller = false;
+  let scrolledVirtualScroller = hash === '';
 
   commit(types.SET_BATCH_LOADING_STATE, 'loading');
   commit(types.SET_RETRIEVING_BATCHES, true);
@@ -243,8 +249,6 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         return nextPage;
       })
       .then((nextPage) => {
-        dispatch('startRenderDiffsQueue');
-
         if (nextPage) {
           return getBatch(nextPage);
         }
@@ -290,9 +294,7 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
     .catch((error) => {
       if (error.response.status === HTTP_STATUS_NOT_FOUND) {
         const alert = createAlert({
-          message: __(
-            'Building your merge request… This page will update when the build is complete.',
-          ),
+          message: BUILDING_YOUR_MR,
           variant: VARIANT_WARNING,
         });
 
@@ -318,7 +320,7 @@ export const fetchCoverageFiles = ({ commit, state }) => {
     },
     errorCallback: () =>
       createAlert({
-        message: __('Something went wrong on our end. Please try again!'),
+        message: SOMETHING_WENT_WRONG,
       }),
   });
 
@@ -379,10 +381,6 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
     const file = state.diffFiles.find((f) => f.file_hash === discussion.diff_file.file_hash);
 
     if (file) {
-      if (!file.renderIt) {
-        commit(types.RENDER_FILE, file);
-      }
-
       if (file.viewer.automaticallyCollapsed) {
         notesEventHub.$emit(`loadCollapsedDiff/${file.file_hash}`);
         scrollToElement(document.getElementById(file.file_hash));
@@ -399,46 +397,6 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
     }
   }
 };
-
-export const startRenderDiffsQueue = ({ state, commit }) => {
-  const diffFilesToRender = state.diffFiles.filter(
-    (file) =>
-      !file.renderIt &&
-      file.viewer &&
-      (!isCollapsed(file) || file.viewer.name !== diffViewerModes.text),
-  );
-  let currentDiffFileIndex = 0;
-
-  const checkItem = () => {
-    const nextFile = diffFilesToRender[currentDiffFileIndex];
-
-    if (nextFile) {
-      let retryCount = 0;
-      currentDiffFileIndex += 1;
-      commit(types.RENDER_FILE, nextFile);
-
-      const requestIdle = () =>
-        requestIdleCallback((idleDeadline) => {
-          // Wait for at least 5ms before trying to render
-          // or for 5 tries and then force render the file
-          if (idleDeadline.timeRemaining() >= 5 || retryCount > 4) {
-            checkItem();
-          } else {
-            requestIdle();
-            retryCount += 1;
-          }
-        });
-
-      requestIdle();
-    }
-  };
-
-  if (diffFilesToRender.length) {
-    checkItem();
-  }
-};
-
-export const setRenderIt = ({ commit }, file) => commit(types.RENDER_FILE, file);
 
 export const setInlineDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
@@ -619,12 +577,7 @@ export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }
       if (formData.positionType === FILE_DIFF_POSITION_TYPE) {
         dispatch('toggleFileCommentForm', formData.diffFile.file_path);
       }
-    })
-    .catch(() =>
-      createAlert({
-        message: s__('MergeRequests|Saving the comment failed'),
-      }),
-    );
+    });
 };
 
 export const toggleTreeOpen = ({ commit }, path) => {
@@ -757,7 +710,7 @@ export const cacheTreeListWidth = (_, size) => {
 export const receiveFullDiffError = ({ commit }, filePath) => {
   commit(types.RECEIVE_FULL_DIFF_ERROR, filePath);
   createAlert({
-    message: s__('MergeRequest|Error loading full diff. Please try again.'),
+    message: ERROR_LOADING_FULL_DIFF,
   });
 };
 
@@ -845,7 +798,7 @@ export const toggleFullDiff = ({ dispatch, commit, getters, state }, filePath) =
   }
 };
 
-export function switchToFullDiffFromRenamedFile({ commit, dispatch }, { diffFile }) {
+export function switchToFullDiffFromRenamedFile({ commit }, { diffFile }) {
   return axios
     .get(diffFile.context_lines_path, {
       params: {
@@ -872,8 +825,6 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch }, { diffFile
         },
       });
       commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });
-
-      dispatch('startRenderDiffsQueue');
     });
 }
 
@@ -895,7 +846,7 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
     })
     .catch(() => {
       createAlert({
-        message: s__('MergeRequest|Error dismissing suggestion popover. Please try again.'),
+        message: ERROR_DISMISSING_SUGESTION_POPOVER,
       });
     });
 

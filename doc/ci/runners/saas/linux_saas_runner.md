@@ -81,16 +81,12 @@ If you want to [contribute to GitLab](https://about.gitlab.com/community/contrib
 `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners, dedicated for GitLab projects and related community forks.
 
 These runners are backed by the same machine type as our `small` runners.
-Unlike the normal SaaS runners on Linux, each virtual machine is re-used up to 40 times.
+Unlike the most commonly used SaaS runners on Linux, each virtual machine is re-used up to 40 times.
 
 As we want to encourage people to contribute, these runners are free of charge.
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-## Pre-clone script (removed)
+## Pre-clone script (deprecated)
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/391896) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29405) in 16.0.
+and [will be removed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29405) in 17.0.
 Use [`pre_get_sources_script`](../../../ci/yaml/index.md#hookspre_get_sources_script) instead.
-
-<!--- end_remove -->

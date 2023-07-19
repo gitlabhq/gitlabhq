@@ -2,6 +2,11 @@
   overflow-y: auto;
   overflow-x: hidden;
   max-width: calc(100% - 6px);
+  @include gl-border-b-1;
+  @include gl-border-b-solid;
+  @include gl-border-b-gray-100;
+  @include gl-rounded-lg;
+  @include gl-shadow-md;
 
   .name,
   small.aliases,
@@ -44,11 +49,15 @@
 
   // TODO: fallback to global style
   .atwho-view-ul {
-    padding: 8px 1px;
+    @include gl-p-2;
+    max-height: $gl-max-dropdown-max-height;
 
     li {
-      padding: 8px 16px;
+      @include gl-px-3;
+      padding-top: $gl-padding-6;
+      padding-bottom: $gl-padding-6;
       border: 0;
+      @include gl-rounded-base;
 
       &.cur {
         background-color: $gray-darker;
@@ -67,14 +76,24 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
+      }
 
-        .center {
-          line-height: 14px;
-        }
+      .center {
+        line-height: 14px;
       }
 
       strong {
         color: $gl-text-color;
+      }
+
+      gl-emoji {
+        @include gl-mr-2;
+      }
+
+      .dropdown-label-box {
+        position: relative;
+        top: -1px;
+        @include gl-mr-2;
       }
     }
   }

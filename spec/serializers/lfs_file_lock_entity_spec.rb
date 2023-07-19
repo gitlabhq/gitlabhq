@@ -16,6 +16,6 @@ RSpec.describe LfsFileLockEntity do
 
   it 'exposes the owner info' do
     expect(subject).to include(:owner)
-    expect(subject[:owner][:name]).to eq(user.name)
+    expect(subject[:owner][:name]).to eq(user.username)
   end
 end

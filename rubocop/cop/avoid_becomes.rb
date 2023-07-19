@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # Cop that blacklists the use of ".becomes(SomeConstant)".
+    # Cop that denylists the use of ".becomes(SomeConstant)".
     #
     # The use of becomes() will result in a new object being created, throwing
     # away any eager loaded assocations. This in turn can cause N+1 query

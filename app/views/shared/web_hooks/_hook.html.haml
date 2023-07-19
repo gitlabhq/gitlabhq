@@ -1,10 +1,10 @@
 - sslStatus = hook.enable_ssl_verification ? _('enabled') : _('disabled')
 - sslBadgeText = _('SSL Verification:') + ' ' + sslStatus
 
-%li
-  .row
-    .col-md-8.col-lg-7
-      %strong.light-header
+%li.label-list-item
+  .gl-display-flex.lgl-align-items-center.row.gl-mx-n1
+    .col-md-8.col-lg-7.gl-px-3
+      .light-header.gl-mb-2
         = hook.url
         - if hook.rate_limited?
           = gl_badge_tag(_('Disabled'), variant: :danger, size: :sm)
@@ -19,7 +19,7 @@
             = gl_badge_tag(integration_webhook_event_human_name(trigger), size: :sm)
         = gl_badge_tag(sslBadgeText, size: :sm)
 
-    .col-md-4.col-lg-5.gl-mt-2.gl-display-flex.gl-md-justify-content-end.gl-align-items-baseline.gl-gap-3
+    .col-md-4.col-lg-5.gl-mt-2.gl-px-3.gl-gap-3.gl-display-flex.gl-md-justify-content-end.gl-align-items-baseline
       = render 'shared/web_hooks/test_button', hook: hook, size: 'small'
       = render Pajamas::ButtonComponent.new(href: edit_hook_path(hook), size: :small) do
         = _('Edit')

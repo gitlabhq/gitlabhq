@@ -2035,7 +2035,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
             expect(pipeline).to be_persisted
             expect(pipeline.yaml_errors)
-              .to include 'content does not have a valid YAML syntax'
+              .to include 'mapping values are not allowed'
           end
         end
       end
@@ -2172,7 +2172,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
             expect(pipeline).to be_persisted
             expect(pipeline.yaml_errors)
-              .to include 'content does not have a valid YAML syntax'
+              .to include 'mapping values are not allowed'
           end
         end
       end

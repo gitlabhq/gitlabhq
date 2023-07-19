@@ -197,9 +197,9 @@ RSpec.describe Gitlab::X509::Signature do
   context 'certificate_crl' do
     describe 'valid crlDistributionPoints' do
       before do
-        allow_any_instance_of(Gitlab::X509::Signature).to receive(:get_certificate_extension).and_call_original
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension).and_call_original
 
-        allow_any_instance_of(Gitlab::X509::Signature).to receive(:get_certificate_extension)
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension)
           .with('crlDistributionPoints')
           .and_return("\nFull Name:\n  URI:http://ch.siemens.com/pki?ZZZZZZA2.crl\n  URI:ldap://cl.siemens.net/CN=ZZZZZZA2,L=PKI?certificateRevocationList\n  URI:ldap://cl.siemens.com/CN=ZZZZZZA2,o=Trustcenter?certificateRevocationList\n")
       end
@@ -218,9 +218,9 @@ RSpec.describe Gitlab::X509::Signature do
 
     describe 'valid crlDistributionPoints providing multiple http URIs' do
       before do
-        allow_any_instance_of(Gitlab::X509::Signature).to receive(:get_certificate_extension).and_call_original
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension).and_call_original
 
-        allow_any_instance_of(Gitlab::X509::Signature).to receive(:get_certificate_extension)
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension)
           .with('crlDistributionPoints')
           .and_return("\nFull Name:\n  URI:http://cdp1.pca.dfn.de/dfn-ca-global-g2/pub/crl/cacrl.crl\n\nFull Name:\n  URI:http://cdp2.pca.dfn.de/dfn-ca-global-g2/pub/crl/cacrl.crl\n")
       end
@@ -241,9 +241,9 @@ RSpec.describe Gitlab::X509::Signature do
   context 'email' do
     describe 'subjectAltName with email, othername' do
       before do
-        allow_any_instance_of(Gitlab::X509::Signature).to receive(:get_certificate_extension).and_call_original
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension).and_call_original
 
-        allow_any_instance_of(Gitlab::X509::Signature).to receive(:get_certificate_extension)
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension)
           .with('subjectAltName')
           .and_return("email:gitlab@example.com, othername:<unsupported>")
       end
@@ -262,9 +262,9 @@ RSpec.describe Gitlab::X509::Signature do
 
     describe 'subjectAltName with othername, email' do
       before do
-        allow_any_instance_of(Gitlab::X509::Signature).to receive(:get_certificate_extension).and_call_original
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension).and_call_original
 
-        allow_any_instance_of(Gitlab::X509::Signature).to receive(:get_certificate_extension)
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension)
           .with('subjectAltName')
           .and_return("othername:<unsupported>, email:gitlab@example.com")
       end

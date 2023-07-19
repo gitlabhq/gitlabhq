@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Group member cannot request access to their group project',
-feature_category: :groups_and_projects do
+  feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }

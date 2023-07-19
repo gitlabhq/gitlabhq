@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This document describes the conventions used at GitLab for writing End-to-end (E2E) tests using the GitLab QA project.
 
-Please note that this guide is an extension of the primary [testing standards and style guidelines](../index.md). If this guide defines a rule that contradicts the primary guide, this guide takes precedence.
+This guide is an extension of the primary [testing standards and style guidelines](../index.md). If this guide defines a rule that contradicts the primary guide, this guide takes precedence.
 
 ## `click_` versus `go_to_`
 

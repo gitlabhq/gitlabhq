@@ -81,6 +81,7 @@ export default {
   },
   inject: [
     'autocompleteAwardEmojisPath',
+    'autocompleteUsersPath',
     'calendarPath',
     'dashboardLabelsPath',
     'dashboardMilestonesPath',
@@ -233,6 +234,7 @@ export default {
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
           token: UserToken,
+          dataType: 'user',
           operators: OPERATORS_IS_NOT_OR,
           fetchUsers: this.fetchUsers,
           preloadedUsers,
@@ -243,6 +245,7 @@ export default {
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
           token: UserToken,
+          dataType: 'user',
           operators: OPERATORS_IS_NOT_OR,
           fetchUsers: this.fetchUsers,
           defaultUsers: [],
@@ -382,7 +385,9 @@ export default {
       });
     },
     fetchUsers(search) {
-      return axios.get('/-/autocomplete/users.json', { params: { active: true, search } });
+      return axios.get(this.autocompleteUsersPath, {
+        params: { active: true, search },
+      });
     },
     getStatus(issue) {
       if (issue.state === STATUS_CLOSED && issue.moved) {

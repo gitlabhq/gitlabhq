@@ -18,10 +18,10 @@ const axiosGet = (url, query, options, callback) => {
         ...options,
       },
     })
-    .then(({ data }) => {
+    .then(({ data, headers }) => {
       callback(data);
 
-      return data;
+      return { data, headers };
     });
 };
 

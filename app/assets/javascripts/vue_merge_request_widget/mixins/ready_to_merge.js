@@ -31,10 +31,6 @@ export default {
     pipelineMustSucceedConflictText() {
       return PIPELINE_MUST_SUCCEED_CONFLICT_TEXT;
     },
-    autoMergeTextLegacy() {
-      // MWPS is currently the only auto merge strategy available in CE
-      return __('Merge when pipeline succeeds');
-    },
     autoMergeText() {
       return __('Set to auto-merge');
     },
@@ -51,7 +47,7 @@ export default {
       };
     },
     shouldShowMergeImmediatelyDropdown() {
-      return this.isPipelineActive && !this.stateData.onlyAllowMergeIfPipelineSucceeds;
+      return this.isPipelineActive && !this.state.onlyAllowMergeIfPipelineSucceeds;
     },
     isMergeImmediatelyDangerous() {
       return false;

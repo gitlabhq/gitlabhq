@@ -71,4 +71,4 @@ To remove the Harbor Registry for a project:
 1. Clear the **Active** checkbox under **Enable integration**.
 1. Select **Save changes**.
 
-The **Packages and registries > Harbor Registry** entry is removed from the sidebar.
+The **Operate > Harbor Registry** entry is removed from the sidebar.

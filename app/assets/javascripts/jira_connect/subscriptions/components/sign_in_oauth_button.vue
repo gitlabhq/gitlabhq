@@ -187,7 +187,7 @@ export default {
 <template>
   <gl-button
     v-bind="$attrs"
-    variant="info"
+    variant="confirm"
     :loading="loading"
     :disabled="!canUseCrypto"
     @click="startOAuthFlow"

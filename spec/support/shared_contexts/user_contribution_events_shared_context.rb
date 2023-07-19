@@ -95,27 +95,52 @@ RSpec.shared_context 'with user contribution events' do
   end
 
   # pushed
-  let_it_be(:push_event_payload_pushed) do
+  commit_title = 'Initial commit'
+  let_it_be(:push_event_branch_payload_pushed) do
     event = create(:push_event, project: project, author: user)
-    create(:push_event_payload, event: event)
+    create(:push_event_payload, event: event, commit_title: commit_title)
     event
   end
 
-  let_it_be(:push_event_payload_created) do
+  let_it_be(:push_event_branch_payload_created) do
     event = create(:push_event, project: project, author: user)
-    create(:push_event_payload, event: event, action: :created)
+    create(:push_event_payload, event: event, action: :created, commit_title: commit_title)
     event
   end
 
-  let_it_be(:push_event_payload_removed) do
+  let_it_be(:push_event_branch_payload_removed) do
     event = create(:push_event, project: project, author: user)
     create(:push_event_payload, event: event, action: :removed)
     event
   end
 
+  let_it_be(:push_event_tag_payload_pushed) do
+    event = create(:push_event, project: project, author: user)
+    create(:push_event_payload, event: event, ref_type: :tag, commit_title: commit_title)
+    event
+  end
+
+  let_it_be(:push_event_tag_payload_created) do
+    event = create(:push_event, project: project, author: user)
+    create(:push_event_payload, event: event, ref_type: :tag, action: :created, commit_title: commit_title)
+    event
+  end
+
+  let_it_be(:push_event_tag_payload_removed) do
+    event = create(:push_event, project: project, author: user)
+    create(:push_event_payload, event: event, ref_type: :tag, action: :removed)
+    event
+  end
+
   let_it_be(:bulk_push_event) do
     event = create(:push_event, project: project, author: user)
-    create(:push_event_payload, event: event, commit_count: 5, commit_from: '83c6aa31482b9076531ed3a880e75627fd6b335c')
+    create(
+      :push_event_payload,
+      event: event,
+      commit_count: 5,
+      commit_from: '83c6aa31482b9076531ed3a880e75627fd6b335c',
+      commit_title: commit_title
+    )
     event
   end
 

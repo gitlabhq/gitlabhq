@@ -9,7 +9,7 @@ RSpec.describe AlertManagement::Alerts::Todo::CreateService, feature_category: :
   let(:current_user) { user }
 
   describe '#execute' do
-    subject(:result) { AlertManagement::Alerts::Todo::CreateService.new(alert, current_user).execute }
+    subject(:result) { described_class.new(alert, current_user).execute }
 
     shared_examples 'permissions error' do
       it 'returns an error', :aggregate_failures do

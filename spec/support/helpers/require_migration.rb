@@ -15,7 +15,7 @@ class RequireMigration
   end
 
   MIGRATION_FOLDERS = %w[db/migrate db/post_migrate].freeze
-  SPEC_FILE_PATTERN = %r{.+/(?:\d+_)?(?<file_name>.+)_spec\.rb}.freeze
+  SPEC_FILE_PATTERN = %r{.+/(?:\d+_)?(?<file_name>.+)_spec\.rb}
 
   class << self
     def require_migration!(file_name)

@@ -57,7 +57,7 @@ You can work with sample queries that pull data from public projects on GitLab.c
 - [Create an audit report](audit_report.md)
 - [Identify issue boards](sample_issue_boards.md)
 - [Query users](users_example.md)
-- [Use custom emojis](custom_emoji.md)
+- [Use custom emoji](custom_emoji.md)
 
 The [get started](getting_started.md) page includes different methods to customize GraphQL queries.
 

@@ -19,7 +19,7 @@ module Database
     def execute_on_each_database(query, databases: %I[main ci])
       databases = databases.select { |database_name| database_exists?(database_name) }
 
-      Gitlab::Database::EachDatabase.each_database_connection(only: databases, include_shared: false) do |connection, _|
+      Gitlab::Database::EachDatabase.each_connection(only: databases, include_shared: false) do |connection, _|
         next unless Gitlab::Database.gitlab_schemas_for_connection(connection).include?(:gitlab_shared)
 
         connection.execute(query)

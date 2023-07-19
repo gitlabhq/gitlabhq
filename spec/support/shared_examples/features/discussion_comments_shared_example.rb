@@ -3,8 +3,8 @@
 RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name|
   let(:form_selector) { '.js-main-target-form' }
   let(:dropdown_selector) { "#{form_selector} .comment-type-dropdown" }
-  let(:toggle_selector) { "#{dropdown_selector} .gl-dropdown-toggle" }
-  let(:menu_selector) { "#{dropdown_selector} .dropdown-menu" }
+  let(:toggle_selector) { "#{dropdown_selector} .gl-new-dropdown-toggle" }
+  let(:menu_selector) { "#{dropdown_selector} .gl-new-dropdown-contents" }
   let(:submit_selector) { "#{form_selector} .js-comment-submit-button > button:first-child" }
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry:not(.being-posted)' }
@@ -61,33 +61,6 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
       find("#{form_selector} .note-textarea").click
 
       expect(page).not_to have_selector menu_selector
-    end
-
-    it 'clicking the ul padding or divider should not change the text' do
-      execute_script("document.querySelector('#{menu_selector}').click()")
-
-      # on issues page, the menu closes when clicking anywhere, on other pages it will
-      # remain open if clicking divider or menu padding, but should not change button action
-      #
-      # if dropdown menu is not toggled (and also not present),
-      # it's "issue-type" dropdown
-      if first(menu_selector, minimum: 0).nil?
-        expect(find(dropdown_selector)).to have_content 'Comment'
-
-        find(toggle_selector).click
-        execute_script("document.querySelector('#{menu_selector} .dropdown-divider').click()")
-      else
-        execute_script("document.querySelector('#{menu_selector}').click()")
-
-        expect(page).to have_selector menu_selector
-        expect(find(dropdown_selector)).to have_content 'Comment'
-
-        execute_script("document.querySelector('#{menu_selector} .dropdown-divider').click()")
-
-        expect(page).to have_selector menu_selector
-      end
-
-      expect(find(dropdown_selector)).to have_content 'Comment'
     end
 
     describe 'when selecting "Start thread"' do
@@ -177,21 +150,27 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
 end
 
 RSpec.shared_examples 'thread comments for issue, epic and merge request' do |resource_name|
+  include ContentEditorHelpers
+
   let(:form_selector) { '.js-main-target-form' }
-  let(:dropdown_selector) { "#{form_selector} [data-testid='comment-button']" }
-  let(:submit_button_selector) { "#{dropdown_selector} .split-content-button" }
-  let(:toggle_selector) { "#{dropdown_selector} .dropdown-toggle-split" }
-  let(:menu_selector) { "#{dropdown_selector} .dropdown-menu" }
+  let(:dropdown_selector) { "#{form_selector} .comment-type-dropdown" }
+  let(:toggle_selector) { "#{dropdown_selector} .gl-new-dropdown-toggle" }
+  let(:menu_selector) { "#{dropdown_selector} .gl-new-dropdown-contents" }
+  let(:submit_selector) { "#{form_selector} .js-comment-submit-button > button:first-child" }
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry:not(.being-posted)' }
   let(:comment) { 'My comment' }
+
+  before do
+    close_rich_text_promo_popover_if_present
+  end
 
   it 'clicking "Comment" will post a comment' do
     expect(page).to have_selector toggle_selector
 
     find("#{form_selector} .note-textarea").send_keys(comment)
 
-    find(submit_button_selector).click
+    find(submit_selector).click
 
     wait_for_all_requests
 
@@ -260,7 +239,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
 
       describe 'creating a thread' do
         before do
-          find(submit_button_selector).click
+          find(submit_selector).click
           wait_for_requests
 
           find(comments_selector, match: :first)
@@ -284,7 +263,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
           expect(new_comment).to have_css('.discussion-with-resolve-btn')
         end
 
-        if resource_name =~ /(issue|merge request)/
+        if /(issue|merge request)/.match?(resource_name)
           it 'can be replied to' do
             submit_reply('some text')
 
@@ -366,14 +345,14 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
           end
 
           it 'updates the submit button text and closes the dropdown' do
-            button = find(submit_button_selector)
+            button = find(submit_selector)
 
             expect(button).to have_content 'Comment'
 
             expect(page).not_to have_selector menu_selector
           end
 
-          if resource_name =~ /(issue|merge request)/
+          if /(issue|merge request)/.match?(resource_name)
             it 'updates the close button text' do
               expect(find(close_selector)).to have_content "Comment & close #{resource_name}"
             end
@@ -402,7 +381,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
     end
   end
 
-  if resource_name =~ /(issue|merge request)/
+  if /(issue|merge request)/.match?(resource_name)
     describe "on a closed #{resource_name}" do
       before do
         find("#{form_selector} .js-note-target-close").click

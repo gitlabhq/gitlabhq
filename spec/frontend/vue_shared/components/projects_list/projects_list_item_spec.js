@@ -38,6 +38,7 @@ describe('ProjectsListItem', () => {
   const findProjectTopics = () => wrapper.findByTestId('project-topics');
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
   const findProjectDescription = () => wrapper.findByTestId('project-description');
+  const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
 
   it('renders project avatar', () => {
     createComponent();
@@ -48,11 +49,11 @@ describe('ProjectsListItem', () => {
       label: project.name,
       labelLink: project.webUrl,
     });
+
     expect(avatarLabeled.attributes()).toMatchObject({
       'entity-id': project.id.toString(),
       'entity-name': project.name,
       shape: 'rect',
-      size: '48',
     });
   });
 
@@ -64,6 +65,19 @@ describe('ProjectsListItem', () => {
 
     expect(icon.props('name')).toBe(VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PRIVATE_STRING]);
     expect(tooltip.value).toBe(PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]);
+  });
+
+  describe('when visibility is not provided', () => {
+    it('does not render visibility icon', () => {
+      const { visibility, ...projectWithoutVisibility } = project;
+      createComponent({
+        propsData: {
+          project: projectWithoutVisibility,
+        },
+      });
+
+      expect(findVisibilityIcon().exists()).toBe(false);
+    });
   });
 
   it('renders access role badge', () => {
@@ -111,6 +125,19 @@ describe('ProjectsListItem', () => {
     createComponent();
 
     expect(wrapper.findComponent(TimeAgoTooltip).props('time')).toBe(project.updatedAt);
+  });
+
+  describe('when updated at is not available', () => {
+    it('does not render updated at', () => {
+      const { updatedAt, ...projectWithoutUpdatedAt } = project;
+      createComponent({
+        propsData: {
+          project: projectWithoutUpdatedAt,
+        },
+      });
+
+      expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(false);
+    });
   });
 
   describe('when issues are enabled', () => {
@@ -261,6 +288,22 @@ describe('ProjectsListItem', () => {
       createComponent();
 
       expect(findProjectDescription().exists()).toBe(false);
+    });
+  });
+
+  describe('when `showProjectIcon` prop is `true`', () => {
+    it('shows project icon', () => {
+      createComponent({ propsData: { showProjectIcon: true } });
+
+      expect(wrapper.findByTestId('project-icon').exists()).toBe(true);
+    });
+  });
+
+  describe('when `showProjectIcon` prop is `false`', () => {
+    it('does not show project icon', () => {
+      createComponent();
+
+      expect(wrapper.findByTestId('project-icon').exists()).toBe(false);
     });
   });
 });

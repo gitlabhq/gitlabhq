@@ -2,21 +2,25 @@
 import { debounce } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { GlDisclosureDropdownGroup, GlLoadingIcon } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { getFormattedItem } from '../utils';
+
 import {
   COMMON_HANDLES,
   COMMAND_HANDLE,
   USER_HANDLE,
   PROJECT_HANDLE,
   ISSUE_HANDLE,
-  GLOBAL_COMMANDS_GROUP_TITLE,
+  PATH_HANDLE,
   PAGES_GROUP_TITLE,
+  PATH_GROUP_TITLE,
   GROUP_TITLES,
+  MAX_ROWS,
 } from './constants';
 import SearchItem from './search_item.vue';
-import { commandMapper, linksReducer, autocompleteQuery } from './utils';
+import { commandMapper, linksReducer, autocompleteQuery, fileMapper } from './utils';
 
 export default {
   name: 'CommandPaletteItems',
@@ -25,7 +29,14 @@ export default {
     GlLoadingIcon,
     SearchItem,
   },
-  inject: ['commandPaletteCommands', 'commandPaletteLinks', 'autocompletePath', 'searchContext'],
+  inject: [
+    'commandPaletteCommands',
+    'commandPaletteLinks',
+    'autocompletePath',
+    'searchContext',
+    'projectFilesPath',
+    'projectBlobPath',
+  ],
   props: {
     searchQuery: {
       type: String,
@@ -35,21 +46,45 @@ export default {
       type: String,
       required: true,
       validator: (value) => {
-        return COMMON_HANDLES.includes(value);
+        return [...COMMON_HANDLES, PATH_HANDLE].includes(value);
       },
     },
   },
   data: () => ({
     groups: [],
-    error: null,
     loading: false,
+    projectFiles: [],
+    debouncedSearch: debounce(function debouncedSearch() {
+      switch (this.handle) {
+        case COMMAND_HANDLE:
+          this.getCommandsAndPages();
+          break;
+        /* TODO: Search for recent issues initiated by #(ISSUE_HANDLE) from the command palette scope
+         was removed as using the # in command palette conflicted
+         with the existing global search functionality to search for issue by its id.
+         The code that performs the Recent issues search was not removed from the code base
+         as it would be nice to bring it back when we decide how to combine both search by id and text.
+         In scope of https://gitlab.com/gitlab-org/gitlab/-/issues/417434
+         we either bring back the search by #issue_text or remove the related code completely */
+        case USER_HANDLE:
+        case PROJECT_HANDLE:
+        case ISSUE_HANDLE:
+          this.getScopedItems();
+          break;
+        case PATH_HANDLE:
+          this.getProjectFiles();
+          break;
+        default:
+          break;
+      }
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
   }),
   computed: {
     isCommandMode() {
       return this.handle === COMMAND_HANDLE;
     },
-    isUserMode() {
-      return this.handle === USER_HANDLE;
+    isPathMode() {
+      return this.handle === PATH_HANDLE;
     },
     commands() {
       return this.commandPaletteCommands.map(commandMapper);
@@ -62,7 +97,7 @@ export default {
         ? this.commands
             .map(({ name, items }) => {
               return {
-                name: name || GLOBAL_COMMANDS_GROUP_TITLE,
+                name,
                 items: this.filterBySearchQuery(items, 'text'),
               };
             })
@@ -73,7 +108,7 @@ export default {
       return this.groups?.length && this.groups.some((group) => group.items?.length);
     },
     hasSearchQuery() {
-      if (this.isCommandMode) {
+      if (this.isCommandMode || this.isPathMode) {
         return this.searchQuery?.length > 0;
       }
       return this.searchQuery?.length > 2;
@@ -84,44 +119,58 @@ export default {
       }
       return this.searchQuery;
     },
+    filteredProjectFiles() {
+      if (!this.searchQuery) {
+        return this.projectFiles.slice(0, MAX_ROWS);
+      }
+      return this.filterBySearchQuery(this.projectFiles, 'text').slice(0, MAX_ROWS);
+    },
   },
   watch: {
     searchQuery: {
       handler() {
-        switch (this.handle) {
-          case COMMAND_HANDLE:
-            this.getCommandsAndPages();
-            break;
-          case USER_HANDLE:
-          case PROJECT_HANDLE:
-          case ISSUE_HANDLE:
-            this.getScopedItems();
-            break;
-          default:
-            break;
-        }
+        this.debouncedSearch();
       },
       immediate: true,
     },
   },
+  updated() {
+    this.$emit('updated');
+  },
   methods: {
     filterBySearchQuery(items, key = 'keywords') {
       return fuzzaldrinPlus.filter(items, this.searchQuery, { key });
+    },
+    async getProjectFiles() {
+      if (!this.projectFiles.length) {
+        this.loading = true;
+
+        try {
+          const response = await axios.get(this.projectFilesPath);
+          this.projectFiles = response?.data.map(fileMapper.bind(null, this.projectBlobPath));
+        } catch (error) {
+          Sentry.captureException(error);
+        } finally {
+          this.loading = false;
+        }
+      }
+
+      this.groups = [
+        {
+          name: PATH_GROUP_TITLE,
+          items: this.filteredProjectFiles,
+        },
+      ];
     },
     getCommandsAndPages() {
       if (!this.searchQuery) {
         this.groups = [...this.commands];
         return;
       }
+
+      this.groups = [...this.filteredCommands];
+
       const matchedLinks = this.filterBySearchQuery(this.links);
-
-      if (this.filteredCommands.length || matchedLinks.length) {
-        this.groups = [];
-      }
-
-      if (this.filteredCommands.length) {
-        this.groups = [...this.filteredCommands];
-      }
 
       if (matchedLinks.length) {
         this.groups.push({
@@ -130,62 +179,57 @@ export default {
         });
       }
     },
-    getScopedItems: debounce(function debouncedSearch() {
-      if (this.searchQuery && this.searchQuery.length < 3) return null;
+    async getScopedItems() {
+      if (this.searchQuery && this.searchQuery.length < 3) return;
 
       this.loading = true;
 
-      return axios
-        .get(
+      try {
+        const response = await axios.get(
           autocompleteQuery({
             path: this.autocompletePath,
             searchTerm: this.searchTerm,
             handle: this.handle,
             projectId: this.searchContext.project?.id,
           }),
-        )
-        .then(({ data }) => {
-          this.groups = this.getGroups(data);
-        })
-        .catch((error) => {
-          this.error = error;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
-    getGroups(data) {
-      return [
-        {
-          name: GROUP_TITLES[this.handle],
-          items: data.map(getFormattedItem),
-        },
-      ];
+        );
+
+        this.groups = [
+          {
+            name: GROUP_TITLES[this.handle],
+            items: response.data.map(getFormattedItem),
+          },
+        ];
+      } catch (error) {
+        Sentry.captureException(error);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };
 </script>
 
 <template>
-  <ul class="gl-p-0 gl-m-0 gl-list-style-none">
+  <div>
     <gl-loading-icon v-if="loading" size="lg" class="gl-my-5" />
 
-    <template v-else-if="hasResults">
+    <ul v-else-if="hasResults" class="gl-p-0 gl-m-0 gl-list-style-none">
       <gl-disclosure-dropdown-group
         v-for="(group, index) in groups"
         :key="index"
         :group="group"
         bordered
-        class="{'gl-mt-0!': index===0}"
+        :class="{ 'gl-mt-0!': index === 0 }"
       >
         <template #list-item="{ item }">
           <search-item :item="item" :search-query="searchQuery" />
         </template>
       </gl-disclosure-dropdown-group>
-    </template>
+    </ul>
 
     <div v-else-if="hasSearchQuery && !hasResults" class="gl-text-gray-700 gl-pl-5 gl-py-3">
       {{ __('No results found') }}
     </div>
-  </ul>
+  </div>
 </template>

@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::QA::ElementWithPattern do
     end
   end
 
-  context 'outside of a migration spec file' do
+  context 'when outside of a QA spec file' do
     it "does not register an offense" do
       expect_no_offenses(<<-RUBY)
         describe 'foo' do

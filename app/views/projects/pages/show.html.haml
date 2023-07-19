@@ -1,4 +1,4 @@
-- page_title _('Pages')
+- page_title s_('GitLabPages|Pages')
 
 - unless @project.pages_deployed?
   = render 'waiting'
@@ -11,7 +11,7 @@
   = render 'pages_settings'
 
   %hr.clearfix
-    = render 'ssl_limitations_warning' if @project.pages_subdomain.include?(".")
+    = render 'ssl_limitations_warning' if pages_subdomain(@project).include?(".")
     = render 'access'
     - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
       = render 'list'

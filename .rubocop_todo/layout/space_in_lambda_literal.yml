@@ -46,7 +46,6 @@ Layout/SpaceInLambdaLiteral:
     - 'app/models/environment.rb'
     - 'app/models/error_tracking/client_key.rb'
     - 'app/models/error_tracking/error.rb'
-    - 'app/models/external_pull_request.rb'
     - 'app/models/group.rb'
     - 'app/models/group_group_link.rb'
     - 'app/models/incident_management/timeline_event_tag.rb'

@@ -4,7 +4,6 @@ import { sortBy } from 'lodash';
 import produce from 'immer';
 import Draggable from 'vuedraggable';
 import { mapState, mapActions } from 'vuex';
-import eventHub from '~/boards/eventhub';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
 import {
@@ -107,23 +106,14 @@ export default {
       return this.canDragColumns ? options : {};
     },
     errorToDisplay() {
-      return this.isApolloBoard ? this.apolloError : this.error;
+      return this.apolloError || this.error || null;
     },
-  },
-  created() {
-    eventHub.$on('updateBoard', this.refetchLists);
-  },
-  beforeDestroy() {
-    eventHub.$off('updateBoard', this.refetchLists);
   },
   methods: {
     ...mapActions(['moveList', 'unsetError']),
     afterFormEnters() {
       const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
-    },
-    refetchLists() {
-      this.$apollo.queries.boardListsApollo.refetch();
     },
     highlightList(listId) {
       this.highlightedLists.push(listId);

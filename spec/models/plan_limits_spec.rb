@@ -302,94 +302,136 @@ RSpec.describe PlanLimits do
     end
   end
 
-  describe '#log_limits_changes', :freeze_time do
+  describe '#format_limits_history', :freeze_time do
     let(:user) { create(:user) }
     let(:plan_limits) { create(:plan_limits) }
     let(:current_timestamp) { Time.current.utc.to_i }
-    let(:history) { plan_limits.limits_history }
 
-    it 'logs a single attribute change' do
-      plan_limits.log_limits_changes(user, enforcement_limit: 5_000)
+    it 'formats a single attribute change' do
+      formatted_limits_history = plan_limits.format_limits_history(user, enforcement_limit: 5_000)
 
-      expect(history).to eq(
-        { 'enforcement_limit' => [{ 'user_id' => user.id, 'username' => user.username,
-                                    'timestamp' => current_timestamp, 'value' => 5_000 }] }
+      expect(formatted_limits_history).to eq(
+        {
+          "enforcement_limit" => [
+            {
+              "user_id" => user.id,
+              "username" => user.username,
+              "timestamp" => current_timestamp,
+              "value" => 5000
+            }
+          ]
+        }
       )
     end
 
-    it 'logs multiple attribute changes' do
-      plan_limits.log_limits_changes(user, enforcement_limit: 10_000, notification_limit: 20_000)
+    it 'does not format limits_history for non-allowed attributes' do
+      formatted_limits_history = plan_limits.format_limits_history(user,
+        { enforcement_limit: 20_000, pipeline_hierarchy_size: 10_000 })
 
-      expect(history).to eq(
-        { 'enforcement_limit' => [{ 'user_id' => user.id, 'username' => user.username,
-                                    'timestamp' => current_timestamp, 'value' => 10_000 }],
-          'notification_limit' => [{ 'user_id' => user.id, 'username' => user.username,
-                                     'timestamp' => current_timestamp,
-                                     'value' => 20_000 }] }
-      )
-    end
-
-    it 'allows logging dashboard_limit_enabled_at from console (without user)' do
-      plan_limits.log_limits_changes(nil, dashboard_limit_enabled_at: current_timestamp)
-
-      expect(history).to eq(
-        { 'dashboard_limit_enabled_at' => [{ 'user_id' => nil, 'username' => nil, 'timestamp' => current_timestamp,
-                                             'value' => current_timestamp }] }
-      )
-    end
-
-    context 'with previous history avilable' do
-      let(:plan_limits) do
-        create(:plan_limits,
-          limits_history: { 'enforcement_limit' => [{ user_id: user.id, username: user.username,
-                                                      timestamp: current_timestamp,
-                                                      value: 20_000 },
-            { user_id: user.id, username: user.username, timestamp: current_timestamp,
-              value: 50_000 }] })
-      end
-
-      it 'appends to it' do
-        plan_limits.log_limits_changes(user, enforcement_limit: 60_000)
-        expect(history).to eq(
+      expect(formatted_limits_history).to eq({
+        "enforcement_limit" => [
           {
+            "user_id" => user.id,
+            "username" => user.username,
+            "timestamp" => current_timestamp,
+            "value" => 20_000
+          }
+        ]
+      })
+    end
+
+    it 'does not format attributes for values that do not change' do
+      plan_limits.update!(enforcement_limit: 20_000)
+      formatted_limits_history = plan_limits.format_limits_history(user, enforcement_limit: 20_000)
+
+      expect(formatted_limits_history).to eq({})
+    end
+
+    it 'formats multiple attribute changes' do
+      formatted_limits_history = plan_limits.format_limits_history(user, enforcement_limit: 10_000,
+        notification_limit: 20_000, dashboard_limit_enabled_at: current_timestamp)
+
+      expect(formatted_limits_history).to eq(
+        {
+          "notification_limit" => [
+            {
+              "user_id" => user.id,
+              "username" => user.username,
+              "timestamp" => current_timestamp,
+              "value" => 20000
+            }
+          ],
+          "enforcement_limit" => [
+            {
+              "user_id" => user.id,
+              "username" => user.username,
+              "timestamp" => current_timestamp,
+              "value" => 10000
+            }
+          ],
+          "dashboard_limit_enabled_at" => [
+            {
+              "user_id" => user.id,
+              "username" => user.username,
+              "timestamp" => current_timestamp,
+              "value" => current_timestamp
+            }
+          ]
+        }
+      )
+    end
+
+    context 'with previous history available' do
+      let(:plan_limits) do
+        create(
+          :plan_limits,
+          limits_history: {
             'enforcement_limit' => [
-              { 'user_id' => user.id, 'username' => user.username, 'timestamp' => current_timestamp,
-                'value' => 20_000 },
-              { 'user_id' => user.id, 'username' => user.username, 'timestamp' => current_timestamp,
-                'value' => 50_000 },
-              { 'user_id' => user.id, 'username' => user.username, 'timestamp' => current_timestamp, 'value' => 60_000 }
+              {
+                user_id: user.id,
+                username: user.username,
+                timestamp: current_timestamp,
+                value: 20_000
+              },
+              {
+                user_id: user.id,
+                username: user.username,
+                timestamp: current_timestamp,
+                value: 50_000
+              }
             ]
           }
         )
       end
-    end
-  end
 
-  describe '#limit_attribute_changes', :freeze_time do
-    let(:user) { create(:user) }
-    let(:current_timestamp) { Time.current.utc.to_i }
-    let(:plan_limits) do
-      create(:plan_limits,
-        limits_history: { 'enforcement_limit' => [
-          { user_id: user.id, username: user.username, timestamp: current_timestamp,
-            value: 20_000 }, { user_id: user.id, username: user.username, timestamp: current_timestamp,
-                               value: 50_000 }
-        ] })
-    end
+      it 'appends to it' do
+        formatted_limits_history = plan_limits.format_limits_history(user, enforcement_limit: 60_000)
 
-    it 'returns an empty array for attribute with no changes' do
-      changes = plan_limits.limit_attribute_changes(:notification_limit)
-
-      expect(changes).to eq([])
-    end
-
-    it 'returns the changes for a specific attribute' do
-      changes = plan_limits.limit_attribute_changes(:enforcement_limit)
-
-      expect(changes).to eq(
-        [{ timestamp: current_timestamp, value: 20_000, username: user.username, user_id: user.id },
-          { timestamp: current_timestamp, value: 50_000, username: user.username, user_id: user.id }]
-      )
+        expect(formatted_limits_history).to eq(
+          {
+            "enforcement_limit" => [
+              {
+                "user_id" => user.id,
+                "username" => user.username,
+                "timestamp" => current_timestamp,
+                "value" => 20000
+              },
+              {
+                "user_id" => user.id,
+                "username" => user.username,
+                "timestamp" => current_timestamp,
+                "value" => 50000
+              },
+              {
+                "user_id" => user.id,
+                "username" => user.username,
+                "timestamp" => current_timestamp,
+                "value" => 60000
+              }
+            ]
+          }
+        )
+      end
     end
   end
 end

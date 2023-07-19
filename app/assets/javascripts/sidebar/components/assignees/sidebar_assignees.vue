@@ -27,11 +27,6 @@ export default {
       type: String,
       required: true,
     },
-    signedIn: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     issuableType: {
       type: String,
       required: false,
@@ -143,7 +138,6 @@ export default {
       :number-of-assignees="store.assignees.length"
       :loading="loading || store.isFetching.assignees"
       :editable="store.editable"
-      :show-toggle="!signedIn"
       :changing="store.changing"
     />
     <assignees

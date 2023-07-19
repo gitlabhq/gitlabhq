@@ -1,4 +1,5 @@
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 export const STATUS_TYPES = {
   SUCCESS: 'success',
@@ -8,7 +9,7 @@ export const STATUS_TYPES = {
 
 export const UPGRADE_DOCS_URL = helpPagePath('update/index');
 
-export const ABOUT_RELEASES_PAGE = 'https://about.gitlab.com/releases/categories/releases/';
+export const ABOUT_RELEASES_PAGE = `${PROMO_URL}/releases/categories/releases/`;
 
 export const ALERT_MODAL_ID = 'security-patch-upgrade-alert-modal';
 

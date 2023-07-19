@@ -1,7 +1,21 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlButton } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormGroup,
+  GlFormRadioGroup,
+  GlIcon,
+  GlTooltipDirective,
+  GlSprintf,
+  GlLink,
+} from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { joinPaths } from '~/lib/utils/url_utility';
+import {
+  I18N,
+  COMPARE_OPTIONS,
+  COMPARE_REVISIONS_DOCS_URL,
+  COMPARE_OPTIONS_INPUT_NAME,
+} from '../constants';
 import RevisionCard from './revision_card.vue';
 
 export default {
@@ -9,8 +23,14 @@ export default {
   components: {
     RevisionCard,
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlFormRadioGroup,
+    GlFormGroup,
+    GlIcon,
+    GlLink,
+    GlSprintf,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     projectCompareIndexPath: {
@@ -76,24 +96,6 @@ export default {
       isStraight: this.straight,
     };
   },
-  computed: {
-    straightModeDropdownItems() {
-      return [
-        {
-          modeType: 'off',
-          isEnabled: false,
-          content: '..',
-          testId: 'disableStraightModeButton',
-        },
-        {
-          modeType: 'on',
-          isEnabled: true,
-          content: '...',
-          testId: 'enableStraightModeButton',
-        },
-      ];
-    },
-  },
   methods: {
     onSubmit() {
       this.$refs.form.submit();
@@ -110,10 +112,11 @@ export default {
     onSwapRevision() {
       [this.from, this.to] = [this.to, this.from]; // swaps 'from' and 'to'
     },
-    setStraightMode(isStraight) {
-      this.isStraight = isStraight;
-    },
   },
+  i18n: I18N,
+  compareOptions: COMPARE_OPTIONS,
+  docsLink: COMPARE_REVISIONS_DOCS_URL,
+  inputName: COMPARE_OPTIONS_INPUT_NAME,
 };
 </script>
 
@@ -125,13 +128,26 @@ export default {
     :action="projectCompareIndexPath"
   >
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
+    <h1 class="gl-font-size-h1 gl-mt-4">{{ $options.i18n.title }}</h1>
+    <p>
+      <gl-sprintf :message="$options.i18n.subtitle">
+        <template #bold="{ content }">
+          <strong>{{ content }}</strong>
+        </template>
+        <template #link="{ content }">
+          <gl-link target="_blank" :href="$options.docsLink" data-testid="help-link">{{
+            content
+          }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
     <div
       class="gl-lg-flex-direction-row gl-lg-display-flex gl-align-items-center compare-revision-cards"
     >
       <revision-card
         data-testid="sourceRevisionCard"
         :refs-project-path="to.refsProjectPath"
-        :revision-text="__('Source')"
+        :revision-text="$options.i18n.source"
         params-name="to"
         :params-branch="to.revision"
         :projects="to.projects"
@@ -139,28 +155,26 @@ export default {
         @selectProject="onSelectProject"
         @selectRevision="onSelectRevision"
       />
-      <div
-        class="gl-display-flex gl-justify-content-center gl-align-items-center gl-align-self-end gl-my-3 gl-md-my-0 gl-pl-3 gl-pr-3"
-        data-testid="ellipsis"
+      <gl-button
+        v-gl-tooltip="$options.i18n.swapRevisions"
+        class="gl-display-flex gl-mx-3 gl-align-self-end swap-button"
+        data-testid="swapRevisionsButton"
+        category="tertiary"
+        @click="onSwapRevision"
       >
-        <input :value="isStraight ? 'true' : 'false'" type="hidden" name="straight" />
-        <gl-dropdown data-testid="modeDropdown" :text="isStraight ? '...' : '..'" size="small">
-          <gl-dropdown-item
-            v-for="mode in straightModeDropdownItems"
-            :key="mode.modeType"
-            :is-check-item="true"
-            :is-checked="isStraight == mode.isEnabled"
-            :data-testid="mode.testId"
-            @click="setStraightMode(mode.isEnabled)"
-          >
-            <span class="dropdown-menu-inner-content"> {{ mode.content }} </span>
-          </gl-dropdown-item>
-        </gl-dropdown>
-      </div>
+        <gl-icon name="substitute" />
+      </gl-button>
+      <gl-button
+        v-gl-tooltip="$options.i18n.swapRevisions"
+        class="gl-display-none gl-align-self-end gl-my-5 swap-button-mobile"
+        @click="onSwapRevision"
+      >
+        {{ $options.i18n.swap }}
+      </gl-button>
       <revision-card
         data-testid="targetRevisionCard"
         :refs-project-path="from.refsProjectPath"
-        :revision-text="__('Target')"
+        :revision-text="$options.i18n.target"
         params-name="from"
         :params-branch="from.revision"
         :projects="from.projects"
@@ -169,22 +183,32 @@ export default {
         @selectRevision="onSelectRevision"
       />
     </div>
-    <div class="gl-display-flex gl-mt-6 gl-gap-3">
-      <gl-button category="primary" variant="confirm" @click="onSubmit">
-        {{ s__('CompareRevisions|Compare') }}
-      </gl-button>
-      <gl-button data-testid="swapRevisionsButton" @click="onSwapRevision">
-        {{ s__('CompareRevisions|Swap revisions') }}
+    <gl-form-group :label="$options.i18n.optionsLabel" class="gl-mt-4">
+      <gl-form-radio-group
+        v-model="isStraight"
+        :options="$options.compareOptions"
+        :name="$options.inputName"
+        required
+      />
+    </gl-form-group>
+    <div class="gl-display-flex gl-gap-3 gl-pb-4">
+      <gl-button
+        category="primary"
+        variant="confirm"
+        data-testid="compare-button"
+        @click="onSubmit"
+      >
+        {{ $options.i18n.compare }}
       </gl-button>
       <gl-button
         v-if="projectMergeRequestPath"
         :href="projectMergeRequestPath"
         data-testid="projectMrButton"
       >
-        {{ s__('CompareRevisions|View open merge request') }}
+        {{ $options.i18n.viewMr }}
       </gl-button>
       <gl-button v-else-if="createMrPath" :href="createMrPath" data-testid="createMrButton">
-        {{ s__('CompareRevisions|Create merge request') }}
+        {{ $options.i18n.openMr }}
       </gl-button>
     </div>
   </form>

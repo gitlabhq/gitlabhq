@@ -2032,7 +2032,7 @@ Follow these steps to view details of a fuzzing fault:
 
 1. You can view faults in a project, or a merge request:
 
-   - In a project, go to the project's **Security and Compliance > Vulnerability Report**
+   - In a project, go to the project's **Secure > Vulnerability report**
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. API Fuzzing faults are available in a section labeled
@@ -2452,7 +2452,7 @@ See the following documentation sections for assistance:
 
 See [Performance Tuning and Testing Speed](#performance-tuning-and-testing-speed)
 
-### Error waiting for API Fuzzing 'http://127.0.0.1:5000' to become available
+### Error: `Error waiting for API Fuzzing 'http://127.0.0.1:5000' to become available`
 
 A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the API Fuzzing analyzer.
 

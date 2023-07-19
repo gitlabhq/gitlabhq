@@ -1,7 +1,7 @@
 ---
 table_name: external_pull_requests
 classes:
-- ExternalPullRequest
+- Ci::ExternalPullRequest
 feature_categories:
 - continuous_integration
 description: TODO

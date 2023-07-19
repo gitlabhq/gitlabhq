@@ -8,7 +8,7 @@ $search-input-field-x-min-width: 200px;
   min-height: $header-height;
   border: 0;
   position: fixed;
-  top: $calc-application-bars-height;
+  top: $calc-system-headers-height;
   left: 0;
   right: 0;
   border-radius: 0;
@@ -322,7 +322,7 @@ $search-input-field-x-min-width: 200px;
   left: var(--application-bar-left);
   position: fixed;
   right: var(--application-bar-right);
-  top: $calc-application-bars-height;
+  top: $calc-system-headers-height;
   width: auto;
   z-index: $top-bar-z-index;
 

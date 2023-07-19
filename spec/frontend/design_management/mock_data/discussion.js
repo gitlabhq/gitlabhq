@@ -1,3 +1,5 @@
+import { mockAuthor, mockAwardEmoji } from './apollo_mock';
+
 export default {
   id: 'discussion-id-1',
   resolved: false,
@@ -12,13 +14,12 @@ export default {
         x: 10,
         y: 15,
       },
-      author: {
-        name: 'John',
-        webUrl: 'link-to-john-profile',
-      },
+      author: mockAuthor,
+      awardEmoji: mockAwardEmoji,
       createdAt: '2020-05-08T07:10:45Z',
       userPermissions: {
         repositionNote: true,
+        awardEmoji: true,
       },
       resolved: false,
     },
@@ -32,12 +33,15 @@ export default {
         y: 25,
       },
       author: {
+        id: 'gid://gitlab/User/2',
         name: 'Mary',
         webUrl: 'link-to-mary-profile',
       },
+      awardEmoji: mockAwardEmoji,
       createdAt: '2020-05-08T07:10:45Z',
       userPermissions: {
         adminNote: true,
+        awardEmoji: true,
       },
       resolved: false,
     },

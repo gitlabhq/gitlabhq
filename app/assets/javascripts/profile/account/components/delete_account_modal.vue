@@ -1,5 +1,6 @@
 <script>
 import { GlModal, GlSprintf } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 
@@ -8,6 +9,7 @@ export default {
     GlModal,
     GlSprintf,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     actionUrl: {
       type: String,
@@ -67,6 +69,9 @@ export default {
     },
   },
   i18n: {
+    textdelay: s__(`Profiles|
+You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account.
+Once you confirm %{deleteAccount}, it cannot be undone or recovered. You might have to wait seven days before creating a new account with the same username or email.`),
     text: s__(`Profiles|
 You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account.
 Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
@@ -85,7 +90,16 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
     @primary="onSubmit"
   >
     <p>
-      <gl-sprintf :message="$options.i18n.text">
+      <gl-sprintf v-if="glFeatures.delayDeleteOwnUser" :message="$options.i18n.textdelay">
+        <template #yourAccount>
+          <strong>{{ s__('Profiles|your account') }}</strong>
+        </template>
+
+        <template #deleteAccount>
+          <strong>{{ s__('Profiles|Delete account') }}</strong>
+        </template>
+      </gl-sprintf>
+      <gl-sprintf v-else :message="$options.i18n.text">
         <template #yourAccount>
           <strong>{{ s__('Profiles|your account') }}</strong>
         </template>

@@ -70,7 +70,11 @@ module QA
       context 'with merge request' do
         it(
           'successfully imports merge request',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478',
+          quarantine: {
+            type: :bug,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/414859"
+          }
         ) do
           expect_project_import_finished_successfully
           expect(imported_mrs.count).to eq(1)

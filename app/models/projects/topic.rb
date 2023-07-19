@@ -71,7 +71,7 @@ module Projects
 
       # /\R/ - A linebreak: \n, \v, \f, \r \u0085 (NEXT LINE),
       # \u2028 (LINE SEPARATOR), \u2029 (PARAGRAPH SEPARATOR) or \r\n.
-      return unless name =~ /\R/
+      return unless /\R/.match?(name)
 
       errors.add(:name, 'has characters that are not allowed')
     end

@@ -5,7 +5,7 @@ export default {
   components: {
     ListboxInput,
   },
-  inject: ['label', 'name', 'emails', 'emptyValueText', 'value', 'disabled'],
+  inject: ['label', 'name', 'emails', 'emptyValueText', 'value', 'disabled', 'placement'],
   data() {
     return {
       selected: this.value,
@@ -41,6 +41,8 @@ export default {
     :name="name"
     :items="options"
     :disabled="disabled"
+    :placement="placement"
+    fluid-width
     @select="onSelect"
   />
 </template>

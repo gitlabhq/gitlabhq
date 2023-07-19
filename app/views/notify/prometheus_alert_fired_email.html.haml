@@ -25,7 +25,3 @@
 - if @alert.show_incident_issues_link?
   %p
     = link_to(_('View incident issues.'), @alert.incident_issues_link)
-
-- if @alert.show_performance_dashboard_link?
-  %p
-    = link_to(_('View performance dashboard.'), @alert.performance_dashboard_link)

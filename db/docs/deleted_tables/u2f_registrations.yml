@@ -1,0 +1,12 @@
+---
+table_name: u2f_registrations
+classes:
+- U2fRegistration
+feature_categories:
+- system_access
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/791cc9138be6ea1783e3c3853370cf0290f4d41e
+milestone: '8.9'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114576
+removed_in_milestone: '16.1'
+gitlab_schema: gitlab_main

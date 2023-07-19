@@ -32,7 +32,7 @@ RSpec.describe PerformanceMonitoring::PrometheusDashboard do
     subject { described_class.from_json(json_content) }
 
     it 'creates a PrometheusDashboard object' do
-      expect(subject).to be_a PerformanceMonitoring::PrometheusDashboard
+      expect(subject).to be_a described_class
       expect(subject.dashboard).to eq(json_content['dashboard'])
       expect(subject.panel_groups).to all(be_a PerformanceMonitoring::PrometheusPanelGroup)
     end

@@ -3,7 +3,9 @@ query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
     id
     pipeline(iid: $pipelineIid) {
       id
+      active
       jobs(statuses: [FAILED], retried: false, jobKind: BUILD) {
+        count
         nodes {
           id
           allowFailure
@@ -19,12 +21,17 @@ query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
           }
           name
           retried
+          retryable
           stage {
             id
             name
           }
           trace {
             htmlSummary
+          }
+          userPermissions {
+            readBuild
+            updateBuild
           }
           webPath
         }

@@ -26,7 +26,7 @@ class Note < ApplicationRecord
   include IgnorableColumns
   include Spammable
 
-  ignore_column :id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
+  ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
 
   ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/.freeze
 
@@ -756,7 +756,7 @@ class Note < ApplicationRecord
     Ability.users_that_can_read_internal_notes(users, resource_parent).pluck(:id)
   end
 
-  # Method necesary while we transition into the new format for task system notes
+  # Method necessary while we transition into the new format for task system notes
   # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/369923
   def note
     return super unless system? && for_issue? && super&.match?(ISSUE_TASK_SYSTEM_NOTE_PATTERN)
@@ -790,6 +790,14 @@ class Note < ApplicationRecord
     return false if noteable.try(:group)&.public? == false || project&.public? == false
 
     true
+  end
+
+  # Use attributes.keys instead of attribute_names to filter out the fields that are skipped during export:
+  #
+  # - note_html
+  # - cached_markdown_version
+  def attribute_names_for_serialization
+    attributes.keys
   end
 
   private

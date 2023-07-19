@@ -3,13 +3,12 @@ import highlightCurrentUser from './highlight_current_user';
 import { renderKroki } from './render_kroki';
 import renderMath from './render_math';
 import renderSandboxedMermaid from './render_sandboxed_mermaid';
-import renderMetrics from './render_metrics';
 import renderObservability from './render_observability';
 import { renderJSONTable } from './render_json_table';
 
 function initPopovers(elements) {
   if (!elements.length) return;
-  import(/* webpackChunkName: 'IssuablePopoverBundle' */ '~/issuable/popover')
+  import(/* webpackChunkName: 'IssuablePopoverBundle' */ 'ee_else_ce/issuable/popover')
     .then(({ default: initIssuablePopovers }) => {
       initIssuablePopovers(elements);
     })
@@ -30,7 +29,6 @@ export function renderGFM(element) {
     tableEls,
     userEls,
     popoverEls,
-    metricsEls,
     observabilityEls,
   ] = [
     '.js-syntax-highlight',
@@ -39,8 +37,7 @@ export function renderGFM(element) {
     '.js-render-mermaid',
     '[lang="json"][data-lang-params="table"]',
     '.gfm-project_member',
-    '.gfm-issue, .gfm-work_item, .gfm-merge_request',
-    '.js-render-metrics',
+    '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic',
     '.js-render-observability',
   ].map((selector) => Array.from(element.querySelectorAll(selector)));
 
@@ -50,9 +47,6 @@ export function renderGFM(element) {
   renderSandboxedMermaid(mermaidEls);
   renderJSONTable(tableEls.map((e) => e.parentNode));
   highlightCurrentUser(userEls);
-  if (!window.gon?.features?.removeMonitorMetrics) {
-    renderMetrics(metricsEls);
-  }
   renderObservability(observabilityEls);
   initPopovers(popoverEls);
 }

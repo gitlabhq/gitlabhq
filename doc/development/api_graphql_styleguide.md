@@ -813,6 +813,12 @@ field :token, GraphQL::Types::String, null: true,
       description: 'Token for login.'
 ```
 
+Similarly, you can also mark an entire mutation as Alpha by updating where the mutation is mounted in `app/graphql/types/mutation_type.rb`:
+
+```ruby
+mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, alpha: { milestone: '15.10' }
+```
+
 Alpha GraphQL items is a custom GitLab feature that leverages GraphQL deprecations. An Alpha item
 appears as deprecated in the GraphQL schema. Like all deprecated schema items, you can test an
 Alpha field in [GraphiQL](../api/graphql/index.md#graphiql). However, be aware that the GraphiQL
@@ -1668,7 +1674,7 @@ should look like this:
 ### Mounting the mutation
 
 To make the mutation available it must be defined on the mutation
-type that is stored in `graphql/types/mutation_types`. The
+type that is stored in `graphql/types/mutation_type`. The
 `mount_mutation` helper method defines a field based on the
 GraphQL-name of the mutation:
 

@@ -35,3 +35,5 @@ module Types
                                              description: 'Wiki size of the project in bytes.'
   end
 end
+
+Types::ProjectStatisticsType.prepend_mod_with('Types::ProjectStatisticsType')

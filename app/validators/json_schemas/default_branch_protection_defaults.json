@@ -62,14 +62,8 @@
     "code_owner_approval_required": {
       "type": "boolean"
     },
-    "merge_access_level": {
-      "type": "integer"
-    },
-    "push_access_level": {
-      "type": "integer"
-    },
-    "unprotect_access_level": {
-      "type": "integer"
+    "developer_can_initial_push": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

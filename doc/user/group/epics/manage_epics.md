@@ -66,7 +66,7 @@ The parent epic's start date then reflects this change and propagates upwards to
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
+On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
 The feature is not ready for production use.
 
@@ -161,9 +161,9 @@ Prerequisites:
 
 To close an epic, at the top of an epic, select **Close epic**.
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
+<!-- Delete when the `move_close_into_dropdown` feature flag is removed -->
 If you don't see this action at the top of an epic, your project or instance might have
-enabled a feature flag for [moved actions](../../project/merge_requests/index.md#move-sidebar-actions)
+enabled a feature flag to [moved it in the actions menu](../../project/issues/managing_issues.md#move-the-close-button-into-the-actions-menu).
 
 You can also use the `/close` [quick action](../../project/quick_actions.md).
 
@@ -182,6 +182,10 @@ To do so, either:
   ![reopen epic - button](img/button_reopen_epic.png)
 
 - Use the `/reopen` [quick action](../../project/quick_actions.md).
+
+<!-- Delete when the `move_close_into_dropdown` feature flag is removed -->
+If you don't see this action at the top of an epic, your project or instance might have
+enabled a feature flag to [moved it in the actions menu](../../project/issues/managing_issues.md#move-the-close-button-into-the-actions-menu).
 
 ## Go to an epic from an issue
 
@@ -262,7 +266,7 @@ To filter:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
+To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
 On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
@@ -351,8 +355,8 @@ you might not have permission to.
 
 ### Add a new issue to an epic
 
-You can add an existing issue to an epic, or create a new issue that's
-automatically added to the epic.
+Add an existing issue to an epic, or create a new issue that's automatically
+added to the epic.
 
 #### Add an existing issue to an epic
 
@@ -388,6 +392,12 @@ To add an existing issue to an epic:
 
 Creating an issue from an epic enables you to maintain focus on the broader context of the epic
 while dividing work into smaller parts.
+
+You can create a new issue from an epic only in projects that are in the epic's group or one of its
+descendant subgroups.
+To create a new issue in a [project that was shared with the epic's group](../../project/members/share_project_with_groups.md),
+first [create the issue directly in the project](../../project/issues/create_issues.md#from-a-project), and
+then [add an existing issue to an epic](#add-an-existing-issue-to-an-epic).
 
 Prerequisites:
 

@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import { sprintf, __ } from '~/locale';
+import { sprintf, __, formatNumber } from '~/locale';
 
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
@@ -49,6 +49,12 @@ export default {
     managersCount() {
       return this.runner.managers?.count || 0;
     },
+    firstIpAddress() {
+      return this.runner.managers?.nodes?.[0]?.ipAddress || null;
+    },
+    additionalIpAddressCount() {
+      return this.managersCount - 1;
+    },
     jobCount() {
       return formatJobCount(this.runner.jobCount);
     },
@@ -62,6 +68,9 @@ export default {
       }
       return null;
     },
+  },
+  methods: {
+    formatNumber,
   },
   i18n: {
     I18N_NO_DESCRIPTION,
@@ -120,8 +129,11 @@ export default {
         </gl-sprintf>
       </runner-summary-field>
 
-      <runner-summary-field v-if="runner.ipAddress" icon="disk" :tooltip="__('IP Address')">
-        {{ runner.ipAddress }}
+      <runner-summary-field v-if="firstIpAddress" icon="disk" :tooltip="__('IP Address')">
+        {{ firstIpAddress }}
+        <template v-if="additionalIpAddressCount"
+          >(+{{ formatNumber(additionalIpAddressCount) }})</template
+        >
       </runner-summary-field>
 
       <runner-summary-field icon="pipeline" data-testid="job-count" :tooltip="__('Jobs')">

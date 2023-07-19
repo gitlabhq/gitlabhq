@@ -3,9 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Cache::Client, feature_category: :source_code_management do
-  subject(:client) { described_class.new(metadata, backend: backend) }
+  subject(:client) { described_class.new(metrics, backend: backend) }
 
+  let(:metrics) { Gitlab::Cache::Metrics.new(metadata) }
   let(:backend) { Rails.cache }
+
+  let(:cache_identifier) { 'MyClass#cache' }
+  let(:feature_category) { :source_code_management }
+  let(:backing_resource) { :cpu }
+
   let(:metadata) do
     Gitlab::Cache::Metadata.new(
       cache_identifier: cache_identifier,
@@ -14,40 +20,14 @@ RSpec.describe Gitlab::Cache::Client, feature_category: :source_code_management 
     )
   end
 
-  let(:cache_identifier) { 'MyClass#cache' }
-  let(:feature_category) { :source_code_management }
-  let(:backing_resource) { :cpu }
-
-  let(:metadata_mock) do
-    Gitlab::Cache::Metadata.new(
-      cache_identifier: cache_identifier,
-      feature_category: feature_category
-    )
-  end
-
-  let(:metrics_mock) { Gitlab::Cache::Metrics.new(metadata_mock) }
-
-  describe '.build_with_metadata' do
-    it 'builds a cache client with metrics support' do
-      attributes = {
-        cache_identifier: cache_identifier,
-        feature_category: feature_category,
-        backing_resource: backing_resource
-      }
-
-      instance = described_class.build_with_metadata(**attributes)
-
-      expect(instance).to be_a(described_class)
-      expect(instance.metadata).to have_attributes(**attributes)
-    end
+  let(:labels) do
+    {
+      feature_category: :audit_events
+    }
   end
 
   describe 'Methods', :use_clean_rails_memory_store_caching do
     let(:expected_key) { 'key' }
-
-    before do
-      allow(Gitlab::Cache::Metrics).to receive(:new).and_return(metrics_mock)
-    end
 
     describe '#read' do
       context 'when key does not exist' do
@@ -56,9 +36,9 @@ RSpec.describe Gitlab::Cache::Client, feature_category: :source_code_management 
         end
 
         it 'increments cache miss' do
-          expect(metrics_mock).to receive(:increment_cache_miss)
+          expect(metrics).to receive(:increment_cache_miss).with(labels).and_call_original
 
-          client.read('key')
+          expect(client.read('key', nil, labels)).to be_nil
         end
       end
 
@@ -72,9 +52,9 @@ RSpec.describe Gitlab::Cache::Client, feature_category: :source_code_management 
         end
 
         it 'increments cache hit' do
-          expect(metrics_mock).to receive(:increment_cache_hit)
+          expect(metrics).to receive(:increment_cache_hit).with(labels)
 
-          client.read('key')
+          expect(client.read('key', nil, labels)).to eq('value')
         end
       end
     end
@@ -125,13 +105,13 @@ RSpec.describe Gitlab::Cache::Client, feature_category: :source_code_management 
         end
 
         it 'increments a cache hit' do
-          expect(metrics_mock).to receive(:increment_cache_hit)
+          expect(metrics).to receive(:increment_cache_hit).with(labels)
 
-          client.fetch('key')
+          expect(client.fetch('key', nil, labels)).to eq('value')
         end
 
         it 'does not measure the cache generation time' do
-          expect(metrics_mock).not_to receive(:observe_cache_generation)
+          expect(metrics).not_to receive(:observe_cache_generation)
 
           client.fetch('key') { 'new-value' }
         end
@@ -145,15 +125,15 @@ RSpec.describe Gitlab::Cache::Client, feature_category: :source_code_management 
         end
 
         it 'increments a cache miss' do
-          expect(metrics_mock).to receive(:increment_cache_miss)
+          expect(metrics).to receive(:increment_cache_miss).with(labels)
 
-          client.fetch('key')
+          expect(client.fetch('key', nil, labels) { 'value' }).to eq('value')
         end
 
         it 'measures the cache generation time' do
-          expect(metrics_mock).to receive(:observe_cache_generation)
+          expect(metrics).to receive(:observe_cache_generation).with(labels).and_call_original
 
-          client.fetch('key') { 'value' }
+          expect(client.fetch('key', nil, labels) { 'value' }).to eq('value')
         end
       end
     end

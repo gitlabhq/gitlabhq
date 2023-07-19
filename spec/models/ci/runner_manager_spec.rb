@@ -69,6 +69,49 @@ RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model 
     it { is_expected.to eq(7.days.ago) }
   end
 
+  describe '.for_runner' do
+    subject(:runner_managers) { described_class.for_runner(runner_arg) }
+
+    let_it_be(:runner1) { create(:ci_runner) }
+    let_it_be(:runner_manager11) { create(:ci_runner_machine, runner: runner1) }
+    let_it_be(:runner_manager12) { create(:ci_runner_machine, runner: runner1) }
+
+    context 'with single runner' do
+      let(:runner_arg) { runner1 }
+
+      it { is_expected.to contain_exactly(runner_manager11, runner_manager12) }
+    end
+
+    context 'with multiple runners' do
+      let(:runner_arg) { [runner1, runner2] }
+
+      let_it_be(:runner2) { create(:ci_runner) }
+      let_it_be(:runner_manager2) { create(:ci_runner_machine, runner: runner2) }
+
+      it { is_expected.to contain_exactly(runner_manager11, runner_manager12, runner_manager2) }
+    end
+  end
+
+  describe '.aggregate_upgrade_status_by_runner_id' do
+    let!(:runner_version1) { create(:ci_runner_version, version: '16.0.0', status: :recommended) }
+    let!(:runner_version2) { create(:ci_runner_version, version: '16.0.1', status: :available) }
+
+    let!(:runner1) { create(:ci_runner) }
+    let!(:runner2) { create(:ci_runner) }
+    let!(:runner_manager11) { create(:ci_runner_machine, runner: runner1, version: runner_version1.version) }
+    let!(:runner_manager12) { create(:ci_runner_machine, runner: runner1, version: runner_version2.version) }
+    let!(:runner_manager2) { create(:ci_runner_machine, runner: runner2, version: runner_version2.version) }
+
+    subject { described_class.aggregate_upgrade_status_by_runner_id }
+
+    it 'contains aggregate runner upgrade status by runner ID' do
+      is_expected.to eq({
+        runner1.id => :recommended,
+        runner2.id => :available
+      })
+    end
+  end
+
   describe '#status', :freeze_time do
     let(:runner_manager) { build(:ci_runner_machine, created_at: 8.days.ago) }
 

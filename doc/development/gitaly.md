@@ -116,7 +116,7 @@ Please raise an issue in the GitLab CE or EE repositories to report the issue. I
 ~performance ~"technical debt". Please ensure that the issue contains the full stack trace and error message of the
 `TooManyInvocationsError`. Also include any known failing tests if possible.
 
-Isolate the source of the n+1 problem. This is normally a loop that results in Gitaly being called for each
+Isolate the source of the n+1 problem. This is usually a loop that results in Gitaly being called for each
 element in an array. If you are unable to isolate the problem, please contact a member
 of the [Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members) for assistance.
 
@@ -152,7 +152,7 @@ end
 
 ## Running tests with a locally modified version of Gitaly
 
-Normally, GitLab CE/EE tests use a local clone of Gitaly in
+Usually, GitLab CE/EE tests use a local clone of Gitaly in
 `tmp/tests/gitaly` pinned at the version specified in
 `GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports also
 branches and SHA to use a custom commit in [the repository](https://gitlab.com/gitlab-org/gitaly).
@@ -185,7 +185,7 @@ to manually run `make` again.
 
 Note that CI tests do not use your locally modified version of
 Gitaly. To use a custom Gitaly version in CI, you must update
-GITALY_SERVER_VERSION as described at the beginning of this section.
+`GITALY_SERVER_VERSION` as described at the beginning of this section.
 
 To use a different Gitaly repository, such as if your changes are present
 on a fork, you can specify a `GITALY_REPO_URL` environment variable when

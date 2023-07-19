@@ -31,7 +31,6 @@
   &:not(.note-form).internal-note .timeline-content,
   &:not(.note-form).draft-note .timeline-content {
     background-color: $orange-50 !important;
-    border-radius: 3px;
   }
 
   .timeline-entry-inner {
@@ -40,9 +39,12 @@
 
   &:target,
   &.target {
-    .timeline-content,
+    .timeline-content {
+      background-color: $line-target-blue;
+    }
+
     + .public-note.discussion-reply-holder {
-      background-color: $line-target-blue !important;
+      padding-top: $gl-padding-12 !important;
     }
 
     &.system-note .note-body .note-text.system-note-commit-list::after {

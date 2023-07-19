@@ -7,7 +7,7 @@ module Ci
 
       Ci::ExpirePipelineCacheService.new.execute(pipeline, delete: true)
 
-      # ensure cancellation happens sync so we accumulate compute credits successfully
+      # ensure cancellation happens sync so we accumulate compute minutes successfully
       # before deleting the pipeline.
       ::Ci::CancelPipelineService.new(
         pipeline: pipeline,

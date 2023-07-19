@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import jobNameComponent from '~/pipelines/components/jobs_shared/job_name_component.vue';
-import ciIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('job name component', () => {
   let wrapper;
@@ -24,7 +24,7 @@ describe('job name component', () => {
   });
 
   it('should render an icon with the provided status', () => {
-    expect(wrapper.findComponent(ciIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(CiIcon).exists()).toBe(true);
     expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
   });
 });

@@ -18,8 +18,13 @@ RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :user_profil
 
   context 'on the activity tab' do
     before do
-      Event.create!(project: project, author_id: user.id, action: :joined,
-                    updated_at: created_date, created_at: created_date)
+      Event.create!(
+        project: project,
+        author_id: user.id,
+        action: :joined,
+        updated_at: created_date,
+        created_at: created_date
+      )
 
       sign_in user
       visit user_activity_path(user)

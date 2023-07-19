@@ -3,12 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
-  let(:verification) { build(:service_desk_custom_email_verification) }
-  let(:project) { build(:project) }
+  subject(:setting) { build(:service_desk_setting) }
 
   describe 'validations' do
-    subject(:service_desk_setting) { create(:service_desk_setting) }
-
     it { is_expected.to validate_presence_of(:project_id) }
     it { is_expected.to validate_length_of(:outgoing_name).is_at_most(255) }
     it { is_expected.to validate_length_of(:project_key).is_at_most(255) }
@@ -18,14 +15,56 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     it { is_expected.to validate_length_of(:custom_email).is_at_most(255) }
 
     describe '#custom_email_enabled' do
-      it { expect(subject.custom_email_enabled).to be_falsey }
+      it { expect(setting.custom_email_enabled).to be_falsey }
       it { expect(described_class.new(custom_email_enabled: true).custom_email_enabled).to be_truthy }
+
+      context 'when set to true' do
+        let(:expected_error_part) { 'cannot be enabled until verification process has finished.' }
+
+        before do
+          setting.custom_email = 'user@example.com'
+          setting.custom_email_enabled = true
+        end
+
+        it 'is not valid' do
+          is_expected.not_to be_valid
+          expect(setting.errors[:custom_email_enabled].join).to include(expected_error_part)
+        end
+
+        context 'when custom email records exist' do
+          let_it_be(:project) { create(:project) }
+          let_it_be(:credential) { create(:service_desk_custom_email_credential, project: project) }
+
+          let!(:verification) { create(:service_desk_custom_email_verification, project: project) }
+
+          subject(:setting) { build_stubbed(:service_desk_setting, project: project) }
+
+          before do
+            project.reset
+          end
+
+          context 'when custom email verification started' do
+            it 'is not valid' do
+              is_expected.not_to be_valid
+              expect(setting.errors[:custom_email_enabled].join).to include(expected_error_part)
+            end
+          end
+
+          context 'when custom email verification has been finished' do
+            before do
+              verification.mark_as_finished!
+            end
+
+            it { is_expected.to be_valid }
+          end
+        end
+      end
     end
 
     context 'when custom_email_enabled is true' do
       before do
         # Test without ServiceDesk::CustomEmailVerification for simplicity
-        subject.custom_email_enabled = true
+        setting.custom_email_enabled = true
       end
 
       it { is_expected.to validate_presence_of(:custom_email) }
@@ -66,13 +105,13 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
 
   describe '#custom_email_address_for_verification' do
     it 'returns nil' do
-      expect(subject.custom_email_address_for_verification).to be_nil
+      expect(setting.custom_email_address_for_verification).to be_nil
     end
 
     context 'when custom_email exists' do
       it 'returns correct verification address' do
-        subject.custom_email = 'support@example.com'
-        expect(subject.custom_email_address_for_verification).to eq('support+verify@example.com')
+        setting.custom_email = 'support@example.com'
+        expect(setting.custom_email_address_for_verification).to eq('support+verify@example.com')
       end
     end
   end
@@ -114,6 +153,8 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
   end
 
   describe 'associations' do
+    let(:project) { build(:project) }
+    let(:verification) { build(:service_desk_custom_email_verification) }
     let(:custom_email_settings) do
       build_stubbed(
         :service_desk_setting,

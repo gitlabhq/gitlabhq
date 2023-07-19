@@ -1,11 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlAvatarLink } from '@gitlab/ui';
 import mockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
 import EditedAt from '~/issues/show/components/edited.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
+import WorkItemNoteAwardsList from '~/work_items/components/notes/work_item_note_awards_list.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
@@ -76,6 +78,7 @@ describe('Work Item Note', () => {
 
   const errorHandler = jest.fn().mockRejectedValue('Oops');
 
+  const findAwardsList = () => wrapper.findComponent(WorkItemNoteAwardsList);
   const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
   const findNoteHeader = () => wrapper.findComponent(NoteHeader);
   const findNoteBody = () => wrapper.findComponent(NoteBody);
@@ -147,6 +150,13 @@ describe('Work Item Note', () => {
 
       expect(findCommentForm().exists()).toBe(false);
       expect(findNoteWrapper().exists()).toBe(true);
+    });
+
+    it('should show the awards list when in edit mode', async () => {
+      createComponent({ note: mockWorkItemCommentNote, workItemsMvc2: true });
+      findNoteActions().vm.$emit('startEditing');
+      await nextTick();
+      expect(findAwardsList().exists()).toBe(true);
     });
   });
 
@@ -262,6 +272,19 @@ describe('Work Item Note', () => {
     describe('comment threads', () => {
       beforeEach(() => {
         createComponent();
+      });
+
+      it('should show avatar link with popover support', () => {
+        const avatarLink = findTimelineEntryItem().findComponent(GlAvatarLink);
+        const { author } = mockWorkItemCommentNote;
+
+        expect(avatarLink.exists()).toBe(true);
+        expect(avatarLink.classes()).toContain('js-user-link');
+        expect(avatarLink.attributes()).toMatchObject({
+          href: author.webUrl,
+          'data-user-id': '1',
+          'data-username': `${author.username}`,
+        });
       });
 
       it('should have the note header, actions and body', () => {
@@ -403,6 +426,13 @@ describe('Work Item Note', () => {
           );
         });
       });
+    });
+
+    it('passes note props to awards list', () => {
+      createComponent({ note: mockWorkItemCommentNote, workItemsMvc2: true });
+
+      expect(findAwardsList().props('note')).toBe(mockWorkItemCommentNote);
+      expect(findAwardsList().props('workItemIid')).toBe('1');
     });
   });
 });

@@ -35,7 +35,7 @@ of each package management system to publish different package types to the same
 Let's take a look at how you might create one project to host all of your packages:
 
 1. Create a new project in GitLab. The project doesn't require any code or content.
-1. On the left sidebar, select **Project information**, and note the project ID.
+1. On the left sidebar, select **Project overview**, and note the project ID.
 1. Create an access token for authentication. All package types in the Package Registry can be published by using:
 
    - A [personal access token](../../profile/personal_access_tokens.md).

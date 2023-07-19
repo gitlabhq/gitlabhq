@@ -30,7 +30,7 @@ module Packages
       attr_reader :package_name, :project
 
       def metadata_content
-        metadata.payload.to_json
+        ::API::Entities::NpmPackage.represent(metadata.payload).to_json
       end
       strong_memoize_attr :metadata_content
 

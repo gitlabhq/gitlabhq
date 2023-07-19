@@ -39,8 +39,8 @@ export const DORA_METRICS = {
 };
 
 const VSA_FLOW_METRICS_GROUP = {
-  key: 'key_metrics',
-  title: s__('ValueStreamAnalytics|Key metrics'),
+  key: 'lifecycle_metrics',
+  title: s__('ValueStreamAnalytics|Lifecycle metrics'),
   keys: Object.values(FLOW_METRICS),
 };
 

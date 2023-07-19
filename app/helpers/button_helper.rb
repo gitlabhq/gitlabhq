@@ -98,6 +98,68 @@ module ButtonHelper
       href: href,
       data: data
   end
+
+  # Creates a link that looks like a button.
+  #
+  # It renders a Pajamas::ButtonComponent.
+  #
+  # It has the same API as `link_to`, but with some additional options
+  # specific to button rendering.
+  #
+  # Examples:
+  #   # Default button
+  #   link_button_to _('Foo'), some_path
+  #
+  #   # Default button using a block
+  #   link_button_to some_path do
+  #     _('Foo')
+  #   end
+  #
+  #   # Confirm variant
+  #   link_button_to _('Foo'), some_path, variant: :confirm
+  #
+  #   # With icon
+  #   link_button_to _('Foo'), some_path, icon: 'pencil'
+  #
+  #   # Icon-only
+  #   # NOTE: The content must be `nil` in order to correctly render. Use aria-label
+  #   # to ensure the link is accessible.
+  #   link_button_to nil, some_path, icon: 'pencil', 'aria-label': _('Foo')
+  #
+  #   # Small button
+  #   link_button_to _('Foo'), some_path, size: :small
+  #
+  #   # Secondary category danger button
+  #   link_button_to _('Foo'), some_path, variant: :danger, category: :secondary
+  #
+  # For accessibility, ensure that icon-only links have aria-label set.
+  def link_button_to(name = nil, href = nil, options = nil, &block)
+    if block
+      options = href
+      href = name
+    end
+
+    options ||= {}
+
+    # Ignore args that don't make sense for links, like disabled, loading, etc.
+    options_for_button = %i[
+      category
+      variant
+      size
+      block
+      selected
+      icon
+      target
+      method
+    ]
+
+    args = options.slice(*options_for_button)
+    button_options = options.except(*options_for_button)
+
+    render Pajamas::ButtonComponent.new(href: href, **args, button_options: button_options) do
+      block.present? ? yield : name
+    end
+  end
 end
 
 ButtonHelper.prepend_mod_with('ButtonHelper')

@@ -29,10 +29,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Use this scope for all new project routes.
       scope '-' do
         get 'archive/*id', format: true, constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
-        get 'metrics(/:dashboard_path)', constraints: { dashboard_path: /.+\.yml/ },
-          to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
-        get 'metrics(/:dashboard_path)/panel/new', constraints: { dashboard_path: /.+\.yml/ },
-          to: 'metrics_dashboard#show', as: :new_metrics_dashboard, format: false
 
         namespace :metrics, module: :metrics do
           namespace :dashboards do
@@ -250,11 +246,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :import, only: [:new, :create, :show]
         resource :avatar, only: [:show, :destroy]
 
-        scope :grafana, as: :grafana_api do
-          get 'proxy/:datasource_id/*proxy_path', to: 'grafana_api#proxy'
-          get :metrics_dashboard, to: 'grafana_api#metrics_dashboard'
-        end
-
         resource :mattermost, only: [:new, :create]
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :edit, :update, :destroy]
@@ -330,9 +321,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :stop
             post :cancel_auto_stop
             get :terminal
-            get :metrics
-            get :additional_metrics
-            get :metrics_dashboard
 
             # This route is also defined in gitlab-workhorse. Make sure to update accordingly.
             get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', format: false
@@ -343,7 +331,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
 
           collection do
-            get :metrics, action: :metrics_redirect
             get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
             get :search
           end
@@ -411,6 +398,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
               as: 'update'
           end
         end
+
+        resources :tracing, only: [:index], controller: :tracing
 
         namespace :design_management do
           namespace :designs, path: 'designs/:design_id(/:sha)', constraints: -> (params) { params[:sha].nil? || Gitlab::Git.commit_id?(params[:sha]) } do
@@ -493,6 +482,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :ml do
           resources :experiments, only: [:index, :show, :destroy], controller: 'experiments', param: :iid
           resources :candidates, only: [:show, :destroy], controller: 'candidates', param: :iid
+          resources :models, only: [:index], controller: 'models'
+        end
+
+        namespace :service_desk do
+          resource :custom_email, only: [:show, :create, :update, :destroy], controller: 'custom_email'
         end
       end
       # End of the /-/ scope.

@@ -302,7 +302,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
     end
 
     describe '#execute' do
-      subject { described_class.new(current_user: user, params: params).execute }
+      subject(:execute) { described_class.new(current_user: user, params: params).execute }
 
       shared_examples 'membership equal to :descendants' do
         it 'returns all descendant runners' do
@@ -321,7 +321,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
         context 'with :group as target group' do
           let(:target_group) { group }
 
-          context 'passing no params' do
+          context 'passing no membership params' do
             it_behaves_like 'membership equal to :descendants'
           end
 

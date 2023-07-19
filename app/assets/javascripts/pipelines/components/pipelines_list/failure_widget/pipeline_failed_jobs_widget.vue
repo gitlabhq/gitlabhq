@@ -1,22 +1,7 @@
 <script>
-import {
-  GlButton,
-  GlCollapse,
-  GlIcon,
-  GlLink,
-  GlLoadingIcon,
-  GlPopover,
-  GlSprintf,
-} from '@gitlab/ui';
-import { createAlert } from '~/alert';
-import { __, s__ } from '~/locale';
-import getPipelineFailedJobs from '../../../graphql/queries/get_pipeline_failed_jobs.query.graphql';
-import WidgetFailedJobRow from './widget_failed_job_row.vue';
-import { sortJobsByStatus } from './utils';
-
-const JOB_ID_HEADER = __('Job ID');
-const JOB_NAME_HEADER = __('Job name');
-const STAGE_HEADER = __('Stage');
+import { GlButton, GlCollapse, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
+import { __, s__, sprintf } from '~/locale';
+import FailedJobsList from './failed_jobs_list.vue';
 
 export default {
   components: {
@@ -24,13 +9,20 @@ export default {
     GlCollapse,
     GlIcon,
     GlLink,
-    GlLoadingIcon,
     GlPopover,
     GlSprintf,
-    WidgetFailedJobRow,
+    FailedJobsList,
   },
   inject: ['fullPath'],
   props: {
+    failedJobsCount: {
+      required: true,
+      type: Number,
+    },
+    isPipelineActive: {
+      required: true,
+      type: Boolean,
+    },
     pipelineIid: {
       required: true,
       type: Number,
@@ -42,62 +34,44 @@ export default {
   },
   data() {
     return {
-      failedJobs: [],
+      currentFailedJobsCount: this.failedJobsCount,
+      isActive: false,
       isExpanded: false,
     };
-  },
-  apollo: {
-    failedJobs: {
-      query: getPipelineFailedJobs,
-      skip() {
-        return !this.isExpanded;
-      },
-      variables() {
-        return {
-          fullPath: this.fullPath,
-          pipelineIid: this.pipelineIid,
-        };
-      },
-      update(data) {
-        const jobs = data?.project?.pipeline?.jobs?.nodes || [];
-        return sortJobsByStatus(jobs);
-      },
-      error(e) {
-        createAlert({ message: e?.message || this.$options.i18n.fetchError, variant: 'danger' });
-      },
-    },
   },
   computed: {
     bodyClasses() {
       return this.isExpanded ? '' : 'gl-display-none';
     },
-    failedJobsCount() {
-      return this.failedJobs.length;
+    failedJobsCountText() {
+      return sprintf(this.$options.i18n.showFailedJobs, { count: this.currentFailedJobsCount });
     },
     iconName() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
     },
-    isLoading() {
-      return this.$apollo.queries.failedJobs.loading;
+    popoverId() {
+      return `popover-${this.pipelineIid}`;
+    },
+  },
+  watch: {
+    failedJobsCount(val) {
+      this.currentFailedJobsCount = val;
     },
   },
   methods: {
+    setFailedJobsCount(count) {
+      this.currentFailedJobsCount = count;
+    },
     toggleWidget() {
       this.isExpanded = !this.isExpanded;
     },
   },
-  columns: [
-    { text: JOB_NAME_HEADER, class: 'col-6' },
-    { text: STAGE_HEADER, class: 'col-2' },
-    { text: JOB_ID_HEADER, class: 'col-2' },
-  ],
   i18n: {
     additionalInfoPopover: s__(
       'Pipelines|You will see a maximum of 100 jobs in this list. To view all failed jobs, %{linkStart}go to the details page%{linkEnd} of this pipeline.',
     ),
     additionalInfoTitle: __('Limitation on this view'),
-    fetchError: __('There was a problem fetching failed jobs'),
-    showFailedJobs: __('Show failed jobs'),
+    showFailedJobs: __('Show failed jobs (%{count})'),
   },
 };
 </script>
@@ -105,9 +79,9 @@ export default {
   <div class="gl-border-none!">
     <gl-button variant="link" @click="toggleWidget">
       <gl-icon :name="iconName" />
-      {{ $options.i18n.showFailedJobs }}
-      <gl-icon id="target" name="information-o" />
-      <gl-popover target="target" placement="top">
+      {{ failedJobsCountText }}
+      <gl-icon :id="popoverId" name="information-o" />
+      <gl-popover :target="popoverId" placement="top">
         <template #title> {{ $options.i18n.additionalInfoTitle }} </template>
         <slot>
           <gl-sprintf :message="$options.i18n.additionalInfoPopover">
@@ -118,26 +92,16 @@ export default {
         </slot>
       </gl-popover>
     </gl-button>
-    <gl-loading-icon v-if="isLoading" />
     <gl-collapse
-      v-else
       v-model="isExpanded"
       class="gl-bg-gray-10 gl-border-1 gl-border-t gl-border-color-gray-100 gl-mt-4 gl-pt-3"
     >
-      <div class="container-fluid gl-grid-tpl-rows-auto">
-        <div class="row gl-mb-6 gl-text-gray-900">
-          <div
-            v-for="col in $options.columns"
-            :key="col.text"
-            class="gl-font-weight-bold gl-text-left"
-            :class="col.class"
-            data-testid="header"
-          >
-            {{ col.text }}
-          </div>
-        </div>
-      </div>
-      <widget-failed-job-row v-for="job in failedJobs" :key="job.id" :job="job" />
+      <failed-jobs-list
+        v-if="isExpanded"
+        :is-pipeline-active="isPipelineActive"
+        :pipeline-iid="pipelineIid"
+        @failed-jobs-count="setFailedJobsCount"
+      />
     </gl-collapse>
   </div>
 </template>

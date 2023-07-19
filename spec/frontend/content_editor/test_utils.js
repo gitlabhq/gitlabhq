@@ -1,7 +1,4 @@
 import { Node } from '@tiptap/core';
-import { Document } from '@tiptap/extension-document';
-import { Paragraph } from '@tiptap/extension-paragraph';
-import { Text } from '@tiptap/extension-text';
 import { Editor } from '@tiptap/vue-2';
 import { builders, eq } from 'prosemirror-test-builder';
 import { nextTick } from 'vue';
@@ -12,12 +9,12 @@ import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
-import Comment from '~/content_editor/extensions/comment';
 import DescriptionItem from '~/content_editor/extensions/description_item';
 import DescriptionList from '~/content_editor/extensions/description_list';
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
 import Diagram from '~/content_editor/extensions/diagram';
+import Document from '~/content_editor/extensions/document';
 import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Emoji from '~/content_editor/extensions/emoji';
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
@@ -36,6 +33,7 @@ import Italic from '~/content_editor/extensions/italic';
 import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
+import Paragraph from '~/content_editor/extensions/paragraph';
 import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
 import Reference from '~/content_editor/extensions/reference';
 import ReferenceLabel from '~/content_editor/extensions/reference_label';
@@ -47,9 +45,12 @@ import TableRow from '~/content_editor/extensions/table_row';
 import TableOfContents from '~/content_editor/extensions/table_of_contents';
 import TaskItem from '~/content_editor/extensions/task_item';
 import TaskList from '~/content_editor/extensions/task_list';
+import Text from '~/content_editor/extensions/text';
 import Video from '~/content_editor/extensions/video';
 import HTMLMarks from '~/content_editor/extensions/html_marks';
 import HTMLNodes from '~/content_editor/extensions/html_nodes';
+
+export const DEFAULT_WAIT_TIMEOUT = 100;
 
 export const createDocBuilder = ({ tiptapEditor, names = {} }) => {
   const docBuilders = builders(tiptapEditor.schema, {
@@ -237,6 +238,16 @@ export const waitUntilTransaction = ({ tiptapEditor, number, action }) => {
     tiptapEditor.on('update', handleTransaction);
     action();
   });
+};
+
+export const sleep = (time = DEFAULT_WAIT_TIMEOUT) => {
+  jest.useRealTimers();
+  const promise = new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+  jest.useFakeTimers();
+
+  return promise;
 };
 
 export const expectDocumentAfterTransaction = ({ tiptapEditor, number, expectedDoc, action }) => {

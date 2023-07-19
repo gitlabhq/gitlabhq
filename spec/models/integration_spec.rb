@@ -246,31 +246,41 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
+  describe '#ci?' do
+    it 'is true when integration is a CI integration' do
+      expect(build(:jenkins_integration).ci?).to eq(true)
+    end
+
+    it 'is false when integration is not a ci integration' do
+      expect(build(:integration).ci?).to eq(false)
+    end
+  end
+
   describe '.find_or_initialize_non_project_specific_integration' do
     let!(:integration_1) { create(:jira_integration, project_id: nil, group_id: group.id) }
     let!(:integration_2) { create(:jira_integration, project: project) }
 
     it 'returns the right integration' do
-      expect(Integration.find_or_initialize_non_project_specific_integration('jira', group_id: group))
+      expect(described_class.find_or_initialize_non_project_specific_integration('jira', group_id: group))
         .to eq(integration_1)
     end
 
     it 'does not create a new integration' do
-      expect { Integration.find_or_initialize_non_project_specific_integration('redmine', group_id: group) }
-        .not_to change(Integration, :count)
+      expect { described_class.find_or_initialize_non_project_specific_integration('redmine', group_id: group) }
+        .not_to change(described_class, :count)
     end
   end
 
   describe '.find_or_initialize_all_non_project_specific' do
     shared_examples 'integration instances' do
       it 'returns the available integration instances' do
-        expect(Integration.find_or_initialize_all_non_project_specific(Integration.for_instance).map(&:to_param))
-          .to match_array(Integration.available_integration_names(include_project_specific: false))
+        expect(described_class.find_or_initialize_all_non_project_specific(described_class.for_instance).map(&:to_param))
+          .to match_array(described_class.available_integration_names(include_project_specific: false))
       end
 
       it 'does not create integration instances' do
-        expect { Integration.find_or_initialize_all_non_project_specific(Integration.for_instance) }
-          .not_to change(Integration, :count)
+        expect { described_class.find_or_initialize_all_non_project_specific(described_class.for_instance) }
+          .not_to change(described_class, :count)
       end
     end
 
@@ -282,19 +292,19 @@ RSpec.describe Integration, feature_category: :integrations do
       end
 
       before do
-        attrs = Integration.available_integration_types(include_project_specific: false).map do
+        attrs = described_class.available_integration_types(include_project_specific: false).map do
           integration_hash(_1)
         end
 
-        Integration.insert_all(attrs)
+        described_class.insert_all(attrs)
       end
 
       it_behaves_like 'integration instances'
 
       context 'with a previous existing integration (:mock_ci) and a new integration (:asana)' do
         before do
-          Integration.insert(integration_hash(:mock_ci))
-          Integration.delete_by(**integration_hash(:asana))
+          described_class.insert(integration_hash(:mock_ci))
+          described_class.delete_by(**integration_hash(:asana))
         end
 
         it_behaves_like 'integration instances'
@@ -1345,6 +1355,18 @@ RSpec.describe Integration, feature_category: :integrations do
 
     context 'when the event is not supported' do
       let(:supported_events) { %w[issue] }
+
+      it 'does not queue a worker' do
+        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
+
+        async_execute
+      end
+    end
+
+    context 'when the Gitlab::SilentMode is enabled' do
+      before do
+        allow(Gitlab::SilentMode).to receive(:enabled?).and_return(true)
+      end
 
       it 'does not queue a worker' do
         expect(Integrations::ExecuteWorker).not_to receive(:perform_async)

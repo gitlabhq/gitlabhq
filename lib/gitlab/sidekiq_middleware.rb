@@ -7,7 +7,7 @@ module Gitlab
     # The result of this method should be passed to
     # Sidekiq's `config.server_middleware` method
     # eg: `config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator)`
-    def self.server_configurator(metrics: true, arguments_logger: true, defer_jobs: true)
+    def self.server_configurator(metrics: true, arguments_logger: true, skip_jobs: true)
       lambda do |chain|
         # Size limiter should be placed at the top
         chain.add ::Gitlab::SidekiqMiddleware::SizeLimiter::Server
@@ -40,7 +40,7 @@ module Gitlab
         # so we can compare the latest WAL location against replica
         chain.add ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server
         chain.add ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware
-        chain.add ::Gitlab::SidekiqMiddleware::DeferJobs if defer_jobs
+        chain.add ::Gitlab::SidekiqMiddleware::SkipJobs if skip_jobs
       end
     end
 

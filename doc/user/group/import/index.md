@@ -30,7 +30,7 @@ If you migrate from GitLab.com to self-managed GitLab, an administrator can crea
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
 
 On self-managed GitLab, by default [migrating group items](#migrated-group-items) is not available. To show the
-feature, ask an administrator to [enable it in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
+feature, an administrator can [enable it in application settings](../../../administration/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
 
 Migrating groups by direct transfer copies the groups from one place to another. You can:
 
@@ -65,6 +65,8 @@ See [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629) for a list of
 transfer.
 
 ### Limits
+
+Hardcoded limits apply on migration by direct transfer.
 
 | Limit       | Description                                                                                                                                                                     |
 |:------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -105,7 +107,7 @@ To migrate groups by direct transfer:
 - The network connection between instances or GitLab.com must support HTTPS.
 - Any firewalls must not block the connection between the source and destination GitLab instances.
 - Both GitLab instances must have group migration by direct transfer
-  [enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+  [enabled in application settings](../../../administration/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
 - The source GitLab instance must be running GitLab 14.0 or later.
 - You must have a [personal access token](../../../user/profile/personal_access_tokens.md) for the source GitLab
@@ -136,10 +138,10 @@ To ensure GitLab maps users and their contributions correctly:
 Create the group you want to import to and connect the source GitLab instance:
 
 1. Create either:
-   - A new group. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**. Then select **Import group**.
+   - A new group. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**. Then select **Import group**.
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
-     - On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
+     - On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
 1. Enter the URL of a GitLab instance running GitLab 14.0 or later.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
@@ -176,7 +178,7 @@ You can view all groups migrated by you by direct transfer listed on the group i
 To view group import history:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Import group**.
 1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.
@@ -208,10 +210,10 @@ Group items that are migrated to the destination GitLab instance include:
 | Boards               | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
 | Board lists          | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24863)  |
 | Epics <sup>1</sup>   | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/250281)         |
-| Group labels         | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429)         |
+| Group labels <sup>2</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429)    |
 | Iterations           | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428)        |
 | Iteration cadences   | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570)  |
-| Members <sup>2</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415)         |
+| Members <sup>3</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415)         |
 | Group milestones     | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292427)        |
 | Namespace settings   | [GitLab 14.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85128) |
 | Release milestones   | [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/339422)         |
@@ -222,6 +224,8 @@ Group items that are migrated to the destination GitLab instance include:
    associations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62074) in GitLab 13.12, state and
    state ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28203) in GitLab 13.7, and system note
    metadata [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63551) in GitLab 14.0.
+1. Group Labels cannot retain any associated Label Priorities during import. These labels will need to be re-prioritized manually
+   once the relevant Project is migrated to the destination instance.
 1. Group members are associated with the imported group if the user:
    - Already exists in the destination GitLab instance.
    - Has a public email in the source GitLab instance that matches a confirmed email in the destination GitLab instance.
@@ -490,7 +494,7 @@ for your version of GitLab to check which items can be imported to the destinati
 Group items that are exported include:
 
 - Milestones
-- Labels
+- Group Labels (_without_ associated label priorities)
 - Boards and Board Lists
 - Badges
 - Subgroups (including all the aforementioned data)
@@ -550,7 +554,7 @@ You can also export a group [using the API](../../../api/group_import_export.md)
 
 ### Import the group
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New subgroup**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**.
 1. Select the **import an existing group** link.
 1. Enter your group name.
 1. Accept or modify the associated group URL.

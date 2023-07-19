@@ -501,7 +501,7 @@ We can disable tracking completely by using the global flag:
 
 ##### Known events are added automatically in Service Data payload
 
-Service Ping adds all events [`known_events/*.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events) to Service Data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
+Service Ping adds all events [`known_events/*.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events) to Service Data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/db/schema.rb#L213).
 For each event we add metrics for the weekly and monthly time frames, and totals for each where applicable:
 
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#add-new-events) events and data for the last complete week for weekly [aggregation](#add-new-events) events.
@@ -680,7 +680,7 @@ See the [Metrics Dictionary guide](metrics_dictionary.md) for more information.
 
 ## Add the metric to the Versions Application
 
-Check if the new metric must be added to the Versions Application. See the `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and Service Data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `stats` column.
+Check if the new metric must be added to the Versions Application. See the `usage_data` [schema](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/db/schema.rb#L152) and Service Data [parameters accepted](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `stats` column.
 
 ## Create a merge request
 
@@ -715,7 +715,7 @@ To set up Service Ping locally, you must:
 ### Set up local repositories
 
 1. Clone and start [GitLab](https://gitlab.com/gitlab-org/gitlab-development-kit).
-1. Clone and start [Versions Application](https://gitlab.com/gitlab-services/version-gitlab-com).
+1. Clone and start [Versions Application](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com).
    Make sure you run `docker-compose up` to start a PostgreSQL and Redis instance.
 1. Point GitLab to the Versions Application endpoint instead of the default endpoint:
    1. Open [service_ping/submit_service.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L5) locally and modify `STAGING_BASE_URL`.
@@ -783,7 +783,7 @@ By default, it comes with a fully configured Prometheus service that is set up t
 However, it has the following limitations:
 
 - It does not run a `gitlab-exporter` instance, so several `process_*` metrics from services such as Gitaly may be missing.
-- While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it normally reports itself as not associated
+- While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it usually reports itself as not associated
   with any of the other running services. That is not how node metrics are reported in a production setup, where `node_exporter`
   always runs as a process alongside other GitLab components on any given node. For Service Ping, none of the node data would therefore
   appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Service Ping.

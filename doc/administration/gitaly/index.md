@@ -52,13 +52,10 @@ Before deploying Gitaly Cluster, review:
 - [Configuration guidance](configure_gitaly.md) and [Repository storage options](../repository_storage_paths.md) to make
   sure that Gitaly Cluster is the best setup for you.
 
-If you have:
+If you have not yet migrated to Gitaly Cluster, you have two options:
 
-- Not yet migrated to Gitaly Cluster and want to continue using NFS, remain on the service you are using. However, NFS
-  is [no longer supported](../../update/removals.md#nfs-as-git-repository-storage-is-no-longer-supported).
-- Not yet migrated to Gitaly Cluster but want to migrate away from NFS, you have two options:
-  - A sharded Gitaly instance.
-  - Gitaly Cluster.
+- A sharded Gitaly instance.
+- Gitaly Cluster.
 
 Contact your [Customer Success Manager](https://about.gitlab.com/job-families/sales/customer-success-management/) or customer support if you have any questions.
 
@@ -72,15 +69,15 @@ the current status of these issues, refer to the referenced issues and epics.
 | Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. | No known solution prior to GitLab 15.0. In GitLab 15.0 to 15.2, enable the [`gitaly_praefect_generated_replica_paths` feature flag](#praefect-generated-replica-paths-gitlab-150-and-later) on your Geo primary site. In GitLab 15.3, the feature flag is enabled by default. |
 | Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform standard operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
 | Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind results in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup:<br/><br/>1. [Shut down GitLab](../read_only_gitlab.md#shut-down-the-gitlab-ui).<br/>2. Snapshot all Gitaly Cluster nodes at the same time.<br/>3. Take a database dump of the Praefect database. |
-| Rebuilding or replacing an existing Gitaly Cluster node | There is no way to replace existing nodes in place because the Praefect database is relied on to determine the current state of each Gitaly node. Changing how Gitaly Cluster stores repositories is proposed in issue [4218](https://gitlab.com/gitlab-org/gitaly/-/issues/4218). Turning on [repository verification](praefect.md#repository-verification) is proposed in issue [4429](https://gitlab.com/gitlab-org/gitaly/-/issues/4429) so Praefect can detect that data is missing and needs to replicated to a new Gitaly node. | No known solution at this time. |
+| Limitations when running in Kubernetes, Amazon ECS, or similar | Praefect (Gitaly Cluster) is not supported and Gitaly has known limitations. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127). | Use our [reference architectures](../reference_architectures/index.md). |
 
 ### Snapshot backup and recovery limitations
 
 Gitaly Cluster does not support snapshot backups. Snapshot backups can cause issues where the Praefect database becomes
 out of sync with the disk storage. Because of how Praefect rebuilds the replication metadata of Gitaly disk information
-during a restore, you should use the [official backup and restore Rake tasks](../../raketasks/backup_restore.md).
+during a restore, you should use the [official backup and restore Rake tasks](../../administration/backup_restore/index.md).
 
-The [incremental backup method](../../raketasks/backup_gitlab.md#incremental-repository-backups)
+The [incremental backup method](../../administration/backup_restore/backup_gitlab.md#incremental-repository-backups)
 can be used to speed up Gitaly Cluster backups.
 
 If you are unable to use either method, contact customer support for restoration help.
@@ -175,7 +172,7 @@ best suited by using Gitaly Cluster.
 
 ### Backing up repositories
 
-When backing up or syncing repositories using tools other than GitLab, you must [prevent writes](../../raketasks/backup_restore.md#prevent-writes-and-copy-the-git-repository-data)
+When backing up or syncing repositories using tools other than GitLab, you must [prevent writes](../../administration/backup_restore/backup_gitlab.md#prevent-writes-and-copy-the-git-repository-data)
 while copying repository data.
 
 ## Gitaly Cluster
@@ -641,7 +638,7 @@ code. This re-introduced code is informally referred to as the "Rugged patches".
 
 FLAG:
 On self-managed GitLab, by default automatic detection of whether Rugged should be used (per storage) is not available.
-To make it available, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named
+To make it available, an administrator can [disable the feature flag](../../administration/feature_flags.md) named
 `skip_rugged_auto_detect`.
 
 The Ruby methods that perform direct Git access are behind

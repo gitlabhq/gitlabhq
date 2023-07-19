@@ -147,7 +147,7 @@ Updating CA certificates...
 Runtime platform                                    arch=amd64 os=linux pid=7 revision=1b659122 version=12.8.0
 Running in system-mode.
 
-Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
+Please enter the gitlab-ci coordinator URL (for example, https://gitlab.com/):
 https://my-host.internal
 Please enter the gitlab-ci token for this runner:
 XXXXXXXXXXX
@@ -158,7 +158,7 @@ Please enter the gitlab-ci tags for this runner (comma separated):
 Registering runner... succeeded                     runner=FSMwkvLZ
 Please enter the executor: custom, docker, virtualbox, kubernetes, docker+machine, docker-ssh+machine, docker-ssh, parallels, shell, ssh:
 docker
-Please enter the default Docker image (e.g. ruby:2.6):
+Please enter the default Docker image (for example, ruby:2.6):
 ruby:2.6
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```
@@ -204,7 +204,7 @@ Version Check and Service Ping improve the GitLab user experience and ensure tha
 users are on the most up-to-date instances of GitLab. These two services can be turned off for offline
 environments so that they do not attempt and fail to reach out to GitLab services.
 
-For more information, see [Enable or disable usage statistics](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics).
+For more information, see [Enable or disable usage statistics](../../administration/settings/usage_statistics.md#enable-or-disable-usage-statistics).
 
 ### Configure NTP
 
@@ -262,7 +262,7 @@ PKG_METADATA_MANIFEST_OUTPUT_FILE="/tmp/license_db_export_manifest.json"
 PKG_METADATA_DOWNLOADS_OUTPUT_FILE="/tmp/license_db_object_links.tsv"
 
 # Download the contents of the bucket
-curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/prod-export-license-bucket-1a6c642fc4de57d4/o" > "$PKG_METADATA_MANIFEST_OUTPUT_FILE"
+curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/prod-export-license-bucket-1a6c642fc4de57d4/o?maxResults=7500" > "$PKG_METADATA_MANIFEST_OUTPUT_FILE"
 
 # Parse the links and names for the bucket objects and output them into a tsv file
 jq -r '.items[] | [.name, .mediaLink] | @tsv' "$PKG_METADATA_MANIFEST_OUTPUT_FILE" > "$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"

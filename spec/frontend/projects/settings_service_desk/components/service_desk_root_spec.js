@@ -13,8 +13,8 @@ describe('ServiceDeskRoot', () => {
   let spy;
 
   const provideData = {
-    customEmail: 'custom.email@example.com',
-    customEmailEnabled: true,
+    serviceDeskEmail: 'custom.email@example.com',
+    serviceDeskEmailEnabled: true,
     endpoint: '/gitlab-org/gitlab-test/service_desk',
     initialIncomingEmail: 'servicedeskaddress@example.com',
     initialIsEnabled: true,
@@ -52,8 +52,8 @@ describe('ServiceDeskRoot', () => {
       wrapper = createComponent();
 
       expect(wrapper.findComponent(ServiceDeskSetting).props()).toEqual({
-        customEmail: provideData.customEmail,
-        customEmailEnabled: provideData.customEmailEnabled,
+        serviceDeskEmail: provideData.serviceDeskEmail,
+        serviceDeskEmailEnabled: provideData.serviceDeskEmailEnabled,
         incomingEmail: provideData.initialIncomingEmail,
         initialOutgoingName: provideData.outgoingName,
         initialProjectKey: provideData.projectKey,
@@ -80,7 +80,7 @@ describe('ServiceDeskRoot', () => {
       const alertBodyLink = alertEl.findComponent(GlLink);
       expect(alertBodyLink.exists()).toBe(true);
       expect(alertBodyLink.attributes('href')).toBe(
-        '/help/user/project/service_desk.html#use-a-custom-email-address',
+        '/help/user/project/service_desk.html#use-an-additional-service-desk-alias-email',
       );
       expect(alertBodyLink.text()).toBe('How do I create a custom email address?');
     });

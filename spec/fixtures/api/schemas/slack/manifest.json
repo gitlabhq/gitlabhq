@@ -1,0 +1,1250 @@
+{
+  "type": "object",
+  "title": "App Manifest",
+  "required": [
+    "display_information"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "_metadata": {
+      "$ref": "#/definitions/app-manifests.metadata"
+    },
+    "app_directory": {
+      "$ref": "#/definitions/app-manifests.v1.app_directory.schema"
+    },
+    "display_information": {
+      "$ref": "#/definitions/app-manifests.v1.display_information.schema"
+    },
+    "features": {
+      "$ref": "#/definitions/app-manifests.v1.features.schema"
+    },
+    "oauth_config": {
+      "$ref": "#/definitions/app-manifests.v1.oauth_config.schema"
+    },
+    "settings": {
+      "$ref": "#/definitions/app-manifests.v1.settings.schema"
+    },
+    "functions": {
+      "$ref": "#/definitions/app-manifests.v2.hermes.functions"
+    },
+    "workflows": {
+      "$ref": "#/definitions/app-manifests.v2.hermes.workflows"
+    },
+    "datastores": {
+      "$ref": "#/definitions/app-manifests.v1.hermes.datastores"
+    },
+    "outgoing_domains": {
+      "$ref": "#/definitions/app-manifests.v1.hermes.outgoing_domains"
+    },
+    "types": {
+      "$ref": "#/definitions/app-manifests.v1.hermes.types"
+    },
+    "external_auth_providers": {
+      "$ref": "#/definitions/app-manifests.v2.hermes.third_party_auth.providers"
+    }
+  },
+  "description": "Describes core app information and functionality.",
+  "definitions": {
+    "app-manifests.metadata": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "type": "integer"
+        },
+        "min_version": {
+          "type": "integer"
+        },
+        "major_version": {
+          "type": "integer",
+          "description": "An integer that specifies the major version of the manifest schema to target."
+        },
+        "minor_version": {
+          "type": "integer",
+          "description": "An integer that specifies the minor version of the manifest schema to target."
+        }
+      },
+      "description": "A group of settings that describe the manifest",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.app_directory.schema": {
+      "type": "object",
+      "required": [
+        "installation_landing_page",
+        "privacy_policy_url",
+        "support_url",
+        "support_email",
+        "supported_languages",
+        "pricing"
+      ],
+      "properties": {
+        "app_directory_categories": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        },
+        "use_direct_install": {
+          "type": "boolean"
+        },
+        "direct_install_url": {
+          "type": "string",
+          "pattern": "^https?:\\/\\/",
+          "maxLength": 255
+        },
+        "installation_landing_page": {
+          "type": "string",
+          "pattern": "^https?:\\/\\/",
+          "maxLength": 255
+        },
+        "privacy_policy_url": {
+          "type": "string",
+          "pattern": "^https?:\\/\\/",
+          "maxLength": 500
+        },
+        "support_url": {
+          "type": "string",
+          "pattern": "^https?:\\/\\/",
+          "maxLength": 350
+        },
+        "support_email": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
+          "maxLength": 100,
+          "_note": "Regex follows HTML5 spec for an email address, not RFC 5322"
+        },
+        "supported_languages": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "maxLength": 50
+          }
+        },
+        "pricing": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        }
+      },
+      "description": "Information displayed in the App Directory.",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.display_information.schema": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 35,
+          "description": "A string of the name of the app. Maximum length is 35 characters."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 140,
+          "description": "A string with a short description of the app for display to users. Maximum length is 140 characters."
+        },
+        "background_color": {
+          "type": "string",
+          "regex": "^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$",
+          "minLength": 4,
+          "maxLength": 7,
+          "description": "A string containing a hex color value (including the hex sign) that specifies the background color used on hovercards that display information about your app. Can be 3-digit (#000) or 6-digit (#000000) hex values. Once an app has set a background color value, it cannot be removed, only updated."
+        },
+        "long_description": {
+          "type": "string",
+          "minLength": 175,
+          "maxLength": 4000,
+          "description": "A string with a longer version of the description of the app. Maximum length is 4000 characters."
+        }
+      },
+      "description": "A group of settings that describe parts of an app's appearance within Slack. If you're distributing the app via the App Directory, read our listing guidelines to pick the best values for these settings",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.features.app_home": {
+      "type": "object",
+      "properties": {
+        "home_tab_enabled": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether or not the Home tab is enabled."
+        },
+        "messages_tab_enabled": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether or not the Messages tab in your App Home is enabled."
+        },
+        "messages_tab_read_only_enabled": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether or not the users can send messages to your app in the Messages tab of your App Home."
+        }
+      },
+      "description": "A group of settings corresponding to the Features section of the app config pages.",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.features.bot_user": {
+      "type": "object",
+      "required": [
+        "display_name"
+      ],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "A string containing the display name of the bot user. Maximum length is 80 characters."
+        },
+        "always_online": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether or not the bot user will always appear to be online."
+        }
+      },
+      "description": "A subgroup of settings that describe bot user configuration.",
+      "additionalProperties": false
+    },
+    "slack-functions.parameter": {
+      "type": "object",
+      "required": [
+        "type",
+        "name"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "Slack function parameter type",
+          "enum": [
+            "integer",
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "array",
+            "slack#/types/user_context",
+            "slack#/types/user_permission",
+            "slack#/types/user_id",
+            "slack#/types/channel_id",
+            "slack#/types/usergroup_id",
+            "slack#/types/timestamp",
+            "slack#/types/blocks",
+            "slack#/types/credential/oauth2",
+            "slack#/types/date",
+            "slack#/types/interactivity",
+            "slack#/types/rich_text",
+            "slack#/types/form_input",
+            "slack#/types/form_input_object",
+            "slack#/types/message_ts",
+            "slack#/types/message_context"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "is_required": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "app-manifests.v1.features.functions": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": [
+          "callback_id",
+          "title",
+          "description",
+          "input_parameters",
+          "output_parameters"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "callback_id": {
+            "type": "string"
+          },
+          "input_parameters": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/definitions/slack-functions.parameter"
+            }
+          },
+          "output_parameters": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/definitions/slack-functions.parameter"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Make functionality of your app reusable."
+    },
+    "app-manifests.v1.features.shortcuts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "callback_id",
+          "description"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24,
+            "description": "A string containing the name of the shortcut."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "message",
+              "global"
+            ],
+            "description": "A string containing one of message or global. This specifies which type of shortcut is being described."
+          },
+          "callback_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "A string containing the callback_id of this shortcut. Maximum length is 255 characters."
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150,
+            "description": "A string containing a short description of this shortcut. Maximum length is 150 characters."
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "An array of settings groups that describe shortcuts configuration. A maximum of 5 shortcuts can be included in this array."
+    },
+    "app-manifests.v1.features.slash_commands": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": [
+          "command",
+          "description"
+        ],
+        "properties": {
+          "command": {
+            "type": "string",
+            "pattern": "^\\/",
+            "minLength": 2,
+            "maxLength": 32,
+            "description": "A string containing the actual slash command. Maximum length is 32 characters, and should include the leading / character."
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^https?:\\/\\/",
+            "maxLength": 3000,
+            "description": "A string containing the full https URL that acts as the slash command's request URL"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "A string containing a description of the slash command that will be displayed to users. Maximum length is 2000 characters."
+          },
+          "usage_hint": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "A string a short usage hint about the slash command for users. Maximum length is 1000 characters."
+          },
+          "should_escape": {
+            "type": "boolean",
+            "description": "A boolean that specifies whether or not channels, users, and links typed with the slash command should be escaped.",
+            "default": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "An array of settings groups that describe slash commands configuration. A maximum of 5 slash commands can be included in this array."
+    },
+    "app-manifests.v1.features.workflow_steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "callback_id"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "A string containing the name of the workflow step. Maximum length of 50 characters."
+          },
+          "callback_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "A string containing the callback_id of the workflow step. Maximum length of 50 characters."
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "An array of settings groups that describe workflow steps configuration. A maximum of 10 workflow steps can be included in this array."
+    },
+    "app-manifests.v1.features.unfurl_domains": {
+      "uniqueItems": true,
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "pattern": "^(?![\\.\\-])([-a-z0-9\\.])+([a-z0-9])$",
+        "maxLength": 255
+      },
+      "description": "An array of strings containing valid unfurl domains to register. A maximum of 5 unfurl domains can be included in this array. Please consult the unfurl docs for a list of domain requirements."
+    },
+    "app-manifests.v1.features.schema": {
+      "type": "object",
+      "properties": {
+        "app_home": {
+          "$ref": "#/definitions/app-manifests.v1.features.app_home"
+        },
+        "bot_user": {
+          "$ref": "#/definitions/app-manifests.v1.features.bot_user"
+        },
+        "functions": {
+          "$ref": "#/definitions/app-manifests.v1.features.functions"
+        },
+        "shortcuts": {
+          "$ref": "#/definitions/app-manifests.v1.features.shortcuts"
+        },
+        "slash_commands": {
+          "$ref": "#/definitions/app-manifests.v1.features.slash_commands"
+        },
+        "workflow_steps": {
+          "$ref": "#/definitions/app-manifests.v1.features.workflow_steps"
+        },
+        "unfurl_domains": {
+          "$ref": "#/definitions/app-manifests.v1.features.unfurl_domains"
+        }
+      },
+      "description": "A group of settings corresponding to the Features section of the app config pages.",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.oauth_config.redirect_urls": {
+      "uniqueItems": true,
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "string",
+        "maxLength": 2500,
+        "_note": "Not including a regex bc currently we accept anything like '://asdf'"
+      },
+      "description": "An array of strings containing OAuth redirect URLs. A maximum of 1000 redirect URLs can be included in this array."
+    },
+    "app-manifests.v1.oauth_config.scopes": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "array",
+          "maxItems": 255,
+          "items": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "description": "An array of strings containing user scopes to request upon app installation. A maximum of 255 scopes can included in this array."
+        },
+        "bot": {
+          "type": "array",
+          "maxItems": 255,
+          "items": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "description": "An array of strings containing bot scopes to request upon app installation. A maximum of 255 scopes can included in this array."
+        }
+      },
+      "description": "A subgroup of settings that describe permission scopes configuration.",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.oauth_config.schema": {
+      "type": "object",
+      "properties": {
+        "redirect_urls": {
+          "$ref": "#/definitions/app-manifests.v1.oauth_config.redirect_urls"
+        },
+        "scopes": {
+          "$ref": "#/definitions/app-manifests.v1.oauth_config.scopes"
+        },
+        "token_management_enabled": {
+          "type": "boolean"
+        }
+      },
+      "description": "A group of settings describing OAuth configuration for the app.",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.settings.allowed_ip_address_ranges": {
+      "uniqueItems": true,
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "string",
+        "pattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(3[0-2]|[1-2][0-9]|[0-9]))?$"
+      },
+      "description": "An array of strings that contain IP addresses that conform to the Allowed IP Ranges feature"
+    },
+    "app-manifests.v1.settings.event_subscriptions": {
+      "type": "object",
+      "properties": {
+        "request_url": {
+          "type": "string",
+          "pattern": "^https?:\\/\\/",
+          "maxLength": 3500,
+          "description": "A string containing the full https URL that acts as the Events API request URL. If set, you'll need to manually verify the Request URL in the App Manifest section of App Management."
+        },
+        "user_events": {
+          "uniqueItems": true,
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "description": "An array of strings matching the event types you want to the app to subscribe to on behalf of authorized users. A maximum of 100 event types can be used."
+        },
+        "bot_events": {
+          "uniqueItems": true,
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "description": "An array of strings matching the event types you want to the app to subscribe to. A maximum of 100 event types can be used."
+        },
+        "metadata_subscriptions": {
+          "uniqueItems": true,
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": [
+              "app_id",
+              "event_type"
+            ],
+            "properties": {
+              "app_id": {
+                "type": "string"
+              },
+              "event_type": {
+                "type": "string",
+                "maxLength": 50
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "description": "A subgroup of settings that describe Events API configuration for the app.",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.settings.incoming_webhooks": {
+      "type": "object",
+      "properties": {
+        "incoming_webhooks_enabled": {
+          "type": "boolean"
+        }
+      },
+      "description": "Incoming Webhooks settings",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.settings.interactivity": {
+      "type": "object",
+      "required": [
+        "is_enabled"
+      ],
+      "properties": {
+        "is_enabled": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether or not interactivity features are enabled."
+        },
+        "request_url": {
+          "type": "string",
+          "pattern": "^https?:\\/\\/",
+          "maxLength": 3500,
+          "description": "A string containing the full https URL that acts as the interactive Request URL."
+        },
+        "message_menu_options_url": {
+          "type": "string",
+          "pattern": "^https?:\\/\\/",
+          "maxLength": 3500,
+          "description": "A string containing the full https URL that acts as the interactive Options Load URL."
+        }
+      },
+      "description": "A subgroup of settings that describe interactivity configuration for the app.",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.settings.siws_links": {
+      "type": "object",
+      "properties": {
+        "initiate_uri": {
+          "type": "string",
+          "pattern": "^https:\\/\\/",
+          "maxLength": 3500
+        }
+      },
+      "additionalProperties": false
+    },
+    "app-manifests.v1.settings.schema": {
+      "type": "object",
+      "properties": {
+        "allowed_ip_address_ranges": {
+          "$ref": "#/definitions/app-manifests.v1.settings.allowed_ip_address_ranges"
+        },
+        "event_subscriptions": {
+          "$ref": "#/definitions/app-manifests.v1.settings.event_subscriptions"
+        },
+        "incoming_webhooks": {
+          "$ref": "#/definitions/app-manifests.v1.settings.incoming_webhooks"
+        },
+        "interactivity": {
+          "$ref": "#/definitions/app-manifests.v1.settings.interactivity"
+        },
+        "org_deploy_enabled": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether or not org-wide deploy is enabled."
+        },
+        "socket_mode_enabled": {
+          "type": "boolean",
+          "description": "A boolean that specifies whether or not Socket Mode is enabled."
+        },
+        "is_hosted": {
+          "type": "boolean"
+        },
+        "token_rotation_enabled": {
+          "type": "boolean"
+        },
+        "siws_links": {
+          "$ref": "#/definitions/app-manifests.v1.settings.siws_links"
+        },
+        "hermes_app_type": {
+          "type": "string"
+        },
+        "function_runtime": {
+          "type": "string"
+        }
+      },
+      "description": "A group of settings corresponding to the Settings section of the app config pages.",
+      "additionalProperties": false
+    },
+    "app-manifests.v1.hermes.types.type": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "Slack  primitive type",
+          "enum": [
+            "integer",
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "array",
+            "slack#/types/user_context",
+            "slack#/types/user_permission",
+            "slack#/types/user_id",
+            "slack#/types/channel_id",
+            "slack#/types/usergroup_id",
+            "slack#/types/timestamp",
+            "slack#/types/blocks",
+            "slack#/types/credential/oauth2",
+            "slack#/types/date",
+            "slack#/types/interactivity",
+            "slack#/types/rich_text",
+            "slack#/types/form_input",
+            "slack#/types/form_input_object",
+            "slack#/types/message_ts",
+            "slack#/types/message_context"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "is_required": {
+          "type": "boolean"
+        },
+        "is_hidden": {
+          "type": "boolean"
+        },
+        "hint": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "app-manifests.v1.hermes.types": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "$ref": "#/definitions/app-manifests.v1.hermes.types.type"
+        }
+      },
+      "minProperties": 0,
+      "maxProperties": 50,
+      "description": "Declare the types the app provides",
+      "default": {
+        "your_type_name": {
+          "type": "string"
+        }
+      }
+    },
+    "app-manifests.v2.hermes.functions": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "required": [
+            "title",
+            "description",
+            "input_parameters",
+            "output_parameters"
+          ],
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "input_parameters": {
+              "type": "object",
+              "required": [
+                "properties"
+              ],
+              "properties": {
+                "properties": {
+                  "$ref": "#/definitions/app-manifests.v1.hermes.types"
+                },
+                "required": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "output_parameters": {
+              "type": "object",
+              "required": [
+                "properties"
+              ],
+              "properties": {
+                "properties": {
+                  "$ref": "#/definitions/app-manifests.v1.hermes.types"
+                },
+                "required": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 0,
+      "maxProperties": 50,
+      "description": "Make functionality of your app reusable.",
+      "default": {
+        "your_callback_id": {
+          "title": "Your Function Title",
+          "description": "Your Function Description",
+          "input_parameters": {
+          },
+          "output_parameters": {
+          }
+        }
+      }
+    },
+    "app-manifests.v2.hermes.step": {
+      "type": "object",
+      "required": [
+        "id",
+        "function_id",
+        "inputs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "function_id": {
+          "type": "string"
+        },
+        "inputs": {
+          "type": "object",
+          "patternProperties": {
+            "^.+$": {
+              "type": [
+                "string",
+                "object",
+                "array",
+                "number",
+                "boolean"
+              ]
+            }
+          },
+          "default": {
+            "your_input": "string"
+          },
+          "additionalProperties": false
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "function",
+            "switch",
+            "conditional"
+          ]
+        }
+      },
+      "description": "Declare a workflow step",
+      "additionalProperties": false
+    },
+    "slack-functions.value-template": {
+      "type": "object",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object"
+            },
+            {
+              "type": "array"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "initial_value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object"
+            },
+            {
+              "type": "array"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "locked": {
+          "type": "boolean",
+          "default": false
+        },
+        "hidden": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "description": "An object describing how to render a value at runtime",
+      "additionalProperties": false
+    },
+    "slack-functions.parameter-value-templates": {
+      "type": "object",
+      "patternProperties": {
+        "^.+$": {
+          "$ref": "#/definitions/slack-functions.value-template"
+        }
+      },
+      "description": "A mapping of parameter names to template objects",
+      "default": {
+        "your_input": {
+          "value": {
+            "type": "integer"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "app-manifests.v2.hermes.workflows": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "required": [
+            "title",
+            "description",
+            "steps"
+          ],
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "input_parameters": {
+              "type": "object",
+              "required": [
+                "properties"
+              ],
+              "properties": {
+                "properties": {
+                  "$ref": "#/definitions/app-manifests.v1.hermes.types"
+                },
+                "required": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "steps": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/app-manifests.v2.hermes.step"
+              }
+            },
+            "suggested_triggers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "inputs"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "inputs": {
+                    "$ref": "#/definitions/slack-functions.parameter-value-templates"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 0,
+      "maxProperties": 50,
+      "description": "Declare the workflow functions the app provides.",
+      "default": {
+        "your_workflow_id": {
+          "title": "Your Workflow Title",
+          "description": "Your Workflow Description",
+          "steps": [
+
+          ]
+        }
+      }
+    },
+    "app-manifests.v1.hermes.datastores": {
+      "type": "object",
+      "patternProperties": {
+        "^.+$": {
+          "type": "object",
+          "required": [
+            "primary_key",
+            "attributes"
+          ],
+          "properties": {
+            "primary_key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "attributes": {
+              "type": "object",
+              "patternProperties": {
+                "^.+$": {
+                  "type": "object",
+                  "required": [
+                    "type"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "type"
+                      ],
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    },
+                    "properties": {
+                      "type": "object"
+                    }
+                  }
+                }
+              },
+              "minProperties": 0,
+              "maxProperties": 100,
+              "default": {
+                "your_attribute_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "minProperties": 0,
+      "maxProperties": 10,
+      "description": "Declares the datastores used by the app.",
+      "default": {
+        "your_datastore_id": {
+          "primary_key": "Your Primary Key",
+          "attributes": {
+            "your_attribute_id": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "app-manifests.v1.hermes.outgoing_domains": {
+      "uniqueItems": true,
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 10,
+      "items": {
+        "type": "string",
+        "pattern": "^(?![\\.\\-])([-a-z0-9\\.])+([a-z0-9])$",
+        "maxLength": 50
+      },
+      "description": "Allowed Egress Domains for the Hosted App"
+    },
+    "app-manifests.v2.hermes.third_party_auth.providers.oauth2": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "required": [
+            "provider_type",
+            "options"
+          ],
+          "properties": {
+            "provider_type": {
+              "type": "string",
+              "enum": [
+                "CUSTOM",
+                "SLACK_PROVIDED"
+              ]
+            },
+            "options": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "client_id",
+                    "scope"
+                  ],
+                  "properties": {
+                    "client_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1024
+                    },
+                    "scope": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minItems": 0
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "client_id",
+                    "provider_name",
+                    "authorization_url",
+                    "token_url",
+                    "scope",
+                    "identity_config"
+                  ],
+                  "properties": {
+                    "client_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1024
+                    },
+                    "provider_name": {
+                      "type": "string",
+                      "minLength": 2,
+                      "maxLength": 255
+                    },
+                    "authorization_url": {
+                      "type": "string",
+                      "pattern": "^https:\\/\\/",
+                      "minLength": 5,
+                      "maxLength": 255
+                    },
+                    "token_url": {
+                      "type": "string",
+                      "pattern": "^https:\\/\\/",
+                      "minLength": 5,
+                      "maxLength": 255
+                    },
+                    "scope": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^(\\x21|[\\x23-\\x5B]|[\\x5D-\\x7E]){1,}$",
+                        "minItems": 0
+                      }
+                    },
+                    "authorization_url_extras": {
+                      "type": "object"
+                    },
+                    "identity_config": {
+                      "type": "object",
+                      "required": [
+                        "url",
+                        "account_identifier"
+                      ],
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "pattern": "^https:\\/\\/",
+                          "minLength": 5,
+                          "maxLength": 255
+                        },
+                        "account_identifier": {
+                          "type": "string",
+                          "pattern": "^\\$\\.(.)+",
+                          "minLength": 1,
+                          "maxLength": 255
+                        },
+                        "headers": {
+                          "type": "object"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "description": "Declares the oauth configurations used by the app.",
+      "default": {
+        "your_oauth2_id": {
+          "provider_type": "CUSTOM",
+          "options": {
+            "client_id": "Your Client ID",
+            "scope": [
+
+            ]
+          }
+        }
+      }
+    },
+    "app-manifests.v2.hermes.third_party_auth.providers": {
+      "type": "object",
+      "properties": {
+        "oauth2": {
+          "$ref": "#/definitions/app-manifests.v2.hermes.third_party_auth.providers.oauth2"
+        }
+      },
+      "description": "Declares the oauth configurations used by the app.",
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

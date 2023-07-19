@@ -34,6 +34,7 @@ export default {
     moreTopics: __('More topics'),
     updated: __('Updated'),
   },
+  avatarSize: { default: 32, md: 48 },
   safeHtmlConfig: {
     ADD_TAGS: ['gl-emoji'],
   },
@@ -78,6 +79,11 @@ export default {
       type: Object,
       required: true,
     },
+    showProjectIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -85,11 +91,14 @@ export default {
     };
   },
   computed: {
+    visibility() {
+      return this.project.visibility;
+    },
     visibilityIcon() {
-      return VISIBILITY_TYPE_ICON[this.project.visibility];
+      return VISIBILITY_TYPE_ICON[this.visibility];
     },
     visibilityTooltip() {
-      return PROJECT_VISIBILITY_TYPE[this.project.visibility];
+      return PROJECT_VISIBILITY_TYPE[this.visibility];
     },
     accessLevel() {
       return this.project.permissions?.projectAccess?.accessLevel;
@@ -150,71 +159,87 @@ export default {
 
 <template>
   <li class="projects-list-item gl-py-5 gl-md-display-flex gl-align-items-center gl-border-b">
-    <gl-avatar-labeled
-      class="gl-flex-grow-1"
-      :entity-id="project.id"
-      :entity-name="project.name"
-      :label="project.name"
-      :label-link="project.webUrl"
-      shape="rect"
-      :size="48"
-    >
-      <template #meta>
-        <gl-icon
-          v-gl-tooltip="visibilityTooltip"
-          :name="visibilityIcon"
-          class="gl-text-secondary gl-ml-3"
-        />
-        <user-access-role-badge v-if="shouldShowAccessLevel" class="gl-ml-3">{{
-          accessLevelLabel
-        }}</user-access-role-badge>
-      </template>
-      <div
-        v-if="project.descriptionHtml"
-        v-safe-html:[$options.safeHtmlConfig]="project.descriptionHtml"
-        class="gl-font-sm gl-overflow-hidden gl-line-height-20 description"
-        data-testid="project-description"
-      ></div>
-      <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
-        <div
-          class="gl-w-full gl-display-inline-flex gl-flex-wrap gl-font-base gl-font-weight-normal gl-align-items-center gl-mx-n2 gl-my-n2"
-        >
-          <span class="gl-p-2 gl-text-secondary">{{ $options.i18n.topics }}:</span>
-          <div v-for="topic in visibleTopics" :key="topic" class="gl-p-2">
-            <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
-              {{ topicTitle(topic) }}
-            </gl-badge>
-          </div>
-          <template v-if="popoverTopics.length">
-            <div
-              :id="topicsPopoverTarget"
-              class="gl-p-2 gl-text-secondary"
-              role="button"
-              tabindex="0"
-            >
-              <gl-sprintf :message="$options.i18n.topicsPopoverTargetText">
-                <template #count>{{ popoverTopics.length }}</template>
-              </gl-sprintf>
-            </div>
-            <gl-popover :target="topicsPopoverTarget" :title="$options.i18n.moreTopics">
-              <div class="gl-font-base gl-font-weight-normal gl-mx-n2 gl-my-n2">
-                <div
-                  v-for="topic in popoverTopics"
-                  :key="topic"
-                  class="gl-p-2 gl-display-inline-block"
-                >
-                  <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
-                    {{ topicTitle(topic) }}
-                  </gl-badge>
-                </div>
+    <div class="gl-display-flex gl-flex-grow-1">
+      <gl-icon
+        v-if="showProjectIcon"
+        class="gl-mr-3 gl-mt-3 gl-md-mt-5 gl-flex-shrink-0 gl-text-secondary"
+        name="project"
+      />
+      <gl-avatar-labeled
+        :entity-id="project.id"
+        :entity-name="project.name"
+        :label="project.name"
+        :label-link="project.webUrl"
+        shape="rect"
+        :size="$options.avatarSize"
+      >
+        <template #meta>
+          <div class="gl-px-2">
+            <div class="gl-mx-n2 gl-display-flex gl-align-items-center gl-flex-wrap">
+              <div class="gl-px-2">
+                <gl-icon
+                  v-if="visibility"
+                  v-gl-tooltip="visibilityTooltip"
+                  :name="visibilityIcon"
+                  class="gl-text-secondary"
+                />
               </div>
-            </gl-popover>
-          </template>
+              <div class="gl-px-2">
+                <user-access-role-badge v-if="shouldShowAccessLevel">{{
+                  accessLevelLabel
+                }}</user-access-role-badge>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div
+          v-if="project.descriptionHtml"
+          v-safe-html:[$options.safeHtmlConfig]="project.descriptionHtml"
+          class="gl-font-sm gl-overflow-hidden gl-line-height-20 description md"
+          data-testid="project-description"
+        ></div>
+        <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
+          <div
+            class="gl-w-full gl-display-inline-flex gl-flex-wrap gl-font-base gl-font-weight-normal gl-align-items-center gl-mx-n2 gl-my-n2"
+          >
+            <span class="gl-p-2 gl-text-secondary">{{ $options.i18n.topics }}:</span>
+            <div v-for="topic in visibleTopics" :key="topic" class="gl-p-2">
+              <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
+                {{ topicTitle(topic) }}
+              </gl-badge>
+            </div>
+            <template v-if="popoverTopics.length">
+              <div
+                :id="topicsPopoverTarget"
+                class="gl-p-2 gl-text-secondary"
+                role="button"
+                tabindex="0"
+              >
+                <gl-sprintf :message="$options.i18n.topicsPopoverTargetText">
+                  <template #count>{{ popoverTopics.length }}</template>
+                </gl-sprintf>
+              </div>
+              <gl-popover :target="topicsPopoverTarget" :title="$options.i18n.moreTopics">
+                <div class="gl-font-base gl-font-weight-normal gl-mx-n2 gl-my-n2">
+                  <div
+                    v-for="topic in popoverTopics"
+                    :key="topic"
+                    class="gl-p-2 gl-display-inline-block"
+                  >
+                    <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
+                      {{ topicTitle(topic) }}
+                    </gl-badge>
+                  </div>
+                </div>
+              </gl-popover>
+            </template>
+          </div>
         </div>
-      </div>
-    </gl-avatar-labeled>
+      </gl-avatar-labeled>
+    </div>
     <div
-      class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-pl-10 gl-md-pl-0 gl-md-mt-0"
+      class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0"
+      :class="showProjectIcon ? 'gl-pl-11' : 'gl-pl-8'"
     >
       <div class="gl-display-flex gl-align-items-center gl-gap-x-3">
         <gl-badge v-if="project.archived" variant="warning">{{ $options.i18n.archived }}</gl-badge>
@@ -248,7 +273,10 @@ export default {
           <span>{{ numberToMetricPrefix(project.openIssuesCount) }}</span>
         </gl-link>
       </div>
-      <div class="gl-font-sm gl-white-space-nowrap gl-text-secondary gl-mt-3">
+      <div
+        v-if="project.updatedAt"
+        class="gl-font-sm gl-white-space-nowrap gl-text-secondary gl-mt-3"
+      >
         <span>{{ $options.i18n.updated }}</span>
         <time-ago-tooltip :time="project.updatedAt" />
       </div>

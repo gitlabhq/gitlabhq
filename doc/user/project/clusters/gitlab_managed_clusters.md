@@ -17,7 +17,7 @@ To connect your cluster to GitLab, use the [GitLab agent](../../../user/clusters
 To manage applications, use the [Cluster Project Management Template](../../../user/clusters/management_project_template.md).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `certificate_based_clusters`.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `certificate_based_clusters`.
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster
 is managed by GitLab, resources for your projects are automatically created. See
@@ -45,7 +45,7 @@ your cluster. This can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. Navigate to your project's **Infrastructure > Kubernetes clusters** page, and select your cluster.
+1. Navigate to your project's **Operate > Kubernetes clusters** page, and select your cluster.
 1. Expand the **Advanced settings** section.
 1. Select **Clear cluster cache**.
 

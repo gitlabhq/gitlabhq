@@ -69,7 +69,6 @@ export default {
       mediaSrc: undefined,
       mediaCanonicalSrc: undefined,
       mediaAlt: undefined,
-      mediaTitle: undefined,
 
       isEditing: false,
       isUpdating: false,
@@ -130,16 +129,13 @@ export default {
 
       const position = this.tiptapEditor.state.selection.from;
 
-      this.tiptapEditor
-        .chain()
-        .focus()
-        .updateAttributes(this.mediaType, {
-          src: this.mediaSrc,
-          alt: this.mediaAlt,
-          canonicalSrc: this.mediaCanonicalSrc,
-          title: this.mediaTitle,
-        })
-        .run();
+      const attrs = {
+        src: this.mediaSrc,
+        alt: this.mediaAlt,
+        canonicalSrc: this.mediaCanonicalSrc,
+      };
+
+      this.tiptapEditor.chain().focus().updateAttributes(this.mediaType, attrs).run();
 
       this.tiptapEditor.commands.setNodeSelection(position);
 
@@ -155,13 +151,11 @@ export default {
 
       this.isUpdating = true;
 
-      const { src, title, alt, canonicalSrc, uploading } = this.tiptapEditor.getAttributes(
-        this.mediaType,
-      );
+      const { src, alt, canonicalSrc, uploading } = this.tiptapEditor.getAttributes(this.mediaType);
 
-      this.mediaTitle = title;
       this.mediaAlt = alt;
       this.mediaCanonicalSrc = canonicalSrc || src;
+
       this.uploading = uploading;
 
       this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
@@ -177,7 +171,6 @@ export default {
     },
 
     resetMediaInfo() {
-      this.mediaTitle = null;
       this.mediaAlt = null;
       this.mediaCanonicalSrc = null;
       this.uploading = false;
@@ -248,7 +241,6 @@ export default {
           data-qa-selector="file_upload_field"
           @change="onFileSelect"
         />
-
         <gl-link
           v-if="!showProgressIndicator"
           v-gl-tooltip
@@ -260,17 +252,6 @@ export default {
         >
           {{ mediaCanonicalSrc }}
         </gl-link>
-        <gl-button
-          v-gl-tooltip
-          variant="default"
-          category="tertiary"
-          size="medium"
-          data-testid="copy-media-src"
-          :aria-label="copySourceLabel"
-          :title="copySourceLabel"
-          icon="copy-to-clipboard"
-          @click="copyMediaSrc"
-        />
         <gl-button
           v-if="!showProgressIndicator"
           v-gl-tooltip
@@ -290,8 +271,8 @@ export default {
           category="tertiary"
           size="medium"
           data-testid="edit-diagram"
-          :aria-label="replaceLabel"
-          title="Edit diagram"
+          :aria-label="editLabel"
+          :title="editLabel"
           icon="diagram"
           @click="editDiagram"
         />
@@ -307,27 +288,13 @@ export default {
           icon="retry"
           @click="replaceMedia"
         />
-        <gl-button
-          v-gl-tooltip
-          variant="default"
-          category="tertiary"
-          size="medium"
-          data-testid="delete-media"
-          :aria-label="deleteLabel"
-          :title="deleteLabel"
-          icon="remove"
-          @click="deleteMedia"
-        />
       </gl-button-group>
       <gl-form v-else class="bubble-menu-form gl-p-4 gl-w-100" @submit.prevent="saveEditedMedia">
         <gl-form-group :label="__('URL')" label-for="media-src">
           <gl-form-input id="media-src" v-model="mediaCanonicalSrc" data-testid="media-src" />
         </gl-form-group>
-        <gl-form-group :label="__('Description (alt text)')" label-for="media-alt">
+        <gl-form-group :label="__('Alt text')" label-for="media-alt">
           <gl-form-input id="media-alt" v-model="mediaAlt" data-testid="media-alt" />
-        </gl-form-group>
-        <gl-form-group :label="__('Title')" label-for="media-title">
-          <gl-form-input id="media-title" v-model="mediaTitle" data-testid="media-title" />
         </gl-form-group>
         <div class="gl-display-flex gl-justify-content-end">
           <gl-button

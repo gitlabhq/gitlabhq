@@ -8,26 +8,19 @@ RSpec.describe 'viewing an issue with cross project references' do
 
   let(:user) { create(:user) }
   let(:other_project) do
-    create(:project, :public,
-          external_authorization_classification_label: 'other_label')
+    create(:project, :public, external_authorization_classification_label: 'other_label')
   end
 
   let(:other_issue) do
-    create(:issue, :closed,
-           title: 'I am in another project',
-           project: other_project)
+    create(:issue, :closed, title: 'I am in another project', project: other_project)
   end
 
   let(:other_confidential_issue) do
-    create(:issue, :confidential, :closed,
-           title: 'I am in another project and confidential',
-           project: other_project)
+    create(:issue, :confidential, :closed, title: 'I am in another project and confidential', project: other_project)
   end
 
   let(:other_merge_request) do
-    create(:merge_request, :closed,
-           title: 'I am a merge request in another project',
-           source_project: other_project)
+    create(:merge_request, :closed, title: 'I am a merge request in another project', source_project: other_project)
   end
 
   let(:description_referencing_other_issue) do
@@ -39,15 +32,11 @@ RSpec.describe 'viewing an issue with cross project references' do
 
   let(:project) { create(:project) }
   let(:issue) do
-    create(:issue,
-           project: project,
-           description: description_referencing_other_issue)
+    create(:issue, project: project, description: description_referencing_other_issue)
   end
 
   let(:confidential_issue) do
-    create(:issue, :confidential, :closed,
-           title: "I am in the same project and confidential",
-           project: project)
+    create(:issue, :confidential, :closed, title: "I am in the same project and confidential", project: project)
   end
 
   before do

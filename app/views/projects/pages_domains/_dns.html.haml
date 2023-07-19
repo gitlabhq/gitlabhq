@@ -1,5 +1,5 @@
 - verification_enabled = Gitlab::CurrentSettings.pages_domain_verification_enabled?
-- dns_record = "#{domain_presenter.domain} ALIAS #{domain_presenter.project.pages_subdomain}.#{Settings.pages.host}."
+- dns_record = "#{domain_presenter.domain} ALIAS #{pages_subdomain(domain_presenter.project)}.#{Settings.pages.host}."
 
 .form-group.border-section
   .row
@@ -21,11 +21,11 @@
         .gl-mb-3
           - text, status = domain_presenter.unverified? ? [_('Unverified'), :danger] : [_('Verified'), :success]
           = gl_badge_tag text, variant: status
-          = link_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: "gl-ml-2 gl-button btn btn-sm btn-default has-tooltip", title: _("Retry verification")
+          = link_button_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: 'gl-ml-2 has-tooltip', title: _("Retry verification"), size: :small
         .input-group
           = text_field_tag :domain_verification, domain_presenter.verification_record, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-append
             = clipboard_button(target: '#domain_verification', class: 'btn-default d-none d-sm-block')
         %p.form-text.text-muted
           - link_to_help = link_to(_('verify ownership'), help_page_path('user/project/pages/custom_domains_ssl_tls_certification/index.md', anchor: '4-verify-the-domains-ownership'))
-          = _("To %{link_to_help} of your domain, add the above key to a TXT record within your DNS configuration.").html_safe % { link_to_help: link_to_help }
+          = _("To %{link_to_help} of your domain, add the above key to a TXT record within your DNS configuration within seven days.").html_safe % { link_to_help: link_to_help }

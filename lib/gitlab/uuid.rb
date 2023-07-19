@@ -10,8 +10,6 @@ module Gitlab
     }.freeze
 
     UUID_V5_PATTERN = /\h{8}-\h{4}-5\h{3}-\h{4}-\h{12}/.freeze
-    NAMESPACE_REGEX = /(\h{8})-(\h{4})-(\h{4})-(\h{4})-(\h{4})(\h{8})/.freeze
-    PACK_PATTERN = "NnnnnN"
 
     class << self
       def v5(name, namespace_id: default_namespace_id)
@@ -25,12 +23,7 @@ module Gitlab
       private
 
       def default_namespace_id
-        @default_namespace_id ||= begin
-          namespace_uuid = NAMESPACE_IDS.fetch(Rails.env.to_sym)
-          # Digest::UUID is broken when using a UUID as a namespace_id
-          # https://github.com/rails/rails/issues/37681#issue-520718028
-          namespace_uuid.scan(NAMESPACE_REGEX).flatten.map { |s| s.to_i(16) }.pack(PACK_PATTERN)
-        end
+        NAMESPACE_IDS.fetch(Rails.env.to_sym)
       end
     end
   end

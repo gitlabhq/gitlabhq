@@ -178,7 +178,7 @@ of options for access and working with diffs, focusing solely on the most common
 ### `batch_diffs.json`
 
 The most common avenue for viewing diffs is the **Changes**
-tab in the top navigation bar of merge request pages in the GitLab UI. When selected, the
+tab at the top of merge request pages in the GitLab UI. When selected, the
 diffs themselves are loaded via a paginated request to `/-/merge_requests/:id/batch_diffs.json`,
 which is served by [`Projects::MergeRequests::DiffsController#diffs_batch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/projects/merge_requests/diffs_controller.rb):
 

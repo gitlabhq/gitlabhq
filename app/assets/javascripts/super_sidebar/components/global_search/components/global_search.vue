@@ -25,20 +25,24 @@ import {
   SEARCH_RESULTS_SCOPE,
 } from '~/vue_shared/global_search/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { darkModeEnabled } from '~/lib/utils/color_utils';
 import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
   SCOPE_TOKEN_MAX_LENGTH,
   INPUT_FIELD_PADDING,
-  IS_SEARCHING,
   SEARCH_MODAL_ID,
   SEARCH_INPUT_SELECTOR,
   SEARCH_RESULTS_ITEM_SELECTOR,
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
-import { COMMON_HANDLES, SEARCH_OR_COMMAND_MODE_PLACEHOLDER } from '../command_palette/constants';
+import {
+  COMMON_HANDLES,
+  PATH_HANDLE,
+  SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
+} from '../command_palette/constants';
 import GlobalSearchAutocompleteItems from './global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from './global_search_default_items.vue';
 import GlobalSearchScopedItems from './global_search_scoped_items.vue';
@@ -68,6 +72,11 @@ export default {
     FakeSearchInput,
   },
   mixins: [glFeatureFlagMixin()],
+  data() {
+    return {
+      nextFocusedItemIndex: null,
+    };
+  },
   computed: {
     ...mapState(['search', 'loading', 'searchContext']),
     ...mapGetters(['searchQuery', 'searchOptions', 'scopedSearchOptions']),
@@ -108,40 +117,52 @@ export default {
             count: this.searchOptions.length,
           });
     },
-    searchBarClasses() {
-      return {
-        [IS_SEARCHING]: this.searchTermOverMin,
-      };
-    },
-    showScopeHelp() {
+    showScopeToken() {
       return this.searchTermOverMin && !this.isCommandMode;
     },
     searchBarItem() {
       return this.searchOptions?.[0];
     },
-    infieldHelpContent() {
+    scopeTokenText() {
       return this.searchBarItem?.scope || this.searchBarItem?.description;
     },
-    infieldHelpIcon() {
-      return this.searchBarItem?.icon;
+    scopeTokenIcon() {
+      if (!this.isCommandMode) {
+        return this.searchBarItem?.icon;
+      }
+      return null;
     },
-    scopeTokenTitle() {
+    searchScope() {
       return sprintf(this.$options.i18n.SEARCH_RESULTS_SCOPE, {
-        scope: this.infieldHelpContent,
+        scope: this.scopeTokenText,
       });
     },
-
+    truncatedSearchScope() {
+      return truncate(this.searchScope, SCOPE_TOKEN_MAX_LENGTH);
+    },
     searchTextFirstChar() {
       return this.searchText?.trim().charAt(0);
     },
     isCommandMode() {
-      return this.glFeatures?.commandPalette && COMMON_HANDLES.includes(this.searchTextFirstChar);
+      return (
+        this.glFeatures?.commandPalette &&
+        (COMMON_HANDLES.includes(this.searchTextFirstChar) ||
+          (this.searchContext.project && this.searchTextFirstChar === PATH_HANDLE))
+      );
     },
     commandPaletteQuery() {
       if (this.isCommandMode) {
         return this.searchText?.trim().substring(1);
       }
       return '';
+    },
+    commandHighlightClass() {
+      return darkModeEnabled() ? 'gl-bg-gray-10!' : 'gl-bg-gray-50!';
+    },
+  },
+  watch: {
+    nextFocusedItemIndex() {
+      this.highlightFirstCommand();
     },
   },
   methods: {
@@ -156,9 +177,6 @@ export default {
         this.fetchAutocompleteOptions();
       }
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
-    getTruncatedScope(scope) {
-      return truncate(scope, SCOPE_TOKEN_MAX_LENGTH);
-    },
     observeTokenWidth({ contentRect: { width } }) {
       const inputField = this.$refs?.searchInputBox?.$el?.querySelector('input');
       if (!inputField) {
@@ -206,7 +224,7 @@ export default {
       }
     },
     focusSearchInput() {
-      this.$refs.searchInputBox.$el.querySelector('input').focus();
+      this.$refs.searchInput.$el.querySelector('input').focus();
     },
     focusNextItem(event, elements, offset) {
       const { target } = event;
@@ -221,10 +239,33 @@ export default {
       elements[index]?.focus();
     },
     submitSearch() {
+      if (this.isCommandMode) {
+        this.runFirstCommand();
+        return;
+      }
       if (this.search?.length <= SEARCH_SHORTCUTS_MIN_CHARACTERS) {
         return;
       }
       visitUrl(this.searchQuery);
+    },
+    runFirstCommand() {
+      this.getFocusableOptions()[0]?.firstChild.click();
+    },
+    onSearchModalShown() {
+      this.$emit('shown');
+    },
+    onSearchModalHidden() {
+      this.searchText = '';
+      this.$emit('hidden');
+    },
+    highlightFirstCommand() {
+      if (this.isCommandMode) {
+        const activeCommand = this.getFocusableOptions()[0]?.firstChild;
+        activeCommand?.classList.toggle(
+          this.commandHighlightClass,
+          Boolean(!this.nextFocusedItemIndex),
+        );
+      }
     },
   },
   SEARCH_INPUT_DESCRIPTION,
@@ -243,24 +284,22 @@ export default {
     body-class="gl-p-0!"
     modal-class="global-search-modal"
     :centered="false"
-    @hidden="$emit('hidden')"
-    @shown="$emit('shown')"
+    @shown="onSearchModalShown"
+    @hide="onSearchModalHidden"
   >
     <form
       role="search"
       :aria-label="searchPlaceholder"
       class="gl-relative gl-rounded-base gl-w-full"
-      :class="searchBarClasses"
       data-testid="global-search-form"
     >
       <div class="gl-p-1 gl-relative">
         <gl-search-box-by-type
           id="search"
-          ref="searchInputBox"
+          ref="searchInput"
           v-model="searchText"
           role="searchbox"
           data-testid="global-search-input"
-          data-qa-selector="global_search_input"
           autocomplete="off"
           :placeholder="searchPlaceholder"
           :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
@@ -270,24 +309,20 @@ export default {
           @keydown="onKeydown"
         />
         <gl-token
-          v-if="showScopeHelp"
+          v-if="showScopeToken"
           v-gl-resize-observer-directive="observeTokenWidth"
-          class="in-search-scope-help gl-sm-display-block gl-display-none"
+          class="search-scope-help gl-absolute gl-sm-display-block gl-display-none"
           view-only
-          :title="scopeTokenTitle"
+          :title="searchScope"
         >
           <gl-icon
-            v-if="infieldHelpIcon"
+            v-if="scopeTokenIcon"
             class="gl-mr-2"
-            :aria-label="infieldHelpContent"
-            :name="infieldHelpIcon"
+            :aria-label="scopeTokenText"
+            :name="scopeTokenIcon"
             :size="16"
           />
-          {{
-            getTruncatedScope(
-              sprintf($options.i18n.SEARCH_RESULTS_SCOPE, { scope: infieldHelpContent }),
-            )
-          }}
+          {{ truncatedSearchScope }}
         </gl-token>
         <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">
           {{ $options.i18n.SEARCH_DESCRIBED_BY_WITH_RESULTS }}
@@ -319,6 +354,7 @@ export default {
           v-if="isCommandMode"
           :search-query="commandPaletteQuery"
           :handle="searchTextFirstChar"
+          @updated="highlightFirstCommand"
         />
 
         <template v-else>

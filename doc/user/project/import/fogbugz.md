@@ -19,7 +19,7 @@ users.
 
 > Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
-- [FogBugz import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
+- [FogBugz import source](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The FogBugz import source is enabled
   by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to.
@@ -29,7 +29,7 @@ users.
 To import your project from FogBugz:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project**.
 1. Select **FogBugz**.
 1. Enter your FogBugz URL, email address, and password.

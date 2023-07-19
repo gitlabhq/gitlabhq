@@ -35,18 +35,6 @@ module Gitlab
           gitlab_alert&.environment || super
         end
 
-        def metrics_dashboard_url
-          return unless gitlab_alert
-
-          metrics_dashboard_project_prometheus_alert_url(
-            project,
-            gitlab_alert.prometheus_metric_id,
-            environment_id: environment.id,
-            embedded: true,
-            **alert_embed_window_params
-          )
-        end
-
         private
 
         def plain_gitlab_fingerprint

@@ -34,13 +34,19 @@ module Gitlab
 
     def signature_text
       strong_memoize(:signature_text) do
-        @signature_data.itself ? @signature_data[0] : nil
+        @signature_data.itself ? @signature_data[:signature] : nil
       end
     end
 
     def signed_text
       strong_memoize(:signed_text) do
-        @signature_data.itself ? @signature_data[1] : nil
+        @signature_data.itself ? @signature_data[:signed_text] : nil
+      end
+    end
+
+    def signer
+      strong_memoize(:signer) do
+        @signature_data.itself ? @signature_data[:signer] : nil
       end
     end
 

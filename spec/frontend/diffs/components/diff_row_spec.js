@@ -33,6 +33,14 @@ describe('DiffRow', () => {
       left: { old_line: 1, discussions: [] },
       right: { new_line: 1, discussions: [] },
     },
+    {
+      left: {},
+      right: {},
+      isMetaLineLeft: true,
+      isMetaLineRight: false,
+      isContextLineLeft: true,
+      isContextLineRight: false,
+    },
   ];
 
   const createWrapper = ({ props, state = {}, actions, isLoggedIn = true }) => {
@@ -272,6 +280,12 @@ describe('DiffRow', () => {
       expect(findInteropAttributes(wrapper, '[data-testid="left-side"]')).toEqual(leftSide);
       expect(findInteropAttributes(wrapper, '[data-testid="right-side"]')).toEqual(rightSide);
     });
+  });
+
+  it('renders comment button when isMetaLineLeft is false and isMetaLineRight is true', () => {
+    wrapper = createWrapper({ props: { line: testLines[4], inline: false } });
+
+    expect(wrapper.find('.add-diff-note').exists()).toBe(true);
   });
 });
 

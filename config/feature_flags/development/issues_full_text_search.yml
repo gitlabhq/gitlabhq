@@ -1,8 +1,0 @@
----
-name: issues_full_text_search
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354784
-milestone: '14.5'
-type: development
-group: group::project management
-default_enabled: true

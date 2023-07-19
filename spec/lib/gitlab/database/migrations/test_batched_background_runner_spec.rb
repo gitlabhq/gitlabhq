@@ -153,6 +153,25 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
         expect(calls.size).to eq(1)
       end
 
+      it 'does not sample a job if there are zero rows to sample' do
+        calls = []
+        define_background_migration(migration_name, with_base_class: true, scoping: ->(relation) {
+                                                                                      relation.none
+                                                                                    }) do |*args|
+          calls << args
+        end
+
+        queue_migration(migration_name, table_name, :id,
+                        job_interval: 5.minutes,
+                        batch_size: num_rows_in_table * 2,
+                        sub_batch_size: num_rows_in_table * 2)
+
+        described_class.new(result_dir: result_dir, connection: connection,
+                            from_id: from_id).run_jobs(for_duration: 3.minutes)
+
+        expect(calls.count).to eq(0)
+      end
+
       context 'with multiple jobs to run' do
         let(:last_id) do
           Gitlab::Database::SharedModel.using_connection(connection) do

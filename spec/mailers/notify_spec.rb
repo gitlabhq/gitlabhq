@@ -109,8 +109,14 @@ RSpec.describe Notify do
           is_expected.to have_body_text issue.description
         end
 
-        it 'does not add a reason header' do
-          is_expected.not_to have_header('X-GitLab-NotificationReason', /.+/)
+        context 'when issue is confidential' do
+          before do
+            issue.update_attribute(:confidential, true)
+          end
+
+          it 'has a confidential header set to true' do
+            is_expected.to have_header('X-GitLab-ConfidentialIssue', 'true')
+          end
         end
 
         context 'when sent with a reason' do
@@ -819,6 +825,10 @@ RSpec.describe Notify do
         let_it_be(:second_note) { create(:discussion_note_on_issue, in_reply_to: first_note, project: project) }
         let_it_be(:third_note) { create(:discussion_note_on_issue, in_reply_to: second_note, project: project) }
 
+        before_all do
+          first_note.noteable.update_attribute(:confidential, "true")
+        end
+
         subject { described_class.note_issue_email(recipient.id, third_note.id) }
 
         it_behaves_like 'an email sent to a user'
@@ -840,16 +850,28 @@ RSpec.describe Notify do
         it 'has X-GitLab-Discussion-ID header' do
           expect(subject.header['X-GitLab-Discussion-ID'].value).to eq(third_note.discussion.id)
         end
+
+        it 'has a confidential header set to true' do
+          is_expected.to have_header('X-GitLab-ConfidentialIssue', 'true')
+        end
       end
 
       context 'individual issue comments' do
         let_it_be(:note) { create(:note_on_issue, project: project) }
+
+        before_all do
+          note.noteable.update_attribute(:confidential, "true")
+        end
 
         subject { described_class.note_issue_email(recipient.id, note.id) }
 
         it_behaves_like 'an email sent to a user'
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
+
+        it 'has a confidential header set to true' do
+          expect(subject.header['X-GitLab-ConfidentialIssue'].value).to eq('true')
+        end
 
         it 'has In-Reply-To header pointing to the issue' do
           expect(subject.header['In-Reply-To'].message_ids).to eq(["issue_#{note.noteable.id}@#{host}"])
@@ -1572,14 +1594,20 @@ RSpec.describe Notify do
 
           context 'when custom email is enabled' do
             let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+            let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
             let_it_be(:settings) do
               create(
                 :service_desk_setting,
                 project: project,
-                custom_email_enabled: true,
                 custom_email: 'supersupport@example.com'
               )
+            end
+
+            before_all do
+              verification.mark_as_finished!
+              project.reset
+              settings.update!(custom_email_enabled: true)
             end
 
             it 'uses custom email and service bot name in "from" header' do
@@ -1630,20 +1658,21 @@ RSpec.describe Notify do
           end
 
           context 'when custom email is enabled' do
-            let_it_be(:credentials) do
-              create(
-                :service_desk_custom_email_credential,
-                project: project
-              )
-            end
+            let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+            let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
             let_it_be(:settings) do
               create(
                 :service_desk_setting,
                 project: project,
-                custom_email_enabled: true,
                 custom_email: 'supersupport@example.com'
               )
+            end
+
+            before_all do
+              verification.mark_as_finished!
+              project.reset
+              settings.update!(custom_email_enabled: true)
             end
 
             it 'uses custom email and author\'s name in "from" header' do

@@ -22,6 +22,7 @@ module AwardEmojis
     private
 
     def after_destroy(award)
+      execute_hooks(award, 'revoke')
     end
   end
 end

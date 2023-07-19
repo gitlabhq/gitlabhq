@@ -149,6 +149,10 @@ class Commit
 
       from_hash(hash, project)
     end
+
+    def underscore
+      'commit'
+    end
   end
 
   attr_accessor :raw

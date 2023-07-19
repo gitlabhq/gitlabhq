@@ -38,9 +38,11 @@ RSpec.describe 'Projects > Members > User requests access', :js, feature_categor
 
   context 'code access is restricted' do
     it 'user can request access' do
-      project.project_feature.update!(repository_access_level: ProjectFeature::PRIVATE,
-                                      builds_access_level: ProjectFeature::PRIVATE,
-                                      merge_requests_access_level: ProjectFeature::PRIVATE)
+      project.project_feature.update!(
+        repository_access_level: ProjectFeature::PRIVATE,
+        builds_access_level: ProjectFeature::PRIVATE,
+        merge_requests_access_level: ProjectFeature::PRIVATE
+      )
       visit project_path(project)
 
       expect(page).to have_content 'Request Access'

@@ -87,6 +87,7 @@ module Gitlab
       end
 
       def verification_status(gpg_key)
+        return :verified_system if verified_by_gitlab?
         return :multiple_signatures if multiple_signatures?
         return :unknown_key unless gpg_key
         return :unverified_key unless gpg_key.verified?
@@ -99,6 +100,15 @@ module Gitlab
         else
           :other_user
         end
+      end
+
+      # If a commit is signed by Gitaly, the Gitaly returns `SIGNER_SYSTEM` as a signer
+      # In order to calculate it, the signature is Verified using the Gitaly's public key:
+      # https://gitlab.com/gitlab-org/gitaly/-/blob/v16.2.0-rc2/internal/gitaly/service/commit/commit_signatures.go#L63
+      #
+      # It is safe to skip verification step if the commit has been signed by Gitaly
+      def verified_by_gitlab?
+        signer == :SIGNER_SYSTEM
       end
 
       def user_infos(gpg_key)

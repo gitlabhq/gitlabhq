@@ -116,7 +116,7 @@ vm.mmap_min_addr=4096
 # Default is 0, randomize virtual address space in memory, makes vuln exploitation
 # harder
 kernel.randomize_va_space=2
-# Restrict kernel pointer access (e.g. cat /proc/kallsyms) for exploit assistance
+# Restrict kernel pointer access (for example, cat /proc/kallsyms) for exploit assistance
 kernel.kptr_restrict=2
 # Restrict verbose kernel errors in dmesg
 kernel.dmesg_restrict=1

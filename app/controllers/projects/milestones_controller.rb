@@ -24,6 +24,10 @@ class Projects::MilestonesController < Projects::ApplicationController
   feature_category :team_planning
   urgency :low
 
+  before_action do
+    push_frontend_feature_flag(:content_editor_on_issues, @project)
+  end
+
   def index
     @sort = params[:sort] || 'due_date_asc'
     @milestones = milestones.sort_by_attribute(@sort)

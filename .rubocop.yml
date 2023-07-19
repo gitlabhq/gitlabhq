@@ -40,6 +40,7 @@ AllCops:
   TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
   TargetRailsVersion: 6.0
   Exclude:
+    - 'gems/**/*'
     - 'vendor/**/*'
     - 'node_modules/**/*'
     - 'db/fixtures/**/*'
@@ -273,6 +274,11 @@ Naming/FileName:
     - XSS
     - GRPC
 
+# Check for the use of before with let_it_be when using "add_role" methods
+# e.g. add_guest, add_reporter, add_developer
+RSpec/BeforeAllRoleAssignment:
+  Enabled: true
+
 Rails/ApplicationRecord:
   Enabled: true
   Exclude:
@@ -389,7 +395,6 @@ Gitlab/Json:
   Exclude:
     - 'qa/**/*'
     - 'scripts/**/*'
-    - 'tooling/rspec_flaky/**/*'
     - 'lib/quality/**/*'
     - 'tooling/danger/**/*'
 
@@ -484,11 +489,6 @@ Cop/InjectEnterpriseEditionModule:
 Style/ReturnNil:
   Enabled: true
 
-# It isn't always safe to replace `=~` with `.match?`, especially when there are
-# nil values on the left hand side
-Performance/RegexpMatch:
-  Enabled: false
-
 Cop/ActiveRecordAssociationReload:
   Enabled: true
   Exclude:
@@ -546,6 +546,7 @@ RSpec/MissingFeatureCategory:
   Enabled: true
   Exclude:
     - 'qa/**/*.rb'
+    - 'gems/**/*.rb'
 
 RSpec/FactoryBot/AvoidCreate:
   Enabled: true
@@ -620,15 +621,6 @@ Graphql/AuthorizeTypes:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
-Graphql/GIDExpectedType:
-  Enabled: true
-  Include:
-    - 'app/graphql/**/*'
-    - 'ee/app/graphql/**/*'
-  Exclude:
-    - 'spec/**/*.rb'
-    - 'ee/spec/**/*.rb'
-
 Graphql/IDType:
   Enabled: true
   Include:
@@ -675,7 +667,6 @@ RSpec/EnvMocking:
     - 'ee/spec/**/fast_spec_helper.rb'
     - 'spec/**/spec_helper.rb'
     - 'ee/spec/**/spec_helper.rb'
-    - 'spec/support/helpers/stub_env.rb'
 
 RSpec/BeSuccessMatcher:
   Enabled: true
@@ -926,6 +917,13 @@ Performance/ActiveRecordSubtransactionMethods:
 Migration/BackgroundMigrationBaseClass:
   Enabled: false
 
+BackgroundMigration/AvoidSilentRescueExceptions:
+  Enabled: false
+
+Migration/AvoidFinalizeBackgroundMigration:
+  Include:
+    - 'db/post_migrate/*.rb'
+
 Style/ClassAndModuleChildren:
   Enabled: true
 
@@ -970,11 +968,6 @@ Cop/SidekiqApiUsage:
     - 'lib/gitlab/sidekiq_queue.rb'
     - 'config/initializers/sidekiq.rb'
     - 'config/initializers/forbid_sidekiq_in_transactions.rb'
-
-Rake/Require:
-  Include:
-    - '{,ee/,jh/}lib/**/*.rake'
-    - 'qa/tasks/**/*.rake'
 
 Cop/FeatureFlagUsage:
   Include:
@@ -1022,3 +1015,10 @@ RSpec/FactoryBot/LocalStaticAssignment:
 
 Rails/TransactionExitStatement:
   Enabled: true
+
+Search/AvoidCheckingFinishedOnDeprecatedMigrations:
+  Include:
+    - 'ee/app/models/**/*.rb'
+    - 'ee/lib/elastic/**/*.rb'
+    - 'ee/lib/gitlab/elastic/**/*.rb'
+    - 'ee/spec/support/helpers/elasticsearch_helpers.rb'

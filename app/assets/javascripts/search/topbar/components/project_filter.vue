@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     ...mapState(['query', 'projects', 'fetchingProjects']),
-    ...mapGetters(['frequentProjects']),
+    ...mapGetters(['frequentProjects', 'currentScope']),
     selectedProject() {
       return this.initialData ? this.initialData : ANY_OPTION;
     },
@@ -42,6 +42,7 @@ export default {
         ...(project.namespace?.id && { [GROUP_DATA.queryParam]: project.namespace.id }),
         [PROJECT_DATA.queryParam]: project.id,
         nav_source: null,
+        scope: this.currentScope,
       };
 
       visitUrl(setUrlParams(queryParams));

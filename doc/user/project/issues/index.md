@@ -16,7 +16,7 @@ You can use issues for many purposes, customized to your needs and workflow.
 - Accept feature proposals, questions, support requests, or bug reports.
 - Elaborate on code implementations.
 
-For more information about using issues, see the GitLab blog post:
+For more information about issues, see the GitLab blog post:
 [Always start a discussion with an issue](https://about.gitlab.com/blog/2016/03/03/start-with-an-issue/).
 
 Issues are always associated with a specific project. If you have multiple

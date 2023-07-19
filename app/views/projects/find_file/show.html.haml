@@ -2,11 +2,11 @@
 - add_page_specific_style 'page_bundles/tree'
 
 .file-finder-holder.tree-holder.clearfix.js-file-finder{ 'data-file-find-url': "#{escape_javascript(project_files_path(@project, @ref, format: :json))}", 'data-find-tree-url': escape_javascript(project_tree_path(@project, @ref)), 'data-blob-url-template': escape_javascript(project_blob_path(@project, @ref)) }
-  .nav-block
-    .tree-ref-holder
+  .nav-block.gl-xs-mr-0
+    .tree-ref-holder.gl-xs-mb-3.gl-xs-w-full
       #js-blob-ref-switcher{ data: { project_id: @project.id, ref: @ref, namespace: "/-/find_file" } }
-    %ul.breadcrumb.repo-breadcrumb
-      %li.breadcrumb-item
+    %ul.breadcrumb.repo-breadcrumb.gl-flex-nowrap
+      %li.breadcrumb-item.gl-white-space-nowrap
         = link_to project_tree_path(@project, @ref) do
           = @project.path
       %li.file-finder.breadcrumb-item

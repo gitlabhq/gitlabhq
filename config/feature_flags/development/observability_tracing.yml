@@ -1,0 +1,8 @@
+---
+name: observability_tracing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966
+rollout_issue_url: https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2252
+milestone: '16.2'
+type: development
+group: group::observability
+default_enabled: false

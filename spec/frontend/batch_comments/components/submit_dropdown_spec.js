@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SubmitDropdown from '~/batch_comments/components/submit_dropdown.vue';
+import { mockTracking } from 'helpers/tracking_helper';
 
 jest.mock('~/autosave');
 
@@ -10,9 +11,11 @@ Vue.use(Vuex);
 
 let wrapper;
 let publishReview;
+let trackingSpy;
 
 function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) {
   publishReview = jest.fn();
+  trackingSpy = mockTracking(undefined, null, jest.spyOn);
 
   const store = new Vuex.Store({
     getters: {
@@ -66,6 +69,20 @@ describe('Batch comments submit dropdown', () => {
       note: 'Hello world',
       approve: false,
       approval_password: '',
+    });
+  });
+
+  it('tracks submit action', () => {
+    factory();
+
+    findCommentTextarea().setValue('Hello world');
+
+    findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
+      context: 'MergeRequest_review',
+      editorType: 'editor_type_plain_text_editor',
+      label: 'editor_tracking',
     });
   });
 

@@ -137,8 +137,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
     describe 'multiple tasks' do
       let!(:note) do
-        create(:note, note: markdown, noteable: issue,
-                      project: project, author: user)
+        create(:note, note: markdown, noteable: issue, project: project, author: user)
       end
 
       it 'renders for note body' do
@@ -171,8 +170,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
     describe 'single incomplete task' do
       let!(:note) do
-        create(:note, note: single_incomplete_markdown, noteable: issue,
-                      project: project, author: user)
+        create(:note, note: single_incomplete_markdown, noteable: issue, project: project, author: user)
       end
 
       it 'renders for note body' do
@@ -186,8 +184,7 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
 
     describe 'single complete task' do
       let!(:note) do
-        create(:note, note: single_complete_markdown, noteable: issue,
-                      project: project, author: user)
+        create(:note, note: single_complete_markdown, noteable: issue, project: project, author: user)
       end
 
       it 'renders for note body' do

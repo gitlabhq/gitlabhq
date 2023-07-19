@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host do
   end
 
   let(:host) do
-    Gitlab::Database::LoadBalancing::Host.new('localhost', load_balancer)
+    described_class.new('localhost', load_balancer)
   end
 
   before do

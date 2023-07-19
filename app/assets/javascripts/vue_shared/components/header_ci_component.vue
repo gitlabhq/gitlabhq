@@ -114,11 +114,7 @@ export default {
 </script>
 
 <template>
-  <header
-    class="page-content-header gl-md-display-flex gl-min-h-7"
-    data-qa-selector="pipeline_header"
-    data-testid="ci-header-content"
-  >
+  <header class="page-content-header gl-md-display-flex gl-min-h-7" data-testid="ci-header-content">
     <section class="header-main-content gl-mr-3">
       <ci-badge-link class="gl-mr-3" :status="status" />
 

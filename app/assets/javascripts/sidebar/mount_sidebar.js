@@ -118,7 +118,6 @@ function mountSidebarAssigneesDeprecated(mediator) {
           issuableIid: String(iid),
           projectPath: fullPath,
           field: el.dataset.field,
-          signedIn: Object.prototype.hasOwnProperty.call(el.dataset, 'signedIn'),
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? TYPE_ISSUE

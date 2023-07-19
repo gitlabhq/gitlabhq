@@ -10,6 +10,9 @@ RSpec.configure do |config|
     # because it'll skip any following tests from running.
     # Convert it to something that won't skip everything.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/350060
+
+    raise if ENV['RSPEC_BYPASS_SYSTEM_EXIT_PROTECTION'] == 'true'
+
     raise SystemExitDetected, "SystemExit should be rescued in the tests!"
   end
 end

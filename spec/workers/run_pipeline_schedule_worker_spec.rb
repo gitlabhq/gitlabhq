@@ -61,7 +61,7 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
         before do
           expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
 
-          expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule).and_return(service_response)
+          expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: pipeline_schedule).and_return(service_response)
         end
 
         context "when pipeline is persisted" do
@@ -124,7 +124,26 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
 
         it 'creates a pipeline' do
           expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
-          expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule).and_return(service_response)
+          expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: pipeline_schedule).and_return(service_response)
+
+          worker.perform(pipeline_schedule.id, user.id)
+        end
+      end
+
+      context 'with feature flag persist_failed_pipelines_from_schedules disabled' do
+        before do
+          stub_feature_flags(persist_failed_pipelines_from_schedules: false)
+        end
+
+        it 'does not save_on_errors' do
+          expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
+
+          expect(create_pipeline_service).to receive(:execute).with(
+            :schedule,
+            ignore_skip_ci: true,
+            save_on_errors: false,
+            schedule: pipeline_schedule
+          )
 
           worker.perform(pipeline_schedule.id, user.id)
         end

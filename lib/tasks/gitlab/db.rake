@@ -33,7 +33,7 @@ namespace :gitlab do
         exit 1
       end
 
-      Gitlab::Database::EachDatabase.each_database_connection(only: only_on) do |connection, name|
+      Gitlab::Database::EachDatabase.each_connection(only: only_on) do |connection, name|
         connection.execute("INSERT INTO schema_migrations (version) VALUES (#{connection.quote(version)})")
 
         puts "Successfully marked '#{version}' as complete on database #{name}".color(:green)
@@ -57,7 +57,7 @@ namespace :gitlab do
     end
 
     def drop_tables(only_on: nil)
-      Gitlab::Database::EachDatabase.each_database_connection(only: only_on) do |connection, name|
+      Gitlab::Database::EachDatabase.each_connection(only: only_on) do |connection, name|
         # In PostgreSQLAdapter, data_sources returns both views and tables, so use tables instead
         tables = connection.tables
 
@@ -142,7 +142,7 @@ namespace :gitlab do
     desc 'This adjusts and cleans db/structure.sql - it runs after db:schema:dump'
     task :clean_structure_sql do |task_name|
       ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
-        structure_file = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.name)
+        structure_file = ActiveRecord::Tasks::DatabaseTasks.schema_dump_path(db_config)
 
         schema = File.read(structure_file)
 
@@ -292,7 +292,7 @@ namespace :gitlab do
             exit
           end
 
-          Gitlab::Database::EachDatabase.each_database_connection(only: database_name) do
+          Gitlab::Database::EachDatabase.each_connection(only: database_name) do
             Gitlab::Database::AsyncIndexes.execute_pending_actions!(how_many: args[:pick].to_i)
           end
         end
@@ -322,7 +322,7 @@ namespace :gitlab do
             exit
           end
 
-          Gitlab::Database::EachDatabase.each_database_connection(only: database_name) do
+          Gitlab::Database::EachDatabase.each_connection(only: database_name) do
             Gitlab::Database::AsyncConstraints.validate_pending_entries!(how_many: args[:pick].to_i)
           end
         end
@@ -413,7 +413,7 @@ namespace :gitlab do
 
     desc 'Run all pending batched migrations'
     task execute_batched_migrations: :environment do
-      Gitlab::Database::EachDatabase.each_database_connection do |connection, name|
+      Gitlab::Database::EachDatabase.each_connection do |connection, name|
         Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:active).queue_order.each do |migration|
           Gitlab::AppLogger.info("Executing batched migration #{migration.id} on database #{name} inline")
           Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new(connection: connection).run_entire_migration(migration)
@@ -457,26 +457,20 @@ namespace :gitlab do
       desc 'Checks schema inconsistencies'
       task run: :environment do
         database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
-        database = Gitlab::Database::SchemaValidation::Database.new(database_model.connection)
+        database = Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
 
         stucture_sql_path = Rails.root.join('db/structure.sql')
-        structure_sql = Gitlab::Database::SchemaValidation::StructureSql.new(stucture_sql_path)
+        structure_sql = Gitlab::Schema::Validation::Sources::StructureSql.new(stucture_sql_path)
 
         filter = Gitlab::Database::SchemaValidation::InconsistencyFilter.new(IGNORED_TABLES, IGNORED_TRIGGERS)
 
-        inconsistencies =
-          Gitlab::Database::SchemaValidation::Runner.new(structure_sql, database).execute.filter_map(&filter)
+        validators = Gitlab::Schema::Validation::Validators::Base.all_validators
 
-        gitlab_url = 'gitlab-org/gitlab'
+        inconsistencies =
+          Gitlab::Schema::Validation::Runner.new(structure_sql, database, validators: validators).execute.filter_map(&filter)
 
         inconsistencies.each do |inconsistency|
-          Gitlab::Database::SchemaValidation::TrackInconsistency.new(
-            inconsistency,
-            Project.find_by_full_path(gitlab_url),
-            User.automation_bot
-          ).execute
-
-          puts inconsistency.inspect
+          puts inconsistency.display
         end
       end
     end

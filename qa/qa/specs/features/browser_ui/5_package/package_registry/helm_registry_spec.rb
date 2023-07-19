@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
-    describe 'Helm Registry' do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+    describe 'Helm Registry',
+      quarantine: {
+        only: { job: %w[relative_url airgapped] },
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417590',
+        type: :investigating
+      } do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

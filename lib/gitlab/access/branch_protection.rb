@@ -45,6 +45,63 @@ module Gitlab
       def fully_protected?
         level == PROTECTION_FULL
       end
+
+      def to_hash
+        # translate the original integer values into a json payload
+        # that matches the protected branches API:
+        # https://docs.gitlab.com/ee/api/protected_branches.html#update-a-protected-branch
+        case level
+        when PROTECTION_NONE
+          self.class.protection_none
+        when PROTECTION_DEV_CAN_PUSH
+          self.class.protection_partial
+        when PROTECTION_FULL
+          self.class.protected_fully
+        when PROTECTION_DEV_CAN_MERGE
+          self.class.protected_against_developer_pushes
+        when PROTECTION_DEV_CAN_INITIAL_PUSH
+          self.class.protected_after_initial_push
+        end
+      end
+
+      class << self
+        def protection_none
+          {
+            allowed_to_push: [{ 'access_level' => Gitlab::Access::DEVELOPER }],
+            allowed_to_merge: [{ 'access_level' => Gitlab::Access::DEVELOPER }],
+            allow_force_push: true
+          }
+        end
+
+        def protection_partial
+          protection_none.merge(allow_force_push: false)
+        end
+
+        def protected_fully
+          {
+            allowed_to_push: [{ 'access_level' => Gitlab::Access::MAINTAINER }],
+            allowed_to_merge: [{ 'access_level' => Gitlab::Access::MAINTAINER }],
+            allow_force_push: false
+          }
+        end
+
+        def protected_against_developer_pushes
+          {
+            allowed_to_push: [{ 'access_level' => Gitlab::Access::MAINTAINER }],
+            allowed_to_merge: [{ 'access_level' => Gitlab::Access::DEVELOPER }],
+            allow_force_push: true
+          }
+        end
+
+        def protected_after_initial_push
+          {
+            allowed_to_push: [{ 'access_level' => Gitlab::Access::MAINTAINER }],
+            allowed_to_merge: [{ 'access_level' => Gitlab::Access::DEVELOPER }],
+            allow_force_push: true,
+            developer_can_initial_push: true
+          }
+        end
+      end
     end
   end
 end

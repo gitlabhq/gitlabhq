@@ -8,7 +8,7 @@ RSpec.describe ContextCommitsDiffEntity do
   let_it_be(:mrcc2) { create(:merge_request_context_commit, merge_request: merge_request, sha: "ae73cb07c9eeaf35924a10f713b364d32b2dd34f") }
 
   context 'as json' do
-    subject { ContextCommitsDiffEntity.represent(merge_request.context_commits_diff).as_json }
+    subject { described_class.represent(merge_request.context_commits_diff).as_json }
 
     it 'exposes commits_count' do
       expect(subject[:commits_count]).to eq(2)

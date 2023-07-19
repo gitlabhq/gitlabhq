@@ -25,6 +25,10 @@ module GroupsHelper
     Ability.allowed?(current_user, :admin_group_member, group)
   end
 
+  def can_admin_service_accounts?(group)
+    false
+  end
+
   def group_icon_url(group, options = {})
     if group.is_a?(String)
       group = Group.find_by_full_path(group)
@@ -143,6 +147,7 @@ module GroupsHelper
 
   def group_overview_tabs_app_data(group)
     {
+      group_id: group.id,
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
       shared_projects_endpoint: group_shared_projects_path(group, format: :json),
       archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),

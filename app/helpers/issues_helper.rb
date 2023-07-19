@@ -231,13 +231,15 @@ module IssuesHelper
       can_read_crm_organization: can?(current_user, :read_crm_organization, group).to_s,
       has_any_issues: @has_issues.to_s,
       has_any_projects: @has_projects.to_s,
-      new_project_path: new_project_path(namespace_id: group.id)
+      new_project_path: new_project_path(namespace_id: group.id),
+      group_id: group.id
     )
   end
 
   def dashboard_issues_list_data(current_user)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+      autocomplete_users_path: autocomplete_users_path,
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
       dashboard_labels_path: dashboard_labels_path(format: :json, include_ancestor_groups: true),
       dashboard_milestones_path: dashboard_milestones_path(format: :json),

@@ -356,4 +356,20 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
       expect(milestone.human_total_time_estimate).to be_nil
     end
   end
+
+  describe '#expires_at' do
+    it 'returns the date when milestone expires' do
+      due_date = Date.today + 1.day
+      milestone.due_date = due_date
+
+      expect(milestone.expires_at).to eq("expires on #{due_date.to_fs(:medium)}")
+    end
+
+    it 'returns the date when milestone expires' do
+      due_date = Date.today - 1.day
+      milestone.due_date = due_date
+
+      expect(milestone.expires_at).to eq("expired on #{due_date.to_fs(:medium)}")
+    end
+  end
 end

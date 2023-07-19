@@ -6,6 +6,9 @@ import {
   GlFormInput,
   GlAlert,
   GlSprintf,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlDisclosureDropdownGroup,
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
@@ -46,7 +49,13 @@ describe('ErrorDetails', () => {
 
   function mountComponent({ integratedErrorTrackingEnabled = false } = {}) {
     wrapper = shallowMount(ErrorDetails, {
-      stubs: { GlButton, GlSprintf },
+      stubs: {
+        GlButton,
+        GlSprintf,
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
+        GlDisclosureDropdownGroup,
+      },
       store,
       mocks,
       propsData: {

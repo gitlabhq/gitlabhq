@@ -22,6 +22,8 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   it { is_expected.to delegate_method(:star_count).to(:project) }
   it { is_expected.to delegate_method(:forks_count).to(:project) }
 
+  it { is_expected.to define_enum_for(:state).with_values({ draft: 0, published: 1 }) }
+
   describe '.for_projects' do
     it 'returns catalog resources for the given project IDs' do
       resources_for_projects = described_class.for_projects(project.id)
@@ -63,6 +65,12 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   describe '#latest_version' do
     it 'returns the latest release' do
       expect(resource.latest_version).to eq(release3)
+    end
+  end
+
+  describe '#state' do
+    it 'defaults to draft' do
+      expect(resource.state).to eq('draft')
     end
   end
 end

@@ -11,6 +11,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
   before do
+    allow(helper).to receive(:current_user).and_return(user)
     helper.instance_variable_set(:@project, project)
   end
 
@@ -143,7 +144,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     let(:project) { project_with_repo }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).with(user, :read_cross_project) { true }
       allow(user).to receive(:max_member_access_for_project).and_return(40)
       allow(Gitlab::I18n).to receive(:locale).and_return('es')
@@ -287,10 +287,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#show_no_ssh_key_message?' do
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
     context 'user has no keys' do
       it 'returns true' do
         expect(helper.show_no_ssh_key_message?).to be_truthy
@@ -307,10 +303,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#show_no_password_message?' do
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
     context 'user has password set' do
       it 'returns false' do
         expect(helper.show_no_password_message?).to be_falsey
@@ -345,10 +337,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   describe '#no_password_message' do
     let(:user) { create(:user, password_automatically_set: true) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
 
     context 'password authentication is enabled for Git' do
       it 'returns message prompting user to set password or set up a PAT' do
@@ -431,10 +419,10 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe 'default_clone_protocol' do
+    let(:user) { nil }
+
     context 'when user is not logged in and gitlab protocol is HTTP' do
       it 'returns HTTP' do
-        allow(helper).to receive(:current_user).and_return(nil)
-
         expect(helper.send(:default_clone_protocol)).to eq('http')
       end
     end
@@ -442,7 +430,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     context 'when user is not logged in and gitlab protocol is HTTPS' do
       it 'returns HTTPS' do
         stub_config_setting(protocol: 'https')
-        allow(helper).to receive(:current_user).and_return(nil)
 
         expect(helper.send(:default_clone_protocol)).to eq('https')
       end
@@ -452,10 +439,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#last_push_event' do
     let(:user) { double(:user, fork_of: nil) }
     let(:project) { double(:project, id: 1) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
 
     context 'when there is no current_user' do
       let(:user) { nil }
@@ -543,10 +526,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#git_user_name' do
     let(:user) { build_stubbed(:user, name: 'John "A" Doe53') }
 
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
     it 'parses quotes in name' do
       expect(helper.send(:git_user_name)).to eq('John \"A\" Doe53')
     end
@@ -554,9 +533,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   describe '#git_user_email' do
     context 'not logged-in' do
-      before do
-        allow(helper).to receive(:current_user).and_return(nil)
-      end
+      let(:user) { nil }
 
       it 'returns your@email.com' do
         expect(helper.send(:git_user_email)).to eq('your@email.com')
@@ -564,10 +541,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'user logged in' do
-      before do
-        allow(helper).to receive(:current_user).and_return(user)
-      end
-
       context 'user has no configured commit email' do
         it 'returns the primary email' do
           expect(helper.send(:git_user_email)).to eq(user.email)
@@ -807,9 +780,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   describe '#can_admin_project_member?' do
     context 'when user is project owner' do
-      before do
-        allow(helper).to receive(:current_user) { project.owner }
-      end
+      let(:user) { project.owner }
 
       it 'returns true for owner of project' do
         expect(helper.can_admin_project_member?(project)).to eq true
@@ -829,7 +800,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       with_them do
         before do
           project.add_role(user, user_project_role)
-          allow(helper).to receive(:current_user) { user }
         end
 
         it 'resolves if the user can import members' do
@@ -1016,7 +986,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     before do
       allow(helper).to receive(:can?) { true }
-      allow(helper).to receive(:current_user).and_return(user)
     end
 
     it 'includes project_permissions_settings' do
@@ -1188,10 +1157,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   shared_examples 'configure import method modal' do
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
     context 'as a user' do
       it 'returns a link to contact an administrator' do
         allow(user).to receive(:can_admin_all_resources?).and_return(false)
@@ -1290,16 +1255,14 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#can_admin_associated_clusters?' do
-    let_it_be(:current_user) { create(:user) }
     let_it_be_with_reload(:project) { create(:project) }
 
     subject { helper.send(:can_admin_associated_clusters?, project) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(current_user)
       allow(helper)
         .to receive(:can?)
-        .with(current_user, :admin_cluster, namespace)
+        .with(user, :admin_cluster, namespace)
         .and_return(user_can_admin_cluster)
     end
 
@@ -1394,7 +1357,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       let_it_be(:has_active_license) { true }
 
       it 'displays the correct messagee' do
-        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. Contact GitLab Support if you have any additional questions.'))
+        expect(subject).to eq(s_('ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}, or contact GitLab support.'))
       end
     end
 
@@ -1402,7 +1365,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       let_it_be(:has_active_license) { false }
 
       it 'displays the correct message' do
-        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of February 2023. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.'))
+        expect(subject).to eq(s_('ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}.'))
       end
     end
   end
@@ -1477,8 +1440,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
 
       it 'returns the data related to fork divergence' do
-        allow(helper).to receive(:current_user).and_return(user)
-
         ahead_path =
           "/#{project.full_path}/-/compare/#{source_project.default_branch}...ref?from_project_id=#{source_project.id}"
         behind_path =
@@ -1500,8 +1461,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
 
       it 'returns view_mr_path if a merge request for the branch exists' do
-        allow(helper).to receive(:current_user).and_return(user)
-
         merge_request =
           create(:merge_request, source_project: project, target_project: project_with_repo,
             source_branch: project.default_branch, target_branch: project_with_repo.default_branch)
@@ -1523,8 +1482,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
         with_them do
           it 'create_mr_path is nil' do
-            allow(helper).to receive(:current_user).and_return(user)
-
             project.add_member(user, project_role)
             source_project.add_member(user, source_project_role)
 
@@ -1561,5 +1518,100 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject { helper.ssh_clone_url_to_repo(project) }
 
     it { expect(subject).to eq('ssh_url_to_repo') }
+  end
+
+  describe '#can_view_branch_rules?' do
+    subject { helper.can_view_branch_rules? }
+
+    context 'when user is a maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when user is a developer' do
+      before do
+        project.add_developer(user)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#can_push_code?' do
+    subject { helper.can_push_code? }
+
+    context 'when user is nil' do
+      let(:user) { nil }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when user is a developer on the project' do
+      before do
+        project.add_developer(user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when user is a reporter on the project' do
+      before do
+        project.add_reporter(user)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#can_admin_associated_clusters?(project)' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:project_clusters_exist, :user_can_admin_project_clusters, :group_clusters_exist, :user_can_admin_group_clusters, :expected) do
+      false | false | false | false | false
+      true  | false | false | false | false
+      false | true  | false | false | false
+      false | false | true  | false | false
+      false | false | false | true  | false
+      true  | true  | false | false | true
+      false | false | true  | true  | true
+      true  | true  | true  | true  | true
+    end
+
+    with_them do
+      subject { helper.can_admin_associated_clusters?(project) }
+
+      let(:clusters) { [double('Cluster')] }
+      let(:group) { double('Group') }
+
+      before do
+        allow(project)
+          .to receive(:clusters)
+          .and_return(project_clusters_exist ? clusters : [])
+        allow(helper)
+          .to receive(:can?).with(user, :admin_cluster, project)
+          .and_return(user_can_admin_project_clusters)
+
+        allow(project)
+          .to receive(:group)
+          .and_return(group)
+        allow(group)
+          .to receive(:clusters)
+          .and_return(group_clusters_exist ? clusters : [])
+        allow(helper)
+          .to receive(:can?).with(user, :admin_cluster, project.group)
+          .and_return(user_can_admin_group_clusters)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#branch_rules_path' do
+    subject { helper.branch_rules_path }
+
+    it { is_expected.to eq(project_settings_repository_path(project, anchor: 'js-branch-rules')) }
   end
 end

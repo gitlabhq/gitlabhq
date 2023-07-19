@@ -20,7 +20,7 @@ available on legacy and hashed storage.
 
 To have a summary and then a list of projects and their attachments using legacy storage:
 
-- **Omnibus installation**
+- Linux package installations:
 
   ```shell
   # Projects
@@ -32,7 +32,7 @@ To have a summary and then a list of projects and their attachments using legacy
   sudo gitlab-rake gitlab:storage:list_legacy_attachments
   ```
 
-- **Source installation**
+- Self-compiled installations:
 
   ```shell
   # Projects
@@ -48,7 +48,7 @@ To have a summary and then a list of projects and their attachments using legacy
 
 To have a summary and then a list of projects and their attachments using hashed storage:
 
-- **Omnibus installation**
+- Linux package installations:
 
   ```shell
   # Projects
@@ -60,7 +60,7 @@ To have a summary and then a list of projects and their attachments using hashed
   sudo gitlab-rake gitlab:storage:list_hashed_attachments
   ```
 
-- **Source installation**
+- Self-compiled installations:
 
   ```shell
   # Projects
@@ -86,13 +86,13 @@ This task must be run on any machine that has Rails/Sidekiq configured, and the 
 schedules all your existing projects and attachments associated with it to be
 migrated to the **Hashed** storage type:
 
-- **Omnibus installation**
+- Linux package installations:
 
   ```shell
   sudo gitlab-rake gitlab:storage:migrate_to_hashed
   ```
 
-- **Source installation**
+- Self-compiled installations:
 
   ```shell
   sudo -u git -H bundle exec rake gitlab:storage:migrate_to_hashed RAILS_ENV=production
@@ -101,7 +101,7 @@ migrated to the **Hashed** storage type:
 If you have any existing integration, you may want to do a small rollout first,
 to validate. You can do so by specifying an ID range with the operation by using
 the environment variables `ID_FROM` and `ID_TO`. For example, to limit the rollout
-to project IDs 50 to 100 in an Omnibus GitLab installation:
+to project IDs 50 to 100 in a Linux package installation:
 
 ```shell
 sudo gitlab-rake gitlab:storage:migrate_to_hashed ID_FROM=50 ID_TO=100
@@ -139,13 +139,13 @@ been disabled.
 This task schedules all your existing projects and associated attachments to be rolled back to the
 legacy storage type.
 
-- **Omnibus installation**
+- Linux package installations:
 
   ```shell
   sudo gitlab-rake gitlab:storage:rollback_to_legacy
   ```
 
-- **Source installation**
+- Self-compiled installations:
 
   ```shell
   sudo -u git -H bundle exec rake gitlab:storage:rollback_to_legacy RAILS_ENV=production
@@ -154,7 +154,7 @@ legacy storage type.
 If you have any existing integration, you may want to do a small rollback first,
 to validate. You can do so by specifying an ID range with the operation by using
 the environment variables `ID_FROM` and `ID_TO`. For example, to limit the rollout
-to project IDs 50 to 100 in an Omnibus GitLab installation:
+to project IDs 50 to 100 in a Linux package installation:
 
 ```shell
 sudo gitlab-rake gitlab:storage:rollback_to_legacy ID_FROM=50 ID_TO=100
@@ -244,9 +244,9 @@ If destroying the project generates a stack trace relating to encryption or the 
 1. [Verify your GitLab secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 1. If the affected projects have secrets that cannot be decrypted it will be necessary to remove those specific secrets.
-   [Our documentation for dealing with lost secrets](../../raketasks/backup_restore.md#when-the-secrets-file-is-lost)
+   [Our documentation for dealing with lost secrets](../../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost)
    is for loss of all secrets, but it's possible for specific projects to be affected. For example,
-   to [reset specific runner registration tokens](../../raketasks/backup_restore.md#reset-runner-registration-tokens)
+   to [reset specific runner registration tokens](../../administration/backup_restore/backup_gitlab.md#reset-runner-registration-tokens)
    for a specific project ID:
 
    ```sql

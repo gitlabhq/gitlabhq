@@ -727,6 +727,8 @@ module Types
       if minimum_access_level.nil?
         object.forks.public_or_visible_to_user(current_user)
       else
+        return [] if current_user.nil?
+
         object.forks.visible_to_user_and_access_level(current_user, minimum_access_level)
       end
     end

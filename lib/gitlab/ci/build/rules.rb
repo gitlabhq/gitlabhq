@@ -32,18 +32,13 @@ module Gitlab
           if @rule_list.nil?
             Result.new(when: @default_when)
           elsif matched_rule = match_rule(pipeline, context)
-            result = Result.new(
+            Result.new(
               when: matched_rule.attributes[:when] || @default_when,
               start_in: matched_rule.attributes[:start_in],
               allow_failure: matched_rule.attributes[:allow_failure],
-              variables: matched_rule.attributes[:variables]
+              variables: matched_rule.attributes[:variables],
+              needs: matched_rule.attributes[:needs]
             )
-
-            if Feature.enabled?(:introduce_rules_with_needs, pipeline.project)
-              result.needs = matched_rule.attributes[:needs]
-            end
-
-            result
           else
             Result.new(when: 'never')
           end

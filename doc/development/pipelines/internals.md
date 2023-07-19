@@ -20,13 +20,33 @@ Pipelines are always created for the following scenarios:
 
 Pipeline creation is also affected by the following CI/CD variables:
 
-- If `$FORCE_GITLAB_CI` is set, pipelines are created.
+- If `$FORCE_GITLAB_CI` is set, pipelines are created. Not recommended to use.
+  See [Avoid `$FORCE_GITLAB_CI`](#avoid-force_gitlab_ci).
 - If `$GITLAB_INTERNAL` is not set, pipelines are not created.
 
 No pipeline is created in any other cases (for example, when pushing a branch with no
 MR for it).
 
 The source of truth for these workflow rules is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
+
+### Avoid `$FORCE_GITLAB_CI`
+
+The pipeline is very complex and we need to clearly understand the kind of
+pipeline we want to trigger. We need to know which jobs we should run and
+which ones we shouldn't.
+
+If we use `$FORCE_GITLAB_CI` to force trigger a pipeline,
+we don't really know what kind of pipeline it is. The result can be that we don't
+run the jobs we want, or we run too many jobs we don't care about.
+
+Some more context and background can be found at:
+[Avoid blanket changes to avoid unexpected run](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102881)
+
+Here's a list of where we're using this right now, and should try to move away
+from using `$FORCE_GITLAB_CI`.
+
+- [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html)
+- [Gitaly downstream GitLab pipeline](https://gitlab.com/gitlab-org/gitaly/-/issues/4615)
 
 ## Default image
 
@@ -102,7 +122,7 @@ Docker Hub unless `${GITLAB_DEPENDENCY_PROXY}` is also defined there.
 
 ### Work around for when a pipeline is started by a Project access token user
 
-When a pipeline is started by a Project access token user (e.g. the `release-tools approver bot` user which
+When a pipeline is started by a Project access token user (for example, the `release-tools approver bot` user which
 automatically updates the Gitaly version used in the main project),
 [the Dependency proxy isn't accessible](https://gitlab.com/gitlab-org/gitlab/-/issues/332411#note_1130388163)
 and the job fails at the `Preparing the "docker+machine" executor` step.
@@ -165,7 +185,7 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 
 | `if:` conditions | Description | Notes |
 |------------------|-------------|-------|
-| `if-not-canonical-namespace`                                 | Matches if the project isn't in the canonical (`gitlab-org/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success` or `when: manual`), or **not** create a job for forks (by using `when: never`). |
+| `if-not-canonical-namespace`                                 | Matches if the project isn't in the canonical (`gitlab-org/` and `gitlab-cn/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success` or `when: manual`), or **not** create a job for forks (by using `when: never`). |
 | `if-not-ee`                                                  | Matches if the project isn't EE (that is, project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success` or `when: manual`), or **not** create a job if the project is EE (by using `when: never`). |
 | `if-not-foss`                                                | Matches if the project isn't FOSS (that is, project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success` or `when: manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
 | `if-default-refs`                                            | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
@@ -224,7 +244,7 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 
 - If you need to **extend a hash**, you should use `extends`
 - If you need to **extend an array**, you'll need to use `!reference`, or `YAML anchors` as last resort
-- For more complex cases (e.g. extend hash inside array, extend array inside hash, ...), you'll have to use `!reference` or `YAML anchors`
+- For more complex cases (for example, extend hash inside array, extend array inside hash, ...), you'll have to use `!reference` or `YAML anchors`
 
 #### What can `extends` and `YAML anchors` do?
 

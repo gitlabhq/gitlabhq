@@ -95,7 +95,7 @@ module Gitlab
 
           async_index = Gitlab::Database::AsyncIndexes::PostgresAsyncIndex.find_or_create_by!(name: index_name) do |rec|
             rec.table_name = table_name
-            rec.definition = definition
+            rec.definition = definition.to_s.strip
           end
 
           Gitlab::AppLogger.info(

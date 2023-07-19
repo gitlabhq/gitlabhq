@@ -26,7 +26,14 @@ end
 def allowed_host_and_ip(url)
   host = URI.parse(url).host
   ip_address = Addrinfo.ip(host).ip_address
-  [host, ip_address]
+
+  allowed = [host, ip_address]
+
+  # Sometimes IPv6 address has square brackets around it
+  parsed_ip = IPAddr.new(ip_address)
+  allowed << "[#{ip_address}]" if parsed_ip.ipv6?
+
+  allowed
 end
 
 def with_net_connect_allowed

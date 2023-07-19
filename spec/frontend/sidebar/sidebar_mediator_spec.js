@@ -25,8 +25,6 @@ describe('Sidebar mediator', () => {
     SidebarService.singleton = null;
     SidebarStore.singleton = null;
     SidebarMediator.singleton = null;
-
-    jest.clearAllMocks();
   });
 
   it('assigns yourself', () => {

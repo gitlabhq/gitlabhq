@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inline, feature_category: :code_review_workflow do
+  include ContentEditorHelpers
+
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { create(:user) }
@@ -15,6 +17,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
   context 'presents merged merge request content' do
     it 'when merge method is set to merge commit' do
       visit(merge_request_path(merge_request))
+      close_rich_text_promo_popover_if_present
 
       click_merge_button
 
@@ -30,6 +33,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
         merge_request = create(:merge_request, :rebased, source_project: project)
 
         visit(merge_request_path(merge_request))
+        close_rich_text_promo_popover_if_present
 
         click_merge_button
 
@@ -40,6 +44,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
         merge_request = create(:merge_request, :rebased, source_project: project, squash: true)
 
         visit(merge_request_path(merge_request))
+        close_rich_text_promo_popover_if_present
 
         click_merge_button
 
@@ -51,6 +56,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
   context 'with removing the source branch' do
     before do
       visit(merge_request_path(merge_request))
+      close_rich_text_promo_popover_if_present
     end
 
     it 'accepts a merge request' do
@@ -69,6 +75,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
   context 'without removing the source branch' do
     before do
       visit(merge_request_path(merge_request))
+      close_rich_text_promo_popover_if_present
     end
 
     it 'accepts a merge request' do
@@ -86,6 +93,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
   context 'when a URL has an anchor' do
     before do
       visit(merge_request_path(merge_request, anchor: 'note_123'))
+      close_rich_text_promo_popover_if_present
     end
 
     it 'accepts a merge request' do
@@ -106,6 +114,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
       merge_request.mark_as_mergeable
 
       visit(merge_request_path(merge_request))
+      close_rich_text_promo_popover_if_present
     end
 
     it 'accepts a merge request' do

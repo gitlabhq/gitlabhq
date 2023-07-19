@@ -66,7 +66,6 @@ module Clusters
 
     def ci_access_authorized_for?(user)
       return false unless user
-      return false unless ::Feature.enabled?(:expose_authorized_cluster_agents, project)
 
       all_ci_access_authorized_projects_for(user).exists? ||
         all_ci_access_authorized_namespaces_for(user).exists?
@@ -74,7 +73,6 @@ module Clusters
 
     def user_access_authorized_for?(user)
       return false unless user
-      return false unless ::Feature.enabled?(:expose_authorized_cluster_agents, project)
 
       Clusters::Agents::Authorizations::UserAccess::Finder
         .new(user, agent: self, preload: false, limit: 1).execute.any?

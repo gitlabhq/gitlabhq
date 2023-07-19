@@ -60,7 +60,7 @@ the deployment branch back to the repository using the provided token. To preser
 commit history between both branches, the CI/CD job uses a fast-forward merge.
 
 Each cluster has an agent for Kubernetes, and each agent is configured to
-[sync manifests from the branch corresponding to its cluster](../gitops.md#gitops-configuration-reference).
+sync manifests from the branch corresponding to its cluster.
 In your own project, you can different GitOps tool like Flux, or use the same configuration to deploy
 to virtual machines with GitLab CI/CD.
 

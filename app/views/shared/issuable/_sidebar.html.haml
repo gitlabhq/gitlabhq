@@ -12,10 +12,10 @@
 - moved_sidebar_enabled = moved_mr_sidebar_enabled?
 - is_merge_request_with_flag = is_merge_request && moved_sidebar_enabled
 
-%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request_with_flag)} #{'right-sidebar-merge-requests' if is_merge_request_with_flag}", 'aria-live' => 'polite', 'aria-label': issuable_type }
+%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { always_show_toggle: true, signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request_with_flag)} #{'right-sidebar-merge-requests' if is_merge_request_with_flag}", 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar{ class: "#{'is-merge-request' if is_merge_request_with_flag}" }
     .issuable-sidebar-header{ class: "#{'gl-pb-2! gl-md-display-flex gl-justify-content-end gl-lg-display-none!' if is_merge_request_with_flag}" }
-      %button.btn.gl-button.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ type: "reset", class: "gl-shadow-none! #{'gl-display-block' if moved_sidebar_enabled}", "aria-label" => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
+      = render Pajamas::ButtonComponent.new(button_options: { class: "gutter-toggle float-right js-sidebar-toggle has-tooltip gl-shadow-none! #{'gl-display-block' if moved_sidebar_enabled}", type: 'button', 'aria-label' => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }) do
         = sidebar_gutter_toggle_icon
       - if signed_in && !is_merge_request_with_flag
         .js-sidebar-todo-widget-root{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }

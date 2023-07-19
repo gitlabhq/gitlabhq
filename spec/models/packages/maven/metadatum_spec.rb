@@ -43,7 +43,7 @@ RSpec.describe Packages::Maven::Metadatum, type: :model do
       describe '.for_package_ids' do
         let_it_be(:metadata) { create_list(:maven_metadatum, 3, package: package) }
 
-        subject { Packages::Maven::Metadatum.for_package_ids(package.id) }
+        subject { described_class.for_package_ids(package.id) }
 
         it { is_expected.to match_array(metadata) }
       end

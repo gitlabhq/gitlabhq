@@ -377,7 +377,7 @@ class TodoService
     attributes = {
       project_id: target&.project&.id,
       target_id: target.id,
-      target_type: target.class.name,
+      target_type: target.class.try(:polymorphic_name) || target.class.name,
       commit_id: nil
     }
 

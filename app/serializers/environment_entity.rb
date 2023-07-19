@@ -27,10 +27,6 @@ class EnvironmentEntity < Grape::Entity
       ops.merge(except: UNNECESSARY_ENTRIES_FOR_UPCOMING_DEPLOYMENT))
   end
 
-  expose :metrics_path, if: -> (*) { expose_metrics_path? } do |environment|
-    metrics_project_environment_path(environment.project, environment)
-  end
-
   expose :environment_path do |environment|
     project_environment_path(environment.project, environment)
   end
@@ -100,10 +96,6 @@ class EnvironmentEntity < Grape::Entity
 
   def cluster
     deployment_platform.cluster
-  end
-
-  def expose_metrics_path?
-    !Feature.enabled?(:remove_monitor_metrics) && environment.has_metrics?
   end
 end
 

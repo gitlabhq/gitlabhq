@@ -1,8 +1,0 @@
-- title: "Redundant timestamp field from DORA metrics API payload"
-  reporter: kbychu
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/325931'
-  breaking_change: true
-  body: |
-    The [deployment frequency project-level API](https://docs.gitlab.com/ee/api/dora/metrics.html#list-project-deployment-frequencies) endpoint has been deprecated in favor of the [DORA 4 API](https://docs.gitlab.com/ee/api/dora/metrics.html), which consolidates all the metrics under one API with the specific metric as a required field. As a result, the timestamp field, which doesn't allow adding future extensions and causes performance issues, will be removed. With the old API, an example response would be `{ "2021-03-01": 3, "date": "2021-03-01", "value": 3 }`. The first key/value (`"2021-03-01": 3`) will be removed and replaced by the last two (`"date": "2021-03-01", "value": 3`).

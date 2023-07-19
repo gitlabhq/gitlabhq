@@ -1,0 +1,53 @@
+{
+  "meta": [
+    {
+      "name": "id",
+      "type": "UInt64"
+    },
+    {
+      "name": "title",
+      "type:": "String"
+    },
+    {
+      "name": "description",
+      "type": "Nullable(String)"
+    },
+    {
+      "name": "created_at",
+      "type": "DateTime64(6, 'UTC')"
+    },
+    {
+      "name": "updated_at",
+      "type": "DateTime64(6, 'UTC')"
+    }
+  ],
+  "data": [
+    {
+      "id": "2",
+      "title": "Title 2",
+      "description": "description",
+      "created_at": "2023-06-21 13:33:44.000000",
+      "updated_at": "2023-06-21 13:33:44.000000"
+    },
+    {
+      "id": "3",
+      "title": "Title 3",
+      "description": null,
+      "created_at": "2023-06-21 13:33:50.000000",
+      "updated_at": "2023-06-21 13:33:50.000000"
+    },
+    {
+      "id": "1",
+      "title": "Title 1",
+      "description": "description",
+      "created_at": "2023-06-21 13:33:40.000000",
+      "updated_at": "2023-06-21 13:33:40.000000"
+    }
+  ],
+  "rows": 3,
+  "statistics": {
+    "elapsed": 0.001581789,
+    "rows_read": 3,
+    "bytes_read": 172
+  }
+}

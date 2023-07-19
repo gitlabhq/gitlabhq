@@ -105,7 +105,6 @@ RSpec.describe GraphQL::Query, type: :request do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:issue_type) { 'issue' }
 
   before_all do
     project.add_reporter(user)
@@ -128,8 +127,7 @@ RSpec.describe GraphQL::Query, type: :request do
         title: '15.2',
         start_date: Date.new(2020, 7, 1),
         due_date: Date.new(2020, 7, 30)
-      ),
-      issue_type: issue_type
+      )
     )
 
     post_graphql(query, current_user: user, variables: { projectPath: project.full_path, iid: issue.iid.to_s })

@@ -70,8 +70,15 @@ RSpec.describe 'Project Issues Calendar Feed', feature_category: :groups_and_pro
 
     context 'issue with due date' do
       let!(:issue) do
-        create(:issue, author: user, assignees: [assignee], project: project, title: 'test title',
-                       description: 'test desc', due_date: Date.tomorrow)
+        create(
+          :issue,
+          author: user,
+          assignees: [assignee],
+          project: project,
+          title: 'test title',
+          description: 'test desc',
+          due_date: Date.tomorrow
+        )
       end
 
       it 'renders issue fields' do

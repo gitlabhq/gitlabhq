@@ -1,0 +1,5 @@
+mutation workItemNoteRemoveAwardEmoji($awardableId: AwardableID!, $name: String!) {
+  awardEmojiRemove(input: { awardableId: $awardableId, name: $name }) {
+    errors
+  }
+}

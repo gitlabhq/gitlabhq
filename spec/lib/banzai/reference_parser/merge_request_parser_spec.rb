@@ -61,7 +61,7 @@ RSpec.describe Banzai::ReferenceParser::MergeRequestParser, feature_category: :c
     end
 
     def merge_request_link(merge_request)
-      Nokogiri::HTML.fragment(%Q{<a data-project="#{merge_request.project_id}" data-merge-request="#{merge_request.id}"></a>}).children[0]
+      Nokogiri::HTML.fragment(%{<a data-project="#{merge_request.project_id}" data-merge-request="#{merge_request.id}"></a>}).children[0]
     end
 
     before do

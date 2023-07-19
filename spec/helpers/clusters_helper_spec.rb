@@ -224,21 +224,6 @@ RSpec.describe ClustersHelper do
         subject
       end
     end
-
-    context 'when remove_monitor_metrics FF is disabled' do
-      before do
-        stub_feature_flags(remove_monitor_metrics: false)
-      end
-
-      context 'integrations ' do
-        let(:tab) { 'integrations' }
-
-        it 'renders integrations tab' do
-          expect(helper).to receive(:render).with('integrations')
-          subject
-        end
-      end
-    end
   end
 
   describe '#cluster_type_label' do

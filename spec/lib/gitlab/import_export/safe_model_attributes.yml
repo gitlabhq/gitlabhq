@@ -608,6 +608,7 @@ ProjectHook:
 - confidential_note_events
 - repository_update_events
 - releases_events
+- emoji_events
 ProtectedBranch:
 - id
 - project_id
@@ -905,7 +906,7 @@ List:
 - max_issue_count
 - max_issue_weight
 - limit_metric
-ExternalPullRequest:
+Ci::ExternalPullRequest:
 - id
 - created_at
 - updated_at
@@ -1084,3 +1085,5 @@ ApprovalProjectRulesProtectedBranch:
   - protected_branch_id
   - approval_project_rule_id
   - branch_name
+WorkItems::Type:
+  - base_type

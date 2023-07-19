@@ -32,8 +32,8 @@ Migrations cannot mix **DDL** and **DML** changes as the application requires th
 The DDL migrations are all migrations that:
 
 1. Create or drop a table (for example, `create_table`).
-1. Add or remove an index (for example, `add_index`, `add_index_concurrently`).
-1. Add or remove a foreign key (for example `add_foreign_key`, `add_foreign_key_concurrently`).
+1. Add or remove an index (for example, `add_index`, `add_concurrent_index`).
+1. Add or remove a foreign key (for example `add_foreign_key`, `add_concurrent_foreign_key`).
 1. Add or remove a column with or without a default value (for example, `add_column`).
 1. Create or drop trigger functions (for example, `create_trigger_function`).
 1. Attach or detach triggers from tables (for example, `track_record_deletions`, `untrack_record_deletions`).

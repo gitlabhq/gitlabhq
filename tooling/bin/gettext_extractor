@@ -4,6 +4,7 @@
 require_relative '../lib/tooling/gettext_extractor'
 
 pot_file = ARGV.shift
+silent = '--silent' in ARGV
 
 if !pot_file || !Dir.exist?(File.dirname(pot_file))
   abort <<~MSG
@@ -12,9 +13,11 @@ if !pot_file || !Dir.exist?(File.dirname(pot_file))
   MSG
 end
 
-puts <<~MSG
-  Extracting translatable strings from source files...
-MSG
+unless silent
+  puts <<~MSG
+    Extracting translatable strings from source files...
+  MSG
+end
 
 root_dir = File.expand_path('../../', __dir__)
 
@@ -24,6 +27,8 @@ extractor = Tooling::GettextExtractor.new(
 
 File.write(pot_file, extractor.generate_pot)
 
-puts <<~MSG
-  All done. Please commit the changes to `#{pot_file}`.
-MSG
+unless silent
+  puts <<~MSG
+    All done. Please commit the changes to `#{pot_file}`.
+  MSG
+end

@@ -7,7 +7,6 @@ import CreateMenu from '~/super_sidebar/components/create_menu.vue';
 import SearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
-import Counter from '~/super_sidebar/components/counter.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -19,10 +18,9 @@ describe('UserBar component', () => {
   let wrapper;
 
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
-  const findCounter = (at) => wrapper.findAllComponents(Counter).at(at);
-  const findIssuesCounter = () => findCounter(0);
-  const findMRsCounter = () => findCounter(1);
-  const findTodosCounter = () => findCounter(2);
+  const findIssuesCounter = () => wrapper.findByTestId('issues-shortcut-button');
+  const findMRsCounter = () => wrapper.findByTestId('merge-requests-shortcut-button');
+  const findTodosCounter = () => wrapper.findByTestId('todos-shortcut-button');
   const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
   const findBrandLogo = () => wrapper.findComponent(BrandLogo);
   const findCollapseButton = () => wrapper.findByTestId('super-sidebar-collapse-button');

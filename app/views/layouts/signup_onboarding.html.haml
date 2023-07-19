@@ -1,13 +1,14 @@
+- add_page_specific_style 'page_bundles/signup'
+- add_page_specific_style 'page_bundles/login'
 !!! 5
-%html.devise-layout-html.navless{ class: system_message_class }
-  - add_page_specific_style 'page_bundles/signup'
-  - add_page_specific_style 'page_bundles/login'
+%html.html-devise-layout{ lang: I18n.locale }
   = render "layouts/head"
-  %body.signup-page{ class: "#{user_application_theme} #{client_class_list}", data: { page: body_data_page, qa_selector: 'signup_page' } }
-    = render "layouts/header/logo_with_title"
+  %body.signup-page.navless{ class: "#{system_message_class} #{user_application_theme} #{client_class_list}", data: { page: body_data_page, qa_selector: 'signup_page' } }
+    = header_message
     = render "layouts/init_client_detection_flags"
-    .page-wrap
-      .container.signup-box-container.navless-container
-        = render "layouts/broadcast"
-        .content
-          = yield
+    = render "layouts/header/logo_with_title"
+    .container
+      .content
+        = yield
+
+    = footer_message

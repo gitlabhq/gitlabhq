@@ -11,7 +11,7 @@
     tokens before GitLab 15.0 is released:
 
     1. Edit the application.
-    1. Select **Expire access tokens** to enable them. Tokens must be revoked or they don’t expire.
+    1. Select **Expire access tokens** to enable them. Tokens must be revoked or they don't expire.
 
 # The following items are not published on the docs page, but may be used in the future.
   reporter: hsutor

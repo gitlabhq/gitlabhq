@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlTooltip, GlSprintf } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlLoadingIcon, GlTooltip, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -51,8 +51,7 @@ describe('SidebarSeverityWidget', () => {
 
   const findSeverityToken = () => wrapper.findAllComponents(SeverityToken);
   const findEditBtn = () => wrapper.findByTestId('edit-button');
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findCriticalSeverityDropdownItem = () => wrapper.findComponent(GlDropdownItem); // First dropdown item is critical severity
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findCollapsedSeverity = () => wrapper.findComponent({ ref: 'severity' });
@@ -87,7 +86,7 @@ describe('SidebarSeverityWidget', () => {
       });
       createComponent({ mutationMock });
 
-      findCriticalSeverityDropdownItem().vm.$emit('click');
+      findDropdown().vm.$emit('select', severity);
 
       expect(mutationMock).toHaveBeenCalledWith({
         iid,
@@ -100,7 +99,7 @@ describe('SidebarSeverityWidget', () => {
       const mutationMock = jest.fn().mockRejectedValue('Something went wrong');
       createComponent({ mutationMock });
 
-      findCriticalSeverityDropdownItem().vm.$emit('click');
+      findDropdown().vm.$emit('select', severity);
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalled();
@@ -110,7 +109,7 @@ describe('SidebarSeverityWidget', () => {
       const mutationMock = jest.fn().mockRejectedValue({});
       createComponent({ mutationMock });
 
-      findCriticalSeverityDropdownItem().vm.$emit('click');
+      findDropdown().vm.$emit('select', severity);
       await nextTick();
 
       expect(findLoadingIcon().exists()).toBe(true);

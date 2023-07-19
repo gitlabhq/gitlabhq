@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # Cop that blacklists the injecting of extension specific modules before any lines which are not already injecting another module.
+    # Cop that denylists the injecting of extension specific modules before any lines which are not already injecting another module.
     # It allows multiple module injections as long as they're all at the end.
     class InjectEnterpriseEditionModule < RuboCop::Cop::Base
       extend RuboCop::Cop::AutoCorrector
@@ -20,7 +20,7 @@ module RuboCop
 
       DISALLOW_METHODS = Set.new(%i[include extend prepend]).freeze
 
-      COMMENT_OR_EMPTY_LINE = /^\s*(#.*|$)/.freeze
+      COMMENT_OR_EMPTY_LINE = /^\s*(#.*|$)/
 
       CHECK_LINE_METHODS_REGEXP = Regexp.union((CHECK_LINE_METHODS + DISALLOW_METHODS).map(&:to_s) + [COMMENT_OR_EMPTY_LINE]).freeze
 
@@ -80,7 +80,7 @@ module RuboCop
 
       # Automatically correcting these offenses is not always possible, as
       # sometimes code needs to be refactored to make this work. As such, we
-      # only allow developers to easily blacklist existing offenses.
+      # only allow developers to easily denylist existing offenses.
       def corrector(node)
         lambda do |corrector|
           corrector.insert_after(

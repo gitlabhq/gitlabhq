@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
-    describe 'Maven group level endpoint' do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+    describe 'Maven group level endpoint',
+      quarantine: {
+        only: { job: %w[relative_url airgapped] },
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417600',
+        type: :investigating
+      } do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
       include_context 'packages registry qa scenario'

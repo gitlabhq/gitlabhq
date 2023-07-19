@@ -3,10 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe Analytics::CycleAnalytics::Stage, feature_category: :value_stream_management do
-  describe 'uniqueness validation on name' do
+  describe 'validations' do
     subject { build(:cycle_analytics_stage) }
 
     it { is_expected.to validate_uniqueness_of(:name).scoped_to([:group_id, :group_value_stream_id]) }
+
+    it 'validates count of stages per value stream' do
+      stub_const("#{described_class.name}::MAX_STAGES_PER_VALUE_STREAM", 1)
+      value_stream = create(:cycle_analytics_value_stream, name: 'test')
+      create(:cycle_analytics_stage, name: "stage 1", value_stream: value_stream)
+
+      new_stage = build(:cycle_analytics_stage, name: "stage 2", value_stream: value_stream)
+
+      expect do
+        new_stage.save!
+      end.to raise_error(ActiveRecord::RecordInvalid,
+        _('Validation failed: Value stream Maximum number of stages per value stream exceeded'))
+    end
   end
 
   describe 'associations' do

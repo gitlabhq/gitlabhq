@@ -16,7 +16,6 @@
     #js-issuable-header-warnings{ data: { hidden: issue_hidden?(issuable).to_s } }
     = issuable_meta(issuable, @project)
 
-    %a.btn.gl-button.btn-default.btn-icon.float-right.gl-display-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
-      = sprite_icon('chevron-double-lg-left')
+    = render Pajamas::ButtonComponent.new(href: '#', icon: 'chevron-double-lg-left', button_options: { class: 'gl-float-right gl-display-block gl-sm-display-none! gutter-toggle issuable-gutter-toggle js-sidebar-toggle' })
 
   .js-issue-header-actions{ data: issue_header_actions_data(@project, issuable, current_user, @issuable_sidebar) }

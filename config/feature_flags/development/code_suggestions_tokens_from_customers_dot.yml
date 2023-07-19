@@ -1,0 +1,8 @@
+---
+name: code_suggestions_tokens_from_customers_dot
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125405
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417762
+milestone: '16.3'
+type: development
+group: group::application performance
+default_enabled: false

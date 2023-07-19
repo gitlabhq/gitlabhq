@@ -1,0 +1,9 @@
+---
+# Cop supports --autocorrect.
+Style/RedundantParentheses:
+  Details: grace period
+  Exclude:
+    - 'spec/graphql/types/ci/job_kind_enum_spec.rb'
+    - 'spec/lib/gitlab/import_export/command_line_util_spec.rb'
+    - 'spec/requests/verifies_with_email_spec.rb'
+    - 'spec/services/projects/create_service_spec.rb'

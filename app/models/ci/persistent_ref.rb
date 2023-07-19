@@ -19,6 +19,11 @@ module Ci
       false
     end
 
+    # This needs to be kept in sync with `Ci::Pipeline#after_transition` calling `pipeline.persistent_ref.delete`
+    def should_delete?
+      pipeline.status.to_sym.in?(::Ci::Pipeline.stopped_statuses)
+    end
+
     def create
       create_ref(sha, path)
     rescue StandardError => e
@@ -27,6 +32,8 @@ module Ci
     end
 
     def delete
+      return unless should_delete?
+
       delete_refs(path)
     rescue Gitlab::Git::Repository::NoRepository
       # no-op

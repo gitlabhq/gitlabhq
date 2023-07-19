@@ -72,7 +72,7 @@ module Projects
       end
 
       def endpoint_identifier
-        params[:endpoint_identifier] || AlertManagement::HttpIntegration::LEGACY_IDENTIFIER
+        params[:endpoint_identifier] || AlertManagement::HttpIntegration::LEGACY_IDENTIFIERS
       end
 
       def notification_payload

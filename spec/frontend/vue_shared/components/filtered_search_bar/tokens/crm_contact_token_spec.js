@@ -39,7 +39,6 @@ describe('CrmContactToken', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  let fakeApollo;
 
   const getBaseToken = () => wrapper.findComponent(BaseToken);
 
@@ -58,9 +57,8 @@ describe('CrmContactToken', () => {
     listeners = {},
     queryHandler = searchGroupCrmContactsQueryHandler,
   } = {}) => {
-    fakeApollo = createMockApollo([[searchCrmContactsQuery, queryHandler]]);
-
     wrapper = mount(CrmContactToken, {
+      apolloProvider: createMockApollo([[searchCrmContactsQuery, queryHandler]]),
       propsData: {
         config,
         value,
@@ -75,13 +73,8 @@ describe('CrmContactToken', () => {
       },
       stubs,
       listeners,
-      apolloProvider: fakeApollo,
     });
   };
-
-  afterEach(() => {
-    fakeApollo = null;
-  });
 
   describe('methods', () => {
     describe('fetchContacts', () => {
@@ -160,9 +153,7 @@ describe('CrmContactToken', () => {
       });
 
       it('calls `createAlert` with alert error message when request fails', async () => {
-        mountComponent();
-
-        jest.spyOn(wrapper.vm.$apollo, 'query').mockRejectedValue({});
+        mountComponent({ queryHandler: jest.fn().mockRejectedValue({}) });
 
         getBaseToken().vm.$emit('fetch-suggestions');
         await waitForPromises();
@@ -173,12 +164,9 @@ describe('CrmContactToken', () => {
       });
 
       it('sets `loading` to false when request completes', async () => {
-        mountComponent();
-
-        jest.spyOn(wrapper.vm.$apollo, 'query').mockRejectedValue({});
+        mountComponent({ queryHandler: jest.fn().mockRejectedValue({}) });
 
         getBaseToken().vm.$emit('fetch-suggestions');
-
         await waitForPromises();
 
         expect(getBaseToken().props('suggestionsLoading')).toBe(false);
@@ -195,13 +183,7 @@ describe('CrmContactToken', () => {
         value: { data: '1' },
       });
 
-      const baseTokenEl = wrapper.findComponent(BaseToken);
-
-      expect(baseTokenEl.exists()).toBe(true);
-      expect(baseTokenEl.props()).toMatchObject({
-        suggestions: mockCrmContacts,
-        getActiveTokenValue: wrapper.vm.getActiveContact,
-      });
+      expect(getBaseToken().props('suggestions')).toEqual(mockCrmContacts);
     });
 
     it.each(mockCrmContacts)('renders token item when value is selected', (contact) => {
@@ -270,12 +252,9 @@ describe('CrmContactToken', () => {
 
     it('emits listeners in the base-token', () => {
       const mockInput = jest.fn();
-      mountComponent({
-        listeners: {
-          input: mockInput,
-        },
-      });
-      wrapper.findComponent(BaseToken).vm.$emit('input', [{ data: 'mockData', operator: '=' }]);
+      mountComponent({ listeners: { input: mockInput } });
+
+      getBaseToken().vm.$emit('input', [{ data: 'mockData', operator: '=' }]);
 
       expect(mockInput).toHaveBeenLastCalledWith([{ data: 'mockData', operator: '=' }]);
     });

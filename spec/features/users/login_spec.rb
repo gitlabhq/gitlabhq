@@ -390,8 +390,12 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       end
 
       before do
-        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
-                                  providers: [mock_saml_config_with_upstream_two_factor_authn_contexts])
+        stub_omniauth_saml_config(
+          enabled: true,
+          auto_link_saml_user: true,
+          allow_single_sign_on: ['saml'],
+          providers: [mock_saml_config_with_upstream_two_factor_authn_contexts]
+        )
       end
 
       it 'displays the remember me checkbox' do
@@ -415,8 +419,10 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       context 'when authn_context is worth two factors' do
         let(:mock_saml_response) do
           File.read('spec/fixtures/authentication/saml_response.xml')
-            .gsub('urn:oasis:names:tc:SAML:2.0:ac:classes:Password',
-                  'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS')
+            .gsub(
+              'urn:oasis:names:tc:SAML:2.0:ac:classes:Password',
+              'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS'
+            )
         end
 
         it 'signs user in without prompting for second factor' do
@@ -991,8 +997,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
       context 'when the user already enabled 2FA' do
         before do
-          user.update!(otp_required_for_login: true,
-                       otp_secret: User.generate_otp_secret(32))
+          user.update!(otp_required_for_login: true, otp_secret: User.generate_otp_secret(32))
         end
 
         it 'asks the user to accept the terms' do

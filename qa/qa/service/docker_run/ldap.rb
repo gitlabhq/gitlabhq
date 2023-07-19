@@ -28,7 +28,7 @@ module QA
           if volume_exists?(volume_name)
             volume_name
           else
-            ::File.join(Runtime::Path.fixtures_path, 'ldap', volume_name)
+            Runtime::Path.fixture('ldap', volume_name)
           end
         end
 

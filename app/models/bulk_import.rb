@@ -58,6 +58,10 @@ class BulkImport < ApplicationRecord
     Gitlab::VersionInfo.new(MIN_MAJOR_VERSION, MIN_MINOR_VERSION_FOR_PROJECT)
   end
 
+  def self.min_gl_version_for_migration_in_batches
+    Gitlab::VersionInfo.new(16, 2)
+  end
+
   def self.all_human_statuses
     state_machine.states.map(&:human_name)
   end
@@ -67,5 +71,9 @@ class BulkImport < ApplicationRecord
     return unless entities.any?(&:has_failures)
 
     update!(has_failures: true)
+  end
+
+  def supports_batched_export?
+    source_version_info >= self.class.min_gl_version_for_migration_in_batches
   end
 end

@@ -14,7 +14,7 @@ module Tooling
       def database_dictionary_files(change_type:)
         files = helper.public_send("#{change_type}_files") # rubocop:disable GitlabSecurity/PublicSend
 
-        files.filter_map { |path| Found.new(path) if path =~ DICTIONARY_PATH_REGEXP }
+        files.filter_map { |path| Found.new(path) if DICTIONARY_PATH_REGEXP.match?(path) }
       end
 
       class Found

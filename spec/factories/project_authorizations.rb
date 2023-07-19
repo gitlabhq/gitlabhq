@@ -6,4 +6,8 @@ FactoryBot.define do
     project
     access_level { Gitlab::Access::REPORTER }
   end
+
+  trait :owner do
+    access_level { Gitlab::Access::OWNER }
+  end
 end

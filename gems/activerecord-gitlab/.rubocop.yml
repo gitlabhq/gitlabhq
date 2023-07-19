@@ -1,0 +1,18 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+# FIXME
+Gitlab/RSpec/AvoidSetup:
+  Enabled: false
+
+Database/EstablishConnection:
+  Enabled: false
+
+Database/MultipleDatabases:
+  Enabled: false
+
+RSpec/EnvAssignment:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false

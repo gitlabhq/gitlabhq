@@ -10,7 +10,7 @@ module RuboCop
       class FeatureCategory < RuboCop::Cop::Base
         include MigrationHelpers
 
-        FEATURE_CATEGORIES_FILE_PATH = "config/feature_categories.yml"
+        FEATURE_CATEGORIES_FILE_PATH = File.expand_path("../../../config/feature_categories.yml", __dir__)
 
         MSG = "'feature_category' should be defined to better assign the ownership for batched migration jobs. " \
               "For more details refer: " \

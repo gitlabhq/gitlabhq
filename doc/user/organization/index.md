@@ -24,7 +24,7 @@ everything you do as a GitLab administrator, including:
 - Aggregating data from all your groups, subgroups, and projects.
 
 Our goal is to reach feature parity between SaaS and self-managed installations, with all
-[Admin Area settings](/ee/user/admin_area/settings/index.md) moving to either:
+[Admin Area settings](../../administration/settings/index.md) moving to either:
 
 - Groups. Available in the Organization, and subgroups.
 - Hardware Controls. For functionality that does not apply to groups, Hardware Controls are only

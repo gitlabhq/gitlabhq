@@ -1,0 +1,66 @@
+# The template generates jobs for gems vendored in the main GitLab project
+# under `gem_path_prefix` (defaults to `gems/`).
+#
+# Inputs
+# - `gem_name`: The name of the gem, i.e. if the gem is located at `gems/gitlab-rspec`, `gem_name` should be set to `gitlab-rspec`.
+# - `gem_path_prefix`: The prefix of the gem path, i.e. if the gem is located at `vendor/gems/gitlab-rspec`, `gem_path_prefix` should be set to `vendor/gems/`. Defaults to `gems/`.
+spec:
+  inputs:
+    gem_name:
+    gem_path_prefix:
+      default: "gems/"
+---
+workflow:
+  name: '$PIPELINE_NAME'
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      variables:
+        PIPELINE_NAME: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+
+variables:
+  BUNDLE_PATH: "vendor"
+  BUNDLE_FROZEN: "true"
+  GIT_DEPTH: "20"
+  # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
+  GIT_STRATEGY: "clone"
+  GIT_SUBMODULE_STRATEGY: "none"
+  GET_SOURCES_ATTEMPTS: "3"
+  # Default Ruby version for jobs that don't use .ruby_matrix
+  RUBY_VERSION: "3.0"
+
+default:
+  image: "ruby:${RUBY_VERSION}"
+  cache:
+    key: "$[[inputs.gem_name]]-${RUBY_VERSION}"
+    paths:
+      - "$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/vendor/ruby"
+  before_script:
+    - cd $[[inputs.gem_path_prefix]]$[[inputs.gem_name]]
+    - ruby -v                                   # Print out ruby version for debugging
+    - bundle_version=$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1 | sed -e 's/[[:space:]]//')
+    - gem install bundler --version "$bundle_version" --no-document # Bundler is not installed with the image
+    - bundle config                             # Show bundler configuration
+    - bundle install --jobs=$(nproc) --retry=3
+
+.ruby_matrix:
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["3.0", "3.1", "3.2"]
+
+rubocop:
+  extends: .ruby_matrix
+  rules:
+    - exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/.rubocop.yml"]
+  script:
+    - bundle exec rubocop --config .rubocop.yml
+
+rspec:
+  extends: .ruby_matrix
+  script:
+    - bundle exec rspec
+  coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - coverage/

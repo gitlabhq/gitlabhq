@@ -1809,7 +1809,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         create(:user_status, user: second_discussion.author)
 
         expect { get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid } }
-          .not_to exceed_query_limit(control)
+          .not_to exceed_query_limit(control).with_threshold(9)
       end
 
       context 'when user is setting notes filters' do

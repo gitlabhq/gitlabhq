@@ -1,7 +1,0 @@
-- title: "GitLab Runner installation to ignore the `skel` directory"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: deastman
-  breaking_change: true
-  body: |
-    In GitLab Runner 14.0, the installation process will ignore the `skel` directory by default when creating the user home directory. Refer to [issue #4845](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4845) for details.

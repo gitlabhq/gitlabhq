@@ -89,21 +89,6 @@ RSpec.describe Clusters::AgentTokens::CreateService, feature_category: :deployme
           expect(subject.status).to eq(:error)
           expect(subject.message).to eq('An agent can have only two active tokens at a time')
         end
-
-        context 'when cluster_agents_limit_tokens_created feature flag is disabled' do
-          before do
-            stub_feature_flags(cluster_agents_limit_tokens_created: false)
-          end
-
-          it 'creates a new token' do
-            expect { subject }.to change { ::Clusters::AgentToken.count }.by(1)
-          end
-
-          it 'returns success status', :aggregate_failures do
-            expect(subject.status).to eq(:success)
-            expect(subject.message).to be_nil
-          end
-        end
       end
     end
   end

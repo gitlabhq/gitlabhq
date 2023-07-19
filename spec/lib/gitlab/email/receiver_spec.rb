@@ -226,6 +226,25 @@ RSpec.describe Gitlab::Email::Receiver do
     end
   end
 
+  context "when the received field is malformed" do
+    let(:email_raw) do
+      attack = "for <<" * 100_000
+      [
+        "Delivered-To: incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com",
+        "Received: from mail.example.com #{attack}; Thu, 13 Jun 2013 17:03:50 -0400",
+        "To: \"support@example.com\" <support@example.com>",
+        "",
+        "Email content"
+      ].join("\n")
+    end
+
+    it 'mail_metadata has no ReDos issue' do
+      Timeout.timeout(2) do
+        Gitlab::Email::Receiver.new(email_raw).mail_metadata
+      end
+    end
+  end
+
   it 'requires all handlers to have a unique metric_event' do
     events = Gitlab::Email::Handler.handlers.map do |handler|
       handler.new(Mail::Message.new, 'gitlabhq/gitlabhq+auth_token').metrics_event

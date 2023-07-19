@@ -33,7 +33,7 @@ module BulkImports
         def download_service(context)
           @download_service ||= BulkImports::FileDownloadService.new(
             configuration: context.configuration,
-            relative_url: context.entity.relation_download_url_path(relation),
+            relative_url: context.entity.relation_download_url_path(relation, context.extra[:batch_number]),
             tmpdir: tmpdir,
             filename: filename
           )

@@ -1,0 +1,18 @@
+{
+  "type": "array",
+  "items": {
+    "type": [
+      {
+        "type": "object",
+        "properties": {
+          "job_class_name": {
+            "type": "string"
+          },
+          "elapsed_time": {
+            "type": "integer"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -342,8 +342,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         context 'when same project is being updated in 2 instances' do
           it 'syncs only changed attributes' do
-            project1 = Project.last
-            project2 = Project.last
+            project1 = described_class.last
+            project2 = described_class.last
 
             project_name = project1.name
             project_path = project1.path
@@ -2170,6 +2170,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_slack_integration' do
+    it 'returns projects with both active and inactive slack integrations' do
+      create(:project)
+      with_active_slack = create(:integrations_slack).project
+      with_disabled_slack = create(:integrations_slack, active: false).project
+
+      expect(described_class.with_slack_integration).to contain_exactly(
+        with_active_slack,
+        with_disabled_slack
+      )
+    end
+  end
+
+  describe '.with_slack_slash_commands_integration' do
+    it 'returns projects with both active and inactive slack slash commands integrations' do
+      create(:project)
+      with_active_slash_commands = create(:slack_slash_commands_integration).project
+      with_disabled_slash_commands = create(:slack_slash_commands_integration, active: false).project
+
+      expect(described_class.with_slack_slash_commands_integration).to contain_exactly(
+        with_active_slash_commands,
+        with_disabled_slash_commands
+      )
+    end
+  end
+
   describe '.cached_count', :use_clean_rails_memory_store_caching do
     let(:group)     { create(:group, :public) }
     let!(:project1) { create(:project, :public, group: group) }
@@ -2382,11 +2408,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:service_desk_setting, project_key: 'key2')
       create(:service_desk_setting)
 
-      expect(Project.with_service_desk_key('key1')).to contain_exactly(project1, project2)
+      expect(described_class.with_service_desk_key('key1')).to contain_exactly(project1, project2)
     end
 
     it 'returns empty if there is no project with the key' do
-      expect(Project.with_service_desk_key('key1')).to be_empty
+      expect(described_class.with_service_desk_key('key1')).to be_empty
     end
   end
 
@@ -2439,7 +2465,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:jira_integration, project: project_3, inherit_from_id: nil)
       create(:integrations_slack, project: project_4, inherit_from_id: nil)
 
-      expect(Project.without_integration(instance_integration)).to contain_exactly(project_4)
+      expect(described_class.without_integration(instance_integration)).to contain_exactly(project_4)
     end
   end
 
@@ -2777,224 +2803,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it { is_expected.to eq(result) }
-    end
-  end
-
-  describe '#pages_url', feature_category: :pages do
-    let(:group_name) { 'group' }
-    let(:project_name) { 'project' }
-
-    let(:group) { create(:group, name: group_name) }
-    let(:nested_group) { create(:group, parent: group) }
-
-    let(:project_path) { project_name.downcase }
-    let(:project) do
-      create(
-        :project,
-        namespace: group,
-        name: project_name,
-        path: project_path)
-    end
-
-    let(:domain) { 'Example.com' }
-    let(:port) { nil }
-
-    subject { project.pages_url }
-
-    before do
-      allow(Settings.pages).to receive(:host).and_return(domain)
-      allow(Gitlab.config.pages)
-        .to receive(:url)
-        .and_return(['http://example.com', port].compact.join(':'))
-    end
-
-    context 'when not using pages_unique_domain' do
-      subject { project.pages_url(with_unique_domain: false) }
-
-      context 'when pages_unique_domain feature flag is disabled' do
-        before do
-          stub_feature_flags(pages_unique_domain: false)
-        end
-
-        it { is_expected.to eq('http://group.example.com/project') }
-      end
-
-      context 'when pages_unique_domain feature flag is enabled' do
-        before do
-          stub_feature_flags(pages_unique_domain: true)
-
-          project.project_setting.update!(
-            pages_unique_domain_enabled: pages_unique_domain_enabled,
-            pages_unique_domain: 'unique-domain'
-          )
-        end
-
-        context 'when pages_unique_domain_enabled is false' do
-          let(:pages_unique_domain_enabled) { false }
-
-          it { is_expected.to eq('http://group.example.com/project') }
-        end
-
-        context 'when pages_unique_domain_enabled is true' do
-          let(:pages_unique_domain_enabled) { true }
-
-          it { is_expected.to eq('http://group.example.com/project') }
-        end
-      end
-    end
-
-    context 'when using pages_unique_domain' do
-      subject { project.pages_url(with_unique_domain: true) }
-
-      context 'when pages_unique_domain feature flag is disabled' do
-        before do
-          stub_feature_flags(pages_unique_domain: false)
-        end
-
-        it { is_expected.to eq('http://group.example.com/project') }
-      end
-
-      context 'when pages_unique_domain feature flag is enabled' do
-        before do
-          stub_feature_flags(pages_unique_domain: true)
-
-          project.project_setting.update!(
-            pages_unique_domain_enabled: pages_unique_domain_enabled,
-            pages_unique_domain: 'unique-domain'
-          )
-        end
-
-        context 'when pages_unique_domain_enabled is false' do
-          let(:pages_unique_domain_enabled) { false }
-
-          it { is_expected.to eq('http://group.example.com/project') }
-        end
-
-        context 'when pages_unique_domain_enabled is true' do
-          let(:pages_unique_domain_enabled) { true }
-
-          it { is_expected.to eq('http://unique-domain.example.com') }
-        end
-      end
-    end
-
-    context 'with nested group' do
-      let(:project) { create(:project, namespace: nested_group, name: project_name) }
-      let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
-
-      context 'group page' do
-        let(:project_name) { 'group.example.com' }
-
-        it { is_expected.to eq(expected_url) }
-      end
-
-      context 'project page' do
-        let(:project_name) { 'Project' }
-
-        it { is_expected.to eq(expected_url) }
-      end
-    end
-
-    context 'when the project matches its namespace url' do
-      let(:project_name) { 'group.example.com' }
-
-      it { is_expected.to eq('http://group.example.com') }
-
-      context 'with different group name capitalization' do
-        let(:group_name) { 'Group' }
-
-        it { is_expected.to eq("http://group.example.com") }
-      end
-
-      context 'with different project path capitalization' do
-        let(:project_path) { 'Group.example.com' }
-
-        it { is_expected.to eq("http://group.example.com") }
-      end
-
-      context 'with different project name capitalization' do
-        let(:project_name) { 'Project' }
-
-        it { is_expected.to eq("http://group.example.com/project") }
-      end
-
-      context 'when there is an explicit port' do
-        let(:port) { 3000 }
-
-        context 'when not in dev mode' do
-          before do
-            stub_rails_env('production')
-          end
-
-          it { is_expected.to eq('http://group.example.com:3000/group.example.com') }
-        end
-
-        context 'when in dev mode' do
-          before do
-            stub_rails_env('development')
-          end
-
-          it { is_expected.to eq('http://group.example.com:3000') }
-        end
-      end
-    end
-  end
-
-  describe '#pages_unique_url', feature_category: :pages do
-    let(:project_settings) { create(:project_setting, pages_unique_domain: 'unique-domain') }
-    let(:project) { build(:project, project_setting: project_settings) }
-    let(:domain) { 'example.com' }
-
-    before do
-      allow(Settings.pages).to receive(:host).and_return(domain)
-      allow(Gitlab.config.pages).to receive(:url).and_return("http://#{domain}")
-    end
-
-    it 'returns the pages unique url' do
-      expect(project.pages_unique_url).to eq('http://unique-domain.example.com')
-    end
-  end
-
-  describe '#pages_unique_host', feature_category: :pages do
-    let(:project_settings) { create(:project_setting, pages_unique_domain: 'unique-domain') }
-    let(:project) { build(:project, project_setting: project_settings) }
-    let(:domain) { 'example.com' }
-
-    before do
-      allow(Settings.pages).to receive(:host).and_return(domain)
-      allow(Gitlab.config.pages).to receive(:url).and_return("http://#{domain}")
-    end
-
-    it 'returns the pages unique url' do
-      expect(project.pages_unique_host).to eq('unique-domain.example.com')
-    end
-  end
-
-  describe '#pages_namespace_url', feature_category: :pages do
-    let(:group) { create(:group, name: group_name) }
-    let(:project) { create(:project, namespace: group, name: project_name) }
-    let(:domain) { 'Example.com' }
-    let(:port) { 1234 }
-
-    subject { project.pages_namespace_url }
-
-    before do
-      allow(Settings.pages).to receive(:host).and_return(domain)
-      allow(Gitlab.config.pages).to receive(:url).and_return("http://example.com:#{port}")
-    end
-
-    context 'group page' do
-      let(:group_name) { 'Group' }
-      let(:project_name) { 'group.example.com' }
-
-      it { is_expected.to eq("http://group.example.com:#{port}") }
-    end
-
-    context 'project page' do
-      let(:group_name) { 'Group' }
-      let(:project_name) { 'Project' }
-
-      it { is_expected.to eq("http://group.example.com:#{port}") }
     end
   end
 
@@ -6311,6 +6119,36 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       expect(recorder.count).to be_zero
     end
+
+    context 'with a CI integration' do
+      let!(:ci_integration) do
+        create(:jenkins_integration, push_events: true, active: true, project: integration.project)
+      end
+
+      it 'executes the integrations' do
+        [Integrations::Jenkins, Integrations::Slack].each do |integration_type|
+          expect_next_found_instance_of(integration_type) do |instance|
+            expect(instance).to receive(:async_execute).with('data').once
+          end
+        end
+
+        integration.project.execute_integrations('data', :push_hooks)
+      end
+
+      context 'and skipping ci' do
+        it 'does not execute ci integrations' do
+          expect_next_found_instance_of(Integrations::Jenkins) do |instance|
+            expect(instance).not_to receive(:async_execute)
+          end
+
+          expect_next_found_instance_of(Integrations::Slack) do |instance|
+            expect(instance).to receive(:async_execute).with('data').once
+          end
+
+          integration.project.execute_integrations('data', :push_hooks, skip_ci: true)
+        end
+      end
+    end
   end
 
   describe '#has_active_hooks?' do
@@ -6337,6 +6175,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       expect(project.has_active_hooks?(:merge_request_hooks)).to eq(true)
       expect(project.has_active_hooks?).to eq(true)
+    end
+
+    context 'with :emoji_hooks scope' do
+      it 'returns true when a matching emoji hook exists' do
+        create(:project_hook, emoji_events: true, project: project)
+
+        expect(project.has_active_hooks?(:emoji_hooks)).to eq(true)
+      end
     end
   end
 
@@ -6576,7 +6422,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'does not allow access to branches for which the merge request was closed' do
         create(
-          :merge_request, :closed,
+          :merge_request,
+          :closed,
           target_project: target_project,
           target_branch: 'target-branch',
           source_project: project,
@@ -7542,7 +7389,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe 'with_issues_or_mrs_available_for_user' do
     before do
-      Project.delete_all
+      described_class.delete_all
     end
 
     it 'returns correct projects' do
@@ -9028,6 +8875,67 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.without_created_and_owned_by_banned_user' do
+    let_it_be(:other_project) { create(:project) }
+
+    subject(:results) { described_class.without_created_and_owned_by_banned_user }
+
+    context 'when project creator is not banned' do
+      let_it_be(:project_of_active_user) { create(:project, creator: create(:user)) }
+
+      it 'includes the project' do
+        expect(results).to match_array([other_project, project_of_active_user])
+      end
+    end
+
+    context 'when project creator is banned' do
+      let_it_be(:banned_user) { create(:user, :banned) }
+      let_it_be(:project_of_banned_user) { create(:project, creator: banned_user) }
+
+      context 'when project creator is also an owner' do
+        let_it_be(:project_auth) do
+          project = project_of_banned_user
+          create(:project_authorization, :owner, user: project.creator, project: project)
+        end
+
+        it 'excludes the project' do
+          expect(results).to match_array([other_project])
+        end
+      end
+
+      context 'when project creator is not an owner' do
+        it 'includes the project' do
+          expect(results).to match_array([other_project, project_of_banned_user])
+        end
+      end
+    end
+  end
+
+  describe '#created_and_owned_by_banned_user?' do
+    subject { project.created_and_owned_by_banned_user? }
+
+    context 'when creator is banned' do
+      let_it_be(:creator) { create(:user, :banned) }
+      let_it_be(:project) { create(:project, creator: creator) }
+
+      it { is_expected.to eq false }
+
+      context 'when creator is an owner' do
+        let_it_be(:project_auth) do
+          create(:project_authorization, :owner, user: project.creator, project: project)
+        end
+
+        it { is_expected.to eq true }
+      end
+    end
+
+    context 'when creator is not banned' do
+      let_it_be(:project) { create(:project) }
+
+      it { is_expected.to eq false }
+    end
+  end
+
   it_behaves_like 'something that has web-hooks' do
     let_it_be_with_reload(:object) { create(:project) }
 
@@ -9081,7 +8989,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   def create_build(new_pipeline = pipeline, name = 'test')
     create(
-      :ci_build, :success, :artifacts,
+      :ci_build,
+      :success,
+      :artifacts,
       pipeline: new_pipeline,
       status: new_pipeline.status,
       name: name

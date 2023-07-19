@@ -100,7 +100,7 @@ For example, the following log entry has level `INFO`, is part of the `CRAWL` lo
 Logs are sent either to file or to console (the CI/CD job log). You can configure each destination to accept different logs using
 the environment variables `DAST_BROWSER_LOG` for console logs and `DAST_BROWSER_FILE_LOG` for file logs.
 
-In the following example, the file log defaults to `DEBUG` level, the console log defaults to `INFO` level and logs the `AUTH` module at `DEBUG` level.
+For example:
 
 ```yaml
 include:
@@ -108,9 +108,10 @@ include:
 
 dast:
   variables:
-    DAST_BROWSER_LOG: "auth:debug"
-    DAST_BROWSER_FILE_LOG: "loglevel:debug"
-    DAST_BROWSER_FILE_LOG_PATH: "/zap/wrk/dast-scan.log"
+    DAST_BROWSER_SCAN: "true"
+    DAST_BROWSER_LOG: "auth:debug"                               # console log defaults to INFO level, logs AUTH module at DEBUG
+    DAST_BROWSER_FILE_LOG: "loglevel:debug,cache:warn"           # file log defaults to DEBUG level, logs CACHE module at WARN
+    DAST_BROWSER_FILE_LOG_PATH: "$CI_PROJECT_DIR/dast-scan.log"  # Save the file log in the project directory so it can be recognized as an artifact
   artifacts:
     paths:
       - dast-scan.log

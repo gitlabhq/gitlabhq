@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Cluster::Mixins::PumaCluster do
       loop do
         line = process.readline
         puts "PUMA_DEBUG: #{line}" if ENV['PUMA_DEBUG']
-        break if line =~ output
+        break if line.match?(output)
       end
     end
   end

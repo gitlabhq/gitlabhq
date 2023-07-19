@@ -30,8 +30,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
 
     context 'for 28d time frame' do
       let(:expected_value) { 6 }
-      let(:start) { 30.days.ago.to_s(:db) }
-      let(:finish) { 2.days.ago.to_s(:db) }
+      let(:start) { 30.days.ago.to_fs(:db) }
+      let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
         "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
         " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"
@@ -63,8 +63,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
 
     context 'for 28d time frame' do
       let(:expected_value) { 3 }
-      let(:start) { 30.days.ago.to_s(:db) }
-      let(:finish) { 2.days.ago.to_s(:db) }
+      let(:start) { 30.days.ago.to_fs(:db) }
+      let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
         "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
         " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"\
@@ -92,8 +92,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
 
     context 'for 28d time frame' do
       let(:expected_value) { 3 }
-      let(:start) { 30.days.ago.to_s(:db) }
-      let(:finish) { 2.days.ago.to_s(:db) }
+      let(:start) { 30.days.ago.to_fs(:db) }
+      let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
         "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
         " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"\
@@ -121,8 +121,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
 
     context 'for 28d time frame' do
       let(:expected_value) { 4 }
-      let(:start) { 30.days.ago.to_s(:db) }
-      let(:finish) { 2.days.ago.to_s(:db) }
+      let(:start) { 30.days.ago.to_fs(:db) }
+      let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
         "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
         " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"\
@@ -150,8 +150,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
 
     context 'for 28d time frame' do
       let(:expected_value) { 2 }
-      let(:start) { 30.days.ago.to_s(:db) }
-      let(:finish) { 2.days.ago.to_s(:db) }
+      let(:start) { 30.days.ago.to_fs(:db) }
+      let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
         "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\""\
         " WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"\
@@ -202,8 +202,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
 
     context 'for 28d time frame' do
       let(:expected_value) { 3 }
-      let(:start) { 30.days.ago.to_s(:db) }
-      let(:finish) { 2.days.ago.to_s(:db) }
+      let(:start) { 30.days.ago.to_fs(:db) }
+      let(:finish) { 2.days.ago.to_fs(:db) }
       let(:expected_query) do
         "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" " \
           "WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}' " \
@@ -249,8 +249,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
     context 'for 28d time frame' do
       context 'with project entity' do
         let(:expected_value) { 2 }
-        let(:start) { 30.days.ago.to_s(:db) }
-        let(:finish) { 2.days.ago.to_s(:db) }
+        let(:start) { 30.days.ago.to_fs(:db) }
+        let(:finish) { 2.days.ago.to_fs(:db) }
         let(:expected_query) do
           "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" " \
             "WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}' " \
@@ -265,8 +265,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
 
       context 'with group entity' do
         let(:expected_value) { 2 }
-        let(:start) { 30.days.ago.to_s(:db) }
-        let(:finish) { 2.days.ago.to_s(:db) }
+        let(:start) { 30.days.ago.to_fs(:db) }
+        let(:finish) { 2.days.ago.to_fs(:db) }
         let(:expected_query) do
           "SELECT COUNT(\"bulk_import_entities\".\"id\") FROM \"bulk_import_entities\" " \
             "WHERE \"bulk_import_entities\".\"created_at\" BETWEEN '#{start}' AND '#{finish}' " \

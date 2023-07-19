@@ -51,13 +51,14 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:service_desk_new_note_email_native_attachments, project)
     push_frontend_feature_flag(:saved_replies, current_user)
     push_frontend_feature_flag(:issues_grid_view)
+    push_frontend_feature_flag(:service_desk_ticket)
   end
 
   before_action only: [:index, :show] do
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
   end
 
-  before_action only: :index do
+  before_action only: [:index, :service_desk] do
     push_frontend_feature_flag(:or_issuable_queries, project)
     push_frontend_feature_flag(:frontend_caching, project&.group)
   end
@@ -69,6 +70,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
+    push_frontend_feature_flag(:move_close_into_dropdown, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

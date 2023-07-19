@@ -39,7 +39,7 @@ module Mutations
       def resolve(full_path:, **args)
         project = authorized_find!(full_path)
 
-        if args[:job_token_scope_enabled] && project.frozen_outbound_job_token_scopes?
+        if args[:job_token_scope_enabled]
           raise Gitlab::Graphql::Errors::ArgumentError, 'job_token_scope_enabled can only be set to false'
         end
 

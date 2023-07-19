@@ -22,14 +22,11 @@
     -# only show normal/blame view links for text files
     - if blob.readable_text?
       - if blame
-        = link_to 'Normal view', project_blob_path(@project, @id),
-            class: 'gl-button btn btn-default'
+        = link_button_to _('Normal view'), project_blob_path(@project, @id)
       - else
-        = link_to 'Blame', project_blame_path(@project, @id),
-            class: 'gl-button btn btn-default js-blob-blame-link' unless blob.empty?
+        = link_button_to _('Blame'), project_blame_path(@project, @id), class: 'js-blob-blame-link' unless blob.empty?
 
-    = link_to 'History', project_commits_path(@project, @id),
-        class: 'gl-button btn btn-default'
+    = link_button_to _('History'), project_commits_path(@project, @id)
 
-    = link_to 'Permalink', project_blob_path(@project,
-        tree_join(@commit.sha, @path)), class: 'gl-button btn btn-default js-data-file-blob-permalink-url'
+    = link_button_to _('Permalink'), project_blob_path(@project, tree_join(@commit.sha, @path)),
+        class: 'js-data-file-blob-permalink-url'

@@ -93,7 +93,7 @@ RSpec.shared_examples 'querying a GraphQL type with labels' do
   describe 'performance' do
     def query_for(*labels)
       selections = labels.map do |label|
-        %Q[#{label.title.gsub(/:+/, '_')}: label(title: "#{label.title}") { description }]
+        %[#{label.title.gsub(/:+/, '_')}: label(title: "#{label.title}") { description }]
       end
 
       make_query(selections)

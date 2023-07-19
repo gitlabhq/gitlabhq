@@ -204,7 +204,7 @@ to monitor it.
 
 After successfully deploying your application, you can view its website and check
 on its health on the **Environments** page by navigating to
-**Deployments > Environments**. This page displays details about
+**Operate > Environments**. This page displays details about
 the deployed applications, and the right-hand column displays icons that link
 you to common environment tasks:
 
@@ -302,4 +302,3 @@ and customized to fit your workflow. Here are some helpful resources for further
 1. [Incremental rollout to production](../cicd_variables.md#incremental-rollout-to-production)
 1. [Disable jobs you don't need with CI/CD variables](../cicd_variables.md)
 1. [Use your own buildpacks to build your application](../customize.md#custom-buildpacks)
-1. [Prometheus monitoring](../../../user/project/integrations/prometheus.md)

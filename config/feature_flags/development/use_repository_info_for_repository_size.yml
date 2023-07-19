@@ -1,0 +1,8 @@
+---
+name: use_repository_info_for_repository_size
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124477
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416490
+milestone: '16.1'
+type: development
+group: group::source code
+default_enabled: false

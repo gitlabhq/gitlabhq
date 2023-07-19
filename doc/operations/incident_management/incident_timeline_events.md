@@ -88,7 +88,7 @@ of an incident.
 > [Introduced]([issue-link](https://gitlab.com/gitlab-org/gitlab/-/issues/365489)) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -139,7 +139,7 @@ Added tags are displayed next to the timestamp.
 Incident timeline events support the following [GitLab Flavored Markdown](../../user/markdown.md) features.
 
 - [Code](../../user/markdown.md#code-spans-and-blocks).
-- [Emojis](../../user/markdown.md#emojis).
+- [Emoji](../../user/markdown.md#emoji).
 - [Emphasis](../../user/markdown.md#emphasis).
 - [GitLab-specific references](../../user/markdown.md#gitlab-specific-references).
 - [Images](../../user/markdown.md#images), rendered as a link to the uploaded image.

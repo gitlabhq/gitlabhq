@@ -13,10 +13,10 @@ module Tooling
       MSG
 
       DATA_WAREHOUSE_SCOPE = 'Data Warehouse::'
-      FILE_PATH_REGEX = %r{((ee|jh)/)?config/metrics(/.+\.yml)}.freeze
-      PERFORMANCE_INDICATOR_REGEX = %r{gmau|smau|paid_gmau|umau}.freeze
-      METRIC_REMOVED = %r{\+status: removed}.freeze
-      DATABASE_REGEX = %r{\Adb/structure\.sql}.freeze
+      FILE_PATH_REGEX = %r{((ee|jh)/)?config/metrics(/.+\.yml)}
+      PERFORMANCE_INDICATOR_REGEX = %r{gmau|smau|paid_gmau|umau}
+      METRIC_REMOVED = %r{\+status: removed}
+      DATABASE_REGEX = %r{\Adb/structure\.sql}
       STRUCTURE_SQL_FILE = %w(db/structure.sql).freeze
 
       def build_message

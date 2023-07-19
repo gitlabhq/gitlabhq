@@ -36,7 +36,7 @@ RSpec.describe IncidentManagement::CloseIncidentWorker, feature_category: :incid
 
     context 'when issue type is not incident' do
       before do
-        issue.update!(issue_type: :issue, work_item_type: WorkItems::Type.default_by_type(:issue))
+        issue.update!(work_item_type: WorkItems::Type.default_by_type(:issue))
       end
 
       it_behaves_like 'does not call the close issue service'

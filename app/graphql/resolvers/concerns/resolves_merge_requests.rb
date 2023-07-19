@@ -11,6 +11,11 @@ module ResolvesMergeRequests
   end
 
   def resolve_with_lookahead(**args)
+    if args[:group_id]
+      args[:group_id] = ::GitlabSchema.parse_gid(args[:group_id], expected_type: ::Group).model_id
+      args[:include_subgroups] = true
+    end
+
     mr_finder = MergeRequestsFinder.new(current_user, args.compact)
     finder = Gitlab::Graphql::Loaders::IssuableLoader.new(mr_parent, mr_finder)
 

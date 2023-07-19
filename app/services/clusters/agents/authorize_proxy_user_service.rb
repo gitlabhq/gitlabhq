@@ -11,17 +11,14 @@ module Clusters
       end
 
       def execute
-        return forbidden unless user_access_config.present?
+        return forbidden('`user_access` keyword is not found in agent config file.') unless user_access_config.present?
 
         access_as = user_access_config['access_as']
-        return forbidden unless access_as.present?
-        return forbidden if access_as.size != 1
 
-        if payload = handle_access(access_as)
-          return success(payload: payload)
-        end
+        return forbidden('`access_as` is not found under the `user_access` keyword.') unless access_as.present?
+        return forbidden('`access_as` must exist only once under the `user_access` keyword.') if access_as.size != 1
 
-        forbidden
+        handle_access(access_as)
       end
 
       private
@@ -52,9 +49,11 @@ module Clusters
       end
 
       def access_as_agent
-        return if authorizations.empty?
+        if authorizations.empty?
+          return forbidden('You must be a member of `projects` or `groups` under the `user_access` keyword.')
+        end
 
-        response_base.merge(access_as: { agent: {} })
+        success(payload: response_base.merge(access_as: { agent: {} }))
       end
 
       def user_access_config
@@ -64,8 +63,8 @@ module Clusters
 
       delegate :success, to: ServiceResponse, private: true
 
-      def forbidden
-        ServiceResponse.error(reason: :forbidden, message: '403 Forbidden')
+      def forbidden(message)
+        ServiceResponse.error(reason: :forbidden, message: message)
       end
     end
   end

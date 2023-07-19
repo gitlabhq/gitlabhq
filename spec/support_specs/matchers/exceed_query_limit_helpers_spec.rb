@@ -156,8 +156,8 @@ RSpec.describe ExceedQueryLimitHelpers do
 
       expect(test_matcher.count_queries(recorder)).to eq({
         'SELECT "schema_migrations".* FROM "schema_migrations"' => {
-          %Q[WHERE "schema_migrations"."version" = 'foo\nbar\nbaz' LIMIT 1] => 2,
-          %Q[WHERE "schema_migrations"."version" = 'foo\nbiz\nbaz' LIMIT 1] => 1
+          %[WHERE "schema_migrations"."version" = 'foo\nbar\nbaz' LIMIT 1] => 2,
+          %[WHERE "schema_migrations"."version" = 'foo\nbiz\nbaz' LIMIT 1] => 1
         }
       })
     end

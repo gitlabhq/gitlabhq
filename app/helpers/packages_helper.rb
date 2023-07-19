@@ -74,6 +74,16 @@ module PackagesHelper
     Ability.allowed?(current_user, :admin_group, group)
   end
 
+  def can_delete_packages?(project)
+    Gitlab.config.packages.enabled &&
+    Ability.allowed?(current_user, :destroy_package, project)
+  end
+
+  def can_delete_group_packages?(group)
+    group.packages_feature_enabled? &&
+    Ability.allowed?(current_user, :destroy_package, group)
+  end
+
   def cleanup_settings_data
     {
       project_id: @project.id,

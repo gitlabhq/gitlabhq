@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
   let(:section) { "analytics" }
   let(:mr) { "https://gitlab.com/some-group/some-project/-/merge_requests/123" }
   let(:event) { "view_analytics_dashboard" }
-  let(:unique_on) { "user_id" }
+  let(:unique) { "user_id" }
   let(:time_frames) { %w[7d] }
   let(:include_default_identifiers) { 'yes' }
   let(:options) do
@@ -27,11 +27,11 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
       stage: stage,
       section: section,
       event: event,
-      unique_on: unique_on
+      unique: unique
     }.stringify_keys
   end
 
-  let(:key_path_7d) { "count_distinct_#{unique_on}_from_#{event}_7d" }
+  let(:key_path_7d) { "count_distinct_#{unique}_from_#{event}_7d" }
   let(:metric_definition_path_7d) { Dir.glob(File.join(temp_dir, "metrics/counts_7d/#{key_path_7d}.yml")).first }
   let(:metric_definition_7d) do
     {
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
       "milestone" => "13.9",
       "introduced_by_url" => mr,
       "time_frame" => "7d",
-      "data_source" => "redis_hll",
+      "data_source" => "internal_events",
       "data_category" => "optional",
       "instrumentation_class" => "RedisHLLMetric",
       "distribution" => %w[ce ee],
@@ -195,6 +195,14 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
         end
       end
 
+      context 'with unique value passed with a dot' do
+        it 'creates a metric definition file using the template' do
+          described_class.new([], options.merge(unique: 'user.id')).invoke_all
+
+          expect(YAML.safe_load(File.read(metric_definition_path_7d))).to eq(metric_definition_7d)
+        end
+      end
+
       context 'without at least one tier available' do
         it 'raises error' do
           expect { described_class.new([], options.merge(tiers: [])).invoke_all }
@@ -211,8 +219,8 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
       context 'without obligatory parameter' do
         it 'raises error', :aggregate_failures do
-          %w[unique_on event mr section stage group].each do |option|
-            expect { described_class.new([],  options.without(option)).invoke_all }
+          %w[unique event mr section stage group].each do |option|
+            expect { described_class.new([], options.without(option)).invoke_all }
               .to raise_error(RuntimeError)
           end
         end
@@ -241,7 +249,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
     context 'for multiple time frames' do
       let(:time_frames) { %w[7d 28d] }
-      let(:key_path_28d) { "count_distinct_#{unique_on}_from_#{event}_28d" }
+      let(:key_path_28d) { "count_distinct_#{unique}_from_#{event}_28d" }
       let(:metric_definition_path_28d) { Dir.glob(File.join(temp_dir, "metrics/counts_28d/#{key_path_28d}.yml")).first }
       let(:metric_definition_28d) do
         metric_definition_7d.merge(
@@ -260,7 +268,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
     context 'with default time frames' do
       let(:time_frames) { nil }
-      let(:key_path_28d) { "count_distinct_#{unique_on}_from_#{event}_28d" }
+      let(:key_path_28d) { "count_distinct_#{unique}_from_#{event}_28d" }
       let(:metric_definition_path_28d) { Dir.glob(File.join(temp_dir, "metrics/counts_28d/#{key_path_28d}.yml")).first }
       let(:metric_definition_28d) do
         metric_definition_7d.merge(

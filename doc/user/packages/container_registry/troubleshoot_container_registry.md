@@ -125,5 +125,5 @@ This error happens when your authentication token expires before the image push 
 the Container Registry on self-managed GitLab instances expire every five minutes. On GitLab.com, the token expiration
 time is set to 15 minutes.
 
-If you are using self-managed GitLab, you can ask an administrator to
+If you are using self-managed GitLab, an administrator can
 [increase the token duration](../../../administration/packages/container_registry.md#increase-token-duration).

@@ -27,6 +27,8 @@ module AwardEmojis
 
     def after_create(award)
       TodoService.new.new_award_emoji(todoable, current_user) if todoable
+
+      execute_hooks(award, 'award')
     end
 
     def todoable

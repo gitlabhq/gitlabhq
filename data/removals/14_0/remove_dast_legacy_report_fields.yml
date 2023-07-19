@@ -1,9 +1,0 @@
-- title: "Legacy fields from DAST report"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: derekferguson
-  breaking_change: true
-  body: |
-    As a part of the migration to a common report format for all of the Secure scanners in GitLab, DAST is making changes to the DAST JSON report. Certain legacy fields were deprecated in 13.8 and have been completely removed in 14.0. These fields are `@generated`, `@version`, `site`, and `spider`. This should not affect any normal DAST operation, but does affect users who consume the JSON report in an automated way and use these fields. Anyone affected by these changes, and needs these fields for business reasons, is encouraged to open a new GitLab issue and explain the need.
-
-    For more information, see [the removal issue](https://gitlab.com/gitlab-org/gitlab/-/issues/33915).

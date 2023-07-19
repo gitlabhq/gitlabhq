@@ -1,4 +1,5 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/work_items/graphql/award_emoji.fragment.graphql"
 
 fragment WorkItemNote on Note {
   id
@@ -21,6 +22,11 @@ fragment WorkItemNote on Note {
   }
   author {
     ...User
+  }
+  awardEmoji {
+    nodes {
+      ...AwardEmojiFragment
+    }
   }
   userPermissions {
     adminNote

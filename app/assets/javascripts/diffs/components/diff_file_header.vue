@@ -101,11 +101,6 @@ export default {
       required: false,
       default: false,
     },
-    codequalityDiff: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   idState() {
     return {
@@ -212,7 +207,7 @@ export default {
       return this.expanded ? __('Hide file contents') : __('Show file contents');
     },
     showCommentButton() {
-      return this.getNoteableData.current_user.can_create_note && this.glFeatures.commentOnFiles;
+      return this.getNoteableData.current_user.can_create_note;
     },
   },
   watch: {
@@ -428,6 +423,7 @@ export default {
           toggle-class="btn-icon js-diff-more-actions"
           class="gl-pt-0!"
           data-qa-selector="dropdown_button"
+          lazy
           @show="setMoreActionsShown(true)"
           @hidden="setMoreActionsShown(false)"
         >

@@ -3,9 +3,8 @@
 = gitlab_ui_form_for @appearance, url: admin_application_settings_appearances_path, html: { class: 'gl-mt-3' } do |f|
   = form_errors(@appearance)
 
-
   .row
-    .col-lg-4.profile-settings-sidebar
+    .col-lg-4
       %h4.gl-mt-0= _('Navigation bar')
 
     .col-lg-8
@@ -25,7 +24,7 @@
             = _('Maximum file size is 1MB. Pages are optimized for a 24px tall header logo')
   %hr
   .row
-    .col-lg-4.profile-settings-sidebar
+    .col-lg-4
       %h4.gl-mt-0 Favicon
 
     .col-lg-8
@@ -50,7 +49,7 @@
 
   %hr
   .row
-    .col-lg-4.profile-settings-sidebar
+    .col-lg-4
       %h4.gl-mt-0= _('Sign in/Sign up pages')
 
     .col-lg-8
@@ -79,7 +78,7 @@
 
   %hr
   .row
-    .col-lg-4.profile-settings-sidebar
+    .col-lg-4
       %h4.gl-mt-0= _('Progressive Web App (PWA)')
 
     .col-lg-8
@@ -111,7 +110,7 @@
 
   %hr
   .row
-    .col-lg-4.profile-settings-sidebar
+    .col-lg-4
       %h4.gl-mt-0= _('New project pages')
 
     .col-lg-8
@@ -124,7 +123,7 @@
 
   %hr
   .row
-    .col-lg-4.profile-settings-sidebar
+    .col-lg-4
       %h4.gl-mt-0= _('Profile image guideline')
 
     .col-lg-8

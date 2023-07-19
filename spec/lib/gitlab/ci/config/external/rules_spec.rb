@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_composition do
-  # Remove `project` property when FF `ci_support_include_rules_when_never` is removed
-  let(:context) { double(variables_hash: {}, project: nil) }
+  let(:context) { double(variables_hash: {}) }
   let(:rule_hashes) { [{ if: '$MY_VAR == "hello"' }] }
 
   subject(:rules) { described_class.new(rule_hashes) }
@@ -19,11 +18,6 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
     end
 
     shared_examples 'when there is a rule with if' do |rule_matched_result = true, rule_not_matched_result = false|
-      # Remove this `before` block when FF `ci_support_include_rules_when_never` is removed
-      before do
-        allow(context).to receive(:project).and_return(nil)
-      end
-
       context 'when the rule matches' do
         let(:context) { double(variables_hash: { 'MY_VAR' => 'hello' }) }
 
@@ -70,28 +64,12 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
         let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'never' }] }
 
         it_behaves_like 'when there is a rule with if', false, false
-
-        context 'when FF `ci_support_include_rules_when_never` is disabled' do
-          before do
-            stub_feature_flags(ci_support_include_rules_when_never: false)
-          end
-
-          it_behaves_like 'when there is a rule with if'
-        end
       end
 
       context 'with when: always' do
         let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'always' }] }
 
         it_behaves_like 'when there is a rule with if'
-
-        context 'when FF `ci_support_include_rules_when_never` is disabled' do
-          before do
-            stub_feature_flags(ci_support_include_rules_when_never: false)
-          end
-
-          it_behaves_like 'when there is a rule with if'
-        end
       end
 
       context 'with when: <invalid string>' do
@@ -115,28 +93,12 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
         let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'never' }] }
 
         it_behaves_like 'when there is a rule with exists', false, false
-
-        context 'when FF `ci_support_include_rules_when_never` is disabled' do
-          before do
-            stub_feature_flags(ci_support_include_rules_when_never: false)
-          end
-
-          it_behaves_like 'when there is a rule with exists'
-        end
       end
 
       context 'with when: always' do
         let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'always' }] }
 
         it_behaves_like 'when there is a rule with exists'
-
-        context 'when FF `ci_support_include_rules_when_never` is disabled' do
-          before do
-            stub_feature_flags(ci_support_include_rules_when_never: false)
-          end
-
-          it_behaves_like 'when there is a rule with exists'
-        end
       end
 
       context 'with when: <invalid string>' do

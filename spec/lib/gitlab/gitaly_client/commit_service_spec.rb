@@ -334,112 +334,6 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         include_examples 'uses requests format'
       end
     end
-
-    context 'when feature flag "find_changed_paths_new_format" is disabled' do
-      before do
-        stub_feature_flags(find_changed_paths_new_format: false)
-      end
-
-      shared_examples 'uses commits format' do
-        it do
-          subject
-          expect(Gitaly::FindChangedPathsRequest)
-            .to have_received(:new).with(
-              repository: repository_message,
-              commits: commits,
-              merge_commit_diff_mode: mapped_merge_commit_diff_mode
-            )
-        end
-      end
-
-      context 'when merge_commit_diff_mode is nil' do
-        let(:merge_commit_diff_mode) { nil }
-
-        include_examples 'includes paths different in any parent'
-
-        include_examples 'uses commits format'
-      end
-
-      context 'when merge_commit_diff_mode is :unspecified' do
-        let(:merge_commit_diff_mode) { :unspecified }
-
-        include_examples 'includes paths different in any parent'
-
-        include_examples 'uses commits format'
-      end
-
-      context 'when merge_commit_diff_mode is :include_merges' do
-        let(:merge_commit_diff_mode) { :include_merges }
-
-        include_examples 'includes paths different in any parent'
-
-        include_examples 'uses commits format'
-      end
-
-      context 'when merge_commit_diff_mode is invalid' do
-        let(:merge_commit_diff_mode) { 'invalid' }
-
-        include_examples 'includes paths different in any parent'
-
-        include_examples 'uses commits format'
-      end
-
-      context 'when merge_commit_diff_mode is :all_parents' do
-        let(:merge_commit_diff_mode) { :all_parents }
-
-        include_examples 'includes paths different in all parents'
-
-        include_examples 'uses commits format'
-      end
-
-      context 'when feature flag "merge_commit_diff_modes" is disabled' do
-        let(:mapped_merge_commit_diff_mode) { nil }
-
-        before do
-          stub_feature_flags(merge_commit_diff_modes: false)
-        end
-
-        context 'when merge_commit_diff_mode is nil' do
-          let(:merge_commit_diff_mode) { nil }
-
-          include_examples 'includes paths different in any parent'
-
-          include_examples 'uses commits format'
-        end
-
-        context 'when merge_commit_diff_mode is :unspecified' do
-          let(:merge_commit_diff_mode) { :unspecified }
-
-          include_examples 'includes paths different in any parent'
-
-          include_examples 'uses commits format'
-        end
-
-        context 'when merge_commit_diff_mode is :include_merges' do
-          let(:merge_commit_diff_mode) { :include_merges }
-
-          include_examples 'includes paths different in any parent'
-
-          include_examples 'uses commits format'
-        end
-
-        context 'when merge_commit_diff_mode is invalid' do
-          let(:merge_commit_diff_mode) { 'invalid' }
-
-          include_examples 'includes paths different in any parent'
-
-          include_examples 'uses commits format'
-        end
-
-        context 'when merge_commit_diff_mode is :all_parents' do
-          let(:merge_commit_diff_mode) { :all_parents }
-
-          include_examples 'includes paths different in any parent'
-
-          include_examples 'uses commits format'
-        end
-      end
-    end
   end
 
   describe '#tree_entries' do
@@ -1142,6 +1036,40 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         is_expected.to include(blame_headers[2], blame_headers[3])
         is_expected.not_to include(blame_headers[0], blame_headers[1], blame_headers[4])
       end
+    end
+  end
+
+  describe '#get_commit_signatures' do
+    let(:project) { create(:project, :test_repo) }
+
+    it 'returns commit signatures for specified commit ids', :aggregate_failures do
+      without_signature = "e63f41fe459e62e1228fcef60d7189127aeba95a" # has no signature
+
+      signed_by_user = [
+        "a17a9f66543673edf0a3d1c6b93bdda3fe600f32", # has signature
+        "7b5160f9bb23a3d58a0accdbe89da13b96b1ece9"  # SSH signature
+      ]
+
+      large_signed_text = "8cf8e80a5a0546e391823c250f2b26b9cf15ce88" # has signature and commit message > 4MB
+
+      signatures = client.get_commit_signatures(
+        [without_signature, large_signed_text, *signed_by_user]
+      )
+
+      expect(signatures.keys).to match_array([large_signed_text, *signed_by_user])
+
+      [large_signed_text, *signed_by_user].each do |commit_id|
+        expect(signatures[commit_id][:signature]).to be_present
+        expect(signatures[commit_id][:signer]).to eq(:SIGNER_USER)
+      end
+
+      signed_by_user.each do |commit_id|
+        commit = project.commit(commit_id)
+        expect(signatures[commit_id][:signed_text]).to include(commit.message)
+        expect(signatures[commit_id][:signed_text]).to include(commit.description)
+      end
+
+      expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
     end
   end
 end

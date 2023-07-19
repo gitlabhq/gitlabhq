@@ -12,7 +12,7 @@
   .files-changed-inner
     .inline-parallel-buttons.gl-display-none.gl-md-display-flex.gl-relative
       - if !diffs_expanded? && diff_files.any?(&:collapsed?)
-        = link_to _('Expand all'), url_for(safe_params.merge(expanded: 1, format: nil)), class: 'gl-button btn btn-default'
+        = link_button_to _('Expand all'), url_for(safe_params.merge(expanded: 1, format: nil))
       - if show_whitespace_toggle
         - if current_controller?(:commit)
           = commit_diff_whitespace_link(diffs.project, @commit, class: 'd-none d-sm-inline-block')

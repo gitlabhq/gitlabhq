@@ -73,6 +73,9 @@ export default {
     hasSecurityReports() {
       return this.artifacts.length > 0;
     },
+    summary() {
+      return { title: this.$options.i18n.scansHaveRun };
+    },
   },
   methods: {
     handleIsLoading(value) {
@@ -109,7 +112,7 @@ export default {
     :widget-name="$options.name"
     :is-collapsible="false"
     :help-popover="$options.widgetHelpPopover"
-    :summary="$options.i18n.scansHaveRun"
+    :summary="summary"
     @is-loading="handleIsLoading"
   >
     <template #action-buttons>

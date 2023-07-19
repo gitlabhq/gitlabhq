@@ -184,21 +184,14 @@ export default {
 <template>
   <div id="related-issues" class="related-issues-block">
     <gl-card
-      class="gl-overflow-hidden gl-mt-5 gl-mb-0"
-      header-class="gl-p-0 gl-border-0"
-      body-class="gl-p-0 gl-bg-gray-10"
+      class="gl-new-card gl-overflow-hidden"
+      header-class="gl-new-card-header"
+      body-class="gl-new-card-body"
+      :aria-expanded="isOpen.toString()"
     >
       <template #header>
-        <div
-          :class="{
-            'gl-border-b-1': isOpen,
-            'gl-border-b-0': !isOpen,
-          }"
-          class="gl-display-flex gl-justify-content-space-between gl-pl-5 gl-pr-4 gl-py-4 gl-bg-white gl-border-b-solid gl-border-b-gray-100"
-        >
-          <h3
-            class="card-title h5 gl-relative gl-my-0 gl-display-flex gl-align-items-center gl-flex-grow-1 gl-line-height-24"
-          >
+        <div class="gl-new-card-title-wrapper">
+          <h3 class="gl-new-card-title" data-testid="card-title">
             <gl-link
               id="user-content-related-issues"
               class="anchor position-absolute gl-text-decoration-none"
@@ -206,48 +199,44 @@ export default {
               aria-hidden="true"
             />
             <slot name="header-text">{{ headerText }}</slot>
-
-            <div
-              class="js-related-issues-header-issue-count gl-display-inline-flex gl-mx-3 gl-text-gray-500"
-            >
-              <span class="gl-display-inline-flex gl-align-items-center">
-                <gl-icon :name="issuableTypeIcon" class="gl-mr-2 gl-text-gray-500" />
-                {{ badgeLabel }}
-              </span>
-            </div>
           </h3>
-          <slot name="header-actions"></slot>
-          <gl-button
-            v-if="canAdmin"
-            size="small"
-            data-testid="related-issues-plus-button"
-            :aria-label="addIssuableButtonText"
-            class="gl-ml-3"
-            @click="addButtonClick"
-          >
-            <slot name="add-button-text">{{ __('Add') }}</slot>
-          </gl-button>
-          <div class="gl-pl-3 gl-ml-3 gl-border-l-1 gl-border-l-solid gl-border-l-gray-100">
-            <gl-button
-              category="tertiary"
-              size="small"
-              :icon="toggleIcon"
-              :aria-label="toggleLabel"
-              data-testid="toggle-links"
-              @click="handleToggle"
-            />
+          <div class="gl-new-card-count js-related-issues-header-issue-count">
+            <gl-icon :name="issuableTypeIcon" class="gl-mr-2" />
+            {{ badgeLabel }}
           </div>
+        </div>
+        <slot name="header-actions"></slot>
+        <gl-button
+          v-if="canAdmin"
+          size="small"
+          data-testid="related-issues-plus-button"
+          :aria-label="addIssuableButtonText"
+          class="gl-ml-3"
+          @click="addButtonClick"
+        >
+          <slot name="add-button-text">{{ __('Add') }}</slot>
+        </gl-button>
+        <div class="gl-new-card-toggle">
+          <gl-button
+            category="tertiary"
+            size="small"
+            :icon="toggleIcon"
+            :aria-label="toggleLabel"
+            data-testid="toggle-links"
+            @click="handleToggle"
+          />
         </div>
       </template>
       <div
         v-if="isOpen"
-        class="linked-issues-card-body gl-py-3 gl-px-4 gl-bg-gray-10"
+        class="linked-issues-card-body gl-new-card-content"
         data-testid="related-issues-body"
       >
         <div
           v-if="isFormVisible"
-          class="js-add-related-issues-form-area card-body bg-white gl-mt-2 gl-border-1 gl-border-solid gl-border-gray-100 gl-rounded-base"
+          class="js-add-related-issues-form-area gl-new-card-add-form"
           :class="{ 'gl-mb-5': shouldShowTokenBody, 'gl-show-field-errors': hasError }"
+          data-testid="add-item-form"
         >
           <add-issuable-form
             :show-categorized-issues="showCategorizedIssues"
@@ -289,8 +278,8 @@ export default {
             @saveReorder="$emit('saveReorder', $event)"
           />
         </template>
-        <div v-if="!shouldShowTokenBody && !isFormVisible" data-testid="related-items-empty">
-          <p class="gl-p-2 gl-mb-0 gl-text-gray-500">
+        <div v-if="!shouldShowTokenBody && !isFormVisible">
+          <p class="gl-new-card-empty">
             {{ emptyStateMessage }}
             <gl-link
               v-if="hasHelpPath"

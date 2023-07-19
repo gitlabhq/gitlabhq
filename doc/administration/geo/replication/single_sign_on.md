@@ -31,6 +31,10 @@ If you have configured SAML on the primary site correctly, then it should work o
 
 ### SAML with separate URL with proxying enabled
 
+NOTE:
+When proxying is enabled, SAML can only be used to sign in the secondary site if your SAML Identity Provider (IdP) allows an
+application to have multiple callback URLs configured. Check with your IdP provider support team to confirm if this is the case.
+
 If a secondary site uses a different `external_url` to the primary site, then configure your SAML Identity Provider (IdP) to allow the secondary site's SAML callback URL. For example, to configure Okta:
 
 1. [Sign in to Okta](https://www.okta.com/login/).

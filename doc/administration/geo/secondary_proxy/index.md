@@ -131,6 +131,10 @@ and cannot be configured per Geo site. Therefore, all runners clone from the pri
 which Geo site they register on. For information about GitLab CI using a specific Geo secondary to clone from, see issue
 [3294](https://gitlab.com/gitlab-org/gitlab/-/issues/3294#note_1009488466).
 
+- When secondary proxying is used together with separate URLs,
+  [signing in the secondary site using SAML](../replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled)
+  is only supported if the SAML Identity Provider (IdP) allows an application to be configured with multiple callback URLs.
+
 ## Behavior of secondary sites when the primary Geo site is down
 
 Considering that web traffic is proxied to the primary, the behavior of the secondary sites differs when the primary

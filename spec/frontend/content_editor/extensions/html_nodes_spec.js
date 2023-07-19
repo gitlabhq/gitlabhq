@@ -28,9 +28,9 @@ describe('content_editor/extensions/html_nodes', () => {
   });
 
   it.each`
-    input                      | insertedNodes
-    ${'<div><p>foo</p></div>'} | ${() => div(p('foo'))}
-    ${'<pre><p>foo</p></pre>'} | ${() => pre(p('foo'))}
+    input                                 | insertedNodes
+    ${'<div><p dir="auto">foo</p></div>'} | ${() => div(p('foo'))}
+    ${'<pre><p dir="auto">foo</p></pre>'} | ${() => pre(p('foo'))}
   `('parses and creates nodes for $input', ({ input, insertedNodes }) => {
     const expectedDoc = doc(insertedNodes());
 

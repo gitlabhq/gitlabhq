@@ -32,4 +32,4 @@
 
   .gl-mt-5
     = f.submit _('Save application'), pajamas_button: true, data: { qa_selector: 'save_application_button' }
-    = link_to _('Cancel'), admin_applications_path, class: "gl-button btn btn-default btn-cancel"
+    = link_button_to _('Cancel'), admin_applications_path

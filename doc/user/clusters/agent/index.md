@@ -34,7 +34,7 @@ You can choose from two primary workflows. The GitOps workflow is recommended.
 
 ### GitOps workflow
 
-You should use Flux for GitOps. To get started, see the GitLab [Flux documentation](../../../user/clusters/agent/gitops/flux.md).
+You should use Flux for GitOps. To get started, see [Tutorial: Set up Flux for GitOps](gitops/flux_tutorial.md)
 
 ### GitLab CI/CD workflow
 
@@ -55,8 +55,11 @@ This workflow has a weaker security model and is not recommended for production 
 ## Supported Kubernetes versions for GitLab features
 
 GitLab supports the following Kubernetes versions. If you want to run
-GitLab in a Kubernetes cluster, you might need a different version of Kubernetes.
-GitLab in a Kubernetes cluster, you might need [a different version of Kubernetes](https://docs.gitlab.com/charts/installation/cloud/index.html).
+GitLab in a Kubernetes cluster, you might need a different version of Kubernetes:
+
+- For the [Helm Chart](https://docs.gitlab.com/charts/installation/cloud/index.html).
+- For [GitLab Operator](https://docs.gitlab.com/operator/installation.html#kubernetes).
+
 You can upgrade your
 Kubernetes version to a supported version at any time:
 

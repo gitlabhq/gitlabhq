@@ -7,10 +7,10 @@ RSpec.describe ErrorTracking::ListIssuesService, feature_category: :error_tracki
 
   let(:params) { {} }
 
-  subject { described_class.new(project, user, params) }
+  subject(:service) { described_class.new(project, user, params) }
 
   describe '#execute' do
-    context 'Sentry backend' do
+    context 'with Sentry backend' do
       let(:params) { { search_term: 'something', sort: 'last_seen', cursor: 'some-cursor' } }
 
       let(:list_sentry_issues_args) do
@@ -42,7 +42,7 @@ RSpec.describe ErrorTracking::ListIssuesService, feature_category: :error_tracki
           expect(result).to eq(status: :success, pagination: {}, issues: issues)
         end
 
-        it 'returns bad request for an issue_status not on the whitelist' do
+        it 'returns bad request with invalid issue_status' do
           params[:issue_status] = 'assigned'
 
           expect(error_tracking_setting).not_to receive(:list_sentry_issues)
@@ -65,22 +65,84 @@ RSpec.describe ErrorTracking::ListIssuesService, feature_category: :error_tracki
       end
     end
 
-    context 'GitLab backend' do
-      let_it_be(:error1) { create(:error_tracking_error, name: 'foo', project: project) }
-      let_it_be(:error2) { create(:error_tracking_error, name: 'bar', project: project) }
+    context 'with integrated error tracking' do
+      let(:error_repository) { instance_double(Gitlab::ErrorTracking::ErrorRepository) }
+      let(:errors) { [] }
+      let(:pagination) { Gitlab::ErrorTracking::ErrorRepository::Pagination.new(nil, nil) }
+      let(:opts) { default_opts }
 
-      let(:params) { { limit: '1' } }
+      let(:default_opts) do
+        {
+          filters: { status: described_class::DEFAULT_ISSUE_STATUS },
+          query: nil,
+          sort: described_class::DEFAULT_SORT,
+          limit: described_class::DEFAULT_LIMIT,
+          cursor: nil
+        }
+      end
+
+      let(:params) { {} }
 
       before do
         error_tracking_setting.update!(integrated: true)
+
+        allow(service).to receive(:error_repository).and_return(error_repository)
       end
 
-      it 'returns the error in expected format' do
-        expect(result[:status]).to eq(:success)
-        expect(result[:issues].size).to eq(1)
-        expect(result[:issues].first.to_json).to eq(error2.to_sentry_error.to_json)
-        expect(result[:pagination][:next][:cursor]).to be_present
-        expect(result[:pagination][:previous]).to be_nil
+      context 'when errors are found' do
+        let(:error) { build_stubbed(:error_tracking_open_api_error, project_id: project.id) }
+        let(:errors) { [error] }
+
+        before do
+          allow(error_repository).to receive(:list_errors)
+            .with(**opts)
+            .and_return([errors, pagination])
+        end
+
+        context 'without params' do
+          it 'returns the errors without pagination' do
+            expect(result[:status]).to eq(:success)
+            expect(result[:issues]).to eq(errors)
+            expect(result[:pagination]).to eq({})
+            expect(error_repository).to have_received(:list_errors).with(**opts)
+          end
+        end
+
+        context 'with pagination' do
+          context 'with next page' do
+            before do
+              pagination.next = 'next cursor'
+            end
+
+            it 'has next cursor' do
+              expect(result[:pagination]).to eq(next: { cursor: 'next cursor' })
+            end
+          end
+
+          context 'with prev page' do
+            before do
+              pagination.prev = 'prev cursor'
+            end
+
+            it 'has prev cursor' do
+              expect(result[:pagination]).to eq(previous: { cursor: 'prev cursor' })
+            end
+          end
+
+          context 'with next and prev page' do
+            before do
+              pagination.next = 'next cursor'
+              pagination.prev = 'prev cursor'
+            end
+
+            it 'has both cursors' do
+              expect(result[:pagination]).to eq(
+                next: { cursor: 'next cursor' },
+                previous: { cursor: 'prev cursor' }
+              )
+            end
+          end
+        end
       end
     end
   end

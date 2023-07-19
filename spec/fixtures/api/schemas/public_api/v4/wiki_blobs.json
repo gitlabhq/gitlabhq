@@ -1,0 +1,57 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "basename": {
+        "type": "string"
+      },
+      "data": {
+        "type": "string"
+      },
+      "path": {
+        "type": [
+          "string"
+        ]
+      },
+      "filename": {
+        "type": [
+          "string"
+        ]
+      },
+      "id": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "project_id": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "group_id": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "ref": {
+        "type": "string"
+      },
+      "startline": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "basename",
+      "data",
+      "path",
+      "filename",
+      "ref",
+      "startline"
+    ],
+    "additionalProperties": false
+  }
+}

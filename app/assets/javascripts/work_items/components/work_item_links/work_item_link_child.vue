@@ -271,7 +271,7 @@ export default {
         @click="toggleItem"
       />
       <div
-        class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-pl-3 gl-pr-2 gl-py-2 gl-rounded-base"
+        class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-pl-3 gl-pr-2 gl-py-2 gl-mx-n2 gl-rounded-base"
         data-testid="links-child"
       >
         <div class="item-contents gl-display-flex gl-flex-grow-1 gl-flex-wrap gl-min-w-0">

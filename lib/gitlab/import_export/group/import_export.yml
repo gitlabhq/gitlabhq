@@ -7,12 +7,10 @@ tree:
   group:
     - :milestones
     - :badges
-    - labels:
-      - :priorities
+    - :labels
     - boards:
       - lists:
-        - label:
-          - :priorities
+        - :label
         - :board
     - members:
       - :user
@@ -126,8 +124,7 @@ ee:
       - boards:
         - :board_assignee
         - :milestone
-        - labels:
-          - :priorities
+        - :labels
         - lists:
           - milestone:
             - events:

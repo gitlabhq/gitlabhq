@@ -255,6 +255,27 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         expect(entity.export_relations_url_path).to eq("/projects/#{entity.source_xid}/export_relations")
       end
     end
+
+    context 'when batched' do
+      context 'when source supports batched export' do
+        it 'returns batched export relations url' do
+          import = build(:bulk_import, source_version: '16.2.0')
+          entity = build(:bulk_import_entity, :project_entity, bulk_import: import)
+
+          expect(entity.export_relations_url_path(batched: true))
+            .to eq("/projects/#{entity.source_xid}/export_relations?batched=true")
+        end
+      end
+
+      context 'when source does not support batched export' do
+        it 'returns export relations url' do
+          entity = build(:bulk_import_entity)
+
+          expect(entity.export_relations_url_path(batched: true))
+            .to eq("/groups/#{entity.source_xid}/export_relations")
+        end
+      end
+    end
   end
 
   describe '#relation_download_url_path' do
@@ -263,6 +284,27 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
       expect(entity.relation_download_url_path('test'))
         .to eq("/groups/#{entity.source_xid}/export_relations/download?relation=test")
+    end
+
+    context 'when batch number is present' do
+      context 'when source supports batched export' do
+        it 'returns export relations url with download query string and batch number' do
+          import = build(:bulk_import, source_version: '16.2.0')
+          entity = build(:bulk_import_entity, :project_entity, bulk_import: import)
+
+          expect(entity.relation_download_url_path('test', 1))
+            .to eq("/projects/#{entity.source_xid}/export_relations/download?batch_number=1&batched=true&relation=test")
+        end
+      end
+
+      context 'when source does not support batched export' do
+        it 'returns export relations url' do
+          entity = build(:bulk_import_entity)
+
+          expect(entity.relation_download_url_path('test', 1))
+            .to eq("/groups/#{entity.source_xid}/export_relations/download?relation=test")
+        end
+      end
     end
   end
 

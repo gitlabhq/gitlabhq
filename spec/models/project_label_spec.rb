@@ -107,14 +107,14 @@ RSpec.describe ProjectLabel do
       context 'using name' do
         it 'returns cross reference with label name' do
           expect(label.to_reference(project, format: :name))
-            .to eq %Q(#{label.project.full_path}~"#{label.name}")
+            .to eq %(#{label.project.full_path}~"#{label.name}")
         end
       end
 
       context 'using id' do
         it 'returns cross reference with label id' do
           expect(label.to_reference(project, format: :id))
-            .to eq %Q(#{label.project.full_path}~#{label.id})
+            .to eq %(#{label.project.full_path}~#{label.id})
         end
       end
     end

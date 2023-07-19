@@ -52,6 +52,7 @@ const mockProvide = {
 
 const defaultProps = {
   areScopedVariablesAvailable: true,
+  hasEnvScopeQuery: false,
   pageInfo: {},
   hideEnvironmentScope: false,
   refetchAfterMutation: false,
@@ -219,16 +220,12 @@ describe('Ci Variable Shared Component', () => {
           expect(mockEnvironments).toHaveBeenCalled();
         });
 
-        describe('when Limit Environment Scope FF is enabled', () => {
+        // applies only to project-level CI variables
+        describe('when environment scope is limited', () => {
           beforeEach(async () => {
             await createComponentWithApollo({
               props: { ...createProjectProps() },
-              provide: {
-                glFeatures: {
-                  ciLimitEnvironmentScope: true,
-                  ciVariablesPages: isVariablePagesEnabled,
-                },
-              },
+              provide: pagesFeatureFlagProvide,
             });
           });
 
@@ -251,26 +248,11 @@ describe('Ci Variable Shared Component', () => {
               expect.objectContaining({ search: 'staging' }),
             );
           });
-        });
 
-        describe('when Limit Environment Scope FF is disabled', () => {
-          beforeEach(async () => {
-            await createComponentWithApollo({
-              props: { ...createProjectProps() },
-              provide: pagesFeatureFlagProvide,
-            });
-          });
+          it('does not show loading icon in table while searching for environments', () => {
+            findCiSettings().vm.$emit('search-environment-scope', 'staging');
 
-          it('initial query is called with the correct variables', () => {
-            expect(mockEnvironments).toHaveBeenCalledWith({ fullPath: '/namespace/project/' });
-          });
-
-          it(`does not refetch environments when search term is present`, async () => {
-            expect(mockEnvironments).toHaveBeenCalledTimes(1);
-
-            await findCiSettings().vm.$emit('search-environment-scope', 'staging');
-
-            expect(mockEnvironments).toHaveBeenCalledTimes(1);
+            expect(findLoadingIcon().exists()).toBe(false);
           });
         });
       });
@@ -532,6 +514,7 @@ describe('Ci Variable Shared Component', () => {
               areEnvironmentsLoading: false,
               areScopedVariablesAvailable: wrapper.props().areScopedVariablesAvailable,
               hideEnvironmentScope: defaultProps.hideEnvironmentScope,
+              hasEnvScopeQuery: props.hasEnvScopeQuery,
               pageInfo: defaultProps.pageInfo,
               isLoading: false,
               maxVariableLimit,

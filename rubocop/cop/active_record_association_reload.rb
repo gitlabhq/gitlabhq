@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # Cop that blacklists the use of `reload`.
+    # Cop that denylists the use of `reload`.
     class ActiveRecordAssociationReload < RuboCop::Cop::Base
       MSG = 'Use reset instead of reload. ' \
         'For more details check the https://gitlab.com/gitlab-org/gitlab-foss/issues/60218.'

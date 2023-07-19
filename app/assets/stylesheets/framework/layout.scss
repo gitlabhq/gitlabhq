@@ -36,7 +36,7 @@ body {
 }
 
 .layout-page {
-  padding-top: calc(#{$header-height} + #{$calc-application-bars-height});
+  padding-top: $calc-application-bars-height;
   padding-bottom: $calc-application-footer-height;
 }
 
@@ -60,11 +60,6 @@ body {
       padding-left: 15px !important;
     }
   }
-}
-
-.navless-container {
-  margin-top: $header-height;
-  padding-top: $gl-padding * 2;
 }
 
 .container-limited {

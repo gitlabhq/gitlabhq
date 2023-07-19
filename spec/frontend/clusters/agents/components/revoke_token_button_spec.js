@@ -2,6 +2,7 @@ import { GlButton, GlModal, GlFormInput, GlTooltip } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { ENTER_KEY } from '~/lib/utils/keys';
@@ -81,12 +82,15 @@ describe('RevokeTokenButton', () => {
       },
       propsData,
       stubs: {
-        GlModal,
+        GlModal: stubComponent(GlModal, {
+          methods: {
+            hide: jest.fn(),
+          },
+        }),
         GlTooltip,
       },
       mocks: { $toast: { show: toast } },
     });
-    wrapper.vm.$refs.modal.hide = jest.fn();
 
     writeQuery();
     await nextTick();

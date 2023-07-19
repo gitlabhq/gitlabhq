@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2023-06-13 04:43\n"
+"PO-Revision-Date: 2023-07-11 04:46\n"
 
 msgid " %{start} to %{end}"
 msgstr " de la %{start} până la %{end}"
@@ -102,6 +102,18 @@ msgid_plural "%d Approvals"
 msgstr[0] "%d Aprobare"
 msgstr[1] "%d Aprobări"
 msgstr[2] "%d de Aprobări"
+
+msgid "%d Issue"
+msgid_plural "%d Issues"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "%d Merge Request"
+msgid_plural "%d Merge Requests"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "%d Module"
 msgid_plural "%d Modules"
@@ -192,6 +204,12 @@ msgid_plural "%d assigned issues"
 msgstr[0] "%d problemă atribuită"
 msgstr[1] "%d probleme atribuite"
 msgstr[2] "%d de probleme atribuite"
+
+msgid "%d author"
+msgid_plural "%d authors"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "%d changed file"
 msgid_plural "%d changed files"
@@ -408,18 +426,6 @@ msgid_plural "%d more comments"
 msgstr[0] "%d comentariu în plus"
 msgstr[1] "%d comentarii în plus"
 msgstr[2] "%d de comentarii în plus"
-
-msgid "%d opened Issue"
-msgid_plural "%d opened Issues"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "%d opened Merge Request"
-msgid_plural "%d opened Merge Requests"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
 
 msgid "%d package"
 msgid_plural "%d packages"
@@ -754,9 +760,6 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-msgid "%{count} related %{pluralized_subject}: %{links}"
-msgstr "%{count} de %{pluralized_subject} conexe: %{links}"
-
 msgid "%{count} selected"
 msgstr "%{count} selectat(e)"
 
@@ -798,6 +801,9 @@ msgstr "%{docs_link_start}Ce este Large File Storage?%{docs_link_end}"
 
 msgid "%{docs_link_start}What is two-factor authentication?%{docs_link_end}"
 msgstr "%{docs_link_start}Ce este autentificarea cu doi factori?%{docs_link_end}"
+
+msgid "%{duration}, queued for %{queuedDuration} seconds"
+msgstr ""
 
 msgid "%{duration}ms"
 msgstr "%{duration}ms"
@@ -871,7 +877,10 @@ msgstr ""
 msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
 msgstr "%{integrations_link_start}Integrările%{link_end} vă permit să faceți aplicații terțe parte din fluxul de lucru GitLab. Dacă integrările disponibile nu vă satisfac nevoile, considerați posibilitatea de a utiliza un %{webhooks_link_start}webhook%{link_end}."
 
-msgid "%{issuableDisplayName} %{lockStatus}."
+msgid "%{issuableDisplayName} locked."
+msgstr ""
+
+msgid "%{issuableDisplayName} unlocked."
 msgstr ""
 
 msgid "%{issuableType} will be removed! Are you sure?"
@@ -894,6 +903,9 @@ msgstr "%{italic_start}Ce este nou%{italic_end} este inactiv și nu poate fi viz
 
 msgid "%{itemsCount} issues with a limit of %{maxIssueCount}"
 msgstr "%{itemsCount} probleme cu o limită de %{maxIssueCount}"
+
+msgid "%{jobName} job is being retried"
+msgstr ""
 
 msgid "%{jobs} Jobs"
 msgstr ""
@@ -1219,6 +1231,12 @@ msgstr "%{spanStart}la linia%{spanEnd} %{errorLine}%{errorColumn}"
 msgid "%{spanStart}in%{spanEnd} %{errorFn}"
 msgstr "%{spanStart}în%{spanEnd} %{errorFn}"
 
+msgid "%{startDate} – %{dueDate}"
+msgstr ""
+
+msgid "%{startDate} – No due date"
+msgstr ""
+
 msgid "%{start} to %{end}"
 msgstr "%{start} la %{end}"
 
@@ -1246,8 +1264,8 @@ msgstr ""
 msgid "%{statusStart}Dismissed%{statusEnd}: %{dismissalReason} on pipeline %{pipelineLink} at %{projectLink}"
 msgstr ""
 
-msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
-msgstr "%{strongOpen}Avertisment:%{strongClose} Linkurile de grup SAML pot face ca GitLab să înlăture automat membrii din grupuri."
+msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically change member roles or remove members from groups."
+msgstr ""
 
 msgid "%{strongStart}%{count}%{strongEnd} commit"
 msgid_plural "%{strongStart}%{count}%{strongEnd} commits"
@@ -1377,9 +1395,6 @@ msgstr "%{type} acceptă numai numele %{name}"
 
 msgid "%{url} (optional)"
 msgstr ""
-
-msgid "%{userName} (cannot merge)"
-msgstr "%{userName} (nu poate îmbina)"
 
 msgid "%{userName}'s avatar"
 msgstr "Avatarul lui %{userName}"
@@ -2089,6 +2104,12 @@ msgstr ""
 msgid "AI|I don't see how I can help. Please give better instructions!"
 msgstr ""
 
+msgid "AI|May provide inappropriate responses not representative of GitLab's views. Do not input personal data."
+msgstr ""
+
+msgid "AI|New chat"
+msgstr ""
+
 msgid "AI|Populate issue description"
 msgstr ""
 
@@ -2542,6 +2563,9 @@ msgstr "Tokenuri de acces"
 msgid "AccessTokens|Access token limit reached"
 msgstr ""
 
+msgid "AccessTokens|Add a %{type}"
+msgstr ""
+
 msgid "AccessTokens|Are you sure?"
 msgstr "Sunteți sigur?"
 
@@ -2560,11 +2584,17 @@ msgstr "Copiați tokenul de e-mail primit"
 msgid "AccessTokens|Copy static object token"
 msgstr "Copiați tokenul obiectului static"
 
+msgid "AccessTokens|Create %{type}"
+msgstr ""
+
 msgid "AccessTokens|Created"
 msgstr "Creat"
 
 msgid "AccessTokens|Feed token"
 msgstr "Token de flux"
+
+msgid "AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
+msgstr ""
 
 msgid "AccessTokens|Incoming email token"
 msgstr "Token de e-mail primit"
@@ -2584,6 +2614,15 @@ msgstr "Păstrați acest token secret. Oricine îl are poate citi fluxurile RSS 
 msgid "AccessTokens|Personal Access Tokens"
 msgstr "Tokenuri de acces personal"
 
+msgid "AccessTokens|Scopes set the permission levels granted to the token."
+msgstr ""
+
+msgid "AccessTokens|Select a role"
+msgstr ""
+
+msgid "AccessTokens|Select scopes"
+msgstr ""
+
 msgid "AccessTokens|Static object token"
 msgstr "Token de obiect static"
 
@@ -2592,6 +2631,9 @@ msgstr "Ultima dată când a fost folosit un token"
 
 msgid "AccessTokens|They are the only accepted password when you have Two-Factor Authentication (2FA) enabled."
 msgstr "Acestea sunt singurele parole acceptate atunci când autentificarea cu doi factori (2FA) este activată."
+
+msgid "AccessTokens|Token name"
+msgstr ""
 
 msgid "AccessTokens|You can also use personal access tokens to authenticate against Git over HTTP."
 msgstr "De asemenea, puteți utiliza tokenuri de acces personale pentru a vă autentifica la Git prin HTTP."
@@ -2644,13 +2686,13 @@ msgstr "Reparați-vă pipeline-urile prin validarea contului dumneavoastră"
 msgid "AccountValidation|I'll bring my own runners"
 msgstr "Îmi voi aduce proprii executori"
 
-msgid "AccountValidation|In order to use free units of compute on shared runners, you'll need to validate your account using one of our verification options. If you prefer not to, you can run pipelines by bringing your own runners and disabling shared runners for your project."
+msgid "AccountValidation|In order to use free compute minutes on shared runners, you'll need to validate your account using one of our verification options. If you prefer not to, you can run pipelines by bringing your own runners and disabling shared runners for your project."
 msgstr ""
 
 msgid "AccountValidation|Learn more."
 msgstr "Aflați mai multe."
 
-msgid "AccountValidation|Looks like you'll need to validate your account to use free units of compute"
+msgid "AccountValidation|Looks like you'll need to validate your account to use free compute minutes"
 msgstr ""
 
 msgid "AccountValidation|Validate your account"
@@ -2761,9 +2803,6 @@ msgstr ""
 msgid "Add Zoom meeting"
 msgstr "Adăugare reuniune Zoom."
 
-msgid "Add a %{type}"
-msgstr "Adăugare %{type}"
-
 msgid "Add a GCP region"
 msgstr "Adăugați o regiune GCP"
 
@@ -2811,6 +2850,9 @@ msgstr "Adăugați o nouă problemă"
 
 msgid "Add a numbered list"
 msgstr "Adăugați o listă numerotată"
+
+msgid "Add a quick action"
+msgstr ""
 
 msgid "Add a related epic"
 msgstr "Adăugați o epică asociată"
@@ -3067,6 +3109,9 @@ msgstr "S-a adăugat în această versiune"
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
 msgstr "Adăugarea de aplicații noi este dezactivată în instanța dvs. GitLab. Vă rugăm să contactați administratorul dvs. GitLab pentru a obține permisiunea"
 
+msgid "Additional compute minutes:"
+msgstr ""
+
 msgid "Additional diagram formats"
 msgstr ""
 
@@ -3086,9 +3131,6 @@ msgid "Additional text to show on the sign-in page"
 msgstr "Text suplimentar de afișat pe pagina de autentificare"
 
 msgid "Additional units"
-msgstr ""
-
-msgid "Additional units of compute:"
 msgstr ""
 
 msgid "Address"
@@ -3514,23 +3556,14 @@ msgstr "Dacă nu există niciun index existent, GitLab creează unul."
 msgid "AdminSettings|Import sources"
 msgstr "Surse de import"
 
+msgid "AdminSettings|Improve non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed."
+msgstr ""
+
 msgid "AdminSettings|Inactive project deletion"
 msgstr "Ștergerea proiectelor inactive"
 
 msgid "AdminSettings|Instance runners expiration"
 msgstr "Expirarea executanților de instanță"
-
-msgid "AdminSettings|Jitsu administrator email"
-msgstr ""
-
-msgid "AdminSettings|Jitsu administrator password"
-msgstr ""
-
-msgid "AdminSettings|Jitsu host"
-msgstr ""
-
-msgid "AdminSettings|Jitsu project ID"
-msgstr ""
 
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
 msgstr "Păstrați cele mai recente artefacte pentru toate joburile din cele mai recente pipeline-uri de succes"
@@ -3613,6 +3646,9 @@ msgstr "Protejați în mod implicit variabilele CI/CD"
 msgid "AdminSettings|Registration Features include:"
 msgstr "Funcțiile de înregistrare includ:"
 
+msgid "AdminSettings|Requeue indexing workers"
+msgstr ""
+
 msgid "AdminSettings|Require users to prove ownership of custom domains"
 msgstr "Solicitați utilizatorilor să dovedească proprietatea asupra domeniilor personalizate"
 
@@ -3682,9 +3718,6 @@ msgstr "Setarea trebuie să fie mai mare de 0."
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr "Setările de mărime și domeniu pentru site-urile statice Pages."
 
-msgid "AdminSettings|The ID of the project in Jitsu. The project contains all analytics instances."
-msgstr ""
-
 msgid "AdminSettings|The URL of your Cube instance."
 msgstr ""
 
@@ -3693,9 +3726,6 @@ msgstr ""
 
 msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects."
 msgstr "Domeniul implicit de utilizat pentru etapele Auto Review Apps și Auto Deploy în toate proiectele."
-
-msgid "AdminSettings|The host of your Jitsu instance."
-msgstr ""
 
 msgid "AdminSettings|The host of your data collector instance."
 msgstr ""
@@ -3727,10 +3757,10 @@ msgstr "Numărul total de joburi în pipeline-urile active în prezent"
 msgid "AdminSettings|Use AWS OpenSearch Service with IAM credentials"
 msgstr "Utilizați serviciul AWS OpenSearch cu acreditările IAM"
 
-msgid "AdminSettings|Used to connect Jitsu to the Clickhouse instance."
+msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
 msgstr ""
 
-msgid "AdminSettings|Used to generate short-lived API access tokens."
+msgid "AdminSettings|Used to connect Snowplow to the Clickhouse instance."
 msgstr ""
 
 msgid "AdminSettings|Used to retrieve dashboard data from the Cube instance."
@@ -3738,9 +3768,6 @@ msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
 msgstr "Atât utilizatorii, cât și grupurile trebuie să accepte invitația înainte de a fi adăugați la un grup sau la un proiect."
-
-msgid "AdminSettings|When paused, GitLab still tracks the changes. This is useful for cluster/index migrations."
-msgstr "Atunci când este în pauză, GitLab continuă să urmărească modificările. Acest lucru este util pentru migrările de clustere/indexuri."
 
 msgid "AdminSettings|When to delete inactive projects"
 msgstr "Când să ștergeți proiectele inactive"
@@ -3964,9 +3991,6 @@ msgstr "Informații importante despre utilizarea instanței dvs. GitLab"
 msgid "AdminUsers|Is using seat"
 msgstr "Folosește un seat"
 
-msgid "AdminUsers|Issues and merge requests authored by this user are hidden from other users."
-msgstr ""
-
 msgid "AdminUsers|It's you!"
 msgstr "Sunteți d-voastră!"
 
@@ -4012,6 +4036,9 @@ msgstr "Proiectele personale, istoricul grupurilor și al utilizatorilor vor fi 
 msgid "AdminUsers|Private profile"
 msgstr ""
 
+msgid "AdminUsers|Projects, issues, merge requests, and comments of this user are hidden from other users."
+msgstr ""
+
 msgid "AdminUsers|Reactivating a user will:"
 msgstr "Reactivarea unui utilizator va:"
 
@@ -4051,7 +4078,7 @@ msgstr "Skype"
 msgid "AdminUsers|Sort by"
 msgstr "Sortare după"
 
-msgid "AdminUsers|The maximum units of compute that jobs in this namespace can use on shared runners each month. Set 0 for unlimited. Set empty to inherit the global setting of %{minutes}"
+msgid "AdminUsers|The maximum compute minutes that jobs in this namespace can use on shared runners each month. Set 0 for unlimited. Set empty to inherit the global setting of %{minutes}"
 msgstr ""
 
 msgid "AdminUsers|The user can't access git repositories."
@@ -4321,9 +4348,6 @@ msgstr "Folosiți mapări de căutare a codurilor învechite. Pentru a îmbunăt
 msgid "After a successful password update you will be redirected to login screen."
 msgstr "După o actualizare reușită a parolei, veți fi redirecționat către ecranul de conectare."
 
-msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
-msgstr "După o actualizare cu succes a parolei, veți fi redirecționat către pagina de autentificare, unde vă puteți conecta cu noua parolă."
-
 msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
 msgstr ""
 
@@ -4360,8 +4384,8 @@ msgstr "Flux de activitate"
 msgid "AlertManagement|Alert"
 msgstr "Alertă"
 
-msgid "AlertManagement|Alert assignee(s): %{assignees}"
-msgstr "Responsabil(i) alertă: %{assignees}"
+msgid "AlertManagement|Alert assignees: %{assignees}"
+msgstr ""
 
 msgid "AlertManagement|Alert detail"
 msgstr "Detaliu despre alerta"
@@ -4465,11 +4489,11 @@ msgstr "A survenit o eroare la afișarea alertei. Vă rugăm să reîmprospăta�
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr "A survenit o eroare la afișarea alertelor. Confirmați detaliile de configurare ale punctului final pentru a vă asigura că apar alerte."
 
-msgid "AlertManagement|There was an error while updating the assignee(s) list. Please try again."
-msgstr "A survenit o eroare la actualizarea listei responsabililor. Vă rugăm să încercați din nou."
+msgid "AlertManagement|There was an error while updating the assignees list. Please try again."
+msgstr ""
 
-msgid "AlertManagement|There was an error while updating the assignee(s) of the alert. Please try again."
-msgstr "A survenit o eroare la actualizarea celor responsabili la această alertă. Vă rugăm să încercați din nou."
+msgid "AlertManagement|There was an error while updating the assignees of the alert. Please try again."
+msgstr ""
 
 msgid "AlertManagement|There was an error while updating the status of the alert."
 msgstr "A survenit o eroare la actualizarea statutului alertei."
@@ -4579,9 +4603,6 @@ msgstr "Continuați cu editarea"
 msgid "AlertSettings|Prometheus"
 msgstr "Prometheus"
 
-msgid "AlertSettings|Prometheus API base URL"
-msgstr "Adresa URL de bază a API-ului Prometheus"
-
 msgid "AlertSettings|Reset Key"
 msgstr "Resetare cheie"
 
@@ -4617,9 +4638,6 @@ msgstr "Formularul are modificări nesalvate. Cum doriți să continuați?"
 
 msgid "AlertSettings|To create a custom mapping, enter an example payload from your monitoring tool, in JSON format. Select the \"Parse payload fields\" button to continue."
 msgstr "Pentru a crea o mapare personalizată, introduceți un exemplu de payload de la instrumentul de monitorizare, în format JSON. Selectați butonul „Analizare câmpuri payload” pentru a continua."
-
-msgid "AlertSettings|URL cannot be blank and must start with http: or https:."
-msgstr "URL-ul nu poate fi gol și trebuie să înceapă cu http: sau https:."
 
 msgid "AlertSettings|Use the URL and authorization key below to configure how Prometheus sends alerts to GitLab. Review the %{linkStart}GitLab documentation%{linkEnd} to learn how to configure your endpoint."
 msgstr "Utilizați URL-ul și cheia de autorizare de mai jos pentru a configura modul în care Prometheus trimite alerte către GitLab. Consultați %{linkStart}documentația GitLab%{linkEnd} pentru a afla cum să vă configurați punctul final."
@@ -4716,6 +4734,9 @@ msgstr "Toate ramurile"
 
 msgid "All changes are committed"
 msgstr "Toate schimbările sunt comise"
+
+msgid "All default branches"
+msgstr ""
 
 msgid "All eligible users"
 msgstr "Toți utilizatorii eligibili"
@@ -4882,6 +4903,9 @@ msgstr "De asemenea, înlăturați apartenența directă a utilizatorilor la sub
 msgid "Also unassign this user from related issues and merge requests"
 msgstr "De asemenea, anulați atribuirea acestui utilizator de la problemele și merge request-urile asociate"
 
+msgid "Alt text"
+msgstr ""
+
 msgid "Alternate support URL for Help page and Help dropdown."
 msgstr "URL alternativ de asistență pentru pagina de Ajutor și meniul derulant Ajutor."
 
@@ -4933,12 +4957,6 @@ msgstr "A apărut o eroare"
 msgid "An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present."
 msgstr "O eroare de raportare în care rezultatul unui test indică în mod eronat prezența unei vulnerabilități într-un sistem atunci când vulnerabilitatea nu este prezentă."
 
-msgid "An error occurred adding a draft to the thread."
-msgstr "S-a produs o eroare la adăugarea unui draft la subiect."
-
-msgid "An error occurred adding a new draft."
-msgstr "A apărut o eroare la adăugarea unui nou draft."
-
 msgid "An error occurred creating the new branch."
 msgstr "A apărut o eroare la crearea noii ramuri."
 
@@ -4980,6 +4998,12 @@ msgstr "A survenit o eroare la aprobare, încercați din nou."
 
 msgid "An error occurred while checking group path. Please refresh and try again."
 msgstr "A survenit o eroare în timpul verificării căii grupului. Vă rugăm să reîmprospătați și să încercați din nou."
+
+msgid "An error occurred while creating the %{issuableType}. Please try again."
+msgstr ""
+
+msgid "An error occurred while creating the issue. Please try again."
+msgstr ""
 
 msgid "An error occurred while decoding the file."
 msgstr "A apărut o eroare în timpul decodării fișierului."
@@ -5140,9 +5164,6 @@ msgstr "A apărut o eroare în timpul încărcării proiectelor."
 msgid "An error occurred while loading the blob controls."
 msgstr "A apărut o eroare în timpul încărcării controalelor pentru blob."
 
-msgid "An error occurred while loading the data. Please try again."
-msgstr "A apărut o eroare în timpul încărcării datelor. Vă rugăm să încercați din nou."
-
 msgid "An error occurred while loading the file"
 msgstr "A apărut o eroare la încărcarea fișierului"
 
@@ -5260,9 +5281,6 @@ msgstr "S-a produs o eroare la actualizarea configurației."
 msgid "An error occurred while updating labels."
 msgstr "S-a produs o eroare la actualizarea etichetelor."
 
-msgid "An error occurred while updating the comment"
-msgstr "A apărut o eroare în timp ce se actualiza comentariul"
-
 msgid "An error occurred while updating the configuration."
 msgstr "A apărut o eroare în timp ce se actualiza configurația."
 
@@ -5350,7 +5368,7 @@ msgstr "A apărut o eroare necunoscută."
 msgid "Analytics"
 msgstr "Analize"
 
-msgid "Analytics|Add to Dashboard"
+msgid "Analytics|A visualization with that name already exists."
 msgstr ""
 
 msgid "Analytics|Add visualizations"
@@ -5416,10 +5434,19 @@ msgstr ""
 msgid "Analytics|Data Table"
 msgstr ""
 
+msgid "Analytics|Dates and times are displayed in the UTC timezone"
+msgstr ""
+
 msgid "Analytics|Edit"
 msgstr ""
 
+msgid "Analytics|Enter a visualization name"
+msgstr ""
+
 msgid "Analytics|Error while saving dashboard"
+msgstr ""
+
+msgid "Analytics|Error while saving visualization."
 msgstr ""
 
 msgid "Analytics|Host"
@@ -5431,7 +5458,7 @@ msgstr ""
 msgid "Analytics|Line Chart"
 msgstr ""
 
-msgid "Analytics|New Analytics Visualization Title"
+msgid "Analytics|New analytics visualization name"
 msgstr ""
 
 msgid "Analytics|New dashboard"
@@ -5470,6 +5497,18 @@ msgstr ""
 msgid "Analytics|Save"
 msgstr ""
 
+msgid "Analytics|Save and add to Dashboard"
+msgstr ""
+
+msgid "Analytics|Save new visualization"
+msgstr ""
+
+msgid "Analytics|Select a measurement"
+msgstr ""
+
+msgid "Analytics|Select a visualization type"
+msgstr ""
+
 msgid "Analytics|Single Statistic"
 msgstr ""
 
@@ -5480,6 +5519,9 @@ msgid "Analytics|URL"
 msgstr ""
 
 msgid "Analytics|Updating dashboard %{dashboardId}"
+msgstr ""
+
+msgid "Analytics|Updating visualization %{visualizationName}"
 msgstr ""
 
 msgid "Analytics|Users"
@@ -5498,6 +5540,12 @@ msgid "Analytics|Visualization Designer"
 msgstr ""
 
 msgid "Analytics|Visualization Type"
+msgstr ""
+
+msgid "Analytics|Visualization designer"
+msgstr ""
+
+msgid "Analytics|Visualization was saved successfully"
 msgstr ""
 
 msgid "Analyze your dependencies for known vulnerabilities."
@@ -5523,6 +5571,9 @@ msgstr "Și acest token de înregistrare:"
 
 msgid "Anonymous"
 msgstr "Anonim"
+
+msgid "Anonymous user"
+msgstr ""
 
 msgid "Another issue tracker is already in use. Only one issue tracker service can be active at a time"
 msgstr "Un alt tracker de probleme este deja în uz. Un singur serviciu de urmărire a problemelor poate fi activ la un moment dat."
@@ -6322,9 +6373,6 @@ msgstr "Sunteți sigur? Înlăturarea acestei chei GPG nu afectează commit-uril
 msgid "Are you sure? The device will be signed out of GitLab and all remember me tokens revoked."
 msgstr "Sunteți sigur? Dispozitivul va fi deconectat de la GitLab și toate tokenurile de tip „amintiți-vă de mine” vor fi revocate."
 
-msgid "Arrange charts"
-msgstr "Aranjați graficele"
-
 msgid "Artifact"
 msgstr "Artefact"
 
@@ -6415,6 +6463,9 @@ msgstr "Mărimea totală a artefactelor"
 msgid "Artifacts|We want you to be able to use this page to easily manage your CI/CD job artifacts. We are working to improve this experience and would appreciate any feedback you have about the improvements we are making."
 msgstr ""
 
+msgid "As this is a newly created account, to get started, click the link below to confirm your account."
+msgstr ""
+
 msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."
 msgstr "Pe măsură ce continuăm să dezvoltăm mai multe funcții pentru SAST, ne-ar plăcea să primim feedback-ul dvs. cu privire la funcția de configurare SAST în %{linkStart}această problemă%{linkEnd}."
 
@@ -6469,8 +6520,8 @@ msgstr "Atribuire personală"
 msgid "Assign reviewer"
 msgstr "Atribuiți un revizor"
 
-msgid "Assign reviewer(s)"
-msgstr "Atribuiți revizor(i)"
+msgid "Assign reviewers"
+msgstr ""
 
 msgid "Assign severity"
 msgstr "Atribuiți severitatea"
@@ -6528,9 +6579,6 @@ msgstr "Responsabilul nu are permisiuni"
 
 msgid "Assignee lists not available with your current license"
 msgstr "Listele de responsabili nu sunt disponibile cu licența dvs. actuală"
-
-msgid "Assignee(s)"
-msgstr "Responsabil(i)"
 
 msgid "Assignees"
 msgstr "Responsabili"
@@ -6673,17 +6721,23 @@ msgstr "S-a produs o eroare la preluarea fluxurilor de evenimente de audit exter
 msgid "AuditStreams|An error occurred when updating external audit event stream destination. Please try it again."
 msgstr "A apărut o eroare la actualizarea destinației fluxului de evenimente de audit extern. Vă rugăm să încercați din nou."
 
+msgid "AuditStreams|Are you sure about deleting this destination?"
+msgstr ""
+
 msgid "AuditStreams|Cancel editing"
 msgstr "Anulați editarea"
+
+msgid "AuditStreams|Client Email"
+msgstr ""
 
 msgid "AuditStreams|Custom HTTP headers (optional)"
 msgstr "Anteturi HTTP personalizate (opțional)"
 
-msgid "AuditStreams|Defines which streaming events are captured"
+msgid "AuditStreams|Delete destination"
 msgstr ""
 
-msgid "AuditStreams|Delete %{link}"
-msgstr "Ștergeți %{link}"
+msgid "AuditStreams|Deleting the streaming destination %{destination} will stop audit events being streamed"
+msgstr ""
 
 msgid "AuditStreams|Destination URL"
 msgstr "URL-ul de destinație"
@@ -6694,19 +6748,34 @@ msgstr ""
 msgid "AuditStreams|Destinations receive all audit event data"
 msgstr "Destinațiile primesc toate datele evenimentelor de audit"
 
-msgid "AuditStreams|Edit %{link}"
-msgstr "Editați %{link}"
-
 msgid "AuditStreams|Event filtering (optional)"
+msgstr ""
+
+msgid "AuditStreams|Filter by audit event type"
+msgstr ""
+
+msgid "AuditStreams|Google Cloud Logging"
+msgstr ""
+
+msgid "AuditStreams|HTTP endpoint"
 msgstr ""
 
 msgid "AuditStreams|Header"
 msgstr "Antet"
 
+msgid "AuditStreams|Log ID"
+msgstr ""
+
 msgid "AuditStreams|Maximum of %{number} HTTP headers has been reached."
 msgstr "A fost atins numărul maxim de %{number} (de) anteturi HTTP."
 
-msgid "AuditStreams|No filters available. %{linkStart}How do I add a filter?%{linkEnd}"
+msgid "AuditStreams|No header created yet."
+msgstr ""
+
+msgid "AuditStreams|Private key"
+msgstr ""
+
+msgid "AuditStreams|Project ID"
 msgstr ""
 
 msgid "AuditStreams|Remove custom header"
@@ -6714,6 +6783,9 @@ msgstr "Înlăturați antetul personalizat"
 
 msgid "AuditStreams|Save external stream destination"
 msgstr "Salvați destinația fluxului extern"
+
+msgid "AuditStreams|Select events"
+msgstr ""
 
 msgid "AuditStreams|Setup streaming for audit events"
 msgstr "Configurați streamingul pentru evenimentele de audit"
@@ -6742,10 +6814,7 @@ msgstr "Valoare"
 msgid "AuditStreams|Verification token"
 msgstr "Token de verificare"
 
-msgid "AuditStreams|Verification token for the %{link} stream"
-msgstr ""
-
-msgid "AuditStreams|View verification token"
+msgid "AuditStreams|audit-events"
 msgstr ""
 
 msgid "AuditStreams|ex: 1000"
@@ -6755,6 +6824,12 @@ msgid "AuditStreams|ex: limitation"
 msgstr ""
 
 msgid "AuditStreams|filtered"
+msgstr ""
+
+msgid "AuditStreams|my-email@my-google-project.iam.gservice.account.com"
+msgstr ""
+
+msgid "AuditStreams|my-google-project"
 msgstr ""
 
 msgid "Aug"
@@ -7294,28 +7369,28 @@ msgstr "Facturare"
 msgid "BillingPlans|%{group_name} is currently using the %{plan_name}"
 msgstr "%{group_name} folosește în prezent %{plan_name}."
 
-msgid "BillingPlans|10,000 units of compute per month"
+msgid "BillingPlans|10,000 compute minutes per month"
 msgstr ""
 
-msgid "BillingPlans|10000 units of compute"
+msgid "BillingPlans|10000 compute minutes"
 msgstr ""
 
 msgid "BillingPlans|10GB transfer per month"
 msgstr "10GB de transfer pe lună"
 
-msgid "BillingPlans|400 units of compute"
+msgid "BillingPlans|400 compute minutes"
 msgstr ""
 
-msgid "BillingPlans|400 units of compute per month"
+msgid "BillingPlans|400 compute minutes per month"
 msgstr ""
 
 msgid "BillingPlans|5 users per namespace"
 msgstr "5 utilizatori pe spațiu de nume"
 
-msgid "BillingPlans|50,000 units of compute per month"
+msgid "BillingPlans|50,000 compute minutes per month"
 msgstr ""
 
-msgid "BillingPlans|50000 units of compute"
+msgid "BillingPlans|50000 compute minutes"
 msgstr ""
 
 msgid "BillingPlans|5GB storage"
@@ -7486,6 +7561,9 @@ msgstr "Asistență"
 msgid "BillingPlans|Talk to an expert today."
 msgstr "Discutați cu un expert astăzi."
 
+msgid "BillingPlans|Then %{move_link_start}move any projects%{move_link_end} you wish to use with your subscription to that group."
+msgstr ""
+
 msgid "BillingPlans|This group uses the plan associated with its parent group."
 msgstr "Acest grup utilizează planul asociat grupului său părinte."
 
@@ -7513,11 +7591,8 @@ msgstr "Suntem aici pentru a vă ajuta."
 msgid "BillingPlans|While GitLab is ending availability of the Bronze plan, you can still renew your Bronze subscription one additional time before %{eoa_bronze_plan_end_date}. We are also offering a limited time free upgrade to our Premium Plan (up to 25 users)! Learn more about the changes and offers in our %{announcement_link}."
 msgstr "În timp ce GitLab pune capăt disponibilității planului Bronze, încă mai puteți reînnoi abonamentul Bronze încă o dată înainte de %{eoa_bronze_plan_end_date}. Oferim, de asemenea, un upgrade gratuit pe o perioadă limitată de timp la planul Premium (până la 25 de utilizatori)! Aflați mai multe despre modificări și oferte în %{announcement_link}."
 
-msgid "BillingPlans|You don't have any groups. You'll need to %{create_group_link_start}create one%{create_group_link_end} and %{move_link_start}move this project to it%{move_link_end}."
-msgstr "Nu aveți niciun grup. Va trebui să %{create_group_link_start}creați unul%{create_group_link_end} și %{move_link_start}să mutați acest proiect în el%{move_link_end}."
-
-msgid "BillingPlans|You'll have to %{move_link_start}move this project%{move_link_end} to one of your groups."
-msgstr "Va trebui să %{move_link_start}mutați acest proiect%{move_link_end} într-unul din grupurile dumneavoastră."
+msgid "BillingPlans|You don't have any groups. You'll need to %{create_group_link_start}create one%{create_group_link_end} and %{move_link_start}move your projects to it%{move_link_end}."
+msgstr ""
 
 msgid "BillingPlans|Your GitLab.com %{plan} trial will %{strong_open}expire after %{expiration_date}%{strong_close}. You can retain access to the %{plan} features by upgrading below."
 msgstr "Perioada dvs. de încercare GitLab.com %{plan} %{strong_open}expiră după %{expiration_date}%{strong_close}. Puteți să păstrați accesul la caracteristicile %{plan} dacă faceți upgrade mai jos."
@@ -7576,10 +7651,10 @@ msgstr "Seats în uz / Seats în abonament"
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
 msgstr "Executorii partajați nu pot fi activați până când nu este înregistrat un card de credit valabil."
 
-msgid "Billings|To use free units of compute on shared runners, you'll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
+msgid "Billings|To use free compute minutes on shared runners, you'll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "Billings|To use free units of compute on shared runners, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
+msgid "Billings|To use free compute minutes on shared runners, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|User validation required"
@@ -7591,7 +7666,7 @@ msgstr "Validați contul"
 msgid "Billings|Validate user account"
 msgstr "Validați contul de utilizator"
 
-msgid "Billings|You'll now be able to take advantage of free units of compute on shared runners."
+msgid "Billings|You'll now be able to take advantage of free compute minutes on shared runners."
 msgstr ""
 
 msgid "Billings|Your account has been validated"
@@ -7888,11 +7963,17 @@ msgstr "A apărut o eroare în timpul creării problemei. Vă rugăm să încerc
 msgid "Boards|An error occurred while creating the list. Please try again."
 msgstr "A apărut o eroare în timpul creării listei. Vă rugăm să încercați din nou."
 
+msgid "Boards|An error occurred while fetching board. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching child groups. Please try again."
 msgstr "S-a produs o eroare în timpul căutării grupurilor copil. Vă rugăm să încercați din nou."
 
 msgid "Boards|An error occurred while fetching group projects. Please try again."
 msgstr "A apărut o eroare în timpul preluării proiectelor de grup. Vă rugăm să încercați din nou."
+
+msgid "Boards|An error occurred while fetching groups. Please try again."
+msgstr ""
 
 msgid "Boards|An error occurred while fetching issues. Please reload the page."
 msgstr "A apărut o eroare în timpul preluării problemelor. Vă rugăm să reîncărcați pagina."
@@ -7957,9 +8038,6 @@ msgstr "Extindeți"
 msgid "Boards|Failed to fetch blocking %{issuableType}s"
 msgstr "Nu s-a reușit preluarea %{issuableType}s care blochează"
 
-msgid "Boards|List actions"
-msgstr ""
-
 msgid "Boards|Move card"
 msgstr "Mutați cardul"
 
@@ -8016,6 +8094,9 @@ msgstr "Încărcați mai multe probleme"
 
 msgid "Board|Loading epics"
 msgstr "Se încarcă epicele"
+
+msgid "Bold (%{modifierKey}B)"
+msgstr ""
 
 msgid "Bold text"
 msgstr "Text îngroșat"
@@ -8434,7 +8515,16 @@ msgstr ""
 msgid "BroadcastMessages|Red"
 msgstr ""
 
+msgid "BroadcastMessages|Show only to users who have specific roles on groups/project pages"
+msgstr ""
+
 msgid "BroadcastMessages|Show the broadcast message in a command-line interface as a Git remote response"
+msgstr ""
+
+msgid "BroadcastMessages|Show to all users on all pages"
+msgstr ""
+
+msgid "BroadcastMessages|Show to all users on specific matching pages"
 msgstr ""
 
 msgid "BroadcastMessages|Starts at"
@@ -8443,10 +8533,10 @@ msgstr ""
 msgid "BroadcastMessages|Target Path"
 msgstr ""
 
-msgid "BroadcastMessages|Target roles"
+msgid "BroadcastMessages|Target broadcast message"
 msgstr ""
 
-msgid "BroadcastMessages|The broadcast message displays only to users in projects and groups who have these roles."
+msgid "BroadcastMessages|Target roles"
 msgstr ""
 
 msgid "BroadcastMessages|Theme"
@@ -8682,6 +8772,9 @@ msgstr "Pe lună"
 
 msgid "By quarter"
 msgstr "Pe trimestru"
+
+msgid "By using a primary email tied to an Enterprise email address, you acknowledge that this account is an Enterprise User."
+msgstr ""
 
 msgid "By week"
 msgstr "Pe săptămână"
@@ -9178,11 +9271,11 @@ msgstr "Rata eșecului schimbărilor"
 msgid "Change assignee"
 msgstr "Schimbare de responsabil"
 
-msgid "Change assignee(s)"
-msgstr "Schimbare de responsabil(i)"
+msgid "Change assignees"
+msgstr ""
 
-msgid "Change assignee(s)."
-msgstr "Schimbare de responsabil(i)"
+msgid "Change assignees."
+msgstr ""
 
 msgid "Change branches"
 msgstr "Schimbați ramurile"
@@ -9199,11 +9292,11 @@ msgstr "Schimbare de obiectiv"
 msgid "Change path"
 msgstr "Schimbați calea"
 
-msgid "Change reviewer(s)"
-msgstr "Schimbare de revizor(i)"
+msgid "Change reviewers"
+msgstr ""
 
-msgid "Change reviewer(s)."
-msgstr "Schimbare de revizor(i)"
+msgid "Change reviewers."
+msgstr ""
 
 msgid "Change role"
 msgstr "Schimbați rolul"
@@ -9226,8 +9319,11 @@ msgstr ""
 msgid "Change your password"
 msgstr "Schimbați-vă parola"
 
-msgid "Change your password or recover your current one"
-msgstr "Schimbați-vă parola sau recuperați-vă parola curentă"
+msgid "Change your password or recover your current one."
+msgstr ""
+
+msgid "Change your password."
+msgstr ""
 
 msgid "ChangeReviewer|All reviewers were removed."
 msgstr ""
@@ -9274,14 +9370,14 @@ msgstr "Modificările dvs. vor fi comise în %{branchName} deoarece un merge req
 msgid "Changed"
 msgstr "Modificat"
 
-msgid "Changed assignee(s)."
-msgstr "Responsabil(i) schimbat(i)."
+msgid "Changed assignees."
+msgstr ""
 
 msgid "Changed merge method to %{merge_method}"
 msgstr "Metoda de îmbinare a fost schimbată în %{merge_method}"
 
-msgid "Changed reviewer(s)."
-msgstr "Recenzent(i) modificat(i)."
+msgid "Changed reviewers."
+msgstr ""
 
 msgid "Changed squash option to %{squash_option}"
 msgstr "Opțiunea squash a fost schimbată în %{squash_option}"
@@ -9321,9 +9417,6 @@ msgstr "Caractere rămase"
 
 msgid "Characters over limit"
 msgstr "Caractere peste limită"
-
-msgid "Charts can't be displayed as the request for data has timed out. %{documentationLink}"
-msgstr "Graficele nu pot fi afișate deoarece solicitarea de date a expirat. %{documentationLink}"
 
 msgid "Chat"
 msgstr "Chat"
@@ -9430,7 +9523,7 @@ msgstr ""
 msgid "Checkout|$%{selectedPlanPrice} per 10 GB storage pack per year"
 msgstr "%{selectedPlanPrice} USD pe pachet de stocare de 10 GB pe an"
 
-msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 units of compute"
+msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 compute minutes"
 msgstr ""
 
 msgid "Checkout|%d compute pack"
@@ -9445,23 +9538,23 @@ msgstr "%{cardType} care se termină în %{lastFourDigits}"
 msgid "Checkout|%{name}'s GitLab subscription"
 msgstr "Abonament GitLab pentru %{name}"
 
+msgid "Checkout|%{name}'s compute minutes"
+msgstr ""
+
 msgid "Checkout|%{name}'s storage subscription"
 msgstr "Abonamentul de stocare pentru %{name}"
 
-msgid "Checkout|%{name}'s units of compute"
-msgstr ""
-
 msgid "Checkout|%{quantity} GB of storage"
 msgstr "%{quantity} GB de stocare"
+
+msgid "Checkout|%{quantity} compute minutes"
+msgstr ""
 
 msgid "Checkout|%{quantity} storage pack"
 msgid_plural "Checkout|%{quantity} storage packs"
 msgstr[0] "%{quantity} pachet de stocare"
 msgstr[1] "%{quantity} pachete de stocare"
 msgstr[2] "%{quantity} de pachete de stocare"
-
-msgid "Checkout|%{quantity} units of compute"
-msgstr ""
 
 msgid "Checkout|%{selectedPlanText} plan"
 msgstr "Planul %{selectedPlanText}"
@@ -9502,7 +9595,7 @@ msgstr "Oraș"
 msgid "Checkout|Compute pack"
 msgstr ""
 
-msgid "Checkout|Compute packs are only used after you've used your subscription's monthly quota. The additional units of compute will roll over month to month and are valid for one year."
+msgid "Checkout|Compute packs are only used after you've used your subscription's monthly quota. The additional compute minutes will roll over month to month and are valid for one year."
 msgstr ""
 
 msgid "Checkout|Confirm purchase"
@@ -9643,11 +9736,11 @@ msgstr "Taxa"
 msgid "Checkout|Total"
 msgstr "Total"
 
+msgid "Checkout|Total compute minutes: %{quantity}"
+msgstr ""
+
 msgid "Checkout|Total storage: %{quantity} GB"
 msgstr "Spațiu de stocare total: %{quantity} GB"
-
-msgid "Checkout|Total units of compute: %{quantity}"
-msgstr ""
 
 msgid "Checkout|Users"
 msgstr "Utilizatori"
@@ -9673,7 +9766,7 @@ msgstr "un abonament de stocare"
 msgid "Checkout|company or team"
 msgstr "companie sau echipă"
 
-msgid "Checkout|units of compute"
+msgid "Checkout|compute minutes"
 msgstr ""
 
 msgid "Checkout|x %{quantity} %{units} per pack"
@@ -9721,6 +9814,9 @@ msgstr "Alegeți un tip…"
 msgid "Choose file…"
 msgstr "Alegeți fișierul…"
 
+msgid "Choose protected branch"
+msgstr ""
+
 msgid "Choose the top-level group for your repository imports."
 msgstr "Alegeți grupul de nivel superior pentru importurile de repozitoriu."
 
@@ -9748,16 +9844,16 @@ msgstr ""
 msgid "CiCatalog|About this project"
 msgstr ""
 
-msgid "CiCatalog|CI/CD Catalog resource"
+msgid "CiCatalog|CI/CD Catalog"
 msgstr ""
 
-msgid "CiCatalog|CI/CD catalog"
+msgid "CiCatalog|CI/CD Catalog resource"
 msgstr ""
 
 msgid "CiCatalog|Create a pipeline component repository and make reusing pipeline configurations faster and easier."
 msgstr ""
 
-msgid "CiCatalog|Get started with the CI/CD catalog"
+msgid "CiCatalog|Get started with the CI/CD Catalog"
 msgstr ""
 
 msgid "CiCatalog|Go to the project"
@@ -9770,6 +9866,9 @@ msgid "CiCatalog|Mark project as a CI/CD Catalog resource"
 msgstr ""
 
 msgid "CiCatalog|Mark project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
+msgstr ""
+
+msgid "CiCatalog|No release available"
 msgstr ""
 
 msgid "CiCatalog|Page %{currentPage} of %{totalPage}"
@@ -9797,6 +9896,9 @@ msgid "CiCatalog|This project is now a CI/CD Catalog resource."
 msgstr ""
 
 msgid "CiCatalog|This project will be marked as a CI/CD Catalog resource and will be visible in the CI/CD Catalog. This action is not reversible."
+msgstr ""
+
+msgid "CiCatalog|Unreleased"
 msgstr ""
 
 msgid "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!"
@@ -10171,6 +10273,9 @@ msgstr "Clonează această problemă, fără comentarii, în %{project}."
 msgid "Close"
 msgstr "Închideți"
 
+msgid "Close %{issuableType}"
+msgstr ""
+
 msgid "Close %{issueType}"
 msgstr "Închideți %{issueType}"
 
@@ -10226,6 +10331,9 @@ msgid "Closes this %{quick_action_target}."
 msgstr "Închideți această %{quick_action_target}."
 
 msgid "Closes this issue. Marks as related to, and a duplicate of, %{duplicate_reference}."
+msgstr ""
+
+msgid "Closing %{issuableType}..."
 msgstr ""
 
 msgid "Cloud Run"
@@ -10822,9 +10930,6 @@ msgstr "Opțiuni avansate privind integrarea acestui cluster Kubernetes"
 msgid "ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster."
 msgstr "Permiteți GitLab să administreze spațiile de nume și conturile de servicii pentru acest cluster."
 
-msgid "ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Prometheus for metrics."
-msgstr "Permiteți ca GitLab să interogheze un Prometheus în cluster configurat în mod specific pentru metrici."
-
 msgid "ClusterIntegration|Amazon EKS"
 msgstr "Amazon EKS"
 
@@ -10909,9 +11014,6 @@ msgstr "Știați că?"
 msgid "ClusterIntegration|Elastic Kubernetes Service"
 msgstr "Serviciul Elastic Kubernetes"
 
-msgid "ClusterIntegration|Enable Prometheus integration"
-msgstr "Activați integrarea Prometheus"
-
 msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
 msgstr "Activați sau dezactivați conexiunea GitLab la clusterul dvs. Kubernetes."
 
@@ -10971,9 +11073,6 @@ msgstr "Integrare dezactivată"
 
 msgid "ClusterIntegration|Integration enabled"
 msgstr "Integrare activată"
-
-msgid "ClusterIntegration|Integrations allow you to use applications installed in your cluster as part of your GitLab workflow."
-msgstr "Integrările vă permit să utilizați aplicațiile instalate în clusterul dvs. ca parte a fluxului de lucru GitLab."
 
 msgid "ClusterIntegration|Kubernetes cluster is being created..."
 msgstr "Se creează clusterul Kubernetes..."
@@ -11218,6 +11317,9 @@ msgstr ""
 msgid "CodeOwners|Code owners"
 msgstr ""
 
+msgid "CodeOwners|Code owners are users and groups that can approve specific file changes."
+msgstr ""
+
 msgid "CodeOwners|Hide all"
 msgstr ""
 
@@ -11263,6 +11365,12 @@ msgstr ""
 msgid "CodeSuggestionsSM|Your personal access token from GitLab.com. See the %{link_start}documentation%{link_end} for information on creating a personal access token."
 msgstr ""
 
+msgid "CodeSuggestionsThirdPartyAlert|%{code_suggestions_link_start}Code Suggestions%{link_end} now uses third-party AI services to provide higher quality suggestions. You can %{third_party_link_start}disable third-party services%{link_end} for your group, or disable Code Suggestions entirely in %{profile_settings_link_start}your user profile%{link_end}."
+msgstr ""
+
+msgid "CodeSuggestionsThirdPartyAlert|We use third-party AI services to improve Code Suggestions."
+msgstr ""
+
 msgid "CodeSuggestions|%{link_start}What are code suggestions?%{link_end}"
 msgstr ""
 
@@ -11278,10 +11386,7 @@ msgstr ""
 msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
 msgstr ""
 
-msgid "CodeSuggestions|Subject to the %{link_start}Testing Terms of Use%{link_end}"
-msgstr ""
-
-msgid "CodeSuggestions|Subject to the %{link_start}Testing Terms of Use%{link_end}."
+msgid "CodeSuggestions|Subject to the %{terms_link_start}Testing Terms of Use%{link_end}. Code Suggestions currently uses third-party AI services unless those are %{third_party_features_link_start}disabled%{link_end}."
 msgstr ""
 
 msgid "Cohorts|Inactive users"
@@ -11377,13 +11482,22 @@ msgstr ""
 msgid "CommandPalette|Pages"
 msgstr ""
 
-msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user or perform generic search..."
+msgid "CommandPalette|Project files"
 msgstr ""
 
-msgid "CommandPalette|Users"
+msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user, %{projectHandle} for project, %{pathHandle} for project file, or perform generic search..."
 msgstr ""
 
 msgid "CommandPalette|command"
+msgstr ""
+
+msgid "CommandPalette|go to project file"
+msgstr ""
+
+msgid "CommandPalette|issue (enter at least 3 chars)"
+msgstr ""
+
+msgid "CommandPalette|project (enter at least 3 chars)"
 msgstr ""
 
 msgid "CommandPalette|user (enter at least 3 chars)"
@@ -11479,17 +11593,11 @@ msgstr "Commit șters"
 msgid "Commit message"
 msgstr "Mesajul commit-ului"
 
-msgid "Commit message (optional)"
-msgstr "Mesaj de commit (opțional)"
-
 msgid "Commit message generated by AI"
 msgstr ""
 
 msgid "Commit statistics for %{ref} %{start_time} - %{end_time}"
 msgstr "Statistici de commit-uri pentru %{ref} %{start_time} - %{end_time}"
-
-msgid "Commit to %{branchName} branch"
-msgstr "Commit la ramura %{branchName}"
 
 msgid "CommitBoxTitle|Commit"
 msgstr "Commit"
@@ -11617,14 +11725,29 @@ msgstr "Nu este nimic de comparat."
 msgid "CompareRevisions|Branches"
 msgstr "Ramuri"
 
+msgid "CompareRevisions|Changes are shown as if the %{boldStart}source%{boldEnd} revision was being merged into the %{boldStart}target%{boldEnd} revision. %{linkStart}Learn more about comparing revisions.%{linkEnd}"
+msgstr ""
+
+msgid "CompareRevisions|Commits on Source (%{commits_amount})"
+msgstr ""
+
 msgid "CompareRevisions|Compare"
 msgstr "Comparați"
+
+msgid "CompareRevisions|Compare revisions"
+msgstr ""
 
 msgid "CompareRevisions|Create merge request"
 msgstr "Creați un merge request"
 
 msgid "CompareRevisions|Filter by Git revision"
 msgstr "Filtrați după revizuirea Git"
+
+msgid "CompareRevisions|Include changes to target since source was created"
+msgstr ""
+
+msgid "CompareRevisions|Only incoming changes from source"
+msgstr ""
 
 msgid "CompareRevisions|Select Git revision"
 msgstr "Selectați revizuirea Git"
@@ -11634,6 +11757,12 @@ msgstr "Selectați ramura/eticheta"
 
 msgid "CompareRevisions|Select target project"
 msgstr "Selectați proiectul țintă"
+
+msgid "CompareRevisions|Show changes"
+msgstr ""
+
+msgid "CompareRevisions|Swap"
+msgstr ""
 
 msgid "CompareRevisions|Swap revisions"
 msgstr "Comutați revizuirile"
@@ -11671,10 +11800,13 @@ msgstr "Completat"
 msgid "Completed in %{duration_seconds} seconds (%{relative_time})"
 msgstr "S-a completat în %{duration_seconds} (de) secunde (%{relative_time})"
 
-msgid "Compliance Report|Export as CSV"
+msgid "Compliance Report|Export frameworks as CSV. You will be emailed after the export is processed."
 msgstr ""
 
-msgid "Compliance Report|Export frameworks as CSV. You will be emailed after export is processed."
+msgid "Compliance Report|Export full report as CSV"
+msgstr ""
+
+msgid "Compliance Report|Export merge request violations as CSV. You will be emailed after the export is processed."
 msgstr ""
 
 msgid "Compliance Report|Frameworks"
@@ -11872,6 +12004,9 @@ msgstr "Mai puțin de 2 aprobatori"
 msgid "ComplianceReport|No projects found"
 msgstr ""
 
+msgid "ComplianceReport|No projects found that match filters"
+msgstr ""
+
 msgid "ComplianceReport|No violations found"
 msgstr "Nu s-au constatat încălcări"
 
@@ -11917,14 +12052,14 @@ msgstr ""
 msgid "Components must have a 'name'"
 msgstr ""
 
+msgid "Compute minutes"
+msgstr ""
+
 msgid "Compute quota"
 msgstr ""
 
 msgid "Compute quota:"
 msgstr ""
-
-msgid "Confidence"
-msgstr "Încredere"
 
 msgid "Confidential"
 msgstr "Confidențial"
@@ -11980,9 +12115,6 @@ msgstr "Configurați timeout-urile Gitaly."
 msgid "Configure Integrations"
 msgstr "Configurați integrările"
 
-msgid "Configure Prometheus"
-msgstr "Configurați Prometheus"
-
 msgid "Configure SAST IaC in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST IaC settings."
 msgstr "Configurați SAST IaC în „.gitlab-ci.yml” utilizând șablonul gestionat de GitLab. Puteți [adăuga suprascrieri de variabile](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) pentru a personaliza setările SAST IaC."
 
@@ -12018,9 +12150,6 @@ msgstr "Configurați permisiunile avansate, Large File Storage, autentificarea c
 
 msgid "Configure custom rules for Jira issue key matching"
 msgstr ""
-
-msgid "Configure existing installation"
-msgstr "Configurați instalația existentă"
 
 msgid "Configure pipeline"
 msgstr "Configurați pipeline-ul"
@@ -12184,14 +12313,8 @@ msgstr ""
 msgid "Connecting..."
 msgstr "Se conectează..."
 
-msgid "Connection failed"
-msgstr "Conectare eșuată"
-
 msgid "Connection failure"
 msgstr "Eșec de conectare"
-
-msgid "Connection timed out"
-msgstr "Conexiunea a expirat"
 
 msgid "Consistency guarantee method"
 msgstr "Metoda de garantare a consistenței"
@@ -12583,9 +12706,6 @@ msgstr ""
 msgid "Content parsed with %{link}."
 msgstr "Conținut analizat cu %{link}."
 
-msgid "ContentEditor|For %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd}, type %{keyboardStart}/%{keyboardEnd}."
-msgstr ""
-
 msgid "ContentEditor|You have to provide a renderMarkdown function or a custom serializer"
 msgstr "Trebuie să furnizați o funcție renderMarkdown sau un serializator personalizat"
 
@@ -12707,6 +12827,39 @@ msgid "ContributionAnalytics|There is too much data to calculate. Try lowering t
 msgstr ""
 
 msgid "ContributionAnalytics|Total Contributions"
+msgstr ""
+
+msgid "ContributionEvent|Approved merge request %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Deleted branch %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Deleted tag %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Joined project %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Left project %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Pushed a new branch %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Pushed a new tag %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Pushed to branch %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Pushed to tag %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Removed due to membership expiration from %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|…and %{count} more commits. %{linkStart}Compare%{linkEnd}."
 msgstr ""
 
 msgid "Contributions for %{calendar_date}"
@@ -12837,9 +12990,6 @@ msgstr "Copiați linkul"
 
 msgid "Copy link URL"
 msgstr "Copiere URL de link"
-
-msgid "Copy link to chart"
-msgstr "Copiați linkul către grafic"
 
 msgid "Copy merge request URL"
 msgstr ""
@@ -13006,6 +13156,9 @@ msgstr "Nu s-a putut înlătura declanșatorul."
 msgid "Could not restore the group"
 msgstr "Nu s-a putut restabili grupul"
 
+msgid "Could not retrieve the list of protected branches. Use the YAML editor mode, or refresh this page later. To view the list of protected branches, go to %{boldStart}Settings - Branches%{boldEnd} and expand %{boldStart}Protected branches%{boldEnd}."
+msgstr ""
+
 msgid "Could not revoke access token %{access_token_name}."
 msgstr "Nu s-a putut revoca tokenul de acces %{access_token_name}."
 
@@ -13060,9 +13213,6 @@ msgstr "Creați %{environment}"
 msgid "Create %{humanized_resource_name}"
 msgstr "Creați %{humanized_resource_name}"
 
-msgid "Create %{type}"
-msgstr "Creați %{type}"
-
 msgid "Create %{workspace} label"
 msgstr "Creați eticheta %{workspace}"
 
@@ -13104,6 +13254,9 @@ msgstr "Creați o nouă ramură"
 
 msgid "Create a new file as there are no files yet. Afterwards, you'll be able to commit your changes."
 msgstr "Creați un fișier nou, deoarece nu există încă niciun fișier. După aceea, veți putea să vă comiteți modificările."
+
+msgid "Create a new fork"
+msgstr ""
 
 msgid "Create a new issue"
 msgstr "Creați o nouă problemă"
@@ -13390,6 +13543,9 @@ msgstr "Sfârșitul etapei problemei"
 msgid "CreateValueStreamForm|Maximum length %{maxLength} characters"
 msgstr "Lungime maximă %{maxLength} caractere"
 
+msgid "CreateValueStreamForm|Minimum length %{minLength} characters"
+msgstr ""
+
 msgid "CreateValueStreamForm|Name is required"
 msgstr "Numele este obligatoriu"
 
@@ -13533,9 +13689,6 @@ msgstr "Se creează"
 
 msgid "Creating epic"
 msgstr "Se creează epica"
-
-msgid "Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available."
-msgstr "Crearea graficelor utilizează datele de pe serverul Prometheus. Dacă durează mult, asigurați-vă că datele sunt disponibile."
 
 msgid "Creator"
 msgstr "Creator"
@@ -14761,6 +14914,12 @@ msgstr "Validarea mărimii arhivei decomprimate a eșuat."
 msgid "Decrease"
 msgstr "Descreștere"
 
+msgid "Decrement suggestion line end"
+msgstr ""
+
+msgid "Decrement suggestion line start"
+msgstr ""
+
 msgid "Default - Never run"
 msgstr "Implicit - Nu se execută niciodată"
 
@@ -15028,6 +15187,9 @@ msgstr "Ștergeți variabila"
 msgid "Delete video"
 msgstr "Ștergeți videoclipul"
 
+msgid "DeleteProject|Failed to remove design repository. Please try again or contact administrator."
+msgstr ""
+
 msgid "DeleteProject|Failed to remove events. Please try again or contact administrator."
 msgstr "Nu s-au putut elimina evenimentele. Vă rugăm să încercați din nou sau să contactați administratorul."
 
@@ -15148,6 +15310,12 @@ msgstr[0] "%d vulnerabilitate detectată"
 msgstr[1] "%d vulnerabilități detectate"
 msgstr[2] "%d de vulnerabilități detectate"
 
+msgid "Dependencies|%{locationCount} locations"
+msgstr ""
+
+msgid "Dependencies|%{projectCount} projects"
+msgstr ""
+
 msgid "Dependencies|%{remainingLicensesCount} more"
 msgstr "%{remainingLicensesCount} mai mult"
 
@@ -15190,8 +15358,14 @@ msgstr "Locație și calea dependenței"
 msgid "Dependencies|Packager"
 msgstr "Manager de pachete"
 
+msgid "Dependencies|Projects"
+msgstr ""
+
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr "Software Bill of Materials (SBOM) bazat pe scanarea %{linkStart}reușită cea mai recentă%{linkEnd}"
+
+msgid "Dependencies|Software Bill of Materials (SBOM) based on the latest successful scan of each project."
+msgstr ""
 
 msgid "Dependencies|The %{codeStartTag}dependency_scanning%{codeEndTag} job has failed and cannot generate the list. Please ensure the job is running properly and run the pipeline again."
 msgstr "Jobul %{codeStartTag}dependency_scanning%{codeEndTag} a eșuat și nu poate genera lista. Vă rugăm să vă asigurați că lucrarea se execută corect și să rulați din nou pipeline-ul."
@@ -15226,6 +15400,9 @@ msgstr ""
 msgid "Dependency list"
 msgstr "Listă de dependențe"
 
+msgid "DependencyProxy|%{docLinkStart}See the documentation%{docLinkEnd} for other ways to store Docker images in Dependency Proxy cache."
+msgstr ""
+
 msgid "DependencyProxy|All items in the cache are scheduled for removal."
 msgstr "Toate elementele din cache sunt programate pentru înlăturare."
 
@@ -15243,6 +15420,9 @@ msgstr ""
 
 msgid "DependencyProxy|Contains %{count} blobs of images (%{size})"
 msgstr "Conține %{count} blob-uri de imagini (%{size})"
+
+msgid "DependencyProxy|Copy example"
+msgstr ""
 
 msgid "DependencyProxy|Copy image path"
 msgstr ""
@@ -15268,6 +15448,9 @@ msgstr "Activați Proxy de Dependență și setările pentru ștergerea memoriei
 msgid "DependencyProxy|Image list"
 msgstr "Lista de imagini"
 
+msgid "DependencyProxy|Pull image by digest example"
+msgstr ""
+
 msgid "DependencyProxy|Scheduled for deletion"
 msgstr "Programat pentru ștergere"
 
@@ -15276,6 +15459,9 @@ msgstr "Nu există imagini în cache"
 
 msgid "DependencyProxy|To see the image prefix and what is in the cache, visit the %{linkStart}Dependency Proxy%{linkEnd}"
 msgstr "Pentru a vedea prefixul imaginii și ce se află în cache, vizitați %{linkStart}Proxy de Dependență%{linkEnd}"
+
+msgid "DependencyProxy|To store docker images in Dependency Proxy cache, pull an image by tag in your %{codeStart}.gitlab-ci.yml%{codeEnd} file. In this example, the image is %{codeStart}alpine:latest%{codeEnd}"
+msgstr ""
 
 msgid "DependencyProxy|When enabled, images older than 90 days will be removed from the cache."
 msgstr "Atunci când este activată, imaginile mai vechi de 90 de zile vor fi eliminate din cache."
@@ -15592,9 +15778,6 @@ msgstr ""
 msgid "DeploymentApprovals|Set how approval rules are applied to deployments in protected environments."
 msgstr ""
 
-msgid "DeploymentApprovals|When a pipeline runs, deployment jobs will automatically be approved in the pipeline if the triggerer is allowed to approve."
-msgstr ""
-
 msgid "DeploymentApproval| Current approvals: %{current}"
 msgstr " Aprobări actuale: %{current}"
 
@@ -15748,12 +15931,6 @@ msgstr "succes"
 msgid "Deprecated API rate limits"
 msgstr "Limite de rată API depreciate"
 
-msgid "Deprecations|For information on a possible replacement %{epicStart} learn more about Opstrace %{epicEnd}."
-msgstr "Pentru informații cu privire la un posibil înlocuitor, %{epicStart}aflați mai multe despre Opstrace %{epicEnd}."
-
-msgid "Deprecations|The metrics feature was deprecated in GitLab 14.7."
-msgstr "Funcția de metrici a fost abandonată în GitLab 14.7."
-
 msgid "Deprioritize label"
 msgstr "Deprioritizați eticheta"
 
@@ -15762,9 +15939,6 @@ msgstr "Descrieți scopul modificărilor și ce ar trebui să aibă în vedere r
 
 msgid "Description"
 msgstr "Descriere"
-
-msgid "Description (alt text)"
-msgstr "Descriere ( text alt)"
 
 msgid "Description (optional)"
 msgstr "Descriere (opțional)"
@@ -16519,7 +16693,7 @@ msgstr ""
 msgid "DomainVerification|The following domains are configured for projects in this group. Users with email addresses that match a verified domain do not need to confirm their account."
 msgstr "Domeniile următoare sunt configurate pentru proiectele din acest grup. Utilizatorii cu adrese de e-mail care corespund unui domeniu verificat nu trebuie să-și confirme contul."
 
-msgid "DomainVerification|To verify ownership of your domain, add the above key to a TXT record within your DNS configuration. %{link_to_help}"
+msgid "DomainVerification|To verify ownership of your domain, add the above key to a TXT record within your DNS configuration within seven days. %{link_to_help}"
 msgstr ""
 
 msgid "Don't have a group?"
@@ -16564,14 +16738,14 @@ msgstr "Descărcați (%{fileSizeReadable})"
 msgid "Download (%{size})"
 msgstr "Descărcați (%{size})"
 
-msgid "Download CSV"
-msgstr "Descărcați CSV"
-
 msgid "Download PDF"
 msgstr "Descărcare PDF"
 
 msgid "Download artifacts"
 msgstr "Descărcați artefacte"
+
+msgid "Download artifacts archive"
+msgstr ""
 
 msgid "Download codes"
 msgstr "Descărcați codurile"
@@ -16858,6 +17032,9 @@ msgstr "Modificați cheia de implementare publică"
 msgid "Edit sidebar"
 msgstr "Editați bara laterală"
 
+msgid "Edit single file"
+msgstr ""
+
 msgid "Edit table"
 msgstr "Editați tabelul"
 
@@ -16962,6 +17139,9 @@ msgstr "E-mailul nu a putut fi trimis"
 
 msgid "Email display name"
 msgstr "Numele afișat de e-mail"
+
+msgid "Email must be provided."
+msgstr ""
 
 msgid "Email not verified. Please verify your email in Salesforce."
 msgstr "Email neverificat. Vă rugăm să vă verificați e-mailul în Salesforce."
@@ -17299,9 +17479,6 @@ msgstr "Impuneți autentificarea cu doi factori pentru toate autentificările ut
 msgid "Enhance security by storing service account keys in secret managers - learn more about %{docLinkStart}secret management with GitLab%{docLinkEnd}"
 msgstr "Îmbunătățiți securitatea prin stocarea cheilor conturilor de servicii în administratorii de secrete - aflați mai multe despre %{docLinkStart}managementul secretului cu GitLab%{docLinkEnd}"
 
-msgid "Ensure connectivity is available from the GitLab server to the Prometheus server"
-msgstr "Asigurați-vă că este disponibilă conectivitatea de la serverul GitLab la serverul Prometheus."
-
 msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd} of your CI pipeline to track deployments to your cluster."
 msgstr "Asigurați-vă că %{linkStart}mediul dvs. face parte din etapa de implementare%{linkEnd} a pipeline-ului dvs. CI pentru a urmări implementările în clusterul dvs."
 
@@ -17362,9 +17539,6 @@ msgstr ""
 msgid "Enter the following to confirm:"
 msgstr "Introduceți următoarele pentru a confirma:"
 
-msgid "Enter the name of your application, and we'll return a unique %{type}."
-msgstr "Introduceți numele aplicației dvs., iar noi vom returna un %{type} unic."
-
 msgid "Enter the number of seconds, or other human-readable input, like \"1 hour\". This timeout takes precedence over lower timeouts set for the project."
 msgstr "Introduceți numărul de secunde sau alte date lizibile de către om, cum ar fi „1 oră”. Acest timp de expirare are prioritate față de timpii de expirare mai mici setați pentru proiect."
 
@@ -17392,16 +17566,19 @@ msgstr "Introduceți parola pentru a aproba"
 msgid "Enterprise"
 msgstr "Enterprise"
 
+msgid "Enterprise User"
+msgstr ""
+
+msgid "Enterprise User Account on GitLab"
+msgstr ""
+
 msgid "EnterpriseUsers|The user detail cannot be updated"
 msgstr ""
 
 msgid "EnterpriseUsers|The user does not match the \"Enterprise User\" definition for the group"
 msgstr ""
 
-msgid "EnterpriseUsers|The user is already an enterprise user"
-msgstr ""
-
-msgid "EnterpriseUsers|The user is not a member of the group"
+msgid "EnterpriseUsers|The user is already an enterprise user of the group"
 msgstr ""
 
 msgid "Environment"
@@ -17566,9 +17743,6 @@ msgstr ""
 msgid "Environments|Job"
 msgstr "Joburi"
 
-msgid "Environments|Learn about environments"
-msgstr "Aflați mai multe despre medii"
-
 msgid "Environments|Learn more about stopping environments"
 msgstr "Aflați mai multe despre oprirea mediilor"
 
@@ -17580,9 +17754,6 @@ msgstr ""
 
 msgid "Environments|New environment"
 msgstr "Mediu nou"
-
-msgid "Environments|No deployed environments"
-msgstr "Nu există medii implementate"
 
 msgid "Environments|No deployments yet"
 msgstr "Nu există încă implementări"
@@ -17779,12 +17950,6 @@ msgstr "Epicele vă permit să vă gestionați portofoliul de proiecte mai efici
 msgid "Epics, issues, and merge requests"
 msgstr "Epice, probleme și merge request-uri"
 
-msgid "Epics|%{startDate} – %{dueDate}"
-msgstr "%{startDate} – %{dueDate}"
-
-msgid "Epics|%{startDate} – No due date"
-msgstr "%{startDate} – Fără dată scadentă"
-
 msgid "Epics|Add a new epic"
 msgstr "Adăugați o nouă epică"
 
@@ -17799,9 +17964,6 @@ msgstr "Sunteți sigur că doriți să înlăturați %{bStart}%{targetIssueTitle
 
 msgid "Epics|Leave empty to inherit from milestone dates"
 msgstr "Lăsați necomplet pentru a moșteni din datele obiectivului"
-
-msgid "Epics|No start date – %{dueDate}"
-msgstr "Fără dată de început – %{dueDate}"
 
 msgid "Epics|Remove epic"
 msgstr "Înlăturați epica"
@@ -18757,11 +18919,17 @@ msgstr[2] "Joburi eșuate"
 msgid "Failed on"
 msgstr "Eșuat pe"
 
+msgid "Failed to %{action} this work item: %{reason}."
+msgstr ""
+
 msgid "Failed to add a Zoom meeting"
 msgstr "Nu s-a reușit adăugarea unei reuniuni Zoom"
 
 msgid "Failed to add a resource link"
 msgstr "Nu s-a putut adăuga un link de resurse"
+
+msgid "Failed to add emoji. Please try again"
+msgstr ""
 
 msgid "Failed to apply commands."
 msgstr "Nu s-a reușit aplicarea comenzilor."
@@ -18801,9 +18969,6 @@ msgstr "Nu s-a reușit clonarea acestei probleme deoarece proiectul țintă nu e
 
 msgid "Failed to clone this issue: wrong parameters."
 msgstr "Nu s-a reușit clonarea acestei probleme: parametri greșiți."
-
-msgid "Failed to convert this work item: %{reason}."
-msgstr ""
 
 msgid "Failed to create a branch for this issue. Please try again."
 msgstr "Nu s-a reușit crearea unei ramuri pentru această problemă. Vă rugăm să încercați din nou."
@@ -18949,6 +19114,9 @@ msgstr "Nu s-a reușit înlăturarea unei ședințe Zoom"
 msgid "Failed to remove a to-do item for the design."
 msgstr "Nu s-a reușit înlăturarea unei sarcini de-făcut pentru elementul de design"
 
+msgid "Failed to remove emoji. Please try again"
+msgstr ""
+
 msgid "Failed to remove mirror."
 msgstr "Nu s-a reușit eliminarea replicii"
 
@@ -18969,6 +19137,9 @@ msgstr "Nu s-a reușit recuperarea paginii"
 
 msgid "Failed to save merge conflicts resolutions. Please try again!"
 msgstr "Nu s-a reușit salvarea rezoluțiilor conflictelor de îmbinare. Vă rugăm să încercați din nou!"
+
+msgid "Failed to save namespace commit email."
+msgstr ""
 
 msgid "Failed to save new settings"
 msgstr "Nu s-a reușit salvarea noilor setări"
@@ -19035,9 +19206,6 @@ msgstr "Faviconul va fi eliminat. Sunteți sigur?"
 
 msgid "Feature Flags"
 msgstr "Feature Flags"
-
-msgid "Feature deprecation"
-msgstr "Deprecierea funcțiilor"
 
 msgid "Feature flag status"
 msgstr "Statusul Feature Flag"
@@ -19342,6 +19510,9 @@ msgstr "Fișierele cu modificări mari sunt restrânse în mod implicit."
 msgid "Files, directories, and submodules in the path %{path} for commit reference %{ref}"
 msgstr "Fișiere, directoare și submodule din calea %{path} pentru referința de commit %{ref}"
 
+msgid "Fill in merge request template"
+msgstr ""
+
 msgid "Fill in the fields below, turn on %{strong_open}Enable SAML authentication for this group%{strong_close}, and press %{strong_open}Save changes%{strong_close}"
 msgstr "Completați câmpurile următoare, porniți %{strong_open}Activați autentificarea SAML pentru acest grup%{strong_close} și apăsați %{strong_open}Salvați modificările%{strong_close}"
 
@@ -19573,9 +19744,6 @@ msgstr "Pentru fiecare job, clonați repozitoriul."
 msgid "For each job, re-use the project workspace. If the workspace doesn't exist, use %{code_open}git clone%{code_close}."
 msgstr "Pentru fiecare job, reutilizați spațiul de lucru al proiectului. Dacă spațiul de lucru nu există, utilizați %{code_open}git clone%{code_close}."
 
-msgid "For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
-msgstr "De exemplu, aplicația care utilizează tokenul sau scopul său. Nu furnizați informații sensibile pentru numele tokenului, deoarece acesta va fi vizibil pentru toți membrii %{resource_type}."
-
 msgid "For files larger than this limit, only index the file name. The file content is neither indexed nor searchable."
 msgstr "Pentru fișiere mai mari decât această limită, indexați numai numele fișierului. Conținutul fișierului nu este nici indexat, nici nu poate fi căutat."
 
@@ -19584,6 +19752,9 @@ msgstr "Pentru lucrări generale"
 
 msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain or group."
 msgstr "Pentru utilizare personală, creați un cont separat cu adresa dvs. de e-mail personală, cont care să nu fie legat de domeniul sau grupul de e-mail Enterprise."
+
+msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain."
+msgstr ""
 
 msgid "For investigating IT service disruptions or outages"
 msgstr "Pentru investigarea întreruperilor sau indisponibilităților serviciilor IT"
@@ -19768,6 +19939,9 @@ msgstr[0] "Grupurile gratuite sunt limitate la %{free_user_limit} membru, iar me
 msgstr[1] "Grupurile gratuite sunt limitate la %{free_user_limit} membri, iar membrii rămași vor primi statutul de peste limită și vor pierde accesul la grup."
 msgstr[2] "Grupurile gratuite sunt limitate la %{free_user_limit} de membri, iar membrii rămași vor primi statutul de peste limită și vor pierde accesul la grup."
 
+msgid "Free top-level groups will soon be limited to %{free_users_limit} users and %{free_storage_limit} of data"
+msgstr ""
+
 msgid "Free trial will expire in %{days}"
 msgstr ""
 
@@ -19828,6 +20002,9 @@ msgstr "De la %{providerTitle}"
 msgid "From issue creation until deploy to production"
 msgstr "De la crearea problemei până la implementarea în producție"
 
+msgid "From line %{line1} to %{line2}"
+msgstr ""
+
 msgid "From merge request merge until deploy to production"
 msgstr "De la îmbinarea merge request-ului până la implementarea în producție"
 
@@ -19884,6 +20061,9 @@ msgstr "Generați un nou export"
 
 msgid "Generate project access tokens scoped to this project for your applications that need access to the GitLab API."
 msgstr "Generați tokenuri de acces de proiect cu scopuri specifice acestui proiect pentru aplicațiile dvs. care au nevoie de acces la GitLab API."
+
+msgid "Generate root cause analysis"
+msgstr ""
 
 msgid "Generate site and private keys at"
 msgstr "Generați site-ul și cheile private la"
@@ -20503,9 +20683,6 @@ msgstr "Începeți cu GitLab"
 msgid "Get started with error tracking"
 msgstr "Începeți cu urmărirea erorilor"
 
-msgid "Get started with performance monitoring"
-msgstr "Începeți cu monitorizarea performanței"
-
 msgid "Get started!"
 msgstr "Începeți!"
 
@@ -20986,6 +21163,9 @@ msgstr "Pentru a utiliza integrarea, fiecare utilizator trebuie de asemenea să 
 msgid "Gitpod|https://gitpod.example.com"
 msgstr "https://gitpod.example.com"
 
+msgid "Give feedback"
+msgstr ""
+
 msgid "Give us some feedback"
 msgstr ""
 
@@ -21025,6 +21205,9 @@ msgstr ""
 msgid "GlobalSearch|Close"
 msgstr ""
 
+msgid "GlobalSearch|Fetching aggregations error."
+msgstr ""
+
 msgid "GlobalSearch|Group"
 msgstr ""
 
@@ -21043,6 +21226,9 @@ msgstr "Problemele pe care le-am creat"
 msgid "GlobalSearch|Issues assigned to me"
 msgstr "Problemele care mi-au fost atribuite"
 
+msgid "GlobalSearch|Label(s)"
+msgstr ""
+
 msgid "GlobalSearch|Language"
 msgstr ""
 
@@ -21054,6 +21240,9 @@ msgstr "Merge request-urile care mi-au fost atribuite"
 
 msgid "GlobalSearch|Merge requests that I'm a reviewer"
 msgstr "Merge request-uri pentru care sunt un recenzent"
+
+msgid "GlobalSearch|No labels found"
+msgstr ""
 
 msgid "GlobalSearch|Project"
 msgstr ""
@@ -21090,6 +21279,9 @@ msgstr ""
 
 msgid "GlobalSearch|Search for projects, issues, etc."
 msgstr "Căutați proiecte, probleme etc."
+
+msgid "GlobalSearch|Search labels"
+msgstr ""
 
 msgid "GlobalSearch|Search results are loading"
 msgstr "Rezultatele căutării se încarcă"
@@ -21520,9 +21712,6 @@ msgstr "Info grup:"
 msgid "Group information"
 msgstr "Informații despre grup"
 
-msgid "Group is required when cluster_type is :group"
-msgstr "Grupul este necesar atunci când cluster_type este: group"
-
 msgid "Group jobs by"
 msgstr "Grupați joburile după"
 
@@ -21813,6 +22002,9 @@ msgstr "Token SCIM"
 
 msgid "GroupSAML|SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr "Amprenta SHA1 a certificatului de semnare a tokenului SAML. Obțineți acest lucru de la furnizorul de identitate, unde poate fi numit și „Thumbprint”."
+
+msgid "GroupSAML|Some branches are inaccessible because your SAML session has expired. To access the branches, select the group’s path to reauthenticate."
+msgstr ""
 
 msgid "GroupSAML|Some to-do items may be hidden because your SAML session has expired. Select the group’s path to reauthenticate and view the hidden to-do items."
 msgstr ""
@@ -22489,12 +22681,6 @@ msgstr ""
 msgid "HeaderAction|Okay!"
 msgstr ""
 
-msgid "HeaderAction|incident"
-msgstr "incident"
-
-msgid "HeaderAction|issue"
-msgstr "problemă"
-
 msgid "Headers"
 msgstr "Antete"
 
@@ -22608,12 +22794,6 @@ msgstr "Ascundeți previzualizarea în direct"
 
 msgid "Hide archived projects"
 msgstr "Ascundeți proiectele arhivate"
-
-msgid "Hide chart"
-msgid_plural "Hide charts"
-msgstr[0] "Ascundeți graficul"
-msgstr[1] "Ascundeți graficele"
-msgstr[2] "Ascundeți graficele"
 
 msgid "Hide comments"
 msgstr "Ascundeți comentariile"
@@ -22762,11 +22942,23 @@ msgstr "Menaj"
 msgid "Housekeeping successfully started"
 msgstr "Menajul a început cu succes"
 
+msgid "How do I change my password in GitLab?"
+msgstr ""
+
+msgid "How do I clone a repository?"
+msgstr ""
+
 msgid "How do I configure Akismet?"
 msgstr "Cum pot configura Akismet?"
 
 msgid "How do I configure this integration?"
 msgstr "Cum pot configura această integrare?"
+
+msgid "How do I create a template?"
+msgstr ""
+
+msgid "How do I fork a project?"
+msgstr ""
 
 msgid "How do I generate it?"
 msgstr "Cum o pot genera?"
@@ -23392,6 +23584,9 @@ msgstr ""
 msgid "ImportProjects|Re-import creates a new project. It does not sync with the existing project."
 msgstr ""
 
+msgid "ImportProjects|Repository above permitted size limit."
+msgstr ""
+
 msgid "ImportProjects|Requesting namespaces failed"
 msgstr "Solicitarea spațiilor de nume a eșuat"
 
@@ -23451,6 +23646,9 @@ msgstr "Nu există un repozitoriu Git valid la această adresă URL. Dacă depoz
 
 msgid "Improve customer support with Service Desk"
 msgstr "Îmbunătățiți asistența pentru clienți cu Service Desk"
+
+msgid "Improve indexing performance by increasing Sidekiq load. Values greater than the current shard limit (%{limit}) are not allowed."
+msgstr ""
 
 msgid "Improve quality with test cases"
 msgstr ""
@@ -24274,6 +24472,12 @@ msgstr "Incomplet"
 msgid "Increase"
 msgstr "Creștere"
 
+msgid "Increment suggestion line end"
+msgstr ""
+
+msgid "Increment suggestion line start"
+msgstr ""
+
 msgid "Incubation|%{featureName} is in incubating phase"
 msgstr ""
 
@@ -24391,8 +24595,8 @@ msgstr "Inserați coloana înainte"
 msgid "Insert comment template"
 msgstr ""
 
-msgid "Insert link"
-msgstr "Inserați un link"
+msgid "Insert link (%{modifierKey}K)"
+msgstr ""
 
 msgid "Insert or edit diagram"
 msgstr ""
@@ -24423,9 +24627,6 @@ msgstr "Acest proiect este filtrat în fișierul insights.yml (consultați confi
 
 msgid "Install GitLab Runner and ensure it's running."
 msgstr "Instalați GitLab Runner și asigurați-vă că rulează."
-
-msgid "Install on clusters"
-msgstr "Instalați pe clustere"
 
 msgid "Installation"
 msgstr "Instalare"
@@ -25504,6 +25705,9 @@ msgstr "Se pare că în prezent nu există date disponibile pentru coverage de c
 msgid "It's you"
 msgstr "Sunteți dvs."
 
+msgid "Italic (%{modifierKey}I)"
+msgstr ""
+
 msgid "Italic text"
 msgstr "Text italic"
 
@@ -25861,8 +26065,14 @@ msgstr ""
 msgid "JiraConnect|Sign in to link groups"
 msgstr ""
 
+msgid "JiraConnect|Tell us what you think!"
+msgstr ""
+
 msgid "JiraConnect|The Jira user is not a site administrator. Check the permissions in Jira and try again."
 msgstr "Utilizatorul Jira nu este un administrator de site. Verificați permisiunile din Jira și încercați din nou."
+
+msgid "JiraConnect|We would love to learn more about your experience with the GitLab for Jira Cloud App."
+msgstr ""
 
 msgid "JiraConnect|Welcome to GitLab for Jira"
 msgstr ""
@@ -26098,6 +26308,9 @@ msgstr "Job %{jobName}"
 msgid "Job Failed #%{build_id}"
 msgstr "Jobul a eșuat #%{build_id}"
 
+msgid "Job ID"
+msgstr ""
+
 msgid "Job artifacts"
 msgstr ""
 
@@ -26115,6 +26328,9 @@ msgstr "Jobul este blocat. Verificați executorii."
 
 msgid "Job logs and artifacts"
 msgstr "Jurnale de job și artefacte"
+
+msgid "Job name"
+msgstr ""
 
 msgid "Job was retried"
 msgstr "Jobul a fost reîncercat"
@@ -26281,6 +26497,9 @@ msgstr "Niciun job de afișat"
 msgid "Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens."
 msgstr "Căutarea în text brut nu este acceptată în prezent pentru funcția de căutare filtrată a joburilor. Vă rugăm să utilizați tokenurile de căutare disponibile."
 
+msgid "Jobs|Root cause analysis"
+msgstr ""
+
 msgid "Jobs|There was a problem fetching the failed jobs."
 msgstr "A apărut o problemă la preluarea joburilor eșuate."
 
@@ -26443,6 +26662,12 @@ msgstr "În așteptare de resurse"
 msgid "Job|We could not find this element"
 msgstr "Nu s-a putut găsi acest element"
 
+msgid "Job|You do not have permission to read this job's log"
+msgstr ""
+
+msgid "Job|You do not have permission to retry this job"
+msgstr ""
+
 msgid "Job|allowed to fail"
 msgstr "permis să eșueze"
 
@@ -26505,9 +26730,6 @@ msgstr "Păstrați artefacte de la cele mai recente joburi de succes"
 
 msgid "Keep divergent refs"
 msgstr "Păstrați referințele divergente"
-
-msgid "Keeping all SAST analyzers enabled future-proofs the project in case new languages are added later on. Determining which analyzers apply is a process that consumes minimal resources and adds minimal time to the pipeline. Leaving all SAST analyzers enabled ensures maximum coverage."
-msgstr "Menținerea activată a tuturor analizatorilor SAST permite ca proiectul să fie pregătit pentru viitor, în cazul în care vor fi adăugate ulterior noi limbaje. Determinarea analizatorilor care se aplică este un proces care consumă resurse minime și adaugă un timp minim la procesul de lucru. Activarea tuturor analizatorilor SAST asigură o acoperire maximă."
 
 msgid "Kerberos access denied"
 msgstr "Accesul Kerberos refuzat"
@@ -26727,6 +26949,9 @@ msgstr "Ultimele %{days} zile"
 
 msgid "Last 2 weeks"
 msgstr "Ultimele 2 săptămâni"
+
+msgid "Last 24 hours"
+msgstr ""
 
 msgid "Last Accessed On"
 msgstr "Ultimul acces la"
@@ -27373,9 +27598,6 @@ msgstr "Conectați Sentry la GitLab pentru a descoperi și a vizualiza erorile g
 msgid "Link an external wiki from the project's sidebar. %{docs_link}"
 msgstr "Conectați un wiki extern din bara laterală a proiectului. %{docs_link}"
 
-msgid "Link copied"
-msgstr "Link copiat"
-
 msgid "Link copied to clipboard."
 msgstr ""
 
@@ -27523,8 +27745,8 @@ msgstr "Se încarcă mai multe"
 msgid "Loading snippet"
 msgstr "Se încarcă fragmentul de cod"
 
-msgid "Loading the GitLab IDE..."
-msgstr "Se încarcă GitLab IDE..."
+msgid "Loading the GitLab IDE"
+msgstr ""
 
 msgid "Loading, please wait."
 msgstr "Se încarcă, vă rugăm să așteptați."
@@ -27588,6 +27810,9 @@ msgstr ""
 
 msgid "Locked the discussion."
 msgstr "Discuția a fost închisă."
+
+msgid "Locking %{issuableDisplayName}"
+msgstr ""
 
 msgid "Locks the discussion."
 msgstr "Închideți discuția."
@@ -27781,6 +28006,9 @@ msgstr "Gestionați proiectele."
 msgid "Manage two-factor authentication"
 msgstr "Gestionați autentificarea cu două factori"
 
+msgid "Manage usage"
+msgstr ""
+
 msgid "Manage your project's triggers"
 msgstr "Gestionați declanșatoarele proiectului dumneavoastră"
 
@@ -27813,6 +28041,9 @@ msgstr "Legați manual această problemă adăugând-o la secțiunea de probleme
 
 msgid "Map a FogBugz account ID to a GitLab user"
 msgstr "Maparea unui ID de cont FogBugz la un utilizator GitLab"
+
+msgid "Map data from"
+msgstr ""
 
 msgid "Mar"
 msgstr "Mar"
@@ -27871,6 +28102,9 @@ msgstr "Adăugați text italic (%{modifierKey}I)"
 msgid "MarkdownEditor|Add italic text (%{modifier_key}I)"
 msgstr "Adăugați text italic (%{modifier_key}I)"
 
+msgid "MarkdownEditor|Add strikethrough text (%{modifierKey}%{shiftKey}X)"
+msgstr ""
+
 msgid "MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)"
 msgstr "Adăugați text tăiat cu o linie (%{modifierKey}⇧X)"
 
@@ -27894,9 +28128,6 @@ msgstr "Linie de indentare negativă (%{modifier_key}[)"
 
 msgid "MarkdownEditor|header"
 msgstr "antet"
-
-msgid "MarkdownToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}"
-msgstr "Acceptă %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}"
 
 msgid "Marked"
 msgstr "Marcat"
@@ -27997,8 +28228,8 @@ msgstr "Valoarea maximă"
 msgid "Max authenticated Git LFS requests per period per user"
 msgstr "Numărul maxim de solicitări autentificate Git LFS pe perioadă și pe utilizator"
 
-msgid "Max file size is 200 KB."
-msgstr "Mărimea maximă a fișierului este de 200 KB."
+msgid "Max file size is 200 KiB."
+msgstr ""
 
 msgid "Max role"
 msgstr "Rolul maxim"
@@ -28048,8 +28279,8 @@ msgstr "Mărimea maximă a artefactelor (MB)"
 msgid "Maximum attachment size"
 msgstr "Mărimea maximă a atașamentului"
 
-msgid "Maximum attachment size (MB)"
-msgstr "Mărimea maximă a atașamentului (MB)"
+msgid "Maximum attachment size (MiB)"
+msgstr ""
 
 msgid "Maximum authenticated API requests per rate limit period per user"
 msgstr "Numărul maxim de solicitări API autentificate pe perioada limită de ratei pe utilizator"
@@ -28075,8 +28306,8 @@ msgstr "Întârzierea maximă (minute)"
 msgid "Maximum diff patch size"
 msgstr "Mărimea maximă a patch-ului diff"
 
-msgid "Maximum diff patch size (Bytes)"
-msgstr "Mărimea maximă a patch-ului diff (Octeți)"
+msgid "Maximum diff patch size (bytes)"
+msgstr ""
 
 msgid "Maximum duration of a session."
 msgstr "Durata maximă a unei sesiuni."
@@ -28084,8 +28315,8 @@ msgstr "Durata maximă a unei sesiuni."
 msgid "Maximum export size"
 msgstr "Mărimea maximă a exportului"
 
-msgid "Maximum export size (MB)"
-msgstr "Mărimea maximă a exportului (MB)"
+msgid "Maximum export size (MiB)"
+msgstr ""
 
 msgid "Maximum field length"
 msgstr "Lungimea maximă a câmpului"
@@ -28120,8 +28351,8 @@ msgstr "Maximum de solicitări de import de grup pe minut"
 msgid "Maximum import size"
 msgstr "Mărimea maximă a importului"
 
-msgid "Maximum import size (MB)"
-msgstr "Mărimea maximă a importului (MB)"
+msgid "Maximum import size (MiB)"
+msgstr ""
 
 msgid "Maximum job artifact size"
 msgstr "Mărimea maximă a artefactului jobului"
@@ -28141,8 +28372,11 @@ msgstr "Mărimea maximă a fișierului pachetului npm în octeți"
 msgid "Maximum number of %{name} (%{count}) exceeded"
 msgstr "Numărul maxim de %{name} (%{count}) a fost depășit"
 
-msgid "Maximum number of changes (branches or tags) in a single push for which webhooks and services trigger (default is 3)."
-msgstr "Numărul maxim de modificări (ramuri sau etichete) într-un singur push pentru care se declanșează webhook-urile și serviciile (valoarea implicită este 3)."
+msgid "Maximum number of changes (branches or tags) in a single push above which a bulk push event is created (default is `3`). Setting to `0` does not disable throttling."
+msgstr ""
+
+msgid "Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered (default is `3`). Setting to `0` does not disable throttling."
+msgstr ""
 
 msgid "Maximum number of comments exceeded"
 msgstr "Numărul maxim de comentarii a fost depășit"
@@ -28162,11 +28396,17 @@ msgstr "Numărul maxim de solicitări pe minut pentru un utilizator autentificat
 msgid "Maximum number of requests per minute for an unauthenticated IP address"
 msgstr "Numărul maxim de solicitări pe minut pentru o adresă IP neautentificată"
 
-msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
-msgstr "Numărul maxim de solicitări pe minut pentru fiecare cale brută (valoarea implicită este 300). Setați la 0 pentru a dezactiva limitarea."
+msgid "Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling."
+msgstr ""
+
+msgid "Maximum number of stages per value stream exceeded"
+msgstr ""
 
 msgid "Maximum number of unique IP addresses per user."
 msgstr "Numărul maxim de adrese IP unice pe utilizator."
+
+msgid "Maximum number of value streams per namespace exceeded"
+msgstr ""
 
 msgid "Maximum number of variables loaded (2000)"
 msgstr "Numărul maxim de variabile încărcate (2000)"
@@ -28192,8 +28432,8 @@ msgstr "Maximum de solicitări de import de proiecte pe minut"
 msgid "Maximum push size"
 msgstr "Mărime maximă de push"
 
-msgid "Maximum push size (MB)"
-msgstr "Mărimea maximă de push (MB)"
+msgid "Maximum push size (MiB)"
+msgstr ""
 
 msgid "Maximum requests per 10 minutes per IP address"
 msgstr ""
@@ -28225,8 +28465,8 @@ msgstr "Mărimea maximă a fișierelor de import."
 msgid "Maximum size of individual attachments in comments."
 msgstr "Mărimea maximă a atașamentelor individuale în comentarii."
 
-msgid "Maximum size of pages (MB)"
-msgstr "Mărimea maximă a paginilor (MB)"
+msgid "Maximum size of pages (MiB)"
+msgstr ""
 
 msgid "Maximum snippet size"
 msgstr "Mărimea maximă a fragmentului de cod"
@@ -28573,6 +28813,9 @@ msgstr "Analiza merge request-urilor"
 msgid "Merge request approvals"
 msgstr "Aprobări de merge request-uri"
 
+msgid "Merge request change summary"
+msgstr ""
+
 msgid "Merge request commits"
 msgstr "Commit-uri de merge request"
 
@@ -28589,6 +28832,9 @@ msgid "Merge request reports"
 msgstr "Rapoarte de merge request-uri"
 
 msgid "Merge request status"
+msgstr ""
+
+msgid "Merge request summaries"
 msgstr ""
 
 msgid "Merge request summary"
@@ -28708,9 +28954,6 @@ msgstr "Comentând liniile %{selectStart}start%{selectEnd} până la %{end}"
 msgid "MergeRequestDiffs|Select comment starting line"
 msgstr "Selectați linia de start a comentariului"
 
-msgid "MergeRequests|An error occurred while saving the draft comment."
-msgstr "A apărut o eroare în timpul salvării draftului de comentariu."
-
 msgid "MergeRequests|Can't perform this action automatically. It may have already been done, or a more recent commit may have updated some of this content. Please perform this action locally."
 msgstr ""
 
@@ -28738,9 +28981,6 @@ msgstr ""
 msgid "MergeRequests|Reference copied"
 msgstr "Referință copiată"
 
-msgid "MergeRequests|Saving the comment failed"
-msgstr "Salvarea comentariului a eșuat"
-
 msgid "MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch."
 msgstr "Squashing-ul a eșuat: Faceți squash de commit-uri la nivel local, rezolvați orice conflicte, apoi faceți push la ramură."
 
@@ -28764,6 +29004,9 @@ msgstr "Vizualizați fișierul @ %{commitId}"
 
 msgid "MergeRequests|View replaced file @ %{commitId}"
 msgstr "Vizualizați fișierul înlocuit @ %{commitId}"
+
+msgid "MergeRequests|Your comment could not be submitted because %{reason}."
+msgstr ""
 
 msgid "MergeRequests|commented on commit %{commitLink}"
 msgstr "a comentat commit-ul %{commitLink}"
@@ -28829,6 +29072,18 @@ msgid "MergeRequest|Reviewed by @%{username} but not yet approved"
 msgstr ""
 
 msgid "MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)"
+msgstr ""
+
+msgid "MergeRequest|Summaries are written by AI"
+msgstr ""
+
+msgid "MergeRequest|Summary notes"
+msgstr ""
+
+msgid "MergeRequest|This description was generated for revision %{revision} using AI"
+msgstr ""
+
+msgid "MergeRequest|This description was generated using AI"
 msgstr ""
 
 msgid "MergeTopics|%{sourceTopic} will be removed"
@@ -28927,9 +29182,6 @@ msgstr "A apărut o problemă la actualizarea imaginii dvs."
 msgid "MetricImages|There was an issue uploading your image."
 msgstr "A apărut o problemă la încărcarea imaginii dvs."
 
-msgid "Metrics"
-msgstr "Metrici"
-
 msgid "Metrics - Grafana"
 msgstr "Metrici - Grafana"
 
@@ -28984,62 +29236,8 @@ msgstr "Tabloul de bord cu calea solicitată nu poate fi găsit"
 msgid "MetricsUsersStarredDashboards|You are not authorized to add star to this dashboard"
 msgstr "Nu sunteți autorizat să adăugați stele la acest tablou de bord"
 
-msgid "Metrics|1. Define and preview panel"
-msgstr "1. Definiți și previzualizați panoul"
-
-msgid "Metrics|2. Paste panel YAML into dashboard"
-msgstr "2. Lipiți panoul YAML în dashboard"
-
-msgid "Metrics|Add metric"
-msgstr "Adăugare metrică"
-
-msgid "Metrics|Add panel"
-msgstr "Adăugare panou"
-
-msgid "Metrics|Avg"
-msgstr "Med"
-
-msgid "Metrics|Back to dashboard"
-msgstr "Înapoi la dashboard"
-
-msgid "Metrics|Cancel"
-msgstr "Anulare"
-
-msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
-msgstr "Consultați documentația CI/CD privind desfășurarea într-un mediu"
-
-msgid "Metrics|Collapse panel"
-msgstr "Restrângeți panoul"
-
-msgid "Metrics|Collapse panel (Esc)"
-msgstr "Restrângeți panoul (Esc)"
-
-msgid "Metrics|Copy YAML"
-msgstr "Copiați YAML"
-
-msgid "Metrics|Copy and paste the panel YAML into your dashboard YAML file."
-msgstr "Copiați și lipiți YAML-ul panoului în fișierul YAML al dashboard-ului dumneavoastră."
-
-msgid "Metrics|Create custom dashboard %{fileName}"
-msgstr "Creați un tablou de bord personalizat %{fileName}"
-
 msgid "Metrics|Create metric"
 msgstr "Creați o metrică"
-
-msgid "Metrics|Create new dashboard"
-msgstr "Creați un nou tablou de bord"
-
-msgid "Metrics|Create your dashboard configuration file"
-msgstr "Creați-vă fișierul de configurare al tabloului de bord"
-
-msgid "Metrics|Current"
-msgstr "Actual"
-
-msgid "Metrics|Dashboard files can be found in %{codeStart}.gitlab/dashboards%{codeEnd} at the root of this project."
-msgstr "Fișierele dashboard-ului pot fi găsite în %{codeStart}.gitlab/dashboards%{codeEnd} la rădăcina acestui proiect."
-
-msgid "Metrics|Define panel YAML below to preview panel."
-msgstr "Definiți panoul YAML de mai jos pentru a previzualiza panoul."
 
 msgid "Metrics|Delete metric"
 msgstr "Ștergeți metrica"
@@ -29047,38 +29245,11 @@ msgstr "Ștergeți metrica"
 msgid "Metrics|Delete metric?"
 msgstr "Ștergeți metrica?"
 
-msgid "Metrics|Duplicate"
-msgstr "Duplicați"
-
-msgid "Metrics|Duplicate current dashboard"
-msgstr "Duplicați dashboard-ul curent"
-
-msgid "Metrics|Duplicate dashboard"
-msgstr "Duplicați dashboard-ul"
-
-msgid "Metrics|Duplicate this dashboard to add panel or edit dashboard YAML."
-msgstr "Duplicați acest tablou de bord pentru a adăuga un panou sau pentru a edita YAML-ul tabloului de bord."
-
-msgid "Metrics|Duplicating..."
-msgstr "Duplicarea..."
-
-msgid "Metrics|Edit dashboard YAML"
-msgstr "Editați YAML-ul tabloului de bord"
-
 msgid "Metrics|Edit metric"
-msgid_plural "Metrics|Edit metrics"
-msgstr[0] "Editați metrica"
-msgstr[1] "Editați metricile"
-msgstr[2] "Editați metricile"
-
-msgid "Metrics|Expand panel"
-msgstr "Extindeți panoul"
+msgstr ""
 
 msgid "Metrics|For grouping similar metrics"
 msgstr "Pentru gruparea metricilor similare"
-
-msgid "Metrics|Invalid time range, please verify."
-msgstr "Interval de timp invalid, vă rugăm să verificați."
 
 msgid "Metrics|Label of the y-axis (usually the unit). The x-axis always represents time."
 msgstr "Eticheta axei y (de obicei, unitatea). Axa x reprezintă întotdeauna timpul."
@@ -29086,44 +29257,11 @@ msgstr "Eticheta axei y (de obicei, unitatea). Axa x reprezintă întotdeauna ti
 msgid "Metrics|Legend label (optional)"
 msgstr "Legenda etichetei (opțional)"
 
-msgid "Metrics|Link contains an invalid time window, please verify the link to see the requested time range."
-msgstr "Linkul conține o fereastră de timp invalidă, vă rugăm să verificați linkul pentru a vedea intervalul de timp solicitat."
-
-msgid "Metrics|Link contains invalid chart information, please verify the link to see the expanded panel."
-msgstr "Linkul conține informații invalide despre grafic, vă rugăm să verificați linkul pentru a vedea panoul extins."
-
-msgid "Metrics|Manage chart links"
-msgstr "Gestionați linkurile graficului"
-
-msgid "Metrics|Max"
-msgstr "Max"
-
-msgid "Metrics|Metrics Settings"
-msgstr "Setări de metrice"
-
-msgid "Metrics|Min"
-msgstr "Min"
-
-msgid "Metrics|More actions"
-msgstr "Mai multe acțiuni"
-
 msgid "Metrics|Must be a valid PromQL query."
 msgstr "Trebuie să fie o interogare PromQL validă."
 
 msgid "Metrics|New metric"
 msgstr "Noua metrică"
-
-msgid "Metrics|Open repository"
-msgstr "Deschideți repozitoriul"
-
-msgid "Metrics|Panel YAML"
-msgstr "Panoul YAML"
-
-msgid "Metrics|Panel YAML copied"
-msgstr "Panou YAML copiat"
-
-msgid "Metrics|Preview panel"
-msgstr "Panou de previzualizare"
 
 msgid "Metrics|PromQL query is valid"
 msgstr "Interogarea PromQL este validă"
@@ -29131,68 +29269,11 @@ msgstr "Interogarea PromQL este validă"
 msgid "Metrics|Prometheus Query Documentation"
 msgstr "Documentația interogării Prometheus"
 
-msgid "Metrics|Refresh Prometheus data"
-msgstr "Reîmprospătarea datelor Prometheus"
-
-msgid "Metrics|Refresh dashboard"
-msgstr "Reîmprospătați tabloul de bord"
-
-msgid "Metrics|Select a value"
-msgstr "Selectați o valoare"
-
-msgid "Metrics|Set refresh rate"
-msgstr "Setați rata de reîmprospătare"
-
-msgid "Metrics|Star dashboard"
-msgstr "Adăugați tabloul de bord în favorite"
-
-msgid "Metrics|There was an error creating the dashboard."
-msgstr "A apărut o eroare la crearea dashboard-ului."
-
-msgid "Metrics|There was an error creating the dashboard. %{error}"
-msgstr "A apărut o eroare la crearea tabloului de bord. %{error}"
-
-msgid "Metrics|There was an error fetching annotations. Please try again."
-msgstr "A apărut o eroare la preluarea adnotărilor. Vă rugăm să încercați din nou."
-
-msgid "Metrics|There was an error fetching the environments data, please try again"
-msgstr "A apărut o eroare la preluarea datelor despre medii, vă rugăm să încercați din nou"
-
-msgid "Metrics|There was an error getting annotations information."
-msgstr "A apărut o eroare la obținerea informațiilor despre adnotări."
-
-msgid "Metrics|There was an error getting dashboard validation warnings information."
-msgstr "A apărut o eroare la obținerea informațiilor privind avertismentele de validare a tabloului de bord."
-
-msgid "Metrics|There was an error getting deployment information."
-msgstr "A apărut o eroare la obținerea informațiilor despre desfășurare."
-
-msgid "Metrics|There was an error getting environments information."
-msgstr "A apărut o eroare în timpul obținerii informațiilor despre medii."
-
-msgid "Metrics|There was an error getting options for variable \"%{name}\"."
-msgstr "A apărut o eroare la obținerea opțiunilor pentru variabila „%{name}”."
-
 msgid "Metrics|There was an error trying to validate your query"
 msgstr "A apărut o eroare în timpul încercării de validare a interogării dvs."
 
-msgid "Metrics|There was an error while retrieving metrics"
-msgstr "A apărut o eroare în timpul recuperării metricilor"
-
-msgid "Metrics|There was an error while retrieving metrics. %{message}"
-msgstr "A apărut o eroare în timpul recuperării metricilor. %{message}"
-
-msgid "Metrics|To create a new dashboard, add a new YAML file to %{codeStart}.gitlab/dashboards%{codeEnd} at the root of this project."
-msgstr "Pentru a crea un nou tablou de bord, adăugați un nou fișier YAML la %{codeStart}.gitlab/dashboards%{codeEnd} la rădăcina acestui proiect."
-
-msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
-msgstr "Răspuns neașteptat la datele de desfășurare de la punctul final prometheus"
-
 msgid "Metrics|Unit label"
 msgstr "Eticheta unității"
-
-msgid "Metrics|Unstar dashboard"
-msgstr "Eliminați tabloul de bord din favorite"
 
 msgid "Metrics|Used as a title for the chart"
 msgstr "Utilizat ca titlu pentru grafic"
@@ -29203,23 +29284,11 @@ msgstr "Se utilizează atunci când interogarea returnează o singură serie. Da
 msgid "Metrics|Validating query"
 msgstr "Validarea interogării"
 
-msgid "Metrics|Values"
-msgstr "Valori"
-
-msgid "Metrics|View documentation"
-msgstr "Vizualizați documentația"
-
 msgid "Metrics|Y-axis label"
 msgstr "Eticheta axei Y"
 
-msgid "Metrics|You can save a copy of this dashboard to your repository so it can be customized. Select a file name and branch to save it."
-msgstr "Puteți salva o copie a acestui tablou de bord în repozitoriul dvs. pentru a putea fi personalizat. Selectați un nume de fișier și o ramură pentru a-l salva."
-
 msgid "Metrics|You're about to permanently delete this metric. This cannot be undone."
 msgstr "Sunteți pe cale să ștergeți definitiv această metrică. Acest lucru nu poate fi anulat."
-
-msgid "Metrics|Your dashboard schema is invalid. Edit the dashboard to correct the YAML schema."
-msgstr "Schema dashboard-ului dvs. nu este validă. Editați dashboard-ul pentru a corecta schema YAML."
 
 msgid "Metrics|e.g. HTTP requests"
 msgstr "ex. solicitări HTTP"
@@ -29608,6 +29677,9 @@ msgstr ""
 msgid "MlExperimentTracking|Model experiments"
 msgstr ""
 
+msgid "MlExperimentTracking|Model registry"
+msgstr ""
+
 msgid "MlExperimentTracking|Name"
 msgstr ""
 
@@ -29642,6 +29714,9 @@ msgid "Modal|Close"
 msgstr "Închideți"
 
 msgid "Model experiments"
+msgstr ""
+
+msgid "ModelRegistry|Model registry"
 msgstr ""
 
 msgid "Modified"
@@ -29703,9 +29778,6 @@ msgstr "Mai multe informații"
 
 msgid "More information is available|here"
 msgstr "Mai multe informații sunt disponibile|aici"
-
-msgid "More information."
-msgstr "Mai multe informații"
 
 msgid "More options"
 msgstr ""
@@ -29882,6 +29954,12 @@ msgid "Namespace ID:"
 msgstr "ID-ul spațiului de nume:"
 
 msgid "Namespace Limits"
+msgstr ""
+
+msgid "Namespace doesn't exist or you don't have permission."
+msgstr ""
+
+msgid "Namespace must be provided."
 msgstr ""
 
 msgid "Namespace or group to import repository into does not exist."
@@ -30634,12 +30712,6 @@ msgstr "Nu este nevoie de card de credit."
 msgid "No data available"
 msgstr "Nu există date disponibile"
 
-msgid "No data found"
-msgstr "Nu s-au găsit date"
-
-msgid "No data to display"
-msgstr "Nu există date de afișat"
-
 msgid "No deployments detected. Use environments to control your software's continuous deployment. %{linkStart}Learn more about deployment jobs.%{linkEnd}"
 msgstr "Nu a fost detectată nicio implementare. Utilizați mediile pentru a controla implementarea continuă a software-ului dumneavoastră. %{linkStart}Aflați mai multe despre joburile de implementare.%{linkEnd}"
 
@@ -30778,9 +30850,6 @@ msgstr "Niciun ref selectat"
 msgid "No regions configured"
 msgstr "Nicio regiune configurată"
 
-msgid "No related merge requests found."
-msgstr "Niciun merge request asociat găsit."
-
 msgid "No repository"
 msgstr "Niciun repozitoriu"
 
@@ -30822,6 +30891,9 @@ msgstr "Nicio urmă de stivă pentru această eroare"
 
 msgid "No starrers matched your search"
 msgstr "Niciun marcator cu stele nu a corespuns căutării dvs."
+
+msgid "No start date – %{dueDate}"
+msgstr ""
 
 msgid "No suggestions found"
 msgstr "Nu s-au găsit sugestii"
@@ -30966,9 +31038,6 @@ msgstr "Notă: forkurile actuale își vor păstra nivelul de vizibilitate."
 
 msgid "NoteForm|Note"
 msgstr "Notă"
-
-msgid "NoteToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}. For %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd}, type %{keyboardStart}/%{keyboardEnd}."
-msgstr "Acceptă %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}. Pentru %{quickActionsDocsLinkStart}acțiuni rapide%{quickActionsDocsLinkEnd}, tastați %{keyboardStart}/%{keyboardEnd}."
 
 msgid "Notes"
 msgstr "Note"
@@ -31270,6 +31339,9 @@ msgstr "Autorul commit-ului"
 msgid "Notify|Committed by"
 msgstr "Commit făcut de"
 
+msgid "Notify|Could not find the following %{column} values in %{project}%{parent_groups_clause}: %{error_lines}"
+msgstr ""
+
 msgid "Notify|Don't want to receive updates from GitLab administrators?"
 msgstr "Nu doriți să primiți actualizări de la administratorii GitLab?"
 
@@ -31375,16 +31447,22 @@ msgstr "Acest tip de fișier nu poate fi previzualizat"
 msgid "Notify|No work items have been imported."
 msgstr ""
 
-msgid "Notify|Pipeline #%{pipeline_id} has failed!"
-msgstr ""
-
 msgid "Notify|Pipeline %{pipeline_link} triggered by"
 msgstr "Pipeline-ul %{pipeline_link} declanșat de"
 
-msgid "Notify|Pipeline has been fixed and #%{pipeline_id} has passed!"
-msgstr "Pipeline-ul a fost reparat și #%{pipeline_id} a trecut!"
+msgid "Notify|Pipeline %{pipeline_name_or_id} has failed!"
+msgstr ""
+
+msgid "Notify|Pipeline %{pipeline_name_or_id} has passed!"
+msgstr ""
+
+msgid "Notify|Pipeline has been fixed and %{pipeline_name_or_id} has passed!"
+msgstr ""
 
 msgid "Notify|Please check that your service provider supports email subaddressing and that you have set up email forwarding correctly."
+msgstr ""
+
+msgid "Notify|Please fix the errors above and try the CSV import again."
 msgstr ""
 
 msgid "Notify|Please fix the lines with errors and try the CSV import again."
@@ -31560,6 +31638,9 @@ msgstr "Numărul de replici"
 
 msgid "Number of shards"
 msgstr "Numărul de fragmente"
+
+msgid "Number of shards for non-code indexing"
+msgstr ""
 
 msgid "OK"
 msgstr "OK"
@@ -32239,6 +32320,12 @@ msgstr "Lista ordonată"
 msgid "Organizations"
 msgstr "Organizații"
 
+msgid "Organization|Organization navigation"
+msgstr ""
+
+msgid "Organization|Organization overview"
+msgstr ""
+
 msgid "Orphaned member"
 msgstr "Membru orfan"
 
@@ -32760,6 +32847,18 @@ msgstr "Nivel de proiect"
 
 msgid "PackageRegistry|Publish packages if their name or version matches this regex."
 msgstr "Publicați pachetele dacă numele sau versiunea lor se potrivește cu acest regex."
+
+msgid "PackageRegistry|Published %{date}"
+msgstr ""
+
+msgid "PackageRegistry|Published by %{author}, %{date}"
+msgstr ""
+
+msgid "PackageRegistry|Published to %{projectName} by %{author}, %{date}"
+msgstr ""
+
+msgid "PackageRegistry|Published to %{projectName}, %{date}"
+msgstr ""
 
 msgid "PackageRegistry|Published to the %{project} Package Registry %{datetime}"
 msgstr "Publicat în Registrul de pachete %{project} la %{datetime}"
@@ -33331,9 +33430,6 @@ msgstr "Programele pipeline-ului"
 msgid "Pipeline URL"
 msgstr "URL-ul pipeline-ului"
 
-msgid "Pipeline artifacts"
-msgstr ""
-
 msgid "Pipeline creation rate limits"
 msgstr "Limitele ratei de creare a pipeline-urilor"
 
@@ -33535,6 +33631,15 @@ msgstr "Activ"
 msgid "PipelineSchedules|All"
 msgstr "Toate"
 
+msgid "PipelineSchedules|An error occurred while creating the pipeline schedule."
+msgstr ""
+
+msgid "PipelineSchedules|An error occurred while trying to fetch the pipeline schedule."
+msgstr ""
+
+msgid "PipelineSchedules|An error occurred while updating the pipeline schedule."
+msgstr ""
+
 msgid "PipelineSchedules|Are you sure you want to delete this pipeline schedule?"
 msgstr "Sigur doriți să ștergeți acest program de pipeline?"
 
@@ -33542,6 +33647,9 @@ msgid "PipelineSchedules|Can have custom CI/CD variables."
 msgstr ""
 
 msgid "PipelineSchedules|Create a new pipeline schedule"
+msgstr ""
+
+msgid "PipelineSchedules|Create pipeline schedule"
 msgstr ""
 
 msgid "PipelineSchedules|Cron timezone"
@@ -33599,9 +33707,6 @@ msgid "PipelineSchedules|Runs for a specific branch or tag."
 msgstr ""
 
 msgid "PipelineSchedules|Runs with the same project permissions as the schedule owner."
-msgstr ""
-
-msgid "PipelineSchedules|Save pipeline schedule"
 msgstr ""
 
 msgid "PipelineSchedules|Successfully scheduled a pipeline to run. Go to the %{linkStart}Pipelines page%{linkEnd} for details. "
@@ -33790,9 +33895,6 @@ msgstr ""
 msgid "Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})"
 msgstr ""
 
-msgid "Pipelines|Child pipeline (%{link_start}parent%{link_end})"
-msgstr "Pipeline copil (%{link_start}părinte%{link_end})"
-
 msgid "Pipelines|Clear runner caches"
 msgstr "Ștergeți cache-urile executorilor"
 
@@ -33904,6 +34006,9 @@ msgstr "Sunteți gata să configurați CI/CD pentru proiectul dumneavoastră?"
 msgid "Pipelines|Rebasing creates a pipeline that runs code originating from a forked project merge request. Consequently there are potential security implications, such as the exposure of CI variables."
 msgstr ""
 
+msgid "Pipelines|Retry %{jobName} Job"
+msgstr ""
+
 msgid "Pipelines|Revoke trigger"
 msgstr "Revocare declanșator"
 
@@ -33955,9 +34060,6 @@ msgstr ""
 msgid "Pipelines|This GitLab CI configuration is valid."
 msgstr "Această configurație GitLab CI este validă."
 
-msgid "Pipelines|This is a child pipeline within the parent pipeline"
-msgstr "Acesta este un pipeline copil în interiorul unui pipeline părinte"
-
 msgid "Pipelines|This pipeline is stuck"
 msgstr ""
 
@@ -33976,7 +34078,7 @@ msgstr "Acest proiect nu este configurat în prezent pentru a executa pipeline-u
 msgid "Pipelines|Token"
 msgstr "Token"
 
-msgid "Pipelines|Total amount of compute credits used for the pipeline"
+msgid "Pipelines|Total amount of compute minutes used for the pipeline"
 msgstr ""
 
 msgid "Pipelines|Total number of jobs for the pipeline"
@@ -34036,8 +34138,14 @@ msgstr ""
 msgid "Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page."
 msgstr "Schimbările dvs. au fost comise cu succes. Acum se redirecționează către noua pagină a merge request-ului."
 
+msgid "Pipelines|created"
+msgstr ""
+
 msgid "Pipelines|error"
 msgstr "eroare"
+
+msgid "Pipelines|finished"
+msgstr ""
 
 msgid "Pipelines|invalid"
 msgstr "invalid"
@@ -34104,6 +34212,12 @@ msgstr "Joburile pipeline de merge train nu pot fi reîncercate"
 
 msgid "Pipeline|Merged result pipeline"
 msgstr "Pipeline de rezultate îmbinate"
+
+msgid "Pipeline|No failed jobs in this pipeline 🎉"
+msgstr ""
+
+msgid "Pipeline|Only the first 100 jobs per stage are displayed"
+msgstr ""
 
 msgid "Pipeline|Passed"
 msgstr "A trecut"
@@ -34188,6 +34302,9 @@ msgstr "Acest pipeline a rulat pe conținutul ramurii sursă a acestui merge req
 
 msgid "Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{linkStart}must be configured%{linkEnd} to run in merge request pipelines."
 msgstr "Pentru a rula un pipeline de merge request, joburile din fișierul de configurare CI/CD %{linkStart} trebuie să fie configurate%{linkEnd} pentru a rula în pipeline-urile de merge request."
+
+msgid "Pipeline|To see the remaining jobs, go to the %{boldStart}Jobs%{boldEnd} tab."
+msgstr ""
 
 msgid "Pipeline|Trigger author"
 msgstr "Autorul declanșatorului"
@@ -34314,9 +34431,6 @@ msgstr "Vă rugăm să confirmați adresa dvs. de e-mail"
 
 msgid "Please contact an admin to create runners."
 msgstr ""
-
-msgid "Please contact an admin to register runners."
-msgstr "Vă rugăm să contactați un administrator pentru a înregistra executori."
 
 msgid "Please contact your GitLab administrator if you think this is an error."
 msgstr "Contactați administratorul dvs. GitLab dacă sunteți de părere că este vorba de o eroare."
@@ -34468,8 +34582,8 @@ msgstr "Vă rugăm să încercați din nou"
 msgid "Please try and refresh the page. If the problem persists please contact support."
 msgstr "Vă rugăm să încercați să reîmprospătați pagina. Dacă problema persistă, vă rugăm să contactați serviciul de asistență."
 
-msgid "Please type %{phrase_code} to proceed or close this modal to cancel."
-msgstr "Vă rugăm să introduceți %{phrase_code} pentru a continua sau să închideți acest mod pentru a anula."
+msgid "Please type %{phrase_code} to proceed."
+msgstr ""
 
 msgid "Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately."
 msgstr ""
@@ -34984,6 +35098,9 @@ msgstr ""
 msgid "ProductAnalytics|Feature Usages"
 msgstr ""
 
+msgid "ProductAnalytics|For more information, see the %{linkStart}docs%{linkEnd}."
+msgstr ""
+
 msgid "ProductAnalytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."
 msgstr ""
 
@@ -35021,6 +35138,9 @@ msgid "ProductAnalytics|On what do you want to get insights?"
 msgstr ""
 
 msgid "ProductAnalytics|Page Views"
+msgstr ""
+
+msgid "ProductAnalytics|Product analytics onboarding"
 msgstr ""
 
 msgid "ProductAnalytics|Repeat Visit Percentage"
@@ -35163,6 +35283,9 @@ msgstr "activat"
 
 msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered."
 msgstr "Sunteți pe cale să ștergeți definitiv %{yourAccount} și toate problemele, merge request-urile și grupurile legate de contul dumneavoastră. După ce confirmați %{deleteAccount}, această operațiune nu mai poate fi anulată, nici contul recuperat."
+
+msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered. You might have to wait seven days before creating a new account with the same username or email."
+msgstr ""
 
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr "Veți schimba numele de utilizator %{currentUsernameBold} în %{newUsernameBold}. Profilul și proiectele vor fi redirecționate către spațiul de nume %{newUsername}, dar această redirecționare va expira odată ce spațiul de nume %{currentUsername} este înregistrat de un alt utilizator sau grup. Vă rugăm să vă actualizați telecomenzile repozitoriului Git cât mai curând posibil."
@@ -35679,9 +35802,6 @@ msgstr "Informații despre proiect:"
 
 msgid "Project information"
 msgstr "Informații despre proiect"
-
-msgid "Project is required when cluster_type is :project"
-msgstr "Proiectul este necesar atunci când cluster_type este: project"
 
 msgid "Project members"
 msgstr "Membrii proiectului"
@@ -36220,18 +36340,6 @@ msgstr "Intern"
 msgid "ProjectSettings|Issues"
 msgstr "Probleme"
 
-msgid "ProjectSettings|Jitsu administrator email"
-msgstr ""
-
-msgid "ProjectSettings|Jitsu administrator password"
-msgstr ""
-
-msgid "ProjectSettings|Jitsu host"
-msgstr ""
-
-msgid "ProjectSettings|Jitsu project ID"
-msgstr ""
-
 msgid "ProjectSettings|LFS objects from this repository are available to forks. %{linkStart}How do I remove them?%{linkEnd}"
 msgstr "Obiectele LFS din acest repozitoriu sunt disponibile pentru fork-uri. %{linkStart}Cum le pot elimina?%{linkEnd}"
 
@@ -36415,9 +36523,6 @@ msgstr "Trimiteți modificările pentru a fi îmbinate în amonte."
 msgid "ProjectSettings|Target project"
 msgstr "Proiect țintă"
 
-msgid "ProjectSettings|The ID of the project in Jitsu. The project contains all analytics instances."
-msgstr ""
-
 msgid "ProjectSettings|The URL of your Cube instance."
 msgstr ""
 
@@ -36438,9 +36543,6 @@ msgstr "Proiectul țintă implicit pentru merge request-urile create în acest p
 
 msgid "ProjectSettings|The default template will be applied on save."
 msgstr "Șablonul implicit va fi aplicat la salvare."
-
-msgid "ProjectSettings|The host of your Jitsu instance."
-msgstr ""
 
 msgid "ProjectSettings|The host of your data collector instance."
 msgstr ""
@@ -36478,10 +36580,7 @@ msgstr "Proiect în amonte"
 msgid "ProjectSettings|Used for every new merge request."
 msgstr "Utilizat pentru fiecare nou merge request."
 
-msgid "ProjectSettings|Used to connect Jitsu to the Clickhouse instance."
-msgstr ""
-
-msgid "ProjectSettings|Used to generate short-lived API access tokens."
+msgid "ProjectSettings|Used to connect Snowplow to the Clickhouse instance."
 msgstr ""
 
 msgid "ProjectSettings|Used to retrieve dashboard data from the Cube instance."
@@ -36964,6 +37063,9 @@ msgstr "Promovați la etichetă de grup"
 msgid "Promote to objective"
 msgstr ""
 
+msgid "Promote work item"
+msgstr ""
+
 msgid "PromoteMilestone|Only project milestones can be promoted."
 msgstr "Numai obiectivele proiectului pot fi promovate."
 
@@ -36978,6 +37080,9 @@ msgstr "Problemă promovată la o epică."
 
 msgid "Promotes issue to incident"
 msgstr "Promovează problema în incident"
+
+msgid "Promotes work item to %{type}."
+msgstr ""
 
 msgid "Promotion is not supported."
 msgstr "Promovarea nu este acceptată."
@@ -37765,9 +37870,6 @@ msgstr "Calitatea proiectului"
 msgid "Query"
 msgstr "Interogare"
 
-msgid "Query cannot be processed"
-msgstr "Interogarea nu poate fi procesată"
-
 msgid "Queued"
 msgstr "În coadă"
 
@@ -37838,6 +37940,9 @@ msgid "Read more about GitLab at %{link_to_promo}."
 msgstr "Citiți mai multe despre GitLab la %{link_to_promo}."
 
 msgid "Read more about the %{changes_link_start}changes%{link_end}, the %{vision_link_start}vision%{link_end}, and the %{design_link_start}design%{link_end}."
+msgstr ""
+
+msgid "Read the documentation before applying changes."
 msgstr ""
 
 msgid "Read their documentation."
@@ -38023,7 +38128,7 @@ msgstr "utilizați această funcție"
 msgid "RegistrationVerification|Are you sure you want to skip this step?"
 msgstr "Sunteți sigur că doriți să săriți peste această etapă?"
 
-msgid "RegistrationVerification|Enable free units of compute"
+msgid "RegistrationVerification|Enable free compute minutes"
 msgstr ""
 
 msgid "RegistrationVerification|GitLab will not charge your card, it will only be used for validation."
@@ -38035,7 +38140,7 @@ msgstr "Pipeline-urile care utilizează executori partajați GitLab vor eșua p�
 msgid "RegistrationVerification|Skip this for now"
 msgstr "Săriți peste aceasta deocamdată."
 
-msgid "RegistrationVerification|To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method, such as a debit or credit card. Until then, you can't use free units of compute to build your application."
+msgid "RegistrationVerification|To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method, such as a debit or credit card. Until then, you can't use free compute minutes to build your application."
 msgstr ""
 
 msgid "RegistrationVerification|Validate account"
@@ -38049,18 +38154,6 @@ msgstr "Da, aș vrea să sar peste"
 
 msgid "RegistrationVerification|You can alway verify your account at a later time."
 msgstr "Puteți oricând să vă verificați contul ulterior."
-
-msgid "Registration|Checkout"
-msgstr "Validare"
-
-msgid "Registration|Your GitLab group"
-msgstr "Grupul d-voastră GitLab"
-
-msgid "Registration|Your first project"
-msgstr "Primul d-voastră proiect"
-
-msgid "Registration|Your profile"
-msgstr "Profilul dumneavoastră"
 
 msgid "Registry entry enqueued to be resynced"
 msgstr ""
@@ -38278,14 +38371,14 @@ msgstr "Înlăturați reuniunea Zoom."
 msgid "Remove access"
 msgstr "Înlăturați accesul"
 
-msgid "Remove all or specific assignee(s)"
-msgstr "Înlăturați toți sau anumiți responsabili"
+msgid "Remove all or specific assignees"
+msgstr ""
 
 msgid "Remove all or specific label(s)"
 msgstr "Înlăturați toate sau anumite etichete"
 
-msgid "Remove all or specific reviewer(s)"
-msgstr "Înlăturați toți sau anumiți recenzenți"
+msgid "Remove all or specific reviewers"
+msgstr ""
 
 msgid "Remove approvers"
 msgstr "Înlăturați aprobatorii"
@@ -38545,6 +38638,9 @@ msgstr "Reînnoiți abonamentul"
 msgid "Reopen"
 msgstr "Redeschideți"
 
+msgid "Reopen %{issuableType}"
+msgstr ""
+
 msgid "Reopen %{issueType}"
 msgstr "Redeschideți %{issueType}"
 
@@ -38569,6 +38665,9 @@ msgstr "Redeschideți acest / această %{quick_action_target}"
 msgid "Reopened this %{quick_action_target}."
 msgstr "S-a redeschis acest / această %{quick_action_target}."
 
+msgid "Reopening %{issuableType}..."
+msgstr ""
+
 msgid "Reopening..."
 msgstr ""
 
@@ -38586,6 +38685,9 @@ msgstr "Înlocuiți toate etichetele"
 
 msgid "Replace audio"
 msgstr "Înlocuiți audio"
+
+msgid "Replace current template with filled in placeholders"
+msgstr ""
 
 msgid "Replace file"
 msgstr "Înlocuiți fișierul"
@@ -38992,8 +39094,8 @@ msgstr "Repozitoriul trebuie să conțină cel puțin 1 fișier."
 msgid "Repository size is above the limit."
 msgstr "Mărimea repozitoriului depășește limita."
 
-msgid "Repository size limit (MB)"
-msgstr "Limita dimensiunii repozitoriului (MB)"
+msgid "Repository size limit (MiB)"
+msgstr ""
 
 msgid "Repository storage"
 msgstr "Stocarea repozitoriului"
@@ -39373,9 +39475,6 @@ msgstr[0] "Revizor"
 msgstr[1] "%d Revizori"
 msgstr[2] "%d de Revizori"
 
-msgid "Reviewer(s)"
-msgstr "Revizor(i)"
-
 msgid "Reviewers"
 msgstr "Recenzenți"
 
@@ -39421,11 +39520,20 @@ msgstr "Afișare foaie de parcurs"
 msgid "Role"
 msgstr "Rol"
 
+msgid "Roles and Permissions"
+msgstr ""
+
 msgid "Rollback"
 msgstr "Rollback"
 
 msgid "Rollout of free user limits within GitLab.com. Do not edit these values unless approval has been given via %{link_start}this issue%{link_end}."
 msgstr "Introducerea de limite gratuite de utilizatori în GitLab.com. Nu modificați aceste valori decât dacă  s-a acordat aprobarea prin %{link_start}această problemă%{link_end}."
+
+msgid "Root cause analysis"
+msgstr ""
+
+msgid "Root cause analysis is a feature that analyzes your logs to determine why a job may have failed and the potential ways to fix it. To generate this analysis, we may share information in your job logs with %{linkStart}Third-Party AI providers%{linkEnd}. Before initiating this analysis, please do not include in your logs any information that could impact the security or privacy of your account."
+msgstr ""
 
 msgid "Ruby"
 msgstr "Ruby"
@@ -39583,6 +39691,9 @@ msgstr "Amazon Linux 2 Docker HA cu scalare manuală și programare opțională.
 msgid "Runners|An error has occurred fetching instructions"
 msgstr "A apărut o eroare la preluarea instrucțiunilor"
 
+msgid "Runners|An error occurred while creating the runner. Please try again."
+msgstr ""
+
 msgid "Runners|An error occurred while deleting. Some runners may not have been deleted."
 msgstr ""
 
@@ -39688,11 +39799,17 @@ msgstr "Creat %{timeAgo}"
 msgid "Runners|Created %{timeAgo} by %{avatar}"
 msgstr ""
 
+msgid "Runners|Dashboard"
+msgstr ""
+
 msgid "Runners|Delete %d runner"
 msgid_plural "Runners|Delete %d runners"
 msgstr[0] "Ștergeți %d executor"
 msgstr[1] "Ștergeți %d executori"
 msgstr[2] "Ștergeți %d de executori"
+
+msgid "Runners|Delete %{count} runners?"
+msgstr ""
 
 msgid "Runners|Delete runner"
 msgstr "Ștergeți executorul"
@@ -39753,9 +39870,6 @@ msgstr ""
 
 msgid "Runners|Filter projects"
 msgstr "Filtrare proiecte"
-
-msgid "Runners|Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner."
-msgstr ""
 
 msgid "Runners|Get started with runners"
 msgstr "Începeți cu executorii"
@@ -39930,6 +40044,12 @@ msgid_plural "Runners|Permanently delete %d runners"
 msgstr[0] "Ștergeți permanent %d executor"
 msgstr[1] "Ștergeți permanent %d executori"
 msgstr[2] "Ștergeți permanent %d de executori"
+
+msgid "Runners|Permanently delete runner"
+msgid_plural "Runners|Permanently delete %d runners"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "Runners|Platform"
 msgstr "Platformă"
@@ -40184,7 +40304,10 @@ msgid "Runners|The project, group or instance where the runner was registered. I
 msgstr "Proiectul, grupul sau instanța în care a fost înregistrat executorul. Executorii de instanță sunt întotdeauna deținuți de Administrator."
 
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
-msgstr "Executorul va fi șters permanent și nu va mai fi disponibil pentru proiectele sau grupurile din instanță. Sunteți sigur că doriți să continuați?"
+msgid_plural "Runners|%d runners will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "Runners|The unique ID for each runner that uses this configuration."
 msgstr ""
@@ -40504,10 +40627,13 @@ msgstr "Se salvează"
 msgid "Saving project."
 msgstr "Se salvează proiectul."
 
-msgid "ScanExecutionPolicy|%{period} %{days} at %{time}"
-msgstr "ScanExecutionPolicy|%{period} %{days} la %{time}"
+msgid "ScanExecutionPolicy|%{hostname}'s timezone"
+msgstr ""
 
-msgid "ScanExecutionPolicy|%{rules} %{period} for %{scopes} %{branches} %{agents} %{namespaces}"
+msgid "ScanExecutionPolicy|%{period} %{days} at %{time} %{timezoneLabel} %{timezone}"
+msgstr ""
+
+msgid "ScanExecutionPolicy|%{rules} actions for %{scopes} %{branches} %{agents} %{namespaces} %{period}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{agents} %{namespaces}"
@@ -40516,10 +40642,31 @@ msgstr ""
 msgid "ScanExecutionPolicy|Add condition"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Add new CI variable"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Conditions"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Customized CI variables:"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Customized variables will overwrite ones defined in the project CI/CD file and settings"
+msgstr ""
+
 msgid "ScanExecutionPolicy|If the field is empty, the runner will be automatically selected"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Key"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Kubernetes agent's timezone"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Maximum number of CI-criteria is one"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Only one variable can be added at a time."
 msgstr ""
 
 msgid "ScanExecutionPolicy|Run a %{scan} scan on runner that %{tags}"
@@ -40540,6 +40687,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|Select a scanner"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Select a variable"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Select agent"
 msgstr "Selectați un agent"
 
@@ -40555,6 +40705,9 @@ msgstr "Selectați profilul scanerului"
 msgid "ScanExecutionPolicy|Select site profile"
 msgstr "Selectați profilul site-ului"
 
+msgid "ScanExecutionPolicy|Select timezone"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Site profile"
 msgstr "Profil de site"
 
@@ -40562,6 +40715,9 @@ msgid "ScanExecutionPolicy|Tags"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Triggers:"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Value"
 msgstr ""
 
 msgid "ScanExecutionPolicy|agent"
@@ -40575,6 +40731,12 @@ msgstr ""
 
 msgid "ScanExecutionPolicy|in namespaces"
 msgstr "în spațiile de nume"
+
+msgid "ScanExecutionPolicy|on %{hostname}"
+msgstr ""
+
+msgid "ScanExecutionPolicy|on the Kubernetes agent pod"
+msgstr ""
 
 msgid "ScanExecutionPolicy|scanner profile %{scannerProfile} and site profile %{siteProfile}"
 msgstr ""
@@ -40595,6 +40757,9 @@ msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
 msgid "ScanResultPolicy|Clear all"
+msgstr ""
+
+msgid "ScanResultPolicy|Customized CI Variables"
 msgstr ""
 
 msgid "ScanResultPolicy|Except"
@@ -40643,6 +40808,9 @@ msgid "ScanResultPolicy|Severity is:"
 msgstr ""
 
 msgid "ScanResultPolicy|Status is:"
+msgstr ""
+
+msgid "ScanResultPolicy|Unknown"
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
@@ -41098,8 +41266,8 @@ msgstr "Verificare de coverage"
 msgid "SecurityApprovals|Learn more about Coverage-Check"
 msgstr "Aflați mai multe despre Verificarea de coverage"
 
-msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}Learn more.%{linkEnd}"
-msgstr "Necesită aprobare pentru diminuări în coverage de teste. %{linkStart}Aflați mai multe.%{linkEnd}"
+msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
 
 msgid "SecurityConfiguration|%{featureName} merge request creation mutation failed"
 msgstr "Merge request-ul %{featureName} de creare a mutației a eșuat"
@@ -41121,9 +41289,6 @@ msgstr ""
 
 msgid "SecurityConfiguration|Breach and Attack Simulation is an incubating feature extending existing security testing by simulating adversary activity."
 msgstr ""
-
-msgid "SecurityConfiguration|By default, all analyzers are applied in order to cover all languages across your project, and only run if the language is detected in the merge request."
-msgstr "În mod implicit, toate analizatoarele sunt aplicate pentru a acoperi toate limbajele din proiectul dvs. și se execută numai dacă limbajul este detectat în merge request."
 
 msgid "SecurityConfiguration|Configuration guide"
 msgstr "Ghid de configurare"
@@ -41208,9 +41373,6 @@ msgstr "Activați rapid toate instrumentele de testare continuă și de conformi
 
 msgid "SecurityConfiguration|Runtime security metrics for application environments"
 msgstr "Metricile de securitate runtime pentru mediile aplicațiilor"
-
-msgid "SecurityConfiguration|SAST Analyzers"
-msgstr "Analizatoare SAST"
 
 msgid "SecurityConfiguration|SAST configuration"
 msgstr ""
@@ -41325,6 +41487,9 @@ msgstr ""
 
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
 msgstr "Sunteți sigur că doriți să ștergeți această politică? Această acțiune nu poate fi anulată."
+
+msgid "SecurityOrchestration|Branch types don't match any existing branches."
+msgstr ""
 
 msgid "SecurityOrchestration|Choose a project"
 msgstr "Alegeți un proiect"
@@ -41449,6 +41614,9 @@ msgstr "Nu s-au definit reguli - politica nu se va executa."
 msgid "SecurityOrchestration|No tags available"
 msgstr ""
 
+msgid "SecurityOrchestration|Non-existing CI variables have been detected in the policy yaml. As a result, rule mode has been disabled. To enable rule mode, remove those non-existing CI variables from the policy yaml."
+msgstr ""
+
 msgid "SecurityOrchestration|Non-existing DAST profiles have been detected in the policy yaml. As a result, rule mode has been disabled. To enable rule mode, remove those non-existing profiles from the policy yaml."
 msgstr ""
 
@@ -41491,7 +41659,7 @@ msgstr "Tipul politicii"
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers} if any of the following occur:"
 msgstr "Necesită %{approvals} %{plural} de la %{approvers} în oricare dintre următoarele cazuri:"
 
-msgid "SecurityOrchestration|Required approvals exceed eligible approvers"
+msgid "SecurityOrchestration|Required approvals exceed eligible approvers."
 msgstr ""
 
 msgid "SecurityOrchestration|Roles"
@@ -41634,6 +41802,9 @@ msgstr "Acest proiect"
 
 msgid "SecurityOrchestration|This view only shows scan results for the agent %{agent}. You can view scan results for all agents in the %{linkStart}Operational Vulnerabilities tab of the vulnerability report%{linkEnd}."
 msgstr "Această vizualizare afișează numai rezultatele scanării pentru agentul %{agent}. Puteți vizualiza rezultatele scanării pentru toți agenții în %{linkStart}fila Vulnerabilități operaționale din raportul de vulnerabilitate%{linkEnd}."
+
+msgid "SecurityOrchestration|Timezone is invalid"
+msgstr ""
 
 msgid "SecurityOrchestration|To widen your search, change filters above or select a different security policy project."
 msgstr "Pentru a vă extinde căutarea, modificați filtrele de mai sus sau selectați un alt proiect de politică de securitate."
@@ -42028,6 +42199,9 @@ msgstr "Raportul de securitate pentru acest pipeline a %{helpPageLinkStart}expir
 msgid "SecurityReports|There was an error adding the comment."
 msgstr "A apărut o eroare la adăugarea comentariului."
 
+msgid "SecurityReports|There was an error creating a Jira issue for the finding. Please try again."
+msgstr ""
+
 msgid "SecurityReports|There was an error creating the issue."
 msgstr "A apărut o eroare la crearea problemei."
 
@@ -42208,8 +42382,8 @@ msgstr "Selectați o iterație"
 msgid "Select assignee"
 msgstr "Selectați responsabilul"
 
-msgid "Select assignee(s)"
-msgstr "Selectați responsabilul"
+msgid "Select assignees"
+msgstr ""
 
 msgid "Select branch"
 msgstr "Selectați ramura"
@@ -42271,11 +42445,17 @@ msgstr "Selectați proiectul pentru a crea %{type}"
 msgid "Select projects"
 msgstr "Selectați proiecte"
 
+msgid "Select protected branch"
+msgstr ""
+
+msgid "Select protected branches"
+msgstr ""
+
 msgid "Select report"
 msgstr "Selectați raportul"
 
-msgid "Select reviewer(s)"
-msgstr "Selectare recenzent(i)"
+msgid "Select reviewers"
+msgstr ""
 
 msgid "Select severity (optional)"
 msgstr ""
@@ -42421,6 +42601,9 @@ msgstr "Contul de servicii"
 msgid "Service Account Key"
 msgstr "Cheia contului de servicii"
 
+msgid "Service Accounts"
+msgstr ""
+
 msgid "Service Accounts keys authorize GitLab to deploy your Google Cloud project"
 msgstr "Cheile conturilor de servicii autorizează GitLab să implementeze proiectul dvs. Google Cloud"
 
@@ -42451,6 +42634,9 @@ msgstr ""
 msgid "ServiceAccount|User does not have permission to create a service account."
 msgstr ""
 
+msgid "ServiceDesk|Cannot create custom email"
+msgstr ""
+
 msgid "ServiceDesk|Custom email address could not be verified."
 msgstr ""
 
@@ -42458,6 +42644,12 @@ msgid "ServiceDesk|Custom email address has already been verified."
 msgstr ""
 
 msgid "ServiceDesk|Custom email address verification has already been processed and failed."
+msgstr ""
+
+msgid "ServiceDesk|Custom email already exists"
+msgstr ""
+
+msgid "ServiceDesk|Custom email does not exist"
 msgstr ""
 
 msgid "ServiceDesk|Enable Service Desk"
@@ -42468,6 +42660,9 @@ msgstr "Pentru a obține ajutor la configurarea Service Desk pentru instanța dv
 
 msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
 msgstr "Problemele create din e-mailurile Service Desk vor apărea aici. Fiecare comentariu devine parte a conversației din e-mail."
+
+msgid "ServiceDesk|Parameters missing"
+msgstr ""
 
 msgid "ServiceDesk|Service Desk is not enabled"
 msgstr "Service Desk nu este activat"
@@ -42495,6 +42690,12 @@ msgstr "Utilizatorii dvs. pot trimite e-mailuri la această adresă:"
 
 msgid "ServicePing|Service ping is off"
 msgstr "Serviciul Ping este oprit"
+
+msgid "ServicePing|This can be changed at any time in %{link_start}your settings%{link_end}."
+msgstr ""
+
+msgid "ServicePing|To help improve GitLab, we would like to periodically %{link_start}collect usage information%{link_end}."
+msgstr ""
 
 msgid "ServicePing|To view instance-level analytics, ask an admin to turn on %{docLinkStart}service ping%{docLinkEnd}."
 msgstr "Pentru a vizualiza analizele la nivel de instanță, cereți unui administrator să activeze %{docLinkStart}serviciul ping%{docLinkEnd}."
@@ -42805,6 +43006,15 @@ msgstr ""
 msgid "SharedRunnersMinutesSettings|When you reset the compute usage for this namespace, the compute usage changes to zero."
 msgstr ""
 
+msgid "ShellOperations|Git SSH operations rate limit"
+msgstr ""
+
+msgid "ShellOperations|Limit the number of Git operations a user can perform per minute, per repository."
+msgstr ""
+
+msgid "ShellOperations|Maximum number of Git operations per minute"
+msgstr ""
+
 msgid "Shimo|Go to Shimo Workspace"
 msgstr "Mergeți la spațiul de lucru Shimo"
 
@@ -42889,7 +43099,7 @@ msgstr "Afișați jurnalul brut complet"
 msgid "Show details"
 msgstr "Afișați detaliile"
 
-msgid "Show failed jobs"
+msgid "Show failed jobs (%{count})"
 msgstr ""
 
 msgid "Show file browser"
@@ -42897,9 +43107,6 @@ msgstr "Afișați browserul de fișiere"
 
 msgid "Show file contents"
 msgstr "Afișați conținutul fișierului"
-
-msgid "Show filters"
-msgstr ""
 
 msgid "Show full blame"
 msgstr ""
@@ -43210,8 +43417,8 @@ msgstr "Mărime"
 msgid "Size Limits"
 msgstr "Limite de mărime"
 
-msgid "Size limit per repository (MB)"
-msgstr "Limita de dimensiune pe depozit (MB)"
+msgid "Size limit per repository (MiB)"
+msgstr ""
 
 msgid "Skip to main content"
 msgstr ""
@@ -43434,6 +43641,9 @@ msgstr ""
 
 msgid "Snippets|Files"
 msgstr "Fișiere"
+
+msgid "Snippets|Snippets are limited to %{total} files."
+msgstr ""
 
 msgid "Snippets|Snippets can't contain empty files. Ensure all files have content, or delete them."
 msgstr "Fragmentele de cod nu pot conține fișiere goale. Asigurați-vă că toate fișierele au conținut sau ștergeți-le."
@@ -44005,6 +44215,9 @@ msgstr "Jurnalul de spam a fost trimis cu succes ca ham."
 msgid "Specific branches"
 msgstr ""
 
+msgid "Specific protected branches"
+msgstr ""
+
 msgid "Specified URL cannot be used: \"%{reason}\""
 msgstr "URL-ul specificat nu poate fi utilizat: „%{reason}”"
 
@@ -44142,9 +44355,6 @@ msgstr "Începeți un subiect intern"
 
 msgid "Start merge train"
 msgstr "Începeți merge train-ul"
-
-msgid "Start merge train when pipeline succeeds"
-msgstr "Porniți merge train-ul când conducta reușește"
 
 msgid "Start merge train..."
 msgstr "Începe merge train-ul..."
@@ -44347,9 +44557,6 @@ msgstr "documentația de configurare"
 msgid "StatusPage|your status page frontend."
 msgstr "frontend-ul paginii dvs. de stare."
 
-msgid "Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments."
-msgstr "Rămâneți la curent cu performanțele și starea de sănătate a mediului dvs. prin configurarea Prometheus pentru a vă monitoriza implementările."
-
 msgid "Step %{currentStep} of %{stepCount}"
 msgstr "Etapa %{currentStep} din %{stepCount}"
 
@@ -44398,8 +44605,8 @@ msgstr "Necunoscut"
 msgid "Store your files, plan your work, collaborate on code, and more."
 msgstr "Stocați-vă fișierele, planificați-vă activitatea, colaborați la cod și multe altele."
 
-msgid "Strikethrough"
-msgstr "Tăiat cu o linie"
+msgid "Strikethrough (%{modifierKey}%{shiftKey}X)"
+msgstr ""
 
 msgid "Strikethrough text"
 msgstr "Text tăiat cu o linie"
@@ -44833,6 +45040,12 @@ msgstr "Rezumat / notă"
 msgid "Summary comment (optional)"
 msgstr "Comentariu sumar (opțional)"
 
+msgid "Summary generated by AI"
+msgstr ""
+
+msgid "Summary will be generated with the next push to this merge request and will appear here."
+msgstr ""
+
 msgid "Sun"
 msgstr "Dum"
 
@@ -45061,10 +45274,10 @@ msgstr "Schimbați ramura/eticheta"
 msgid "Switch to GitLab Next"
 msgstr "Treceți la GitLab Next"
 
-msgid "Switch to Markdown"
+msgid "Switch to plain text editing"
 msgstr ""
 
-msgid "Switch to rich text"
+msgid "Switch to rich text editing"
 msgstr ""
 
 msgid "Switch to the source to copy the file contents"
@@ -45328,7 +45541,7 @@ msgstr "protejate"
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr "Consultați documentația pentru a descoperi toate capacitățile GitLab."
 
-msgid "TanukiBot|Ask GitLab Chat"
+msgid "TanukiBot|Ask GitLab Duo"
 msgstr ""
 
 msgid "TanukiBot|Ask a question about GitLab"
@@ -45414,6 +45627,21 @@ msgstr "Declanșează TeamCity CI după ce un merge request a fost creat sau act
 
 msgid "TeamcityIntegration|Trigger TeamCity CI after every push to the repository, except branch delete"
 msgstr "Declanșează TeamCity CI după fiecare push în depozit, cu excepția ștergerii ramurii"
+
+msgid "TelegramIntegration|Leave blank to use your current token."
+msgstr ""
+
+msgid "TelegramIntegration|New token"
+msgstr ""
+
+msgid "TelegramIntegration|Send notifications about project events to Telegram."
+msgstr ""
+
+msgid "TelegramIntegration|Send notifications about project events to Telegram. %{docs_link}"
+msgstr ""
+
+msgid "TelegramIntegration|Unique authentication token."
+msgstr ""
 
 msgid "Telephone number"
 msgstr "Număr de telefon"
@@ -45588,9 +45816,6 @@ msgstr "Modificări ale resurselor raportate: %{addNum} de adăugat, %{changeNum
 
 msgid "Terraform|Terraform init command"
 msgstr "Comanda Terraform init"
-
-msgid "Terraform|Terraform reports"
-msgstr "Rapoarte Terraform"
 
 msgid "Terraform|Terraform states"
 msgstr ""
@@ -45847,9 +46072,6 @@ msgstr "Trackerul de probleme este locul în care puteți adăuga lucruri care t
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
 msgstr "Trackerul de probleme este locul în care puteți adăuga lucruri care trebuie îmbunătățite sau rezolvate într-un proiect. Vă puteți înregistra sau autentifica pentru a crea probleme pentru acest proiect."
 
-msgid "The Prometheus server responded with \"bad request\". Please check your queries are correct and are supported in your Prometheus version. %{documentationLink}"
-msgstr "Serverul Prometheus a răspuns cu „solicitare greșită”. Vă rugăm să verificați dacă interogările dvs. sunt corecte și sunt acceptate în versiunea dvs. de Prometheus. %{documentationLink}"
-
 msgid "The Slack notifications integration is deprecated and will be removed in a future release. To continue to receive notifications from Slack, use the GitLab for Slack app instead. %{learn_more_link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -45928,14 +46150,14 @@ msgstr "Problema actuală"
 msgid "The current user is not authorized to access the job log."
 msgstr "Utilizatorul curent nu este autorizat să acceseze jurnalul jobului."
 
+msgid "The current user is not authorized to create the pipeline schedule"
+msgstr ""
+
 msgid "The current user is not authorized to update the pipeline schedule"
 msgstr ""
 
 msgid "The data in this pipeline is too old to be rendered as a graph. Please check the Jobs tab to access historical data."
 msgstr "Datele acestui pipeline sunt prea vechi pentru a fi redate sub formă de grafic. Vă rugăm să verificați fila Joburi pentru a accesa datele istorice."
-
-msgid "The data source is connected, but there is no data to display. %{documentationLink}"
-msgstr "Sursa de date este conectată, dar nu există date de afișat. %{documentationLink}"
 
 msgid "The date when the release is ready. A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}."
 msgstr "Data la care versiunea este gata. O versiune cu o dată în viitor este etichetată ca fiind o %{linkStart}Versiune viitoare%{linkEnd}."
@@ -46132,8 +46354,14 @@ msgstr "Licența pe care ați încărcat-o nu este valabilă. Dacă problema per
 msgid "The list creation wizard is already open"
 msgstr "Expertul de creare a listei este deja deschis"
 
+msgid "The map can not be displayed because there was an error loading the GeoJSON file."
+msgstr ""
+
 msgid "The maximum amount of time users have to set up two-factor authentication before it's enforced."
 msgstr "Durata maximă de timp avută de utilizatori pentru a configura autentificarea cu doi factori înainte de a fi impusă."
+
+msgid "The maximum compute minutes that jobs in a namespace can use on shared runners each month. 0 for unlimited."
+msgstr ""
 
 msgid "The maximum file size allowed is %{size}."
 msgstr "Mărimea maximă permisă a fișierului este %{size}."
@@ -46149,9 +46377,6 @@ msgstr "Mărimea maximă a fișierului este %{size}."
 
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
 msgstr "Numărul maxim de etichete pe care un singur proces de curățare le acceptă pentru curățare. Dacă numărul de etichete depășește această limită, lista de etichete care urmează să fie șterse este trunchiată la acest număr. Pentru a înlătura această limită, setați-o la 0."
-
-msgid "The maximum units of compute that jobs in a namespace can use on shared runners each month. 0 for unlimited."
-msgstr ""
 
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
 msgstr "Conflictele de îmbinare pentru acest merge request nu pot fi rezolvate prin GitLab. Încercați să le rezolvați pe plan local."
@@ -46278,6 +46503,9 @@ msgstr ""
 
 msgid "The snippet can be accessed without any authentication."
 msgstr "Fragmentul de cod poate fi accesat fără nicio autentificare."
+
+msgid "The snippet can be accessed without any authentication. To embed snippets, a project must be public."
+msgstr ""
 
 msgid "The snippet is visible only to me."
 msgstr "Fragmentul de cod este vizibil numai pentru mine."
@@ -46507,6 +46735,9 @@ msgstr "A apărut o problemă la preluarea emojiurilor."
 msgid "There was a problem fetching epics."
 msgstr "A existat o problemă la preluarea epicelor."
 
+msgid "There was a problem fetching failed jobs"
+msgstr ""
+
 msgid "There was a problem fetching groups."
 msgstr "A existat o problemă la preluarea grupurilor."
 
@@ -46717,6 +46948,9 @@ msgstr "S-a produs o eroare în timpul preluării datelor de analiză a fluxului
 msgid "There was an error while fetching value stream analytics duration data."
 msgstr "S-a produs o eroare în timpul preluării datelor privind durata analizei fluxului de valori."
 
+msgid "There was an error while retrying this job"
+msgstr ""
+
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr "A apărut o eroare cu reCAPTCHA. Vă rugăm să rezolvați din nou reCAPTCHA."
 
@@ -46857,6 +47091,9 @@ msgstr ""
 
 msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."
 msgstr "Acest commit face parte din merge request-ul %{link_to_merge_request}. Comentariile create aici vor fi create în contextul acestui merge request."
+
+msgid "This commit was created in the GitLab UI, and signed with a GitLab-verified signature."
+msgstr ""
 
 msgid "This commit was signed with a %{strong_open}verified%{strong_close} signature and the committer email is verified to belong to the same user."
 msgstr "Acest commit a fost semnat cu o semnătură %{strong_open}verificată%{strong_close} și s-a verificat că adresa de e-mail a celui care a făcut comiterea aparține aceluiași utilizator."
@@ -47239,9 +47476,6 @@ msgstr ""
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
 msgstr "Această pagină nu este disponibilă deoarece nu aveți permisiunea de a citi informații în mai multe proiecte."
 
-msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{b_open}Auto DevOps.%{b_close}"
-msgstr "Acest pipeline utilizează o configurație predefinită CI/CD activată de %{b_open}Auto DevOps.%{b_close}"
-
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
 msgstr "Acest pipeline utilizează o configurație predefinită CI/CD activată de %{strongStart}Auto DevOps.%{strongEnd}"
 
@@ -47412,9 +47646,6 @@ msgstr "Pragul în octeți la care se comprimă argumentele jobului Sidekiq."
 
 msgid "Threshold in bytes at which to reject Sidekiq jobs. Set this to 0 to if you don't want to limit Sidekiq jobs."
 msgstr "Limita în octeți la care se resping joburile Sidekiq. Setați această valoare la 0 dacă nu doriți să limitați lucrările Sidekiq."
-
-msgid "Threshold number of changes (branches or tags) in a single push above which a bulk push event is created (default is 3)."
-msgstr "Limita de modificări (ramuri sau etichete) într-un singur push, peste care se creează un eveniment de push în bloc (valoarea implicită este 3)."
 
 msgid "Throughput"
 msgstr "Debit"
@@ -47695,6 +47926,9 @@ msgstr "chiar acum"
 msgid "Timeago|right now"
 msgstr "chiar acum"
 
+msgid "Timeline"
+msgstr ""
+
 msgid "Timeline event added successfully."
 msgstr "Adăugarea evenimentului cronologic a reușit."
 
@@ -47782,14 +48016,11 @@ msgstr "Titlu:"
 msgid "Titles"
 msgstr ""
 
-msgid "Titles and Descriptions"
-msgstr "Titluri și descrieri"
-
 msgid "To"
 msgstr "La"
 
-msgid "To %{link_to_help} of your domain, add the above key to a TXT record within your DNS configuration."
-msgstr "Pentru %{link_to_help} domeniului dvs., adăugați cheia de mai sus la o înregistrare TXT în configurația DNS."
+msgid "To %{link_to_help} of your domain, add the above key to a TXT record within your DNS configuration within seven days."
+msgstr ""
 
 msgid "To Do"
 msgstr "De Făcut"
@@ -47857,6 +48088,9 @@ msgstr "Pentru a vă asigura că %{project_link} este deprogramat de la șterger
 msgid "To ensure %{project_name} is unscheduled for deletion, check that activity has been logged by GitLab. For example:"
 msgstr "Pentru a vă asigura că %{project_name} este deprogramat de la ștergere, verificați dacă s-a înregistrat vreo activitate de către GitLab. De exemplu:"
 
+msgid "To ensure no loss of access to personal content, only use this account for matters related to %{group_name}."
+msgstr ""
+
 msgid "To ensure no loss of personal content, this account should only be used for matters related to %{group_name}."
 msgstr "Pentru a nu pierde conținutul personal, acest cont trebuie utilizat numai pentru aspecte legate de %{group_name}."
 
@@ -47883,9 +48117,6 @@ msgstr "Pentru a începe, utilizați linkul de mai jos pentru a vă confirma con
 
 msgid "To go to GitLab Pages, on the left sidebar, select %{pages_link}."
 msgstr ""
-
-msgid "To help improve GitLab, we would like to periodically %{docs_link}. This can be changed at any time in %{settings_link}."
-msgstr "Pentru a ajuta la îmbunătățirea GitLab, am dori ca periodic să %{docs_link}. Acest lucru poate fi schimbat în orice moment în %{settings_link}."
 
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr "Pentru a importa un repozitoriu SVN, consultați %{svn_link}."
@@ -47959,6 +48190,9 @@ msgstr "Pentru a vedea ce s-a schimbat sau pentru a crea un merge request, alege
 msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
 msgstr "Pentru a configura autentificarea SAML pentru grupul dvs prin intermediul unui furnizor de identitate precum Azure, Okta, Onelogin, Ping Identity sau furnizorul dvs personalizat SAML 2.0:"
 
+msgid "To set up this feature, contact your administrator."
+msgstr ""
+
 msgid "To set up this integration:"
 msgstr "Pentru a configura această integrare:"
 
@@ -47967,6 +48201,12 @@ msgstr "Pentru a specifica nivelul de notificare pentru fiecare proiect al unui 
 
 msgid "To start using GitLab Enterprise Edition, upload the %{codeOpen}.gitlab-license%{codeClose} file or enter the license key you have received from GitLab Inc."
 msgstr "Pentru a începe să utilizați Ediția GitLab Enterprise, încărcați fișierul %{codeOpen}.gitlab-license%{codeClose} sau introduceți cheia de licență pe care ați primit-o de la GitLab Inc."
+
+msgid "To submit your changes in a merge request, create a new fork."
+msgstr ""
+
+msgid "To submit your changes in a merge request, switch to one of these forks or create a new fork."
+msgstr ""
 
 msgid "To unsubscribe from this issue, please paste the following link into your browser:"
 msgstr "Pentru a vă dezabona de la această problemă, vă rugăm să introduceți următorul link în browserul d-voastră:"
@@ -48139,9 +48379,6 @@ msgstr "Comutați bara laterală"
 msgid "Toggle backtrace"
 msgstr "Comutați backtrace"
 
-msgid "Toggle collapse"
-msgstr "Comutare restrângere"
-
 msgid "Toggle comments for this file"
 msgstr "Comutați comentariile pentru acest fișier"
 
@@ -48150,6 +48387,9 @@ msgstr "Comutare la descrierea commit-ului"
 
 msgid "Toggle commit list"
 msgstr "Comutare la lista de commit-uri"
+
+msgid "Toggle details"
+msgstr ""
 
 msgid "Toggle emoji award"
 msgstr "Schimbați premiul emoji"
@@ -48198,12 +48438,6 @@ msgstr "Token valabil până la revocare"
 
 msgid "TokenRevocation|This Personal Access Token has been automatically revoked on detection. Consider investigating and rotating before marking this vulnerability as resolved."
 msgstr ""
-
-msgid "Tokens|Scopes set the permission levels granted to the token."
-msgstr "Scopurile stabilesc nivelurile de permisiune acordate tokenului."
-
-msgid "Tokens|Select scopes"
-msgstr "Selectați domeniile"
 
 msgid "Tomorrow"
 msgstr "Mâine"
@@ -48279,6 +48513,9 @@ msgstr "Subiecte"
 
 msgid "Topics could not be merged!"
 msgstr "Subiectele nu au putut fi îmbinate!"
+
+msgid "Topics|Subscribe to the new projects feed"
+msgstr ""
 
 msgid "Total"
 msgstr "Total"
@@ -48610,12 +48847,6 @@ msgstr "Introduceți textul de căutat"
 msgid "URL"
 msgstr "URL"
 
-msgid "URL cannot be blank"
-msgstr "URL-ul nu poate fi gol"
-
-msgid "URL is invalid"
-msgstr "URL-ul este nevalid"
-
 msgid "URL is required"
 msgstr "URL-ul este necesar"
 
@@ -48672,9 +48903,6 @@ msgstr "Nu se pot colecta informații despre CPU"
 
 msgid "Unable to collect memory info"
 msgstr "Nu se pot colecta informații despre memorie"
-
-msgid "Unable to connect to Prometheus server"
-msgstr "Nu se poate conecta la serverul Prometheus"
 
 msgid "Unable to connect to server: %{error}"
 msgstr "Nu se poate conecta la server: %{error}"
@@ -48859,9 +49087,6 @@ msgstr "Din păcate, mesajul dvs. de e-mail către GitLab nu a putut fi procesat
 msgid "Unhappy?"
 msgstr "Nemulțumit(ă)?"
 
-msgid "Units of compute"
-msgstr ""
-
 msgid "Units|d"
 msgstr ""
 
@@ -48913,7 +49138,7 @@ msgstr "Dezlegare"
 msgid "Unlock"
 msgstr "Deblocați"
 
-msgid "Unlock %{issuableType}"
+msgid "Unlock %{issuableDisplayName}"
 msgstr ""
 
 msgid "Unlock account"
@@ -48934,6 +49159,9 @@ msgstr "Deblocat"
 msgid "Unlocked the discussion."
 msgstr "Discuția a fost deblocată."
 
+msgid "Unlocking %{issuableDisplayName}"
+msgstr ""
+
 msgid "Unlocks the discussion."
 msgstr "Deblochează discuția."
 
@@ -48942,9 +49170,6 @@ msgstr "Inaccesibil"
 
 msgid "Unrecognized approval status."
 msgstr "Statusul de aprobare nerecunoscut."
-
-msgid "Unrecognized cluster type"
-msgstr "Tip de cluster nerecunoscut"
 
 msgid "Unresolve"
 msgstr "Marcați nerezolvat"
@@ -49225,7 +49450,7 @@ msgstr "%{storage_limit_link_start}O limită de stocare a spațiului de nume%{li
 msgid "UsageQuota|Audio samples, videos, datasets, and graphics."
 msgstr "Mostre audio, videoclipuri, seturi de date și grafice."
 
-msgid "UsageQuota|Buy additional units of compute"
+msgid "UsageQuota|Buy additional compute minutes"
 msgstr ""
 
 msgid "UsageQuota|Buy storage"
@@ -49273,6 +49498,9 @@ msgstr "Registrul de container Docker integrat în Gitlab pentru stocarea imagin
 msgid "UsageQuota|Group settings &gt; Usage quotas"
 msgstr "Setări de grup &gt; Cote de utilizare"
 
+msgid "UsageQuota|Included in %{planName} subscription"
+msgstr ""
+
 msgid "UsageQuota|Includes artifacts, repositories, wiki, and other items."
 msgstr ""
 
@@ -49312,17 +49540,11 @@ msgstr "Membri în așteptare"
 msgid "UsageQuota|Pipeline artifacts and job artifacts, created with CI/CD."
 msgstr "Artefacte de pipeline și artefacte de job, create cu CI/CD."
 
-msgid "UsageQuota|Pipeline artifacts created by CI/CD."
-msgstr ""
-
 msgid "UsageQuota|Pipelines"
 msgstr "Pipeline-uri"
 
-msgid "UsageQuota|Purchased storage"
-msgstr "Stocarea achiziționată"
-
-msgid "UsageQuota|Purchased storage used"
-msgstr "Stocarea achiziționată folosită"
+msgid "UsageQuota|Project storage included in %{planName} subscription"
+msgstr ""
 
 msgid "UsageQuota|Recalculate repository usage"
 msgstr "Recalculați utilizarea repozitorului"
@@ -49381,7 +49603,13 @@ msgstr ""
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
 msgstr "Acest spațiu de nume nu are proiecte care au folosit executorii partajați în perioada curentă."
 
-msgid "UsageQuota|This table omits projects that used 0 units of compute or 0 shared runners duration"
+msgid "UsageQuota|This table omits projects that used 0 compute minutes or 0 shared runners duration"
+msgstr ""
+
+msgid "UsageQuota|Total purchased storage"
+msgstr ""
+
+msgid "UsageQuota|Total storage"
 msgstr ""
 
 msgid "UsageQuota|Transfer"
@@ -49687,6 +49915,9 @@ msgstr "Utilizatorul nu are o solicitare în așteptare"
 msgid "User does not have permission to create a Security Policy project."
 msgstr ""
 
+msgid "User doesn't exist or you don't have permission to change namespace commit emails."
+msgstr ""
+
 msgid "User has already been deactivated"
 msgstr ""
 
@@ -49840,7 +50071,13 @@ msgstr ""
 msgid "UserProfile|Activity"
 msgstr "Activitate"
 
+msgid "UserProfile|An error occurred loading the activity. Please refresh the page to try again."
+msgstr ""
+
 msgid "UserProfile|An error occurred loading the followers. Please refresh the page to try again."
+msgstr ""
+
+msgid "UserProfile|An error occurred loading the following. Please refresh the page to try again."
 msgstr ""
 
 msgid "UserProfile|An error occurred loading the personal projects. Please refresh the page to try again."
@@ -49860,6 +50097,9 @@ msgstr "Proiecte contribuite"
 
 msgid "UserProfile|Copy user ID"
 msgstr "Copiați ID-ul de utilizator"
+
+msgid "UserProfile|Copy user ID: %{id}"
+msgstr ""
 
 msgid "UserProfile|Edit profile"
 msgstr "Editare profil"
@@ -49941,6 +50181,9 @@ msgstr "Acest utilizator nu urmărește alți utilizatori."
 
 msgid "UserProfile|Unconfirmed user"
 msgstr "Utilizator neconfirmat"
+
+msgid "UserProfile|User ID copied to clipboard"
+msgstr ""
 
 msgid "UserProfile|User ID: %{id}"
 msgstr "ID-ul de utilizator: %{id}"
@@ -50191,8 +50434,8 @@ msgstr "Mergeți la documente"
 msgid "ValueStreamAnalytics|High vulnerabilities over time."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Key metrics"
-msgstr "Metrici cheie"
+msgid "ValueStreamAnalytics|Lifecycle metrics"
+msgstr ""
 
 msgid "ValueStreamAnalytics|Median time an incident was open on a production environment in the given time period."
 msgstr "Timpul mediu în care un incident a fost deschis într-un mediu de producție în perioada de timp dată."
@@ -50317,7 +50560,7 @@ msgstr "Până atunci, executorii partajați nu vor fi disponibili. %{validateLi
 msgid "VerificationReminder|Your account has been validated"
 msgstr "Contul dvs. a fost validat"
 
-msgid "VerificationReminder|You’ll now be able to take advantage of free units of compute on shared runners."
+msgid "VerificationReminder|You’ll now be able to take advantage of free compute minutes on shared runners."
 msgstr ""
 
 msgid "Verified"
@@ -50331,9 +50574,6 @@ msgstr "Verificați configurația SAML"
 
 msgid "Verify code"
 msgstr "Verificați codul"
-
-msgid "Verify configuration"
-msgstr "Verificați configurația"
 
 msgid "Version"
 msgstr "Versiune"
@@ -50416,12 +50656,6 @@ msgstr "Consultați blame înainte de această modificare"
 msgid "View card matches"
 msgstr "Vizualizați potriviri card"
 
-msgid "View chart"
-msgid_plural "View charts"
-msgstr[0] "Vizualizați graficul"
-msgstr[1] "Vizualizați graficele"
-msgstr[2] "Vizualizați graficele"
-
 msgid "View dependency details for your project"
 msgstr "Vizualizați detaliile dependențelor pentru proiectul dvs."
 
@@ -50448,9 +50682,6 @@ msgstr "Vizualizați fișierul @ "
 
 msgid "View file @ %{commitSha}"
 msgstr "Vizualizați fișierul @ %{commitSha}"
-
-msgid "View full dashboard"
-msgstr "Vizualizați dashboard-ul complet"
 
 msgid "View group in admin area"
 msgstr "Vizualizați grupul în Zona Admin"
@@ -50506,9 +50737,6 @@ msgstr "Vizualizați merge request-ul deschis"
 msgid "View page @ "
 msgstr "Vizualizați pagina @ "
 
-msgid "View performance dashboard."
-msgstr "Vizualizați tabloul de bord de performanță."
-
 msgid "View project in admin area"
 msgstr "Vizualizați proiectul în Zona Admin"
 
@@ -50527,6 +50755,9 @@ msgstr "Vizualizați fișierul înlocuit @ "
 msgid "View seat usage"
 msgstr "Vizualizare utilizare seats"
 
+msgid "View summary notes"
+msgstr ""
+
 msgid "View supported languages and frameworks"
 msgstr "Vedeți limbajele și framework-urile acceptate"
 
@@ -50538,9 +50769,6 @@ msgstr "Consultați documentația"
 
 msgid "View the latest successful deployment to this environment"
 msgstr "Vizualizați cea mai recentă implementare de succes în acest mediu"
-
-msgid "View the performance dashboard at"
-msgstr "Vizualizați dashboard-ul de performanță la"
 
 msgid "View usage details"
 msgstr "Vizualizați detaliile de utilizare"
@@ -50896,6 +51124,9 @@ msgstr "Revizuire de cod"
 msgid "Vulnerability|Comments"
 msgstr "Comentarii"
 
+msgid "Vulnerability|Could not load prompt."
+msgstr ""
+
 msgid "Vulnerability|Crash address"
 msgstr "Adresa incidentului"
 
@@ -50949,6 +51180,9 @@ msgstr "Fișier:"
 
 msgid "Vulnerability|GitLab Security Report"
 msgstr "Raport de securitate GitLab"
+
+msgid "Vulnerability|Hide prompt"
+msgstr ""
 
 msgid "Vulnerability|Identifier"
 msgstr "Identificator"
@@ -51025,6 +51259,9 @@ msgstr "Severitate"
 msgid "Vulnerability|Severity:"
 msgstr "Severitate:"
 
+msgid "Vulnerability|Show prompt"
+msgstr ""
+
 msgid "Vulnerability|Status"
 msgstr "Status"
 
@@ -51082,9 +51319,6 @@ msgstr "Se așteaptă aprobarea"
 msgid "Waiting for merge (open and assigned)"
 msgstr "Se așteaptă pentru îmbinare (deschisă și atribuită)"
 
-msgid "Waiting for performance data"
-msgstr "Se așteaptă datele de performanță"
-
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr "Doriți să vedeți datele? Adresați-vă unui administrator pentru acces."
 
@@ -51124,9 +51358,6 @@ msgstr "Nu s-au găsit %{scope} care să corespundă cu %{term} în grupul %{gro
 msgid "We couldn't find any %{scope} matching %{term} in project %{project}"
 msgstr "Nu s-au găsit %{scope} care să corespundă cu %{term} din proiectul %{project}."
 
-msgid "We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating."
-msgstr "Nu am putut ajunge la serverul Prometheus. Fie serverul nu mai există, fie detaliile de configurare trebuie actualizate."
-
 msgid "We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed."
 msgstr "Am detectat un spam potențial în %{humanized_resource_name}. Vă rugăm să rezolvați reCAPTCHA pentru a continua."
 
@@ -51144,9 +51375,6 @@ msgstr "Vă invităm să %{featureLinkStart}solicitați o caracteristică%{featu
 
 msgid "We recommend a work email address."
 msgstr "Vă recomandăm o adresă de e-mail de serviciu."
-
-msgid "We recommend leaving all SAST analyzers enabled"
-msgstr "Vă recomandăm să lăsați toți analizatorii SAST activi"
 
 msgid "We recommend that you buy additional Pipeline minutes to avoid any interruption of service."
 msgstr "Vă recomandăm să cumpărați minute suplimentare pipeline pentru a evita orice întrerupere a serviciului."
@@ -51535,6 +51763,9 @@ msgstr "Ce este listat aici?"
 msgid "What is repository mirroring?"
 msgstr "Ce este replicarea repozitoriului?"
 
+msgid "What is root cause analysis?"
+msgstr ""
+
 msgid "What is squashing?"
 msgstr "Ce este squashing-ul?"
 
@@ -51853,6 +52084,9 @@ msgstr "Retrageți solicitarea de acces"
 msgid "Won't fix / Accept risk"
 msgstr "Nu se repară / Acceptați riscul"
 
+msgid "Work Item promoted successfully."
+msgstr ""
+
 msgid "Work Item type with id %{id} was not found"
 msgstr ""
 
@@ -51949,6 +52183,9 @@ msgstr ""
 msgid "WorkItem|Converted to task"
 msgstr ""
 
+msgid "WorkItem|Copy %{workItemType} email address"
+msgstr ""
+
 msgid "WorkItem|Create %{workItemType}"
 msgstr ""
 
@@ -51971,9 +52208,6 @@ msgid "WorkItem|Due date"
 msgstr "Data scadenței"
 
 msgid "WorkItem|Existing task"
-msgstr ""
-
-msgid "WorkItem|Failed to award emoji"
 msgstr ""
 
 msgid "WorkItem|Health status"
@@ -52090,6 +52324,12 @@ msgstr "Ceva nu a mers bine atunci când s-a încercat adăugarea unui copil. V�
 msgid "WorkItem|Something went wrong when trying to create a child. Please try again."
 msgstr "Ceva nu a mers bine atunci când ați încercat să creați un copil. Încercați din nou."
 
+msgid "WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again."
+msgstr ""
+
 msgid "WorkItem|Something went wrong while fetching milestones. Please try again."
 msgstr "Ceva nu a mers bine în timpul recuperării obiectivelor. Încercați din nou."
 
@@ -52166,6 +52406,9 @@ msgid "Workspaces|A workspace is a virtual sandbox environment for your code in 
 msgstr ""
 
 msgid "Workspaces|Cancel"
+msgstr ""
+
+msgid "Workspaces|Could not load workspaces"
 msgstr ""
 
 msgid "Workspaces|Could not retrieve cluster agents for this project"
@@ -52262,6 +52505,9 @@ msgid "Workspaces|You can create a workspace for public projects only."
 msgstr ""
 
 msgid "Workspaces|You can't create a workspace for this project"
+msgstr ""
+
+msgid "Workspaces|Your workspaces"
 msgstr ""
 
 msgid "Would you like to create a new branch?"
@@ -52374,9 +52620,6 @@ msgstr ""
 
 msgid "You are billed if you exceed this number. %{qsrOverageLinkStart}How does billing work?%{qsrOverageLinkEnd}"
 msgstr "Dacă depășiți acest număr, veți fi facturat. %{qsrOverageLinkStart}Cum funcționează facturarea?%{qsrOverageLinkEnd}"
-
-msgid "You are connected to the Prometheus server, but there is currently no data to display."
-msgstr "Sunteți conectat la serverul Prometheus, dar în prezent nu există date de afișat."
 
 msgid "You are currently offline, or the GitLab instance is not reachable."
 msgstr "În prezent sunteți offline sau instanța GitLab nu este accesibilă."
@@ -52665,6 +52908,9 @@ msgstr "Nu puteți scrie pe o instanță secundară GitLab Geo numai în citire.
 
 msgid "You cannot write to this read-only GitLab instance."
 msgstr "Nu puteți scrie în această instanță GitLab numai în citire."
+
+msgid "You can’t edit files directly in this project."
+msgstr ""
 
 msgid "You can’t edit files directly in this project. Fork this project and submit a merge request with your changes."
 msgstr "Nu puteți edita fișiere direct în acest proiect. Fork acest proiect și trimiteți un merge request cu modificările dumneavoastră."
@@ -53107,6 +53353,12 @@ msgstr ""
 msgid "Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in %{duration} or you can click the link below to unlock now."
 msgstr "Contul dvs. GitLab a fost blocat datorită unui număr excesiv de încercări nereușite de autentificare. Puteți aștepta deblocarea automată a contului dvs. în %{duration} sau puteți face clic pe linkul de mai jos pentru a vă debloca acum."
 
+msgid "Your GitLab account is now an %{source_link}:"
+msgstr ""
+
+msgid "Your GitLab account is now an Enterprise User (%{source_link}):"
+msgstr ""
+
 msgid "Your GitLab account request has been approved!"
 msgstr "Solicitarea dvs. de creare a contului GitLab a fost aprobată!"
 
@@ -53157,6 +53409,12 @@ msgstr "Dispozitivul dvs. WebAuthn a fost înregistrat!"
 
 msgid "Your access request to the %{source_type} has been withdrawn."
 msgstr "Solicitarea dvs. de acces la %{source_type} a fost retrasă."
+
+msgid "Your account has been blocked. Contact %{support} for assistance."
+msgstr ""
+
+msgid "Your account has been blocked. Contact your GitLab administrator for assistance."
+msgstr ""
 
 msgid "Your account has been deactivated"
 msgstr "Contul dvs. a fost dezactivat"
@@ -53218,8 +53476,8 @@ msgstr ""
 msgid "Your comment could not be submitted! Please check your network connection and try again."
 msgstr "Comentariul dvs. nu a putut fi trimis! Vă rugăm să verificați conexiunea la rețea și să încercați din nou."
 
-msgid "Your comment could not be updated! Please check your network connection and try again."
-msgstr "Comentariul dvs. nu a putut fi actualizat! Vă rugăm să verificați conexiunea la rețea și să încercați din nou."
+msgid "Your comment could not be updated because %{reason}."
+msgstr ""
 
 msgid "Your comment will be discarded."
 msgstr "Comentariul dvs. va fi înlăturat."
@@ -53380,10 +53638,13 @@ msgstr ""
 msgid "Your top-level group %{namespace_name} will move to a read-only state soon"
 msgstr ""
 
-msgid "Your top-level group is over the user and storage limits and has been placed in a read-only state."
+msgid "Your top-level group is over the user limit and has been placed in a read-only state."
 msgstr ""
 
-msgid "Your top-level group is over the user limit and has been placed in a read-only state."
+msgid "Your top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To ensure that your group does not become read-only, you should contact a user with the Owner role for this group to upgrade to a paid tier, or manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}"
+msgstr ""
+
+msgid "Your top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To get more seats and additional storage, upgrade to a paid tier. You can also manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}"
 msgstr ""
 
 msgid "Your update failed. You can only upload one design when dropping onto an existing design."
@@ -53680,7 +53941,7 @@ msgstr "nu se poate modifica dacă executorii partajați sunt activați"
 msgid "cannot be changed since member is associated with a custom role"
 msgstr "nu se poate modifica, deoarece membrul este asociat cu un rol personalizat"
 
-msgid "cannot be changed to %{new_type} with %{parent_type} as parent type."
+msgid "cannot be changed to %{new_type} when linked to a parent %{parent_type}."
 msgstr ""
 
 msgid "cannot be changed to %{new_type} with these child item types."
@@ -54122,10 +54383,10 @@ msgid "closed %{timeago}"
 msgstr "închis %{timeago}"
 
 msgid "closed issue"
-msgstr "problemă închisă"
-
-msgid "collect usage information"
-msgstr "colectează informații de utilizare"
+msgid_plural "closed issues"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "comment"
 msgstr "comentariu"
@@ -54352,18 +54613,6 @@ msgstr[2] "de fișiere"
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr "constatarea nu este găsită sau este deja atașată unei vulnerabilități"
 
-msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch}"
-msgstr "pentru %{link_to_merge_request} cu %{link_to_merge_request_source_branch}"
-
-msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}"
-msgstr "pentru %{link_to_merge_request} cu %{link_to_merge_request_source_branch} în %{link_to_merge_request_target_branch}"
-
-msgid "for %{link_to_pipeline_ref}"
-msgstr "pentru %{link_to_pipeline_ref}"
-
-msgid "for %{ref}"
-msgstr "pentru %{ref}"
-
 msgid "for Workspace is required to be public"
 msgstr ""
 
@@ -54472,7 +54721,7 @@ msgstr "în"
 msgid "in %{duration} and was queued for %{queued_duration}"
 msgstr ""
 
-msgid "in %{duration}, using %{compute_credits} compute credits, and was queued for %{queued_duration}"
+msgid "in %{duration}, using %{compute_minutes} compute minutes, and was queued for %{queued_duration}"
 msgstr ""
 
 msgid "in group %{link_to_group}"
@@ -54480,6 +54729,9 @@ msgstr "în grupul %{link_to_group}"
 
 msgid "in project %{link_to_project}"
 msgstr "în proiectul %{link_to_project}"
+
+msgid "incident"
+msgstr ""
 
 msgid "instance completed"
 msgid_plural "instances completed"
@@ -54670,9 +54922,6 @@ msgstr "încărcați-l oricum"
 msgid "loading"
 msgstr "încărcare"
 
-msgid "locked"
-msgstr ""
-
 msgid "locked by %{path_lock_user_name} %{created_at}"
 msgstr "blocat(ă) de %{path_lock_user_name} la %{created_at}"
 
@@ -54853,9 +55102,6 @@ msgstr ""
 msgid "mrWidget|%{rules} invalid rules have been approved automatically"
 msgstr ""
 
-msgid "mrWidget|A merge train is a queued list of merge requests waiting to be merged into the target branch. The changes in each merge request are combined with the changes in earlier merge requests and tested before merge."
-msgstr "Un merge train este o listă de merge request-uri care așteaptă să fie îmbinate în ramura țintă. Modificările din fiecare merge request sunt combinate cu modificările din merge request-urile anterioare și sunt testate înainte de îmbinare."
-
 msgid "mrWidget|A new merge train has started and this merge request is the first of the queue."
 msgstr "Un nou merge train a început și acest merge request este primul în coada de așteptare."
 
@@ -54979,9 +55225,6 @@ msgstr "Îmbinarea nu a reușit."
 msgid "mrWidget|Merged by"
 msgstr "Îmbinat de"
 
-msgid "mrWidget|More information"
-msgstr "Mai multe informații"
-
 msgid "mrWidget|Please restore it or use a different %{type} branch."
 msgstr "Vă rugăm să o restaurați sau să folosiți o altă ramură %{type}."
 
@@ -55045,17 +55288,17 @@ msgstr "Acest merge request nu a reușit să fie îmbinat automat"
 msgid "mrWidget|To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
 msgstr "Pentru a aproba acest merge request, vă rugăm să vă introduceți parola. Acest proiect necesită ca toate aprobările să fie autentificate."
 
-msgid "mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more.%{linkEnd}"
-msgstr "Pentru a modifica aceste mesaje implicite, editați atât șabloanele mesajelor commit-urilor de îmbinare cât și ale celor de squash. %{linkStart}Aflați mai multe.%{linkEnd}"
+msgid "mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
 
-msgid "mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more.%{linkEnd}"
-msgstr "Pentru a modifica acest mesaj implicit, editați șablonul pentru mesajele commit-ului de îmbinare %{linkStart}Aflați mai multe.%{linkEnd}"
+msgid "mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
 
-msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more.%{linkEnd}"
-msgstr "Pentru a schimba acest mesaj implicit, editați șablonul mesajelor commit-urilor squash. %{linkStart}Aflați mai multe.%{linkEnd}"
+msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
 
-msgid "mrWidget|What is a merge train?"
-msgstr "Ce este un merge train?"
+msgid "mrWidget|Your merge request is almost ready!"
+msgstr ""
 
 msgid "mrWidget|Your password"
 msgstr "Parola dumneavoastră"
@@ -55093,6 +55336,12 @@ msgstr "trebuie să fie asociat cu un Grup sau un Proiect"
 msgid "must be at least 1 day"
 msgstr ""
 
+msgid "must be before %{expiry_date}"
+msgstr ""
+
+msgid "must be false when email confirmation setting is off"
+msgstr ""
+
 msgid "must be greater than start date"
 msgstr "trebuie să fie mai mare decât data de început"
 
@@ -55124,9 +55373,6 @@ msgid "must belong to same project of the work item."
 msgstr ""
 
 msgid "must contain only a discord user ID."
-msgstr ""
-
-msgid "must expire in 365 days"
 msgstr ""
 
 msgid "must have a repository"
@@ -55208,7 +55454,10 @@ msgid "only supports valid HTTP(S) URLs"
 msgstr ""
 
 msgid "open issue"
-msgstr "problemă deschisă"
+msgid_plural "open issues"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "or"
 msgstr "sau"
@@ -55543,6 +55792,9 @@ msgstr "numele etichetei"
 msgid "terraform states"
 msgstr "stările terraform"
 
+msgid "test case"
+msgstr ""
+
 msgid "the correct format."
 msgstr "formatul corect."
 
@@ -55599,9 +55851,6 @@ msgstr "parametrul tipului lipsește și este necesar"
 
 msgid "unicode domains should use IDNA encoding"
 msgstr "domeniile unicode ar trebui să utilizeze codificarea IDNA"
-
-msgid "unlocked"
-msgstr ""
 
 msgid "updated"
 msgstr "s-a actualizat"
@@ -55728,9 +55977,6 @@ msgstr "instanța dvs. GitLab"
 
 msgid "your group (%{group_name})"
 msgstr "grupul dvs. (%{group_name})"
-
-msgid "your settings"
-msgstr "setările d-voastră"
 
 msgid "yyyy-mm-dd"
 msgstr ""

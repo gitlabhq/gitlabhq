@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # `gitlab-sshd` **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299109) in GitLab 14.5 as an Experiment for self-managed customers.
-> - Ready for production use with [Cloud Native GitLab in GitLab 15.1](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2540) and [Omnibus GitLab in GitLab 15.9](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5937).
+> - Ready for production use with [Cloud Native GitLab in GitLab 15.1](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2540) and [Linux packages in GitLab 15.9](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5937).
 
 `gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
 written in Go. It is provided as a part of the `gitlab-shell` package. It has a lower memory
@@ -47,7 +47,7 @@ The following instructions enable `gitlab-sshd` on a different port than OpenSSH
    gitlab_sshd['listen_address'] = '[::]:2222' # Adjust the port accordingly
    ```
 
-1. Optional. By default, Omnibus GitLab generates SSH host keys for `gitlab-sshd` if
+1. Optional. By default, Linux package installations generate SSH host keys for `gitlab-sshd` if
 they do not exist in `/var/opt/gitlab/gitlab-sshd`. If you wish to disable this automatic generation, add this line:
 
    ```ruby

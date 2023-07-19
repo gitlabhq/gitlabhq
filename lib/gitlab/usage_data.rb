@@ -152,22 +152,6 @@ module Gitlab
         }
       end
 
-      def system_usage_data_settings
-        {
-          settings: {
-            ldap_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth::Ldap::Config.encrypted_secrets.active? },
-            smtp_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Email::SmtpConfig.encrypted_secrets.active? },
-            operating_system: alt_usage_data(fallback: nil) { operating_system },
-            gitaly_apdex: alt_usage_data { gitaly_apdex },
-            collected_data_categories: add_metric('CollectedDataCategoriesMetric', time_frame: 'none'),
-            service_ping_features_enabled: add_metric('ServicePingFeaturesMetric', time_frame: 'none'),
-            snowplow_enabled: add_metric('SnowplowEnabledMetric', time_frame: 'none'),
-            snowplow_configured_to_gitlab_collector: add_metric('SnowplowConfiguredToGitlabCollectorMetric', time_frame: 'none'),
-            certificate_based_clusters_ff: add_metric('CertBasedClustersFfMetric')
-          }
-        }
-      end
-
       def system_usage_data_weekly
         {
           counts_weekly: {}
@@ -286,15 +270,8 @@ module Gitlab
           response[:"instances_#{name}_active"] = count(Integration.active.where(instance: true, type: type))
           response[:"projects_inheriting_#{name}_active"] = count(Integration.active.where.not(project: nil).where.not(inherit_from_id: nil).where(type: type))
           response[:"groups_inheriting_#{name}_active"] = count(Integration.active.where.not(group: nil).where.not(inherit_from_id: nil).where(type: type))
-        end.merge(jira_usage, jira_import_usage)
+        end.merge(jira_import_usage)
         # rubocop: enable UsageData/LargeTable:
-      end
-
-      def jira_usage
-        {
-          projects_jira_dvcs_cloud_active: count(ProjectFeatureUsage.with_jira_dvcs_integration_enabled),
-          projects_jira_dvcs_server_active: count(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false))
-        }
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -326,17 +303,6 @@ module Gitlab
         {
           user_preferences_user_gitpod_enabled: count(UserPreference.with_user.gitpod_enabled.merge(User.active))
         }
-      end
-
-      def operating_system
-        ohai_data = Ohai::System.new.tap do |oh|
-          oh.all_plugins(['platform'])
-        end.data
-
-        platform = ohai_data['platform']
-        platform = 'raspbian' if ohai_data['platform'] == 'debian' && ohai_data['kernel']['machine']&.include?('armv')
-
-        "#{platform}-#{ohai_data['platform_version']}"
       end
 
       # Source: https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/ping_metrics_to_stage_mapping_data.csv
@@ -371,7 +337,11 @@ module Gitlab
           group_clusters_disabled: clusters_user_distinct_count(::Clusters::Cluster.disabled.group_type, time_period),
           group_clusters_enabled: clusters_user_distinct_count(::Clusters::Cluster.enabled.group_type, time_period),
           project_clusters_disabled: clusters_user_distinct_count(::Clusters::Cluster.disabled.project_type, time_period),
-          project_clusters_enabled: clusters_user_distinct_count(::Clusters::Cluster.enabled.project_type, time_period)
+          project_clusters_enabled: clusters_user_distinct_count(::Clusters::Cluster.enabled.project_type, time_period),
+          # These two `projects_slack_x` metrics are owned by the Manage stage, but are in this method as their key paths can't change.
+          # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123442#note_1427961339.
+          projects_slack_notifications_active: distinct_count(::Project.with_slack_integration.where(time_period), :creator_id),
+          projects_slack_slash_active: distinct_count(::Project.with_slack_slash_commands_integration.where(time_period), :creator_id)
         }
       end
       # rubocop: enable UsageData/LargeTable
@@ -527,7 +497,6 @@ module Gitlab
 
       def usage_data_metrics
         system_usage_data_license
-          .merge(system_usage_data_settings)
           .merge(system_usage_data)
           .merge(system_usage_data_monthly)
           .merge(system_usage_data_weekly)
@@ -541,16 +510,6 @@ module Gitlab
 
       def metric_time_period(time_period)
         time_period.present? ? '28d' : 'none'
-      end
-
-      def gitaly_apdex
-        with_prometheus_client(verify: false, fallback: FALLBACK) do |client|
-          result = client.query('avg_over_time(gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m[1w])').first
-
-          break FALLBACK unless result
-
-          result['value'].last.to_f
-        end
       end
 
       def distinct_count_service_desk_enabled_projects(time_period)

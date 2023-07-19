@@ -12,7 +12,7 @@ type: reference, how-to
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73116) in GitLab 14.8.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `sourcegraph`.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `sourcegraph`.
 On GitLab.com, this feature is available for public projects only.
 
 [Sourcegraph](https://sourcegraph.com) provides code intelligence features, natively integrated into the GitLab UI.

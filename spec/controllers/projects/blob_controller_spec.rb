@@ -5,13 +5,19 @@ require 'spec_helper'
 RSpec.describe Projects::BlobController, feature_category: :source_code_management do
   include ProjectForksHelper
 
-  let(:project) { create(:project, :public, :repository, previous_default_branch: previous_default_branch) }
-  let(:previous_default_branch) { nil }
+  let_it_be(:project) { create(:project, :public, :repository) }
 
   describe "GET show" do
-    let(:params) { { namespace_id: project.namespace, project_id: project, id: id } }
+    let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
+    let(:ref_type) { nil }
     let(:request) do
       get(:show, params: params)
+    end
+
+    let(:redirect_with_ref_type) { true }
+
+    before do
+      stub_feature_flags(redirect_with_ref_type: redirect_with_ref_type)
     end
 
     render_views
@@ -24,25 +30,43 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         request
       end
 
+      after do
+        project.repository.rm_tag(project.creator, 'ambiguous_ref')
+        project.repository.rm_branch(project.creator, 'ambiguous_ref')
+      end
+
       context 'when the ref is ambiguous' do
         let(:ref) { 'ambiguous_ref' }
         let(:path) { 'README.md' }
         let(:id) { "#{ref}/#{path}" }
-        let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
 
-        context 'and explicitly requesting a branch' do
-          let(:ref_type) { 'heads' }
+        context 'and the redirect_with_ref_type flag is disabled' do
+          let(:redirect_with_ref_type) { false }
 
-          it 'redirects to blob#show with sha for the branch' do
-            expect(response).to redirect_to(project_blob_path(project, "#{RepoHelpers.another_sample_commit.id}/#{path}"))
+          context 'and explicitly requesting a branch' do
+            let(:ref_type) { 'heads' }
+
+            it 'redirects to blob#show with sha for the branch' do
+              expect(response).to redirect_to(project_blob_path(project, "#{RepoHelpers.another_sample_commit.id}/#{path}"))
+            end
+          end
+
+          context 'and explicitly requesting a tag' do
+            let(:ref_type) { 'tags' }
+
+            it 'responds with success' do
+              expect(response).to be_ok
+            end
           end
         end
 
-        context 'and explicitly requesting a tag' do
-          let(:ref_type) { 'tags' }
+        context 'and the redirect_with_ref_type flag is enabled' do
+          context 'when the ref_type is nil' do
+            let(:ref_type) { nil }
 
-          it 'responds with success' do
-            expect(response).to be_ok
+            it 'redirects to the tag' do
+              expect(response).to redirect_to(project_blob_path(project, id, ref_type: 'tags'))
+            end
           end
         end
       end
@@ -68,18 +92,20 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         it { is_expected.to respond_with(:not_found) }
       end
 
-      context "renamed default branch, valid file" do
-        let(:id) { 'old-default-branch/README.md' }
-        let(:previous_default_branch) { 'old-default-branch' }
+      context 'when default branch was renamed' do
+        let_it_be_with_reload(:project) { create(:project, :public, :repository, previous_default_branch: 'old-default-branch') }
 
-        it { is_expected.to redirect_to("/#{project.full_path}/-/blob/#{project.default_branch}/README.md") }
-      end
+        context "renamed default branch, valid file" do
+          let(:id) { 'old-default-branch/README.md' }
 
-      context "renamed default branch, invalid file" do
-        let(:id) { 'old-default-branch/invalid-path.rb' }
-        let(:previous_default_branch) { 'old-default-branch' }
+          it { is_expected.to redirect_to("/#{project.full_path}/-/blob/#{project.default_branch}/README.md") }
+        end
 
-        it { is_expected.to redirect_to("/#{project.full_path}/-/blob/#{project.default_branch}/invalid-path.rb") }
+        context "renamed default branch, invalid file" do
+          let(:id) { 'old-default-branch/invalid-path.rb' }
+
+          it { is_expected.to redirect_to("/#{project.full_path}/-/blob/#{project.default_branch}/invalid-path.rb") }
+        end
       end
 
       context "binary file" do
@@ -100,7 +126,7 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         let(:id) { 'master/README.md' }
 
         before do
-          get :show, params: { namespace_id: project.namespace, project_id: project, id: id }, format: :json
+          get :show, params: params, format: :json
         end
 
         it do
@@ -114,7 +140,7 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         let(:id) { 'master/README.md' }
 
         before do
-          get :show, params: { namespace_id: project.namespace, project_id: project, id: id, viewer: 'none' }, format: :json
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: id, ref_type: 'heads', viewer: 'none' }, format: :json
         end
 
         it do
@@ -127,7 +153,7 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
 
     context 'with tree path' do
       before do
-        get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
+        get :show, params: params
 
         controller.instance_variable_set(:@blob, nil)
       end
@@ -414,6 +440,10 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       let(:after_delete_path) { project_tree_path(project, 'master/files') }
 
       it 'redirects to the sub directory' do
+        expect_next_instance_of(Files::DeleteService) do |instance|
+          expect(instance).to receive(:execute).and_return({ status: :success })
+        end
+
         delete :destroy, params: default_params
 
         expect(response).to redirect_to(after_delete_path)

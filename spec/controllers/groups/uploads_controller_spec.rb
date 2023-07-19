@@ -76,31 +76,17 @@ RSpec.describe Groups::UploadsController do
         context 'when uploader class does not match the upload' do
           let(:uploader_class) { FileUploader }
 
-          it 'responds with status 200 but logs a deprecation message' do
-            expect(Gitlab::AppJsonLogger).to receive(:info).with(
-              message: 'Deprecated usage of build_uploader_from_params',
-              uploader_class: uploader_class.name,
-              path: filename,
-              exists: true
-            )
-
+          it 'responds with status 404' do
             show_upload
 
-            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
         context 'when filename does not match' do
           let(:invalid_filename) { 'invalid_filename.jpg' }
 
-          it 'responds with status 404 and logs a deprecation message' do
-            expect(Gitlab::AppJsonLogger).to receive(:info).with(
-              message: 'Deprecated usage of build_uploader_from_params',
-              uploader_class: uploader_class.name,
-              path: invalid_filename,
-              exists: false
-            )
-
+          it 'responds with status 404' do
             get :show, params: params.merge(secret: secret, filename: invalid_filename)
 
             expect(response).to have_gitlab_http_status(:not_found)

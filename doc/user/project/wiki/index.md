@@ -37,7 +37,7 @@ To access a project wiki:
    - On any page in the project, use the <kbd>g</kbd> + <kbd>w</kbd>
      [wiki keyboard shortcut](../../shortcuts.md).
 
-If **Wiki** is not listed in the left sidebar of your project, a project administrator
+If **Plan > Wiki** is not listed in the left sidebar of your project, a project administrator
 has [disabled it](#enable-or-disable-a-project-wiki).
 
 ## Configure a default branch for your wiki
@@ -310,11 +310,12 @@ Previously added wiki pages are preserved in case you
 want to re-enable the wiki. To re-enable it, repeat the process
 to disable the wiki but toggle it on (in blue).
 
-## Content Editor
+## Rich text editor
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5643) in GitLab 14.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345398) switching between editing experiences in GitLab 14.7 [with a flag](../../../administration/feature_flags.md) named `wiki_switch_between_content_editor_raw_markdown`. Enabled by default.
 > - Switching between editing experiences generally available in GitLab 14.10. [Feature flag `wiki_switch_between_content_editor_raw_markdown`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83760) removed.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/398152) from content editor to rich text editor in GitLab 16.2.
 
 GitLab provides a WYSIWYG editing experience for GitLab Flavored Markdown in wikis.
 
@@ -327,12 +328,12 @@ Support includes:
 - Previewing Mermaid, PlantUML, and Kroki diagrams ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86701) in GitLab 15.2).
 - Creating and editing HTML comments ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104084) in GitLab 15.7).
 
-### Use the Content Editor
+### Use the rich text editor
 
 1. [Create](#create-a-new-wiki-page) a new wiki page, or [edit](#edit-a-wiki-page) an existing one.
 1. Select **Markdown** as your format.
 1. Above **Content**, select **Edit rich text**.
-1. Customize your page's content using the various formatting options available in the content editor.
+1. Customize your page's content using the various formatting options available in the rich text editor.
 1. Select **Create page** for a new page, or **Save changes** for an existing page.
 
 The rich text editing mode remains the default until you switch back to
@@ -340,12 +341,12 @@ The rich text editing mode remains the default until you switch back to
 
 ### Switch back to the old editor
 
-1. *If you're editing the page in the content editor,* scroll to **Content**.
+1. *If you're editing the page in the rich text editor,* scroll to **Content**.
 1. Select **Edit source**.
 
 ### GitLab Flavored Markdown support
 
-Supporting all GitLab Flavored Markdown content types in the Content Editor is a work in progress.
+Supporting all GitLab Flavored Markdown content types in the rich text editor is a work in progress.
 For the status of the ongoing development for CommonMark and GitLab Flavored Markdown support, read:
 
 - [Basic Markdown formatting extensions](https://gitlab.com/groups/gitlab-org/-/epics/5404) epic.

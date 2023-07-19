@@ -21,6 +21,7 @@ RSpec.describe Resolvers::BoardListsResolver do
     end
 
     it 'does not create the backlog list' do
+      board.lists.backlog.delete_all
       lists = resolve_board_lists
 
       expect(lists.count).to eq 1
@@ -35,7 +36,6 @@ RSpec.describe Resolvers::BoardListsResolver do
 
     context 'when authorized' do
       let!(:label_list) { create(:list, board: board, label: label) }
-      let!(:backlog_list) { create(:backlog_list, board: board) }
 
       it 'returns a list of board lists' do
         lists = resolve_board_lists

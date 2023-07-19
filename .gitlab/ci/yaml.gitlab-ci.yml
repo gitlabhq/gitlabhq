@@ -23,7 +23,7 @@ lint-pipeline-yaml:
   stage: lint
   needs: []
   variables:
-    LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates data/deprecations data/removals data/whats_new
+    LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates data/deprecations data/whats_new
   script:
     - 'yamllint -d "{extends: default, rules: {line-length: disable, document-start: disable}}" $LINT_PATHS'
 

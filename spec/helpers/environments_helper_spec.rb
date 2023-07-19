@@ -22,7 +22,6 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
       expect(metrics_data).to include(
         'settings_path' => edit_project_settings_integration_path(project, 'prometheus'),
         'clusters_path' => project_clusters_path(project),
-        'metrics_dashboard_base_path' => project_metrics_dashboard_path(project, environment: environment),
         'current_environment_name' => environment.name,
         'documentation_path' => help_page_path('administration/monitoring/prometheus/index.md'),
         'add_dashboard_documentation_path' => help_page_path('operations/metrics/dashboards/index.md', anchor: 'add-a-new-dashboard-to-your-project'),
@@ -30,7 +29,6 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
         'empty_loading_svg_path' => match_asset_path('/assets/illustrations/monitoring/loading.svg'),
         'empty_no_data_svg_path' => match_asset_path('/assets/illustrations/monitoring/no_data.svg'),
         'empty_unable_to_connect_svg_path' => match_asset_path('/assets/illustrations/monitoring/unable_to_connect.svg'),
-        'metrics_endpoint' => additional_metrics_project_environment_path(project, environment, format: :json),
         'deployments_endpoint' => project_environment_deployments_path(project, environment, format: :json),
         'default_branch' => 'master',
         'project_path' => project_path(project),
@@ -82,30 +80,6 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
       it { is_expected.to include('environment_state' => 'stopped') }
     end
 
-    context 'when request is from project scoped metrics path' do
-      let(:request) { double('request', path: path) }
-
-      before do
-        allow(helper).to receive(:request).and_return(request)
-      end
-
-      context '/:namespace/:project/-/metrics' do
-        let(:path) { project_metrics_dashboard_path(project) }
-
-        it 'uses correct path for metrics_dashboard_base_path' do
-          expect(metrics_data['metrics_dashboard_base_path']).to eq(project_metrics_dashboard_path(project))
-        end
-      end
-
-      context '/:namespace/:project/-/metrics/some_custom_dashboard.yml' do
-        let(:path) { "#{project_metrics_dashboard_path(project)}/some_custom_dashboard.yml" }
-
-        it 'uses correct path for metrics_dashboard_base_path' do
-          expect(metrics_data['metrics_dashboard_base_path']).to eq(project_metrics_dashboard_path(project))
-        end
-      end
-    end
-
     context 'when metrics dashboard feature is unavailable' do
       before do
         stub_feature_flags(remove_monitor_metrics: true)
@@ -145,15 +119,6 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
       }
 
       expect(helper.environment_logs_data(project, environment)).to eq(expected_data)
-    end
-  end
-
-  describe '#environment_data' do
-    it 'returns the environment as JSON' do
-      expected_data = { id: environment.id,
-                        name: environment.name,
-                        external_url: environment.external_url }.to_json
-      expect(helper.environment_data(environment)).to eq(expected_data)
     end
   end
 end

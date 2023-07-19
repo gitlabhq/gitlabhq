@@ -16,7 +16,7 @@ module BulkImports
 
     def execute
       find_or_create_export! do |export|
-        remove_existing_export_file!(export)
+        export.remove_existing_upload!
         export_service.execute
         compress_exported_relation
         upload_compressed_file(export)
@@ -43,15 +43,6 @@ module BulkImports
       finish_export!(export)
     rescue StandardError => e
       fail_export!(export, e)
-    end
-
-    def remove_existing_export_file!(export)
-      upload = export.upload
-
-      return unless upload&.export_file&.file
-
-      upload.remove_export_file!
-      upload.save!
     end
 
     def export_service

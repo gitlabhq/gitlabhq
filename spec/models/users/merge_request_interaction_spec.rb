@@ -8,7 +8,7 @@ RSpec.describe ::Users::MergeRequestInteraction do
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   subject(:interaction) do
-    ::Users::MergeRequestInteraction.new(user: user, merge_request: merge_request.reset)
+    described_class.new(user: user, merge_request: merge_request.reset)
   end
 
   describe 'declarative policy delegation' do

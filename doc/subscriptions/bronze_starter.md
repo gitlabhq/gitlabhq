@@ -15,13 +15,13 @@ New paid features will not be released in Bronze and Starter tiers after GitLab 
 The following features remain available to Bronze and Starter customers, even though
 the tiers are no longer mentioned in GitLab documentation:
 
-- [Activate GitLab EE with a license](../user/admin_area/license.md)
-- [Add a help message to the sign-in page](../user/admin_area/settings/help_page.md#add-a-help-message-to-the-sign-in-page)
+- [Activate GitLab EE with a license](../administration/license.md)
+- [Add a help message to the sign-in page](../administration/settings/help_page.md#add-a-help-message-to-the-sign-in-page)
 - [Burndown and burnup charts](../user/project/milestones/burndown_and_burnup_charts.md) in the [Milestone View](../user/project/milestones/index.md#burndown-charts),
 - [Code owners](../user/project/codeowners/index.md)
 - Description templates:
   - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
-- [Email from GitLab](../user/admin_area/email_from_gitlab.md)
+- [Email from GitLab](../administration/email_from_gitlab.md)
 - Groups:
   - [Creating group memberships via CN](../user/group/access_and_permissions.md#create-group-links-via-cn)
   - [Group push rules](../user/group/access_and_permissions.md#group-push-rules)
@@ -84,7 +84,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Reference Architecture information:
   - [Zero downtime upgrades](../administration/reference_architectures/index.md#zero-downtime-upgrades)
 - Repositories:
-  - [Repository size limit](../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit)
+  - [Repository size limit](../administration/settings/account_and_limit_settings.md#repository-size-limit)
   - Repository mirroring:
     - [Pull mirroring](../user/project/repository/mirror/pull.md) outside repositories in a GitLab repository
     - [Overwrite diverged branches](../user/project/repository/mirror/pull.md#overwrite-diverged-branches)

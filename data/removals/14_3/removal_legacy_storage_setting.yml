@@ -1,9 +1,0 @@
-- title: Use of legacy storage setting
-  removal_date: September 22nd, 2021  # day the removal was released
-  removal_milestone: "14.3"
-  reporter: dorrino  # GitLab username of the person reporting the removal
-  breaking_change: false
-  body: |  # example (supports markdown)
-    The support for [`gitlab_pages['use_legacy_storage']` setting](https://docs.gitlab.com/ee/administration/pages/index.html#domain-source-configuration-before-140) in Omnibus installations has been removed.
-
-    In 14.0 we removed [`domain_config_source`](https://docs.gitlab.com/ee/administration/pages/index.html#domain-source-configuration-before-140) which had been previously deprecated, and allowed users to specify disk storage. In 14.0 we added `use_legacy_storage` as a **temporary** flag to unblock upgrades, and allow us to debug issues with our users and it was deprecated and communicated for removal in 14.3.

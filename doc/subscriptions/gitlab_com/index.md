@@ -16,7 +16,7 @@ You don't need to install anything to use GitLab SaaS, you only need to
 
 The subscription determines which features are available for your private projects. Organizations with public open source projects can actively apply to our [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/join/).
 
-Qualifying open source projects also get 50,000 units of compute and free access to the **Ultimate** tier
+Qualifying open source projects also get 50,000 compute minutes and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
 ## Obtain a GitLab SaaS subscription
@@ -102,6 +102,11 @@ To view a list of seats being used:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Settings > Usage Quotas**.
 1. On the **Seats** tab, view usage information.
+
+For each user, a list shows groups and projects where the user is a direct member.
+
+- **Group invite** indicates the user is a member of a [group shared with a group](../../user/group/manage.md#share-a-group-with-another-group).
+- **Project invite** indicates the user is a member of a [group shared with a project](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group).
 
 The data in seat usage listing, **Seats in use**, and **Seats in subscription** are updated live.
 The counts for **Max seats used** and **Seats owed** are updated once per day.
@@ -347,12 +352,13 @@ If you have difficulty during the renewal process, contact the
 
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
 
-To change the contacts:
+For information about how to transfer ownership of the Customers Portal account to another person, see
+[Change account owner information](../customers_portal.md#change-account-owner-information).
+
+To add a secondary contact for your subscription:
 
 1. Ensure an account exists in the
    [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
-1. Verify you have access to at least one of
-   [these requirements](https://about.gitlab.com/handbook/support/license-and-renewals/workflows/customersdot/associating_purchases.html).
 1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
 
 ## Compute
@@ -363,10 +369,10 @@ on GitLab shared runners.
 Refer to [Compute usage](../../ci/pipelines/cicd_minutes.md)
 for more information.
 
-### Purchase additional units of compute
+### Purchase additional compute minutes
 
-You can [purchase additional units of compute](../../ci/pipelines/cicd_minutes.md#purchase-additional-units-of-compute)
-for your personal or group namespace. Units of compute are a **one-time purchase**, so they do not renew.
+You can [purchase additional compute minutes](../../ci/pipelines/cicd_minutes.md#purchase-additional-compute-minutes)
+for your personal or group namespace. Compute minutes are a **one-time purchase**, so they do not renew.
 
 ## Add-on subscription for additional Storage and Transfer
 

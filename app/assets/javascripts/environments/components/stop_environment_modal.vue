@@ -1,10 +1,14 @@
 <script>
 import { GlSprintf, GlTooltipDirective, GlModal } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 import eventHub from '../event_hub';
 import stopEnvironmentMutation from '../graphql/mutations/stop_environment.mutation.graphql';
 
 export default {
+  yamlDocsLink: `${DOCS_URL_IN_EE_DIR}/ee/ci/yaml/`,
+  stoppingEnvironmentDocsLink: `${DOCS_URL_IN_EE_DIR}/environments/#stopping-an-environment`,
+
   id: 'stop-environment-modal',
   name: 'StopEnvironmentModal',
 
@@ -98,18 +102,15 @@ export default {
             <strong>{{ content }}</strong>
           </template>
           <template #ciConfigLink="{ content }">
-            <a href="https://docs.gitlab.com/ee/ci/yaml/" target="_blank" rel="noopener noreferrer">
+            <a :href="$options.yamlDocsLink" target="_blank" rel="noopener noreferrer">
               {{ content }}</a
             >
           </template>
         </gl-sprintf>
       </p>
-      <a
-        href="https://docs.gitlab.com/ee/ci/environments/#stopping-an-environment"
-        target="_blank"
-        rel="noopener noreferrer"
-        >{{ s__('Environments|Learn more about stopping environments') }}</a
-      >
+      <a :href="$options.stoppingEnvironmentDocsLink" target="_blank" rel="noopener noreferrer">{{
+        s__('Environments|Learn more about stopping environments')
+      }}</a>
     </div>
   </gl-modal>
 </template>

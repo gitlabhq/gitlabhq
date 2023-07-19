@@ -63,6 +63,12 @@ RSpec.describe 'Pipeline schedules (JavaScript fixtures)' do
       expect_graphql_errors_to_be_empty
     end
 
+    it "#{fixtures_path}#{get_pipeline_schedules_query}.single.json" do
+      post_graphql(query, current_user: user, variables: { projectPath: project.full_path, ids: pipeline_schedule_populated.id })
+
+      expect_graphql_errors_to_be_empty
+    end
+
     it "#{fixtures_path}#{get_pipeline_schedules_query}.as_guest.json" do
       guest = create(:user)
       project.add_guest(user)

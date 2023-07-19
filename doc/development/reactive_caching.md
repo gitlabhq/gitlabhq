@@ -197,9 +197,8 @@ There are some `class_attribute` options which can be tweaked.
   self.reactive_cache_key = -> (record) { [model_name.singular, record.id] }
   ```
 
-- The `data` and `alive` cache keys in this case are `"ExampleModel:1:arg1:arg2"`
-  and `"ExampleModel:1:arg1:arg2:alive"` respectively, where `ExampleModel` is the
-  name of the model, `1` is the ID of the record, `arg1` and `arg2` are parameters
+- The `data` cache key is `"ExampleModel:1:arg1:arg2"` and `alive` cache keys is `"ExampleModel:1:arg1:arg2:alive"`,
+  where `ExampleModel` is the name of the model, `1` is the ID of the record, `arg1` and `arg2` are parameters
   passed to `with_reactive_cache`.
 - If you're including this concern in an integration (`app/models/integrations/`) instead, you must override
   the default by adding the following to your integration:

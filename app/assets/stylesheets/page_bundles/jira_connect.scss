@@ -9,6 +9,8 @@
 @import '@gitlab/ui/src/components/base/alert/alert';
 @import '@gitlab/ui/src/components/base/avatar/avatar';
 @import '@gitlab/ui/src/components/base/button/button';
+@import '@gitlab/ui/src/components/base/banner/banner';
+@import '@gitlab/ui/src/components/base/card/card';
 @import '@gitlab/ui/src/components/base/icon/icon';
 @import '@gitlab/ui/src/components/base/link/link';
 @import '@gitlab/ui/src/components/base/loading_icon/loading_icon';
@@ -23,7 +25,7 @@
 @import '@gitlab/ui/src/components/base/form/form_group/form_group';
 @import '@gitlab/ui/src/components/base/search_box_by_type/search_box_by_type';
 
-$header-height: 40px;
+$header-height: $gl-spacing-scale-8;
 
 .jira-connect-header {
   min-height: $header-height;
@@ -35,6 +37,6 @@ $header-height: 40px;
 
 .jira-connect-app {
   margin-top: $header-height;
-  height: calc(100% - #{$header-height});
-  max-width: 1000px;
+  height: 100%;
+  max-height: calc(100% - #{$header-height + $gl-spacing-scale-7 * 2});
 }

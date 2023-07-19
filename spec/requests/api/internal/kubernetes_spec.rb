@@ -122,14 +122,28 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
       it 'tracks events and unique events', :aggregate_failures do
         request_count = 2
-        counters = { gitops_sync: 10, k8s_api_proxy_request: 5, flux_git_push_notifications_total: 42 }
-        unique_counters = { agent_users_using_ci_tunnel: [10, 999, 777, 10] }
+        counters = {
+          gitops_sync: 10,
+          k8s_api_proxy_request: 5,
+          flux_git_push_notifications_total: 42,
+          k8s_api_proxy_requests_via_ci_access: 43,
+          k8s_api_proxy_requests_via_user_access: 44
+        }
+        unique_counters = {
+          agent_users_using_ci_tunnel: [10, 999, 777, 10],
+          k8s_api_proxy_requests_unique_users_via_ci_access: [10, 999, 777, 10],
+          k8s_api_proxy_requests_unique_agents_via_ci_access: [10, 999, 777, 10],
+          k8s_api_proxy_requests_unique_users_via_user_access: [10, 999, 777, 10],
+          k8s_api_proxy_requests_unique_agents_via_user_access: [10, 999, 777, 10],
+          flux_git_push_notified_unique_projects: [10, 999, 777, 10]
+        }
         expected_counters = {
           kubernetes_agent_gitops_sync: request_count * counters[:gitops_sync],
           kubernetes_agent_k8s_api_proxy_request: request_count * counters[:k8s_api_proxy_request],
-          kubernetes_agent_flux_git_push_notifications_total: request_count * counters[:flux_git_push_notifications_total]
+          kubernetes_agent_flux_git_push_notifications_total: request_count * counters[:flux_git_push_notifications_total],
+          kubernetes_agent_k8s_api_proxy_requests_via_ci_access: request_count * counters[:k8s_api_proxy_requests_via_ci_access],
+          kubernetes_agent_k8s_api_proxy_requests_via_user_access: request_count * counters[:k8s_api_proxy_requests_via_user_access]
         }
-        expected_hll_count = unique_counters[:agent_users_using_ci_tunnel].uniq.count
 
         request_count.times do
           send_request(params: { counters: counters, unique_counters: unique_counters })
@@ -137,13 +151,15 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
         expect(Gitlab::UsageDataCounters::KubernetesAgentCounter.totals).to eq(expected_counters)
 
-        expect(
-          Gitlab::UsageDataCounters::HLLRedisCounter
-            .unique_events(
-              event_names: 'agent_users_using_ci_tunnel',
-              start_date: Date.current, end_date: Date.current + 10
-            )
-        ).to eq(expected_hll_count)
+        unique_counters.each do |c, xs|
+          expect(
+            Gitlab::UsageDataCounters::HLLRedisCounter
+              .unique_events(
+                event_names: c.to_s,
+                start_date: Date.current, end_date: Date.current + 10
+              )
+          ).to eq(xs.uniq.count)
+        end
       end
     end
   end
@@ -231,7 +247,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
             'gitaly_info' => a_hash_including(
               'address' => match(/\.socket$/),
               'token' => 'secret',
-              'features' => {}
+              'features' => Feature::Gitaly.server_feature_flags
             ),
             'gitaly_repository' => a_hash_including(
               'storage_name' => project.repository_storage,
@@ -274,7 +290,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
               'gitaly_info' => a_hash_including(
                 'address' => match(/\.socket$/),
                 'token' => 'secret',
-                'features' => {}
+                'features' => Feature::Gitaly.server_feature_flags
               ),
               'gitaly_repository' => a_hash_including(
                 'storage_name' => project.repository_storage,
@@ -529,18 +545,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       send_request(params: { agent_id: another_agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
 
       expect(response).to have_gitlab_http_status(:forbidden)
-    end
-
-    it 'returns 401 when global flag is disabled' do
-      stub_feature_flags(kas_user_access: false)
-
-      deployment_project.add_member(user, :developer)
-      token = new_token
-      public_id = stub_user_session(user, token)
-      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
-      send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
-
-      expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it 'returns 401 when user id is not found in session' do

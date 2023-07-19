@@ -14,6 +14,6 @@ run:
 install:
   stage: install
   script:
-  - "pip install <%= package.name %> --no-deps --index-url <%= uri.scheme %>://<%= personal_access_token %>:<%= personal_access_token %>@<%= gitlab_host_with_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host <%= gitlab_host_with_port %>"
+  - "pip install <%= package.name %> --no-deps --index-url <%= uri.scheme %>://${PERSONAL_ACCESS_TOKEN}:${PERSONAL_ACCESS_TOKEN}@<%= gitlab_host_with_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host <%= gitlab_host_with_port %>"
   tags:
   - runner-for-<%= project.name %>

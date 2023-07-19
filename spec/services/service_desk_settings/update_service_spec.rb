@@ -10,9 +10,9 @@ RSpec.describe ServiceDeskSettings::UpdateService, feature_category: :service_de
       let(:params) { { outgoing_name: 'some name', project_key: 'foo' } }
 
       it 'updates service desk settings' do
-        result = described_class.new(settings.project, user, params).execute
+        response = described_class.new(settings.project, user, params).execute
 
-        expect(result[:status]).to eq :success
+        expect(response).to be_success
         expect(settings.reload.outgoing_name).to eq 'some name'
         expect(settings.reload.project_key).to eq 'foo'
       end
@@ -22,9 +22,9 @@ RSpec.describe ServiceDeskSettings::UpdateService, feature_category: :service_de
       let(:params) { { project_key: '' } }
 
       it 'sets nil project_key' do
-        result = described_class.new(settings.project, user, params).execute
+        response = described_class.new(settings.project, user, params).execute
 
-        expect(result[:status]).to eq :success
+        expect(response).to be_success
         expect(settings.reload.project_key).to be_nil
       end
     end
@@ -33,10 +33,10 @@ RSpec.describe ServiceDeskSettings::UpdateService, feature_category: :service_de
       let(:params) { { outgoing_name: 'x' * 256 } }
 
       it 'does not update service desk settings' do
-        result = described_class.new(settings.project, user, params).execute
+        response = described_class.new(settings.project, user, params).execute
 
-        expect(result[:status]).to eq :error
-        expect(result[:message]).to eq 'Outgoing name is too long (maximum is 255 characters)'
+        expect(response).to be_error
+        expect(response.message).to eq 'Outgoing name is too long (maximum is 255 characters)'
         expect(settings.reload.outgoing_name).to eq 'original name'
       end
     end

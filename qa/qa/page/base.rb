@@ -4,6 +4,11 @@ require 'capybara/dsl'
 
 module QA
   module Page
+    # Page base class
+    #
+    # @!method self.perform
+    #   Perform action on the page
+    #   @yieldparam [self] instance of page object
     class Base
       # Generic matcher for common css selectors like:
       # - class name '.someclass'
@@ -517,6 +522,12 @@ module QA
         raise ElementNotFound,
           "Could not find the expected element as #{element_when_flag_enabled} or #{element_when_flag_disabled}." \
           "The relevant feature flag is #{feature_flag}"
+      end
+
+      def wait_for_gitlab_to_respond
+        wait_until(sleep_interval: 5, message: '502 - GitLab is taking too much time to respond') do
+          Capybara.page.has_no_text?('GitLab is taking too much time to respond')
+        end
       end
     end
   end

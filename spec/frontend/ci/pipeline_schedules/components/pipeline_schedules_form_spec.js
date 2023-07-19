@@ -1,14 +1,47 @@
 import MockAdapter from 'axios-mock-adapter';
-import { GlForm } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlForm, GlLoadingIcon } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { createAlert } from '~/alert';
 import PipelineSchedulesForm from '~/ci/pipeline_schedules/components/pipeline_schedules_form.vue';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
+import createPipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/create_pipeline_schedule.mutation.graphql';
+import updatePipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/update_pipeline_schedule.mutation.graphql';
+import getPipelineSchedulesQuery from '~/ci/pipeline_schedules/graphql/queries/get_pipeline_schedules.query.graphql';
 import { timezoneDataFixture } from '../../../vue_shared/components/timezone_dropdown/helpers';
+import {
+  createScheduleMutationResponse,
+  updateScheduleMutationResponse,
+  mockSinglePipelineScheduleNode,
+} from '../mock_data';
+
+Vue.use(VueApollo);
+
+jest.mock('~/alert');
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn(),
+  joinPaths: jest.fn().mockReturnValue(''),
+  queryToObject: jest.fn().mockReturnValue({ id: '1' }),
+}));
+
+const {
+  data: {
+    project: {
+      pipelineSchedules: { nodes },
+    },
+  },
+} = mockSinglePipelineScheduleNode;
+
+const schedule = nodes[0];
+const variables = schedule.variables.nodes;
 
 describe('Pipeline schedules form', () => {
   let wrapper;
@@ -17,22 +50,36 @@ describe('Pipeline schedules form', () => {
   const cron = '';
   const dailyLimit = '';
 
-  const createComponent = (mountFn = shallowMountExtended, stubs = {}) => {
+  const querySuccessHandler = jest.fn().mockResolvedValue(mockSinglePipelineScheduleNode);
+  const queryFailedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+
+  const createMutationHandlerSuccess = jest.fn().mockResolvedValue(createScheduleMutationResponse);
+  const createMutationHandlerFailed = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+  const updateMutationHandlerSuccess = jest.fn().mockResolvedValue(updateScheduleMutationResponse);
+  const updateMutationHandlerFailed = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+
+  const createMockApolloProvider = (
+    requestHandlers = [[createPipelineScheduleMutation, createMutationHandlerSuccess]],
+  ) => {
+    return createMockApollo(requestHandlers);
+  };
+
+  const createComponent = (mountFn = shallowMountExtended, editing = false, requestHandlers) => {
     wrapper = mountFn(PipelineSchedulesForm, {
       propsData: {
         timezoneData: timezoneDataFixture,
         refParam: 'master',
+        editing,
       },
       provide: {
         fullPath: 'gitlab-org/gitlab',
         projectId,
         defaultBranch,
-        cron,
-        cronTimezone: '',
         dailyLimit,
         settingsLink: '',
+        schedulesPath: '/root/ci-project/-/pipeline_schedules',
       },
-      stubs,
+      apolloProvider: createMockApolloProvider(requestHandlers),
     });
   };
 
@@ -43,17 +90,24 @@ describe('Pipeline schedules form', () => {
   const findRefSelector = () => wrapper.findComponent(RefSelector);
   const findSubmitButton = () => wrapper.findByTestId('schedule-submit-button');
   const findCancelButton = () => wrapper.findByTestId('schedule-cancel-button');
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   // Variables
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key');
   const findValueInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-value');
   const findRemoveIcons = () => wrapper.findAllByTestId('remove-ci-variable-row');
 
-  beforeEach(() => {
-    createComponent();
-  });
+  const addVariableToForm = () => {
+    const input = findKeyInputs().at(0);
+    input.element.value = 'test_var_2';
+    input.trigger('change');
+  };
 
   describe('Form elements', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('displays form', () => {
       expect(findForm().exists()).toBe(true);
     });
@@ -102,19 +156,16 @@ describe('Pipeline schedules form', () => {
     it('displays the submit and cancel buttons', () => {
       expect(findSubmitButton().exists()).toBe(true);
       expect(findCancelButton().exists()).toBe(true);
+      expect(findCancelButton().attributes('href')).toBe('/root/ci-project/-/pipeline_schedules');
     });
   });
 
   describe('CI variables', () => {
     let mock;
 
-    const addVariableToForm = () => {
-      const input = findKeyInputs().at(0);
-      input.element.value = 'test_var_2';
-      input.trigger('change');
-    };
-
     beforeEach(() => {
+      // mock is needed when we fully mount
+      // downstream components request needs to be mocked
       mock = new MockAdapter(axios);
       createComponent(mountExtended);
     });
@@ -155,6 +206,231 @@ describe('Pipeline schedules form', () => {
       await nextTick();
 
       expect(findVariableRows()).toHaveLength(1);
+    });
+  });
+
+  describe('Button text', () => {
+    it.each`
+      editing  | expectedText
+      ${true}  | ${'Edit pipeline schedule'}
+      ${false} | ${'Create pipeline schedule'}
+    `(
+      'button text is $expectedText when editing is $editing',
+      async ({ editing, expectedText }) => {
+        createComponent(shallowMountExtended, editing, [
+          [getPipelineSchedulesQuery, querySuccessHandler],
+        ]);
+
+        await waitForPromises();
+
+        expect(findSubmitButton().text()).toBe(expectedText);
+      },
+    );
+  });
+
+  describe('Schedule creation', () => {
+    it('when creating a schedule the query is not called', () => {
+      createComponent();
+
+      expect(querySuccessHandler).not.toHaveBeenCalled();
+    });
+
+    it('does not show loading state when creating new schedule', () => {
+      createComponent();
+
+      expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    describe('schedule creation success', () => {
+      let mock;
+
+      beforeEach(() => {
+        // mock is needed when we fully mount
+        // downstream components request needs to be mocked
+        mock = new MockAdapter(axios);
+        createComponent(mountExtended);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('creates pipeline schedule', async () => {
+        findDescription().element.value = 'My schedule';
+        findDescription().trigger('change');
+
+        findTimezoneDropdown().vm.$emit('input', {
+          formattedTimezone: '[UTC-4] Eastern Time (US & Canada)',
+          identifier: 'America/New_York',
+        });
+
+        findIntervalComponent().vm.$emit('cronValue', '0 16 * * *');
+
+        addVariableToForm();
+
+        findSubmitButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(createMutationHandlerSuccess).toHaveBeenCalledWith({
+          input: {
+            active: true,
+            cron: '0 16 * * *',
+            cronTimezone: 'America/New_York',
+            description: 'My schedule',
+            projectPath: 'gitlab-org/gitlab',
+            ref: 'main',
+            variables: [
+              {
+                key: 'test_var_2',
+                value: '',
+                variableType: 'ENV_VAR',
+              },
+            ],
+          },
+        });
+        expect(visitUrl).toHaveBeenCalledWith('/root/ci-project/-/pipeline_schedules');
+        expect(createAlert).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('schedule creation failure', () => {
+      beforeEach(() => {
+        createComponent(shallowMountExtended, false, [
+          [createPipelineScheduleMutation, createMutationHandlerFailed],
+        ]);
+      });
+
+      it('shows error for failed pipeline schedule creation', async () => {
+        findSubmitButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'An error occurred while creating the pipeline schedule.',
+        });
+      });
+    });
+  });
+
+  describe('Schedule editing', () => {
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('shows loading state when editing', async () => {
+      createComponent(shallowMountExtended, true, [
+        [getPipelineSchedulesQuery, querySuccessHandler],
+      ]);
+
+      expect(findLoadingIcon().exists()).toBe(true);
+
+      await waitForPromises();
+
+      expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    describe('schedule fetch success', () => {
+      it('fetches schedule and sets form data correctly', async () => {
+        createComponent(mountExtended, true, [[getPipelineSchedulesQuery, querySuccessHandler]]);
+
+        expect(querySuccessHandler).toHaveBeenCalled();
+
+        await waitForPromises();
+
+        expect(findDescription().element.value).toBe(schedule.description);
+        expect(findIntervalComponent().props('initialCronInterval')).toBe(schedule.cron);
+        expect(findTimezoneDropdown().props('value')).toBe(schedule.cronTimezone);
+        expect(findRefSelector().props('value')).toBe(schedule.ref);
+        expect(findVariableRows()).toHaveLength(3);
+        expect(findKeyInputs().at(0).element.value).toBe(variables[0].key);
+        expect(findKeyInputs().at(1).element.value).toBe(variables[1].key);
+        expect(findValueInputs().at(0).element.value).toBe(variables[0].value);
+        expect(findValueInputs().at(1).element.value).toBe(variables[1].value);
+      });
+    });
+
+    it('schedule fetch failure', async () => {
+      createComponent(shallowMountExtended, true, [
+        [getPipelineSchedulesQuery, queryFailedHandler],
+      ]);
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred while trying to fetch the pipeline schedule.',
+      });
+    });
+
+    it('edit schedule success', async () => {
+      createComponent(mountExtended, true, [
+        [getPipelineSchedulesQuery, querySuccessHandler],
+        [updatePipelineScheduleMutation, updateMutationHandlerSuccess],
+      ]);
+
+      await waitForPromises();
+
+      findDescription().element.value = 'Updated schedule';
+      findDescription().trigger('change');
+
+      findIntervalComponent().vm.$emit('cronValue', '0 22 16 * *');
+
+      // Ensures variable is sent with destroy property set true
+      findRemoveIcons().at(0).vm.$emit('click');
+
+      findSubmitButton().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(updateMutationHandlerSuccess).toHaveBeenCalledWith({
+        input: {
+          active: schedule.active,
+          cron: '0 22 16 * *',
+          cronTimezone: schedule.cronTimezone,
+          id: schedule.id,
+          ref: schedule.ref,
+          description: 'Updated schedule',
+          variables: [
+            {
+              destroy: true,
+              id: variables[0].id,
+              key: variables[0].key,
+              value: variables[0].value,
+              variableType: variables[0].variableType,
+            },
+            {
+              destroy: false,
+              id: variables[1].id,
+              key: variables[1].key,
+              value: variables[1].value,
+              variableType: variables[1].variableType,
+            },
+          ],
+        },
+      });
+    });
+
+    it('edit schedule failure', async () => {
+      createComponent(shallowMountExtended, true, [
+        [getPipelineSchedulesQuery, querySuccessHandler],
+        [updatePipelineScheduleMutation, updateMutationHandlerFailed],
+      ]);
+
+      await waitForPromises();
+
+      findSubmitButton().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred while updating the pipeline schedule.',
+      });
     });
   });
 });

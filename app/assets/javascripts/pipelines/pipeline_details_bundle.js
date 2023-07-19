@@ -2,20 +2,18 @@ import VueRouter from 'vue-router';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { pipelineTabName } from './constants';
-import { createPipelineHeaderApp, createPipelineDetailsHeaderApp } from './pipeline_details_header';
+import { createPipelineDetailsHeaderApp } from './pipeline_details_header';
 import { apolloProvider } from './pipeline_shared_client';
 
 const SELECTORS = {
-  PIPELINE_HEADER: '#js-pipeline-header-vue',
   PIPELINE_DETAILS_HEADER: '#js-pipeline-details-header-vue',
   PIPELINE_TABS: '#js-pipeline-tabs',
 };
 
-export default async function initPipelineDetailsBundle(flagEnabled) {
-  const headerSelector = flagEnabled
-    ? SELECTORS.PIPELINE_DETAILS_HEADER
-    : SELECTORS.PIPELINE_HEADER;
-  const headerApp = flagEnabled ? createPipelineDetailsHeaderApp : createPipelineHeaderApp;
+export default async function initPipelineDetailsBundle() {
+  const headerSelector = SELECTORS.PIPELINE_DETAILS_HEADER;
+
+  const headerApp = createPipelineDetailsHeaderApp;
 
   const headerEl = document.querySelector(headerSelector);
 

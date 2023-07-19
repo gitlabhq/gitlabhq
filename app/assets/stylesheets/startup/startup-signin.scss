@@ -19,9 +19,10 @@ header {
 }
 body {
   margin: 0;
-  font-family: "GitLab Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--default-regular-font, "GitLab Sans"), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell,
+    "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -382,9 +383,10 @@ input.btn-block[type="submit"] {
 .gl-form-input,
 .gl-form-input.form-control {
   background-color: #fff;
-  font-family: "GitLab Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--default-regular-font, "GitLab Sans"), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell,
+    "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 0.875rem;
   line-height: 1rem;
   padding-top: 0.5rem;
@@ -622,10 +624,6 @@ body.navless {
     margin-top: 20px;
   }
 }
-.navless-container {
-  margin-top: var(--header-height, 48px);
-  padding-top: 32px;
-}
 .btn {
   border-radius: 4px;
   font-size: 0.875rem;
@@ -684,12 +682,6 @@ body.navless {
 hr {
   margin: 1.5rem 0;
   border-top: 1px solid #ececef;
-}
-.footer-links {
-  margin-bottom: 20px;
-}
-.footer-links a {
-  margin-right: 15px;
 }
 .flash-container {
   margin: 0;
@@ -777,8 +769,14 @@ svg {
 .gl-align-items-center {
   align-items: center;
 }
+.gl-flex-wrap {
+  flex-wrap: wrap;
+}
 .gl-justify-content-space-between {
   justify-content: space-between;
+}
+.gl-align-self-end {
+  align-self: flex-end;
 }
 .gl-w-10 {
   width: 3.5rem;
@@ -794,6 +792,9 @@ svg {
     width: 100%;
   }
 }
+.gl-h-full {
+  height: 100%;
+}
 .gl-p-5 {
   padding: 1rem;
 }
@@ -804,6 +805,9 @@ svg {
 .gl-py-5 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+.gl-m-0 {
+  margin: 0;
 }
 .gl-mt-3 {
   margin-top: 0.5rem;
@@ -822,6 +826,9 @@ svg {
 }
 .gl-ml-auto {
   margin-left: auto;
+}
+.gl-gap-5 {
+  gap: 1rem;
 }
 @media (min-width: 576px) {
   .gl-sm-mt-0 {

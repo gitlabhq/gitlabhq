@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::NotesController < Projects::ApplicationController
+  extend Gitlab::Utils::Override
   include RendersNotes
   include NotesActions
   include NotesHelper
@@ -11,9 +12,29 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
 
-  feature_category :team_planning
+  feature_category :team_planning, [:index, :create, :update, :destroy, :delete_attachment, :toggle_award_emoji]
+  feature_category :code_review_workflow, [:resolve, :unresolve, :outdated_line_change]
   urgency :medium, [:index]
   urgency :low, [:create, :update, :destroy, :resolve, :unresolve, :toggle_award_emoji, :outdated_line_change]
+
+  override :feature_category
+  def feature_category
+    if %w[index create].include?(params[:action])
+      category = feature_category_override_for_target_type(params[:target_type])
+      return category if category
+    end
+
+    super
+  end
+
+  def feature_category_override_for_target_type(target_type)
+    case target_type
+    when 'merge_request'
+      'code_review_workflow'
+    when 'commit', 'project_snippet'
+      'source_code_management'
+    end
+  end
 
   def delete_attachment
     note.remove_attachment!

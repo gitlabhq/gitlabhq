@@ -54,7 +54,7 @@ When you are ready to update the documentation:
    1. In the **Commit message** text box, enter a commit message.
       Use 3-5 words, start with a capital letter, and do not end with a period.
    1. Select **Commit changes**.
-   1. On the left sidebar, select **Merge requests**.
+   1. On the left sidebar, select **Code > Merge requests**.
    1. Select **New merge request**.
    1. For the source branch, select your fork and branch. If you did not create a branch, select `master`.
       For the target branch, select the [GitLab repository](https://gitlab.com/gitlab-org/gitlab) `master` branch.

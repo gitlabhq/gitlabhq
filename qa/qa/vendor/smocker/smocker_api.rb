@@ -44,7 +44,7 @@ module QA
         #
         # @param wait [Integer] wait duration for smocker readiness
         def wait_for_ready(wait: 10)
-          Support::Waiter.wait_until(max_duration: wait, reload_page: false, raise_on_failure: true) do
+          Support::Waiter.wait_until(max_duration: wait, sleep_interval: 1, log: false) do
             ready?
           end
         end

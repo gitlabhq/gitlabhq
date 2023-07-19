@@ -108,4 +108,18 @@ RSpec.describe DraftNotes::CreateService, feature_category: :code_review_workflo
       end
     end
   end
+
+  context 'when the draft note is invalid' do
+    before do
+      allow_next_instance_of(DraftNote) do |draft|
+        allow(draft).to receive(:valid?).and_return(false)
+      end
+    end
+
+    it 'does not create the note' do
+      draft_note = create_draft(note: 'invalid note')
+
+      expect(draft_note).not_to be_persisted
+    end
+  end
 end

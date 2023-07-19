@@ -13,8 +13,6 @@ RSpec.describe 'User adds lists', :js, feature_category: :team_planning do
 
   let_it_be(:group_label) { create(:group_label, group: group) }
   let_it_be(:project_label) { create(:label, project: project) }
-  let_it_be(:group_backlog_list) { create(:backlog_list, board: group_board) }
-  let_it_be(:project_backlog_list) { create(:backlog_list, board: project_board) }
   let_it_be(:backlog) { create(:group_label, group: group, name: 'Backlog') }
   let_it_be(:closed) { create(:group_label, group: group, name: 'Closed') }
 

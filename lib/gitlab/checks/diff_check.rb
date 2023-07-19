@@ -74,7 +74,7 @@ module Gitlab
           lfs_lock = project.lfs_file_locks.where(path: paths).where.not(user_id: user_access.user.id).take
 
           if lfs_lock
-            return "The path '#{lfs_lock.path}' is locked in Git LFS by #{lfs_lock.user.name}"
+            return "The path '#{lfs_lock.path}' is locked in Git LFS by #{lfs_lock.user.username}"
           end
         end
       end

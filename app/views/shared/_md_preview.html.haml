@@ -1,4 +1,5 @@
 - referenced_users = local_assigns.fetch(:referenced_users, nil)
+- supports_quick_actions = local_assigns.fetch(:supports_quick_actions, false)
 
 - if @merge_request&.discussion_locked?
   .issuable-note-warning
@@ -8,14 +9,14 @@
       = _('Only project members can comment.')
 
 .md-area.position-relative
-  .md-header.gl-bg-gray-50.gl-px-2.gl-rounded-base.gl-mx-2.gl-mt-2
+  .md-header.gl-px-3.gl-rounded-top-base.gl-border-b.gl-border-gray-100
     .gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-justify-content-space-between
-      .md-header-toolbar.gl-display-flex.gl-py-2.gl-flex-wrap
-        = render 'shared/blob/markdown_buttons'
-      .switch-preview.gl-py-2.gl-display-flex.gl-align-items-center.gl-ml-auto
+      .md-header-toolbar.gl-display-flex.gl-py-3.gl-flex-wrap.gl-row-gap-3
         = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { class: 'js-md-preview-button', value: 'preview' }) do
           = _('Preview')
-        = render Pajamas::ButtonComponent.new(icon: 'maximize', category: :tertiary, size: :small, button_options: { 'tabindex': -1, 'aria-label': _("Go full screen"), class: 'has-tooltip js-zen-enter gl-ml-2', data: { container: 'body' } })
+        = render 'shared/blob/markdown_buttons', supports_quick_actions: supports_quick_actions
+        .full-screen
+          = render Pajamas::ButtonComponent.new(icon: 'maximize', category: :tertiary, size: :small, button_options: { 'tabindex': -1, 'aria-label': _("Go full screen"), class: 'has-tooltip js-zen-enter', data: { container: 'body' } })
 
   .md-write-holder
     = yield

@@ -71,7 +71,12 @@ export default {
         class="gl-new-dropdown-item-text-wrapper gl-display-flex! gl-justify-content-space-between gl-align-items-center gl-py-2!"
       >
         {{ $options.i18n.toggleMenuItemLabel }}
-        <gl-toggle :value="isEnabled" :label="$options.i18n.toggleLabel" label-position="hidden" />
+        <gl-toggle
+          :value="isEnabled"
+          :label="$options.i18n.toggleLabel"
+          label-position="hidden"
+          data-testid="new-navigation-toggle"
+        />
       </div>
     </div>
   </gl-disclosure-dropdown-item>
@@ -92,7 +97,7 @@ export default {
         :value="isEnabled"
         :label="$options.i18n.toggleLabel"
         label-position="hidden"
-        data-qa-selector="new_navigation_toggle"
+        data-testid="new_navigation_toggle"
       />
     </div>
   </li>

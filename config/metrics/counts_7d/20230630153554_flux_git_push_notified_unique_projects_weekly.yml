@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.kubernetes_agent.flux_git_push_notified_unique_projects_weekly
+description: WAU of the unique projects which were notified by agentk about new Git push events in order to reconcile their Flux workloads
+product_section: ops
+product_stage: deploy
+product_group: environment
+value_type: number
+status: active
+milestone: "16.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125146
+time_frame: 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - flux_git_push_notified_unique_projects
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

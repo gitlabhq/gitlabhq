@@ -12,7 +12,7 @@ Currently, we have two proof-of-concept (POC) implementations:
 
 They both have similar ideas;
 
-1. Find a new CI Config syntax to define the pipeline events.
+1. Find a new CI Config syntax to define pipeline events.
 
     Example 1:
 
@@ -42,19 +42,13 @@ They both have similar ideas;
       script: echo "Hello World"
     ```
 
-1. Upsert an event to the database when creating a pipeline.
-1. Create [EventStore subscriptions](../../../development/event_store.md) to handle the events.
+1. Upsert a workflow definition to the database when new configuration gets
+   pushed.
+1. Match subscriptions and publishers whenever something happens at GitLab.
 
-## Problems & Questions
+## Discussion
 
-1. The CI config of a project can be anything;
-    - `.gitlab-ci.yml` by default
-    - another file in the project
-    - another file in another project
-    - completely a remote/external file
-
-    How do we handle these cases?
-1. Since we have these problems above, should we keep the events in its own file? (`.gitlab-ci-events.yml`)
-1. Do we only accept the changes in the main branch?
-1. We try to create event subscriptions every time a pipeline is created.
-1. Can we move the existing workflows into the new CI events, for example, `merge_request_event`?
+1. How to efficiently detect changes to the subscriptions?
+1. How do we handle differences between workflows / events / subscriptions on
+   different branches?
+1. Do we need to upsert subscriptions on every push?

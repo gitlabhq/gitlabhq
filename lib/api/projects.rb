@@ -251,6 +251,28 @@ module API
         present_projects load_projects
       end
 
+      desc 'Get projects that a user has contributed to' do
+        success code: 200, model: Entities::BasicProjectDetails
+        failure [{ code: 404, message: '404 User Not Found' }]
+        tags %w[projects]
+        is_array true
+      end
+      params do
+        requires :user_id, type: String, desc: 'The ID or username of the user'
+        use :sort_params
+        use :pagination
+
+        optional :simple, type: Boolean, default: false,
+                          desc: 'Return only the ID, URL, name, and path of each project'
+      end
+      get ":user_id/contributed_projects", feature_category: :groups_and_projects, urgency: :low do
+        user = find_user(params[:user_id])
+        not_found!('User') unless user
+
+        contributed_projects = ContributedProjectsFinder.new(user).execute(current_user).joined(user)
+        present_projects contributed_projects
+      end
+
       desc 'Get projects starred by a user' do
         success code: 200, model: Entities::BasicProjectDetails
         failure [{ code: 404, message: '404 User Not Found' }]
@@ -534,7 +556,6 @@ module API
         attrs = translate_params_for_compatibility(attrs)
         attrs = add_import_params(attrs)
         filter_attributes_using_license!(attrs)
-        filter_attributes_under_feature_flag!(attrs, user_project)
         verify_update_project_attrs!(user_project, attrs)
 
         user_project.remove_avatar! if attrs.key?(:avatar) && attrs[:avatar].nil?

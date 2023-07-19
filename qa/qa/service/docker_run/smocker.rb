@@ -38,10 +38,14 @@ module QA
           @api = nil
         end
 
+        def self.logs
+          @container&.logs
+        end
+
         attr_reader :public_port, :admin_port
 
         def host_name
-          return '127.0.0.1' unless QA::Runtime::Env.running_in_ci? || QA::Runtime::Env.qa_hostname
+          return host_ip unless QA::Runtime::Env.running_in_ci? || QA::Runtime::Env.qa_hostname
 
           "#{@name}.#{@network_cache}"
         end

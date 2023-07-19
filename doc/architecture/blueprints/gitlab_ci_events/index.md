@@ -2,6 +2,7 @@
 status: proposed
 creation-date: "2023-03-15"
 authors: [ "@furkanayhan" ]
+owners: [ "@furkanayhan" ]
 coach: "@grzesiek"
 approvers: [ "@jreporter", "@cheryl.li" ]
 owning-stage: "~devops::verify"
@@ -45,7 +46,7 @@ Events" blueprint is about making it possible to:
 
 ## Proposals
 
-For now, we have technical 4 proposals;
+For now, we have technical 5 proposals;
 
 1. [Proposal 1: Using the `.gitlab-ci.yml` file](proposal-1-using-the-gitlab-ci-file.md)
     Based on;
@@ -55,9 +56,7 @@ For now, we have technical 4 proposals;
     Highly inefficient way.
 1. [Proposal 3: Using the `.gitlab/ci/events` folder](proposal-3-using-the-gitlab-ci-events-folder.md)
     Involves file reading for every event.
-1. [Proposal 4: Creating events via CI files](proposal-4-creating-events-via-ci-files.md)
-    Combination of some proposals.
-
-Each of them has its pros and cons. There could be many more proposals and we
-would like to discuss them all. We can combine the best part of those proposals
-and create a new one.
+1. [Proposal 4: Creating events via a CI config file](proposal-4-creating-events-via-ci-files.md)
+    Separate configuration files for defininig events.
+1. [Proposal 5: Combined proposal](proposal-5-combined-proposal.md)
+    Combination of all of the proposals listed above.

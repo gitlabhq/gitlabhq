@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   include ActionView::Helpers::JavaScriptHelper
   include ListboxHelpers
+  include ContentEditorHelpers
 
   let_it_be(:project)   { create(:project, :repository) }
   let_it_be(:user)      { create(:user) }
@@ -36,6 +37,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   describe 'new issue' do
     before do
       visit new_project_issue_path(project)
+      close_rich_text_promo_popover_if_present
     end
 
     describe 'shorten users API pagination limit' do
@@ -745,7 +747,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
     context 'with the visible_label_selection_on_metadata feature flag enabled', :js do
       let(:visible_label_selection_on_metadata) { true }
 
-      it 'creates project label from dropdown' do
+      it 'creates project label from dropdown', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416585' do
         find('[data-testid="labels-select-dropdown-contents"] button').click
 
         wait_for_all_requests

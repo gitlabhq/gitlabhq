@@ -21,7 +21,6 @@ import getProjectsWithCIJobTokenScopeQuery from '../graphql/queries/get_projects
 import TokenProjectsTable from './token_projects_table.vue';
 
 // Note: This component will be removed in 17.0, as the outbound access token is getting deprecated
-// Some warnings are behind the `frozen_outbound_job_token_scopes` feature flag
 export default {
   i18n: {
     toggleLabelTitle: s__('CICD|Limit CI_JOB_TOKEN access'),
@@ -127,14 +126,8 @@ export default {
     ciJobTokenHelpPage() {
       return helpPagePath('ci/jobs/ci_job_token#limit-your-projects-job-token-access');
     },
-    disableOutboundToken() {
-      return (
-        this.glFeatures?.frozenOutboundJobTokenScopes &&
-        !this.glFeatures?.frozenOutboundJobTokenScopesOverride
-      );
-    },
     disableTokenToggle() {
-      return !this.jobTokenScopeEnabled && this.disableOutboundToken;
+      return !this.jobTokenScopeEnabled;
     },
   },
   methods: {
@@ -226,7 +219,6 @@ export default {
     <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
     <template v-else>
       <gl-alert
-        v-if="disableOutboundToken"
         class="gl-mb-3"
         variant="warning"
         :dismissible="false"
@@ -260,7 +252,7 @@ export default {
               <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">
                 {{ content }}
               </gl-link>
-              <strong v-if="disableOutboundToken">{{ $options.i18n.disableToggleWarning }} </strong>
+              <strong>{{ $options.i18n.disableToggleWarning }} </strong>
             </template>
           </gl-sprintf>
         </template>
@@ -274,7 +266,7 @@ export default {
           <template #default>
             <gl-form-input
               v-model="targetProjectPath"
-              :disabled="disableOutboundToken"
+              :disabled="true"
               :placeholder="$options.i18n.addProjectPlaceholder"
               data-testid="project-path-input"
             />
@@ -286,16 +278,6 @@ export default {
             <gl-button @click="clearTargetProjectPath">{{ $options.i18n.cancel }}</gl-button>
           </template>
         </gl-card>
-        <gl-alert
-          v-if="!jobTokenScopeEnabled && !disableOutboundToken"
-          class="gl-mb-3"
-          variant="warning"
-          :dismissible="false"
-          :show-icon="false"
-          data-testid="token-disabled-alert"
-        >
-          {{ $options.i18n.settingDisabledMessage }}
-        </gl-alert>
         <token-projects-table
           :projects="projects"
           :table-fields="$options.fields"

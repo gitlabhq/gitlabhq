@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require 'googleauth'
 
-RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, :snowplow do
+RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, :snowplow, feature_category: :metrics do
   include PrometheusHelpers
   include ReactiveCachingHelpers
 
@@ -37,8 +37,8 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         integration.manual_configuration = true
       end
 
-      it 'validates presence of api_url' do
-        expect(integration).to validate_presence_of(:api_url)
+      it 'does not validates presence of api_url' do
+        expect(integration).not_to validate_presence_of(:api_url)
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
     context 'when configuration is not valid' do
       before do
-        integration.api_url = nil
+        integration.manual_configuration = nil
       end
 
       it 'returns failure message' do

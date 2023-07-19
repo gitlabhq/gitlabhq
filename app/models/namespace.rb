@@ -57,6 +57,7 @@ class Namespace < ApplicationRecord
   # This should _not_ be `inverse_of: :namespace`, because that would also set
   # `user.namespace` when this user creates a group with themselves as `owner`.
   belongs_to :owner, class_name: 'User'
+  belongs_to :organization, class_name: 'Organizations::Organization'
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, -> { where(type: Group.sti_name) }, class_name: "Namespace", foreign_key: :parent_id
@@ -305,7 +306,7 @@ class Namespace < ApplicationRecord
   end
 
   def first_project_with_container_registry_tags
-    if ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+    if Gitlab.com_except_jh? && ContainerRegistry::GitlabApiClient.supports_gitlab_api?
       ContainerRegistry::GitlabApiClient.one_project_with_container_registry_tag(full_path)
     else
       all_projects.includes(:container_repositories).find(&:has_container_registry_tags?)
@@ -423,6 +424,10 @@ class Namespace < ApplicationRecord
     false
   end
 
+  def all_project_ids
+    all_projects.pluck(:id)
+  end
+
   def all_project_ids_except(ids)
     all_projects.where.not(id: ids).pluck(:id)
   end
@@ -478,7 +483,7 @@ class Namespace < ApplicationRecord
 
   def container_repositories_size
     strong_memoize(:container_repositories_size) do
-      next unless Gitlab.com?
+      next unless Gitlab.com_except_jh?
       next unless root?
       next unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
       next 0 if all_container_repositories.empty?

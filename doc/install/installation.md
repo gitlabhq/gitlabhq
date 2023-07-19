@@ -47,7 +47,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 |:------------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Ruby](#2-ruby)         | `3.0.x`         | From GitLab 15.10, Ruby 3.0 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
 | [RubyGems](#3-rubygems) | `3.4.x`         | A specific RubyGems version is not fully needed, but it's recommended to update so you can enjoy some known performance improvements.                                                                                                                                                  |
-| [Go](#4-go)             | `1.18.x`        | From GitLab 15.6, Go 1.18 or later is required.                                                                                                                                                                                                                                        |
+| [Go](#4-go)             | `1.19.x`        | From GitLab 16.1, Go 1.19 or later is required.                                                                                                                                                                                                                                        |
 | [Git](#git)             | `2.38.x`        | From GitLab 15.8, Git 2.38.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
 | [Node.js](#5-node)      | `18.16.x`       | From GitLab 16.1, Node.js 18.16 or later is required.                                                                                                                                                                                                                                |
 
@@ -72,7 +72,7 @@ When following the instructions on this page, you create this directory structur
 - `/home/git/repositories` - Bare repositories for all projects organized by
   namespace. This is where the Git repositories which are pushed/pulled are
   maintained for all projects. **This area contains critical data for projects.
-  [Keep a backup](../raketasks/backup_restore.md).**
+  [Keep a backup](../administration/backup_restore/index.md).**
 
 The default locations for repositories can be configured in `config/gitlab.yml`
 of GitLab and `config.yml` of GitLab Shell.
@@ -174,7 +174,7 @@ the Git path:
 
 ### GraphicsMagick
 
-For the [Custom Favicon](../user/admin_area/appearance.md#favicon) to work, GraphicsMagick
+For the [Custom Favicon](../administration/appearance.md#favicon) to work, GraphicsMagick
 must be installed.
 
 ```shell
@@ -247,11 +247,11 @@ Linux. You can find downloads for other platforms at the
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --location --progress-bar "https://go.dev/dl/go1.18.8.linux-amd64.tar.gz"
-echo '4d854c7bad52d53470cf32f1b287a5c0c441dc6b98306dea27358e099698142a  go1.18.8.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.18.8.linux-amd64.tar.gz
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.19.10.linux-amd64.tar.gz"
+echo '8b045a483d3895c6edba2e90a9189262876190dbbd21756870cdd63821810677  go1.19.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.19.10.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
-rm go1.18.8.linux-amd64.tar.gz
+rm go1.19.10.linux-amd64.tar.gz
 ```
 
 ## 5. Node
@@ -260,7 +260,7 @@ GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` 18.x releases (v18.16.0 or later).
+- `node` 18.x releases (v18.16.1 or later).
   [Other LTS versions of Node.js](https://github.com/nodejs/release#release-schedule) might be able to build assets, but we only guarantee Node.js 18.x.
 - `yarn` = v1.22.x (Yarn 2 is not supported yet)
 
@@ -1038,9 +1038,11 @@ To start and stop GitLab when using:
 - systemd units: use `sudo systemctl start gitlab.target` or `sudo systemctl stop gitlab.target`.
 - The SysV init script: use `sudo service gitlab start` or `sudo service gitlab stop`.
 
-### Install the product documentation
+### Recommended next steps
 
-This is an optional step. See how to [self-host the product documentation](../administration/docs_self_host.md).
+After completing your installation, consider taking the
+[recommended next steps](next_steps.md), including authentication options
+and sign-up restrictions.
 
 ## Advanced Setup Tips
 

@@ -14,7 +14,7 @@ Stay informed about what's happening in GitLab with email notifications.
 You can receive updates about activity in issues, merge requests, epics, and designs.
 
 For the tool that GitLab administrators can use to send messages to users, read
-[Email from GitLab](../admin_area/email_from_gitlab.md).
+[Email from GitLab](../../administration/email_from_gitlab.md).
 
 ## Who receives notifications
 
@@ -46,7 +46,7 @@ anyone else.
 
 To edit your notification settings:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Edit the desired global, group, or project notification settings.
@@ -99,7 +99,7 @@ You can select a notification level and email address for each group.
 
 To select a notification level for a group, use either of these methods:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Groups** section.
@@ -118,7 +118,7 @@ Or:
 You can select an email address to receive notifications for each group you belong to.
 You can use group notifications, for example, if you work freelance, and want to keep email about clients' projects separate.
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Groups** section.
@@ -130,7 +130,7 @@ To help you stay up to date, you can select a notification level for each projec
 
 To select a notification level for a project, use either of these methods:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Locate the project in the **Projects** section.
@@ -152,7 +152,7 @@ These emails are enabled by default.
 
 To opt out:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Clear the **Receive product marketing emails** checkbox.
@@ -290,7 +290,7 @@ To always receive notifications on your own issues, merge requests, and so on, t
 
 NOTE:
 This feature is enabled by default for self-managed instances. Administrators may disable this feature
-through the [Sign-in restrictions](../admin_area/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
+through the [Sign-in restrictions](../../administration/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
 The feature is always enabled on GitLab.com.
 
 When a user successfully signs in from a previously unknown IP address or device,
@@ -335,7 +335,7 @@ The participants are:
 
 If you no longer wish to receive any email notifications:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
 1. Clear the **Receive product marketing emails** checkbox.
@@ -345,7 +345,7 @@ If you no longer wish to receive any email notifications:
    **Disabled**.
 
 On self-managed installations, even after doing this, your instance administrator
-[can still email you](../admin_area/email_from_gitlab.md).
+[can still email you](../../administration/email_from_gitlab.md).
 To unsubscribe, select the unsubscribe link in one of these emails.
 
 ## Email headers you can use to filter email

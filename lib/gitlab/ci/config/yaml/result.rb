@@ -5,11 +5,12 @@ module Gitlab
     class Config
       module Yaml
         class Result
-          attr_reader :error
+          attr_reader :error, :error_class
 
-          def initialize(config: nil, error: nil)
+          def initialize(config: nil, error: nil, error_class: nil)
             @config = Array.wrap(config)
             @error = error
+            @error_class = error_class
           end
 
           def valid?

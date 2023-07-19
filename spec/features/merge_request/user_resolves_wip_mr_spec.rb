@@ -6,17 +6,23 @@ RSpec.describe 'Merge request > User resolves Draft', :js, feature_category: :co
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) do
-    create(:merge_request_with_diffs, source_project: project,
-                                      author: user,
-                                      title: 'Draft: Bug NS-04',
-                                      merge_params: { force_remove_source_branch: '1' })
+    create(
+      :merge_request_with_diffs,
+      source_project: project,
+      author: user,
+      title: 'Draft: Bug NS-04',
+      merge_params: { force_remove_source_branch: '1' }
+    )
   end
 
   let(:pipeline) do
-    create(:ci_pipeline, project: project,
-                         sha: merge_request.diff_head_sha,
-                         ref: merge_request.source_branch,
-                         head_pipeline_of: merge_request)
+    create(
+      :ci_pipeline,
+      project: project,
+      sha: merge_request.diff_head_sha,
+      ref: merge_request.source_branch,
+      head_pipeline_of: merge_request
+    )
   end
 
   before do

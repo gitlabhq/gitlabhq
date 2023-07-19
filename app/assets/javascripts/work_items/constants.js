@@ -79,6 +79,10 @@ export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
   'WorkItem|Something went wrong when fetching iterations. Please try again.',
 );
 
+export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
+  'WorkItem|Something went wrong while fetching work item award emojis. Please try again.',
+);
+
 export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
 export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
 export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
@@ -192,6 +196,7 @@ export const FORM_TYPES = {
 
 export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;
 export const DEFAULT_PAGE_SIZE_NOTES = 30;
+export const DEFAULT_PAGE_SIZE_EMOJIS = 100;
 
 export const WORK_ITEM_NOTES_SORT_ORDER_KEY = 'sort_direction_work_item';
 
@@ -231,16 +236,12 @@ export const TEST_ID_PROMOTE_ACTION = 'promote-action';
 export const TEST_ID_COPY_REFERENCE_ACTION = 'copy-reference-action';
 export const TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION = 'copy-create-note-email-action';
 
-export const ADD = 'ADD';
-export const MARK_AS_DONE = 'MARK_AS_DONE';
 export const TODO_ADD_ICON = 'todo-add';
 export const TODO_DONE_ICON = 'todo-done';
-export const TODO_TYPENAME = 'Todo';
-export const TODO_EDGE_TYPENAME = 'TodoEdge';
-export const TODO_CONNECTION_TYPENAME = 'TodoConnection';
+export const TODO_DONE_STATE = 'done';
+export const TODO_PENDING_STATE = 'pending';
+
 export const CURRENT_USER_TODOS_TYPENAME = 'WorkItemWidgetCurrentUserTodos';
-export const WORK_ITEM_TYPENAME = 'WorkItem';
-export const WORK_ITEM_UPDATE_PAYLOAD_TYPENAME = 'WorkItemUpdatePayload';
 
 export const EMOJI_ACTION_ADD = 'ADD';
 export const EMOJI_ACTION_REMOVE = 'REMOVE';

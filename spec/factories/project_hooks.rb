@@ -28,6 +28,7 @@ FactoryBot.define do
       deployment_events { true }
       feature_flag_events { true }
       releases_events { true }
+      emoji_events { true }
     end
 
     trait :with_push_branch_filter do

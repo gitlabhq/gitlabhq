@@ -11,7 +11,7 @@ When you are using the GitLab agent for Kubernetes, you might experience issues 
 You can start by viewing the service logs:
 
 ```shell
-kubectl logs -f -l=app=gitlab-agent -n gitlab-agent
+kubectl logs -f -l=app.kubernetes.io/name=gitlab-agent -n gitlab-agent
 ```
 
 If you are a GitLab administrator, you can also view the [GitLab agent server logs](../../../administration/clusters/kas.md#troubleshooting).
@@ -108,8 +108,7 @@ certificate authority that is unknown to the agent.
 
 To fix this issue, you can present the CA certificate file to the agent
 by [customizing the Helm installation](install/index.md#customize-the-helm-installation).
-Add `--set config.caCert="$(cat ~/path/to/ca.crt)"` to the `helm install` command. Make sure to replace `~/path/to/ca.crt`
-with the path to your internal CA's certificate file. The file should be a valid PEM or DER-encoded certificate.
+Add `--set-file config.caCert=my-custom-ca.pem` to the `helm install` command. The file should be a valid PEM or DER-encoded certificate.
 
 When you deploy `agentk` with a set `config.caCert` value, the certificate is added to `configmap` and the certificate file is mounted in `/etc/ssl/certs`.
 

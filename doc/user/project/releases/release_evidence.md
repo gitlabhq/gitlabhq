@@ -97,7 +97,7 @@ Evidence collection snapshots are visible on the Releases page, along with the t
 
 When you create a release, if [job artifacts](../../../ci/yaml/index.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
 
-Although job artifacts normally expire, artifacts included in release evidence do not expire.
+Although job artifacts usually expire, artifacts included in release evidence do not expire.
 
 To enable job artifact collection you must specify both:
 

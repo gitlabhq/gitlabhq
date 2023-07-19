@@ -69,7 +69,7 @@ module Gitlab
           @updates[:title] = title_param
         end
 
-        desc { _('Add label(s)') }
+        desc { _('Add labels') }
         explanation do |labels_param|
           labels = find_label_references(labels_param)
 
@@ -88,7 +88,7 @@ module Gitlab
           run_label_command(labels: find_labels(labels_param), command: :label, updates_key: :add_label_ids)
         end
 
-        desc { _('Remove all or specific label(s)') }
+        desc { _('Remove all or specific labels') }
         explanation do |labels_param = nil|
           label_references = labels_param.present? ? find_label_references(labels_param) : []
           if label_references.any?
@@ -125,7 +125,7 @@ module Gitlab
           @execution_message[:unlabel] = remove_label_message(label_references)
         end
 
-        desc { _('Replace all label(s)') }
+        desc { _('Replace all labels') }
         explanation do |labels_param|
           labels = find_label_references(labels_param)
           "Replaces all labels with #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?

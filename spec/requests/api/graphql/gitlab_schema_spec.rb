@@ -264,8 +264,8 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
     let(:headers) { {} }
 
     before do
-      allow(GitlabSchema).to receive(:execute).and_wrap_original do |method, *args|
-        mock_schema.execute(*args)
+      allow(GitlabSchema).to receive(:execute).and_wrap_original do |method, *args, **kwargs|
+        mock_schema.execute(*args, **kwargs)
       end
     end
 

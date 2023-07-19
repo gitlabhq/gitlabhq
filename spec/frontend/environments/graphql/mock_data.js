@@ -909,3 +909,8 @@ export const k8sWorkloadsMock = {
   JobList: [completedJob, completedJob, failedJob],
   CronJobList: [completedCronJob, suspendedCronJob, failedCronJob],
 };
+
+export const k8sNamespacesMock = [
+  { metadata: { name: 'default' } },
+  { metadata: { name: 'agent' } },
+];

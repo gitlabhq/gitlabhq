@@ -75,6 +75,8 @@ describe('FollowersTab', () => {
         loading: false,
         page: 1,
         totalItems: 6,
+        currentUserEmptyStateTitle: FollowersTab.i18n.currentUserEmptyStateTitle,
+        visitorEmptyStateTitle: FollowersTab.i18n.visitorEmptyStateTitle,
       });
     });
 

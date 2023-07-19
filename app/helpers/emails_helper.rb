@@ -41,7 +41,7 @@ module EmailsHelper
   end
 
   def sanitize_name(name)
-    if name =~ URI::DEFAULT_PARSER.regexp[:URI_REF]
+    if URI::DEFAULT_PARSER.regexp[:URI_REF].match?(name)
       name.tr('.', '_')
     else
       name

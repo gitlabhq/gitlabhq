@@ -8,7 +8,10 @@ RSpec.describe RssHelper do
       it "includes the current_user's feed_token" do
         current_user = create(:user)
         allow(helper).to receive(:current_user).and_return(current_user)
-        expect(helper.rss_url_options).to include feed_token: current_user.feed_token
+
+        feed_token = helper.rss_url_options[:feed_token]
+        expect(feed_token).to match(Gitlab::Auth::AuthFinders::PATH_DEPENDENT_FEED_TOKEN_REGEX)
+        expect(feed_token).to end_with(current_user.id.to_s)
       end
     end
 

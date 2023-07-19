@@ -49,7 +49,14 @@ module API
       end
 
       def content_sha
-        cache_client.fetch("blob_content_sha256:#{user_project.full_path}:#{@blob.id}") do
+        cache_client.fetch(
+          "blob_content_sha256:#{user_project.full_path}:#{@blob.id}",
+          nil,
+          {
+            cache_identifier: 'API::Files#content_sha',
+            backing_resource: :gitaly
+          }
+        ) do
           @blob.load_all_data!
 
           Digest::SHA256.hexdigest(@blob.data)
@@ -57,10 +64,8 @@ module API
       end
 
       def cache_client
-        Gitlab::Cache::Client.build_with_metadata(
-          cache_identifier: 'API::Files#content_sha',
-          feature_category: :source_code_management,
-          backing_resource: :gitaly
+        @cache_client ||= Gitlab::Cache::Client.new(
+          Gitlab::Cache::Metrics.new(Gitlab::Cache::Metadata.new(feature_category: :source_code_management))
         )
       end
 

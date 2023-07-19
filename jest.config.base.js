@@ -30,6 +30,7 @@ module.exports = (path, options = {}) => {
       '^@gitlab/ui/dist/([^.]*)$': [
         '<rootDir>/node_modules/@gitlab/ui/src/$1.vue',
         '<rootDir>/node_modules/@gitlab/ui/src/$1.js',
+        '<rootDir>/node_modules/@gitlab/ui/dist/$1.js',
       ],
       '^@gitlab/ui$': '<rootDir>/node_modules/@gitlab/ui/src/index.js',
     });

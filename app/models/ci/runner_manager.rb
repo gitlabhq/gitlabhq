@@ -44,12 +44,23 @@ module Ci
         remove_duplicates: false).where(created_some_time_ago)
     end
 
+    scope :for_runner, ->(runner_id) do
+      where(runner_id: runner_id)
+    end
+
     def self.online_contact_time_deadline
       Ci::Runner.online_contact_time_deadline
     end
 
     def self.stale_deadline
       STALE_TIMEOUT.ago
+    end
+
+    def self.aggregate_upgrade_status_by_runner_id
+      joins(:runner_version)
+        .group(:runner_id)
+        .maximum(:status)
+        .transform_values { |s| Ci::RunnerVersion.statuses.key(s).to_sym }
     end
 
     def heartbeat(values, update_contacted_at: true)
@@ -66,7 +77,7 @@ module Ci
         end
 
         new_version = values[:version]
-        schedule_runner_version_update(new_version) if new_version && values[:version] != version
+        schedule_runner_version_update(new_version) if new_version && new_version != version
 
         merge_cache_attributes(values)
 

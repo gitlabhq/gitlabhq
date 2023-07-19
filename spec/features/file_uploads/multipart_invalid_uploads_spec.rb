@@ -44,7 +44,7 @@ RSpec.describe 'Invalid uploads that must be rejected', :api, :js, feature_categ
 
     # These keys are rejected directly by rack itself.
     # The request will not be received by multipart.rb (can't use the 'handling file uploads' shared example)
-    it_behaves_like 'rejecting invalid keys', key_name: 'x' * 11000, message: 'Puma caught this error: exceeded available parameter key space (Rack::QueryParser::ParamsTooDeepError)'
+    it_behaves_like 'rejecting invalid keys', key_name: 'x' * 11000, status: 400, message: 'Bad Request'
     it_behaves_like 'rejecting invalid keys', key_name: 'package[]test', status: 400, message: 'Bad Request'
 
     it_behaves_like 'handling file uploads', 'by rejecting uploads with an invalid key'

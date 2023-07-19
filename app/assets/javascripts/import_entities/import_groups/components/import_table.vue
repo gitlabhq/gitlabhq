@@ -664,6 +664,7 @@ export default {
 
       <gl-search-box-by-click
         class="gl-ml-auto"
+        data-testid="filter-groups"
         :placeholder="s__('BulkImport|Filter by source group')"
         @submit="filter = $event"
         @clear="filter = ''"

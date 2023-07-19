@@ -87,7 +87,6 @@ export default {
       :slot-key="activeView"
       class="gl-w-grid-size-40 gl-overflow-hidden gl-p-3"
       data-testid="menu-subview"
-      data-qa-selector="menu_subview_container"
     >
       <template #projects>
         <top-nav-container-view

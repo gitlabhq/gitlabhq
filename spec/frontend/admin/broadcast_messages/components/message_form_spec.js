@@ -5,7 +5,12 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import MessageForm from '~/admin/broadcast_messages/components/message_form.vue';
-import { TYPE_BANNER, TYPE_NOTIFICATION, THEMES } from '~/admin/broadcast_messages/constants';
+import {
+  TYPE_BANNER,
+  TYPE_NOTIFICATION,
+  THEMES,
+  TARGET_OPTIONS,
+} from '~/admin/broadcast_messages/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { MOCK_TARGET_ACCESS_LEVELS } from '../mock_data';
@@ -37,6 +42,8 @@ describe('MessageForm', () => {
   const findCancelButton = () => wrapper.findComponent('[data-testid=cancel-button]');
   const findForm = () => wrapper.findComponent(GlForm);
   const findShowInCli = () => wrapper.findComponent('[data-testid=show-in-cli-checkbox]');
+  const findTargetSelect = () => wrapper.findComponent('[data-testid=target-select]');
+  const findTargetPath = () => wrapper.findComponent('[data-testid=target-path-input]');
 
   function createComponent({ broadcastMessage = {} } = {}) {
     wrapper = mount(MessageForm, {
@@ -112,10 +119,38 @@ describe('MessageForm', () => {
     });
   });
 
-  describe('target roles checkboxes', () => {
-    it('renders target roles', () => {
+  describe('target select', () => {
+    it('renders the first option and hide target path and target roles when creating message', () => {
       createComponent();
-      expect(findTargetRoles().exists()).toBe(true);
+      expect(findTargetSelect().element.value).toBe(TARGET_OPTIONS[0].value);
+      expect(findTargetRoles().isVisible()).toBe(false);
+      expect(findTargetPath().isVisible()).toBe(false);
+    });
+
+    it('triggers displaying target path and target roles when selecting different options', async () => {
+      createComponent();
+      const options = findTargetSelect().findAll('option');
+      await options.at(1).setSelected();
+      expect(findTargetPath().isVisible()).toBe(true);
+      expect(findTargetRoles().isVisible()).toBe(false);
+
+      await options.at(2).setSelected();
+      expect(findTargetPath().isVisible()).toBe(true);
+      expect(findTargetRoles().isVisible()).toBe(true);
+    });
+
+    it('renders the second option and hide target roles when editing message with path specified', () => {
+      createComponent({ broadcastMessage: { targetPath: '/welcome' } });
+      expect(findTargetSelect().element.value).toBe(TARGET_OPTIONS[1].value);
+      expect(findTargetRoles().isVisible()).toBe(false);
+      expect(findTargetPath().isVisible()).toBe(true);
+    });
+
+    it('renders the third option when editing message with path and roles specified', () => {
+      createComponent({ broadcastMessage: { targetPath: '/welcome', targetAccessLevels: [20] } });
+      expect(findTargetSelect().element.value).toBe(TARGET_OPTIONS[2].value);
+      expect(findTargetRoles().isVisible()).toBe(true);
+      expect(findTargetPath().isVisible()).toBe(true);
     });
   });
 

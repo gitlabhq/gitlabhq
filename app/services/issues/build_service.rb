@@ -83,18 +83,17 @@ module Issues
                          params.delete(:work_item_type)
                        end
 
-      base_type = work_item_type&.base_type
+      # We need to support the legacy input params[:issue_type] even if we don't have the issue_type column anymore.
+      # In the future only params[:work_item_type] should be provided
+      base_type = work_item_type&.base_type || params[:issue_type]
 
-      if create_issue_type_allowed?(container, base_type)
-        issue.work_item_type = work_item_type
-        # Up to this point issue_type might be set to the default, so we need to sync if a work item type is provided
-        issue.issue_type = base_type
-      else
-        # If no work item type was provided or not allowed, we need to set it to issue_type,
-        # and that includes the column default
-        issue_type = issue_params[:issue_type] || ::Issue::DEFAULT_ISSUE_TYPE
-        issue.work_item_type = WorkItems::Type.default_by_type(issue_type)
-      end
+      issue.work_item_type = if create_issue_type_allowed?(container, base_type)
+                               work_item_type || WorkItems::Type.default_by_type(base_type)
+                             else
+                               # If no work item type was provided or not allowed, we need to set it to
+                               # the default issue_type
+                               WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)
+                             end
     end
 
     def model_klass
@@ -108,8 +107,6 @@ module Issues
         :description,
         :confidential
       ]
-
-      public_issue_params << :issue_type if create_issue_type_allowed?(container, params[:issue_type])
 
       params.slice(*public_issue_params)
     end

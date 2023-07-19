@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_projects do
+  include Features::AutocompleteHelpers
+
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:author) { create(:user) }
@@ -84,11 +86,5 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
     end
 
     include_examples "open suggestions when typing @", 'commit'
-  end
-
-  private
-
-  def find_autocomplete_menu
-    find('.atwho-view ul', visible: true)
   end
 end

@@ -14,7 +14,7 @@ module Gitlab
     #
     # This class is thread-safe via RequestStore.
     class HookEnv
-      WHITELISTED_VARIABLES = %w[
+      ALLOWLISTED_VARIABLES = %w[
         GIT_OBJECT_DIRECTORY_RELATIVE
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
@@ -25,7 +25,7 @@ module Gitlab
         raise "missing gl_repository" if gl_repository.blank?
 
         Gitlab::SafeRequestStore[:gitlab_git_env] ||= {}
-        Gitlab::SafeRequestStore[:gitlab_git_env][gl_repository] = whitelist_git_env(env)
+        Gitlab::SafeRequestStore[:gitlab_git_env][gl_repository] = allowlist_git_env(env)
       end
 
       def self.all(gl_repository)
@@ -46,8 +46,8 @@ module Gitlab
         env
       end
 
-      def self.whitelist_git_env(env)
-        env.select { |key, _| WHITELISTED_VARIABLES.include?(key.to_s) }.with_indifferent_access
+      def self.allowlist_git_env(env)
+        env.select { |key, _| ALLOWLISTED_VARIABLES.include?(key.to_s) }.with_indifferent_access
       end
     end
   end

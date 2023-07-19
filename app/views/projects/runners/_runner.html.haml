@@ -13,19 +13,16 @@
     .gl-ml-2
       .btn-group.btn-group-sm
         - if @project_runners.include?(runner)
-          = link_to edit_project_runner_path(@project, runner), class: 'btn gl-button btn-icon', title: _('Edit'), aria: { label: _('Edit') }, data: { testid: 'edit-runner-link', toggle: 'tooltip', placement: 'top', container: 'body' } do
-            = sprite_icon('pencil')
+          = link_button_to nil, edit_project_runner_path(@project, runner), title: _('Edit'), aria: { label: _('Edit') }, data: { testid: 'edit-runner-link', toggle: 'tooltip', placement: 'top', container: 'body' }, icon: 'pencil'
           - if runner.active?
-            = link_to pause_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-icon', title: s_('Runners|Pause from accepting jobs'), aria: { label: _('Pause') }, data: { toggle: 'tooltip', container: 'body', confirm: _("Are you sure?") } do
-              = sprite_icon('pause')
+            = link_button_to nil, pause_project_runner_path(@project, runner), method: :post, title: s_('Runners|Pause from accepting jobs'), aria: { label: _('Pause') }, data: { toggle: 'tooltip', container: 'body', confirm: _("Are you sure?") }, icon: 'pause'
           - else
-            = link_to resume_project_runner_path(@project, runner), method: :post, class: 'btn gl-button btn-icon', title: s_('Runners|Resume accepting jobs'), aria: { label: _('Resume') }, data: { toggle: 'tooltip', container: 'body' } do
-              = sprite_icon('play')
+            = link_button_to nil, resume_project_runner_path(@project, runner), method: :post, title: s_('Runners|Resume accepting jobs'), aria: { label: _('Resume') }, data: { toggle: 'tooltip', container: 'body' }, icon: 'play'
           - if runner.belongs_to_one_project?
-            = link_to _('Remove runner'), project_runner_path(@project, runner), aria: { label: _('Remove') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, class: 'btn gl-button btn-danger'
+            = link_button_to _('Remove runner'), project_runner_path(@project, runner), aria: { label: _('Remove') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger
           - else
             - runner_project = @project.runner_projects.find_by(runner_id: runner) # rubocop: disable CodeReuse/ActiveRecord
-            = link_to _('Disable for this project'), project_runner_project_path(@project, runner_project), aria: { label: _('Disable') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, class: 'btn gl-button btn-danger'
+            = link_button_to _('Disable for this project'), project_runner_project_path(@project, runner_project), aria: { label: _('Disable') }, data: { confirm: _("Are you sure?"), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger
         - elsif runner.project_type?
           = form_for [@project, @project.runner_projects.new] do |f|
             = f.hidden_field :runner_id, value: runner.id

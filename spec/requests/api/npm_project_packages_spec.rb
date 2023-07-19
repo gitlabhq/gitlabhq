@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
+RSpec.describe API::NpmProjectPackages, feature_category: :package_registry,
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/418757' do
   include ExclusiveLeaseHelpers
 
   include_context 'npm api setup'
@@ -26,6 +27,51 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
     it_behaves_like 'rejects invalid package names' do
       subject { get(url) }
     end
+
+    context 'when metadata cache exists', :aggregate_failures do
+      let!(:npm_metadata_cache) { create(:npm_metadata_cache, package_name: package.name, project_id: project.id) }
+      let(:metadata) { Gitlab::Json.parse(npm_metadata_cache.file.read.gsub('dist_tags', 'dist-tags')) }
+
+      subject { get(url) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns response from metadata cache' do
+        expect(Packages::Npm::GenerateMetadataService).not_to receive(:new)
+        expect(Packages::Npm::MetadataCache).to receive(:find_by_package_name_and_project_id)
+          .with(package.name, project.id).and_call_original
+
+        subject
+
+        expect(json_response).to eq(metadata)
+      end
+
+      it 'bumps last_downloaded_at of metadata cache' do
+        expect { subject }
+          .to change { npm_metadata_cache.reload.last_downloaded_at }.from(nil).to(instance_of(ActiveSupport::TimeWithZone))
+      end
+
+      it_behaves_like 'does not enqueue a worker to sync a metadata cache'
+
+      context 'when npm_metadata_cache disabled' do
+        before do
+          stub_feature_flags(npm_metadata_cache: false)
+        end
+
+        it_behaves_like 'generates metadata response "on-the-fly"'
+      end
+
+      context 'when metadata cache file does not exist' do
+        before do
+          FileUtils.rm_rf(npm_metadata_cache.file.path)
+        end
+
+        it_behaves_like 'generates metadata response "on-the-fly"'
+        it_behaves_like 'enqueue a worker to sync a metadata cache'
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/npm/-/package/*package_name/dist-tags' do
@@ -39,11 +85,30 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
     it_behaves_like 'handling create dist tag requests', scope: :project do
       let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end
+
+    it_behaves_like 'enqueue a worker to sync a metadata cache' do
+      let(:tag_name) { 'test' }
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+      let(:env) { { 'api.request.body': package.version } }
+      let(:headers) { build_token_auth_header(personal_access_token.token) }
+
+      subject { put(url, env: env, headers: headers) }
+    end
   end
 
   describe 'DELETE /api/v4/projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag' do
     it_behaves_like 'handling delete dist tag requests', scope: :project do
       let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+    end
+
+    it_behaves_like 'enqueue a worker to sync a metadata cache' do
+      let_it_be(:package_tag) { create(:packages_tag, package: package) }
+
+      let(:tag_name) { package_tag.name }
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+      let(:headers) { build_token_auth_header(personal_access_token.token) }
+
+      subject { delete(url, headers: headers) }
     end
   end
 
@@ -176,12 +241,13 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
     subject(:upload_package_with_token) { upload_with_token(package_name, params) }
 
-    shared_examples 'handling invalid record with 400 error' do
+    shared_examples 'handling invalid record with 400 error' do |error_message|
       it 'handles an ActiveRecord::RecordInvalid exception with 400 error' do
         expect { upload_package_with_token }
           .not_to change { project.packages.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(error_message)
       end
     end
 
@@ -191,7 +257,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           let(:package_name) { "@#{group.path}/my_inv@@lid_package_name" }
           let(:params) { upload_params(package_name: package_name) }
 
-          it_behaves_like 'handling invalid record with 400 error'
+          it_behaves_like 'handling invalid record with 400 error', "Validation failed: Name is invalid, Name #{Gitlab::Regex.npm_package_name_regex_message}"
           it_behaves_like 'not a package tracking event'
         end
 
@@ -213,7 +279,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           with_them do
             let(:params) { upload_params(package_name: package_name, package_version: version) }
 
-            it_behaves_like 'handling invalid record with 400 error'
+            it_behaves_like 'handling invalid record with 400 error', "Validation failed: Version #{Gitlab::Regex.semver_regex_message}"
             it_behaves_like 'not a package tracking event'
           end
         end
@@ -222,7 +288,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           let(:package_name) { "@#{group.path}/my_package_name" }
           let(:params) { upload_params(package_name: package_name, file: 'npm/payload_with_empty_attachment.json') }
 
-          it_behaves_like 'handling invalid record with 400 error'
+          it_behaves_like 'handling invalid record with 400 error', 'Attachment data is empty.'
           it_behaves_like 'not a package tracking event'
         end
       end
@@ -297,6 +363,10 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           it_behaves_like 'handling upload with different authentications'
         end
 
+        it_behaves_like 'enqueue a worker to sync a metadata cache' do
+          let(:package_name) { "@#{group.path}/my_package_name" }
+        end
+
         context 'with an existing package' do
           let_it_be(:second_project) { create(:project, namespace: namespace) }
 
@@ -305,7 +375,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
             let(:package_name) { "@#{group.path}/test" }
 
-            it_behaves_like 'handling invalid record with 400 error'
+            it_behaves_like 'handling invalid record with 400 error', 'Validation failed: Package already exists'
             it_behaves_like 'not a package tracking event'
 
             context 'with a new version' do
@@ -340,6 +410,11 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
             .not_to change { project.packages.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('Package already exists.')
+        end
+
+        it_behaves_like 'does not enqueue a worker to sync a metadata cache' do
+          subject { upload_package_with_token }
         end
       end
 
@@ -389,7 +464,8 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
             .not_to change { project.packages.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body).to include('Could not obtain package lease.')
+          expect(response.body).to include('Could not obtain package lease. Please try again.')
+          expect(json_response['error']).to eq('Could not obtain package lease. Please try again.')
         end
       end
 
@@ -415,15 +491,8 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
             end
           end
 
+          it_behaves_like 'handling invalid record with 400 error', 'Validation failed: Package json structure is too large. Maximum size is 20000 characters'
           it_behaves_like 'not a package tracking event'
-
-          it 'returns an error' do
-            expect { upload_package_with_token }
-              .not_to change { project.packages.count }
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(response.body).to include('Validation failed: Package json structure is too large')
-          end
         end
       end
 

@@ -1,9 +1,0 @@
-- title: "Helm v2 support"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: joshlambert
-  breaking_change: true
-  body: |
-    Helm v2 was [officially deprecated](https://helm.sh/blog/helm-v2-deprecation-timeline/) in November of 2020, with the `stable` repository being [de-listed from the Helm Hub](https://about.gitlab.com/blog/2020/11/09/ensure-auto-devops-work-after-helm-stable-repo/) shortly thereafter. With the release of GitLab 14.0, which will include the 5.0 release of the [GitLab Helm chart](https://docs.gitlab.com/charts/), Helm v2 will no longer be supported.
-
-    Users of the chart should [upgrade to Helm v3](https://helm.sh/docs/topics/v2_v3_migration/) to deploy GitLab 14.0 and later.

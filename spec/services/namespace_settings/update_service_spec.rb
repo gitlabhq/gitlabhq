@@ -45,6 +45,22 @@ RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_p
       end
     end
 
+    context 'when default_branch_protection is updated' do
+      let(:namespace_settings) { group.namespace_settings }
+      let(:expected) { ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys }
+      let(:settings) { { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE } }
+
+      before do
+        group.add_owner(user)
+      end
+
+      it "updates default_branch_protection_defaults from the default_branch_protection param" do
+        expect { service.execute }
+          .to change { namespace_settings.default_branch_protection_defaults }
+          .from({}).to(expected)
+      end
+    end
+
     context "updating :resource_access_token_creation_allowed" do
       let(:settings) { { resource_access_token_creation_allowed: false } }
 

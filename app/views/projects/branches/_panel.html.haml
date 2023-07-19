@@ -7,9 +7,9 @@
 
 - return unless branches.any?
 
-= render Pajamas::CardComponent.new(card_options: {class: 'gl-mt-5 gl-bg-gray-10'}, header_options: {class: 'gl-px-5 gl-py-4 gl-bg-white'}, body_options: {class: 'gl-px-3 gl-py-0'}, footer_options: {class: 'gl-bg-white'}) do |c|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body' }, footer_options: { class: 'gl-new-card-footer' }) do |c|
   - c.with_header do
-    %h3.card-title.h5.gl-line-height-24.gl-m-0
+    %h3.gl-new-card-title.h5
       = panel_title
   - c.with_body do
     %ul.content-list.branches-list.all-branches{ data: { qa_selector: 'all_branches_container' } }

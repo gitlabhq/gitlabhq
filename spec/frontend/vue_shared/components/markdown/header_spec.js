@@ -1,22 +1,28 @@
 import $ from 'jquery';
 import { nextTick } from 'vue';
-import { GlToggle } from '@gitlab/ui';
+import { GlToggle, GlButton } from '@gitlab/ui';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
+import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
 import DrawioToolbarButton from '~/vue_shared/components/markdown/drawio_toolbar_button.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
+import { updateText } from '~/lib/utils/text_markdown';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+
+jest.mock('~/lib/utils/text_markdown');
 
 describe('Markdown field header component', () => {
   let wrapper;
 
-  const createWrapper = (props) => {
+  const createWrapper = ({ props = {}, provide = {}, attachTo = document.body } = {}) => {
     wrapper = shallowMountExtended(HeaderComponent, {
+      attachTo,
       propsData: {
         previewMarkdown: false,
         ...props,
       },
       stubs: { GlToggle },
+      provide,
     });
   };
 
@@ -28,6 +34,7 @@ describe('Markdown field header component', () => {
       .filter((button) => button.props(prop) === value)
       .at(0);
   const findDrawioToolbarButton = () => wrapper.findComponent(DrawioToolbarButton);
+  const findCommentTemplatesDropdown = () => wrapper.findComponent(CommentTemplatesDropdown);
 
   beforeEach(() => {
     window.gl = {
@@ -54,6 +61,39 @@ describe('Markdown field header component', () => {
         'Add a checklist',
         'Indent line (⌘])',
         'Outdent line (⌘[)',
+        'Add a collapsible section',
+        'Add a table',
+        'Go full screen',
+      ];
+      const elements = findToolbarButtons();
+
+      elements.wrappers.forEach((buttonEl, index) => {
+        expect(buttonEl.props('buttonTitle')).toBe(buttons[index]);
+      });
+    });
+
+    it('renders correct title on non MacOS systems', () => {
+      window.gl = {
+        client: {
+          isMac: false,
+        },
+      };
+
+      createWrapper();
+
+      const buttons = [
+        'Insert suggestion',
+        'Add bold text (Ctrl+B)',
+        'Add italic text (Ctrl+I)',
+        'Add strikethrough text (Ctrl+Shift+X)',
+        'Insert a quote',
+        'Insert code',
+        'Add a link (Ctrl+K)',
+        'Add a bullet list',
+        'Add a numbered list',
+        'Add a checklist',
+        'Indent line (Ctrl+])',
+        'Outdent line (Ctrl+[)',
         'Add a collapsible section',
         'Add a table',
         'Go full screen',
@@ -92,15 +132,16 @@ describe('Markdown field header component', () => {
   });
 
   it('shows markdown preview when previewMarkdown is true', () => {
-    createWrapper({ previewMarkdown: true });
+    createWrapper({ props: { previewMarkdown: true } });
 
     expect(findPreviewToggle().text()).toBe('Continue editing');
   });
 
   it('hides toolbar in preview mode', () => {
-    createWrapper({ previewMarkdown: true });
+    createWrapper({ props: { previewMarkdown: true } });
 
-    expect(findToolbar().classes().includes('gl-display-none!')).toBe(true);
+    // only one button is rendered in preview mode
+    expect(findToolbar().findAllComponents(GlButton)).toHaveLength(1);
   });
 
   it('emits toggle markdown event when clicking preview toggle', async () => {
@@ -150,7 +191,9 @@ describe('Markdown field header component', () => {
 
   it('does not render suggestion button if `canSuggest` is set to false', () => {
     createWrapper({
-      canSuggest: false,
+      props: {
+        canSuggest: false,
+      },
     });
 
     expect(wrapper.find('.js-suggestion-btn').exists()).toBe(false);
@@ -158,7 +201,9 @@ describe('Markdown field header component', () => {
 
   it('hides markdown preview when previewMarkdown property is false', () => {
     createWrapper({
-      enablePreview: false,
+      props: {
+        enablePreview: false,
+      },
     });
 
     expect(wrapper.findByTestId('preview-toggle').exists()).toBe(false);
@@ -173,7 +218,9 @@ describe('Markdown field header component', () => {
 
     it('restricts items as per input', () => {
       createWrapper({
-        restrictedToolBarItems: ['quote'],
+        props: {
+          restrictedToolBarItems: ['quote'],
+        },
       });
 
       expect(findToolbarButtons().length).toBe(defaultCount - 1);
@@ -192,9 +239,11 @@ describe('Markdown field header component', () => {
 
     beforeEach(() => {
       createWrapper({
-        drawioEnabled: true,
-        uploadsPath,
-        markdownPreviewPath,
+        props: {
+          drawioEnabled: true,
+          uploadsPath,
+          markdownPreviewPath,
+        },
       });
     });
 
@@ -206,17 +255,46 @@ describe('Markdown field header component', () => {
     });
   });
 
-  describe('with content editor switcher', () => {
+  describe('when selecting a saved reply from the comment templates dropdown', () => {
     beforeEach(() => {
+      setHTMLFixture('<div class="md-area"><textarea></textarea><div id="root"></div></div>');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('updates the textarea with the saved comment', async () => {
       createWrapper({
-        showContentEditorSwitcher: true,
+        attachTo: '#root',
+        provide: {
+          newCommentTemplatePath: 'some/path',
+          glFeatures: {
+            savedReplies: true,
+          },
+        },
+      });
+
+      await findCommentTemplatesDropdown().vm.$emit('select', 'Some saved comment');
+
+      expect(updateText).toHaveBeenCalledWith({
+        textArea: document.querySelector('textarea'),
+        tag: 'Some saved comment',
+        cursorOffset: 0,
+        wrap: false,
       });
     });
 
-    it('re-emits event from switcher', () => {
-      wrapper.findComponent(EditorModeSwitcher).vm.$emit('input', 'richText');
+    it('does not show the saved replies button if newCommentTemplatePath is not defined', () => {
+      createWrapper({
+        provide: {
+          glFeatures: {
+            savedReplies: true,
+          },
+        },
+      });
 
-      expect(wrapper.emitted('enableContentEditor')).toEqual([[]]);
+      expect(findCommentTemplatesDropdown().exists()).toBe(false);
     });
   });
 });

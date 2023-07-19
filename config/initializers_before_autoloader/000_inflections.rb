@@ -34,6 +34,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     project_auto_devops
     project_registry
     project_wiki_repository_registry
+    project_repository_registry
     project_statistics
     snippet_repository_registry
     system_note_metadata

@@ -30,13 +30,13 @@ with various usage patterns:
 Forks allow users not having write access to parent project to make changes. The forking workflow
 is especially important for the Open Source community which is able to contribute back
 to public projects. However, it is equally important in some companies which prefer the strong split
-of responsibilites and tighter access control. The access to project is restricted
+of responsibilities and tighter access control. The access to project is restricted
 to designated list of developers.
 
 Forks enable:
 
-- tigther control of who can modify the upstream project
-- split of the responsibilites: parent project might use CI configuration connecting to production systems
+- tighter control of who can modify the upstream project
+- split of the responsibilities: parent project might use CI configuration connecting to production systems
 - run CI pipelines in context of fork in much more restrictive environment
 - consider all forks to be unveted which reduces risks of leaking secrets, or any other information
   tied with the project

@@ -21,8 +21,7 @@ the [Upgrading from CE to EE](upgrading_from_ce_to_ee.md) documentation.
 
 ## Upgrading to a new major version
 
-Major versions are reserved for backwards incompatible changes. We recommend that
-you first upgrade to the latest available minor version of your current major version.
+Major versions are reserved for backwards incompatible changes. You should first upgrade to the latest available minor version of your current major version.
 Follow the [Upgrade Recommendations](../policy/maintenance.md#upgrade-recommendations)
 to identify the ideal upgrade path.
 
@@ -96,11 +95,11 @@ Download and install Go (for Linux, 64-bit):
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --location --progress-bar "https://go.dev/dl/go1.18.8.linux-amd64.tar.gz"
-echo '4d854c7bad52d53470cf32f1b287a5c0c441dc6b98306dea27358e099698142a  go1.18.8.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.18.8.linux-amd64.tar.gz
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.19.10.linux-amd64.tar.gz"
+echo '8b045a483d3895c6edba2e90a9189262876190dbbd21756870cdd63821810677  go1.19.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.19.10.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
-rm go1.18.8.linux-amd64.tar.gz
+rm go1.19.10.linux-amd64.tar.gz
 ```
 
 ### 6. Update Git
@@ -108,7 +107,7 @@ rm go1.18.8.linux-amd64.tar.gz
 To check you are running the minimum required Git version, see
 [Git versions](../install/installation.md#software-requirements).
 
-From GitLab 13.6, we recommend you use the
+From GitLab 13.6, you should use the
 [Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
 that:
 
@@ -393,11 +392,6 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
 If all items are green, then congratulations, the upgrade is complete!
-
-### 17. Upgrade the product documentation
-
-This is an optional step. If you [installed the product documentation](../install/installation.md#install-the-product-documentation),
-see how to [upgrade to a later version](../administration/docs_self_host.md#upgrade-the-product-documentation-to-a-later-version).
 
 ## Version specific changes
 

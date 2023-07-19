@@ -18,6 +18,14 @@ module RuboCop
     class TodoFormatter < BaseFormatter
       DEFAULT_BASE_DIRECTORY = File.expand_path('../../.rubocop_todo', __dir__)
 
+      # Make sure that HAML exclusions are retained.
+      # This allows enabling cop rules in haml-lint and only exclude HAML files
+      # with offenses.
+      #
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/415330#caveats
+      # on why the entry must end with `.haml.rb`.
+      RETAIN_EXCLUSIONS = %r{\.haml\.rb$}
+
       class << self
         attr_accessor :base_directory
       end
@@ -31,7 +39,7 @@ module RuboCop
         @config_inspect_todo_dir = load_config_inspect_todo_dir
         @config_old_todo_yml = load_config_old_todo_yml
         check_multiple_configurations!
-        create_empty_todos(@config_inspect_todo_dir)
+        create_todos_retaining_exclusions(@config_inspect_todo_dir)
 
         super
       end
@@ -81,11 +89,10 @@ module RuboCop
         raise "Multiple configurations found for cops:\n#{list}\n"
       end
 
-      # For each inspected cop TODO config create a TODO object to make sure
-      # the cop TODO config will be written even without any offenses.
-      def create_empty_todos(inspected_cop_config)
-        inspected_cop_config.each_key do |cop_name|
-          @todos[cop_name]
+      def create_todos_retaining_exclusions(inspected_cop_config)
+        inspected_cop_config.each do |cop_name, config|
+          todo = @todos[cop_name]
+          todo.add_files(config.fetch('Exclude', []).grep(RETAIN_EXCLUSIONS))
         end
       end
 

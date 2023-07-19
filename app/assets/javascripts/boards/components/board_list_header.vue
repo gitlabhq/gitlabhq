@@ -1,12 +1,12 @@
 <script>
 import {
   GlButton,
+  GlButtonGroup,
   GlLabel,
   GlTooltip,
   GlIcon,
   GlSprintf,
   GlTooltipDirective,
-  GlDisclosureDropdown,
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import { isListDraggable } from '~/boards/boards_util';
@@ -35,15 +35,14 @@ import ItemCount from './item_count.vue';
 export default {
   i18n: {
     newIssue: s__('Boards|Create new issue'),
-    listActions: s__('Boards|List actions'),
     newEpic: s__('Boards|Create new epic'),
     listSettings: s__('Boards|Edit list settings'),
     expand: s__('Boards|Expand'),
     collapse: s__('Boards|Collapse'),
   },
   components: {
-    GlDisclosureDropdown,
     GlButton,
+    GlButtonGroup,
     GlLabel,
     GlTooltip,
     GlIcon,
@@ -193,50 +192,6 @@ export default {
     },
     canShowTotalWeight() {
       return this.weightFeatureAvailable && !this.isLoading;
-    },
-    actionListItems() {
-      const items = [];
-
-      if (this.isNewIssueShown) {
-        const newIssueText = this.$options.i18n.newIssue;
-        items.push({
-          text: newIssueText,
-          action: this.showNewIssueForm,
-          extraAttrs: {
-            'data-testid': 'newIssueBtn',
-            title: newIssueText,
-            'aria-label': newIssueText,
-          },
-        });
-      }
-
-      if (this.isNewEpicShown) {
-        const newEpicText = this.$options.i18n.newEpic;
-        items.push({
-          text: newEpicText,
-          action: this.showNewEpicForm,
-          extraAttrs: {
-            'data-testid': 'newEpicBtn',
-            title: newEpicText,
-            'aria-label': newEpicText,
-          },
-        });
-      }
-
-      if (this.isSettingsShown) {
-        const listSettingsText = this.$options.i18n.listSettings;
-        items.push({
-          text: listSettingsText,
-          action: this.openSidebarSettings,
-          extraAttrs: {
-            'data-testid': 'settingsBtn',
-            title: listSettingsText,
-            'aria-label': listSettingsText,
-          },
-        });
-      }
-
-      return items;
     },
   },
   apollo: {
@@ -525,23 +480,42 @@ export default {
           <!-- EE end -->
         </span>
       </div>
-      <gl-disclosure-dropdown
-        v-if="showListHeaderActions"
-        v-gl-tooltip.hover.top="{
-          title: $options.i18n.listActions,
-          boundary: 'viewport',
-        }"
-        data-testid="header-list-actions"
-        class="gl-py-2 gl-ml-3"
-        :aria-label="$options.i18n.listActions"
-        :title="$options.i18n.listActions"
-        category="tertiary"
-        icon="ellipsis_v"
-        :text-sr-only="true"
-        :items="actionListItems"
-        no-caret
-        placement="right"
-      />
+      <gl-button-group v-if="showListHeaderActions" class="board-list-button-group gl-pl-2">
+        <gl-button
+          v-if="isNewIssueShown"
+          ref="newIssueBtn"
+          v-gl-tooltip.hover
+          :aria-label="$options.i18n.newIssue"
+          :title="$options.i18n.newIssue"
+          size="small"
+          icon="plus"
+          data-testid="new-issue-btn"
+          @click="showNewIssueForm"
+        />
+
+        <gl-button
+          v-if="isNewEpicShown"
+          v-gl-tooltip.hover
+          :aria-label="$options.i18n.newEpic"
+          :title="$options.i18n.newEpic"
+          size="small"
+          icon="plus"
+          data-testid="new-epic-btn"
+          @click="showNewEpicForm"
+        />
+
+        <gl-button
+          v-if="isSettingsShown"
+          ref="settingsBtn"
+          v-gl-tooltip.hover
+          :aria-label="$options.i18n.listSettings"
+          size="small"
+          :title="$options.i18n.listSettings"
+          icon="settings"
+          data-testid="settings-btn"
+          @click="openSidebarSettings"
+        />
+      </gl-button-group>
     </h3>
   </header>
 </template>

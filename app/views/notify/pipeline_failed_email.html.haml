@@ -6,7 +6,7 @@
           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;padding-right:5px;line-height:1;" }
             %img{ alt: "✖", height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-x-red-inverted.gif'), style: "display:block;", width: "13" }/
           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;vertical-align:middle;color:#ffffff;text-align:center;" }
-            = s_('Notify|Pipeline #%{pipeline_id} has failed!') % { pipeline_id: @pipeline.id }
+            = s_('Notify|Pipeline %{pipeline_name_or_id} has failed!') % { pipeline_name_or_id: sanitize_name(@pipeline.name) || "##{@pipeline.id}" }
 %tr.spacer
   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;height:18px;font-size:18px;line-height:18px;" }
     &nbsp;
@@ -98,7 +98,8 @@
       %tbody
         %tr
           - common_style = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;font-weight:500;line-height:1.4;vertical-align:baseline;"
-          - pipeline_link = link_to "##{@pipeline.id}", pipeline_url(@pipeline), style: "color:#3777b0;text-decoration:none;"
+          - pipeline_link_text = sanitize_name(@pipeline.name) || "##{@pipeline.id}"
+          - pipeline_link = link_to pipeline_link_text, pipeline_url(@pipeline), style: "color:#3777b0;text-decoration:none;"
           %td{ style: "#{common_style}" }
             = s_('Notify|Pipeline %{pipeline_link} triggered by').html_safe % { pipeline_link: pipeline_link }
           - if @pipeline.user

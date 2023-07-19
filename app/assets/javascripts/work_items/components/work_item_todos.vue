@@ -1,10 +1,20 @@
 <script>
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { produce } from 'immer';
+
 import { s__ } from '~/locale';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
-import { getWorkItemTodoOptimisticResponse } from '../utils';
-import { ADD, MARK_AS_DONE, TODO_ADD_ICON, TODO_DONE_ICON } from '../constants';
-import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import createWorkItemTodosMutation from '~/work_items/graphql/create_work_item_todos.mutation.graphql';
+import markDoneWorkItemTodosMutation from '~/work_items/graphql/mark_done_work_item_todos.mutation.graphql';
+
+import {
+  TODO_ADD_ICON,
+  TODO_DONE_ICON,
+  TODO_PENDING_STATE,
+  TODO_DONE_STATE,
+  WIDGET_TYPE_CURRENT_USER_TODOS,
+} from '../constants';
 
 export default {
   i18n: {
@@ -19,8 +29,16 @@ export default {
     GlButton,
   },
   props: {
-    workItem: {
-      type: Object,
+    workItemId: {
+      type: String,
+      required: true,
+    },
+    workItemIid: {
+      type: String,
+      required: true,
+    },
+    workItemFullpath: {
+      type: String,
       required: true,
     },
     currentUserTodos: {
@@ -39,8 +57,11 @@ export default {
     };
   },
   computed: {
+    todoId() {
+      return this.currentUserTodos[0]?.id || '';
+    },
     pendingTodo() {
-      return this.currentUserTodos.length > 0;
+      return this.todoId !== '';
     },
     buttonIcon() {
       return this.pendingTodo ? TODO_DONE_ICON : TODO_ADD_ICON;
@@ -50,28 +71,60 @@ export default {
     onToggle() {
       this.isLoading = true;
       this.buttonLabel = '';
-      const action = this.pendingTodo ? MARK_AS_DONE : ADD;
-      const inputVariables = {
-        id: this.workItem.id,
-        currentUserTodosWidget: {
-          action,
-        },
+      let mutation = createWorkItemTodosMutation;
+      let inputVariables = {
+        targetId: this.workItemId,
       };
+      if (this.pendingTodo) {
+        mutation = markDoneWorkItemTodosMutation;
+        inputVariables = {
+          id: this.todoId,
+        };
+      }
+
       this.$apollo
         .mutate({
-          mutation: updateWorkItemMutation,
+          mutation,
           variables: {
             input: inputVariables,
           },
-          optimisticResponse: getWorkItemTodoOptimisticResponse({
-            workItem: this.workItem,
-            pendingTodo: this.pendingTodo,
-          }),
+          optimisticResponse: {
+            todoMutation: {
+              todo: {
+                id: this.todoId,
+                state: this.pendingTodo ? TODO_DONE_STATE : TODO_PENDING_STATE,
+              },
+              errors: [],
+            },
+          },
+          update: (
+            cache,
+            {
+              data: {
+                todoMutation: { todo = {} },
+              },
+            },
+          ) => {
+            const todos = [];
+
+            if (todo.state === TODO_PENDING_STATE) {
+              todos.push({
+                // eslint-disable-next-line @gitlab/require-i18n-strings
+                __typename: 'Todo',
+                id: todo.id,
+              });
+            }
+
+            this.updateWorkItemCurrentTodosWidgetCache({
+              cache,
+              todos,
+            });
+          },
         })
         .then(
           ({
             data: {
-              workItemUpdate: { errors },
+              todoMutation: { errors },
             },
           }) => {
             if (errors?.length) {
@@ -92,6 +145,26 @@ export default {
         .finally(() => {
           this.isLoading = false;
         });
+    },
+    updateWorkItemCurrentTodosWidgetCache({ cache, todos }) {
+      const query = {
+        query: workItemByIidQuery,
+        variables: { fullPath: this.workItemFullpath, iid: this.workItemIid },
+      };
+
+      const sourceData = cache.readQuery(query);
+
+      const newData = produce(sourceData, (draftState) => {
+        const { widgets } = draftState.workspace.workItems.nodes[0];
+
+        const widgetCurrentUserTodos = widgets.find(
+          (widget) => widget.type === WIDGET_TYPE_CURRENT_USER_TODOS,
+        );
+
+        widgetCurrentUserTodos.currentUserTodos.nodes = todos;
+      });
+
+      cache.writeQuery({ ...query, data: newData });
     },
   },
 };

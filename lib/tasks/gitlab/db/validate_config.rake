@@ -25,10 +25,7 @@ namespace :gitlab do
     task validate_config: :environment do
       original_db_config = ActiveRecord::Base.connection_db_config # rubocop:disable Database/MultipleDatabases
 
-      # The include_replicas: is a legacy name to fetch all hidden entries (replica: true or database_tasks: false)
-      # Once we upgrade to Rails 7.x this should be changed to `include_hidden: true`
-      # Ref.: https://github.com/rails/rails/blob/f2d9316ba965e150ad04596085ee10eea4f58d3e/activerecord/lib/active_record/database_configurations.rb#L48
-      db_configs = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, include_replicas: true)
+      db_configs = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, include_hidden: true)
       db_configs = db_configs.reject(&:replica?)
 
       # The `pg_control_system()` is not enough to properly discover matching database systems

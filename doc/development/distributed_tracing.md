@@ -40,7 +40,7 @@ better understand the end-to-end path of a request through the system. When a re
 process boundaries, the correlation ID is injected into the outgoing request. This enables
 the propagation of the correlation ID to each downstream subsystem.
 
-Correlation IDs are normally generated in the Rails application in response to
+Correlation IDs are usually generated in the Rails application in response to
 certain web requests. Some user facing systems don't generate correlation IDs in
 response to user requests (for example, Git pushes over SSH).
 
@@ -139,8 +139,8 @@ This can be shown by typing `p` `b` in the browser window.
 Once the performance bar is enabled, select **Trace** in the performance bar to go to
 the Jaeger UI.
 
-The Jaeger search UI returns a query for the `Correlation-ID` of the current request. Normally,
-this search should return a single trace result. Selecting this result shows the detail of the
+The Jaeger search UI returns a query for the `Correlation-ID` of the current request.
+This search should return a single trace result. Selecting this result shows the detail of the
 trace in a hierarchical time-line.
 
 ![Jaeger Search UI](img/distributed_tracing_jaeger_ui.png)

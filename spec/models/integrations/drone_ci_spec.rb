@@ -184,7 +184,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
         "success" => "success"
       }.each do |drone_status, our_status|
         it "sets commit status to #{our_status.inspect} when returned status is #{drone_status.inspect}" do
-          stub_request(body: %Q({"status":"#{drone_status}"}))
+          stub_request(body: %({"status":"#{drone_status}"}))
 
           is_expected.to eq(our_status)
         end

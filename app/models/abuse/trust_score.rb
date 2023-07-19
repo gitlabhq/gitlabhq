@@ -2,9 +2,6 @@
 
 module Abuse
   class TrustScore < ApplicationRecord
-    MAX_EVENTS = 100
-    SPAMCHECK_HAM_THRESHOLD = 0.5
-
     self.table_name = 'abuse_trust_scores'
 
     enum source: Enums::Abuse::Source.sources
@@ -14,6 +11,9 @@ module Abuse
     validates :user, presence: true
     validates :score, presence: true
     validates :source, presence: true
+
+    scope :order_created_at_asc, -> { order(created_at: :asc) }
+    scope :order_created_at_desc, -> { order(created_at: :desc) }
 
     before_create :assign_correlation_id
     after_commit :remove_old_scores
@@ -25,14 +25,7 @@ module Abuse
     end
 
     def remove_old_scores
-      count = user.trust_scores_for_source(source).count
-      return unless count > MAX_EVENTS
-
-      TrustScore.delete(
-        user.trust_scores_for_source(source)
-        .order(created_at: :asc)
-        .limit(count - MAX_EVENTS)
-      )
+      Abuse::UserTrustScore.new(user).remove_old_scores(source)
     end
   end
 end

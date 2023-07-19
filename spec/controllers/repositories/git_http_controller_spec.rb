@@ -79,7 +79,7 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
   end
 
   context 'when repository container is a project' do
-    it_behaves_like Repositories::GitHttpController do
+    it_behaves_like described_class do
       let(:container) { project }
       let(:user) { project.first_owner }
       let(:access_checker_class) { Gitlab::GitAccess }
@@ -133,7 +133,7 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
     end
 
     context 'when the user is a deploy token' do
-      it_behaves_like Repositories::GitHttpController do
+      it_behaves_like described_class do
         let(:container) { project }
         let(:user) { create(:deploy_token, :project, projects: [project]) }
         let(:access_checker_class) { Gitlab::GitAccess }
@@ -144,7 +144,7 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
   end
 
   context 'when repository container is a project wiki' do
-    it_behaves_like Repositories::GitHttpController do
+    it_behaves_like described_class do
       let(:container) { create(:project_wiki, :empty_repo, project: project) }
       let(:user) { project.first_owner }
       let(:access_checker_class) { Gitlab::GitAccessWiki }
@@ -155,7 +155,7 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
   end
 
   context 'when repository container is a personal snippet' do
-    it_behaves_like Repositories::GitHttpController do
+    it_behaves_like described_class do
       let(:container) { personal_snippet }
       let(:user) { personal_snippet.author }
       let(:access_checker_class) { Gitlab::GitAccessSnippet }
@@ -167,7 +167,7 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
   end
 
   context 'when repository container is a project snippet' do
-    it_behaves_like Repositories::GitHttpController do
+    it_behaves_like described_class do
       let(:container) { project_snippet }
       let(:user) { project_snippet.author }
       let(:access_checker_class) { Gitlab::GitAccessSnippet }

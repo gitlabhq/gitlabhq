@@ -6,24 +6,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # External issue trackers **(FREE)**
 
-GitLab has an [issue tracker](../user/project/issues/index.md), but you can
-configure an external issue tracker per GitLab project.
+GitLab has its own [issue tracker](../user/project/issues/index.md),
+but you can also configure an external issue tracker per GitLab project.
+You can then use:
 
-After you configure the external tracker, you can reference external issues
-in GitLab merge requests, commits, and comments
-using the format `CODE-123`, where:
+- The external issue tracker only
+- The external issue tracker with the GitLab issue tracker
+
+With an external tracker, you can use the format `CODE-123` to mention
+external issues in GitLab merge requests, commits, and comments where:
 
 - `CODE` is a unique code for the tracker.
 - `123` is the issue number in the tracker.
 
-The references are automatically converted to links to the issues.
-
-You can keep the GitLab issue tracker enabled in parallel or disable it. When enabled, the **Issues** link in the
-GitLab menu always opens the internal issue tracker. When disabled, the link is not visible in the menu.
+References are displayed as issue links.
 
 ## Disable the GitLab issue tracker
 
-To disable the GitLab issue tracker:
+To disable the GitLab issue tracker for a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
@@ -31,16 +31,16 @@ To disable the GitLab issue tracker:
 1. Under **Issues**, turn off the toggle.
 1. Select **Save changes**.
 
+After you disable the GitLab issue tracker, **Issues** is not visible on the left sidebar of your project.
+
 ## Configure an external issue tracker
 
-To enable an external issue tracker, you must configure the appropriate [integration](../user/project/integrations/index.md).
-
-The following external issue tracker integrations are available:
+You can configure any of the following external issue trackers:
 
 - [Bugzilla](../user/project/integrations/bugzilla.md)
 - [ClickUp](../user/project/integrations/clickup.md)
-- [Custom Issue Tracker](../user/project/integrations/custom_issue_tracker.md)
-- [Engineering Workflow Management](../user/project/integrations/ewm.md)
+- [Custom issue tracker](../user/project/integrations/custom_issue_tracker.md)
+- [Engineering Workflow Management (EWM)](../user/project/integrations/ewm.md)
 - [Jira](../integration/jira/index.md)
 - [Redmine](../user/project/integrations/redmine.md)
 - [YouTrack](../user/project/integrations/youtrack.md)

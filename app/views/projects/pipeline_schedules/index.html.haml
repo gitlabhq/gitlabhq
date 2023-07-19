@@ -6,7 +6,7 @@
 #pipeline-schedules-callout{ data: { docs_url: help_page_path('ci/pipelines/schedules'), illustration_url: image_path('illustrations/pipeline_schedule_callout.svg') } }
 
 - if Feature.enabled?(:pipeline_schedules_vue, @project)
-  #pipeline-schedules-app{ data: { full_path: @project.full_path, pipelines_path: project_pipelines_path(@project) } }
+  #pipeline-schedules-app{ data: { full_path: @project.full_path, pipelines_path: project_pipelines_path(@project), new_schedule_path: new_project_pipeline_schedule_path(@project) } }
 - else
   .top-area
     - schedule_path_proc = ->(scope) { pipeline_schedules_path(@project, scope: scope) }
@@ -14,8 +14,8 @@
 
     - if can?(current_user, :create_pipeline_schedule, @project)
       .nav-controls
-        = link_to new_project_pipeline_schedule_path(@project), class: 'btn gl-button btn-confirm' do
-          %span= _('New schedule')
+        = link_button_to new_project_pipeline_schedule_path(@project), variant: :confirm do
+          = _('New schedule')
 
   - if @schedules.present?
     %ul.content-list

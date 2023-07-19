@@ -54,7 +54,7 @@ export default {
     :label-for="$options.labelId"
     label-cols="3"
     label-cols-lg="2"
-    label-class="gl-pb-0! gl-overflow-wrap-break"
+    label-class="gl-pb-0! gl-overflow-wrap-break work-item-field-label"
     class="gl-align-items-center"
   >
     <gl-form-select
@@ -63,7 +63,7 @@ export default {
       :options="$options.states"
       :disabled="disabled"
       data-testid="work-item-state-select"
-      class="gl-w-auto hide-select-decoration gl-pl-4 gl-my-1"
+      class="gl-w-auto hide-select-decoration gl-pl-4 gl-my-1 work-item-field-value"
       :class="{ 'gl-bg-transparent! gl-cursor-text!': disabled }"
       @change="setState"
     />

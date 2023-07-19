@@ -20,6 +20,7 @@ import eventHub from '~/notes/event_hub';
 import { COMMENT_FORM } from '~/notes/i18n';
 import notesModule from '~/notes/stores/modules';
 import { sprintf } from '~/locale';
+import { mockTracking } from 'helpers/tracking_helper';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
@@ -31,6 +32,7 @@ Vue.use(Vuex);
 describe('issue_comment_form component', () => {
   useLocalStorageSpy();
 
+  let trackingSpy;
   let store;
   let wrapper;
   let axiosMock;
@@ -121,6 +123,15 @@ describe('issue_comment_form component', () => {
         provide: {
           glFeatures: features,
         },
+        mocks: {
+          $apollo: {
+            queries: {
+              currentUser: {
+                loading: false,
+              },
+            },
+          },
+        },
       }),
     );
   };
@@ -128,6 +139,7 @@ describe('issue_comment_form component', () => {
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
     store = createStore();
+    trackingSpy = mockTracking(undefined, null, jest.spyOn);
   });
 
   afterEach(() => {
@@ -148,6 +160,21 @@ describe('issue_comment_form component', () => {
         expect(wrapper.vm.note).toBe('');
         expect(wrapper.vm.saveNote).toHaveBeenCalled();
         expect(wrapper.vm.stopPolling).toHaveBeenCalled();
+      });
+
+      it('tracks event', () => {
+        mountComponent({ mountFunction: mount, initialData: { note: 'hello world' } });
+
+        jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
+        jest.spyOn(wrapper.vm, 'stopPolling');
+
+        findCloseReopenButton().trigger('click');
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
+          context: 'Issue_comment',
+          editorType: 'editor_type_plain_text_editor',
+          label: 'editor_tracking',
+        });
       });
 
       it('does not report errors in the UI when the save succeeds', async () => {
@@ -294,13 +321,13 @@ describe('issue_comment_form component', () => {
     it('hides content editor switcher if feature flag content_editor_on_issues is off', () => {
       mountComponent({ mountFunction: mount, features: { contentEditorOnIssues: false } });
 
-      expect(wrapper.text()).not.toContain('Switch to rich text');
+      expect(wrapper.text()).not.toContain('Switch to rich text editing');
     });
 
     it('shows content editor switcher if feature flag content_editor_on_issues is on', () => {
       mountComponent({ mountFunction: mount, features: { contentEditorOnIssues: true } });
 
-      expect(wrapper.text()).toContain('Switch to rich text');
+      expect(wrapper.text()).toContain('Switch to rich text editing');
     });
 
     describe('textarea', () => {
@@ -327,9 +354,8 @@ describe('issue_comment_form component', () => {
           jest.spyOn(wrapper.vm, 'stopPolling');
           jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
 
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          await wrapper.setData({ note: 'hello world' });
+          findMarkdownEditor().vm.$emit('input', 'hello world');
+          await nextTick();
 
           await findCommentButton().trigger('click');
 
@@ -347,15 +373,7 @@ describe('issue_comment_form component', () => {
 
           const { markdownDocsPath } = notesDataMock;
 
-          expect(wrapper.find(`a[href="${markdownDocsPath}"]`).text()).toBe('Markdown');
-        });
-
-        it('should link to quick actions docs', () => {
-          mountComponent({ mountFunction: mount });
-
-          const { quickActionsDocsPath } = notesDataMock;
-
-          expect(wrapper.find(`a[href="${quickActionsDocsPath}"]`).text()).toBe('quick actions');
+          expect(wrapper.find(`[href="${markdownDocsPath}"]`).exists()).toBe(true);
         });
 
         it('should resize textarea after note discarded', async () => {
@@ -459,9 +477,8 @@ describe('issue_comment_form component', () => {
       it('should enable comment button if it has note', async () => {
         mountComponent();
 
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        await wrapper.setData({ note: 'Foo' });
+        findMarkdownEditor().vm.$emit('input', 'Foo');
+        await nextTick();
 
         expect(findCommentTypeDropdown().props('disabled')).toBe(false);
       });

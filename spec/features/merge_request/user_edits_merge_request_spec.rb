@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User edits a merge request', :js, feature_category: :code_review_workflow do
+  include ContentEditorHelpers
+
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }
@@ -85,6 +87,8 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
 
   describe 'changing target branch' do
     it 'allows user to change target branch' do
+      close_rich_text_promo_popover_if_present
+
       expect(page).to have_content('From master into feature')
 
       first('.js-target-branch').click

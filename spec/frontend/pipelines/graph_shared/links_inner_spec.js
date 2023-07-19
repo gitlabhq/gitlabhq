@@ -80,7 +80,6 @@ describe('Links Inner component', () => {
   };
 
   afterEach(() => {
-    jest.restoreAllMocks();
     resetHTMLFixture();
   });
 

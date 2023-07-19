@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../rubocop/cop_todo'
 
-RSpec.describe RuboCop::CopTodo do
+RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
   let(:cop_name) { 'Cop/Rule' }
 
   subject(:cop_todo) { described_class.new(cop_name) }
@@ -28,6 +28,19 @@ RSpec.describe RuboCop::CopTodo do
       expect(cop_todo).to have_attributes(
         files: contain_exactly('a.rb', 'b.rb'),
         offense_count: 3
+      )
+    end
+  end
+
+  describe '#add_files' do
+    it 'adds files' do
+      cop_todo.add_files(%w[a.rb b.rb])
+      cop_todo.add_files(%w[a.rb])
+      cop_todo.add_files(%w[])
+
+      expect(cop_todo).to have_attributes(
+        files: contain_exactly('a.rb', 'b.rb'),
+        offense_count: 0
       )
     end
   end

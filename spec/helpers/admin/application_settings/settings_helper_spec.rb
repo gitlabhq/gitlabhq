@@ -33,6 +33,12 @@ RSpec.describe Admin::ApplicationSettings::SettingsHelper do
   end
 
   describe 'Code Suggestions for Self-Managed instances', feature_category: :code_suggestions do
+    describe '#code_suggestions_description' do
+      subject { helper.code_suggestions_description }
+
+      it { is_expected.to include 'https://docs.gitlab.com/ee/user/project/repository/code_suggestions.html' }
+    end
+
     describe '#code_suggestions_token_explanation' do
       subject { helper.code_suggestions_token_explanation }
 

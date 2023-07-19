@@ -24,6 +24,7 @@ MUST be linked for the release bot to know that the associated merge requests sh
 - [ ] Create a new branch prefixing it with `security-`.
 - [ ] Create a merge request targeting `master` on `gitlab.com/gitlab-org/security` and use the [Security Release merge request template].
 - [ ] If this includes a breaking change, make sure to include a mention of it for the relevant versions in [`doc/update/index.md`](https://gitlab.com/gitlab-org/security/gitlab/-/blob/master/doc/update/index.md#version-specific-upgrading-instructions)
+   * See if the [breaking changes workflow] applies
 
 After your merge request has been approved according to our [approval guidelines] and by a team member of the AppSec team, you're ready to prepare the backports
 
@@ -76,5 +77,6 @@ After your merge request has been approved according to our [approval guidelines
 [approval guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines
 [issue as linked]: https://docs.gitlab.com/ee/user/project/issues/related_issues.html#add-a-linked-issue
 [issue really needs to follow the security release workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#making-sure-the-issue-needs-to-follow-the-security-release-workflow
+[breaking changes workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/far_reaching_impact_fixes_or_breaking_change_fixes.md
 
 /label ~security

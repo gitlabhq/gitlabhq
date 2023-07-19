@@ -100,4 +100,42 @@ RSpec.describe RuboCop::Cop::Gitlab::StrongMemoizeAttr do
       RUBY
     end
   end
+
+  context 'when strong_memoize_with() is called without parameters' do
+    it 'registers an offense and autocorrects' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def memoized_method
+            strong_memoize_with(:memoized_method) do
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `strong_memoize_attr`, instead of using `strong_memoize_with` without parameters.
+              'This is a memoized method'
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          def memoized_method
+            'This is a memoized method'
+          end
+          strong_memoize_attr :memoized_method
+        end
+      RUBY
+    end
+  end
+
+  context 'when strong_memoize_with() is called with parameters' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def memoized_method(param)
+            strong_memoize_with(:memoized_method, param) do
+              param.to_s
+            end
+          end
+        end
+      RUBY
+    end
+  end
 end

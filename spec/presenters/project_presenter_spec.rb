@@ -388,6 +388,35 @@ RSpec.describe ProjectPresenter do
       end
     end
 
+    describe '#terraform_states_anchor_data' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:anchor_goto_terraform) do
+        have_attributes(
+          is_link: true,
+          label: a_string_including(project.terraform_states.size.to_s),
+          link: presenter.project_terraform_index_path(project)
+        )
+      end
+
+      where(:terraform_states_exists, :can_read_terraform_state, :expected_result) do
+        true  | true  | ref(:anchor_goto_terraform)
+        true  | false | nil
+        false | true  | nil
+        false | false | nil
+      end
+
+      with_them do
+        before do
+          allow(project.terraform_states).to receive(:exists?).and_return(terraform_states_exists)
+          allow(presenter).to receive(:can?).with(user, :read_terraform_state,
+            project).and_return(can_read_terraform_state)
+        end
+
+        it { expect(presenter.terraform_states_anchor_data).to match(expected_result) }
+      end
+    end
+
     describe '#tags_anchor_data' do
       it 'returns tags data' do
         expect(presenter.tags_anchor_data).to have_attributes(

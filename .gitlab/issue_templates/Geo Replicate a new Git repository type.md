@@ -69,7 +69,6 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
         t.integer :retry_count, default: 0, limit: 2, null: false
         t.integer :verification_retry_count, default: 0, limit: 2, null: false
         t.boolean :checksum_mismatch, default: false, null: false
-        t.boolean :force_to_redownload, default: false, null: false
         t.boolean :missing_on_primary, default: false, null: false
         t.binary :verification_checksum
         t.binary :verification_checksum_mismatched
@@ -146,11 +145,14 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
     enable_lock_retries!
 
     def up
-      create_table :cool_widget_states, id: false do |t|
+      create_table :cool_widget_states do |t|
         t.datetime_with_timezone :verification_started_at
         t.datetime_with_timezone :verification_retry_at
         t.datetime_with_timezone :verified_at
-        t.references :cool_widget, primary_key: true, default: nil, index: false, foreign_key: { on_delete: :cascade }
+        t.references :cool_widget,
+          null: false,
+          index: { unique: true },
+          foreign_key: { on_delete: :cascade }
         t.integer :verification_state, default: 0, limit: 2, null: false
         t.integer :verification_retry_count, default: 0, limit: 2, null: false
         t.binary :verification_checksum, using: 'verification_checksum::bytea'
@@ -292,6 +294,11 @@ That's all of the required database changes.
         # Search the codebase for examples, and consult a Geo expert if needed.
       end
 
+      override :verification_state_model_key
+      def verification_state_model_key
+        :cool_widget_id
+      end
+
       override :verification_state_table_class
       def verification_state_table_class
         CoolWidgetState
@@ -391,7 +398,7 @@ That's all of the required database changes.
 
 - [ ] Make sure a Geo secondary site can request and download Cool Widgets on the Geo primary site. You may need to make some changes to `Gitlab::GitAccessCoolWidget`. For example, see [this change for Group-level Wikis](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54914/diffs?commit_id=0f2b36f66697b4addbc69bd377ee2818f648dd33).
 
-- [ ] Make sure a Geo secondary site can replicate Cool Widgets where repository does not exist on the Geo primary site. The only way to know about this is to parse the error text. You may need to make some changes to `Gitlab::CoolWidgetReplicator.no_repo_message` to return the proper error message. For example, see [this change for Group-level Wikis](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74133).
+- [ ] Make sure a Geo secondary site marks Cool Widgets as missing on primary when a repository does not exist on the Geo primary site. The only way to know about this is to parse the error text. You may need to make some changes to `Gitlab::CoolWidgetReplicator.no_repo_message` to return the proper error message. For example, see [this change for Group-level Wikis](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74133). Alternatively, if a repository should *always* exist on the primary, then a Geo-specific workaround is to create an empty repository when verifying on primary. See examples for [project wikis](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123869) and [design repositories](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123917).
 
 - [ ] Generate the feature flag definition files by running the feature flag commands and following the command prompts:
 

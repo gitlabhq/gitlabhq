@@ -63,6 +63,7 @@ RSpec.describe Git::TagHooksService, :service, feature_category: :source_code_ma
         is_expected.to match a_hash_including(
           object_kind: 'tag_push',
           ref: ref,
+          ref_protected: project.protected_for?(ref),
           before: oldrev,
           after: newrev,
           message: tag.message,

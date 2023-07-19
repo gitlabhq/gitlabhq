@@ -153,6 +153,11 @@ export const fileLineCodequality = () => () => {
   return null;
 };
 
+// This function is overwritten for the inline SAST feature in EE
+export const fileLineSast = () => () => {
+  return null;
+};
+
 /**
  * Returns index of a currently selected diff in diffFiles
  * @returns {number}

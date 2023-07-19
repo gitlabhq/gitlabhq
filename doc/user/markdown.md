@@ -58,7 +58,7 @@ Features not found in standard Markdown:
 
 - [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
-- [Emoji](#emojis)
+- [Emoji](#emoji)
 - [Front matter](#front-matter)
 - [Inline diffs](#inline-diff)
 - [Math equations and symbols written in LaTeX](#math)
@@ -207,9 +207,9 @@ installation of GitLab, a GitLab administrator [must enable it](../administratio
 To make Kroki available in GitLab, a GitLab administrator must enable it.
 For more information, see the [Kroki integration](../administration/integration/kroki.md) page.
 
-### Emojis
+### Emoji
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#emojis).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#emoji).
 
 ::Tabs
 
@@ -250,13 +250,13 @@ for a list of all supported emoji codes. :thumbsup:
 
 ::EndTabs
 
-#### Emojis and your operating system
+#### Emoji and your operating system
 
-The previous emoji example uses hard-coded images. Rendered emojis
+The previous emoji example uses hard-coded images. Rendered emoji
 in GitLab may be different depending on the OS and browser used.
 
-Most emojis are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
-emojis where there is no support.
+Most emoji are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
+emoji where there is no support.
 
 <!-- vale gitlab.Spelling = NO -->
 
@@ -266,7 +266,7 @@ this font installed by default.
 
 <!-- vale gitlab.Spelling = YES -->
 
-To learn more about adding custom emojis, see [Custom emojis](award_emojis.md#custom-emojis).
+To learn more about adding custom emoji, see [Custom emoji](award_emojis.md#custom-emoji).
 
 ### Front matter
 
@@ -569,13 +569,13 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 In wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor to create diagrams. You
 can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
-the Markdown editor and the content editor.
+the plain text editor and the rich text editor.
 
 For more information, see [Diagrams.net](../administration/integration/diagrams_net.md).
 
-##### Markdown editor
+##### Plain text editor
 
-To create a diagram in the Markdown editor:
+To create a diagram in the plain text editor:
 
 1. In the editor's toolbar, select **Insert or edit diagram** (**{diagram}**).
 1. Use the diagrams.net editor to create the diagram.
@@ -583,20 +583,20 @@ To create a diagram in the Markdown editor:
 
 A Markdown image reference to the diagram is inserted in the wiki content.
 
-To edit a diagram in the Markdown editor:
+To edit a diagram in the plain text editor:
 
-1. Place the Markdown editor's text field cursor in a Markdown image reference
+1. Place the plain text editor's text field cursor in a Markdown image reference
 that contains the diagram.
-1. Select **Insert or edit diagram** (**{diagram}**) in the Markdown editor.
+1. Select **Insert or edit diagram** (**{diagram}**) in the plain text editor.
 1. Use the diagrams.net editor to edit the diagram.
 1. Select **Save & exit**.
 
 A Markdown image reference to the diagram is inserted in the wiki content,
 replacing the previous diagram.
 
-##### Content editor
+##### Rich text editor
 
-To create a diagram in the content editor:
+To create a diagram in the rich text editor:
 
 1. In the editor's toolbar, select **More options** (**{plus}**).
 1. In the dropdown list, select **Create or edit diagram**.
@@ -605,7 +605,7 @@ To create a diagram in the content editor:
 
 The diagram as visualized in the diagrams.net editor is inserted in the wiki content.
 
-To edit a diagram in the content editor:
+To edit a diagram in the rich text editor:
 
 1. Select the diagram that you want to edit.
 1. In the floating toolbar, select **Edit diagram** (**{diagram}**).
@@ -1082,6 +1082,8 @@ The following codeblock uses HTML to skip the Vale ReferenceLinks test.
 Do not change it back to a markdown codeblock.
 -->
 
+<!-- markdownlint-disable proper-names -->
+
 <pre class="highlight"><code>Inline-style (hover to see title text):
 
 ![alt text](img/markdown_logo.png "Title Text")
@@ -1092,6 +1094,8 @@ Reference-style (hover to see title text):
 
 &#91;logo]: img/markdown_logo.png "Title Text"
 </code></pre>
+
+<!-- markdownlint-enable proper-names -->
 
 <!--
 DO NOT change the name of markdown_logo.png. This file is used for a test in

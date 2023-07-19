@@ -10,8 +10,6 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
 
-    stub_feature_flags(show_pages_in_deployments_menu: false)
-
     project.add_maintainer(user)
 
     sign_in(user)
@@ -82,25 +80,39 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
       end
     end
 
-    describe 'project settings page' do
-      it 'renders "Pages" tab' do
-        visit edit_project_path(project)
+    describe 'menu entry' do
+      describe 'on the pages page' do
+        it 'renders "Pages" tab' do
+          visit project_pages_path(project)
 
-        page.within '.nav-sidebar' do
-          expect(page).to have_link('Pages')
+          page.within '.nav-sidebar' do
+            expect(page).to have_link('Pages')
+          end
         end
       end
 
-      context 'when pages are disabled' do
-        before do
-          allow(Gitlab.config.pages).to receive(:enabled).and_return(false)
+      describe 'in another menu entry under deployments' do
+        context 'when pages are enabled' do
+          it 'renders "Pages" tab' do
+            visit project_environments_path(project)
+
+            page.within '.nav-sidebar' do
+              expect(page).to have_link('Pages')
+            end
+          end
         end
 
-        it 'does not render "Pages" tab' do
-          visit edit_project_path(project)
+        context 'when pages are disabled' do
+          before do
+            allow(Gitlab.config.pages).to receive(:enabled).and_return(false)
+          end
 
-          page.within '.nav-sidebar' do
-            expect(page).not_to have_link('Pages')
+          it 'does not render "Pages" tab' do
+            visit project_environments_path(project)
+
+            page.within '.nav-sidebar' do
+              expect(page).not_to have_link('Pages')
+            end
           end
         end
       end

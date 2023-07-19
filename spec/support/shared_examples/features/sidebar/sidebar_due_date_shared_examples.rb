@@ -26,7 +26,7 @@ RSpec.shared_examples 'date sidebar widget' do
 
         wait_for_requests
 
-        expect(page).to have_content(today.to_s(:medium))
+        expect(page).to have_content(today.to_fs(:medium))
         expect(due_date_value.text).to have_content Time.current.strftime('%b %-d, %Y')
       end
     end

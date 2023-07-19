@@ -14,6 +14,7 @@ module Ci
 
     alias_attribute :secret_value, :value
 
+    validates :description, length: { maximum: 255 }, allow_blank: true
     validates :key, uniqueness: {
       scope: [:group_id, :environment_scope],
       message: "(%{value}) has already been taken"
@@ -36,6 +37,12 @@ module Ci
       .pluck(:environment_scope)
     end
 
+    # Sorting
+    scope :order_created_asc, -> { reorder(created_at: :asc) }
+    scope :order_created_desc, -> { reorder(created_at: :desc) }
+    scope :order_key_asc, -> { reorder(key: :asc) }
+    scope :order_key_desc, -> { reorder(key: :desc) }
+
     self.limit_name = 'group_ci_variables'
     self.limit_scope = :group
 
@@ -49,6 +56,15 @@ module Ci
 
     def group_ci_cd_settings_path
       Gitlab::Routing.url_helpers.group_settings_ci_cd_path(group)
+    end
+
+    def self.sort_by_attribute(method)
+      case method.to_s
+      when 'created_at_asc' then order_created_asc
+      when 'created_at_desc' then order_created_desc
+      when 'key_asc' then order_key_asc
+      when 'key_desc' then order_key_desc
+      end
     end
   end
 end

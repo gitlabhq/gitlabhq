@@ -7,6 +7,7 @@ import SignInPage from '~/jira_connect/subscriptions/pages/sign_in/sign_in_page.
 import SubscriptionsPage from '~/jira_connect/subscriptions/pages/subscriptions_page.vue';
 import UserLink from '~/jira_connect/subscriptions/components/user_link.vue';
 import BrowserSupportAlert from '~/jira_connect/subscriptions/components/browser_support_alert.vue';
+import FeedbackBanner from '~/jira_connect/subscriptions/components/feedback_banner.vue';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '~/jira_connect/subscriptions/constants';
@@ -31,6 +32,7 @@ describe('JiraConnectApp', () => {
   const findSubscriptionsPage = () => wrapper.findComponent(SubscriptionsPage);
   const findUserLink = () => wrapper.findComponent(UserLink);
   const findBrowserSupportAlert = () => wrapper.findComponent(BrowserSupportAlert);
+  const findFeedbackBanner = () => wrapper.findComponent(FeedbackBanner);
 
   const createComponent = ({ provide, initialState = {} } = {}) => {
     store = createStore({ ...initialState, subscriptions: [mockSubscription] });
@@ -64,6 +66,12 @@ describe('JiraConnectApp', () => {
 
       expect(findBrowserSupportAlert().exists()).toBe(true);
       expect(findJiraConnectApp().exists()).toBe(false);
+    });
+
+    it('renders FeedbackBanner', () => {
+      createComponent();
+
+      expect(findFeedbackBanner().exists()).toBe(true);
     });
 
     describe.each`

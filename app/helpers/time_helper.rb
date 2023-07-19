@@ -17,10 +17,6 @@ module TimeHelper
     end
   end
 
-  def date_from_to(from, to)
-    "#{from.to_s(:short)} - #{to.to_s(:short)}"
-  end
-
   def duration_in_numbers(duration_in_seconds)
     seconds = duration_in_seconds % 1.minute
     minutes = (duration_in_seconds / 1.minute) % (1.hour / 1.minute)

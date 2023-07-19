@@ -128,7 +128,11 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 
 ### GraphQL API
 
+> The `GeoRegistriesUpdate` mutation addition in the allowlist was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124259) in GitLab 16.2.
+
 `POST /api/graphql` requests are allowed but mutations are blocked with the error message `You cannot perform write operations on a read-only instance`.
+
+The only mutation that is allowed is the `GeoRegistriesUpdate` which is used to resync and reverify registries.
 
 ### Continuous Integration
 
@@ -194,7 +198,8 @@ When primary is in Maintenance Mode, secondary also automatically goes into Main
 
 It is important that you do not disable replication before enabling Maintenance Mode.
 
-Replication and verification continues to work but proxied Git pushes to primary do not work.
+Replication, verification and manual actions to resync and reverify registries through the Admin UI
+continue to work, but proxied Git pushes to primary don't.
 
 ### Secure features
 

@@ -1024,4 +1024,49 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       end
     end
   end
+
+  describe '#abort_auto_merges' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:author) { user }
+
+    let_it_be(:merge_request, refind: true) do
+      create(
+        :merge_request,
+        source_project: project,
+        target_project: project,
+        merge_user: user,
+        auto_merge_enabled: true,
+        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
+      )
+    end
+
+    let(:service) { described_class.new(project: project, current_user: user) }
+    let(:oldrev) { merge_request.diff_refs.base_sha }
+    let(:newrev) { merge_request.diff_refs.head_sha }
+    let(:merge_sha) { oldrev }
+
+    before do
+      merge_request.merge_params[:sha] = merge_sha
+      merge_request.save!
+
+      service.execute(oldrev, newrev, "refs/heads/#{merge_request.source_branch}")
+
+      merge_request.reload
+    end
+
+    it 'aborts MWPS for merge requests' do
+      expect(merge_request.auto_merge_enabled?).to be_falsey
+      expect(merge_request.merge_user).to be_nil
+    end
+
+    context 'when merge params contains up-to-date sha' do
+      let(:merge_sha) { newrev }
+
+      it 'maintains MWPS for merge requests' do
+        expect(merge_request.auto_merge_enabled?).to be_truthy
+        expect(merge_request.merge_user).to eq(user)
+      end
+    end
+  end
 end

@@ -8,7 +8,7 @@ module QA
     end
 
     describe 'Git Server Hooks' do
-      let(:file_path) { File.join(Runtime::Path.fixtures_path, 'web_ide', 'README.md') }
+      let(:file_path) { Runtime::Path.fixture('web_ide', 'README.md') }
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

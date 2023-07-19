@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ServicePing::DevopsReport do
   let_it_be(:data) { { "conv_index": {} }.to_json }
-  let_it_be(:subject) { ServicePing::DevopsReport.new(Gitlab::Json.parse(data)) }
+  let_it_be(:subject) { described_class.new(Gitlab::Json.parse(data)) }
   let_it_be(:devops_report) { DevOpsReport::Metric.new }
 
   describe '#execute' do

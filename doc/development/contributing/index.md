@@ -71,7 +71,7 @@ To write and test your code, you will use the GitLab Development Kit.
 Now [Open a merge request](../../user/project/merge_requests/creating_merge_requests.md)
 to merge your code and its documentation. The earlier you open a merge request, the sooner
 you can get feedback. You can [mark it as a draft](../../user/project/merge_requests/drafts.md)
-to signal that you’re not done yet.
+to signal that you're not done yet.
 
 1. In the merge request, fill out all the information requested in the template,
    like why you are introducing these changes and a link to the issue this merge request is attempting to close/fix.
@@ -159,4 +159,4 @@ If you need any help while contributing to GitLab:
 - For any other questions or feedback on contributing:
   - Ping `@gitlab-org/community-relations/contributor-success` in a comment on your merge request or issue.
   - Feel free to [make a new issue with the Contributor Success team](https://gitlab.com/gitlab-org/community-relations/contributor-success/team-task/-/issues/) sharing your experience.
-- Did you run out of compute credits for your GitLab merge requests? Join the [GitLab community forks](https://gitlab.com/gitlab-community/meta) project.
+- Did you run out of compute minutes for your GitLab merge requests? Join the [GitLab community forks](https://gitlab.com/gitlab-community/meta) project.

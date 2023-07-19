@@ -20,18 +20,18 @@ cache:
   paths:
     - ${TF_ROOT}/.terraform/
 
-.terraform:fmt: &terraform_fmt
+.terraform:fmt:
   stage: validate
   script:
     - gitlab-terraform fmt
   allow_failure: true
 
-.terraform:validate: &terraform_validate
+.terraform:validate:
   stage: validate
   script:
     - gitlab-terraform validate
 
-.terraform:build: &terraform_build
+.terraform:build:
   stage: build
   script:
     - gitlab-terraform plan
@@ -46,7 +46,7 @@ cache:
     reports:
       terraform: ${TF_ROOT}/plan.json
 
-.terraform:deploy: &terraform_deploy
+.terraform:deploy:
   stage: deploy
   script:
     - gitlab-terraform apply
@@ -56,7 +56,7 @@ cache:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
 
-.terraform:destroy: &terraform_destroy
+.terraform:destroy:
   stage: cleanup
   script:
     - gitlab-terraform destroy

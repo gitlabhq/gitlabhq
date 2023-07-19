@@ -56,13 +56,6 @@ module MergeRequests
       params[:first_parent_ref] || merge_request.target_branch_ref
     end
 
-    ##
-    # The parameter `allow_conflicts` is a flag whether merge conflicts should be merged into diff
-    # Default is false
-    def allow_conflicts
-      params[:allow_conflicts] || false
-    end
-
     def commit(cache_merge_to_ref_calls = false)
       if cache_merge_to_ref_calls
         Rails.cache.fetch(cache_key, expires_in: 1.day) do
@@ -79,8 +72,7 @@ module MergeRequests
         branch: merge_request.target_branch,
         target_ref: target_ref,
         message: commit_message,
-        first_parent_ref: first_parent_ref,
-        allow_conflicts: allow_conflicts)
+        first_parent_ref: first_parent_ref)
     rescue Gitlab::Git::PreReceiveError, Gitlab::Git::CommandError => error
       raise MergeError, error.message
     end

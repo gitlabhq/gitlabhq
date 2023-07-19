@@ -284,7 +284,7 @@ To set this initial state, pass it as a parameter to your store's creation
 function when mounting your Vue component:
 
 ```javascript
-// in the Vue app's initialization script (e.g. mount_show.js)
+// in the Vue app's initialization script (for example, mount_show.js)
 
 import Vue from 'vue';
 import Vuex from 'vuex';

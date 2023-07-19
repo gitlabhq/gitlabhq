@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def unlock_writes
-        Gitlab::Database::EachDatabase.each_database_connection do |connection, database_name|
+        Gitlab::Database::EachDatabase.each_connection do |connection, database_name|
           tables_to_lock(connection) do |table_name, schema_name|
             # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/366834
             next if schema_name.in? GITLAB_SCHEMAS_TO_IGNORE
@@ -28,7 +28,7 @@ module Gitlab
       # It locks the tables on the database where they don't belong. Also it unlocks the tables
       # on the database where they belong
       def lock_writes
-        Gitlab::Database::EachDatabase.each_database_connection(include_shared: false) do |connection, database_name|
+        Gitlab::Database::EachDatabase.each_connection(include_shared: false) do |connection, database_name|
           schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
 
           tables_to_lock(connection) do |table_name, schema_name|

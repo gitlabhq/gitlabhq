@@ -174,12 +174,10 @@ After you have completed the preceding steps,
 deploy your website:
 
 1. Save and commit the `.gitlab-ci.yml` file.
-1. Go to **CI/CD > Pipelines** to watch the pipeline.
-1. When the pipeline is finished, go to **Settings > Pages** to find the link to
+1. Go to **Build > Pipelines** to watch the pipeline.
+1. When the pipeline is finished, go to **Deploy > Pages** to find the link to
    your Pages website.
 
-   If this path is not visible, select **Deployments > Pages**.
-   [This location is part of an experiment](../index.md#menu-position-test).
 When this `pages` job completes successfully, a special `pages:deploy` job
 appears in the pipeline view. It prepares the content of the website for the
 GitLab Pages daemon. GitLab runs it in the background and doesn't use a runner.

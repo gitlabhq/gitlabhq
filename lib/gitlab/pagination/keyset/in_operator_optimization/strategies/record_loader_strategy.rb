@@ -14,6 +14,7 @@ module Gitlab
               @finder_query = finder_query
               @order_by_columns = order_by_columns
               @table_name = model.table_name
+              @model = model
             end
 
             def initializer_columns
@@ -30,7 +31,11 @@ module Gitlab
             end
 
             def final_projections
-              ["(#{RECORDS_COLUMN}).*"]
+              if @model.default_select_columns.is_a?(Array)
+                @model.default_select_columns.map { |column| "(#{RECORDS_COLUMN}).#{column.name}" }
+              else
+                ["(#{RECORDS_COLUMN}).*"]
+              end
             end
 
             private

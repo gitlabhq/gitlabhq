@@ -51,7 +51,7 @@ clear your browser's cookies or change this behavior again.
 
 To view one file at a time for all of your merge requests:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section and select the **Show one file at a time on merge request's Changes tab** checkbox.
 1. Select **Save changes**.
@@ -146,11 +146,8 @@ per conflicted file on the merge request diff:
 
 ## Add a comment to a merge request file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121429) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `comment_on_files`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `comment_on_files`.
-On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123515) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `comment_on_files`. Enabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125130) in GitLab 16.2.
 
 You can add comments to a merge request diff file. These comments persist across
 rebases and file changes.

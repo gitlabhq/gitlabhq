@@ -29,6 +29,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
         before: oldrev,
         after: newrev,
         ref: ref,
+        ref_protected: project.protected_for?(ref),
         user_id: user.id,
         user_name: user.name,
         project_id: project.id

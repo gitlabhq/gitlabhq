@@ -34,8 +34,6 @@ ifeq (${FIPS_MODE}, 1)
     endif
 endif
 
-MINIMUM_SUPPORTED_GO_VERSION := 1.11
-
 export GOBIN := $(TARGET_DIR)/bin
 export PATH := $(GOBIN):$(PATH)
 export GOPROXY ?= https://proxy.golang.org
@@ -189,7 +187,7 @@ check-formatting: install-goimports
 staticcheck:
 	$(call message,Verify: $@)
 	go install honnef.co/go/tools/cmd/staticcheck
-	@ $(GOBIN)/staticcheck -go $(MINIMUM_SUPPORTED_GO_VERSION) ./...
+	@ $(GOBIN)/staticcheck ./...
 
 # In addition to fixing imports, goimports also formats your code in the same style as gofmt
 # so it can be used as a replacement.

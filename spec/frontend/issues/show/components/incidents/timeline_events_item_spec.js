@@ -1,5 +1,5 @@
 import timezoneMock from 'timezone-mock';
-import { GlIcon, GlDropdown, GlBadge } from '@gitlab/ui';
+import { GlIcon, GlDisclosureDropdown, GlBadge } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { timelineItemI18n } from '~/issues/show/components/incidents/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -28,7 +28,7 @@ describe('IncidentTimelineEventList', () => {
   const findCommentIcon = () => wrapper.findComponent(GlIcon);
   const findEventTime = () => wrapper.findByTestId('event-time');
   const findEventTags = () => wrapper.findAllComponents(GlBadge);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findGlDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteButton = () => wrapper.findByText(timelineItemI18n.delete);
   const findEditButton = () => wrapper.findByText(timelineItemI18n.edit);
 
@@ -85,7 +85,7 @@ describe('IncidentTimelineEventList', () => {
 
     describe('action dropdown', () => {
       it('does not show the action dropdown by default', () => {
-        expect(findDropdown().exists()).toBe(false);
+        expect(findGlDropdown().exists()).toBe(false);
         expect(findDeleteButton().exists()).toBe(false);
       });
 
@@ -100,14 +100,14 @@ describe('IncidentTimelineEventList', () => {
           mockEvent: systemGeneratedMockEvent,
         });
 
-        expect(findDropdown().exists()).toBe(true);
+        expect(findGlDropdown().exists()).toBe(true);
         expect(findEditButton().exists()).toBe(false);
       });
 
       it('shows dropdown and delete item when user has update permission', () => {
         mountComponent({ provide: { canUpdateTimelineEvent: true } });
 
-        expect(findDropdown().exists()).toBe(true);
+        expect(findGlDropdown().exists()).toBe(true);
         expect(findDeleteButton().exists()).toBe(true);
       });
 

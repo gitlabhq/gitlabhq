@@ -173,7 +173,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
     let(:payload) do
       { source_sha: source_sha, branch: 'branch', target_ref: ref,
-        message: message, first_parent_ref: first_parent_ref, allow_conflicts: true }
+        message: message, first_parent_ref: first_parent_ref }
     end
 
     it 'sends a user_merge_to_ref message' do
@@ -182,6 +182,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           expect(options).to be_kind_of(Hash)
           expect(request.to_h).to eq(
             payload.merge({
+              allow_conflicts: false,
               repository: repository.gitaly_repository.to_h,
               message: message.dup.force_encoding(Encoding::ASCII_8BIT),
               user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,

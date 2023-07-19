@@ -25,9 +25,9 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 ## PgBouncer as part of a non-fault-tolerant GitLab installation
 
-1. Generate PGBOUNCER_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 pgbouncer`
+1. Generate `PGBOUNCER_USER_PASSWORD_HASH` with the command `gitlab-ctl pg-password-md5 pgbouncer`
 
-1. Generate SQL_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 gitlab`. Enter the plaintext SQL_USER_PASSWORD later.
+1. Generate `SQL_USER_PASSWORD_HASH` with the command `gitlab-ctl pg-password-md5 gitlab`. Enter the plaintext SQL_USER_PASSWORD later.
 
 1. On your database node, ensure the following is set in your `/etc/gitlab/gitlab.rb`
 
@@ -88,7 +88,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 Do not backup or restore GitLab through a PgBouncer connection: it causes a GitLab outage.
 
-[Read more about this and how to reconfigure backups](../../raketasks/backup_restore.md#back-up-and-restore-for-installations-using-pgbouncer).
+[Read more about this and how to reconfigure backups](../../administration/backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer).
 
 ## Enable Monitoring
 
@@ -119,7 +119,7 @@ If you enable Monitoring, it must be enabled on **all** PgBouncer servers.
 
 ## Administrative console
 
-As part of Omnibus GitLab, a command is provided to automatically connect to the
+In Linux package installations, a command is provided to automatically connect to the
 PgBouncer administrative console. See the
 [PgBouncer documentation](https://www.pgbouncer.org/usage.html#admin-console)
 for detailed instructions on how to interact with the console.
@@ -174,11 +174,11 @@ ote_pid | tls
 
 ## Procedure for bypassing PgBouncer
 
-### Omnibus installations
+### Linux package installations
 
 Some database changes have to be done directly, and not through PgBouncer.
 
-The main affected tasks are [database restores](../../raketasks/backup_restore.md#back-up-and-restore-for-installations-using-pgbouncer)
+The main affected tasks are [database restores](../../administration/backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer)
 and [GitLab upgrades with database migrations](../../update/zero_downtime.md#postgresql).
 
 1. To find the primary node, run the following on a database node:
@@ -208,8 +208,8 @@ After you've performed the tasks or procedure, switch back to using PgBouncer:
 
 ### Helm chart installations
 
-High-availability deployments also need to bypass PgBouncer for the same reasons as Omnibus-based ones.
-For this type of installation:
+High-availability deployments also need to bypass PgBouncer for the same reasons as Linux package-based ones.
+For Helm chart installations:
 
 - Database backup and restore tasks are performed by the toolbox container.
 - Migration tasks are performed by the migrations container.
@@ -226,7 +226,7 @@ In specific cases you may want to change the performance-specific and resource-s
 throughput or to limit resource utilization that could cause memory exhaustion on the database.
 
 You can find the parameters and respective documentation on the [official PgBouncer documentation](https://www.pgbouncer.org/config.html).
-Listed below are the most relevant ones and their defaults on an Omnibus GitLab installation:
+Listed below are the most relevant ones and their defaults on a Linux package installation:
 
 - `pgbouncer['max_client_conn']` (default: `2048`, depends on server file descriptor limits)
     This is the "frontend" pool in PgBouncer: connections from Rails to PgBouncer.

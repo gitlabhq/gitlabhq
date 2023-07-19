@@ -421,7 +421,9 @@ class MergeRequest < ApplicationRecord
   scope :preload_latest_diff_commit, -> { preload(latest_merge_request_diff: { merge_request_diff_commits: [:commit_author, :committer] }) }
   scope :preload_milestoneish_associations, -> { preload_routables.preload(:assignees, :labels) }
 
-  scope :with_web_entity_associations, -> { preload(:author, target_project: [:project_feature, group: [:route, :parent], namespace: :route]) }
+  scope :with_web_entity_associations, -> do
+    preload(:author, :labels, target_project: [:project_feature, group: [:route, :parent], namespace: :route])
+  end
 
   scope :with_auto_merge_enabled, -> do
     with_state(:opened).where(auto_merge_enabled: true)
@@ -1199,10 +1201,17 @@ class MergeRequest < ApplicationRecord
   end
   alias_method :wip_title, :draft_title
 
-  def mergeable?(skip_ci_check: false, skip_discussions_check: false)
+  def skipped_mergeable_checks(options = {})
+    {
+      skip_ci_check: options.fetch(:auto_merge_requested, false)
+    }
+  end
+
+  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false)
     return false unless mergeable_state?(
       skip_ci_check: skip_ci_check,
-      skip_discussions_check: skip_discussions_check
+      skip_discussions_check: skip_discussions_check,
+      skip_approved_check: skip_approved_check
     )
 
     check_mergeability
@@ -1223,11 +1232,12 @@ class MergeRequest < ApplicationRecord
     ]
   end
 
-  def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
+  def mergeable_state?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false)
     additional_checks = execute_merge_checks(
       params: {
         skip_ci_check: skip_ci_check,
-        skip_discussions_check: skip_discussions_check
+        skip_discussions_check: skip_discussions_check,
+        skip_approved_check: skip_approved_check
       }
     )
     additional_checks.success?
@@ -1524,6 +1534,14 @@ class MergeRequest < ApplicationRecord
 
   def train_ref_path
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/train"
+  end
+
+  def schedule_cleanup_refs(only: :all)
+    if Feature.enabled?(:merge_request_cleanup_ref_worker_async, target_project)
+      MergeRequests::CleanupRefWorker.perform_async(id, only.to_s)
+    else
+      cleanup_refs(only: only)
+    end
   end
 
   def cleanup_refs(only: :all)

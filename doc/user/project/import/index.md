@@ -92,7 +92,7 @@ over a series of Docker pulls and pushes. Re-run any CI pipelines to retrieve an
 ## Migrate between two self-managed GitLab instances
 
 To migrate from an existing self-managed GitLab instance to a new self-managed GitLab instance,
-you should [back up](../../../raketasks/backup_restore.md)
+you should [back up](../../../administration/backup_restore/index.md)
 the existing instance and restore it on the new instance. For example, you could use this method to migrate a self-managed instance from an old server to a new server.
 
 The backups produced don't depend on the operating system running GitLab. You can therefore use
@@ -114,7 +114,7 @@ You can view all project imports created by you. This list includes the followin
 To view project import history:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project**.
 1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.

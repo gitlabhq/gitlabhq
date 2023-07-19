@@ -15,6 +15,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   let(:repository_storage) { 'default' }
 
   describe 'associations' do
+    it { is_expected.to belong_to :organization }
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many :project_statistics }
     it { is_expected.to belong_to :parent }
@@ -375,7 +376,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   describe 'handling STI', :aggregate_failures do
     let(:namespace_type) { nil }
     let(:parent) { nil }
-    let(:namespace) { Namespace.find(create(:namespace, type: namespace_type, parent: parent).id) }
+    let(:namespace) { described_class.find(create(:namespace, type: namespace_type, parent: parent).id) }
 
     context 'creating a Group' do
       let(:namespace_type) { group_sti_name }
@@ -392,7 +393,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let(:parent) { create(:group) }
 
       it 'is the correct type of namespace' do
-        expect(Namespace.find(namespace.id)).to be_a(Namespaces::ProjectNamespace)
+        expect(described_class.find(namespace.id)).to be_a(Namespaces::ProjectNamespace)
         expect(namespace.kind).to eq('project')
         expect(namespace.project_namespace?).to be_truthy
       end
@@ -402,7 +403,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let(:namespace_type) { user_sti_name }
 
       it 'is the correct type of namespace' do
-        expect(Namespace.find(namespace.id)).to be_a(Namespaces::UserNamespace)
+        expect(described_class.find(namespace.id)).to be_a(Namespaces::UserNamespace)
         expect(namespace.kind).to eq('user')
         expect(namespace.user_namespace?).to be_truthy
       end
@@ -421,7 +422,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let(:namespace_type) { 'nonsense' }
 
       it 'creates a default Namespace' do
-        expect(Namespace.find(namespace.id)).to be_a(Namespace)
+        expect(described_class.find(namespace.id)).to be_a(described_class)
         expect(namespace.kind).to eq('user')
         expect(namespace.user_namespace?).to be_truthy
       end
@@ -587,7 +588,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
 
       it 'returns value that matches database' do
-        expect(namespace.traversal_ids).to eq Namespace.find(namespace.id).traversal_ids
+        expect(namespace.traversal_ids).to eq described_class.find(namespace.id).traversal_ids
       end
     end
 
@@ -598,7 +599,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
 
       it 'returns database value' do
-        expect(namespace.traversal_ids).to eq Namespace.find(namespace.id).traversal_ids
+        expect(namespace.traversal_ids).to eq described_class.find(namespace.id).traversal_ids
       end
     end
 
@@ -684,14 +685,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
         it_behaves_like 'makes recursive queries'
       end
-
-      context 'when feature flag :use_traversal_ids_for_descendants_scopes is disabled' do
-        before do
-          stub_feature_flags(use_traversal_ids_for_descendants_scopes: false)
-        end
-
-        it_behaves_like 'makes recursive queries'
-      end
     end
 
     describe '.self_and_descendant_ids' do
@@ -704,14 +697,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       context 'when feature flag :use_traversal_ids is disabled' do
         before do
           stub_feature_flags(use_traversal_ids: false)
-        end
-
-        it_behaves_like 'makes recursive queries'
-      end
-
-      context 'when feature flag :use_traversal_ids_for_descendants_scopes is disabled' do
-        before do
-          stub_feature_flags(use_traversal_ids_for_descendants_scopes: false)
         end
 
         it_behaves_like 'makes recursive queries'
@@ -889,6 +874,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     context 'when Gitlab API is supported' do
       before do
+        allow(Gitlab).to receive(:com_except_jh?).and_return(true)
         allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
         stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
       end
@@ -931,7 +917,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         before do
           allow(ContainerRegistry::GitlabApiClient).to receive(:one_project_with_container_registry_tag).and_return(nil)
           stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
-          allow(Gitlab).to receive(:com?).and_return(true)
+          allow(Gitlab).to receive(:com_except_jh?).and_return(true)
           allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)
           allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(no_container_repositories)
           allow(project_namespace).to receive_message_chain(:all_container_repositories, :all_migrated?).and_return(all_migrated)
@@ -1142,8 +1128,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       project1
       project2
       statistics = described_class.with_statistics.find(namespace.id)
+      expected_storage_size = project1.statistics.storage_size + project2.statistics.storage_size
 
-      expect(statistics.storage_size).to eq 3995
+      expect(statistics.storage_size).to eq expected_storage_size
       expect(statistics.repository_size).to eq 111
       expect(statistics.wiki_size).to eq 555
       expect(statistics.lfs_objects_size).to eq 222
@@ -1598,96 +1585,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     context 'when use_traversal_ids feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it { is_expected.to eq false }
-    end
-  end
-
-  describe '#use_traversal_ids_for_ancestors?' do
-    let_it_be(:namespace, reload: true) { create(:namespace) }
-
-    subject { namespace.use_traversal_ids_for_ancestors? }
-
-    context 'when use_traversal_ids_for_ancestors? feature flag is true' do
-      before do
-        stub_feature_flags(use_traversal_ids_for_ancestors: true)
-      end
-
-      it { is_expected.to eq true }
-
-      it_behaves_like 'disabled feature flag when traversal_ids is blank'
-    end
-
-    context 'when use_traversal_ids_for_ancestors? feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids_for_ancestors: false)
-      end
-
-      it { is_expected.to eq false }
-    end
-
-    context 'when use_traversal_ids? feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it { is_expected.to eq false }
-    end
-  end
-
-  describe '#use_traversal_ids_for_ancestors_upto?' do
-    let_it_be(:namespace, reload: true) { create(:namespace) }
-
-    subject { namespace.use_traversal_ids_for_ancestors_upto? }
-
-    context 'when use_traversal_ids_for_ancestors_upto feature flag is true' do
-      before do
-        stub_feature_flags(use_traversal_ids_for_ancestors_upto: true)
-      end
-
-      it { is_expected.to eq true }
-
-      it_behaves_like 'disabled feature flag when traversal_ids is blank'
-    end
-
-    context 'when use_traversal_ids_for_ancestors_upto feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids_for_ancestors_upto: false)
-      end
-
-      it { is_expected.to eq false }
-    end
-
-    context 'when use_traversal_ids? feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it { is_expected.to eq false }
-    end
-  end
-
-  describe '#use_traversal_ids_for_self_and_hierarchy?' do
-    let_it_be(:namespace, reload: true) { create(:namespace) }
-
-    subject { namespace.use_traversal_ids_for_self_and_hierarchy? }
-
-    it { is_expected.to eq true }
-
-    it_behaves_like 'disabled feature flag when traversal_ids is blank'
-
-    context 'when use_traversal_ids_for_self_and_hierarchy feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids_for_self_and_hierarchy: false)
-      end
-
-      it { is_expected.to eq false }
-    end
-
-    context 'when use_traversal_ids? feature flag is false' do
       before do
         stub_feature_flags(use_traversal_ids: false)
       end
@@ -2745,6 +2642,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect(namespace.certificate_based_clusters_enabled?).to be_truthy
         end
       end
+    end
+  end
+
+  context 'with loose foreign key on organization_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:organization) }
+      let!(:model) { create(:namespace, organization: parent) }
     end
   end
 end

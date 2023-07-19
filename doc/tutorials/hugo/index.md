@@ -88,7 +88,7 @@ To build a Hugo site with GitLab, you first need to create a `.gitlab-ci.yml` fi
 
 You specify your configuration options in a special file called `.gitlab-ci.yml`. To create a `.gitlab-ci.yml` file:
 
-1. On the left sidebar, select **Repository > Files**.
+1. On the left sidebar, select **Code > Repository**.
 1. Above the file list, select the plus icon ( + ), then select **New file** from the dropdown list.
 1. For the filename, enter `.gitlab-ci.yml`. Don't omit the period at the beginning.
 1. Select the **Apply a template** dropdown list, then enter "Hugo" in the filter box.

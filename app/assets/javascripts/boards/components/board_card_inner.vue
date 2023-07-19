@@ -43,7 +43,14 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [boardCardInner],
-  inject: ['rootPath', 'scopedLabelsAvailable', 'isEpicBoard', 'issuableType', 'isGroupBoard'],
+  inject: [
+    'rootPath',
+    'scopedLabelsAvailable',
+    'isEpicBoard',
+    'issuableType',
+    'isGroupBoard',
+    'isApolloBoard',
+  ],
   props: {
     item: {
       type: Object,
@@ -78,6 +85,9 @@ export default {
   },
   computed: {
     ...mapState(['isShowingLabels', 'allowSubEpics']),
+    isLoading() {
+      return this.item.isLoading || this.item.iid === '-1';
+    },
     cappedAssignees() {
       // e.g. maxRender is 4,
       // Render up to all 4 assignees if there are only 4 assigness
@@ -201,7 +211,9 @@ export default {
         updateHistory({
           url: `${filterPath}${filter}`,
         });
-        this.performSearch();
+        if (!this.isApolloBoard) {
+          this.performSearch();
+        }
         eventHub.$emit('updateTokens');
       }
     },
@@ -243,7 +255,7 @@ export default {
         <a
           :href="item.path || item.webUrl || ''"
           :title="item.title"
-          :class="{ 'gl-text-gray-400!': item.isLoading }"
+          :class="{ 'gl-text-gray-400!': isLoading }"
           class="js-no-trigger gl-text-body gl-hover-text-gray-900"
           @mousemove.stop
           >{{ item.title }}</a
@@ -272,9 +284,9 @@ export default {
       <div
         class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
-        <gl-loading-icon v-if="item.isLoading" size="lg" class="gl-mt-5" />
+        <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
         <span
-          v-if="item.referencePath"
+          v-if="item.referencePath && !isLoading"
           class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3 gl-font-sm gl-text-secondary"
           :class="{ 'gl-font-base': isEpicBoard }"
         >

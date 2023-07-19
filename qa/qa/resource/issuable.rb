@@ -5,7 +5,7 @@ module QA
     class Issuable < Base
       using Rainbow
 
-      # Commentes (notes) path
+      # Comments (notes) path
       #
       # @return [String]
       def api_comments_path

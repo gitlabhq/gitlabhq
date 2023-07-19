@@ -25,13 +25,11 @@ The GitLab Dependency Proxy:
 
 The Dependency Proxy is enabled by default. If you are an administrator, you
 can turn off the Dependency Proxy. To turn off the Dependency Proxy, follow the instructions that
-correspond to your GitLab installation:
+correspond to your GitLab installation.
 
-- [Omnibus GitLab installations](#omnibus-gitlab-installations)
-- [Helm chart installations](#helm-chart-installations)
-- [Installations from source](#installations-from-source)
+::Tabs
 
-### Omnibus GitLab installations
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -42,7 +40,7 @@ correspond to your GitLab installation:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-### Helm chart installations
+:::TabTitle Helm chart (Kubernetes)
 
 After the installation is complete, update the global `appConfig` to turn off the Dependency Proxy:
 
@@ -59,7 +57,7 @@ global:
 
 For more information, see [Configure Charts using Globals](https://docs.gitlab.com/charts/charts/globals.html#configure-appconfig-settings).
 
-### Installations from source
+:::TabTitle Self-compiled (source)
 
 1. After the installation is complete, configure the `dependency_proxy` section in
    `config/gitlab.yml`. Set `enabled` to `false` to turn off the Dependency Proxy:
@@ -69,13 +67,13 @@ For more information, see [Configure Charts using Globals](https://docs.gitlab.c
      enabled: false
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source "How to restart GitLab")
-   for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+::EndTabs
 
 ### Multi-node GitLab installations
 
-Follow the steps for [Omnibus GitLab installations](#omnibus-gitlab-installations)
-for each Web and Sidekiq node.
+Follow the steps for Linux package installations for each Web and Sidekiq node.
 
 ## Turn on the Dependency Proxy
 
@@ -91,12 +89,13 @@ local location or even use object storage.
 
 ### Changing the local storage path
 
-The Dependency Proxy files for Omnibus GitLab installations are stored under
+The Dependency Proxy files for Linux package installations are stored under
 `/var/opt/gitlab/gitlab-rails/shared/dependency_proxy/` and for source
 installations under `shared/dependency_proxy/` (relative to the Git home directory).
-To change the local storage path:
 
-**Omnibus GitLab installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -106,7 +105,7 @@ To change the local storage path:
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-**Installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit the `dependency_proxy` section in `config/gitlab.yml`:
 
@@ -116,7 +115,9 @@ To change the local storage path:
      storage_path: shared/dependency_proxy
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source "How to restart GitLab") for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+::EndTabs
 
 ### Using object storage
 
@@ -127,7 +128,9 @@ This section describes the earlier configuration format. [Migration steps still 
 
 [Read more about using object storage with GitLab](../object_storage.md).
 
-**Omnibus GitLab installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines (uncomment where
    necessary):
@@ -158,7 +161,7 @@ This section describes the earlier configuration format. [Migration steps still 
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-**Installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit the `dependency_proxy` section in `config/gitlab.yml` (uncomment where necessary):
 
@@ -190,7 +193,9 @@ This section describes the earlier configuration format. [Migration steps still 
          #  path_style: false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source "How to restart GitLab") for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+::EndTabs
 
 #### Migrate local Dependency Proxy blobs and manifests to object storage
 
@@ -200,24 +205,24 @@ After [configuring object storage](#using-object-storage),
 use the following task to migrate existing Dependency Proxy blobs and manifests from local storage
 to remote storage. The processing is done in a background worker and requires no downtime.
 
-For Omnibus GitLab:
+- For Linux package installations:
 
-```shell
-sudo gitlab-rake "gitlab:dependency_proxy:migrate"
-```
+  ```shell
+  sudo gitlab-rake "gitlab:dependency_proxy:migrate"
+  ```
 
-For installations from source:
+- For installations from source:
 
-```shell
-RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:dependency_proxy:migrate
-```
+  ```shell
+  RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:dependency_proxy:migrate
+  ```
 
 You can optionally track progress and verify that all Dependency Proxy blobs and manifests migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
-- `sudo gitlab-rails dbconsole` for Omnibus GitLab 14.1 and earlier.
-- `sudo gitlab-rails dbconsole --database main` for Omnibus GitLab 14.2 and later.
-- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+- `sudo gitlab-rails dbconsole` for Linux package installations running version 14.1 and earlier.
+- `sudo gitlab-rails dbconsole --database main` for Linux package installations running version 14.2 and later.
+- `sudo -u git -H psql -d gitlabhq_production` for self-compiled instances.
 
 Verify that `objectstg` (where `file_store = '2'`) has the count of all Dependency Proxy blobs and
 manifests for each respective query:

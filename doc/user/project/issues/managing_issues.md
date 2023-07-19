@@ -155,7 +155,7 @@ Prerequisites:
 
 To do it:
 
-1. Optional (but recommended). [Create a backup](../../../raketasks/backup_restore.md) before
+1. Optional (but recommended). [Create a backup](../../../administration/backup_restore/index.md) before
    attempting any changes in the console.
 1. Open the [Rails console](../../../administration/operations/rails_console.md).
 1. Run the following script. Make sure to change `project`, `admin_user`, and `target_project` to
@@ -215,9 +215,8 @@ To close an issue, you can either:
   1. Select **Plan > Issues**, then select your issue to view it.
   1. At the top of the issue, select **Close issue**.
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
 If you don't see this action at the top of an issue, your project or instance might have
-enabled a feature flag for [moved actions](../merge_requests/index.md#move-sidebar-actions).
+enabled a feature flag to [moved it in the actions menu](#move-the-close-button-into-the-actions-menu).
 
 ### Reopen a closed issue
 
@@ -227,6 +226,9 @@ Prerequisites:
 
 To reopen a closed issue, at the top of the issue, select **Reopen issue**.
 A reopened issue is no different from any other open issue.
+
+If you don't see this action at the top of an issue, your project or instance might have
+enabled a feature flag to [moved it in the actions menu](#move-the-close-button-into-the-actions-menu).
 
 ### Closing issues automatically
 
@@ -327,6 +329,24 @@ Prerequisites:
 
 Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md).
 of your installation.
+
+<!-- Delete when the `move_close_into_dropdown` feature flag is removed
+and update steps for closing and reopening issues, incidents, and epics -->
+### Move the close button into the actions menu
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125173) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `move_close_into_dropdown`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `move_close_into_dropdown`.
+On GitLab.com, this feature is not available.
+
+When this feature flag is enabled, in the upper-right corner,
+**Issue actions** (**{ellipsis_v}**) contains the **Close issue** and **Reopen issue** actions.
+
+In GitLab 16.2 and later, similar action menus are also available on incidents and epics.
+
+When this feature flag is disabled, **Close issue** and **Reopen issue** are
+on the top bar, outside of the actions menu.
 
 ## Change the issue type
 
@@ -445,9 +465,6 @@ To filter the list of issues:
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
    `AND`.
 
-GitLab displays the results on-screen, but you can also
-[retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
-
 ### Filter with the OR operator
 
 > - OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
@@ -456,7 +473,7 @@ GitLab displays the results on-screen, but you can also
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
+To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
 On GitLab.com, this feature is available.
 
 When this feature is enabled, you can use the OR operator (**is one of: `||`**)

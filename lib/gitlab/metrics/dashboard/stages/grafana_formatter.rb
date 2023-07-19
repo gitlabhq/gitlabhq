@@ -53,8 +53,7 @@ module Gitlab
             {
               id: "#{metric[:legendFormat]}_#{idx}",
               query_range: format_query(metric),
-              label: replace_variables(metric[:legendFormat]),
-              prometheus_endpoint_path: prometheus_endpoint_for_metric(metric)
+              label: replace_variables(metric[:legendFormat])
             }.compact
           end
 
@@ -87,17 +86,6 @@ module Gitlab
             strong_memoize(:query_params) do
               Gitlab::Metrics::Dashboard::Url.parse_query(grafana_url)
             end
-          end
-
-          # Endpoint which will return prometheus metric data
-          # for the metric
-          def prometheus_endpoint_for_metric(metric)
-            Gitlab::Routing.url_helpers.project_grafana_api_path(
-              project,
-              datasource_id: datasource[:id],
-              proxy_path: PROXY_PATH,
-              query: format_query(metric)
-            )
           end
 
           # Reformats query for compatibility with prometheus api.

@@ -311,6 +311,7 @@ let shouldExcludeFromCompliling = (modulePath) =>
 if (EXPLICIT_VUE_VERSION) {
   Object.assign(alias, {
     '@gitlab/ui/scss_to_js': path.join(ROOT_PATH, 'node_modules/@gitlab/ui/scss_to_js'),
+    '@gitlab/ui/dist/tokens/js': path.join(ROOT_PATH, 'node_modules/@gitlab/ui/dist/tokens/js'),
     '@gitlab/ui/dist': '@gitlab/ui/src',
     '@gitlab/ui': '@gitlab/ui/src',
   });
@@ -369,6 +370,20 @@ module.exports = {
         test: /(@cubejs-client\/vue).*\.(js)?$/,
         include: /node_modules/,
         loader: 'babel-loader',
+      },
+      {
+        test: /_worker\.js$/,
+        resourceQuery: /worker/,
+        use: [
+          {
+            loader: 'worker-loader',
+            options: {
+              name: '[name].[contenthash:8].worker.js',
+              inline: IS_DEV_SERVER,
+            },
+          },
+          'babel-loader',
+        ],
       },
       {
         test: /mermaid\/.*\.js?$/,
@@ -437,20 +452,6 @@ module.exports = {
         test: /\.(gif|png|mp4)$/,
         loader: 'url-loader',
         options: { limit: 2048 },
-      },
-      {
-        test: /_worker\.js$/,
-        resourceQuery: /worker/,
-        use: [
-          {
-            loader: 'worker-loader',
-            options: {
-              name: '[name].[contenthash:8].worker.js',
-              inline: IS_DEV_SERVER,
-            },
-          },
-          'babel-loader',
-        ],
       },
       {
         test: /\.(worker(\.min)?\.js|pdf)$/,

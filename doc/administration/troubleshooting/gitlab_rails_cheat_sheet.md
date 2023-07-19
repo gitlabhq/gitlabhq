@@ -50,7 +50,7 @@ This content has been moved to [Troubleshooting CI/CD](../../ci/troubleshooting.
 
 ## License
 
-This content has been moved to [Activate GitLab EE with a license file or key](../../user/admin_area/license_file.md).
+This content has been moved to [Activate GitLab EE with a license file or key](../../administration/license_file.md).
 
 ## Registry
 

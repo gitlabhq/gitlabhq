@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'tracked issuable snowplow and service ping events for given event params' do
+RSpec.shared_examples 'tracked issuable events' do
   before do
     stub_application_setting(usage_ping_enabled: true)
   end
@@ -21,11 +21,32 @@ RSpec.shared_examples 'tracked issuable snowplow and service ping events for giv
   it 'does not track edit actions if author is not present' do
     expect(track_action({ author: nil }.merge(track_params))).to be_nil
   end
+end
+
+RSpec.shared_examples 'tracked issuable snowplow and service ping events for given event params' do
+  it_behaves_like 'tracked issuable events'
 
   it 'emits snowplow event' do
     track_action({ author: user1 }.merge(track_params))
 
     expect_snowplow_event(**{ category: category, action: event_action, user: user1 }.merge(event_params))
+  end
+end
+
+RSpec.shared_examples 'tracked issuable internal event for given event params' do
+  it_behaves_like 'tracked issuable events'
+
+  it_behaves_like 'internal event tracking' do
+    subject(:track_event) { track_action({ author: user1 }.merge(track_params)) }
+
+    let(:user) { user1 }
+    let(:namespace) { project&.namespace }
+  end
+end
+
+RSpec.shared_examples 'tracked issuable internal event with project' do
+  it_behaves_like 'tracked issuable internal event for given event params' do
+    let(:track_params) { original_params || { project: project } }
   end
 end
 

@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Settings for Organizations",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "restricted_visibility_levels": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    }
+  }
+}

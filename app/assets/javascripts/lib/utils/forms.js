@@ -18,18 +18,69 @@ export const serializeForm = (form) => {
 };
 
 /**
+ * Like trim but without the error for non-string values.
+ *
+ * @param {String, Number, Array} - value
+ * @returns {String, Number, Array} - the trimmed string or the value if it isn't a string
+ */
+export const safeTrim = (value) => (typeof value === 'string' ? value.trim() : value);
+
+/**
  * Check if the value provided is empty or not
  *
  * It is being used to check if a form input
- * value has been set or not
+ * value has been set or not.
  *
  * @param {String, Number, Array} - Any form value
  * @returns {Boolean} - returns false if a value is set
  *
  * @example
- * returns true for '', [], null, undefined
+ * returns true for '', '   ', [], null, undefined
  */
-export const isEmptyValue = (value) => value == null || value.length === 0;
+export const isEmptyValue = (value) => value == null || safeTrim(value).length === 0;
+
+/**
+ * Check if the value has a minimum string length
+ *
+ * @param {String, Number, Array} - Any form value
+ * @param {Number} - minLength
+ * @returns {Boolean}
+ */
+export const hasMinimumLength = (value, minLength) =>
+  !isEmptyValue(value) && value.length >= minLength;
+
+/**
+ * Checks if the given value can be parsed as an integer as it is (without cutting off decimals etc.)
+ *
+ * @param {String, Number, Array} - Any form value
+ * @returns {Boolean}
+ */
+export const isParseableAsInteger = (value) =>
+  !isEmptyValue(value) && Number.isInteger(Number(safeTrim(value)));
+
+/**
+ * Checks if the parsed integer value from the given input is greater than a certain number
+ *
+ * @param {String, Number, Array} - Any form value
+ * @param {Number} - greaterThan
+ * @returns {Boolean}
+ */
+export const isIntegerGreaterThan = (value, greaterThan) =>
+  isParseableAsInteger(value) && parseInt(value, 10) > greaterThan;
+
+/**
+ * Regexp that matches email structure.
+ * Taken from app/models/service_desk_setting.rb custom_email
+ */
+export const EMAIL_REGEXP = /^[\w\-._]+@[\w\-.]+\.[a-zA-Z]{2,}$/;
+
+/**
+ * Checks if the input is a valid email address
+ *
+ * @param {String} - value
+ * @returns {Boolean}
+ */
+export const isEmail = (value) => EMAIL_REGEXP.test(value);
 
 /**
  * A form object serializer

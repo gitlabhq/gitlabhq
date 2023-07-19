@@ -14,7 +14,9 @@ Feature flags help reduce risk, allowing you to do controlled testing, and separ
 delivery from customer launch.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an example of feature flags in action, see [GitLab for deploys, feature flags, and error tracking](https://www.youtube.com/watch?v=5tw2p6lwXxo).
+For an example of feature flags in action, see [Feature Flags configuration, instrumentation and use](https://www.youtube.com/watch?v=ViA6suScxkE).
+
+You can also explore feature flags with a [click-through demo](https://go.gitlab.com/YKuzLt).
 
 NOTE:
 To contribute to the development of the GitLab product, view
@@ -85,7 +87,7 @@ and the supported strategies are:
 - [User List](#user-list)
 
 Strategies can be added to feature flags when [creating a feature flag](#create-a-feature-flag),
-or by editing an existing feature flag after creation by navigating to **Deployments > Feature flags**
+or by editing an existing feature flag after creation by navigating to **Deploy > Feature flags**
 and selecting **Edit** (**{pencil}**).
 
 ### All users

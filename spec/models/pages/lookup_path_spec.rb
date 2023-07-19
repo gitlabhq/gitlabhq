@@ -8,7 +8,12 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   subject(:lookup_path) { described_class.new(project) }
 
   before do
-    stub_pages_setting(access_control: true, external_https: ["1.1.1.1:443"])
+    stub_pages_setting(
+      access_control: true,
+      external_https: ["1.1.1.1:443"],
+      url: 'http://example.com',
+      protocol: 'http'
+    )
     stub_pages_object_storage(::Pages::DeploymentUploader)
   end
 
@@ -120,18 +125,14 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
 
   describe '#prefix' do
     it 'returns "/" for pages group root projects' do
-      project = instance_double(Project, pages_namespace_url: "namespace.test", pages_url: "namespace.test")
+      project = instance_double(Project, full_path: "namespace/namespace.example.com")
       lookup_path = described_class.new(project, trim_prefix: 'mygroup')
 
       expect(lookup_path.prefix).to eq('/')
     end
 
     it 'returns the project full path with the provided prefix removed' do
-      project = instance_double(
-        Project,
-        pages_namespace_url: "namespace.test",
-        pages_url: "namespace.other",
-        full_path: 'mygroup/myproject')
+      project = instance_double(Project, full_path: 'mygroup/myproject')
       lookup_path = described_class.new(project, trim_prefix: 'mygroup')
 
       expect(lookup_path.prefix).to eq('/myproject/')

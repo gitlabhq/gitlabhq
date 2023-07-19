@@ -49,7 +49,7 @@ module Pajamas
       end
     end
 
-    delegate :sprite_icon, to: :helpers
+    delegate :sprite_icon, :link_button_to, to: :helpers
 
     renders_one :title
     renders_one :illustration

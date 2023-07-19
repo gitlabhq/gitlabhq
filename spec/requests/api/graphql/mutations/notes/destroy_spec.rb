@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Destroying a Note', feature_category: :team_planning do
   include GraphqlHelpers
 
-  let(:noteable) { create(:work_item, :issue) }
+  let(:noteable) { create(:work_item) }
   let!(:note) { create(:note, noteable: noteable, project: noteable.project) }
   let(:global_note_id) { GitlabSchema.id_from_object(note).to_s }
   let(:variables) { { id: global_note_id } }

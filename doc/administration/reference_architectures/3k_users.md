@@ -243,7 +243,7 @@ spread connections equally in practice.
 ### Readiness checks
 
 Ensure the external load balancer only routes to working services with built
-in monitoring endpoints. The [readiness checks](../../user/admin_area/monitoring/health_check.md)
+in monitoring endpoints. The [readiness checks](../monitoring/health_check.md)
 all require [additional configuration](../monitoring/ip_allowlist.md)
 on the nodes being checked, otherwise, the external load balancer will not be able to
 connect.
@@ -2272,7 +2272,7 @@ Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more
 ### Cluster topology
 
 The following tables and diagram detail the hybrid environment using the same formats
-as the normal environment above.
+as the typical environment above.
 
 First are the components that run in Kubernetes. These run across several node groups, although you can change
 the overall makeup as desired as long as the minimum CPU and Memory requirements are observed.

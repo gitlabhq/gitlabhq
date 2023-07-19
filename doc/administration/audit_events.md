@@ -49,7 +49,7 @@ You can view audit events scoped to a group or project.
 To view a group's audit events:
 
 1. Go to the group.
-1. On the left sidebar, select **Security and Compliance > Audit Events**.
+1. On the left sidebar, select **Secure > Audit events**.
 
 Group events do not include project audit events. Group events can also be accessed using the
 [Group Audit Events API](../api/audit_events.md#group-audit-events). Group event queries are limited to a maximum of 30
@@ -58,7 +58,7 @@ days.
 To view a project's audit events:
 
 1. Go to the project.
-1. On the left sidebar, select **Security & Compliance > Audit Events**.
+1. On the left sidebar, select **Secure > Audit events**.
 
 Project events can also be accessed using the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 Project event queries are limited to a maximum of 30 days.
@@ -119,7 +119,7 @@ The first row contains the headers, which are listed in the following table alon
 
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 
-1. Select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile > Authentication log**.
 
 After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.
@@ -140,7 +140,7 @@ From audit events pages, different filters are available depending on the page y
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536) in GitLab 13.0.
 > - Impersonation session events included in group audit events in GitLab 14.8.
 
-When a user is [impersonated](../user/admin_area/index.md#user-impersonation), their actions are logged as audit events
+When a user is [impersonated](../administration/admin_area.md#user-impersonation), their actions are logged as audit events
 with additional details:
 
 - Audit events include information about the impersonating administrator. These audit events are visible in audit event
@@ -362,6 +362,10 @@ GitLab generates audit events when a cluster agent token is created or revoked.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276250) in GitLab 13.6, audit events for when a user is approved using the Admin Area.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6, audit events for when a user's personal access token is successfully or unsuccessfully created or revoked.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298783) in GitLab 13.9, audit events for when a user requests access to an instance or is rejected using the Admin Area.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in
+  GitLab 15.1, audit events when a user's two-factor authentication is disabled.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124169) in GitLab 16.2, audit events when a user's access is locked.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124973) in GitLab 16.2, audit events when a user's access is unlocked.
 
 The following user actions on a GitLab instance generate instance audit events:
 
@@ -373,8 +377,9 @@ The following user actions on a GitLab instance generate instance audit events:
 - Grant OAuth access.
 - Failed second-factor authentication attempt.
 - A user's personal access token was successfully or unsuccessfully created or revoked.
-- A user's two-factor authentication was disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in
-  GitLab 15.1.
+- A user's two-factor authentication was disabled.
+- A user's access is locked.
+- A user's access is unlocked.
 
 #### User management
 
@@ -399,6 +404,13 @@ The following user actions on a GitLab instance generate instance audit events:
 - User was activated using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121708) in GitLab 16.1.
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
+
+#### Application settings **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282428) in GitLab 16.2.
+
+When a user changes an application setting in an instance, project, or group,
+that change and the user that made the change are recorded in the audit log.
 
 ### GitLab Runner events
 

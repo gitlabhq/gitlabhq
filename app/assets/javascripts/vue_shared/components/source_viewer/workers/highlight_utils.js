@@ -1,9 +1,13 @@
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/core';
+import json from 'highlight.js/lib/languages/json';
 import { registerPlugins } from '../plugins/index';
 import { LINES_PER_CHUNK, NEWLINE, ROUGE_TO_HLJS_LANGUAGE_MAP } from '../constants';
 
-const initHighlightJs = (fileType, content) => {
-  registerPlugins(hljs, fileType, content);
+const initHighlightJs = (fileType, content, language) => {
+  // The Highlight Worker is currently scoped to JSON files.
+  // See the following issue for more: https://gitlab.com/gitlab-org/gitlab/-/issues/415753
+  hljs.registerLanguage(language, json);
+  registerPlugins(hljs, fileType, content, true);
 };
 
 const splitByLineBreaks = (content = '') => content.split(/\r?\n/);

@@ -21,6 +21,10 @@ module Types
       field :protected, GraphQL::Types::Boolean,
             null: true,
             description: 'Indicates whether the variable is protected.'
+
+      field :description, GraphQL::Types::String,
+            null: true,
+            description: 'Description of the variable.'
     end
   end
 end

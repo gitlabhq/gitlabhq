@@ -1,103 +1,45 @@
-vendor mail-smtp_pool:
-  extends:
-    - .vendor:rules:mail-smtp_pool
-  needs: []
-  trigger:
-    include: vendor/gems/mail-smtp_pool/.gitlab-ci.yml
-    strategy: depend
-
-vendor attr_encrypted:
-  extends:
-    - .vendor:rules:attr_encrypted
-  needs: []
-  trigger:
-    include: vendor/gems/attr_encrypted/.gitlab-ci.yml
-    strategy: depend
-
-vendor microsoft_graph_mailer:
-  extends:
-    - .vendor:rules:microsoft_graph_mailer
-  needs: []
-  trigger:
-    include: vendor/gems/microsoft_graph_mailer/.gitlab-ci.yml
-    strategy: depend
-
-vendor ipynbdiff:
-  extends:
-    - .vendor:rules:ipynbdiff
-  needs: []
-  trigger:
-    include: vendor/gems/ipynbdiff/.gitlab-ci.yml
-    strategy: depend
-
-vendor omniauth-azure-oauth2:
-  extends:
-    - .vendor:rules:omniauth-azure-oauth2
-  needs: []
-  trigger:
-    include: vendor/gems/omniauth-azure-oauth2/.gitlab-ci.yml
-    strategy: depend
-
-vendor omniauth_crowd:
-  extends:
-    - .vendor:rules:omniauth_crowd
-  needs: []
-  trigger:
-    include: vendor/gems/omniauth_crowd/.gitlab-ci.yml
-    strategy: depend
-
-vendor omniauth-gitlab:
-  extends:
-    - .vendor:rules:omniauth-gitlab
-  needs: []
-  trigger:
-    include: vendor/gems/omniauth-gitlab/.gitlab-ci.yml
-    strategy: depend
-
-vendor omniauth-salesforce:
-  extends:
-    - .vendor:rules:omniauth-salesforce
-  needs: []
-  trigger:
-    include: vendor/gems/omniauth-salesforce/.gitlab-ci.yml
-    strategy: depend
-
-vendor devise-pbkdf2-encryptable:
-  extends:
-    - .vendor:rules:devise-pbkdf2-encryptable
-  needs: []
-  trigger:
-    include: vendor/gems/devise-pbkdf2-encryptable/.gitlab-ci.yml
-    strategy: depend
-
-vendor bundler-checksum:
-  extends:
-    - .vendor:rules:bundler-checksum
-  needs: []
-  trigger:
-    include: vendor/gems/bundler-checksum/.gitlab-ci.yml
-    strategy: depend
-
-vendor gitlab_active_record:
-  extends:
-    - .vendor:rules:gitlab_active_record
-  needs: []
-  trigger:
-    include: vendor/gems/gitlab_active_record/.gitlab-ci.yml
-    strategy: depend
-
-vendor cloud_profiler_agent:
-  extends:
-    - .vendor:rules:cloud_profiler_agent
-  needs: []
-  trigger:
-    include: vendor/gems/cloud_profiler_agent/.gitlab-ci.yml
-    strategy: depend
-
-vendor sidekiq-reliable-fetch:
-  extends:
-    - .vendor:rules:sidekiq-reliable-fetch
-  needs: []
-  trigger:
-    include: vendor/gems/sidekiq-reliable-fetch/.gitlab-ci.yml
-    strategy: depend
+include:
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "mail-smtp_pool"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "attr_encrypted"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "microsoft_graph_mailer"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "omniauth-azure-oauth2"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "omniauth_crowd"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "omniauth-gitlab"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "omniauth-salesforce"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "devise-pbkdf2-encryptable"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "bundler-checksum"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "cloud_profiler_agent"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "sidekiq-reliable-fetch"
+      gem_path_prefix: "vendor/gems/"

@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Runtime, feature_category: :application_performance do
     it_behaves_like "valid runtime", :puma, 3 + Gitlab::ActionCable::Config.worker_pool_size
 
     it 'identifies as an application runtime' do
-      expect(Gitlab::Runtime.application?).to be true
+      expect(described_class.application?).to be true
     end
 
     context "when ActionCable worker pool size is configured" do
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Runtime, feature_category: :application_performance do
     it_behaves_like "valid runtime", :sidekiq, 5
 
     it 'identifies as an application runtime' do
-      expect(Gitlab::Runtime.application?).to be true
+      expect(described_class.application?).to be true
     end
   end
 
@@ -145,7 +145,7 @@ RSpec.describe Gitlab::Runtime, feature_category: :application_performance do
     it_behaves_like "valid runtime", :console, 1
 
     it 'does not identify as an application runtime' do
-      expect(Gitlab::Runtime.application?).to be false
+      expect(described_class.application?).to be false
     end
   end
 
@@ -157,7 +157,7 @@ RSpec.describe Gitlab::Runtime, feature_category: :application_performance do
     it_behaves_like "valid runtime", :test_suite, 1
 
     it 'does not identify as an application runtime' do
-      expect(Gitlab::Runtime.application?).to be false
+      expect(described_class.application?).to be false
     end
   end
 
@@ -177,7 +177,7 @@ RSpec.describe Gitlab::Runtime, feature_category: :application_performance do
     it_behaves_like "valid runtime", :rails_runner, 1
 
     it 'does not identify as an application runtime' do
-      expect(Gitlab::Runtime.application?).to be false
+      expect(described_class.application?).to be false
     end
   end
 end

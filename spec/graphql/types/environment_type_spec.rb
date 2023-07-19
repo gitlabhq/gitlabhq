@@ -8,7 +8,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
 
   it 'includes the expected fields' do
     expected_fields = %w[
-      name id state metrics_dashboard latest_opened_most_severe_alert path external_url deployments
+      name id state latest_opened_most_severe_alert path external_url deployments
       slug createdAt updatedAt autoStopAt autoDeleteAt tier environmentType lastDeployment deployFreezes
       clusterAgent
     ]

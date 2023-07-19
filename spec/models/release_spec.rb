@@ -174,7 +174,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
   end
 
   describe '#assets_count' do
-    subject { Release.find(release.id).assets_count }
+    subject { described_class.find(release.id).assets_count }
 
     it 'returns the number of sources' do
       is_expected.to eq(Gitlab::Workhorse::ARCHIVE_FORMATS.count)
@@ -188,7 +188,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
       end
 
       it "excludes sources count when asked" do
-        assets_count = Release.find(release.id).assets_count(except: [:sources])
+        assets_count = described_class.find(release.id).assets_count(except: [:sources])
         expect(assets_count).to eq(1)
       end
     end

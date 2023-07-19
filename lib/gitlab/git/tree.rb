@@ -26,6 +26,11 @@ module Gitlab
             repository.gitaly_commit_client.tree_entries(
               repository, sha, path, recursive, skip_flat_paths, pagination_params)
           end
+
+        # Incorrect revision or path could lead to index error.
+        # We silently handle such errors by returning an empty set of entries and cursor.
+        rescue Gitlab::Git::Index::IndexError
+          [[], nil]
         end
 
         private

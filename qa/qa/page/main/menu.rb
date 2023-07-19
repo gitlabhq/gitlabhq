@@ -20,7 +20,7 @@ module QA
           end
 
           view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
-            element :user_menu, required: !Runtime::Env.phone_layout?
+            element :user_dropdown, required: !Runtime::Env.phone_layout?
             element :user_avatar_content, required: !Runtime::Env.phone_layout?
             element :sign_out_link
             element :edit_profile_link
@@ -31,8 +31,11 @@ module QA
           end
 
           view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
-            element :global_search_button
-            element :stop_impersonation_link
+            element :super_sidebar_search_button
+            element :stop_impersonation_btn
+            element :issues_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :merge_requests_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :todos_shortcut_button, required: !Runtime::Env.phone_layout?
           end
 
           view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
@@ -43,8 +46,8 @@ module QA
             element :navbar, required: true
             element :canary_badge_link
             element :user_avatar_content, required: !Runtime::Env.phone_layout?
-            element :user_menu, required: !Runtime::Env.phone_layout?
-            element :stop_impersonation_link
+            element :user_dropdown, required: !Runtime::Env.phone_layout?
+            element :stop_impersonation_btn
             element :issues_shortcut_button, required: !Runtime::Env.phone_layout?
             element :merge_requests_shortcut_button, required: !Runtime::Env.phone_layout?
             element :todos_shortcut_button, required: !Runtime::Env.phone_layout?
@@ -62,7 +65,7 @@ module QA
         end
 
         view 'app/assets/javascripts/nav/components/top_nav_dropdown_menu.vue' do
-          element :menu_subview_container
+          element :menu_subview
         end
 
         view 'lib/gitlab/nav/top_nav_menu_item.rb' do
@@ -240,7 +243,7 @@ module QA
         end
 
         def search_for(term)
-          click_element(Runtime::Env.super_sidebar_enabled? ? :global_search_button : :search_box)
+          click_element(Runtime::Env.super_sidebar_enabled? ? :super_sidebar_search_button : :search_box)
           fill_element(:global_search_input, "#{term}\n")
         end
 
@@ -262,7 +265,7 @@ module QA
         end
 
         def click_stop_impersonation_link
-          click_element(:stop_impersonation_link)
+          click_element(:stop_impersonation_btn)
         end
 
         # To verify whether the user has been directed to a canary web node
@@ -278,7 +281,19 @@ module QA
         def enable_new_navigation
           Runtime::Logger.info("Enabling super sidebar!")
           return Runtime::Logger.info("User is not signed in, skipping") unless has_element?(:navbar, wait: 2)
+
           return Runtime::Logger.info("Super sidebar is already enabled") if has_css?('[data-testid="super-sidebar"]')
+
+          within_user_menu { click_element(:new_navigation_toggle) }
+        end
+
+        def disable_new_navigation
+          Runtime::Logger.info("Disabling super sidebar!")
+          return Runtime::Logger.info("User is not signed in, skipping") unless has_element?(:navbar, wait: 2)
+
+          unless has_css?('[data-testid="super-sidebar"]')
+            return Runtime::Logger.info("Super sidebar is already disabled")
+          end
 
           within_user_menu { click_element(:new_navigation_toggle) }
         end
@@ -293,20 +308,20 @@ module QA
           within_top_menu do
             click_element :user_avatar_content unless has_element?(:user_profile_link, wait: 1)
 
-            within_element(:user_menu, &block)
+            within_element(:user_dropdown, &block)
           end
         end
 
         def within_groups_menu(&block)
           go_to_menu_dropdown_option(:groups_dropdown)
 
-          within_element(:menu_subview_container, &block)
+          within_element(:menu_subview, &block)
         end
 
         def within_projects_menu(&block)
           go_to_menu_dropdown_option(:projects_dropdown)
 
-          within_element(:menu_subview_container, &block)
+          within_element(:menu_subview, &block)
         end
 
         def click_admin_area

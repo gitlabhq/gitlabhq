@@ -31,7 +31,7 @@ We were using Overcommit prior to Lefthook, so you may want to uninstall it firs
 ### Install Lefthook
 
 1. You can install lefthook in [different ways](https://github.com/evilmartians/lefthook/blob/master/docs/install.md#install-lefthook).
-   If you do not choose to install it globally (e.g. via Homebrew or package managers), and only want to use it for the GitLab project,
+   If you do not choose to install it globally (for example, via Homebrew or package managers), and only want to use it for the GitLab project,
    you can install the Ruby gem via:
 
    ```shell

@@ -24,7 +24,10 @@ end
 
 def service_desk_fixture(path, slug: nil, key: 'mykey')
   slug ||= project.full_path_slug.to_s
-  fixture_file(path).gsub('project_slug', slug).gsub('project_key', key)
+  fixture_file(path)
+    .gsub('project_slug', slug)
+    .gsub('project_key', key)
+    .gsub('project_id', project.project_id.to_s)
 end
 
 RSpec.shared_examples 'reply processing shared examples' do

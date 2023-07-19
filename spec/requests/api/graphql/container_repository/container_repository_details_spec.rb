@@ -241,7 +241,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
     end
 
     before do
-      allow(::Gitlab).to receive(:com?).and_return(on_com)
+      allow(::Gitlab).to receive(:com_except_jh?).and_return(on_com)
       container_repository.update_column(:created_at, created_at)
     end
 

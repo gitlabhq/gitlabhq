@@ -1,6 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -8,6 +8,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import UpdateUsername from '~/profile/account/components/update_username.vue';
+import { setVueErrorHandler, resetVueErrorHandler } from 'helpers/set_vue_error_handler';
 
 jest.mock('~/alert');
 
@@ -43,7 +44,7 @@ describe('UpdateUsername component', () => {
 
   afterEach(() => {
     axiosMock.restore();
-    Vue.config.errorHandler = null;
+    resetVueErrorHandler();
   });
 
   const findElements = () => {
@@ -60,7 +61,7 @@ describe('UpdateUsername component', () => {
   };
 
   const clickModalWithErrorResponse = () => {
-    Vue.config.errorHandler = jest.fn(); // silence thrown error
+    setVueErrorHandler({ instance: wrapper.vm, handler: jest.fn() }); // silence thrown error
     const { modal } = findElements();
     modal.vm.$emit('primary');
     return waitForPromises();

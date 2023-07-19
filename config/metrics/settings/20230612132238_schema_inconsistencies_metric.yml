@@ -1,0 +1,24 @@
+---
+key_path: schema_inconsistencies_metric
+name: "schema_inconsistencies"
+description: "List the schema inconsistencies in the database"
+product_section: enablement
+product_stage: enablement
+product_group: database
+value_type: boolean
+status: active
+milestone: "16.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123383
+time_frame: none
+data_source: system
+data_category: optional
+instrumentation_class: SchemaInconsistenciesMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+value_json_schema: "config/metrics/objects_schemas/schema_inconsistencies_metric.json"

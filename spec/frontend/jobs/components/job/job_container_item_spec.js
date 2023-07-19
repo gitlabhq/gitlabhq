@@ -9,8 +9,8 @@ import job from '../../mock_data';
 describe('JobContainerItem', () => {
   let wrapper;
 
-  const findCiIconComponent = () => wrapper.findComponent(CiIcon);
-  const findGlIconComponent = () => wrapper.findComponent(GlIcon);
+  const findCiIcon = () => wrapper.findComponent(CiIcon);
+  const findGlIcon = () => wrapper.findComponent(GlIcon);
 
   function createComponent(jobData = {}, props = { isActive: false, retried: false }) {
     wrapper = shallowMount(JobContainerItem, {
@@ -30,9 +30,7 @@ describe('JobContainerItem', () => {
     });
 
     it('displays a status icon', () => {
-      const ciIcon = findCiIconComponent();
-
-      expect(ciIcon.props('status')).toBe(job.status);
+      expect(findCiIcon().props('status')).toBe(job.status);
     });
 
     it('displays the job name', () => {
@@ -52,9 +50,7 @@ describe('JobContainerItem', () => {
     });
 
     it('displays an arrow sprite icon', () => {
-      const icon = findGlIconComponent();
-
-      expect(icon.props('name')).toBe('arrow-right');
+      expect(findGlIcon().props('name')).toBe('arrow-right');
     });
   });
 
@@ -64,9 +60,7 @@ describe('JobContainerItem', () => {
     });
 
     it('displays a retry icon', () => {
-      const icon = findGlIconComponent();
-
-      expect(icon.props('name')).toBe('retry');
+      expect(findGlIcon().props('name')).toBe('retry');
     });
   });
 

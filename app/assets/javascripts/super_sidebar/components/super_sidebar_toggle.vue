@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import Tracking from '~/tracking';
 import { JS_TOGGLE_COLLAPSE_CLASS, JS_TOGGLE_EXPAND_CLASS, sidebarState } from '../constants';
 import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 
@@ -11,6 +12,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [Tracking.mixin()],
   props: {
     tooltipContainer: {
       type: String,
@@ -52,6 +54,10 @@ export default {
   },
   methods: {
     toggle() {
+      this.track(this.isCollapsed ? 'nav_show' : 'nav_hide', {
+        label: 'nav_toggle',
+        property: 'nav_sidebar',
+      });
       toggleSuperSidebarCollapsed(!this.isCollapsed, true);
       this.focusOtherToggle();
     },

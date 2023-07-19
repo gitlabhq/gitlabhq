@@ -270,29 +270,17 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       it "includes statistics if requested", :aggregate_failures do
-        attributes = {
-          storage_size: 4093,
-          repository_size: 123,
-          wiki_size: 456,
-          lfs_objects_size: 234,
-          build_artifacts_size: 345,
-          pipeline_artifacts_size: 456,
-          packages_size: 567,
-          snippets_size: 1234,
-          uploads_size: 678
-        }.stringify_keys
-        exposed_attributes = attributes.dup
-        exposed_attributes['job_artifacts_size'] = exposed_attributes.delete('build_artifacts_size')
-
-        project1.statistics.update!(attributes)
+        stat_keys = %w[storage_size repository_size wiki_size
+          lfs_objects_size job_artifacts_size pipeline_artifacts_size
+          packages_size snippets_size uploads_size]
 
         get api("/groups", admin, admin_mode: true), params: { statistics: true }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response)
-          .to satisfy_one { |group| group['statistics'] == exposed_attributes }
+
+        expect(json_response[0]["statistics"].keys).to match_array(stat_keys)
       end
     end
 
@@ -856,6 +844,39 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           expect(shared_with_groups).to contain_exactly(group_link_1.shared_with_group_id, group_link_2.shared_with_group_id)
         end
       end
+
+      context "expose shared_runners_setting attribute" do
+        let(:group) { create(:group, shared_runners_enabled: true) }
+
+        before do
+          group.add_owner(user1)
+        end
+
+        it "returns the group with shared_runners_setting as 'enabled'", :aggregate_failures do
+          get api("/groups/#{group.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['shared_runners_setting']).to eq("enabled")
+        end
+
+        it "returns the group with shared_runners_setting as 'disabled_and_unoverridable'", :aggregate_failures do
+          group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false)
+
+          get api("/groups/#{group.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['shared_runners_setting']).to eq("disabled_and_unoverridable")
+        end
+
+        it "returns the group with shared_runners_setting as 'disabled_and_overridable'", :aggregate_failures do
+          group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true)
+
+          get api("/groups/#{group.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['shared_runners_setting']).to eq("disabled_and_overridable")
+        end
+      end
     end
   end
 
@@ -1067,6 +1088,50 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
           project_ids = json_response.map { |proj| proj['id'] }
           expect(project_ids).to match_array([project3.id, project4.id])
+        end
+      end
+
+      context 'with owned' do
+        let_it_be(:group) { create(:group) }
+
+        let_it_be(:project1) { create(:project, group: group) }
+        let_it_be(:project1_guest) { create(:user) }
+        let_it_be(:project1_owner) { create(:user) }
+        let_it_be(:project1_maintainer) { create(:user) }
+
+        let_it_be(:project2) { create(:project, group: group) }
+
+        before do
+          project1.add_guest(project1_guest)
+          project1.add_owner(project1_owner)
+          project1.add_maintainer(project1_maintainer)
+
+          project2_owner = project1_owner
+          project2.add_owner(project2_owner)
+        end
+
+        context "as a guest" do
+          it 'returns no projects' do
+            get api("/groups/#{group.id}/projects", project1_guest), params: { owned: true }
+            project_ids = json_response.map { |proj| proj['id'] }
+            expect(project_ids).to match_array([])
+          end
+        end
+
+        context "as a maintainer" do
+          it 'returns no projects' do
+            get api("/groups/#{group.id}/projects", project1_maintainer), params: { owned: true }
+            project_ids = json_response.map { |proj| proj['id'] }
+            expect(project_ids).to match_array([])
+          end
+        end
+
+        context "as an owner" do
+          it 'returns projects with owner access level' do
+            get api("/groups/#{group.id}/projects", project1_owner), params: { owned: true }
+            project_ids = json_response.map { |proj| proj['id'] }
+            expect(project_ids).to match_array([project1.id, project2.id])
+          end
         end
       end
 

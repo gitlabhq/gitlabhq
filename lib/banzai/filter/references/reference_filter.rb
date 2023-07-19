@@ -206,7 +206,8 @@ module Banzai
         end
 
         def replace_text_when_pattern_matches(node, index, pattern)
-          return unless node.text =~ pattern
+          return if pattern.is_a?(Gitlab::UntrustedRegexp) && !pattern.match?(node.text)
+          return if pattern.is_a?(Regexp) && !(pattern =~ node.text)
 
           content = node.to_html
           html = yield content

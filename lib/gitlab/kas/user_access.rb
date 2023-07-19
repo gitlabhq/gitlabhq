@@ -9,11 +9,7 @@ module Gitlab
     class UserAccess
       class << self
         def enabled?
-          ::Gitlab::Kas.enabled? && ::Feature.enabled?(:kas_user_access)
-        end
-
-        def enabled_for?(agent)
-          enabled? && ::Feature.enabled?(:kas_user_access_project, agent.project)
+          ::Gitlab::Kas.enabled?
         end
 
         def encrypt_public_session_id(data)

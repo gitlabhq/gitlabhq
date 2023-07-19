@@ -109,7 +109,7 @@ export default {
       :empty-text="s__('AdminUsers|No users found')"
       show-empty
       stacked="md"
-      :tbody-tr-attr="{ 'data-qa-selector': 'user_row_content' }"
+      :tbody-tr-attr="{ 'data-testid': 'user-row-content' }"
     >
       <template #cell(name)="{ item: user }">
         <user-avatar :user="user" :admin-user-path="paths.adminUser" />

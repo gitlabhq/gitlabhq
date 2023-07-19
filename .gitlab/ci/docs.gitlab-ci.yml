@@ -42,7 +42,7 @@ review-docs-cleanup:
 docs-lint links:
   extends:
     - .docs:rules:docs-lint
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-html:alpine-3.17-ruby-3.2.2-c24946ab
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-html:alpine-3.18-ruby-3.2.2-4207821e
   stage: lint
   needs: []
   script:
@@ -52,13 +52,13 @@ docs-lint links:
     - mv doc/ /tmp/gitlab-docs/content/ee
     - cd /tmp/gitlab-docs
     # Build HTML from Markdown
-    - bundle exec nanoc
+    - make compile
     # Check the internal links and anchors (in parallel)
     - "parallel time bundle exec nanoc check ::: internal_links internal_anchors"
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.17-vale-2.24.0-markdownlint-0.33.0-markdownlint2-0.6.0
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.18-vale-2.27.0-markdownlint-0.35.0-markdownlint2-0.8.1
 
 docs-lint markdown:
   extends:
@@ -123,4 +123,3 @@ docs-lint deprecations-and-removals:
   needs: []
   script:
     - bundle exec rake gitlab:docs:check_deprecations
-    - bundle exec rake gitlab:docs:check_removals

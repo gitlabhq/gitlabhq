@@ -22,11 +22,13 @@ You can use [this query](https://gitlab.com/gitlab-org/gitlab/-/issues/347298#no
 
 ### Troubleshoot the GitLab application layer
 
-For results about an investigation conducted into an unexpected drop in Service ping Payload events volume, see [this issue](https://gitlab.com/gitlab-data/analytics/-/issues/11071).
+We conducted an investigation into an unexpected drop in Service ping Payload events volume.
+GitLab team members can view more information in this confidential issue:
+`https://gitlab.com/gitlab-data/analytics/-/issues/11071`
 
 ### Troubleshoot VersionApp layer
 
-Check if the [export jobs](https://gitlab.com/gitlab-services/version-gitlab-com#data-export-using-pipeline-schedules) are successful.
+Check if the [export jobs](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/tree/main/#data-export-using-pipeline-schedules) are successful.
 
 Check [Service Ping errors](https://app.periscopedata.com/app/gitlab/968489?widget=14609989&udv=0) in the [Service Ping Health Dashboard](https://app.periscopedata.com/app/gitlab/968489).
 

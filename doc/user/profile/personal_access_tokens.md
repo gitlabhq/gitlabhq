@@ -48,7 +48,7 @@ Use impersonation tokens to automate authentication as a specific user.
 
 You can create as many personal access tokens as you like.
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. Enter a name and expiry date for the token.
@@ -79,17 +79,15 @@ for guidance on managing personal access tokens (for example, setting a short ex
 
 At any time, you can revoke a personal access token.
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, select **Revoke**.
 
 ## View the last time a token was used
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414945) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `update_personal_access_token_usage_information_every_10_minutes`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `update_personal_access_token_usage_information_every_10_minutes`. On GitLab.com, this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33162) in GitLab 13.2. Token usage information is updated every 24 hours.
+> - The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
 
 Token usage information is updated every 10 minutes. GitLab considers a token used when the token is used to:
 
@@ -98,7 +96,7 @@ Token usage information is updated every 10 minutes. GitLab considers a token us
 
 To view the last time a token was used:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, view the **Last Used** date.
@@ -119,7 +117,8 @@ A personal access token can perform actions based on the assigned scopes.
 | `read_registry`    | Grants read-only (pull) access to a [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the Container Registry is enabled. |
 | `write_registry`   | Grants read-write (push) access to a [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the Container Registry is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28958) in GitLab 12.10.) |
 | `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator. |
-| `admin_mode`             | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.) |
+| `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.) |
+| `create_runner`    | Grants permission to create runners. |
 
 WARNING:
 If you enabled [external authorization](../admin_area/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
@@ -131,7 +130,8 @@ Personal access tokens expire on the date you define, at midnight UTC.
 - GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that expire in the next seven days. The owners of these tokens are notified by email.
 - GitLab runs a check at 02:00 AM UTC every day to identify personal access tokens that expire on the current date. The owners of these tokens are notified by email.
 - In GitLab Ultimate, administrators can
-  [limit the lifetime of access tokens](../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
+  [limit the allowable lifetime of access tokens](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens). If not set, the maximum allowable lifetime of a personal access token is 365 days.
+- In GitLab Free and Premium, the maximum allowable lifetime of a personal access token is 365 days.
 
 ## Create a personal access token programmatically **(FREE SELF)**
 
@@ -157,11 +157,11 @@ To create a personal access token programmatically:
    The token must be 20 characters long. The scopes must be valid and are visible
    [in the source code](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/auth.rb).
 
-   For example, to create a token that belongs to a user with username `automation-bot`:
+   For example, to create a token that belongs to a user with username `automation-bot` and expires in a year:
 
    ```ruby
    user = User.find_by_username('automation-bot')
-   token = user.personal_access_tokens.create(scopes: ['read_user', 'read_repository'], name: 'Automation token')
+   token = user.personal_access_tokens.create(scopes: ['read_user', 'read_repository'], name: 'Automation token', expires_at: 365.days.from_now)
    token.set_token('token-string-here123')
    token.save!
    ```
@@ -170,7 +170,7 @@ This code can be shortened into a single-line shell command by using the
 [Rails runner](../../administration/operations/rails_console.md#using-the-rails-runner):
 
 ```shell
-sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: ['read_user', 'read_repository'], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
+sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: ['read_user', 'read_repository'], name: 'Automation token', expires_at: 365.days.from_now); token.set_token('token-string-here123'); token.save!"
 ```
 
 ## Revoke a personal access token programmatically **(FREE SELF)**

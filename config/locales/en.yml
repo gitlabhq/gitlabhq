@@ -25,6 +25,8 @@ en:
       member:
         user: "The member's email address"
         invite_email: "The member's email address"
+      personal_access_token:
+        expires_at: "Expiration date"
       project/error_tracking_setting:
         token: "Auth Token"
         project: "Project"
@@ -37,6 +39,11 @@ en:
         grafana_enabled: "Grafana integration enabled"
       service_desk_setting:
         project_key: "Project name suffix"
+      system_access/microsoft_application:
+        tenant_xid: "Tenant ID"
+        client_xid: "Client ID"
+        login_endpoint: "Login API endpoint"
+        graph_endpoint: "Graph API endpoint"
       user/user_detail:
         job_title: 'Job title'
         bio: 'Bio'

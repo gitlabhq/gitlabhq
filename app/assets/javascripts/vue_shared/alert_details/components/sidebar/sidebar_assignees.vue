@@ -22,15 +22,15 @@ const DATA_REFETCH_DELAY = 250;
 export default {
   i18n: {
     FETCH_USERS_ERROR: s__(
-      'AlertManagement|There was an error while updating the assignee(s) list. Please try again.',
+      'AlertManagement|There was an error while updating the assignees list. Please try again.',
     ),
     UPDATE_ALERT_ASSIGNEES_ERROR: s__(
-      'AlertManagement|There was an error while updating the assignee(s) of the alert. Please try again.',
+      'AlertManagement|There was an error while updating the assignees of the alert. Please try again.',
     ),
     UPDATE_ALERT_ASSIGNEES_GRAPHQL_ERROR: s__(
       'AlertManagement|This assignee cannot be assigned to this alert.',
     ),
-    ASSIGNEES_BLOCK: s__('AlertManagement|Alert assignee(s): %{assignees}'),
+    ASSIGNEES_BLOCK: s__('AlertManagement|Alert assignees: %{assignees}'),
   },
   components: {
     GlIcon,

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User reverts a merge request', :js, feature_category: :code_review_workflow do
+  include ContentEditorHelpers
+
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { create(:user) }
@@ -13,6 +15,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
     sign_in(user)
 
     visit(merge_request_path(merge_request))
+    close_rich_text_promo_popover_if_present
 
     page.within('.mr-state-widget') do
       click_button 'Merge'

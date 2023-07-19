@@ -1,0 +1,14 @@
+# frozen_string_literal: true
+
+module Gitlab
+  module BackgroundMigration
+    # TODO Add a top-level documentation comment for the class
+    class <%= class_name %> < BatchedMigrationJob
+      feature_category :<%= feature_category %>
+
+      def perform; end
+    end
+  end
+end
+
+Gitlab::BackgroundMigration::<%= class_name %>.prepend_mod

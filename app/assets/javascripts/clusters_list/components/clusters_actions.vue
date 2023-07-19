@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlDropdown, GlDropdownItem, GlModalDirective, GlTooltip } from '@gitlab/ui';
+import {
+  GlButton,
+  GlButtonGroup,
+  GlModalDirective,
+  GlTooltip,
+  GlDisclosureDropdown,
+} from '@gitlab/ui';
 
 import { INSTALL_AGENT_MODAL_ID, CLUSTERS_ACTIONS } from '../constants';
 
@@ -8,8 +14,8 @@ export default {
   INSTALL_AGENT_MODAL_ID,
   components: {
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlButtonGroup,
+    GlDisclosureDropdown,
     GlTooltip,
   },
   directives: {
@@ -45,13 +51,17 @@ export default {
     actionItems() {
       const createCluster = {
         href: this.newClusterDocsPath,
-        title: this.$options.i18n.createCluster,
-        testid: 'create-cluster-link',
+        text: this.$options.i18n.createCluster,
+        extraAttrs: {
+          'data-testid': 'create-cluster-link',
+        },
       };
       const connectCluster = {
         href: this.addClusterPath,
-        title: this.$options.i18n.connectClusterCertificate,
-        testid: 'connect-cluster-link',
+        text: this.$options.i18n.connectClusterCertificate,
+        extraAttrs: {
+          'data-testid': 'connect-cluster-link',
+        },
       };
       const actions = [];
 
@@ -61,7 +71,6 @@ export default {
       if (this.displayClusterAgents && this.certificateBasedClustersEnabled) {
         actions.push(connectCluster);
       }
-
       return actions;
     },
   },
@@ -81,39 +90,35 @@ export default {
       :title="$options.i18n.actionsDisabledHint"
     />
 
-    <gl-button
-      v-if="!actionItems.length"
-      data-qa-selector="clusters_actions_button"
-      category="primary"
-      variant="confirm"
-      :disabled="!canAddCluster"
-      :href="defaultActionUrl"
-    >
-      {{ defaultActionText }}
-    </gl-button>
-
-    <gl-dropdown
-      v-else
+    <!--TODO: Replace button-group workaround once `split` option for new dropdowns is implemented.-->
+    <!-- See issue at https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2263-->
+    <gl-button-group
       ref="actions"
-      v-gl-modal-directive="shouldTriggerModal && $options.INSTALL_AGENT_MODAL_ID"
       data-qa-selector="clusters_actions_button"
-      category="primary"
-      variant="confirm"
-      :text="defaultActionText"
-      :disabled="!canAddCluster"
-      :split-href="defaultActionUrl"
-      split
-      right
+      class="gl-w-full gl-mb-3 gl-md-w-auto gl-md-mb-0"
     >
-      <gl-dropdown-item
-        v-for="action in actionItems"
-        :key="action.title"
-        :href="action.href"
-        :data-testid="action.testid"
-        @click.stop
+      <gl-button
+        v-gl-modal-directive="shouldTriggerModal && $options.INSTALL_AGENT_MODAL_ID"
+        :href="defaultActionUrl"
+        :disabled="!canAddCluster"
+        data-testid="clusters-default-action-button"
+        category="primary"
+        variant="confirm"
       >
-        {{ action.title }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+        {{ defaultActionText }}
+      </gl-button>
+      <gl-disclosure-dropdown
+        v-if="actionItems.length"
+        class="split"
+        toggle-class="gl-rounded-top-left-none! gl-rounded-bottom-left-none! gl-pl-1!"
+        category="primary"
+        variant="confirm"
+        placement="right"
+        :toggle-text="defaultActionText"
+        :items="actionItems"
+        :disabled="!canAddCluster"
+        text-sr-only
+      />
+    </gl-button-group>
   </div>
 </template>

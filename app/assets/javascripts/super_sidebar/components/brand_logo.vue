@@ -27,7 +27,7 @@ export default {
 <template>
   <a
     v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.homepage"
-    class="tanuki-logo-container"
+    class="brand-logo"
     :href="rootPath"
     :title="$options.i18n.homepage"
     data-track-action="click_link"

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::EachDatabase do
-  describe '.each_database_connection', :add_ci_connection do
+  describe '.each_connection', :add_ci_connection do
     let(:database_base_models) { { main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access }
 
     before do
@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Database::EachDatabase do
       expect(Gitlab::Database::SharedModel).to receive(:using_connection)
         .with(Ci::ApplicationRecord.connection).ordered.and_yield
 
-      expect { |b| described_class.each_database_connection(&b) }
+      expect { |b| described_class.each_connection(&b) }
         .to yield_successive_args(
           [ActiveRecord::Base.connection, 'main'],
           [Ci::ApplicationRecord.connection, 'ci']
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Database::EachDatabase do
         expect(Gitlab::Database::SharedModel).to receive(:using_connection)
           .with(Ci::ApplicationRecord.connection).ordered.and_yield
 
-        expect { |b| described_class.each_database_connection(only: 'ci', &b) }
+        expect { |b| described_class.each_connection(only: 'ci', &b) }
           .to yield_successive_args([Ci::ApplicationRecord.connection, 'ci'])
       end
 
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Database::EachDatabase do
           expect(Gitlab::Database::SharedModel).to receive(:using_connection)
             .with(Ci::ApplicationRecord.connection).ordered.and_yield
 
-          expect { |b| described_class.each_database_connection(only: :ci, &b) }
+          expect { |b| described_class.each_connection(only: :ci, &b) }
             .to yield_successive_args([Ci::ApplicationRecord.connection, 'ci'])
         end
       end
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Database::EachDatabase do
       context 'when the selected names are invalid' do
         it 'does not yield any connections' do
           expect do |b|
-            described_class.each_database_connection(only: :notvalid, &b)
+            described_class.each_connection(only: :notvalid, &b)
           rescue ArgumentError => e
             expect(e.message).to match(/notvalid is not a valid database name/)
           end.not_to yield_control
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Database::EachDatabase do
 
         it 'raises an error' do
           expect do
-            described_class.each_database_connection(only: :notvalid) {}
+            described_class.each_connection(only: :notvalid) {}
           end.to raise_error(ArgumentError, /notvalid is not a valid database name/)
         end
       end
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Database::EachDatabase do
           db_config.name != 'main' ? 'main' : nil
         end
 
-        expect { |b| described_class.each_database_connection(include_shared: false, &b) }
+        expect { |b| described_class.each_connection(include_shared: false, &b) }
           .to yield_successive_args([ActiveRecord::Base.connection, 'main'])
       end
     end

@@ -3,6 +3,7 @@ import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ADD_MUTATION_ACTION, DELETE_MUTATION_ACTION, UPDATE_MUTATION_ACTION } from '../constants';
+import getGroupEnvironments from '../graphql/queries/group_environments.query.graphql';
 import getGroupVariables from '../graphql/queries/group_variables.query.graphql';
 import addGroupVariable from '../graphql/mutations/group_add_variable.mutation.graphql';
 import deleteGroupVariable from '../graphql/mutations/group_delete_variable.mutation.graphql';
@@ -22,6 +23,15 @@ export default {
     graphqlId() {
       return convertToGraphQLId(TYPENAME_GROUP, this.groupId);
     },
+    queriesAvailable() {
+      if (this.glFeatures.ciGroupEnvScopeGraphql) {
+        return this.$options.queryData;
+      }
+
+      return {
+        ciVariables: this.$options.queryData.ciVariables,
+      };
+    },
   },
   mutationData: {
     [ADD_MUTATION_ACTION]: addGroupVariable,
@@ -32,6 +42,10 @@ export default {
     ciVariables: {
       lookup: (data) => data?.group?.ciVariables,
       query: getGroupVariables,
+    },
+    environments: {
+      lookup: (data) => data?.group?.environmentScopes,
+      query: getGroupEnvironments,
     },
   },
 };
@@ -45,6 +59,6 @@ export default {
     entity="group"
     :full-path="groupPath"
     :mutation-data="$options.mutationData"
-    :query-data="$options.queryData"
+    :query-data="queriesAvailable"
   />
 </template>

@@ -53,7 +53,7 @@ Sidekiq.configure_server do |config|
   config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator(
     metrics: Settings.monitoring.sidekiq_exporter,
     arguments_logger: SidekiqLogArguments.enabled? && !enable_json_logs,
-    defer_jobs: Gitlab::Utils.to_boolean(ENV['SIDEKIQ_DEFER_JOBS'], default: true)
+    skip_jobs: Gitlab::Utils.to_boolean(ENV['SIDEKIQ_SKIP_JOBS'], default: true)
   ))
 
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)

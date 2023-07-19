@@ -25,7 +25,7 @@ Users added through LDAP:
 - Usually use a [licensed seat](../../../subscriptions/self_managed/index.md#billable-users).
 - Can authenticate with Git using either their GitLab username or their email and LDAP password,
   even if password authentication for Git
-  [is disabled](../../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
+  [is disabled](../../settings/sign_in_restrictions.md#password-authentication-enabled).
 
 The LDAP DN is associated with existing GitLab users when:
 
@@ -1000,13 +1000,13 @@ authenticated with the TLS protocol.
 Users deleted from the LDAP server:
 
 - Are immediately blocked from signing in to GitLab.
-- [No longer consume a license](../../../user/admin_area/moderate_users.md).
+- [No longer consume a license](../../../administration/moderate_users.md).
 
 However, these users can continue to use Git with SSH until the next time the
 [LDAP check cache runs](ldap_synchronization.md#adjust-ldap-user-sync-schedule).
 
 To delete the account immediately, you can manually
-[block the user](../../../user/admin_area/moderate_users.md#block-a-user).
+[block the user](../../../administration/moderate_users.md#block-a-user).
 
 ## Update user email addresses
 

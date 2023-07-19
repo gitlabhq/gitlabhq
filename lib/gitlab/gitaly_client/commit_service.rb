@@ -531,14 +531,24 @@ module Gitlab
         request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
         response = gitaly_client_call(@repository.storage, :commit_service, :get_commit_signatures, request, timeout: GitalyClient.fast_timeout)
 
-        signatures = Hash.new { |h, k| h[k] = [+''.b, +''.b] }
+        signatures = Hash.new do |h, k|
+          h[k] = {
+            signature: +''.b,
+            signed_text: +''.b,
+            signer: :SIGNER_UNSPECIFIED
+          }
+        end
+
         current_commit_id = nil
 
         response.each do |message|
           current_commit_id = message.commit_id if message.commit_id.present?
 
-          signatures[current_commit_id].first << message.signature
-          signatures[current_commit_id].last << message.signed_text
+          signatures[current_commit_id][:signature] << message.signature
+          signatures[current_commit_id][:signed_text] << message.signed_text
+
+          # The actual value is send once. All the other chunks send SIGNER_UNSPECIFIED
+          signatures[current_commit_id][:signer] = message.signer unless message.signer == :SIGNER_UNSPECIFIED
         end
 
         signatures
@@ -585,9 +595,7 @@ module Gitlab
       end
 
       def call_commit_diff(request_params, options = {})
-        request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
-
-        if Feature.enabled?(:add_ignore_all_white_spaces) && (request_params[:ignore_whitespace_change])
+        if options.fetch(:ignore_whitespace_change, false)
           request_params[:whitespace_changes] = WHITESPACE_CHANGES['ignore_all_spaces']
         end
 
@@ -640,10 +648,6 @@ module Gitlab
 
       def find_changed_paths_request(commits, merge_commit_diff_mode)
         diff_mode = MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode] if Feature.enabled?(:merge_commit_diff_modes)
-
-        if Feature.disabled?(:find_changed_paths_new_format)
-          return Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, commits: commits, merge_commit_diff_mode: diff_mode)
-        end
 
         commit_requests = commits.map do |commit|
           Gitaly::FindChangedPathsRequest::Request.new(

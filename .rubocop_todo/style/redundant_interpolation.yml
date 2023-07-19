@@ -35,4 +35,3 @@ Style/RedundantInterpolation:
     - 'qa/qa/tools/generate_perf_testdata.rb'
     - 'scripts/perf/gc/print_gc_stats.rb'
     - 'scripts/qa/testcases-check'
-    - 'tooling/rspec_flaky/flaky_example.rb'

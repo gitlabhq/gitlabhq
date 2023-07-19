@@ -15,12 +15,15 @@
     = render 'shared/issuable/form/template_selector', issuable: model
 
   = render 'shared/form_elements/apply_template_warning', issuable: model
+  - if model.is_a?(MergeRequest)
+    = render 'shared/form_elements/apply_generated_description_warning', issuable: model
 
   .js-markdown-editor{ data: { render_markdown_path: preview_url,
                                markdown_docs_path: help_page_path('user/markdown'),
                                quick_actions_docs_path: help_page_path('user/project/quick_actions'),
                                qa_selector: 'issuable_form_description_field',
                                form_field_placeholder: placeholder,
+                               autofocus: 'false',
                                form_field_classes: 'js-gfm-input markdown-area note-textarea rspec-issuable-form-description' } }
     = form.hidden_field :description
 

@@ -30,12 +30,22 @@ export default {
       type: Array,
       required: true,
     },
+    showProjectIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
 
 <template>
   <ul class="gl-p-0 gl-list-style-none">
-    <projects-list-item v-for="project in projects" :key="project.id" :project="project" />
+    <projects-list-item
+      v-for="project in projects"
+      :key="project.id"
+      :project="project"
+      :show-project-icon="showProjectIcon"
+    />
   </ul>
 </template>

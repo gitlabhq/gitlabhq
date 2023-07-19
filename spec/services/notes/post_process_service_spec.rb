@@ -22,6 +22,9 @@ RSpec.describe Notes::PostProcessService, feature_category: :team_planning do
     it do
       expect(project).to receive(:execute_hooks)
       expect(project).to receive(:execute_integrations)
+      expect_next_instance_of(Integrations::GroupMentionService) do |group_mention_service|
+        expect(group_mention_service).to receive(:execute)
+      end
 
       described_class.new(@note).execute
     end

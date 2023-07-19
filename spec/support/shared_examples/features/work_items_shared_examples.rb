@@ -166,7 +166,8 @@ RSpec.shared_examples 'work items comments' do |type|
 end
 
 RSpec.shared_examples 'work items assignees' do
-  it 'successfully assigns the current user by searching' do
+  it 'successfully assigns the current user by searching',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
     # The button is only when the mouse is over the input
     find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
     wait_for_requests

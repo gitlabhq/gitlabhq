@@ -71,20 +71,22 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
     before do
       allow(shared.logger).to receive(:info).and_call_original
       allow(relation_reader).to receive(:consume_relation).and_call_original
-
-      allow(relation_reader)
-        .to receive(:consume_relation)
-        .with(importable_name, 'labels')
-        .and_return([[label, 0]])
     end
 
     context 'when relation object is new' do
+      before do
+        allow(relation_reader)
+          .to receive(:consume_relation)
+          .with(importable_name, 'boards')
+          .and_return([[board, 0]])
+      end
+
       context 'when relation object has invalid subrelations' do
-        let(:label) do
+        let(:board) do
           {
-            'title' => 'test',
-            'priorities' => [LabelPriority.new, LabelPriority.new],
-            'type' => 'GroupLabel'
+            'name' => 'test',
+            'lists' => [List.new, List.new],
+            'group_id' => importable.id
           }
         end
 
@@ -94,26 +96,33 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
             .with(
               message: '[Project/Group Import] Invalid subrelation',
               group_id: importable.id,
-              relation_key: 'labels',
-              error_messages: "Project can't be blank, Priority can't be blank, and Priority is not a number"
+              relation_key: 'boards',
+              error_messages: "Label can't be blank, Position can't be blank, and Position is not a number"
             )
 
           subject
 
-          label = importable.labels.first
+          board = importable.boards.last
           failure = importable.import_failures.first
 
           expect(importable.import_failures.count).to eq(2)
-          expect(label.title).to eq('test')
+          expect(board.name).to eq('test')
           expect(failure.exception_class).to eq('ActiveRecord::RecordInvalid')
           expect(failure.source).to eq('RelationTreeRestorer#save_relation_object')
           expect(failure.exception_message)
-            .to eq("Project can't be blank, Priority can't be blank, and Priority is not a number")
+            .to eq("Label can't be blank, Position can't be blank, and Position is not a number")
         end
       end
     end
 
     context 'when relation object is persisted' do
+      before do
+        allow(relation_reader)
+          .to receive(:consume_relation)
+          .with(importable_name, 'labels')
+          .and_return([[label, 0]])
+      end
+
       context 'when relation object is invalid' do
         let(:label) { create(:group_label, group: group, title: 'test') }
 

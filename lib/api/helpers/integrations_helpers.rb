@@ -41,7 +41,7 @@ module API
           {
             required: false,
             name: :notify_only_broken_pipelines,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Send notifications for broken pipelines'
           }
         ].freeze
@@ -129,85 +129,85 @@ module API
           {
             required: false,
             name: :commit_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for commit_events'
           },
           {
             required: false,
             name: :push_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for push_events'
           },
           {
             required: false,
             name: :issues_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for issues_events'
           },
           {
             required: false,
             name: :incident_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for incident_events'
           },
           {
             required: false,
             name: :alert_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for alert_events'
           },
           {
             required: false,
             name: :confidential_issues_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for confidential_issues_events'
           },
           {
             required: false,
             name: :merge_requests_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for merge_requests_events'
           },
           {
             required: false,
             name: :note_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for note_events'
           },
           {
             required: false,
             name: :confidential_note_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for confidential_note_events'
           },
           {
             required: false,
             name: :tag_push_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for tag_push_events'
           },
           {
             required: false,
             name: :deployment_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for deployment_events'
           },
           {
             required: false,
             name: :job_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for job_events'
           },
           {
             required: false,
             name: :pipeline_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for pipeline_events'
           },
           {
             required: false,
             name: :wiki_page_events,
-            type: Boolean,
+            type: ::Grape::API::Boolean,
             desc: 'Enable notifications for wiki_page_events'
           }
         ].freeze
@@ -243,7 +243,7 @@ module API
             {
               required: false,
               name: :app_store_protected_refs,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Only enable for protected refs'
             }
           ],
@@ -285,7 +285,7 @@ module API
             {
               required: false,
               name: :enable_ssl_verification,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Enable SSL verification'
             },
             {
@@ -343,7 +343,7 @@ module API
             {
               required: false,
               name: :enable_ssl_verification,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'DEPRECATED: This parameter has no effect since SSL verification will always be enabled'
             }
           ],
@@ -417,7 +417,7 @@ module API
             {
               required: false,
               name: :archive_trace_events,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'When enabled, job logs will be collected by Datadog and shown along pipeline execution traces'
             },
             {
@@ -471,7 +471,7 @@ module API
             {
               required: false,
               name: :enable_ssl_verification,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Enable SSL verification'
             }
           ],
@@ -485,13 +485,13 @@ module API
             {
               required: false,
               name: :disable_diffs,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Disable code diffs'
             },
             {
               required: false,
               name: :send_from_committer_email,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Send from committer'
             },
             {
@@ -598,7 +598,7 @@ module API
             {
               required: false,
               name: :colorize_messages,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Colorize messages'
             }
           ],
@@ -612,7 +612,7 @@ module API
             {
               required: false,
               name: :enable_ssl_verification,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Enable SSL verification'
             },
             {
@@ -668,7 +668,7 @@ module API
             {
               required: false,
               name: :jira_issue_transition_automatic,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Enable automatic issue transitions'
             },
             {
@@ -692,7 +692,7 @@ module API
             {
               required: false,
               name: :comment_on_event_enabled,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Enable comments inside Jira issues on each GitLab event (commit / merge request)'
             }
           ],
@@ -750,13 +750,13 @@ module API
             {
               required: false,
               name: :notify_only_broken_pipelines,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Notify only broken pipelines'
             },
             {
               required: false,
               name: :notify_only_default_branch,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Send notifications only for the default branch'
             },
             {
@@ -946,7 +946,7 @@ module API
             {
               required: false,
               name: :enable_ssl_verification,
-              type: Boolean,
+              type: ::Grape::API::Boolean,
               desc: 'Enable SSL verification'
             },
             {

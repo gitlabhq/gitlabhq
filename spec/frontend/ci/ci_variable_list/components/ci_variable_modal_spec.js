@@ -48,6 +48,7 @@ describe('Ci variable modal', () => {
     areScopedVariablesAvailable: true,
     environments: [],
     hideEnvironmentScope: false,
+    hasEnvScopeQuery: false,
     mode: ADD_VARIABLE_ACTION,
     selectedVariable: {},
     variables: [],
@@ -349,14 +350,14 @@ describe('Ci variable modal', () => {
           expect(link.attributes('href')).toBe(defaultProvide.environmentScopeLink);
         });
 
-        describe('when feature flag is enabled', () => {
+        describe('when query for envioronment scope exists', () => {
           beforeEach(() => {
             createComponent({
               props: {
                 environments: mockEnvs,
+                hasEnvScopeQuery: true,
                 variables: mockVariablesWithUniqueScopes(projectString),
               },
-              provide: { glFeatures: { ciLimitEnvironmentScope: true } },
             });
           });
 

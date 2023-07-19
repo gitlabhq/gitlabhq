@@ -41,6 +41,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
       it 'sets the expected error' do
         expect(valid?).to be_falsy
         expect(external_file.errors).to contain_exactly(expected_error)
+        expect(external_file.content).to eq(nil)
       end
     end
 
@@ -139,7 +140,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
 
                   before do
                     allow_next_instance_of(Gitlab::Ci::ArtifactFileReader) do |reader|
-                      allow(reader).to receive(:read).and_return('')
+                      allow(reader).to receive(:read).and_return(nil)
                     end
                   end
 
@@ -165,8 +166,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
                     }
                     expect(context).to receive(:mutate).with(expected_attrs).and_call_original
 
-                    expect(valid?).to be_truthy
                     external_file.content
+                    expect(valid?).to be_truthy
                   end
                 end
               end

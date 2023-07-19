@@ -41,7 +41,7 @@ The group's new subgroups have push rules set for them based on either:
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/365357) in GitLab 16.0.
 
 You can set the permitted protocols used to access a group's repositories to either SSH, HTTPS, or both. This setting
-is disabled when the [instance setting](../admin_area/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols) is
+is disabled when the [instance setting](../../administration/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols) is
 configured by an administrator.
 
 To change the permitted Git access protocols for a group:
@@ -63,11 +63,11 @@ address. This top-level group setting applies to:
 - The GitLab UI, including subgroups, projects, and issues. It does not apply to GitLab Pages.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
 - In self-managed installations of GitLab 15.1 and later, you can also configure
-[globally-allowed IP address ranges](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
+[globally-allowed IP address ranges](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
 at the group level.
 
 Administrators can combine restricted access by IP address with
-[globally-allowed IP addresses](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges).
+[globally-allowed IP addresses](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges).
 
 To restrict group access by IP address:
 
@@ -252,6 +252,8 @@ For more information on the administration of LDAP and group sync, refer to the 
 
 NOTE:
 When you add LDAP synchronization, if an LDAP user is a group member and they are not part of the LDAP group, they are removed from the group.
+
+You can use a workaround to [manage project access through LDAP groups](../project/settings/index.md#manage-project-access-through-ldap-groups).
 
 ### Create group links via CN **(PREMIUM SELF)**
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
   include NoteInteractionHelpers
+  include ContentEditorHelpers
 
   let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
@@ -11,6 +12,7 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
   describe 'creates' do
     before do
       visit project_issue_path(project, issue)
+      close_rich_text_promo_popover_if_present
     end
 
     it 'displays the new comment' do
@@ -31,6 +33,7 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
       before do
         sign_in(user)
         visit project_issue_path(project, issue)
+        close_rich_text_promo_popover_if_present
       end
 
       it 'displays the updated content' do
@@ -59,7 +62,10 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
 
         update_note(existing_note, updated_text)
 
+        expect(page).to have_selector(".alert")
+
         find("#note_#{existing_note.id} .note-edit-cancel").click
+        click_button('Cancel editing')
 
         expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
       end

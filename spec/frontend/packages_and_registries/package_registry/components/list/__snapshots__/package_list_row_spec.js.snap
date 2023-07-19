@@ -64,16 +64,12 @@ exports[`packages_list_row renders 1`] = `
               withtooltip="true"
             />
              
-            <!---->
-             
             <span
               class="gl-ml-2"
               data-testid="package-type"
             >
               · npm
             </span>
-             
-            <!---->
           </div>
         </div>
       </div>
@@ -91,15 +87,16 @@ exports[`packages_list_row renders 1`] = `
           class="gl-display-flex gl-align-items-center gl-min-h-6"
         >
           <span
-            data-testid="created-date"
+            data-testid="right-secondary"
           >
-            Created 
-            <timeago-tooltip-stub
-              cssclass=""
-              datetimeformat="DATE_WITH_TIME_FORMAT"
-              time="2020-08-17T14:23:32Z"
-              tooltipplacement="top"
-            />
+            Published 
+            <time
+              class=""
+              datetime="2020-05-17T14:23:32Z"
+              title="May 17, 2020 2:23pm UTC"
+            >
+              1 month ago
+            </time>
           </span>
         </div>
       </div>

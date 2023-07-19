@@ -113,7 +113,8 @@ RSpec.shared_examples 'every metric definition' do
         Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric,
         Gitlab::Usage::Metrics::Instrumentations::RedisMetric,
         Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric,
-        Gitlab::Usage::Metrics::Instrumentations::NumbersMetric
+        Gitlab::Usage::Metrics::Instrumentations::NumbersMetric,
+        Gitlab::Usage::Metrics::Instrumentations::PrometheusMetric
       ]
     end
 

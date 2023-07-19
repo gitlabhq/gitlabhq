@@ -1,9 +1,19 @@
 <script>
-import { GlAvatarLabeled, GlAvatarLink, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlAvatarLink, GlIcon, GlSprintf } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import TargetLink from '../target_link.vue';
+import ResourceParentLink from '../resource_parent_link.vue';
 
 export default {
-  components: { GlAvatarLabeled, GlAvatarLink, GlIcon, TimeAgoTooltip },
+  components: {
+    GlAvatarLabeled,
+    GlAvatarLink,
+    GlIcon,
+    GlSprintf,
+    TimeAgoTooltip,
+    TargetLink,
+    ResourceParentLink,
+  },
   props: {
     event: {
       type: Object,
@@ -12,6 +22,11 @@ export default {
     iconName: {
       type: String,
       required: true,
+    },
+    message: {
+      type: String,
+      required: false,
+      default: '',
     },
     iconClass: {
       type: String,
@@ -44,7 +59,15 @@ export default {
     <div class="gl-pl-8 gl-mt-2" data-testid="event-body">
       <div class="gl-text-secondary">
         <gl-icon :class="iconClass" :name="iconName" />
-        <slot></slot>
+        <gl-sprintf v-if="message" :message="message">
+          <template #targetLink>
+            <target-link :event="event" />
+          </template>
+          <template #resourceParentLink>
+            <resource-parent-link :event="event" />
+          </template>
+        </gl-sprintf>
+        <slot v-else></slot>
       </div>
       <div v-if="$scopedSlots['additional-info']" class="gl-mt-2">
         <slot name="additional-info"></slot>

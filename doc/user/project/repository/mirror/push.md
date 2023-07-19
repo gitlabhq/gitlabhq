@@ -30,6 +30,9 @@ it is deleted from the remote mirror on the next push. Branches with unmerged
 changes are kept. If a branch diverges, the **Mirroring repositories** section
 displays an error.
 
+[GitLab Silent Mode](../../../../administration/silent_mode/index.md) disables pushing to,
+and pulling from, remote mirrors.
+
 ## Configure push mirroring
 
 To set up push mirroring for an existing project:
@@ -77,8 +80,12 @@ through the [remote mirrors API](../../../../api/remote_mirrors.md).
 
 To configure a mirror from GitLab to GitHub:
 
-1. Create a [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-   with `public_repo` selected.
+1. Create a [GitHub fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens)
+   with at least read and write permissions on the [repository contents](https://docs.github.com/en/rest/overview/permissions-required-for-fine-grained-personal-access-tokens#repository-permissions-for-contents). If your
+   repository contains a `.github/workflows` directory, you must also grant
+   read and write access for the [Workflows](https://docs.github.com/en/rest/overview/permissions-required-for-fine-grained-personal-access-tokens#repository-permissions-for-workflows).
+   For a more fine-grained access, you can configure your token to only apply
+   to the specific repository.
 1. Enter a **Git repository URL** with this format, changing the variables as needed:
 
    ```plaintext

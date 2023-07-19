@@ -25,7 +25,8 @@ module DraftNotes
       draft_note = DraftNote.new(params)
       draft_note.merge_request = merge_request
       draft_note.author = current_user
-      draft_note.save
+
+      return draft_note unless draft_note.save
 
       if in_reply_to_discussion_id.blank? && draft_note.diff_file&.unfolded?
         merge_request.diffs.clear_cache

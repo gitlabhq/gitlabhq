@@ -4,6 +4,16 @@ include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@7.3.1"
+    inputs:
+      job_name: "e2e-test-report"
+      job_stage: "report"
+      aws_access_key_id_variable_name: "QA_ALLURE_AWS_ACCESS_KEY_ID"
+      aws_secret_access_key_variable_name: "QA_ALLURE_AWS_SECRET_ACCESS_KEY"
+      gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
+      allure_results_glob: "gitlab-qa-run-*/**/allure-results"
+      allure_job_name: "${QA_RUN_TYPE}"
+      allure_ref_slug: "${CI_COMMIT_REF_SLUG}"
 
 # ==========================================
 # Prepare stage
@@ -81,6 +91,7 @@ instance-ff-inverse:
 # ------------------------------------------
 
 # ========== instance ===========
+
 instance:
   extends:
     - .parallel
@@ -145,38 +156,6 @@ praefect-selective-parallel:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
-  rules:
-    - !reference [.rules:test:qa-selective-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-      variables:
-        QA_TESTS: ""
-
-# ========== relative-url ===========
-
-relative-url:
-  extends:
-    - .qa
-    - .parallel
-  variables:
-    QA_SCENARIO: Test::Instance::RelativeUrl
-  rules:
-    - !reference [.rules:test:qa-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-
-relative-url-selective:
-  extends: .qa
-  variables:
-    QA_SCENARIO: Test::Instance::RelativeUrl
-  rules:
-    - !reference [.rules:test:qa-selective, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-
-relative-url-selective-parallel:
-  extends:
-    - .qa
-    - .parallel
-  variables:
-    QA_SCENARIO: Test::Instance::RelativeUrl
   rules:
     - !reference [.rules:test:qa-selective-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -259,7 +238,9 @@ decomposition-multiple-db-selective-parallel:
 # ========== object-storage ===========
 
 object-storage:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   parallel: 2
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -295,7 +276,9 @@ object-storage-selective-parallel:
 # ========== object-storage-aws ===========
 
 object-storage-aws:
-  extends: object-storage
+  extends:
+    - object-storage
+    - .failure-videos
   variables:
     AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
     AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
@@ -325,7 +308,9 @@ object-storage-aws-selective-parallel:
 # ========== object-storage-gcs ===========
 
 object-storage-gcs:
-  extends: object-storage
+  extends:
+    - object-storage
+    - .failure-videos
   variables:
     GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
     GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
@@ -383,7 +368,9 @@ group-saml:
     - !reference [.rules:test:manual, rules]
 
 oauth:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::OAuth
   rules:
@@ -401,7 +388,9 @@ instance-saml:
     - !reference [.rules:test:manual, rules]
 
 jira:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Jira
   rules:
@@ -419,7 +408,9 @@ integrations:
     - !reference [.rules:test:manual, rules]
 
 ldap-no-server:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoServer
   rules:
@@ -428,7 +419,9 @@ ldap-no-server:
     - !reference [.rules:test:manual, rules]
 
 ldap-tls:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
   rules:
@@ -437,7 +430,9 @@ ldap-tls:
     - !reference [.rules:test:manual, rules]
 
 ldap-no-tls:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
   rules:
@@ -455,7 +450,9 @@ mtls:
     - !reference [.rules:test:manual, rules]
 
 mattermost:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Mattermost
   rules:
@@ -464,7 +461,9 @@ mattermost:
     - !reference [.rules:test:manual, rules]
 
 registry:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Registry
   rules:
@@ -473,7 +472,9 @@ registry:
     - !reference [.rules:test:manual, rules]
 
 registry-with-cdn:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::RegistryWithCDN
     GCS_CDN_BUCKET_NAME: $QA_GCS_CDN_BUCKET_NAME
@@ -490,7 +491,9 @@ registry-with-cdn:
     - !reference [.rules:test:manual, rules]
 
 repository-storage:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::RepositoryStorage
   rules:
@@ -499,7 +502,9 @@ repository-storage:
     - !reference [.rules:test:manual, rules]
 
 service-ping-disabled:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::ServicePingDisabled
   rules:
@@ -508,7 +513,9 @@ service-ping-disabled:
     - !reference [.rules:test:manual, rules]
 
 smtp:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::SMTP
   rules:
@@ -517,7 +524,9 @@ smtp:
     - !reference [.rules:test:manual, rules]
 
 cloud-activation:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag cloud_activation
@@ -527,7 +536,9 @@ cloud-activation:
     - !reference [.rules:test:manual, rules]
 
 large-setup:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag can_use_large_setup
@@ -566,7 +577,9 @@ registry-object-storage-tls:
     GITLAB_QA_OPTS: --omnibus-config registry_object_storage $EXTRA_GITLAB_QA_OPTS
 
 importers:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Import
     QA_MOCK_GITHUB: "true"
@@ -620,9 +633,7 @@ update-ee-to-ce:
 # Post test stage
 # ==========================================
 e2e-test-report:
-  extends:
-    - .e2e-test-report
-    - .rules:report:allure-report
+  extends: .rules:report:allure-report
 
 upload-knapsack-report:
   extends:

@@ -27,9 +27,9 @@ RSpec.describe IssueAssignee do
 
     context 'in_projects' do
       it 'returns issue assignees for given project' do
-        expect(IssueAssignee.count).to eq 2
+        expect(described_class.count).to eq 2
 
-        assignees = IssueAssignee.in_projects([project])
+        assignees = described_class.in_projects([project])
 
         expect(assignees.count).to eq 1
         expect(assignees.first.user_id).to eq project_issue.issue_assignees.first.user_id
@@ -39,9 +39,9 @@ RSpec.describe IssueAssignee do
 
     context 'on_issues' do
       it 'returns issue assignees for given issues' do
-        expect(IssueAssignee.count).to eq 2
+        expect(described_class.count).to eq 2
 
-        assignees = IssueAssignee.on_issues([project_issue])
+        assignees = described_class.on_issues([project_issue])
 
         expect(assignees.count).to eq 1
         expect(assignees.first.issue_id).to eq project_issue.issue_assignees.first.issue_id

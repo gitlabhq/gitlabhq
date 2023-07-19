@@ -337,9 +337,15 @@ module Gitlab
 
       # Return repo size in megabytes
       def size
-        size = gitaly_repository_client.repository_size
+        if Feature.enabled?(:use_repository_info_for_repository_size)
+          bytes = gitaly_repository_client.repository_info.size
 
-        (size.to_f / 1024).round(2)
+          (bytes.to_f / 1024 / 1024).round(2)
+        else
+          kilobytes = gitaly_repository_client.repository_size
+
+          (kilobytes.to_f / 1024).round(2)
+        end
       end
 
       # Return git object directory size in bytes
@@ -401,11 +407,12 @@ module Gitlab
 
         newrevs = newrevs.uniq.sort
 
-        @new_blobs ||= Hash.new do |h, revs|
-          h[revs] = blobs(['--not', '--all', '--not'] + newrevs, with_paths: true, dynamic_timeout: dynamic_timeout)
-        end
-
-        @new_blobs[newrevs]
+        @new_blobs ||= {}
+        @new_blobs[newrevs] ||= blobs(
+          ['--not', '--all', '--not'] + newrevs,
+          with_paths: true,
+          dynamic_timeout: dynamic_timeout
+        ).to_a
       end
 
       # List blobs reachable via a set of revisions. Supports the
@@ -554,10 +561,10 @@ module Gitlab
       # Limit of 0 means there is no limit.
       def refs_by_oid(oid:, limit: 0, ref_patterns: nil)
         wrapped_gitaly_errors do
-          gitaly_ref_client.find_refs_by_oid(oid: oid, limit: limit, ref_patterns: ref_patterns)
+          gitaly_ref_client.find_refs_by_oid(oid: oid, limit: limit, ref_patterns: ref_patterns) || []
         end
       rescue CommandError, TypeError, NoRepository
-        nil
+        []
       end
 
       # Returns url for submodule

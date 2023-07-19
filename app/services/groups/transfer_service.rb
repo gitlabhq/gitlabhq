@@ -197,6 +197,11 @@ module Groups
       return if @new_parent_group
       return unless @group.owners.empty?
 
+      add_owner_on_transferred_group
+    end
+
+    # Overridden in EE
+    def add_owner_on_transferred_group
       @group.add_owner(current_user)
     end
 

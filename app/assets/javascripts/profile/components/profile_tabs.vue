@@ -5,6 +5,7 @@ import { getUserProjects } from '~/rest_api';
 import { s__ } from '~/locale';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
+import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
 import OverviewTab from './overview_tab.vue';
 import ActivityTab from './activity_tab.vue';
 import GroupsTab from './groups_tab.vue';
@@ -81,7 +82,21 @@ export default {
   async mounted() {
     try {
       const response = await getUserProjects(this.userId, { per_page: 10 });
-      this.personalProjects = convertObjectPropsToCamelCase(response.data, { deep: true });
+      this.personalProjects = convertObjectPropsToCamelCase(response.data, { deep: true }).map(
+        (project) => {
+          // This API does not return the `visibility` key if user is signed out.
+          // Because this API only returns public projects when signed out, in this case, we can assume
+          // the `visibility` attribute is `public` if it is missing.
+          if (!project.visibility) {
+            return {
+              ...project,
+              visibility: VISIBILITY_LEVEL_PUBLIC_STRING,
+            };
+          }
+
+          return project;
+        },
+      );
       this.personalProjectsLoading = false;
     } catch (error) {
       createAlert({ message: this.$options.i18n.personalProjectsErrorMessage });

@@ -20,7 +20,7 @@ Deleting a user deletes all projects in that user namespace.
 > Delay between a user deleting their own account and deletion of the user record introduced in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. Enabled by default on GitLab.com.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. On GitLab.com, this feature is available.
 
 As a user, to delete your own account:
 
@@ -30,9 +30,7 @@ As a user, to delete your own account:
 1. Select **Delete account**.
 
 NOTE:
-On GitLab.com, there is a seven day delay between a user deleting their own account and deletion of the user record. During this time, that user is [blocked](../../admin_area/moderate_users.md#block-a-user) and a new account with the same email address or username cannot be created.
-
-Unblocking the account does not undo the deletion because the account will still be in the deletion queue, and there is no quick method to reverse this process.
+On GitLab.com, there is a seven day delay between a user deleting their own account and deletion of the user record. During this time, that user is [blocked](../../../administration/moderate_users.md#block-a-user) and a new account with the same email address or username cannot be created. Unblocking the account does not undo the deletion because the account will still be in the deletion queue, and will be deleted. Accounts with no issues, comments, notes, merge requests, or snippets are deleted immediately. Accounts under paid namespaces are deleted immediately.
 
 ## Delete users and user contributions **(FREE SELF)**
 
@@ -71,9 +69,9 @@ When deleting users, you can either:
   - Personal access tokens.
   - Snippets.
 
-An alternative to deleting is [blocking a user](../../admin_area/moderate_users.md#block-a-user).
+An alternative to deleting is [blocking a user](../../../administration/moderate_users.md#block-a-user).
 
-When a user is deleted from an [abuse report](../../admin_area/review_abuse_reports.md) or spam log, these associated
+When a user is deleted from an [abuse report](../../../administration/review_abuse_reports.md) or spam log, these associated
 records are always removed.
 
 The deleting associated records option can be requested in the [API](../../../api/users.md#user-deletion) as well as
@@ -91,7 +89,7 @@ ERROR: null value in column "user_id" violates not-null constraint
 ```
 
 The error can be found in the [PostgreSQL log](../../../administration/logs/index.md#postgresql-logs) and
-in the **Retries** section of the [background jobs view](../../admin_area/index.md#background-jobs) in the Admin Area.
+in the **Retries** section of the [background jobs view](../../../administration/admin_area.md#background-jobs) in the Admin Area.
 
 If the user being deleted used the [iterations](../../group/iterations/index.md) feature, such
 as adding an issue to an iteration, you must use

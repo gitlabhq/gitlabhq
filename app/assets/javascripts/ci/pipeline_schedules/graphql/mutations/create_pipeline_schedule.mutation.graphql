@@ -1,0 +1,6 @@
+mutation createPipelineSchedule($input: PipelineScheduleCreateInput!) {
+  pipelineScheduleCreate(input: $input) {
+    clientMutationId
+    errors
+  }
+}

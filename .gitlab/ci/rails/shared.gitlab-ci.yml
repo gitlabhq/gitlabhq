@@ -24,13 +24,15 @@ include:
     # Only install knapsack after bundle install! Otherwise oddly some native
     # gems could not be found under some circumstance. No idea why, hours wasted.
     - run_timed_command "gem install knapsack --no-document"
-    - echo -e "\e[0Ksection_start:`date +%s`:gitaly-test-spawn[collapsed=true]\r\e[0KStarting Gitaly"
     - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn"  # Do not use 'bundle exec' here
-    - echo -e "\e[0Ksection_end:`date +%s`:gitaly-test-spawn\r\e[0K"
 
 .no-redis-cluster:
   variables:
     USE_REDIS_CLUSTER: "false"
+
+.clusterwide-db:
+  variables:
+    CLUSTERWIDE_DB: "true"
 
 .single-db:
   variables:
@@ -74,12 +76,15 @@ include:
     # spec/lib, yet background migration tests are also sitting there,
     # and they should run on their own jobs so we don't need to run them
     # in unit tests again.
-    - rspec_paralellized_job "--tag ~quarantine --tag ~level:background_migration"
+    - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~level:background_migration --tag ~click_house"
   after_script:
     - echo -e "\e[0Ksection_start:`date +%s`:report_results_section[collapsed=true]\r\e[0KReport results"
     - |
       if [ "$CREATE_RAILS_TEST_FAILURE_ISSUES" == "true" ]; then
-        bundle exec relate-failure-issue --input-files "rspec/rspec-*.json" --system-log-files "log" --project "gitlab-org-sandbox/rails-test-failures" --token "${RAILS_TEST_FAILURES_PROJECT_TOKEN}";
+        bundle exec relate-failure-issue --input-files "rspec/rspec-*.json" --system-log-files "log" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}";
+      fi
+      if [ "$CREATE_RAILS_SLOW_TEST_ISSUES" == "true" ]; then
+        bundle exec slow-test-issues --input-files "rspec/rspec-*.json" --project "gitlab-org-sandbox/rails-test-failures" --token "${RAILS_TEST_FAILURES_PROJECT_TOKEN}";
       fi
     - echo -e "\e[0Ksection_end:`date +%s`:report_results_section\r\e[0K"
 
@@ -105,7 +110,7 @@ include:
 .rspec-base-migration:
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag ~quarantine --tag ~zoekt"
+    - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
   after_script:
     - !reference [.rspec-base, after_script]
 
@@ -123,6 +128,16 @@ include:
   extends:
     - .rspec-base
     - .use-pg14
+
+.rspec-base-pg14-clickhouse23:
+  extends:
+    - .rspec-base
+    - .use-pg14-clickhouse23
+  script:
+    - cp config/click_house.yml.example config/click_house.yml
+    - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
+    - !reference [.base-script, script]
+    - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
 
 .rspec-base-pg14-as-if-foss:
   extends:

@@ -31,7 +31,7 @@ module Gitlab
             if (issue_id = create_issue)
               create_assignees(issue_id)
               issuable_finder.cache_database_id(issue_id)
-              update_search_data(issue_id) if Feature.enabled?(:issues_full_text_search)
+              update_search_data(issue_id)
             end
           end
         end

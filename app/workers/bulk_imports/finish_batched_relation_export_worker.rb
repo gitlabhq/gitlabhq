@@ -5,7 +5,7 @@ module BulkImports
     include ApplicationWorker
 
     idempotent!
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
+    data_consistency :sticky
     feature_category :importers
 
     REENQUEUE_DELAY = 5.seconds

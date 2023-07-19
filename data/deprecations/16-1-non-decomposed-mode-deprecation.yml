@@ -6,4 +6,12 @@
   stage: data_stores
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/411239
   body: |
-    The option to run self-managed installations of GitLab on a single database is now deprecated. From GitLab 17.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509). With this change, self-managed versions of GitLab will behave similarly to GitLab.com. This change applies to installation methods with Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source. Before upgrading to GitLab 17.0, please ensure [migration](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
+    From GitLab 17.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509).
+    We recommend running both databases on the same Postgres instance(s) due to ease of management for most deployments.
+
+    We are providing this as an informational advance notice but we do not recommend taking action yet.
+    We will have another update communicated (as well as the deprecation note) when we recommend admins to start the migration process.
+
+    This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
+    This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
+    Before upgrading to GitLab 17.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.

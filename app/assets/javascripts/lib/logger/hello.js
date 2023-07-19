@@ -1,4 +1,5 @@
 import { s__, sprintf } from '~/locale';
+import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 const HANDSHAKE = String.fromCodePoint(0x1f91d);
 const MAG = String.fromCodePoint(0x1f50e);
@@ -15,7 +16,7 @@ ${s__(
 
 ${sprintf(s__('HelloMessage|%{handshake_emoji} Contribute to GitLab: %{contribute_link}'), {
   handshake_emoji: `${HANDSHAKE}`,
-  contribute_link: 'https://about.gitlab.com/community/contribute/',
+  contribute_link: `${PROMO_URL}/community/contribute/`,
 })}
 ${sprintf(s__('HelloMessage|%{magnifier_emoji} Create a new GitLab issue: %{new_issue_link}'), {
   magnifier_emoji: `${MAG}`,
@@ -27,7 +28,7 @@ ${
         s__(
           'HelloMessage|%{rocket_emoji} We like your curiosity! Help us improve GitLab by joining the team: %{jobs_page_link}',
         ),
-        { rocket_emoji: `${ROCKET}`, jobs_page_link: 'https://about.gitlab.com/jobs/' },
+        { rocket_emoji: `${ROCKET}`, jobs_page_link: `${PROMO_URL}/jobs/` },
       )}`
     : ''
 }`,

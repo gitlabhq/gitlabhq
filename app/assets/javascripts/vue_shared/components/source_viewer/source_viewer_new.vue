@@ -2,6 +2,7 @@
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
+import LineHighlighter from '~/blob/line_highlighter';
 import { EVENT_ACTION, EVENT_LABEL_VIEWER } from './constants';
 import Chunk from './components/chunk_new.vue';
 
@@ -19,9 +20,6 @@ export default {
     SafeHtml,
   },
   mixins: [Tracking.mixin()],
-  inject: {
-    highlightWorker: { default: null },
-  },
   props: {
     blob: {
       type: Object,
@@ -32,6 +30,11 @@ export default {
       required: false,
       default: () => [],
     },
+  },
+  data() {
+    return {
+      lineHighlighter: new LineHighlighter(),
+    };
   },
   created() {
     this.track(EVENT_ACTION, { label: EVENT_LABEL_VIEWER, property: this.blob.language });

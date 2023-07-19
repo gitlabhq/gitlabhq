@@ -453,7 +453,7 @@ RSpec.describe API::GroupClusters, feature_category: :deployment_management do
           end
 
           it 'returns validation error' do
-            expect(json_response['message']['platform_kubernetes.base'].first).to eq(_('Cannot modify managed Kubernetes cluster'))
+            expect(json_response['message']['platform_kubernetes'].first).to eq(_('Cannot modify managed Kubernetes cluster'))
           end
         end
 

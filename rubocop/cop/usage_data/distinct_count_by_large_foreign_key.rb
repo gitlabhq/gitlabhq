@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../usage_data_helpers'
+
 module RuboCop
   module Cop
     module UsageData
@@ -13,6 +15,8 @@ module RuboCop
       #   distinct_count(Ci::Build, :commit_id)
       #
       class DistinctCountByLargeForeignKey < RuboCop::Cop::Base
+        include UsageDataHelpers
+
         MSG = 'Avoid doing `%s` on foreign keys for large tables having above 100 million rows.'
 
         def_node_matcher :distinct_count?, <<-PATTERN
@@ -20,6 +24,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless in_usage_data_file?(node)
+
           distinct_count?(node) do |method_name, method_arguments|
             next unless method_arguments && method_arguments.length >= 2
             next if batch_set_to_false?(method_arguments[2])

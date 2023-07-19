@@ -33,7 +33,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it 'handles sticking when a user could be found' do
-      allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(user)
+      allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(user)
 
       expect(ApplicationRecord.sticking)
         .to receive(:stick_or_unstick_request).with(any_args, :user, 42)
@@ -44,7 +44,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it 'does not handle sticking if no user could be found' do
-      allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(nil)
+      allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(nil)
 
       expect(ApplicationRecord.sticking)
         .not_to receive(:stick_or_unstick_request)
@@ -55,7 +55,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it 'returns the user if one could be found' do
-      allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(user)
+      allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(user)
 
       get 'user'
 
@@ -606,6 +606,39 @@ RSpec.describe API::Helpers, feature_category: :shared do
       expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
       helper.increment_unique_values(unknown_event, nil)
+    end
+  end
+
+  describe '#track_event' do
+    let(:user_id) { 345 }
+    let(:namespace_id) { 12 }
+    let(:project_id) { 56 }
+    let(:event_name) { 'i_compliance_dashboard' }
+    let(:unknown_event) { 'unknown' }
+
+    it 'tracks internal event' do
+      expect(Gitlab::InternalEvents).to receive(:track_event).with(
+        event_name,
+        user_id: user_id,
+        namespace_id: namespace_id,
+        project_id: project_id
+      )
+
+      helper.track_event(event_name, user_id: user_id, namespace_id: namespace_id, project_id: project_id)
+    end
+
+    it 'logs an exception for unknown event' do
+      expect(Gitlab::AppLogger).to receive(:warn).with(
+        "Internal Event tracking event failed for event: #{unknown_event}, message: Unknown event: #{unknown_event}"
+      )
+
+      helper.track_event(unknown_event, user_id: user_id, namespace_id: namespace_id, project_id: project_id)
+    end
+
+    it 'does not track event for nil user_id' do
+      expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+      helper.track_event(unknown_event, user_id: nil, namespace_id: namespace_id, project_id: project_id)
     end
   end
 

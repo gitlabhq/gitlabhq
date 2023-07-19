@@ -417,8 +417,8 @@ module Ci
 
         context 'when first build is stalled' do
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!).and_call_original
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!)
+            allow_any_instance_of(described_class).to receive(:assign_runner!).and_call_original
+            allow_any_instance_of(described_class).to receive(:assign_runner!)
               .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
           end
 

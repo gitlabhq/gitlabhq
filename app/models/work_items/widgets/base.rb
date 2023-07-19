@@ -15,6 +15,10 @@ module WorkItems
         []
       end
 
+      def self.process_quick_action_param(param_name, value)
+        { param_name => value }
+      end
+
       def self.callback_class
         WorkItems::Callbacks.const_get(name.demodulize, false)
       rescue NameError

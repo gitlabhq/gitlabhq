@@ -33,10 +33,6 @@ module WebIdeButtonHelper
     can_view_pipeline_editor?(project) && path == project.ci_config_path_or_default
   end
 
-  def can_push_code?
-    current_user&.can?(:push_code, @project)
-  end
-
   def fork?
     !project_fork.nil? && !can_push_code?
   end

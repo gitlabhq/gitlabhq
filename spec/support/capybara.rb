@@ -5,6 +5,7 @@ require 'capybara/rails'
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 require 'selenium-webdriver'
+require 'gitlab/utils/all'
 
 # Give CI some extra time
 timeout = ENV['CI'] || ENV['CI_SERVER'] ? 30 : 10
@@ -117,7 +118,7 @@ Capybara.register_driver :firefox do |app|
   options.add_argument("--window-size=#{CAPYBARA_WINDOW_SIZE.join(',')}")
 
   # Run headless by default unless WEBDRIVER_HEADLESS specified
-  options.add_argument("--headless") unless ENV['WEBDRIVER_HEADLESS'] =~ /^(false|no|0)$/i
+  options.add_argument("--headless") unless Gitlab::Utils.to_boolean(ENV['WEBDRIVER_HEADLESS'], default: false)
 
   Capybara::Selenium::Driver.new(
     app,
@@ -233,5 +234,6 @@ RSpec.configure do |config|
     # We don't reset the session when the example failed, because we need capybara-screenshot to have access to it.
     Capybara.reset_sessions! unless example.exception
     block_and_wait_for_requests_complete
+    block_and_wait_for_action_cable_requests_complete
   end
 end

@@ -68,10 +68,10 @@ export default {
       required: false,
       default: false,
     },
-    quickActionsDocsPath: {
-      type: String,
+    supportsQuickActions: {
+      type: Boolean,
       required: false,
-      default: '',
+      default: false,
     },
     canAttachFile: {
       type: Boolean,
@@ -355,10 +355,7 @@ export default {
 <template>
   <div
     ref="gl-form"
-    :class="{
-      'gl-border-none! gl-shadow-none!': removeBorder,
-    }"
-    class="js-vue-markdown-field md-area position-relative gfm-form"
+    class="js-vue-markdown-field md-area position-relative gfm-form gl-overflow-hidden"
     :data-uploads-path="uploadsPath"
   >
     <markdown-header
@@ -371,13 +368,12 @@ export default {
       :uploads-path="uploadsPath"
       :markdown-preview-path="markdownPreviewPath"
       :drawio-enabled="drawioEnabled"
+      :supports-quick-actions="supportsQuickActions"
       data-testid="markdownHeader"
       :restricted-tool-bar-items="restrictedToolBarItems"
-      :show-content-editor-switcher="showContentEditorSwitcher"
       @showPreview="showPreview"
       @hidePreview="hidePreview"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
-      @enableContentEditor="$emit('enableContentEditor')"
     />
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
@@ -391,36 +387,31 @@ export default {
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
-          :quick-actions-docs-path="quickActionsDocsPath"
           :can-attach-file="canAttachFile"
           :show-comment-tool-bar="showCommentToolBar"
+          :show-content-editor-switcher="showContentEditorSwitcher"
+          @enableContentEditor="$emit('enableContentEditor')"
         />
       </div>
     </div>
-    <template v-if="hasSuggestion">
-      <div
-        v-show="previewMarkdown"
-        ref="markdown-preview"
-        class="js-vue-md-preview md-preview-holder gl-px-5"
-      >
-        <suggestions
-          v-if="hasSuggestion"
-          :note-html="markdownPreview"
-          :line-type="lineType"
-          :disabled="true"
-          :suggestions="suggestions"
-          :help-page-path="helpPagePath"
-        />
-      </div>
-    </template>
-    <template v-else>
-      <div
-        v-show="previewMarkdown"
-        ref="markdown-preview"
-        v-safe-html:[$options.safeHtmlConfig]="markdownPreview"
-        class="js-vue-md-preview md md-preview-holder gl-px-5"
-      ></div>
-    </template>
+    <div
+      v-show="previewMarkdown"
+      ref="markdown-preview"
+      class="js-vue-md-preview md-preview-holder gl-px-5"
+      :class="{ md: !hasSuggestion }"
+    >
+      <suggestions
+        v-if="hasSuggestion"
+        :note-html="markdownPreview"
+        :line-type="lineType"
+        :disabled="true"
+        :suggestions="suggestions"
+        :help-page-path="helpPagePath"
+      />
+      <template v-else>
+        <div v-safe-html:[$options.safeHtmlConfig]="markdownPreview"></div>
+      </template>
+    </div>
     <div
       v-if="referencedCommands && previewMarkdown && !markdownPreviewLoading"
       v-safe-html:[$options.safeHtmlConfig]="referencedCommands"

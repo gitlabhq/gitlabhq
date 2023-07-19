@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'lists list service' do
   context 'when the board has a backlog list' do
-    let!(:backlog_list) { create_backlog_list(board) }
+    let(:backlog_list) { board.lists.backlog.first }
 
     it 'does not create a backlog list' do
       expect { service.execute(board) }.not_to change { board.lists.count }
@@ -34,6 +34,10 @@ RSpec.shared_examples 'lists list service' do
   end
 
   context 'when the board does not have a backlog list' do
+    before do
+      board.lists.backlog.delete_all
+    end
+
     it 'creates a backlog list' do
       expect { service.execute(board) }.to change { board.lists.count }.by(1)
     end

@@ -1,7 +1,21 @@
 <script>
 import EmptyComponent from '~/vue_shared/components/empty_component';
-import { EVENT_TYPE_APPROVED } from '../constants';
+import {
+  EVENT_TYPE_APPROVED,
+  EVENT_TYPE_EXPIRED,
+  EVENT_TYPE_JOINED,
+  EVENT_TYPE_LEFT,
+  EVENT_TYPE_PUSHED,
+  EVENT_TYPE_PRIVATE,
+  EVENT_TYPE_MERGED,
+} from '../constants';
 import ContributionEventApproved from './contribution_event/contribution_event_approved.vue';
+import ContributionEventExpired from './contribution_event/contribution_event_expired.vue';
+import ContributionEventJoined from './contribution_event/contribution_event_joined.vue';
+import ContributionEventLeft from './contribution_event/contribution_event_left.vue';
+import ContributionEventPushed from './contribution_event/contribution_event_pushed.vue';
+import ContributionEventPrivate from './contribution_event/contribution_event_private.vue';
+import ContributionEventMerged from './contribution_event/contribution_event_merged.vue';
 
 export default {
   props: {
@@ -98,6 +112,24 @@ export default {
       switch (action) {
         case EVENT_TYPE_APPROVED:
           return ContributionEventApproved;
+
+        case EVENT_TYPE_EXPIRED:
+          return ContributionEventExpired;
+
+        case EVENT_TYPE_JOINED:
+          return ContributionEventJoined;
+
+        case EVENT_TYPE_LEFT:
+          return ContributionEventLeft;
+
+        case EVENT_TYPE_PUSHED:
+          return ContributionEventPushed;
+
+        case EVENT_TYPE_PRIVATE:
+          return ContributionEventPrivate;
+
+        case EVENT_TYPE_MERGED:
+          return ContributionEventMerged;
 
         default:
           return EmptyComponent;

@@ -12,6 +12,8 @@ export default {
     errorMessage: s__(
       'UserProfile|An error occurred loading the followers. Please refresh the page to try again.',
     ),
+    currentUserEmptyStateTitle: s__('UserProfile|You do not have any followers'),
+    visitorEmptyStateTitle: s__("UserProfile|This user doesn't have any followers"),
   },
   components: {
     GlBadge,
@@ -68,6 +70,8 @@ export default {
       :loading="loading"
       :page="page"
       :total-items="totalItems"
+      :current-user-empty-state-title="$options.i18n.currentUserEmptyStateTitle"
+      :visitor-empty-state-title="$options.i18n.visitorEmptyStateTitle"
       @pagination-input="onPaginationInput"
     />
   </gl-tab>

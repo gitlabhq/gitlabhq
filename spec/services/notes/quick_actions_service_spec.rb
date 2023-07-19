@@ -182,7 +182,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
 
       context 'on an incident' do
         before do
-          issue.update!(issue_type: :incident, work_item_type: WorkItems::Type.default_by_type(:incident))
+          issue.update!(work_item_type: WorkItems::Type.default_by_type(:incident))
         end
 
         it 'leaves the note empty' do
@@ -224,7 +224,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
 
       context 'on an incident' do
         before do
-          issue.update!(issue_type: :incident, work_item_type: WorkItems::Type.default_by_type(:incident))
+          issue.update!(work_item_type: WorkItems::Type.default_by_type(:incident))
         end
 
         it 'leaves the note empty' do

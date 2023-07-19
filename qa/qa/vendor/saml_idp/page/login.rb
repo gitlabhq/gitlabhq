@@ -1,18 +1,22 @@
 # frozen_string_literal: true
 
-require 'capybara/dsl'
-
 module QA
   module Vendor
     module SamlIdp
       module Page
-        class Login < Page::Base
+        class Login < Vendor::Page::Base
           def login(username, password)
             QA::Runtime::Logger.debug("Logging into SAMLIdp with username: #{username} and password:#{password}")
 
             fill_in 'username', with: username
             fill_in 'password', with: password
             click_on 'Login'
+
+            if Runtime::Env.super_sidebar_enabled?
+              QA::Page::Main::Menu.perform(&:enable_new_navigation)
+            else
+              QA::Page::Main::Menu.perform(&:disable_new_navigation)
+            end
           end
 
           def login_if_required(username, password)

@@ -155,7 +155,6 @@ Style/IfUnlessModifier:
     - 'app/models/diff_viewer/base.rb'
     - 'app/models/environment.rb'
     - 'app/models/error_tracking/project_error_tracking_setting.rb'
-    - 'app/models/external_pull_request.rb'
     - 'app/models/generic_commit_status.rb'
     - 'app/models/grafana_integration.rb'
     - 'app/models/group.rb'
@@ -1075,5 +1074,3 @@ Style/IfUnlessModifier:
     - 'tooling/lib/tooling/find_codeowners.rb'
     - 'tooling/lib/tooling/image.rb'
     - 'tooling/lib/tooling/test_map_packer.rb'
-    - 'tooling/rspec_flaky/flaky_example.rb'
-    - 'tooling/rspec_flaky/flaky_examples_collection.rb'

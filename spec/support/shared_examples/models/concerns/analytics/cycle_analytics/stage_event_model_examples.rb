@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'StageEventModel' do
   describe '.upsert_data' do
-    let(:time) { Time.parse(Time.current.to_s(:db)) } # truncating the timestamp so we can compare it with the timestamp loaded from the DB
+    let(:time) { Time.parse(Time.current.to_fs(:db)) } # truncating the timestamp so we can compare it with the timestamp loaded from the DB
     let(:input_data) do
       [
         {

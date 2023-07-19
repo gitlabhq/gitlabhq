@@ -17,7 +17,7 @@ To create and manage a new cluster use [Infrastructure as Code](../../infrastruc
 When you successfully connect an existing cluster using cluster certificates, the cluster connection to GitLab becomes enabled. To disable it:
 
 1. Go to your:
-   - Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level cluster.
+   - Project's **{cloud-gear}** **Operate > Kubernetes clusters** page, for a project-level cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    - **Main menu > Admin > Kubernetes** page, for an instance-level cluster.
 1. Select the name of the cluster you want to disable.

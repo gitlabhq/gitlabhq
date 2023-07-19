@@ -19,17 +19,17 @@ module QA
         end
       end
 
-      let!(:project_access_token) do
-        QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
-          pat.project = project
+      let!(:runner) do
+        Resource::ProjectRunner.fabricate! do |runner|
+          runner.project = project
+          runner.name = "runner-for-#{project.name}"
+          runner.tags = ["runner-for-#{project.name}"]
         end
       end
 
-      let(:registry) do
-        Resource::RegistryRepository.init do |repository|
-          repository.name = project.path_with_namespace
-          repository.project = project
-          repository.tag_name = 'master'
+      let!(:project_access_token) do
+        QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
+          pat.project = project
         end
       end
 
@@ -61,6 +61,8 @@ module QA
             - docker build -t $IMAGE_TAG .
             - docker push $IMAGE_TAG
             - docker pull $IMAGE_TAG
+          tags:
+            - "runner-for-#{project.name}"
 
         test:
           image: dwdraju/alpine-curl-jq:latest
@@ -74,7 +76,13 @@ module QA
             - if [ $status_code -ne 200 ]; then exit 1; fi;
             - 'status_code=$(curl --head --output /dev/null --write-out "%{http_code}\n" --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories/$id/tags/master")'
             - if [ $status_code -ne 404 ]; then exit 1; fi;
+          tags:
+            - "runner-for-#{project.name}"
         YAML
+      end
+
+      after do
+        runner.remove_via_api!
       end
 
       it 'pushes, pulls image to the registry and deletes tag',

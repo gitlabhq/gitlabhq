@@ -146,12 +146,6 @@ export default {
       }
       return 'col-12';
     },
-    designContentWrapperClass() {
-      if (this.hasDesigns) {
-        return 'gl-bg-gray-10 gl-border gl-border-t-0 gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-5';
-      }
-      return null;
-    },
   },
   mounted() {
     if (this.$route.path === '/designs') {
@@ -359,6 +353,7 @@ export default {
   <div
     data-testid="designs-root"
     class="gl-mt-4"
+    :class="{ 'gl-new-card': showToolbar }"
     @mouseenter="toggleOnPasteListener"
     @mouseleave="toggleOffPasteListener"
   >
@@ -371,11 +366,7 @@ export default {
     >
       {{ uploadError }}
     </gl-alert>
-    <header
-      v-if="showToolbar"
-      class="gl-border gl-px-5 gl-py-4 gl-display-flex gl-justify-content-space-between gl-bg-white gl-rounded-top-base"
-      data-testid="design-toolbar-wrapper"
-    >
+    <header v-if="showToolbar" class="gl-new-card-header" data-testid="design-toolbar-wrapper">
       <div
         class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full gl-flex-wrap gl-gap-3"
       >
@@ -427,8 +418,13 @@ export default {
         </div>
       </div>
     </header>
-    <div :class="designContentWrapperClass">
-      <gl-loading-icon v-if="isLoading" size="lg" />
+    <div
+      :class="{
+        'gl-mx-5': showToolbar,
+        'gl-new-card-body gl-mx-3!': hasDesigns,
+      }"
+    >
+      <gl-loading-icon v-if="isLoading" size="sm" class="gl-py-4" />
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
         {{ $options.i18n.designLoadingError }}
       </gl-alert>

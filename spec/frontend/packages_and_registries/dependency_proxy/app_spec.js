@@ -6,7 +6,7 @@ import {
   GlFormGroup,
   GlModal,
   GlSprintf,
-  GlEmptyState,
+  GlSkeletonLoader,
 } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -78,7 +78,7 @@ describe('DependencyProxyApp', () => {
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
   const findProxyCountText = () => wrapper.findByTestId('proxy-count');
   const findManifestList = () => wrapper.findComponent(ManifestsList);
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findClearCacheDropdownList = () => wrapper.findComponent(GlDropdown);
   const findClearCacheModal = () => wrapper.findComponent(GlModal);
   const findClearCacheAlert = () => wrapper.findComponent(GlAlert);
@@ -102,9 +102,16 @@ describe('DependencyProxyApp', () => {
 
   describe('when the dependency proxy is available', () => {
     describe('when is loading', () => {
-      it('does not render a form group with label', () => {
+      beforeEach(() => {
         createComponent();
+      });
 
+      it('renders loading component & sets loading prop', () => {
+        expect(findLoader().exists()).toBe(true);
+        expect(findManifestList().props('loading')).toBe(true);
+      });
+
+      it('does not render a form group with label', () => {
         expect(findFormGroup().exists()).toBe(false);
       });
     });
@@ -120,11 +127,15 @@ describe('DependencyProxyApp', () => {
           expect(findFormGroup().attributes('label')).toBe(
             DependencyProxyApp.i18n.proxyImagePrefix,
           );
+          expect(findFormGroup().attributes('labelfor')).toBe('proxy-url');
         });
 
         it('renders a form input group', () => {
           expect(findFormInputGroup().exists()).toBe(true);
+          expect(findFormInputGroup().attributes('id')).toBe('proxy-url');
           expect(findFormInputGroup().props('value')).toBe(proxyData().dependencyProxyImagePrefix);
+          expect(findFormInputGroup().attributes('readonly')).toBeDefined();
+          expect(findFormInputGroup().props('selectOnClick')).toBe(true);
         });
 
         it('form input group has a clipboard button', () => {
@@ -175,23 +186,12 @@ describe('DependencyProxyApp', () => {
               return waitForPromises();
             });
 
-            it('shows the empty state message', () => {
-              expect(findEmptyState().props()).toMatchObject({
-                svgPath: provideDefaults.noManifestsIllustration,
-                title: DependencyProxyApp.i18n.noManifestTitle,
-              });
-            });
-
-            it('hides the list', () => {
-              expect(findManifestList().exists()).toBe(false);
+            it('renders the list', () => {
+              expect(findManifestList().exists()).toBe(true);
             });
           });
 
           describe('when there are manifests', () => {
-            it('hides the empty state message', () => {
-              expect(findEmptyState().exists()).toBe(false);
-            });
-
             it('shows list', () => {
               expect(findManifestList().props()).toMatchObject({
                 dependencyProxyImagePrefix: proxyData().dependencyProxyImagePrefix,
@@ -200,26 +200,58 @@ describe('DependencyProxyApp', () => {
               });
             });
 
-            it('prev-page event on list fetches the previous page', async () => {
-              findManifestList().vm.$emit('prev-page');
-              await waitForPromises();
+            describe('prev-page event on list', () => {
+              beforeEach(() => {
+                findManifestList().vm.$emit('prev-page');
+              });
 
-              expect(resolver).toHaveBeenCalledWith({
-                before: pagination().startCursor,
-                first: null,
-                fullPath: provideDefaults.groupPath,
-                last: GRAPHQL_PAGE_SIZE,
+              describe('while loading', () => {
+                it('does not render loading component & sets loading prop', () => {
+                  expect(findLoader().exists()).toBe(false);
+                  expect(findManifestList().props('loading')).toBe(true);
+                });
+
+                it('renders form group with label', () => {
+                  expect(findFormGroup().exists()).toBe(true);
+                });
+              });
+
+              it('list fetches the previous page', async () => {
+                await waitForPromises();
+
+                expect(resolver).toHaveBeenCalledWith({
+                  before: pagination().startCursor,
+                  first: null,
+                  fullPath: provideDefaults.groupPath,
+                  last: GRAPHQL_PAGE_SIZE,
+                });
               });
             });
 
-            it('next-page event on list fetches the next page', async () => {
-              findManifestList().vm.$emit('next-page');
-              await waitForPromises();
+            describe('next-page event on list', () => {
+              beforeEach(() => {
+                findManifestList().vm.$emit('next-page');
+              });
 
-              expect(resolver).toHaveBeenCalledWith({
-                after: pagination().endCursor,
-                first: GRAPHQL_PAGE_SIZE,
-                fullPath: provideDefaults.groupPath,
+              describe('while loading', () => {
+                it('does not render loading component & sets loading prop', () => {
+                  expect(findLoader().exists()).toBe(false);
+                  expect(findManifestList().props('loading')).toBe(true);
+                });
+
+                it('renders form group with label', () => {
+                  expect(findFormGroup().exists()).toBe(true);
+                });
+              });
+
+              it('fetches the next page', async () => {
+                await waitForPromises();
+
+                expect(resolver).toHaveBeenCalledWith({
+                  after: pagination().endCursor,
+                  first: GRAPHQL_PAGE_SIZE,
+                  fullPath: provideDefaults.groupPath,
+                });
               });
             });
 

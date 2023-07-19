@@ -7,6 +7,7 @@ import { SNIPPET_MAX_LIST_COUNT } from '~/profile/constants';
 import SnippetsTab from '~/profile/components/snippets/snippets_tab.vue';
 import SnippetRow from '~/profile/components/snippets/snippet_row.vue';
 import getUserSnippets from '~/profile/components/graphql/get_user_snippets.query.graphql';
+import { isCurrentUser } from '~/lib/utils/common_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import {
@@ -15,7 +16,13 @@ import {
   MOCK_USER_SNIPPETS_RES,
   MOCK_USER_SNIPPETS_PAGINATION_RES,
   MOCK_USER_SNIPPETS_EMPTY_RES,
+  MOCK_NEW_SNIPPET_PATH,
 } from 'jest/profile/mock_data';
+
+jest.mock('~/lib/utils/common_utils');
+jest.mock('~/helpers/help_page_helper', () => ({
+  helpPagePath: jest.fn().mockImplementation(() => 'http://127.0.0.1:3000/help/user/snippets'),
+}));
 
 Vue.use(VueApollo);
 
@@ -32,6 +39,7 @@ describe('UserProfileSnippetsTab', () => {
       provide: {
         userId: MOCK_USER.id,
         snippetsEmptyState: MOCK_SNIPPETS_EMPTY_STATE,
+        newSnippetPath: MOCK_NEW_SNIPPET_PATH,
       },
     });
   };
@@ -52,9 +60,38 @@ describe('UserProfileSnippetsTab', () => {
       expect(findSnippetRows().exists()).toBe(false);
     });
 
-    it('does render empty state with correct svg', () => {
-      expect(findGlEmptyState().exists()).toBe(true);
-      expect(findGlEmptyState().attributes('svgpath')).toBe(MOCK_SNIPPETS_EMPTY_STATE);
+    describe('when user is the current user', () => {
+      beforeEach(() => {
+        isCurrentUser.mockImplementation(() => true);
+        createComponent();
+      });
+
+      it('displays empty state with correct message', () => {
+        expect(findGlEmptyState().props()).toMatchObject({
+          svgPath: MOCK_SNIPPETS_EMPTY_STATE,
+          title: SnippetsTab.i18n.currentUserEmptyStateTitle,
+          description: SnippetsTab.i18n.emptyStateDescription,
+          primaryButtonLink: MOCK_NEW_SNIPPET_PATH,
+          primaryButtonText: SnippetsTab.i18n.newSnippet,
+          secondaryButtonLink: 'http://127.0.0.1:3000/help/user/snippets',
+          secondaryButtonText: SnippetsTab.i18n.learnMore,
+        });
+      });
+    });
+
+    describe('when user is a visitor', () => {
+      beforeEach(() => {
+        isCurrentUser.mockImplementation(() => false);
+        createComponent();
+      });
+
+      it('displays empty state with correct message', () => {
+        expect(findGlEmptyState().props()).toMatchObject({
+          svgPath: MOCK_SNIPPETS_EMPTY_STATE,
+          title: SnippetsTab.i18n.visitorEmptyStateTitle,
+          description: null,
+        });
+      });
     });
   });
 

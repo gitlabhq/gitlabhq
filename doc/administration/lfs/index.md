@@ -391,9 +391,11 @@ To delete these references:
    ls -al /var/opt/gitlab/gitlab-rails/shared/lfs-objects/00/66/22269c61b41bf14a22bbe0e43be3acf86a4a446afb4250c3794ea47541a7
    ```
 
-1. If the file is not present, remove the database record via the rails console:
+1. If the file is not present, remove the database records via the rails console:
 
    ```ruby
+   # First delete the parent records and then destroy the record itself
+   lfs_object.lfs_objects_projects.destroy_all
    lfs_object.destroy
    ```
 

@@ -2,26 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
+RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching, feature_category: :integrations do
   include ReactiveCachingHelpers
   include StubRequests
 
   let(:bamboo_url) { 'http://gitlab.com/bamboo' }
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { build(:project) }
 
-  subject(:integration) do
-    described_class.create!(
-      active: true,
-      project: project,
-      properties: {
-        bamboo_url: bamboo_url,
-        username: 'mic',
-        password: 'password',
-        build_key: 'foo'
-      }
-    )
-  end
+  subject(:integration) { build(:bamboo_integration, project: project, bamboo_url: bamboo_url) }
 
   it_behaves_like Integrations::BaseCi
 

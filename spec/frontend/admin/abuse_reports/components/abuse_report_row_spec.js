@@ -1,6 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import AbuseReportRow from '~/admin/abuse_reports/components/abuse_report_row.vue';
+import AbuseCategory from '~/admin/abuse_reports/components/abuse_category.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import { SORT_UPDATED_AT } from '~/admin/abuse_reports/constants';
@@ -11,7 +12,8 @@ describe('AbuseReportRow', () => {
   const mockAbuseReport = mockAbuseReports[0];
 
   const findListItem = () => wrapper.findComponent(ListItem);
-  const findTitle = () => wrapper.findByTestId('title');
+  const findAbuseCategory = () => wrapper.findComponent(AbuseCategory);
+  const findAbuseReportTitle = () => wrapper.findByTestId('abuse-report-title');
   const findDisplayedDate = () => wrapper.findByTestId('abuse-report-date');
 
   const createComponent = (props = {}) => {
@@ -35,13 +37,13 @@ describe('AbuseReportRow', () => {
     const { reporter, reportedUser, category, reportPath } = mockAbuseReport;
 
     it('displays correctly formatted title', () => {
-      expect(findTitle().text()).toMatchInterpolatedText(
+      expect(findAbuseReportTitle().text()).toMatchInterpolatedText(
         `${reportedUser.name} reported for ${category} by ${reporter.name}`,
       );
     });
 
     it('links to the details page', () => {
-      expect(findTitle().attributes('href')).toEqual(reportPath);
+      expect(findAbuseReportTitle().attributes('href')).toEqual(reportPath);
     });
 
     describe('when the reportedUser is missing', () => {
@@ -50,7 +52,7 @@ describe('AbuseReportRow', () => {
       });
 
       it('displays correctly formatted title', () => {
-        expect(findTitle().text()).toMatchInterpolatedText(
+        expect(findAbuseReportTitle().text()).toMatchInterpolatedText(
           `Deleted user reported for ${category} by ${reporter.name}`,
         );
       });
@@ -62,7 +64,7 @@ describe('AbuseReportRow', () => {
       });
 
       it('displays correctly formatted title', () => {
-        expect(findTitle().text()).toMatchInterpolatedText(
+        expect(findAbuseReportTitle().text()).toMatchInterpolatedText(
           `${reportedUser.name} reported for ${category} by Deleted user`,
         );
       });
@@ -87,5 +89,9 @@ describe('AbuseReportRow', () => {
         );
       });
     });
+  });
+
+  it('renders abuse category', () => {
+    expect(findAbuseCategory().exists()).toBe(true);
   });
 });

@@ -6,14 +6,19 @@ RSpec.describe Ci::JobsHelper do
   describe 'job helper functions' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:job) { create(:ci_build, project: project) }
+    let_it_be(:user) { create(:user) }
 
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@build, job)
+
+      allow(helper)
+      .to receive(:current_user)
+      .and_return(user)
     end
 
     it 'returns jobs data' do
-      expect(helper.jobs_data).to include({
+      expect(helper.jobs_data(project, job)).to include({
         "endpoint" => "/#{project.full_path}/-/jobs/#{job.id}.json",
         "project_path" => project.full_path,
         "artifact_help_url" => "/help/user/gitlab_com/index.md#gitlab-cicd",

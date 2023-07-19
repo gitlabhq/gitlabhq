@@ -12,6 +12,6 @@
   = render_if_exists 'devise/sessions/new_smartcard'
 
 - if allow_admin_mode_password_authentication_for_web?
-  .login-box.tab-pane.gl-p-5{ id: 'login-pane', role: 'tabpanel', class: active_when(!any_form_based_providers_enabled?) }
+  .login-box.tab-pane{ id: 'login-pane', role: 'tabpanel', class: active_when(!any_form_based_providers_enabled?) }
     .login-body
       = render 'admin/sessions/new_base'

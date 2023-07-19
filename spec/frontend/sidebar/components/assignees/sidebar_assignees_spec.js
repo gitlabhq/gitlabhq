@@ -8,6 +8,7 @@ import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees.v
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
+import eventHub from '~/sidebar/event_hub';
 import Mock from '../../mock_data';
 
 describe('sidebar assignees', () => {
@@ -30,6 +31,9 @@ describe('sidebar assignees', () => {
     });
   };
 
+  const findAssigness = () => wrapper.findComponent(Assigness);
+  const findAssigneesRealtime = () => wrapper.findComponent(AssigneesRealtime);
+
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
     mediator = new SidebarMediator(Mock.mediator);
@@ -50,18 +54,20 @@ describe('sidebar assignees', () => {
 
     expect(mediator.saveAssignees).not.toHaveBeenCalled();
 
-    wrapper.vm.saveAssignees();
+    eventHub.$emit('sidebar.saveAssignees');
 
     expect(mediator.saveAssignees).toHaveBeenCalled();
   });
 
-  it('calls the mediator when "assignSelf" method is called', () => {
+  it('calls the mediator when "assignSelf" method is called', async () => {
     createComponent();
+    mediator.store.isFetching.assignees = false;
+    await nextTick();
 
     expect(mediator.assignYourself).not.toHaveBeenCalled();
     expect(mediator.store.assignees.length).toBe(0);
 
-    wrapper.vm.assignSelf();
+    await findAssigness().vm.$emit('assign-self');
 
     expect(mediator.assignYourself).toHaveBeenCalled();
     expect(mediator.store.assignees.length).toBe(1);
@@ -70,19 +76,19 @@ describe('sidebar assignees', () => {
   it('hides assignees until fetched', async () => {
     createComponent();
 
-    expect(wrapper.findComponent(Assigness).exists()).toBe(false);
+    expect(findAssigness().exists()).toBe(false);
 
-    wrapper.vm.store.isFetching.assignees = false;
+    mediator.store.isFetching.assignees = false;
 
     await nextTick();
-    expect(wrapper.findComponent(Assigness).exists()).toBe(true);
+    expect(findAssigness().exists()).toBe(true);
   });
 
   describe('when issuableType is issue', () => {
     it('finds AssigneesRealtime component', () => {
       createComponent();
 
-      expect(wrapper.findComponent(AssigneesRealtime).exists()).toBe(true);
+      expect(findAssigneesRealtime().exists()).toBe(true);
     });
   });
 
@@ -90,7 +96,7 @@ describe('sidebar assignees', () => {
     it('does not find AssigneesRealtime component', () => {
       createComponent({ issuableType: 'MR' });
 
-      expect(wrapper.findComponent(AssigneesRealtime).exists()).toBe(false);
+      expect(findAssigneesRealtime().exists()).toBe(false);
     });
   });
 });

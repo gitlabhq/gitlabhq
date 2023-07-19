@@ -360,7 +360,6 @@ RSpec.describe ProjectStatistics do
         wiki_size: 4,
         lfs_objects_size: 3,
         snippets_size: 2,
-        pipeline_artifacts_size: 3,
         build_artifacts_size: 3,
         packages_size: 6,
         uploads_size: 5
@@ -368,7 +367,7 @@ RSpec.describe ProjectStatistics do
 
       statistics.reload
 
-      expect(statistics.storage_size).to eq 28
+      expect(statistics.storage_size).to eq 25
     end
 
     it 'excludes the container_registry_size' do
@@ -376,6 +375,18 @@ RSpec.describe ProjectStatistics do
         repository_size: 2,
         uploads_size: 5,
         container_registry_size: 10
+      )
+
+      statistics.reload
+
+      expect(statistics.storage_size).to eq 7
+    end
+
+    it 'excludes the pipeline_artifacts_size' do
+      statistics.update!(
+        repository_size: 2,
+        uploads_size: 5,
+        pipeline_artifacts_size: 10
       )
 
       statistics.reload
@@ -428,7 +439,7 @@ RSpec.describe ProjectStatistics do
         storage_size: 0
       )
 
-      expect { refresh_storage_size }.to change { statistics.reload.storage_size }.from(0).to(28)
+      expect { refresh_storage_size }.to change { statistics.reload.storage_size }.from(0).to(25)
     end
 
     context 'when nullable columns are nil' do
@@ -464,10 +475,9 @@ RSpec.describe ProjectStatistics do
           .by(increment.amount)
       end
 
-      it 'increases also storage size by that amount' do
+      it 'does not increase the storage size by that amount' do
         expect { described_class.increment_statistic(project, stat, increment) }
-          .to change { statistics.reload.storage_size }
-          .by(increment.amount)
+          .not_to change { statistics.reload.storage_size }
       end
 
       it 'schedules a namespace aggregation worker' do
@@ -572,10 +582,9 @@ RSpec.describe ProjectStatistics do
                 .by(total_amount)
       end
 
-      it 'increases also storage size by that amount' do
+      it 'does not increase the storage size by that amount' do
         expect { described_class.bulk_increment_statistic(project, stat, increments) }
-          .to change { statistics.reload.storage_size }
-                .by(total_amount)
+          .not_to change { statistics.reload.storage_size }
       end
 
       it 'schedules a namespace aggregation worker' do

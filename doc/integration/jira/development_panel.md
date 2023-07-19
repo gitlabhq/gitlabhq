@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jira development panel **(FREE)**
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) from GitLab Premium to GitLab Free in 13.4.
-
 You can use the Jira development panel to view GitLab activity for a Jira issue directly in Jira.
 To set up the Jira development panel:
 
@@ -51,9 +49,9 @@ depends on where you mention the Jira issue ID in GitLab.
 
 | GitLab: where you mention the Jira issue ID    | Jira development panel: what information is displayed |
 |------------------------------------------------|-------------------------------------------------------|
-| Merge request title or description             | Link to the merge request<br>Link to the branch ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11) |
-| Branch name                                    | Link to the branch                                    |
-| Commit message                                 | Link to the commit                                    |
+| Merge request title or description             | Link to the merge request<br>Link to the deployment<br>Link to the pipeline by title only and by description ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390888) in GitLab 15.10)<br>Link to the branch ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11) |
+| Branch name                                    | Link to the branch<br>Link to the deployment                                    |
+| Commit message                                 | Link to the commit<br>Link to the deployment from up to 5,000 commits after the last successful deployment to the environment ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `jira_deployment_issue_keys`. Enabled by default) |
 | [Jira Smart Commit](#jira-smart-commits)       | Custom comment, logged time, or workflow transition   |
 
 ## Jira Smart Commits
@@ -93,7 +91,6 @@ For more information about how Smart Commits work and what commands are availabl
 - [Process issues with Smart Commits](https://support.atlassian.com/jira-software-cloud/docs/process-issues-with-smart-commits/)
 - [Using Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html)
 
-## Troubleshooting
+## Related topics
 
-To troubleshoot the Jira development panel on your own server, see the
-[Atlassian documentation](https://confluence.atlassian.com/jirakb/troubleshoot-the-development-panel-in-jira-server-574685212.html).
+- [Troubleshoot the development panel in Jira Server](https://confluence.atlassian.com/jirakb/troubleshoot-the-development-panel-in-jira-server-574685212.html)

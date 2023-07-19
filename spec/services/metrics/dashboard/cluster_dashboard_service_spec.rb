@@ -36,7 +36,7 @@ RSpec.describe Metrics::Dashboard::ClusterDashboardService, :use_clean_rails_mem
   end
 
   describe '#get_dashboard' do
-    let(:service_params) { [project, user, { cluster: cluster, cluster_type: :project }] }
+    let(:service_params) { [project, user, { cluster: cluster, cluster_type: :admin }] }
     let(:service_call) { subject.get_dashboard }
 
     subject { described_class.new(*service_params) }

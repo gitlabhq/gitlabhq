@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert do
     let(:inserter) { instance_double(described_class) }
 
     it 'delegates to bulk insert class' do
-      expect(Gitlab::Ci::Tags::BulkInsert)
+      expect(described_class)
         .to receive(:new)
         .with(statuses)
         .and_return(inserter)

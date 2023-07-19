@@ -4,7 +4,7 @@
 
 # Taken from Jekyll
 # https://github.com/jekyll/jekyll/blob/3.5-stable/lib/jekyll/document.rb#L13
-YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m.freeze
+YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
 READ_LIMIT_BYTES = 1024
 
 require 'yaml'

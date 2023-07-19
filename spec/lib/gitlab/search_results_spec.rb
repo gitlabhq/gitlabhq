@@ -302,18 +302,6 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
         results.objects('users')
       end
-
-      context 'when autocomplete_users_use_search_service feature flag is disabled' do
-        before do
-          stub_feature_flags(autocomplete_users_use_search_service: false)
-        end
-
-        it 'calls the UsersFinder without use_minimum_char_limit' do
-          expect(UsersFinder).to receive(:new).with(user, search: 'foo').and_call_original
-
-          results.objects('users')
-        end
-      end
     end
   end
 

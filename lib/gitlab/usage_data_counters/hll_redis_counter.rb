@@ -15,14 +15,7 @@ module Gitlab
       # Track event on entity_id
       # Increment a Redis HLL counter for unique event_name and entity_id
       #
-      # All events should be added to known_events yml files lib/gitlab/usage_data_counters/known_events/
-      #
-      # Event example:
-      #
-      # - name: g_compliance_dashboard # Unique event name
-      #
       # Usage:
-      #
       # * Track event: Gitlab::UsageDataCounters::HLLRedisCounter.track_event('g_compliance_dashboard', values: user_id)
       # * Get unique counts per user: Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'g_compliance_dashboard', start_date: 28.days.ago, end_date: Date.current)
       class << self
@@ -119,8 +112,18 @@ module Gitlab
         end
 
         def load_events(wildcard)
-          Dir[wildcard].each_with_object([]) do |path, events|
-            events.push(*load_yaml_from_path(path))
+          if Feature.enabled?(:use_metric_definitions_for_events_list)
+            events = Gitlab::Usage::MetricDefinition.not_removed.values.map do |d|
+              d.attributes[:options] && d.attributes[:options][:events]
+            end.flatten.compact.uniq
+
+            events.map do |e|
+              { name: e }.with_indifferent_access
+            end
+          else
+            Dir[wildcard].each_with_object([]) do |path, events|
+              events.push(*load_yaml_from_path(path))
+            end
           end
         end
 
@@ -129,7 +132,7 @@ module Gitlab
         end
 
         def known_events_names
-          known_events.map { |event| event[:name] }
+          @known_events_names ||= known_events.map { |event| event[:name] }
         end
 
         def event_for(event_name)

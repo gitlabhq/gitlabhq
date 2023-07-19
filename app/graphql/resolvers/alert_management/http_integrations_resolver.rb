@@ -35,7 +35,7 @@ module Resolvers
       end
 
       def http_integrations
-        ::AlertManagement::HttpIntegrationsFinder.new(project, {}).execute
+        ::AlertManagement::HttpIntegrationsFinder.new(project, { type_identifier: :http }).execute
       end
     end
   end

@@ -164,7 +164,7 @@ blocked the pipeline, or allowed the wrong pipeline type.
 
 ### Pipeline with many jobs fails to start
 
-A Pipeline that has more jobs than the instance's defined [CI/CD limits](../user/admin_area/settings/continuous_integration.md#set-cicd-limits)
+A Pipeline that has more jobs than the instance's defined [CI/CD limits](../administration/settings/continuous_integration.md#set-cicd-limits)
 fails to start.
 
 To reduce the number of jobs in your pipeline, you can split your `.gitlab-ci.yml`

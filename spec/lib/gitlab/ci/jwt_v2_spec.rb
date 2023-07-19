@@ -62,6 +62,23 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
     end
 
     describe 'custom claims' do
+      let(:project_config) do
+        instance_double(
+          Gitlab::Ci::ProjectConfig,
+          url: 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml',
+          source: :repository_source
+        )
+      end
+
+      before do
+        allow(Gitlab::Ci::ProjectConfig).to receive(:new).with(
+          project: project,
+          sha: pipeline.sha,
+          pipeline_source: pipeline.source.to_sym,
+          pipeline_source_bridge: pipeline.source_bridge
+        ).and_return(project_config)
+      end
+
       describe 'runner_id' do
         it 'is the ID of the runner executing the job' do
           expect(payload[:runner_id]).to eq(runner.id)
@@ -113,23 +130,6 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
       end
 
       describe 'ci_config_ref_uri' do
-        let(:project_config) do
-          instance_double(
-            Gitlab::Ci::ProjectConfig,
-            url: 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml',
-            source: :repository_source
-          )
-        end
-
-        before do
-          allow(Gitlab::Ci::ProjectConfig).to receive(:new).with(
-            project: project,
-            sha: pipeline.sha,
-            pipeline_source: pipeline.source.to_sym,
-            pipeline_source_bridge: pipeline.source_bridge
-          ).and_return(project_config)
-        end
-
         it 'joins project_config.url and pipeline.source_ref_path with @' do
           expect(payload[:ci_config_ref_uri]).to eq('gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml' \
                                                     '@refs/heads/auto-deploy-2020-03-19')
@@ -165,13 +165,29 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
           end
         end
 
-        context 'when ci_jwt_v2_ci_config_ref_uri_claim flag is disabled' do
+        context 'when config source is not repository' do
           before do
-            stub_feature_flags(ci_jwt_v2_ref_uri_claim: false)
+            allow(project_config).to receive(:source).and_return(:auto_devops_source)
           end
 
           it 'is nil' do
             expect(payload[:ci_config_ref_uri]).to be_nil
+          end
+        end
+      end
+
+      describe 'ci_config_sha' do
+        it 'is the SHA of the pipeline' do
+          expect(payload[:ci_config_sha]).to eq(pipeline.sha)
+        end
+
+        context 'when project config is nil' do
+          before do
+            allow(Gitlab::Ci::ProjectConfig).to receive(:new).and_return(nil)
+          end
+
+          it 'is nil' do
+            expect(payload[:ci_config_sha]).to be_nil
           end
         end
 
@@ -181,7 +197,7 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
           end
 
           it 'is nil' do
-            expect(payload[:ci_config_ref_uri]).to be_nil
+            expect(payload[:ci_config_sha]).to be_nil
           end
         end
       end

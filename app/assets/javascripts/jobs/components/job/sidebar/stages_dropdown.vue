@@ -161,6 +161,11 @@ export default {
       </gl-sprintf>
     </div>
 
-    <gl-disclosure-dropdown :toggle-text="selectedStage" :items="dropdownItems" class="gl-mt-3" />
+    <gl-disclosure-dropdown
+      :toggle-text="selectedStage"
+      :items="dropdownItems"
+      block
+      class="gl-mt-3"
+    />
   </div>
 </template>

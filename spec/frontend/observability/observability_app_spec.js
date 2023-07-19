@@ -1,4 +1,5 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import ObservabilityApp from '~/observability/components/observability_app.vue';
 import ObservabilitySkeleton from '~/observability/components/skeleton/index.vue';
 import {
@@ -21,7 +22,7 @@ describe('ObservabilityApp', () => {
     query: { otherQuery: 100 },
   };
 
-  const mockHandleSkeleton = jest.fn();
+  const mockSkeletonOnContentLoaded = jest.fn();
 
   const findIframe = () => wrapper.findByTestId('observability-ui-iframe');
 
@@ -36,7 +37,9 @@ describe('ObservabilityApp', () => {
         ...props,
       },
       stubs: {
-        'observability-skeleton': ObservabilitySkeleton,
+        ObservabilitySkeleton: stubComponent(ObservabilitySkeleton, {
+          methods: { onContentLoaded: mockSkeletonOnContentLoaded },
+        }),
       },
       mocks: {
         $route,
@@ -155,14 +158,14 @@ describe('ObservabilityApp', () => {
   describe('on GOUI_LOADED', () => {
     beforeEach(() => {
       mountComponent();
-      wrapper.vm.$refs.observabilitySkeleton.onContentLoaded = mockHandleSkeleton;
     });
+
     it('should call onContentLoaded method', () => {
       dispatchMessageEvent({
         data: { type: MESSAGE_EVENT_TYPE.GOUI_LOADED },
         origin: 'https://observe.gitlab.com',
       });
-      expect(mockHandleSkeleton).toHaveBeenCalled();
+      expect(mockSkeletonOnContentLoaded).toHaveBeenCalled();
     });
 
     it('should not call onContentLoaded method if origin is different', () => {
@@ -170,7 +173,7 @@ describe('ObservabilityApp', () => {
         data: { type: MESSAGE_EVENT_TYPE.GOUI_LOADED },
         origin: 'https://example.com',
       });
-      expect(mockHandleSkeleton).not.toHaveBeenCalled();
+      expect(mockSkeletonOnContentLoaded).not.toHaveBeenCalled();
     });
 
     it('should not call onContentLoaded method if event type is different', () => {
@@ -178,7 +181,7 @@ describe('ObservabilityApp', () => {
         data: { type: 'UNKNOWN_EVENT' },
         origin: 'https://observe.gitlab.com',
       });
-      expect(mockHandleSkeleton).not.toHaveBeenCalled();
+      expect(mockSkeletonOnContentLoaded).not.toHaveBeenCalled();
     });
   });
 

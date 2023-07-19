@@ -253,6 +253,10 @@ module QA
         enabled?(ENV['USE_SELENOID'], default: false)
       end
 
+      def save_all_videos?
+        enabled?(ENV['QA_SAVE_ALL_VIDEOS'], default: false)
+      end
+
       def require_video_variables!
         docs_link = 'https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/running_against_remote_grid.md#testing-with-selenoid'
         use_selenoid? || (raise ArgumentError, "USE_SELENOID is required! See docs: #{docs_link}")
@@ -280,6 +284,14 @@ module QA
 
       def github_password
         ENV['QA_GITHUB_PASSWORD']
+      end
+
+      def facebook_username
+        ENV['QA_FACEBOOK_USERNAME']
+      end
+
+      def facebook_password
+        ENV['QA_FACEBOOK_PASSWORD']
       end
 
       def forker?
@@ -444,6 +456,10 @@ module QA
         ENV['QA_GITHUB_ACCESS_TOKEN'].to_s.strip
       end
 
+      def github_additional_access_tokens
+        ENV['QA_ADDITIONAL_GITHUB_ACCESS_TOKENS']
+      end
+
       def require_github_access_token!
         return unless github_access_token.empty?
 
@@ -558,6 +574,10 @@ module QA
         ENV.fetch('QA_CONTAINER_REGISTRY_HOST', 'registry.gitlab.com')
       end
 
+      def runner_container_image
+        ENV.fetch('QA_RUNNER_CONTAINER_IMAGE', 'gitlab-runner:alpine')
+      end
+
       # ENV variables for authenticating against a private container registry
       # These need to be set if using the
       # Service::DockerRun::Mixins::ThirdPartyDocker module
@@ -620,6 +640,10 @@ module QA
 
       def one_p_github_uuid
         ENV['QA_1P_GITHUB_UUID']
+      end
+
+      def gdk_url
+        ENV['GDK_URL']
       end
 
       private

@@ -13,28 +13,48 @@ module BulkImports
     end
 
     def started?
-      !empty? && export_status['status'] == Export::STARTED
+      !empty? && status['status'] == Export::STARTED
     end
 
     def failed?
-      !empty? && export_status['status'] == Export::FAILED
+      !empty? && status['status'] == Export::FAILED
     end
 
     def empty?
-      export_status.nil?
+      status.nil?
     end
 
     def error
-      export_status['error']
+      status['error']
+    end
+
+    def batched?
+      status['batched'] == true
+    end
+
+    def batches_count
+      status['batches_count'].to_i
+    end
+
+    def batch(batch_number)
+      raise ArgumentError if batch_number < 1
+
+      return unless batched?
+
+      status['batches'].find { |item| item['batch_number'] == batch_number }
     end
 
     private
 
     attr_reader :client, :entity, :relation, :pipeline_tracker
 
-    def export_status
-      strong_memoize(:export_status) do
-        fetch_export_status&.find { |item| item['relation'] == relation }
+    def status
+      strong_memoize(:status) do
+        status = fetch_status
+
+        next status if status.is_a?(Hash) || status.nil?
+
+        status.find { |item| item['relation'] == relation }
       rescue BulkImports::NetworkError => e
         raise BulkImports::RetryPipelineError.new(e.message, 2.seconds) if e.retriable?(pipeline_tracker)
 
@@ -44,12 +64,12 @@ module BulkImports
       end
     end
 
-    def fetch_export_status
-      client.get(status_endpoint).parsed_response
+    def fetch_status
+      client.get(status_endpoint, relation: relation).parsed_response
     end
 
     def status_endpoint
-      File.join(entity.export_relations_url_path, 'status')
+      File.join(entity.export_relations_url_path_base, 'status')
     end
 
     def default_error_response(message)

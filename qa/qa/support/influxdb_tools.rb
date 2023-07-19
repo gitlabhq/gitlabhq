@@ -48,20 +48,21 @@ module QA
       #
       # @return [String, nil]
       def run_type
-        @run_type ||= begin
-          return env('QA_RUN_TYPE') if env('QA_RUN_TYPE')
-          return unless LIVE_ENVS.include?(ci_project_name)
+        @run_type ||= if env('QA_RUN_TYPE')
+                        env('QA_RUN_TYPE')
+                      elsif LIVE_ENVS.exclude?(ci_project_name)
+                        nil
+                      else
+                        test_subset = if env('NO_ADMIN') == 'true'
+                                        'sanity-no-admin'
+                                      elsif env('SMOKE_ONLY') == 'true'
+                                        'sanity'
+                                      else
+                                        'full'
+                                      end
 
-          test_subset = if env('NO_ADMIN') == 'true'
-                          'sanity-no-admin'
-                        elsif env('SMOKE_ONLY') == 'true'
-                          'sanity'
-                        else
-                          'full'
-                        end
-
-          "#{ci_project_name}-#{test_subset}"
-        end
+                        "#{ci_project_name}-#{test_subset}"
+                      end
       end
 
       # Merge request iid

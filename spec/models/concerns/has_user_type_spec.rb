@@ -15,7 +15,7 @@ RSpec.describe User, feature_category: :system_access do
 
   describe 'validations' do
     it 'validates type presence' do
-      expect(User.new).to validate_presence_of(:user_type)
+      expect(described_class.new).to validate_presence_of(:user_type)
     end
   end
 

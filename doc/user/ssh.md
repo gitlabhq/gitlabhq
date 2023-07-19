@@ -76,7 +76,7 @@ must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later 
 
 Available documentation suggests ED25519 is more secure than RSA.
 
-If you use an RSA key, the US National Institute of Science and Technology in
+If you use an RSA key, the US National Institute of Standards and Technology in
 [Publication 800-57 Part 3 (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf)
 recommends a key size of at least 2048 bits. The default key size depends on your version of `ssh-keygen`.
 Review the `man` page for your installed `ssh-keygen` command for details.
@@ -336,7 +336,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    In:
    - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent
      you from using the key. Administrators can view expiration dates and use them for
-     guidance when [deleting keys](admin_area/credentials_inventory.md#delete-a-users-ssh-key).
+     guidance when [deleting keys](../administration/credentials_inventory.md#delete-a-users-ssh-key).
    - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
    - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
 1. Select **Add key**.

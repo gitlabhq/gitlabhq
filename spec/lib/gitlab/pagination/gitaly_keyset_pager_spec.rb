@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
         context 'when next page could be available' do
           let(:branches) { [branch1, branch2] }
 
-          let(:expected_next_page_link) { %Q(<#{incoming_api_projects_url}?#{query.merge(page_token: branch2.name).to_query}>; rel="next") }
+          let(:expected_next_page_link) { %(<#{incoming_api_projects_url}?#{query.merge(page_token: branch2.name).to_query}>; rel="next") }
 
           it 'uses keyset pagination and adds link headers' do
             expect(request_context).to receive(:header).with('Link', expected_next_page_link)

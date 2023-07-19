@@ -35,7 +35,7 @@ When importing projects:
 - The organization the repository belongs to must not impose restrictions of a [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions) on the GitLab instance you import to.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of the import process, see [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
+For an overview of the import process, see [How to migrate from GitHub to GitLab including Actions](https://www.youtube.com/watch?v=0Id5oMl1Kqs).
 
 ## Prerequisites
 
@@ -43,7 +43,7 @@ For an overview of the import process, see [Migrating from GitHub to GitLab](htt
 
 To import projects from GitHub:
 
-- [GitHub import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
+- [GitHub import source](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The GitHub import source is enabled
   by default on GitLab.com.
 - You must have at least the Maintainer role on the destination group to import to.
@@ -68,7 +68,7 @@ If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
 - You must first enable the [GitHub integration](../../../integration/github.md).
 - GitHub must be enabled as an import source in the
-  [Admin Area](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+  [Admin Area](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
 - For GitLab 15.10 and earlier, you must add `github.com` and `api.github.com` entries in the
   [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
@@ -78,7 +78,7 @@ If you are importing from GitHub.com to a self-managed GitLab instance:
 
 - You don't need to enable the [GitHub integration](../../../integration/github.md).
 - GitHub must be enabled as an import source in the
-  [Admin Area](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+  [Admin Area](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
 
 ## Import your GitHub repository into GitLab
 
@@ -96,9 +96,11 @@ NOTE:
 If you are using a self-managed GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
 [GitHub integration](../../../integration/github.md).
 
-1. From the top navigation bar, select **+** and select **New project**.
-1. Select the **Import project** tab and then select **GitHub**.
-1. Select the first button to **List your GitHub repositories**. You are redirected to a page on [GitHub](https://github.com) to authorize the GitLab application.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. Select **Import project** and then **GitHub**.
+1. Now you can either:
+   - Add a personal access token and select **Authenticate**.
+   - If GitHub is [configured](../../../integration/github.md) for the instance, select **Authorize with GitHub**.
 1. Select **Authorize GitlabHQ**. You are redirected back to the GitLab Import page and all of your GitHub repositories are listed.
 1. Continue on to [selecting which repositories to import](#select-which-repositories-to-import).
 

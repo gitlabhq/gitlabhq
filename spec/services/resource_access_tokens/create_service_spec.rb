@@ -199,16 +199,14 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
               end
             end
 
-            context 'expiry of the project bot member' do
-              it 'project bot membership does not expire' do
-                response = subject
-                access_token = response.payload[:access_token]
-                project_bot = access_token.user
+            it 'project bot membership expires when PAT expires' do
+              response = subject
+              access_token = response.payload[:access_token]
+              project_bot = access_token.user
 
-                expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(
-                  max_pat_access_token_lifetime.to_date
-                )
-              end
+              expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(
+                max_pat_access_token_lifetime.to_date
+              )
             end
           end
 

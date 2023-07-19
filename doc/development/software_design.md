@@ -139,3 +139,165 @@ end
 
 If classes that are defined into a namespace have a lot in common with classes in other namespaces,
 chances are that these two namespaces are part of the same bounded context.
+
+## Taming Omniscient classes
+
+We must consider not adding new data and behavior to [omniscient classes](https://en.wikipedia.org/wiki/God_object) (also known as god objects).
+We consider `Project`, `User`, `MergeRequest`, `Ci::Pipeline` and any classes above 1000 LOC to be omniscient.
+
+Such classes are overloaded with responsibilities. New data and behavior can most of the time be added
+as a separate and dedicated class.
+
+Guidelines:
+
+- If you mostly need a reference to the object ID (for example `Project#id`) you could add a new model
+  that uses the foreign key or a thin wrapper around the object to add special behavior.
+- If you find out that by adding a method to the omniscient class you also end up adding a couple of other methods
+  (private or public) it's a sign that these methods should be encapsulated in a dedicated class.
+- It's temping to add a method to `Project` because that's the starting point of data and associations.
+  Try to define behavior in the bounded context where it belongs, not where the data (or some of it) is.
+  This helps creating facets of the omniscient object that are much more relevant in the bounded context than
+  having generic and overloaded objects which bring more coupling and complexity.
+
+### Example: Define a thin domain object around a generic model
+
+Instead of adding multiple methods to `User` because it has an association to `abuse_trust_scores`,
+try inverting the dependency.
+
+```ruby
+##
+# BAD: Behavior added to User object.
+class User
+  def spam_score
+    abuse_trust_scores.spamcheck.average(:score) || 0.0
+  end
+
+  def spammer?
+    # Warning sign: we use a constant that belongs to a specific bounded context!
+    spam_score > Abuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
+  end
+
+  def telesign_score
+    abuse_trust_scores.telesign.recent_first.first&.score || 0.0
+  end
+
+  def arkose_global_score
+    abuse_trust_scores.arkose_global_score.recent_first.first&.score || 0.0
+  end
+
+  def arkose_custom_score
+    abuse_trust_scores.arkose_custom_score.recent_first.first&.score || 0.0
+  end
+end
+
+# Usage:
+user = User.find(1)
+user.spam_score
+user.telesign_score
+user.arkose_global_score
+```
+
+```ruby
+##
+# GOOD: Define a thin class that represents a user trust score
+class Abuse::UserTrustScore
+  def initialize(user)
+    @user = user
+  end
+
+  def spam
+    scores.spamcheck.average(:score) || 0.0
+  end
+
+  def spammer?
+    spam > Abuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
+  end
+
+  def telesign
+    scores.telesign.recent_first.first&.score || 0.0
+  end
+
+  def arkose_global
+    scores.arkose_global_score.recent_first.first&.score || 0.0
+  end
+
+  def arkose_custom
+    scores.arkose_custom_score.recent_first.first&.score || 0.0
+  end
+
+  private
+
+  def scores
+    Abuse::TrustScore.for_user(@user)
+  end
+end
+
+# Usage:
+user = User.find(1)
+user_score = Abuse::UserTrustScore.new(user)
+user_score.spam
+user_score.spammer?
+user_score.telesign
+user_score.arkose_global
+```
+
+See a real example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117853#note_1423070054).  
+
+### Example: Use Dependency Inversion to extract a domain concept
+
+```ruby
+## 
+# BAD: methods related to integrations defined in Project.
+class Project
+  has_many :integrations
+
+  def find_or_initialize_integrations
+    # ...
+  end
+
+  def find_or_initialize_integration(name)
+    # ...
+  end
+
+  def disabled_integrations
+    # ...
+  end
+
+  def ci_integrations
+    # ...
+  end
+
+  # many more methods...
+end
+```
+
+```ruby
+##
+# GOOD: All logic related to Integrations is enclosed inside the `Integrations::`
+# bounded context.
+module Integrations
+  class ProjectIntegrations
+    def initialize(project)
+      @project = project
+    end
+
+    def all_integrations
+      @project.integrations # can still leverage caching of AR associations
+    end
+
+    def find_or_initialize(name)
+      # ...
+    end
+
+    def all_disabled
+      all_integrations.disabled
+    end
+
+    def all_ci
+      all_integrations.ci_integration
+    end
+  end
+end
+```
+
+Real example of [similar refactoring](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92985).

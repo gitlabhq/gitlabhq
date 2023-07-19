@@ -31,6 +31,7 @@ export default {
     onCopy() {
       // value already in the clipboard, simply notify the user
       this.$toast?.show(s__('Runners|Registration token copied!'));
+      this.$emit('copy');
     },
   },
   I18N_COPY_BUTTON_TITLE: s__('Runners|Copy registration token'),

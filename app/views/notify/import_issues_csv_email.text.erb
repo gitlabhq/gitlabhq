@@ -9,3 +9,20 @@ Errors found on line <%= 'number'.pluralize(@results[:error_lines].size) %>: <%=
 <% if @results[:parse_error] %>
 Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values.
 <% end %>
+
+<% preprocess_errors = @results[:preprocess_errors] %>
+<%
+  if preprocess_errors.present?
+    missing_milestone_errors = preprocess_errors.dig(:milestone_errors, :missing) || []
+%>
+
+  <% if missing_milestone_errors.present? %>
+    <%= s_('Notify|Could not find the following %{column} values in %{project}%{parent_groups_clause}: %{error_lines}') % { error_lines: missing_milestone_errors[:titles].join(', '),
+          column: missing_milestone_errors[:header].downcase, project: @project.full_name,
+          parent_groups_clause: @project.group.present? ? ' or its parent groups' : ''} %>
+  <% end %>
+<% end %>
+
+<% if @results[:error_lines].present? || preprocess_errors.present? %>
+  <%= s_('Notify|Please fix the errors above and try the CSV import again.') %>
+<% end %>

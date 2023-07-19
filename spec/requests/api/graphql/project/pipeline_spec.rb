@@ -337,16 +337,33 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
     end
   end
 
-  context 'N+1 queries on pipeline jobs' do
+  context 'N+1 queries on pipeline jobs.previousStageJobsOrNeeds' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
     let(:fields) do
       <<~FIELDS
-      jobs {
+      stages {
         nodes {
-          previousStageJobsAndNeeds {
+          groups {
             nodes {
-              name
+              jobs {
+                nodes {
+                  previousStageJobsOrNeeds {
+                    nodes {
+                      ... on JobNeedUnion {
+                        ... on CiBuildNeed {
+                          id
+                          name
+                        }
+                        ... on CiJob {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -357,13 +374,15 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
     it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
       build_stage = create(:ci_stage, position: 1, name: 'build', project: project, pipeline: pipeline)
       test_stage = create(:ci_stage, position: 2, name: 'test', project: project, pipeline: pipeline)
-      create(:ci_build, pipeline: pipeline, name: 'docker 1 2', ci_stage: build_stage)
+
+      docker_1_2 = create(:ci_build, pipeline: pipeline, name: 'docker 1 2', ci_stage: build_stage)
       create(:ci_build, pipeline: pipeline, name: 'docker 2 2', ci_stage: build_stage)
       create(:ci_build, pipeline: pipeline, name: 'rspec 1 2', ci_stage: test_stage)
-      test_job = create(:ci_build, pipeline: pipeline, name: 'rspec 2 2', ci_stage: test_stage)
-      create(:ci_build_need, build: test_job, name: 'docker 1 2')
+      create(:ci_build, :dependent, needed: docker_1_2, pipeline: pipeline, name: 'rspec 2 2', ci_stage: test_stage)
 
+      # warm up
       post_graphql(query, current_user: current_user)
+      expect_graphql_errors_to_be_empty
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)
@@ -371,7 +390,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
 
       create(:ci_build, name: 'test-a', ci_stage: test_stage, pipeline: pipeline)
       test_b_job = create(:ci_build, name: 'test-b', ci_stage: test_stage, pipeline: pipeline)
-      create(:ci_build_need, build: test_b_job, name: 'docker 2 2')
+      create(:ci_build, :dependent, needed: test_b_job, pipeline: pipeline, name: 'docker 2 2', ci_stage: test_stage)
 
       expect do
         post_graphql(query, current_user: current_user)
@@ -424,6 +443,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
 
       # warm up
       post_graphql(query, current_user: current_user)
+      expect_graphql_errors_to_be_empty
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)

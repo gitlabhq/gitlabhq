@@ -577,17 +577,6 @@
     width: 1%;
   }
 
-  .metrics-embed {
-    h3.popover-header {
-      /** Override <h3> .popover-header
-      * as embed metrics do not follow the same
-      * style as default md <h3> (which are deeply nested)
-      */
-      margin: 0;
-      font-size: $gl-font-size-small;
-    }
-  }
-
   .gl-dropdown-item {
     margin: 0;
     padding: 0;

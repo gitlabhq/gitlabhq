@@ -108,3 +108,12 @@ Check [`production.log`](../../administration/logs/index.md#productionlog) to se
 ```
 
 If that's the case, ensure the **Due date** field is visible for issues in the integrated Jira project.
+
+## `An error occurred while requesting data from Jira` when viewing the Jira issues list in GitLab
+
+You might see a `An error occurred while requesting data from Jira` message when you attempt to view the Jira issues list in GitLab.
+
+You can see this error when the authentication details in the Jira integration settings are incomplete or incorrect.
+
+To attempt to resolve this error, try [configuring the integration](configure.md#configure-the-integration) again. Verify that the
+authentication details are correct, re-enter your API token or password, and save your changes.

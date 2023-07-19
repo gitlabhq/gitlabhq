@@ -47,6 +47,7 @@ eslint-report.html
 /config/puma.rb
 /config/secrets.yml
 /config/sidekiq.yml
+/config/click_house.yml
 /config/registry.key
 /coverage/*
 /db/*.sqlite3

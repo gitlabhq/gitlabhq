@@ -31,8 +31,9 @@ module NextInstanceOf
       receive_new.exactly(number).times
     end
 
-    target.to receive_new.and_wrap_original do |method, *original_args|
-      method.call(*original_args).tap(&blk)
+    target.to receive_new.and_wrap_original do |*original_args, **original_kwargs|
+      method, *original_args = original_args
+      method.call(*original_args, **original_kwargs).tap(&blk)
     end
   end
 end

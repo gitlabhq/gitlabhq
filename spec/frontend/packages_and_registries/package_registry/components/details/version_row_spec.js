@@ -1,5 +1,13 @@
-import { GlDropdownItem, GlFormCheckbox, GlIcon, GlLink, GlSprintf, GlTruncate } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlFormCheckbox,
+  GlIcon,
+  GlLink,
+  GlSprintf,
+  GlTruncate,
+} from '@gitlab/ui';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
@@ -24,10 +32,16 @@ describe('VersionRow', () => {
   const findPackageName = () => wrapper.findComponent(GlTruncate);
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
   const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
-  const findDeleteDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findDeleteDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
-  function createComponent({ packageEntity = packageVersion, selected = false } = {}) {
-    wrapper = shallowMountExtended(VersionRow, {
+  function createComponent(options = {}) {
+    const {
+      mountFn = shallowMountExtended,
+      packageEntity = packageVersion,
+      selected = false,
+    } = options;
+
+    wrapper = mountFn(VersionRow, {
       propsData: {
         packageEntity,
         selected,
@@ -35,6 +49,7 @@ describe('VersionRow', () => {
       stubs: {
         GlSprintf,
         GlTruncate,
+        GlDisclosureDropdown,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -100,9 +115,7 @@ describe('VersionRow', () => {
     });
 
     it('renders checkbox in selected state if selected', () => {
-      createComponent({
-        selected: true,
-      });
+      createComponent({ selected: true });
 
       expect(findBulkDeleteAction().attributes('checked')).toBe('true');
       expect(findListItem().props('selected')).toBe(true);
@@ -116,19 +129,16 @@ describe('VersionRow', () => {
       expect(findDeleteDropdownItem().exists()).toBe(false);
     });
 
-    it('exists and has the correct props', () => {
+    it('exists', () => {
       createComponent();
 
       expect(findDeleteDropdownItem().exists()).toBe(true);
-      expect(findDeleteDropdownItem().attributes()).toMatchObject({
-        variant: 'danger',
-      });
     });
 
-    it('emits the delete event when the delete button is clicked', () => {
-      createComponent();
+    it('emits the delete event when the delete button is clicked', async () => {
+      createComponent({ mountFn: mountExtended });
 
-      findDeleteDropdownItem().vm.$emit('click');
+      await findDeleteDropdownItem().find('button').trigger('click');
 
       expect(wrapper.emitted('delete')).toHaveLength(1);
     });

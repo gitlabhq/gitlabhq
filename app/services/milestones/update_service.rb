@@ -13,10 +13,21 @@ module Milestones
       end
 
       if params.present?
-        milestone.update(params.except(:state_event))
+        milestone.assign_attributes(params.except(:state_event))
       end
 
+      if milestone.changed?
+        before_update(milestone)
+      end
+
+      milestone.save
       milestone
+    end
+
+    private
+
+    def before_update(milestone)
+      milestone.check_for_spam(user: current_user, action: :update)
     end
   end
 end

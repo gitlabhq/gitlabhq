@@ -169,7 +169,10 @@ module Gitlab
             }
             logger.info(message: 'Creating build', **build_attrs)
 
-            ::Ci::Build.new(importing: true, **build_attrs).tap(&:save!)
+            ::Ci::Build.transaction do
+              build = ::Ci::Build.new(importing: true, **build_attrs).tap(&:save!)
+              ::Ci::RunningBuild.upsert_shared_runner_build!(build) if build.running? && build.shared_runner_build?
+            end
           end
 
           def random_pipeline_status

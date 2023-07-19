@@ -695,7 +695,7 @@ Additional configuration may be needed for connecting to private registries for:
 
 Prior to GitLab 13.3, offline environments required an exact name match for [project policies](../license_approval_policies.md).
 In GitLab 13.3 and later, GitLab matches the name of [project policies](../license_approval_policies.md)
-with identifiers from the [SPDX license list](https://spdx.org/licenses/).
+with license names from the [SPDX license list](https://spdx.org/licenses/).
 A local copy of the SPDX license list is distributed with the GitLab instance. If needed, the GitLab
 instance's administrator can manually update it with a [Rake task](../../../raketasks/spdx.md).
 
@@ -705,9 +705,9 @@ We recommend that you use the most recent version of all containers, and the mos
 
 ## Troubleshooting
 
-### ASDF_PYTHON_VERSION does not automatically install the version
+### `ASDF_PYTHON_VERSION` does not automatically install the version
 
-Defining a non-latest Python version in ASDF_PYTHON_VERSION [doesn't have it automatically installed](https://gitlab.com/gitlab-org/gitlab/-/issues/325604). If your project requires a non-latest version of Python:
+Defining a non-latest Python version in `ASDF_PYTHON_VERSION` [doesn't have it automatically installed](https://gitlab.com/gitlab-org/gitlab/-/issues/325604). If your project requires a non-latest version of Python:
 
 1. Define the required version by setting the `ASDF_PYTHON_VERSION` CI/CD variable.
 1. Pass a custom script to the `SETUP_CMD` CI/CD variable to install the required version and dependencies.

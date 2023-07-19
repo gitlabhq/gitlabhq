@@ -378,6 +378,91 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
+  describe '#variables' do
+    it 'returns bridge scoped variables and pipeline persisted variables' do
+      expect(bridge.variables.to_hash)
+        .to eq(bridge.scoped_variables.concat(bridge.pipeline.persisted_variables).to_hash)
+    end
+  end
+
+  describe '#pipeline_variables' do
+    it 'returns the pipeline variables' do
+      expect(bridge.pipeline_variables).to eq(bridge.pipeline.variables)
+    end
+  end
+
+  describe '#pipeline_schedule_variables' do
+    context 'when pipeline is on a schedule' do
+      let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+      let(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
+
+      it 'returns the pipeline schedule variables' do
+        create(:ci_pipeline_schedule_variable, key: 'FOO', value: 'foo', pipeline_schedule: pipeline.pipeline_schedule)
+
+        pipeline_schedule_variables = bridge.reload.pipeline_schedule_variables
+        expect(pipeline_schedule_variables).to match_array([have_attributes({ key: 'FOO', value: 'foo' })])
+      end
+    end
+
+    context 'when pipeline is not on a schedule' do
+      it 'returns empty array' do
+        expect(bridge.pipeline_schedule_variables).to eq([])
+      end
+    end
+  end
+
+  describe '#forward_yaml_variables?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:forward, :result) do
+      true | true
+      false | false
+      nil | true
+    end
+
+    with_them do
+      let(:options) do
+        {
+          trigger: {
+            project: 'my/project',
+            branch: 'master',
+            forward: { yaml_variables: forward }.compact
+          }
+        }
+      end
+
+      let(:bridge) { build(:ci_bridge, options: options) }
+
+      it { expect(bridge.forward_yaml_variables?).to eq(result) }
+    end
+  end
+
+  describe '#forward_pipeline_variables?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:forward, :result) do
+      true | true
+      false | false
+      nil | false
+    end
+
+    with_them do
+      let(:options) do
+        {
+          trigger: {
+            project: 'my/project',
+            branch: 'master',
+            forward: { pipeline_variables: forward }.compact
+          }
+        }
+      end
+
+      let(:bridge) { build(:ci_bridge, options: options) }
+
+      it { expect(bridge.forward_pipeline_variables?).to eq(result) }
+    end
+  end
+
   describe 'metadata support' do
     it 'reads YAML variables from metadata' do
       expect(bridge.yaml_variables).not_to be_empty

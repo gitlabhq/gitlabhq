@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Sidebars::Panel, feature_category: :navigation do
   let(:context) { Sidebars::Context.new(current_user: nil, container: nil) }
-  let(:panel) { Sidebars::Panel.new(context) }
+  let(:panel) { described_class.new(context) }
   let(:menu1) { Sidebars::Menu.new(context) }
   let(:menu2) { Sidebars::Menu.new(context) }
   let(:menu3) { Sidebars::Menu.new(context) }

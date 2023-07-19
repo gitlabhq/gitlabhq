@@ -112,7 +112,6 @@ RSpec/AnyInstanceOf:
     - 'spec/features/projects/container_registry_spec.rb'
     - 'spec/features/projects/files/user_browses_lfs_files_spec.rb'
     - 'spec/features/projects/jobs_spec.rb'
-    - 'spec/features/projects/settings/service_desk_setting_spec.rb'
     - 'spec/features/projects/show/user_sees_setup_shortcut_buttons_spec.rb'
     - 'spec/features/snippets/embedded_snippet_spec.rb'
     - 'spec/features/usage_stats_consent_spec.rb'

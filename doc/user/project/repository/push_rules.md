@@ -71,11 +71,13 @@ Use these rules for your commit messages.
 
 - **Require expression in commit messages**: Messages must match the
   expression. To allow any commit message, leave empty.
-  Uses multiline mode, which can be disabled by using `(?-m)`.
+  Uses multiline mode, which can be disabled by using `(?-m)`. Some validation examples:
 
-  For example, if every commit should reference a Jira issue
-  (like `Refactored css. Fixes JIRA-123.`), the regular expression would be
-  `JIRA\-\d+`.
+  - `JIRA\-\d+` requires every commit to reference a Jira issue, like `Refactored css. Fixes JIRA-123`.
+  - `[[:^punct:]]\b$` rejects a commit if the final character is a punctuation mark.
+    The word boundary character (`\b`) prevents false negatives, because Git adds a
+    newline character (`\n`) to the end of the commit message.
+
 - **Reject expression in commit messages**: Commit messages must not match
   the expression. To allow any commit message, leave empty.
   Uses multiline mode, which can be disabled by using `(?-m)`.
@@ -230,7 +232,7 @@ These examples use regex (regular expressions) string boundary characters to mat
 the beginning of a string (`^`), and its end (`$`). They also include instances
 where either the directory path or the filename can include `.` or `/`. Both of
 these special regex characters must be escaped with a backslash `\\` if you want
-to use them as normal characters in a match condition.
+to use them as standard characters in a match condition.
 
 - **Prevent pushing `.exe` files to any location in the repository** - This regex
   matches any filename that contains `.exe` at the end:

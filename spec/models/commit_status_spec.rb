@@ -113,7 +113,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     let!(:stale_scheduled) { create(:commit_status, scheduled_at: 1.day.ago) }
     let!(:fresh_scheduled) { create(:commit_status, scheduled_at: 1.minute.ago) }
 
-    subject { CommitStatus.scheduled_at_before(1.hour.ago) }
+    subject { described_class.scheduled_at_before(1.hour.ago) }
 
     it { is_expected.to contain_exactly(stale_scheduled) }
   end
@@ -141,7 +141,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       commit_status.update!(retried: false, status: :pending)
 
       # another process does mark object as processed
-      CommitStatus.find(commit_status.id).update_column(:processed, true)
+      described_class.find(commit_status.id).update_column(:processed, true)
 
       # subsequent status transitions on the same instance
       # always saves processed=false to DB even though
@@ -149,7 +149,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       commit_status.update!(retried: false, status: :running)
 
       # we look at a persisted state in DB
-      expect(CommitStatus.find(commit_status.id).processed).to eq(false)
+      expect(described_class.find(commit_status.id).processed).to eq(false)
     end
   end
 

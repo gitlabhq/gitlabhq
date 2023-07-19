@@ -10,7 +10,7 @@ This tutorial guides you through writing a provider test from scratch. It is a c
 
 ## Create the skeleton
 
-Provider tests are quite simple. The goal is to set up the test data and then link that with the corresponding contract. Start by creating a file called `get_discussions_helper.rb` under `spec/contracts/provider/pact_helpers/project/merge_request`. Note that the files are called `helpers` to match how they are called by Pact in the Rake tasks, which are set up at the end of this tutorial.
+Provider tests are quite simple. The goal is to set up the test data and then link that with the corresponding contract. Start by creating a file called `get_discussions_helper.rb` under `spec/contracts/provider/pact_helpers/project/merge_request`. The files are called `helpers` to match how they are called by Pact in the Rake tasks, which are set up at the end of this tutorial.
 
 For more information about how the contract test directory is structured, see [Test suite folder structure](index.md#test-suite-folder-structure).
 
@@ -122,7 +122,7 @@ To create the test data, create `show_state.rb` under `spec/contracts/provider/s
 
 ### Default user in `spec/contracts/provider/spec_helper.rb`
 
-Before you create the test data, note that a default user is created in the [`spec_helper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/provider/spec_helper.rb), which is the user being used for the test runs. This user is configured using `RSpec.configure`, as Pact actually is built on top of RSpec. This step allows us to configure the user before any of the test runs.
+Before you create the test data, a default user is created in the [`spec_helper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/provider/spec_helper.rb), which is the user being used for the test runs. This user is configured using `RSpec.configure`, as Pact actually is built on top of RSpec. This step allows us to configure the user before any of the test runs.
 
 ```ruby
 RSpec.configure do |config|

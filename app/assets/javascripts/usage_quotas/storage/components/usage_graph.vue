@@ -20,7 +20,6 @@ export default {
       const {
         containerRegistrySize,
         buildArtifactsSize,
-        pipelineArtifactsSize,
         lfsObjectsSize,
         packagesSize,
         repositorySize,
@@ -63,12 +62,6 @@ export default {
           style: this.usageStyle(this.barRatio(buildArtifactsSize)),
           class: 'gl-bg-data-viz-green-500',
           size: buildArtifactsSize,
-        },
-        {
-          id: 'pipelineArtifacts',
-          style: this.usageStyle(this.barRatio(pipelineArtifactsSize)),
-          class: 'gl-bg-data-viz-green-800',
-          size: pipelineArtifactsSize,
         },
         {
           id: 'wiki',

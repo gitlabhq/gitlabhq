@@ -36,11 +36,13 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
   context 'when a user created a merge request in the parent project' do
     let!(:merge_request) do
-      create(:merge_request,
-              source_project: project,
-              target_project: project,
-              source_branch: 'feature',
-              target_branch: 'master')
+      create(
+        :merge_request,
+        source_project: project,
+        target_project: project,
+        source_branch: 'feature',
+        target_branch: 'master'
+      )
     end
 
     let!(:push_pipeline) do
@@ -56,8 +58,6 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
     end
 
     before do
-      stub_feature_flags(auto_merge_labels_mr_widget: false)
-
       visit project_merge_request_path(project, merge_request)
 
       page.within('.merge-request-tabs') do
@@ -144,53 +144,8 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       end
     end
 
-    context 'when a user merges a merge request in the parent project', :sidekiq_might_not_need_inline do
+    context 'when a user created a merge request in the parent project' do
       before do
-        click_link 'Overview'
-        click_button 'Merge when pipeline succeeds'
-
-        wait_for_requests
-      end
-
-      context 'when detached merge request pipeline is pending' do
-        it 'waits the head pipeline' do
-          expect(page).to have_content('to be merged automatically when the pipeline succeeds')
-          expect(page).to have_button('Cancel auto-merge')
-        end
-      end
-
-      context 'when detached merge request pipeline succeeds' do
-        before do
-          detached_merge_request_pipeline.reload.succeed!
-
-          wait_for_requests
-        end
-
-        it 'merges the merge request' do
-          expect(page).to have_content('Merged by')
-          expect(page).to have_button('Revert')
-        end
-      end
-
-      context 'when branch pipeline succeeds' do
-        before do
-          click_link 'Overview'
-          push_pipeline.reload.succeed!
-
-          wait_for_requests
-        end
-
-        it 'waits the head pipeline' do
-          expect(page).to have_content('to be merged automatically when the pipeline succeeds')
-          expect(page).to have_button('Cancel auto-merge')
-        end
-      end
-    end
-
-    context 'when a user created a merge request in the parent project with auto_merge_labels_mr_widget on' do
-      before do
-        stub_feature_flags(auto_merge_labels_mr_widget: true)
-
         visit project_merge_request_path(project, merge_request)
 
         page.within('.merge-request-tabs') do
@@ -263,11 +218,13 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
   context 'when a user created a merge request from a forked project to the parent project', :sidekiq_might_not_need_inline do
     let(:merge_request) do
-      create(:merge_request,
-              source_project: forked_project,
-              target_project: project,
-              source_branch: 'feature',
-              target_branch: 'master')
+      create(
+        :merge_request,
+        source_project: forked_project,
+        target_project: project,
+        source_branch: 'feature',
+        target_branch: 'master'
+      )
     end
 
     let!(:push_pipeline) do
@@ -390,8 +347,15 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
     context 'when the latest pipeline is running in the parent project' do
       before do
-        Ci::CreatePipelineService.new(project, user, ref: 'feature')
-          .execute(:merge_request_event, merge_request: merge_request)
+        create(:ci_pipeline,
+          source: :merge_request_event,
+          project: project,
+          ref: 'feature',
+          sha: merge_request.diff_head_sha,
+          user: user,
+          merge_request: merge_request,
+          status: :running)
+        merge_request.update_head_pipeline
       end
 
       context 'when the previous pipeline failed in the fork project' do
@@ -404,10 +368,10 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
             project.update!(only_allow_merge_if_pipeline_succeeds: true)
           end
 
-          it 'shows MWPS button' do
+          it 'shows Set to auto-merge button' do
             visit project_merge_request_path(project, merge_request)
 
-            expect(page).to have_button('Merge when pipeline succeeds')
+            expect(page).to have_button('Set to auto-merge')
           end
         end
       end
@@ -417,7 +381,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       before do
         click_link("Overview")
 
-        click_button 'Merge when pipeline succeeds'
+        click_button 'Set to auto-merge'
 
         wait_for_requests
       end

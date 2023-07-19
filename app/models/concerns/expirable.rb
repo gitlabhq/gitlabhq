@@ -6,10 +6,8 @@ module Expirable
   DAYS_TO_EXPIRE = 7
 
   included do
-    scope :not, ->(scope) { where(scope.arel.constraints.reduce(:and).not) }
-
-    scope :expired, -> { where.not(expires_at: nil).where(arel_table[:expires_at].lteq(Time.current)) }
-    scope :not_expired, -> { self.not(expired) }
+    scope :expired, -> { where(arel_table[:expires_at].lteq(Time.current)) }
+    scope :not_expired, -> { where(arel_table[:expires_at].gt(Time.current)).or(where(expires_at: nil)) }
   end
 
   def expired?

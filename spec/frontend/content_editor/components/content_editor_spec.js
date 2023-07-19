@@ -14,6 +14,7 @@ import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vu
 import LoadingIndicator from '~/content_editor/components/loading_indicator.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { KEYDOWN_EVENT } from '~/content_editor/constants';
+import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 
 jest.mock('~/emoji');
 
@@ -90,19 +91,6 @@ describe('ContentEditor', () => {
     createWrapper();
 
     expect(wrapper.findComponent(FormattingToolbar).exists()).toBe(true);
-  });
-
-  it('renders footer containing quick actions help text if quick actions docs path is defined', () => {
-    createWrapper({ quickActionsDocsPath: '/foo/bar' });
-
-    expect(wrapper.text()).toContain('For quick actions, type /');
-    expect(wrapper.findComponent(GlLink).attributes('href')).toBe('/foo/bar');
-  });
-
-  it('does not render footer containing quick actions help text if quick actions docs path is not defined', () => {
-    createWrapper();
-
-    expect(findEditorElement().text()).not.toContain('For quick actions, type /');
   });
 
   it('displays an attachment button', () => {
@@ -285,5 +273,11 @@ describe('ContentEditor', () => {
     createWrapper();
 
     expect(wrapper.findComponent(component).exists()).toBe(true);
+  });
+
+  it('renders an editor mode dropdown', () => {
+    createWrapper();
+
+    expect(wrapper.findComponent(EditorModeSwitcher).exists()).toBe(true);
   });
 });

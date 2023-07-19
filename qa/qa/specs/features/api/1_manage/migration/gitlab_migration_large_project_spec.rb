@@ -65,6 +65,10 @@ module QA
       let(:mrs) { fetch_mrs(imported_project, api_client) }
       let(:issues) { fetch_issues(imported_project, api_client) }
 
+      before do
+        QA::Support::Helpers::ImportSource.enable(%w[gitlab_project])
+      end
+
       # rubocop:disable RSpec/InstanceVariable
       after do |example|
         next unless defined?(@import_time)

@@ -16,6 +16,8 @@ module Gitlab
                       bridges: 'Ci::Bridge',
                       runners: 'Ci::Runner',
                       pipeline_metadata: 'Ci::PipelineMetadata',
+                      external_pull_request: 'Ci::ExternalPullRequest',
+                      external_pull_requests: 'Ci::ExternalPullRequest',
                       hooks: 'ProjectHook',
                       merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                       push_access_levels: 'ProtectedBranch::PushAccessLevel',
@@ -39,7 +41,8 @@ module Gitlab
                       metrics_setting: 'ProjectMetricsSetting',
                       commit_author: 'MergeRequest::DiffCommitUser',
                       committer: 'MergeRequest::DiffCommitUser',
-                      merge_request_diff_commits: 'MergeRequestDiffCommit' }.freeze
+                      merge_request_diff_commits: 'MergeRequestDiffCommit',
+                      work_item_type: 'WorkItems::Type' }.freeze
 
         BUILD_MODELS = %i[Ci::Build Ci::Bridge commit_status generic_commit_status].freeze
 
@@ -61,11 +64,11 @@ module Gitlab
           epic
           ProjectCiCdSetting
           container_expiration_policy
-          external_pull_request
-          external_pull_requests
+          Ci::ExternalPullRequest
           DesignManagement::Design
           MergeRequest::DiffCommitUser
           MergeRequestDiffCommit
+          WorkItems::Type
         ].freeze
 
         def create
@@ -90,7 +93,7 @@ module Gitlab
           when :notes, :Note then setup_note
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
-          when :issues then setup_issue
+          when :issues then setup_work_item
           when :'Ci::PipelineSchedule' then setup_pipeline_schedule
           when :'ProtectedBranch::MergeAccessLevel' then setup_protected_branch_access_level
           when :'ProtectedBranch::PushAccessLevel' then setup_protected_branch_access_level
@@ -166,8 +169,11 @@ module Gitlab
           end
         end
 
-        def setup_issue
+        def setup_work_item
           @relation_hash['relative_position'] = compute_relative_position
+
+          issue_type = @relation_hash.delete('issue_type')
+          @relation_hash['work_item_type'] ||= ::WorkItems::Type.default_by_type(issue_type) if issue_type
         end
 
         def setup_release

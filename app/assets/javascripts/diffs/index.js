@@ -32,6 +32,7 @@ export default function initDiffsApp(store = notesStore) {
       return {
         endpointCoverage: dataset.endpointCoverage || '',
         endpointCodequality: dataset.endpointCodequality || '',
+        endpointSast: dataset.endpointSast || '',
         helpPagePath: dataset.helpPagePath,
         currentUser: JSON.parse(dataset.currentUserData) || {},
         changesEmptyStateIllustration: dataset.changesEmptyStateIllustration,
@@ -79,6 +80,7 @@ export default function initDiffsApp(store = notesStore) {
         props: {
           endpointCoverage: this.endpointCoverage,
           endpointCodequality: this.endpointCodequality,
+          endpointSast: this.endpointSast,
           currentUser: this.currentUser,
           helpPagePath: this.helpPagePath,
           shouldShow: this.activeTab === 'diffs',

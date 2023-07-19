@@ -125,12 +125,12 @@ RSpec.describe 'Clusters', :js, feature_category: :groups_and_projects do
   def visit_create_cluster_page
     visit project_clusters_path(project)
 
-    click_button(class: 'dropdown-toggle-split')
+    click_button(class: 'gl-new-dropdown-toggle')
     click_link 'Create a cluster'
   end
 
   def visit_connect_cluster_page
-    click_button(class: 'dropdown-toggle-split')
+    click_button(class: 'gl-new-dropdown-toggle')
     click_link 'Connect a cluster (certificate - deprecated)'
   end
 end

@@ -31,8 +31,6 @@ class ObjectStoreSettings
     object_store['proxy_download'] = false if object_store['proxy_download'].nil?
     object_store['storage_options'] ||= {}
 
-    # Convert upload connection settings to use string keys, to make Fog happy
-    object_store['connection']&.deep_stringify_keys!
     object_store
   end
 
@@ -131,8 +129,7 @@ class ObjectStoreSettings
 
     main_config = settings['object_store']
     common_config = main_config.slice('enabled', 'connection', 'proxy_download', 'storage_options')
-    # Convert connection settings to use string keys, to make Fog happy
-    common_config['connection']&.deep_stringify_keys!
+
     # These are no longer configurable if common config is used
     common_config['direct_upload'] = true
     common_config['storage_options'] ||= {}

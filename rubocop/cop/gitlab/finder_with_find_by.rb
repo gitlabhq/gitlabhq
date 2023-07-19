@@ -6,7 +6,7 @@ module RuboCop
       class FinderWithFindBy < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
-        FIND_PATTERN = /\Afind(_by!?)?\z/.freeze
+        FIND_PATTERN = /\Afind(_by!?)?\z/
         ALLOWED_MODULES = ['FinderMethods'].freeze
 
         def message(used_method)

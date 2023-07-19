@@ -79,39 +79,52 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
     end
 
     let!(:assigned_merge_request_from_fork) do
-      create(:merge_request,
-              source_branch: 'markdown', assignees: [current_user],
-              target_project: public_project, source_project: forked_project,
-              author: author_user)
+      create(
+        :merge_request,
+        source_branch: 'markdown',
+        assignees: [current_user],
+        target_project: public_project,
+        source_project: forked_project,
+        author: author_user
+      )
     end
 
     let!(:authored_merge_request) do
-      create(:merge_request,
-              source_branch: 'markdown',
-              source_project: project,
-              author: current_user)
+      create(
+        :merge_request,
+        source_branch: 'markdown',
+        source_project: project,
+        author: current_user
+      )
     end
 
     let!(:authored_merge_request_from_fork) do
-      create(:merge_request,
-              source_branch: 'feature_conflict',
-              author: current_user,
-              target_project: public_project, source_project: forked_project)
+      create(
+        :merge_request,
+        source_branch: 'feature_conflict',
+        author: current_user,
+        target_project: public_project,
+        source_project: forked_project
+      )
     end
 
     let!(:labeled_merge_request) do
-      create(:labeled_merge_request,
-              source_branch: 'labeled',
-              labels: [label],
-              author: current_user,
-              source_project: project)
+      create(
+        :labeled_merge_request,
+        source_branch: 'labeled',
+        labels: [label],
+        author: current_user,
+        source_project: project
+      )
     end
 
     let!(:other_merge_request) do
-      create(:merge_request,
-              source_branch: 'fix',
-              source_project: project,
-              author: author_user)
+      create(
+        :merge_request,
+        source_branch: 'fix',
+        source_project: project,
+        author: author_user
+      )
     end
 
     before do

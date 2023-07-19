@@ -943,7 +943,7 @@ RSpec.describe 'File blob', :js, feature_category: :groups_and_projects do
       page.within('.commit-actions') do
         expect(page).to have_css('.ci-status-icon')
         expect(page).to have_css('.ci-status-icon-running')
-        expect(page).to have_css('.js-ci-status-icon-running')
+        expect(page).to have_selector('[data-testid="status_running-icon"]')
       end
     end
   end

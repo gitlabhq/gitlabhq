@@ -9,7 +9,7 @@ export const packageTags = () => [
 export const packagePipelines = (extend) => [
   {
     commitPath: '/namespace14/project14/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0',
-    createdAt: '2020-08-17T14:23:32Z',
+    createdAt: '2020-05-17T14:23:32Z',
     id: 'gid://gitlab/Ci::Pipeline/36',
     path: '/namespace14/project14/-/pipelines/36',
     name: 'project14',
@@ -38,7 +38,7 @@ export const packageFiles = () => [
     fileSha1: 'be93151dc23ac34a82752444556fe79b32c7a1ad',
     fileSha256: 'fileSha256',
     size: '409600',
-    createdAt: '2020-08-17T14:23:32Z',
+    createdAt: '2020-05-17T14:23:32Z',
     downloadPath: 'downloadPath',
     __typename: 'PackageFile',
   },
@@ -49,7 +49,7 @@ export const packageFiles = () => [
     fileSha1: 'be93151dc23ac34a82752444556fe79b32c7a1ss',
     fileSha256: null,
     size: '409600',
-    createdAt: '2020-08-17T14:23:32Z',
+    createdAt: '2020-05-17T14:23:32Z',
     downloadPath: 'downloadPath',
     __typename: 'PackageFile',
   },
@@ -92,6 +92,7 @@ export const dependencyLinks = () => [
 
 export const packageProject = () => ({
   id: '1',
+  name: 'gitlab-test',
   fullPath: 'gitlab-org/gitlab-test',
   webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test',
   __typename: 'Project',
@@ -144,7 +145,7 @@ export const packageData = (extend) => ({
   name: '@gitlab-org/package-15',
   packageType: 'NPM',
   version: '1.0.0',
-  createdAt: '2020-08-17T14:23:32Z',
+  createdAt: '2020-05-17T14:23:32Z',
   updatedAt: '2020-08-17T14:23:32Z',
   lastDownloadedAt: '2021-08-17T14:23:32Z',
   status: 'DEFAULT',
@@ -278,15 +279,12 @@ export const packagePipelinesQuery = (pipelines = packagePipelines()) => ({
   },
 });
 
-export const packageFilesQuery = ({ files = packageFiles(), pageInfo = {} } = {}) => ({
+export const packageFilesQuery = ({ files = packageFiles(), extendPagination = {} } = {}) => ({
   data: {
     package: {
       id: 'gid://gitlab/Packages::Package/111',
       packageFiles: {
-        pageInfo: {
-          hasNextPage: true,
-          ...pageInfo,
-        },
+        pageInfo: pagination(extendPagination),
         nodes: files,
         __typename: 'PackageFileConnection',
       },

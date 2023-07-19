@@ -295,3 +295,23 @@ run unittests:
       junit:
         - report.xml
 ```
+
+## Helm
+
+This example uses [Helm Unittest](https://github.com/helm-unittest/helm-unittest#docker-usage) plugin, with the `-t junit` flag to format the output to a JUnit report in XML format.
+
+```yaml
+helm:
+  image: helmunittest/helm-unittest:latest
+  stage: test
+  script:
+    - '-t JUnit -o report.xml -f tests/*[._]test.yaml .'
+  artifacts:
+    reports:
+      junit: report.xml
+```
+
+The `-f tests/*[._]test.yaml` flag configures `helm-unittest` to look for files in the `tests/` directory that end in either:
+
+- `.test.yaml`
+- `_test.yaml`

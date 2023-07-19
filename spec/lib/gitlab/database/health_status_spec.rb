@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Database::HealthStatus, feature_category: :database do
         end
 
         let(:deferred_worker_health_checker) do
-          Gitlab::SidekiqMiddleware::DeferJobs::DatabaseHealthStatusChecker.new(
+          Gitlab::SidekiqMiddleware::SkipJobs::DatabaseHealthStatusChecker.new(
             123,
             deferred_worker.name
           )
@@ -116,7 +116,7 @@ RSpec.describe Gitlab::Database::HealthStatus, feature_category: :database do
         it 'captures sidekiq job class in the log' do
           expect(Gitlab::Database::HealthStatus::Logger).to receive(:info).with(
             status_checker_id: deferred_worker_health_checker.id,
-            status_checker_type: 'Gitlab::SidekiqMiddleware::DeferJobs::DatabaseHealthStatusChecker',
+            status_checker_type: 'Gitlab::SidekiqMiddleware::SkipJobs::DatabaseHealthStatusChecker',
             job_class_name: deferred_worker_health_checker.job_class_name,
             health_status_indicator: autovacuum_indicator_class.to_s,
             indicator_signal: 'Stop',

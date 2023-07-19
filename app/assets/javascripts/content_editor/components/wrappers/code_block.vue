@@ -1,19 +1,32 @@
 <script>
 import { debounce } from 'lodash';
+import { GlButton, GlTooltipDirective as GlTooltip, GlSprintf } from '@gitlab/ui';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
-import { __ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SandboxedMermaid from '~/behaviors/components/sandboxed_mermaid.vue';
 import codeBlockLanguageLoader from '../../services/code_block_language_loader';
 import EditorStateObserver from '../editor_state_observer.vue';
+import { memoizedGet } from '../../services/utils';
+import {
+  lineOffsetToLangParams,
+  langParamsToLineOffset,
+  toAbsoluteLineOffset,
+  getLines,
+  appendNewlines,
+} from '../../services/code_suggestion_utils';
 
 export default {
   name: 'CodeBlock',
   components: {
+    GlButton,
+    GlSprintf,
     NodeViewWrapper,
     NodeViewContent,
     EditorStateObserver,
     SandboxedMermaid,
+  },
+  directives: {
+    GlTooltip,
   },
   inject: ['contentEditor'],
   props: {
@@ -39,13 +52,54 @@ export default {
     return {
       diagramUrl: '',
       diagramSource: '',
+
+      allLines: [],
+      deletedLines: [],
+      addedLines: [],
     };
   },
+  computed: {
+    isCodeSuggestion() {
+      return (
+        this.node.attrs.isCodeSuggestion &&
+        this.contentEditor.codeSuggestionsConfig?.canSuggest &&
+        this.contentEditor.codeSuggestionsConfig?.diffFile
+      );
+    },
+    classList() {
+      return this.isCodeSuggestion
+        ? 'gl-p-0! suggestion-added-input'
+        : `gl-p-3 code highlight ${this.$options.userColorScheme}`;
+    },
+    lineOffset() {
+      return langParamsToLineOffset(this.node.attrs.langParams);
+    },
+    absoluteLineOffset() {
+      if (!this.contentEditor.codeSuggestionsConfig) return [0, 0];
+
+      const { new_line: n } = this.contentEditor.codeSuggestionsConfig.line;
+      return toAbsoluteLineOffset(this.lineOffset, n);
+    },
+    disableDecrementLineStart() {
+      return this.absoluteLineOffset[0] <= 1;
+    },
+    disableIncrementLineStart() {
+      return this.lineOffset[0] >= 0;
+    },
+    disableDecrementLineEnd() {
+      return this.lineOffset[1] <= 0;
+    },
+    disableIncrementLineEnd() {
+      return this.absoluteLineOffset[1] >= this.allLines.length - 1;
+    },
+  },
   async mounted() {
-    this.updateDiagramPreview = debounce(
-      this.updateDiagramPreview,
-      DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-    );
+    if (this.isCodeSuggestion) {
+      await this.updateAllLines();
+      this.updateCodeSuggestion();
+    }
+
+    this.updateCodeBlock = debounce(this.updateCodeBlock, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
 
     const lang = codeBlockLanguageLoader.findOrCreateLanguageBySyntax(this.node.attrs.language);
     await codeBlockLanguageLoader.loadLanguage(lang.syntax);
@@ -53,7 +107,26 @@ export default {
     this.updateAttributes({ language: this.node.attrs.language });
   },
   methods: {
-    async updateDiagramPreview() {
+    async updateAllLines() {
+      const { diffFile } = this.contentEditor.codeSuggestionsConfig;
+      this.allLines = (await memoizedGet(diffFile.view_path.replace('/blob/', '/raw/'))).split(
+        '\n',
+      );
+    },
+    updateCodeSuggestion() {
+      this.deletedLines = appendNewlines(getLines(this.absoluteLineOffset, this.allLines));
+      this.addedLines = appendNewlines(
+        this.$refs.nodeViewContent?.$el.textContent.split('\n') || [],
+      );
+    },
+    updateNodeView() {
+      if (this.isCodeSuggestion) {
+        this.updateCodeSuggestion();
+      } else {
+        this.updateCodeBlock();
+      }
+    },
+    async updateCodeBlock() {
       if (!this.node.attrs.showPreview) {
         this.diagramSource = '';
         return;
@@ -70,22 +143,34 @@ export default {
         );
       }
     },
-  },
-  i18n: {
-    frontmatter: __('frontmatter'),
+    updateLineOffset(deltaStart = 0, deltaEnd = 0) {
+      const { lineOffset } = this;
+
+      this.editor
+        .chain()
+        .updateAttributes('codeSuggestion', {
+          langParams: lineOffsetToLangParams([
+            lineOffset[0] + deltaStart,
+            lineOffset[1] + deltaEnd,
+          ]),
+        })
+        .run();
+    },
   },
   userColorScheme: gon.user_color_scheme,
 };
 </script>
 <template>
-  <editor-state-observer @transaction="updateDiagramPreview">
+  <editor-state-observer :debounce="0" @transaction="updateNodeView">
     <node-view-wrapper
-      :class="`content-editor-code-block gl-relative code highlight gl-p-3 ${$options.userColorScheme}`"
+      :class="classList"
+      class="content-editor-code-block gl-relative"
       as="pre"
       dir="auto"
     >
       <div
         v-if="node.attrs.showPreview"
+        contenteditable="false"
         class="gl-mt-n3! gl-ml-n4! gl-mr-n4! gl-mb-3 gl-bg-white! gl-p-4 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
       >
         <sandboxed-mermaid v-if="node.attrs.language === 'mermaid'" :source="diagramSource" />
@@ -93,12 +178,108 @@ export default {
       </div>
       <span
         v-if="node.attrs.isFrontmatter"
+        contenteditable="false"
         data-testid="frontmatter-label"
         class="gl-absolute gl-top-0 gl-right-3"
-        contenteditable="false"
-        >{{ $options.i18n.frontmatter }}:{{ node.attrs.language }}</span
+        >{{ __('frontmatter') }}:{{ node.attrs.language }}</span
       >
-      <node-view-content ref="nodeViewContent" as="code" />
+      <div
+        v-if="isCodeSuggestion"
+        contenteditable="false"
+        class="gl-relative gl-z-index-0"
+        data-testid="code-suggestion-box"
+      >
+        <div
+          class="md-suggestion-header gl-flex-wrap gl-z-index-1 gl-w-full gl-border-none! gl-font-regular gl-px-4 gl-py-3 gl-border-b-1! gl-border-b-solid! gl-mr-n10!"
+        >
+          <div class="gl-font-weight-bold gl-pr-3">
+            {{ __('Suggested change') }}
+          </div>
+
+          <div
+            class="gl-display-flex gl-flex-wrap gl-align-items-center gl-pl-3 gl-gap-2 gl-white-space-nowrap"
+          >
+            <gl-sprintf :message="__('From line %{line1} to %{line2}')">
+              <template #line1>
+                <div class="gl-display-flex gl-bg-gray-50 gl-rounded-base gl-mx-1">
+                  <gl-button
+                    size="small"
+                    icon="dash"
+                    variant="confirm"
+                    category="tertiary"
+                    data-testid="decrement-line-start"
+                    :aria-label="__('Decrement suggestion line start')"
+                    :disabled="disableDecrementLineStart"
+                    @click="updateLineOffset(-1, 0)"
+                  />
+                  <div
+                    class="flex gl-align-items-center gl-justify-content-center gl-px-3 monospace"
+                  >
+                    <strong>{{ absoluteLineOffset[0] }}</strong>
+                  </div>
+                  <gl-button
+                    size="small"
+                    icon="plus"
+                    variant="confirm"
+                    category="tertiary"
+                    data-testid="increment-line-start"
+                    :aria-label="__('Increment suggestion line start')"
+                    :disabled="disableIncrementLineStart"
+                    @click="updateLineOffset(1, 0)"
+                  />
+                </div>
+              </template>
+              <template #line2>
+                <div class="gl-display-flex gl-bg-gray-50 gl-rounded-base gl-ml-1">
+                  <gl-button
+                    size="small"
+                    icon="dash"
+                    variant="confirm"
+                    category="tertiary"
+                    data-testid="decrement-line-end"
+                    :aria-label="__('Decrement suggestion line end')"
+                    :disabled="disableDecrementLineEnd"
+                    @click="updateLineOffset(0, -1)"
+                  />
+                  <div
+                    class="flex gl-align-items-center gl-justify-content-center gl-px-3 monospace"
+                  >
+                    <strong>{{ absoluteLineOffset[1] }}</strong>
+                  </div>
+                  <gl-button
+                    size="small"
+                    icon="plus"
+                    variant="confirm"
+                    category="tertiary"
+                    data-testid="increment-line-end"
+                    :aria-label="__('Increment suggestion line end')"
+                    :disabled="disableIncrementLineEnd"
+                    @click="updateLineOffset(0, 1)"
+                  />
+                </div>
+              </template>
+            </gl-sprintf>
+          </div>
+        </div>
+
+        <div class="suggestion-deleted" data-testid="suggestion-deleted">
+          <code
+            v-for="(line, i) in deletedLines"
+            :key="i"
+            :data-line-number="absoluteLineOffset[0] + i"
+            >{{ line }}</code
+          >
+        </div>
+        <div class="suggestion-added gl-absolute" data-testid="suggestion-added">
+          <code
+            v-for="(line, i) in addedLines"
+            :key="i"
+            :data-line-number="absoluteLineOffset[0] + i"
+            >{{ line }}</code
+          >
+        </div>
+      </div>
+      <node-view-content ref="nodeViewContent" as="code" class="gl-relative gl-z-index-1" />
     </node-view-wrapper>
   </editor-state-observer>
 </template>

@@ -38,7 +38,6 @@ describe('NewResourceDropdown component', () => {
   };
 
   const mountComponent = ({
-    search = '',
     query = searchUserProjectsWithIssuesEnabledQuery,
     queryResponse = searchProjectsQueryResponse,
     mountFn = shallowMount,
@@ -47,16 +46,14 @@ describe('NewResourceDropdown component', () => {
     const requestHandlers = [[query, jest.fn().mockResolvedValue(queryResponse)]];
     const apolloProvider = createMockApollo(requestHandlers);
 
-    return mountFn(NewResourceDropdown, {
+    wrapper = mountFn(NewResourceDropdown, {
       apolloProvider,
       propsData,
-      data() {
-        return { search };
-      },
     });
   };
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findGlDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findInput = () => wrapper.findComponent(GlSearchBoxByType);
   const showDropdown = async () => {
     findDropdown().vm.$emit('shown');
@@ -70,13 +67,13 @@ describe('NewResourceDropdown component', () => {
   });
 
   it('renders a split dropdown', () => {
-    wrapper = mountComponent();
+    mountComponent();
 
     expect(findDropdown().props('split')).toBe(true);
   });
 
   it('renders a label for the dropdown toggle button', () => {
-    wrapper = mountComponent();
+    mountComponent();
 
     expect(findDropdown().attributes('toggle-text')).toBe(
       NewResourceDropdown.i18n.toggleButtonLabel,
@@ -84,7 +81,7 @@ describe('NewResourceDropdown component', () => {
   });
 
   it('focuses on input when dropdown is shown', async () => {
-    wrapper = mountComponent({ mountFn: mount });
+    mountComponent({ mountFn: mount });
 
     const inputSpy = jest.spyOn(findInput().vm, 'focusInput');
 
@@ -99,7 +96,7 @@ describe('NewResourceDropdown component', () => {
     ${'within a group'} | ${withinGroupProps} | ${searchProjectsWithinGroupQuery}           | ${searchProjectsWithinGroupQueryResponse} | ${emptySearchProjectsWithinGroupQueryResponse}
   `('$description', ({ propsData, query, queryResponse, emptyResponse }) => {
     it('renders projects options', async () => {
-      wrapper = mountComponent({ mountFn: mount, query, queryResponse, propsData });
+      mountComponent({ mountFn: mount, query, queryResponse, propsData });
       await showDropdown();
 
       const listItems = wrapper.findAll('li');
@@ -110,14 +107,14 @@ describe('NewResourceDropdown component', () => {
     });
 
     it('renders `No matches found` when there are no matches', async () => {
-      wrapper = mountComponent({
-        search: 'no matches',
+      mountComponent({
         query,
         queryResponse: emptyResponse,
         mountFn: mount,
         propsData,
       });
 
+      await findInput().vm.$emit('input', 'no matches');
       await showDropdown();
 
       expect(wrapper.find('li').text()).toBe(NewResourceDropdown.i18n.noMatchesFound);
@@ -133,7 +130,7 @@ describe('NewResourceDropdown component', () => {
       ({ resourceType, expectedDefaultLabel, expectedPath, expectedLabel }) => {
         describe('when no project is selected', () => {
           beforeEach(() => {
-            wrapper = mountComponent({
+            mountComponent({
               query,
               queryResponse,
               propsData: { ...propsData, resourceType },
@@ -151,7 +148,7 @@ describe('NewResourceDropdown component', () => {
 
         describe('when a project is selected', () => {
           beforeEach(async () => {
-            wrapper = mountComponent({
+            mountComponent({
               mountFn: mount,
               query,
               queryResponse,
@@ -159,7 +156,7 @@ describe('NewResourceDropdown component', () => {
             });
             await showDropdown();
 
-            wrapper.findComponent(GlDropdownItem).vm.$emit('click', project1);
+            findGlDropdownItem().vm.$emit('click', project1);
           });
 
           it('dropdown button is a link', () => {
@@ -178,12 +175,12 @@ describe('NewResourceDropdown component', () => {
 
   describe('without localStorage', () => {
     beforeEach(() => {
-      wrapper = mountComponent({ mountFn: mount });
+      mountComponent({ mountFn: mount });
     });
 
     it('does not attempt to save the selected project to the localStorage', async () => {
       await showDropdown();
-      wrapper.findComponent(GlDropdownItem).vm.$emit('click', project1);
+      findGlDropdownItem().vm.$emit('click', project1);
 
       expect(localStorage.setItem).not.toHaveBeenCalled();
     });
@@ -198,7 +195,7 @@ describe('NewResourceDropdown component', () => {
           name: project1.name,
         }),
       );
-      wrapper = mountComponent({ mountFn: mount, propsData: { withLocalStorage: true } });
+      mountComponent({ mountFn: mount, propsData: { withLocalStorage: true } });
       await nextTick();
       const dropdown = findDropdown();
 
@@ -216,7 +213,7 @@ describe('NewResourceDropdown component', () => {
           name: project1.name,
         }),
       );
-      wrapper = mountComponent({ mountFn: mount, propsData: { withLocalStorage: true } });
+      mountComponent({ mountFn: mount, propsData: { withLocalStorage: true } });
       await nextTick();
       const dropdown = findDropdown();
 
@@ -228,12 +225,12 @@ describe('NewResourceDropdown component', () => {
 
     describe.each(RESOURCE_TYPES)('with resource type %s', (resourceType) => {
       it('computes the local storage key without a group', async () => {
-        wrapper = mountComponent({
+        mountComponent({
           mountFn: mount,
           propsData: { resourceType, withLocalStorage: true },
         });
         await showDropdown();
-        wrapper.findComponent(GlDropdownItem).vm.$emit('click', project1);
+        findGlDropdownItem().vm.$emit('click', project1);
         await nextTick();
 
         expect(localStorage.setItem).toHaveBeenLastCalledWith(
@@ -244,12 +241,12 @@ describe('NewResourceDropdown component', () => {
 
       it('computes the local storage key with a group', async () => {
         const groupId = '22';
-        wrapper = mountComponent({
+        mountComponent({
           mountFn: mount,
           propsData: { groupId, resourceType, withLocalStorage: true },
         });
         await showDropdown();
-        wrapper.findComponent(GlDropdownItem).vm.$emit('click', project1);
+        findGlDropdownItem().vm.$emit('click', project1);
         await nextTick();
 
         expect(localStorage.setItem).toHaveBeenLastCalledWith(

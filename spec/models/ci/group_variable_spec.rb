@@ -13,13 +13,19 @@ RSpec.describe Ci::GroupVariable, feature_category: :secrets_management do
   it { is_expected.to include_module(Presentable) }
   it { is_expected.to include_module(Ci::Maskable) }
   it { is_expected.to include_module(HasEnvironmentScope) }
-  it { is_expected.to validate_uniqueness_of(:key).scoped_to([:group_id, :environment_scope]).with_message(/\(\w+\) has already been taken/) }
+
+  describe 'validations' do
+    it { is_expected.to validate_uniqueness_of(:key).scoped_to([:group_id, :environment_scope]).with_message(/\(\w+\) has already been taken/) }
+    it { is_expected.to allow_values('').for(:description) }
+    it { is_expected.to allow_values(nil).for(:description) }
+    it { is_expected.to validate_length_of(:description).is_at_most(255) }
+  end
 
   describe '.by_environment_scope' do
     let!(:matching_variable) { create(:ci_group_variable, environment_scope: 'production ') }
     let!(:non_matching_variable) { create(:ci_group_variable, environment_scope: 'staging') }
 
-    subject { Ci::GroupVariable.by_environment_scope('production') }
+    subject { described_class.by_environment_scope('production') }
 
     it { is_expected.to contain_exactly(matching_variable) }
   end
@@ -81,6 +87,49 @@ RSpec.describe Ci::GroupVariable, feature_category: :secrets_management do
     it 'groups and orders' do
       expect(described_class.environment_scope_names)
         .to match_array(%w[production staging1 staging2])
+    end
+  end
+
+  describe 'sort_by_attribute' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:environment_scope) { 'env_scope' }
+    let_it_be(:variable1) { create(:ci_group_variable, key: 'd_var', group: group, environment_scope: environment_scope, created_at: 4.days.ago) }
+    let_it_be(:variable2) { create(:ci_group_variable, key: 'a_var', group: group, environment_scope: environment_scope, created_at: 3.days.ago) }
+    let_it_be(:variable3) { create(:ci_group_variable, key: 'c_var', group: group, environment_scope: environment_scope, created_at: 2.days.ago) }
+    let_it_be(:variable4) { create(:ci_group_variable, key: 'b_var', group: group, environment_scope: environment_scope, created_at: 1.day.ago) }
+
+    let(:sort_by_attribute) { described_class.sort_by_attribute(method).pluck(:key) }
+
+    describe '.created_at_asc' do
+      let(:method) { 'created_at_asc' }
+
+      it 'order by created_at ascending' do
+        expect(sort_by_attribute).to eq(%w[d_var a_var c_var b_var])
+      end
+    end
+
+    describe '.created_at_desc' do
+      let(:method) { 'created_at_desc' }
+
+      it 'order by created_at descending' do
+        expect(sort_by_attribute).to eq(%w[b_var c_var a_var d_var])
+      end
+    end
+
+    describe '.key_asc' do
+      let(:method) { 'key_asc' }
+
+      it 'order by key ascending' do
+        expect(sort_by_attribute).to eq(%w[a_var b_var c_var d_var])
+      end
+    end
+
+    describe '.key_desc' do
+      let(:method) { 'key_desc' }
+
+      it 'order by key descending' do
+        expect(sort_by_attribute).to eq(%w[d_var c_var b_var a_var])
+      end
     end
   end
 

@@ -351,7 +351,7 @@ class Deployment < ApplicationRecord
   end
 
   def formatted_deployment_time
-    deployed_at&.to_time&.in_time_zone&.to_s(:medium)
+    deployed_at&.to_time&.in_time_zone&.to_fs(:medium)
   end
 
   def deployed_by
@@ -447,7 +447,7 @@ class Deployment < ApplicationRecord
   # when refs_by_oid is passed an SHA, returns refs for that commit
   def tags(limit: 100)
     strong_memoize_with(:tag, limit) do
-      project.repository.refs_by_oid(oid: sha, limit: limit, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]) || []
+      project.repository.refs_by_oid(oid: sha, limit: limit, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX])
     end
   end
 

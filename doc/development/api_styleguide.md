@@ -179,7 +179,7 @@ request that has an optional parameter:
 optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The user ids for this rule'
 ```
 
-Normally, a request to PUT `/test?user_ids` would cause Grape to pass
+Usually, a request to PUT `/test?user_ids` would cause Grape to pass
 `params` of `{ user_ids: nil }`.
 
 This may introduce errors with endpoints that expect a blank array and
@@ -385,18 +385,6 @@ expect(response).to match_response_schema('merge_requests')
 ```
 
 Also see [verifying N+1 performance](#verifying-with-tests) in tests.
-
-## Error handling
-
-When throwing an error with a message that is meant to be user-facing, you should
-use the error message utility function contained in `lib/gitlab/utils/error_message.rb`.
-It adds a prefix to the error message, making it distinguishable from non-user-facing error messages.
-
-```ruby
-Gitlab::Utils::ErrorMessage.to_user_facing('Example user-facing error-message')
-```
-
-Please make sure that the Frontend is aware of the prefix usage and is using the according utils. See [Error handling](fe_guide/style/javascript.md#error-handling) in JavaScript style guide for more information.
 
 ## Include a changelog entry
 

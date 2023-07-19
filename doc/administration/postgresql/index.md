@@ -13,32 +13,32 @@ be used with GitLab in one of our [reference architectures](../reference_archite
 
 Choose one of the following PostgreSQL configuration options:
 
-### Standalone PostgreSQL using Omnibus GitLab
+### Standalone PostgreSQL for Linux package installations
 
-This setup is for when you have installed the
-[Omnibus GitLab packages](https://about.gitlab.com/install/) (CE or EE),
+This setup is for when you have installed GitLab by using the
+[Linux package](https://about.gitlab.com/install/) (CE or EE),
 to use the bundled PostgreSQL having only its service enabled.
 
-Read how to [set up a standalone PostgreSQL instance](standalone.md) using Omnibus GitLab.
+Read how to [set up a standalone PostgreSQL instance](standalone.md) for Linux package installations.
 
 ### Provide your own PostgreSQL instance
 
 This setup is for when you have installed GitLab using the
-[Omnibus GitLab packages](https://about.gitlab.com/install/) (CE or EE),
-or installed it [from source](../../install/installation.md), but you want to use
+[Linux package](https://about.gitlab.com/install/) (CE or EE),
+or [self-compiled](../../install/installation.md) your installation, but you want to use
 your own external PostgreSQL server.
 
 Read how to [set up an external PostgreSQL instance](external.md).
 
-### PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM SELF)**
+### PostgreSQL replication and failover for Linux package installations **(PREMIUM SELF)**
 
 This setup is for when you have installed GitLab using the
-[Omnibus GitLab **Enterprise Edition** (EE) package](https://about.gitlab.com/install/?version=ee).
+[Linux **Enterprise Edition** (EE) package](https://about.gitlab.com/install/?version=ee).
 
 All the tools that are needed like PostgreSQL, PgBouncer, and Patroni are bundled in
 the package, so you can use it to set up the whole PostgreSQL infrastructure (primary, replica).
 
-Read how to [set up PostgreSQL replication and failover](replication_and_failover.md) using Omnibus GitLab.
+Read how to [set up PostgreSQL replication and failover](replication_and_failover.md) for Linux package installations.
 
 ## Related topics
 

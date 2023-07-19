@@ -39,7 +39,7 @@ Read more on [pagination](rest/index.md#pagination).
 ## Rate limits
 
 To help avoid abuse, you can limit your users to a specific number of `Create` request per minute.
-See [Notes rate limits](../user/admin_area/settings/rate_limit_on_notes_creation.md).
+See [Notes rate limits](../administration/settings/rate_limit_on_notes_creation.md).
 
 ## Issues
 

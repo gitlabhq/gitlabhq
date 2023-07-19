@@ -10,16 +10,18 @@ NOTE:
 This feature is only configurable on self-managed GitLab instances.
 For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
 
-If you want to control and view GitLab content while you're
-working in Slack, you can use Slack slash commands.
-To use Slack slash commands, you must configure both Slack and GitLab.
+You can use [slash commands](gitlab_slack_application.md#slash-commands) to run common GitLab operations,
+like creating an issue, from a [Slack](https://slack.com/) chat environment.
+To use slash commands in Slack, you must configure both Slack and GitLab.
 
-GitLab can also send events (for example, `issue created`) to Slack as notifications.
-The [Slack notifications integration](slack.md) is configured separately.
+GitLab can also send events (such as `issue created`) to Slack as part of the
+separately configured [Slack notifications](slack.md).
 
-## Configure GitLab and Slack
+For a list of available slash commands, see [Slash commands](gitlab_slack_application.md#slash-commands).
 
-Slack slash command integrations are scoped to a project.
+## Configure the integration
+
+Slack slash commands are scoped to a project. To configure Slack slash commands:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
@@ -35,7 +37,3 @@ Slack slash command integrations are scoped to a project.
 1. On the Slack configuration page, select **Save Integration** and copy the **Token**.
 1. Go back to the GitLab configuration page and paste in the **Token**.
 1. Ensure the **Active** checkbox is selected and select **Save changes**.
-
-## Slash commands
-
-You can now use the available [Slack slash commands](../../../integration/slash_commands.md).

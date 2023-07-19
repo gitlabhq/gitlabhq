@@ -2,10 +2,11 @@ import produce from 'immer';
 import VueApollo from 'vue-apollo';
 import { defaultDataIdFromObject } from '@apollo/client/core';
 import { concatPagination } from '@apollo/client/utilities';
+import errorQuery from '~/boards/graphql/client/error.query.graphql';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
-import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
+import { WIDGET_TYPE_NOTES, WIDGET_TYPE_AWARD_EMOJI } from '~/work_items/constants';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 
 export const config = {
@@ -31,6 +32,15 @@ export const config = {
           // If we add any key args, the discussions field becomes discussions({"filter":"ONLY_ACTIVITY","first":10}) and
           // kills any possibility to handle it on the widget level without hardcoding a string.
           discussions: {
+            keyArgs: false,
+          },
+        },
+      },
+      WorkItemWidgetAwardEmoji: {
+        fields: {
+          // If we add any key args, the awardEmoji field becomes awardEmoji({"first":10}) and
+          // kills any possibility to handle it on the widget level without hardcoding a string.
+          awardEmoji: {
             keyArgs: false,
           },
         },
@@ -67,10 +77,30 @@ export const config = {
                 const incomingWidget = incoming.find(
                   (w) => w.type && w.type === existingWidget.type,
                 );
-                // We don't want to override existing notes with empty widget on work item updates
-                if (incomingWidget?.type === WIDGET_TYPE_NOTES && !context.variables.pageSize) {
+                // We don't want to override existing notes or award emojis with empty widget on work item updates
+                if (
+                  (incomingWidget?.type === WIDGET_TYPE_NOTES ||
+                    incomingWidget?.type === WIDGET_TYPE_AWARD_EMOJI) &&
+                  !context.variables.pageSize
+                ) {
                   return existingWidget;
                 }
+
+                // we want to concat next page of awardEmoji to the existing ones
+                if (incomingWidget?.type === WIDGET_TYPE_AWARD_EMOJI && context.variables.after) {
+                  // concatPagination won't work because we were placing new widget here so we have to do this manually
+                  return {
+                    ...incomingWidget,
+                    awardEmoji: {
+                      ...incomingWidget.awardEmoji,
+                      nodes: [
+                        ...existingWidget.awardEmoji.nodes,
+                        ...incomingWidget.awardEmoji.nodes,
+                      ],
+                    },
+                  };
+                }
+
                 // we want to concat next page of discussions to the existing ones
                 if (incomingWidget?.type === WIDGET_TYPE_NOTES && context.variables.after) {
                   // concatPagination won't work because we were placing new widget here so we have to do this manually
@@ -194,6 +224,13 @@ export const resolvers = {
         data: { activeBoardItem: boardItem },
       });
       return boardItem;
+    },
+    setError(_, { error }, { cache }) {
+      cache.writeQuery({
+        query: errorQuery,
+        data: { boardsAppError: error },
+      });
+      return error;
     },
     clientToggleListCollapsed(_, { list = {}, collapsed = false }) {
       return {

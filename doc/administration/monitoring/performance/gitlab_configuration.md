@@ -16,8 +16,8 @@ settings:
 1. Add the necessary configuration changes.
 1. Restart all GitLab for the changes to take effect:
 
-   - For Omnibus GitLab installations: `sudo gitlab-ctl restart`
-   - For installations from source: `sudo service gitlab restart`
+   - For Linux package installations: `sudo gitlab-ctl restart`
+   - For self-compiled installations: `sudo service gitlab restart`
 
 NOTE:
 Removed [in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30786). Use the

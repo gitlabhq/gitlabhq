@@ -119,7 +119,7 @@ If you don't already have a GPG key, create one:
 To add a GPG key to your user settings:
 
 1. Sign in to GitLab.
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. Select **GPG Keys** (**{key}**).
 1. In **Key**, paste your _public_ key.
@@ -230,7 +230,7 @@ You can review commits for a merge request, or for an entire project:
    1. Select **Code > Commits**.
 1. To review commits for a merge request:
    1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-   1. Select **Merge requests**, then select your merge request.
+   1. Select **Code > Merge requests**, then select your merge request.
    1. Select **Commits**.
 1. Identify the commit you want to review. Signed commits show either a **Verified**
    or **Unverified** badge, depending on the verification status of the GPG
@@ -253,7 +253,7 @@ If a GPG key becomes compromised, revoke it. Revoking a key changes both future 
 
 To revoke a GPG key:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. Select **GPG Keys** (**{key}**).
 1. Select **Revoke** next to the GPG key you want to delete.
@@ -268,7 +268,7 @@ When you remove a GPG key from your GitLab account:
 
 To remove a GPG key from your account:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. Select **GPG Keys** (**{key}**).
 1. Select **Remove** (**{remove}**) next to the GPG key you want to delete.
@@ -286,7 +286,7 @@ If you must unverify both future and past commits,
   - [Managing OpenPGP Keys](https://riseup.net/en/security/message-security/openpgp/gpg-keys)
   - [OpenPGP Best Practices](https://riseup.net/en/security/message-security/openpgp/best-practices)
   - [Creating a new GPG key with subkeys](https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/) (advanced)
-  - [Review existing GPG keys in your instance](../../../admin_area/credentials_inventory.md#review-existing-gpg-keys)
+  - [Review existing GPG keys in your instance](../../../../administration/credentials_inventory.md#review-existing-gpg-keys)
 
 ## Troubleshooting
 

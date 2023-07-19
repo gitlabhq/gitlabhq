@@ -4,20 +4,16 @@ module Gitlab
   module Ci
     class Config
       module Yaml
+        LoadError = Class.new(StandardError)
+
         class << self
-          def load!(content, project: nil)
-            Loader.new(content, project: project).to_result.then do |result|
-              ##
-              # raise an error for backwards compatibility
-              #
-              raise result.error unless result.valid?
+          def load!(content, current_user: nil)
+            Loader.new(content, current_user: current_user).load.then do |result|
+              raise result.error_class, result.error if !result.valid? && result.error_class.present?
+              raise LoadError, result.error unless result.valid?
 
               result.content
             end
-          end
-
-          def load_result!(content, project: nil)
-            Loader.new(content, project: project).to_result
           end
         end
       end

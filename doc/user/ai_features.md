@@ -46,20 +46,14 @@ The following feature is in Beta:
 
 ## Experiment AI features
 
-[Experiment features](../policy/experiment-beta-support.md#experiment) will soon require
-[Experiment features to be enabled](group/manage.md#enable-experiment-features).
-
-## Third-party AI features
-
-Third-party AI features require [third-party AI services to be enabled](group/manage.md#enable-third-party-ai-features).
-
-For Experiment third-party AI features, [Experiment features must be enabled](group/manage.md#enable-experiment-features) as well.
+[Experiment](../policy/experiment-beta-support.md#experiment) AI features require
+[Experiment features to be enabled](group/manage.md#enable-experiment-features) as well as [third-party AI services to be enabled](group/manage.md#enable-third-party-ai-features).
 
 ### Explain Selected Code in the Web UI **(ULTIMATE SAAS)**
 
 > Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
-This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3.
+This AI feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by Google's Codey for Code Chat (codechat-bison).
 
 GitLab can help you get up to speed faster if you:
 
@@ -70,16 +64,32 @@ By using a large language model, GitLab can explain the code in natural language
 
 Prerequisites:
 
-- The project must be a public project on GitLab.com.
+Additional prerequisites [beyond the two above](#experiment-ai-features).
+
+- The project must be on GitLab.com.
 - You must have the GitLab Ultimate subscription tier.
-- You must be a member of the project.
+- You must be a member of the project with sufficient permissions to view the repository.
 
 To explain your code:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select any file in your project that contains code.
+1. On the file, select the lines that you want to have explained.
+1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
+1. A drawer is displayed on the right side of the page. Wait a moment for the explanation to be generated.
+1. Provide feedback about how satisfied you are with the explanation, so we can improve the results.
+
+You can also have code explained in the context of a merge request. To explain
+code in a merge request:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. On the left sidebar, select **Code > Merge requests**, then select your merge request.
 1. On the secondary menu, select **Changes**.
-1. Go to the file, and select the lines that you want to have explained.
+1. On the file you would like explained, select the three dots (**{ellipsis_v}**) and select **View File @ $SHA**.
+
+   A separate browser tab opens and shows the full file with the latest changes.
+
+1. On the new tab, select the lines that you want to have explained.
 1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
 1. A drawer is displayed on the right side of the page. Wait a moment for the explanation to be generated.
 1. Provide feedback about how satisfied you are with the explanation, so we can improve the results.
@@ -120,19 +130,22 @@ Review the drawer on the right-hand side of your screen.
 
 We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
-### GitLab Chat **(ULTIMATE SAAS)**
+### GitLab Duo Chat **(ULTIMATE SAAS)**
 
 > Introduced in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
-Getting help has never been easier. If you have a question about how the GitLab product works, you can ask product how-to questions and get AI generated support from GitLab Chat.
+Getting help has never been easier. If you have a question about how the GitLab product works, you can ask product how-to questions and get AI generated support from GitLab Duo Chat.
 
 1. In the lower-left corner, select the Help icon.
-1. Select **Ask in GitLab Chat**. A drawer opens on the right side of your screen.
+1. Select **Ask in GitLab Duo Chat**. A drawer opens on the right side of your screen.
 1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to search the product documentation and produce an answer.
 
 To give feedback, select the **Give Feedback** link.
+
+NOTE:
+Only the last 50 messages in the chat history are retained. The chat history expires 3 days after last use.
 
 ### Summarize merge request changes **(ULTIMATE SAAS)**
 

@@ -26,10 +26,14 @@ module Support
               hash[:exceptions] = exceptions.map do |exception|
                 hash = {
                   class: exception.class.name,
-                  message: exception.message,
-                  message_lines: strip_ansi_codes(notification.message_lines),
-                  backtrace: notification.formatted_backtrace
+                  message: exception.message
                 }
+
+                hash[:backtrace] = notification.formatted_backtrace if notification.respond_to?(:formatted_backtrace)
+
+                if notification.respond_to?(:message_lines)
+                  hash[:message_lines] = strip_ansi_codes(notification.message_lines)
+                end
 
                 if loglinking
                   hash.merge!(
@@ -74,7 +78,8 @@ module Support
           product_group: example.metadata[:product_group],
           feature_category: example.metadata[:feature_category],
           ci_job_url: ENV['CI_JOB_URL'],
-          retry_attempts: example.metadata[:retry_attempts]
+          retry_attempts: example.metadata[:retry_attempts],
+          level: example.metadata[:level]
         }
       end
 

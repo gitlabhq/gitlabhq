@@ -452,42 +452,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             expect(job4.needs).to contain_exactly(an_object_having_attributes(name: 'job3'))
           end
         end
-
-        context 'when the FF introduce_rules_with_needs is disabled' do
-          before do
-            stub_feature_flags(introduce_rules_with_needs: false)
-          end
-
-          context 'when the `$var` rule matches' do
-            it 'creates a pipeline without overridden needs' do
-              expect(pipeline).to be_persisted
-              expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
-
-              expect(job1.needs).to be_empty
-              expect(job2.needs).to be_empty
-              expect(job3.needs).to be_empty
-              expect(job4.needs).to contain_exactly(an_object_having_attributes(name: 'job1'))
-            end
-          end
-
-          context 'when the `$var` rule does not match' do
-            let(:initialization_params) { base_initialization_params.merge(variables_attributes: variables_attributes) }
-
-            let(:variables_attributes) do
-              [{ key: 'var', secret_value: 'SOME_VAR' }]
-            end
-
-            it 'creates a pipeline without overridden needs' do
-              expect(pipeline).to be_persisted
-              expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
-
-              expect(job1.needs).to be_empty
-              expect(job2.needs).to be_empty
-              expect(job3.needs).to be_empty
-              expect(job4.needs).to contain_exactly(an_object_having_attributes(name: 'job1'))
-            end
-          end
-        end
       end
     end
 

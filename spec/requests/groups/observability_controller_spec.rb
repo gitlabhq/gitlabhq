@@ -17,6 +17,10 @@ RSpec.describe Groups::ObservabilityController, feature_category: :tracing do
     end
 
     it_behaves_like 'observability csp policy' do
+      before_all do
+        group.add_developer(user)
+      end
+
       let(:tested_path) { path }
     end
 

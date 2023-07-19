@@ -128,7 +128,7 @@ On this page, you can:
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.11
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../feature_flags.md) named `branch_rules`.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../feature_flags.md) named `branch_rules`.
 On GitLab.com, this feature is available.
 
 Branches in your repository can be [protected](../../protected_branches.md) in multiple ways. You can:

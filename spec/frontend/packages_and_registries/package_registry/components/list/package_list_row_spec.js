@@ -5,9 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
-import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -29,14 +27,13 @@ describe('packages_list_row', () => {
 
   const defaultProvide = {
     isGroupPage: false,
+    canDeletePackages: true,
   };
 
   const packageWithoutTags = { ...packageData(), project: packageProject(), ...linksData };
   const packageWithTags = { ...packageWithoutTags, tags: { nodes: packageTags() } };
-  const packageCannotDestroy = { ...packageData(), ...linksData, canDestroy: false };
 
   const findPackageTags = () => wrapper.findComponent(PackageTags);
-  const findPackagePath = () => wrapper.findComponent(PackagePath);
   const findDeleteDropdown = () => wrapper.findByTestId('action-delete');
   const findPackageType = () => wrapper.findByTestId('package-type');
   const findPackageLink = () => wrapper.findByTestId('details-link');
@@ -44,8 +41,7 @@ describe('packages_list_row', () => {
   const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');
   const findPackageVersion = () => findLeftSecondaryInfos().findComponent(GlTruncate);
   const findPublishMethod = () => wrapper.findComponent(PublishMethod);
-  const findCreatedDateText = () => wrapper.findByTestId('created-date');
-  const findTimeAgoTooltip = () => wrapper.findComponent(TimeagoTooltip);
+  const findRightSecondary = () => wrapper.findByTestId('right-secondary');
   const findListItem = () => wrapper.findComponent(ListItem);
   const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
   const findPackageName = () => wrapper.findComponent(GlTruncate);
@@ -60,6 +56,7 @@ describe('packages_list_row', () => {
       stubs: {
         ListItem,
         GlSprintf,
+        TimeagoTooltip,
       },
       propsData: {
         packageEntity,
@@ -106,18 +103,11 @@ describe('packages_list_row', () => {
     });
   });
 
-  describe('when it is group', () => {
-    it('has a package path component', () => {
-      mountComponent({ provide: { isGroupPage: true } });
-
-      expect(findPackagePath().exists()).toBe(true);
-      expect(findPackagePath().props()).toMatchObject({ path: 'gitlab-org/gitlab-test' });
-    });
-  });
-
   describe('delete button', () => {
     it('does not exist when package cannot be destroyed', () => {
-      mountComponent({ packageEntity: packageCannotDestroy });
+      mountComponent({
+        packageEntity: { ...packageWithoutTags, canDestroy: false },
+      });
 
       expect(findDeleteDropdown().exists()).toBe(false);
     });
@@ -180,7 +170,10 @@ describe('packages_list_row', () => {
   describe('left action template', () => {
     it('does not render checkbox if not permitted', () => {
       mountComponent({
-        packageEntity: { ...packageWithoutTags, canDestroy: false },
+        provide: {
+          ...defaultProvide,
+          canDeletePackages: false,
+        },
       });
 
       expect(findBulkDeleteAction().exists()).toBe(false);
@@ -223,14 +216,6 @@ describe('packages_list_row', () => {
       });
     });
 
-    it('if the pipeline exists show the author message', () => {
-      mountComponent({
-        packageEntity: { ...packageWithoutTags, pipelines: { nodes: packagePipelines() } },
-      });
-
-      expect(findLeftSecondaryInfos().text()).toContain('published by Administrator');
-    });
-
     it('has package type with middot', () => {
       mountComponent();
 
@@ -247,13 +232,50 @@ describe('packages_list_row', () => {
       expect(findPublishMethod().props('pipeline')).toEqual(packagePipelines()[0]);
     });
 
-    it('has the created date', () => {
-      mountComponent();
-
-      expect(findCreatedDateText().text()).toMatchInterpolatedText(PackagesListRow.i18n.createdAt);
-      expect(findTimeAgoTooltip().props()).toMatchObject({
-        time: packageData().createdAt,
+    it('if the package is published through CI show the author name', () => {
+      mountComponent({
+        packageEntity: { ...packageWithoutTags, pipelines: { nodes: packagePipelines() } },
       });
+
+      expect(findRightSecondary().text()).toBe(`Published by Administrator, 1 month ago`);
+    });
+
+    it('if the package is published manually then dont show author name', () => {
+      mountComponent({
+        packageEntity: { ...packageWithoutTags },
+      });
+
+      expect(findRightSecondary().text()).toBe(`Published 1 month ago`);
+    });
+  });
+
+  describe('right info for a group registry', () => {
+    it('if the package is published through CI show the project and author name', () => {
+      mountComponent({
+        provide: {
+          ...defaultProvide,
+          isGroupPage: true,
+        },
+        packageEntity: { ...packageWithoutTags, pipelines: { nodes: packagePipelines() } },
+      });
+
+      expect(findRightSecondary().text()).toBe(
+        `Published to ${packageWithoutTags.project.name} by Administrator, 1 month ago`,
+      );
+    });
+
+    it('if the package is published manually dont show project and the author name', () => {
+      mountComponent({
+        provide: {
+          ...defaultProvide,
+          isGroupPage: true,
+        },
+        packageEntity: { ...packageWithoutTags },
+      });
+
+      expect(findRightSecondary().text()).toBe(
+        `Published to ${packageWithoutTags.project.name}, 1 month ago`,
+      );
     });
   });
 });

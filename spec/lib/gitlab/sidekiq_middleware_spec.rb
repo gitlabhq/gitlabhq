@@ -31,7 +31,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
   shared_examples "a middleware chain" do
     before do
       configurator.call(chain)
-      stub_feature_flags("defer_sidekiq_jobs_#{worker_class.name}": false) # not letting this worker deferring its jobs
+      stub_feature_flags("drop_sidekiq_jobs_#{worker_class.name}": false) # not dropping the job
     end
     it "passes through the right middlewares", :aggregate_failures do
       enabled_sidekiq_middlewares.each do |middleware|
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         ::Gitlab::SidekiqMiddleware::WorkerContext::Server,
         ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
         ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
-        ::Gitlab::SidekiqMiddleware::DeferJobs
+        ::Gitlab::SidekiqMiddleware::SkipJobs
       ]
     end
 
@@ -80,9 +80,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
           described_class.server_configurator(
             metrics: true,
             arguments_logger: true,
-            # defer_jobs has to be false because this middleware defers jobs from a worker based on
-            # `worker` type feature flag which is enabled by default in test
-            defer_jobs: false
+            skip_jobs: false
           ).call(chain)
 
           Sidekiq::Testing.inline! { example.run }
@@ -115,7 +113,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         described_class.server_configurator(
           metrics: false,
           arguments_logger: false,
-          defer_jobs: false
+          skip_jobs: false
         )
       end
 
@@ -123,7 +121,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         [
           Gitlab::SidekiqMiddleware::ServerMetrics,
           Gitlab::SidekiqMiddleware::ArgumentsLogger,
-          Gitlab::SidekiqMiddleware::DeferJobs
+          Gitlab::SidekiqMiddleware::SkipJobs
         ]
       end
 

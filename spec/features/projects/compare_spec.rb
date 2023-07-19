@@ -24,7 +24,7 @@ RSpec.describe "Compare", :js, feature_category: :groups_and_projects do
 
         click_button 'Compare'
 
-        expect(page).to have_content 'Commits'
+        expect(page).to have_content 'Commits on Source'
         expect(page).to have_link 'Create merge request'
       end
     end
@@ -53,7 +53,7 @@ RSpec.describe "Compare", :js, feature_category: :groups_and_projects do
       select_using_dropdown('to', RepoHelpers.sample_commit.id, commit: true)
 
       click_button 'Compare'
-      expect(page).to have_content 'Commits (1)'
+      expect(page).to have_content 'Commits on Source (1)'
       expect(page).to have_content "Showing 2 changed files"
 
       diff = first('.js-unfold')
@@ -85,7 +85,7 @@ RSpec.describe "Compare", :js, feature_category: :groups_and_projects do
 
         click_button 'Compare'
 
-        expect(page).to have_content 'Commits (1)'
+        expect(page).to have_content 'Commits on Source (1)'
         expect(page).to have_content 'Showing 1 changed file with 5 additions and 0 deletions'
         expect(page).to have_link 'View open merge request', href: project_merge_request_path(project, merge_request)
         expect(page).not_to have_link 'Create merge request'
@@ -136,14 +136,14 @@ RSpec.describe "Compare", :js, feature_category: :groups_and_projects do
         visit project_compare_index_path(project, from: "feature", to: "master")
         click_button('Compare')
 
-        expect(page).to have_content 'Commits (29)'
+        expect(page).to have_content 'Commits on Source (29)'
 
         # go to the second page
         within(".files .gl-pagination") do
           click_on("2")
         end
 
-        expect(page).not_to have_content 'Commits (29)'
+        expect(page).not_to have_content 'Commits on Source (29)'
       end
     end
   end
@@ -159,7 +159,7 @@ RSpec.describe "Compare", :js, feature_category: :groups_and_projects do
       expect(find(".js-compare-to-dropdown .gl-dropdown-button-text")).to have_content("v1.1.0")
 
       click_button "Compare"
-      expect(page).to have_content "Commits"
+      expect(page).to have_content "Commits on Source"
     end
   end
 

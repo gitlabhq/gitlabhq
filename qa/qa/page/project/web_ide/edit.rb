@@ -178,7 +178,7 @@ module QA
             within_element(:template_list_content) do
               click_on file_name
             rescue Capybara::ElementNotFound
-              raise ElementNotFound, %Q(Couldn't find file template named "#{file_name}". Please confirm that it is a valid option.)
+              raise ElementNotFound, %(Couldn't find file template named "#{file_name}". Please confirm that it is a valid option.)
             end
 
             # Wait for the modal to fade out too
@@ -192,7 +192,7 @@ module QA
                 begin
                   click_on template
                 rescue Capybara::ElementNotFound
-                  raise ElementNotFound, %Q(Couldn't find template "#{template}" for #{file_name}. Please confirm that it exists in the list of templates.)
+                  raise ElementNotFound, %(Couldn't find template "#{template}" for #{file_name}. Please confirm that it exists in the list of templates.)
                 end
               end
             end

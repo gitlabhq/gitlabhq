@@ -27,17 +27,23 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
     draft_note = create_service.execute
 
+    if draft_note.errors.present?
+      render json: { errors: draft_note.errors.full_messages.to_sentence }, status: :unprocessable_entity
+      return
+    end
+
     prepare_notes_for_rendering(draft_note)
 
     render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)
   end
 
   def update
-    draft_note.update!(draft_note_params)
-
-    prepare_notes_for_rendering(draft_note)
-
-    render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)
+    if draft_note.update(draft_note_params)
+      prepare_notes_for_rendering(draft_note)
+      render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)
+    else
+      render json: { errors: draft_note.errors.full_messages.to_sentence }, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -57,10 +63,13 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
     if Gitlab::Utils.to_boolean(approve_params[:approve])
       unless merge_request.approved_by?(current_user)
-        success = ::MergeRequests::ApprovalService.new(project: @project, current_user: current_user, params: approve_params).execute(merge_request)
+        success = ::MergeRequests::ApprovalService
+          .new(project: @project, current_user: current_user, params: approve_params)
+          .execute(merge_request)
 
         unless success
-          return render json: { message: _('An error occurred while approving, please try again.') }, status: :internal_server_error
+          return render json: { message: _('An error occurred while approving, please try again.') },
+            status: :internal_server_error
         end
       end
 
@@ -101,7 +110,9 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   # rubocop: disable CodeReuse/ActiveRecord
   def merge_request
-    @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).find_by!(iid: params[:merge_request_id])
+    @merge_request ||= MergeRequestsFinder
+      .new(current_user, project_id: @project.id)
+      .find_by!(iid: params[:merge_request_id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

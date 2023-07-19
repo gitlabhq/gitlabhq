@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' } do
+  RSpec.describe 'Package', :object_storage,
+    quarantine: {
+      only: { job: %w[relative_url airgapped] },
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417600',
+      type: :investigating
+    } do
     describe 'Maven project level endpoint', product_group: :package_registry do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

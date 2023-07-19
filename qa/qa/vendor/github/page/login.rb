@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'capybara/dsl'
-require 'benchmark'
-
 module QA
   module Vendor
     module Github
       module Page
-        class Login < Page::Base
+        class Login < Vendor::Page::Base
           def login
             fill_in 'login', with: QA::Runtime::Env.github_username
             fill_in 'password', with: QA::Runtime::Env.github_password
@@ -24,10 +21,16 @@ module QA
             end
 
             authorize_app
+
+            confirm_account_recovery_settings
           end
 
           def authorize_app
             click_on 'Authorize' if has_button?('Authorize')
+          end
+
+          def confirm_account_recovery_settings
+            click_on 'Confirm' if has_button?('Confirm')
           end
         end
       end

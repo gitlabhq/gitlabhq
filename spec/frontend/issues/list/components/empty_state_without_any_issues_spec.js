@@ -23,6 +23,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     newProjectPath: 'new/project/path',
     showNewIssueLink: false,
     signInPath: 'sign/in/path',
+    groupId: '',
   };
 
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);

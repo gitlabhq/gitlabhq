@@ -23,7 +23,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 }
 
 .super-sidebar-skip-to {
-  top: calc(#{$header-height} + #{$calc-application-bars-height});
+  top: $calc-application-bars-height;
   width: calc(#{$super-sidebar-width} - #{$gl-spacing-scale-5});
   z-index: $super-sidebar-skip-to-z-index;
 }
@@ -32,7 +32,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: calc(#{$header-height} + #{$calc-application-bars-height});
+  top: $calc-application-bars-height;
   bottom: $calc-application-footer-height;
   left: 0;
   background-color: var(--gray-10, $gray-10);
@@ -57,12 +57,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   .user-bar {
     background-color: $t-gray-a-04;
 
-    .tanuki-logo {
-      @include gl-vertical-align-middle;
-    }
-
-    .user-bar-item,
-    .tanuki-logo-container {
+    .user-bar-item {
       @include gl-rounded-base;
       @include gl-p-2;
       @include gl-bg-transparent;
@@ -79,21 +74,6 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
       &:focus,
       &:active {
         @include active-toggle;
-      }
-    }
-
-    $light-mode-btn-bg: #e0dfe5;
-    $dark-mode-btn-bg: #53515b;
-
-    .tanuki-logo-container {
-      &:hover,
-      &:focus,
-      &:active {
-        background-color: $light-mode-btn-bg;
-
-        .gl-dark & {
-          background-color: $dark-mode-btn-bg;
-        }
       }
     }
   }
@@ -313,12 +293,9 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     padding: 0.5rem !important;
   }
 
-  .is-searching {
-    .in-search-scope-help {
-      position: absolute;
-      top: 0.625rem;
-      right: 2.5rem;
-    }
+  .search-scope-help {
+    top: 0.625rem;
+    right: 2.5rem;
   }
 
   .gl-search-box-by-type-input-borderless {

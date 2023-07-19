@@ -47,7 +47,7 @@ RSpec.describe AvatarUploader do
     end
   end
 
-  context 'accept whitelist file content type' do
+  context 'accept allowlist file content type' do
     # We need to feed through a valid path, but we force the parsed mime type
     # in a stub below so we can set any path.
     let_it_be(:path) { File.join('spec', 'fixtures', 'video_sample.mp4') }
@@ -61,13 +61,13 @@ RSpec.describe AvatarUploader do
     end
   end
 
-  context 'upload non-whitelisted file content type' do
+  context 'upload denylisted file content type' do
     let_it_be(:path) { File.join('spec', 'fixtures', 'sanitized.svg') }
 
     it_behaves_like 'denied carrierwave upload'
   end
 
-  context 'upload misnamed non-whitelisted file content type' do
+  context 'upload misnamed denylisted file content type' do
     let_it_be(:path) { File.join('spec', 'fixtures', 'not_a_png.png') }
 
     it_behaves_like 'denied carrierwave upload'

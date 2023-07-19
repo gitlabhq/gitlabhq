@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils';
 import _ from 'lodash';
 import { TEST_HOST } from 'helpers/test_constants';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IdeStatusBar from '~/ide/components/ide_status_bar.vue';
 import IdeStatusMR from '~/ide/components/ide_status_mr.vue';
 import { rightSidebarViews } from '~/ide/constants';
@@ -15,6 +15,8 @@ jest.mock('~/lib/utils/poll');
 
 describe('IdeStatusBar component', () => {
   let wrapper;
+  const dummyIntervalId = 1337;
+  let dispatchMock;
 
   const findMRStatus = () => wrapper.findComponent(IdeStatusMR);
 
@@ -31,14 +33,21 @@ describe('IdeStatusBar component', () => {
       ...state,
     });
 
-    wrapper = mount(IdeStatusBar, { store });
+    wrapper = mountExtended(IdeStatusBar, { store });
+    dispatchMock = jest.spyOn(store, 'dispatch');
   };
+
+  beforeEach(() => {
+    jest.spyOn(window, 'setInterval').mockReturnValue(dummyIntervalId);
+  });
+
+  const findCommitShaLink = () => wrapper.findByTestId('commit-sha-content');
 
   describe('default', () => {
     it('triggers a setInterval', () => {
       mountComponent();
 
-      expect(wrapper.vm.intervalId).not.toBe(null);
+      expect(window.setInterval).toHaveBeenCalledTimes(1);
     });
 
     it('renders the statusbar', () => {
@@ -47,34 +56,10 @@ describe('IdeStatusBar component', () => {
       expect(wrapper.classes()).toEqual(['ide-status-bar']);
     });
 
-    describe('commitAgeUpdate', () => {
-      beforeEach(() => {
-        mountComponent();
-        jest.spyOn(wrapper.vm, 'commitAgeUpdate').mockImplementation(() => {});
-      });
-
-      afterEach(() => {
-        jest.clearAllTimers();
-      });
-
-      it('gets called every second', () => {
-        expect(wrapper.vm.commitAgeUpdate).not.toHaveBeenCalled();
-
-        jest.advanceTimersByTime(1000);
-
-        expect(wrapper.vm.commitAgeUpdate.mock.calls).toHaveLength(1);
-
-        jest.advanceTimersByTime(1000);
-
-        expect(wrapper.vm.commitAgeUpdate.mock.calls).toHaveLength(2);
-      });
-    });
-
     describe('getCommitPath', () => {
       it('returns the path to the commit details', () => {
         mountComponent();
-
-        expect(wrapper.vm.getCommitPath('abc123de')).toBe('/commit/abc123de');
+        expect(findCommitShaLink().attributes('href')).toBe('/commit/abc123de');
       });
     });
 
@@ -95,11 +80,10 @@ describe('IdeStatusBar component', () => {
           },
         };
         mountComponent({ pipelines });
-        jest.spyOn(wrapper.vm, 'openRightPane').mockImplementation(() => {});
 
         wrapper.find('button').trigger('click');
 
-        expect(wrapper.vm.openRightPane).toHaveBeenCalledWith(rightSidebarViews.pipelines);
+        expect(dispatchMock).toHaveBeenCalledWith('rightPane/open', rightSidebarViews.pipelines);
       });
     });
 

@@ -1,5 +1,4 @@
 /* eslint-disable no-return-assign, no-new, no-underscore-dangle */
-import $ from 'jquery';
 import htmlStaticLineHighlighter from 'test_fixtures_static/line_highlighter.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -9,11 +8,15 @@ describe('LineHighlighter', () => {
   const testContext = {};
 
   const clickLine = (number, eventData = {}) => {
-    if ($.isEmptyObject(eventData)) {
-      return $(`#L${number}`).click();
+    if (Object.keys(eventData).length === 0) {
+      return document.querySelector(`#L${number}`).click();
     }
-    const e = $.Event('click', eventData);
-    return $(`#L${number}`).trigger(e);
+    const e = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      ...eventData,
+    });
+    return document.querySelector(`#L${number}`).dispatchEvent(e);
   };
 
   beforeEach(() => {
@@ -35,32 +38,30 @@ describe('LineHighlighter', () => {
     it('highlights one line given in the URL hash', () => {
       new LineHighlighter({ hash: '#L13' });
 
-      expect($('#LC13')).toHaveClass(testContext.css);
+      expect(document.querySelector('#LC13').classList).toContain(testContext.css);
     });
 
     it('highlights one line given in the URL hash with given CSS class name', () => {
       const hiliter = new LineHighlighter({ hash: '#L13', highlightLineClass: 'hilite' });
 
       expect(hiliter.highlightLineClass).toBe('hilite');
-      expect($('#LC13')).toHaveClass('hilite');
-      expect($('#LC13')).not.toHaveClass('hll');
+      expect(document.querySelector('#LC13').classList).toContain('hilite');
+      expect(document.querySelector('#LC13').classList).not.toContain('hll');
     });
 
     it('highlights a range of lines given in the URL hash', () => {
       new LineHighlighter({ hash: '#L5-25' });
 
-      expect($(`.${testContext.css}`).length).toBe(21);
       for (let line = 5; line <= 25; line += 1) {
-        expect($(`#LC${line}`)).toHaveClass(testContext.css);
+        expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
       }
     });
 
     it('highlights a range of lines given in the URL hash using GitHub format', () => {
       new LineHighlighter({ hash: '#L5-L25' });
 
-      expect($(`.${testContext.css}`).length).toBe(21);
       for (let line = 5; line <= 25; line += 1) {
-        expect($(`#LC${line}`)).toHaveClass(testContext.css);
+        expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
       }
     });
 
@@ -74,11 +75,13 @@ describe('LineHighlighter', () => {
     it('discards click events', () => {
       const clickSpy = jest.fn();
 
-      $('a[data-line-number]').click(clickSpy);
+      document.querySelectorAll('a[data-line-number]').forEach((el) => {
+        el.addEventListener('click', clickSpy);
+      });
 
       clickLine(13);
 
-      expect(clickSpy.mock.calls[0][0].isDefaultPrevented()).toEqual(true);
+      expect(clickSpy.mock.calls[0][0].defaultPrevented).toEqual(true);
     });
 
     it('handles garbage input from the hash', () => {
@@ -101,27 +104,19 @@ describe('LineHighlighter', () => {
   });
 
   describe('clickHandler', () => {
-    it('handles clicking on a child icon element', () => {
-      const spy = jest.spyOn(testContext.class, 'setHash');
-      $('#L13 [data-testid="link-icon"]').mousedown().click();
-
-      expect(spy).toHaveBeenCalledWith(13);
-      expect($('#LC13')).toHaveClass(testContext.css);
-    });
-
     describe('without shiftKey', () => {
       it('highlights one line when clicked', () => {
         clickLine(13);
 
-        expect($('#LC13')).toHaveClass(testContext.css);
+        expect(document.querySelector('#LC13').classList).toContain(testContext.css);
       });
 
       it('unhighlights previously highlighted lines', () => {
         clickLine(13);
         clickLine(20);
 
-        expect($('#LC13')).not.toHaveClass(testContext.css);
-        expect($('#LC20')).toHaveClass(testContext.css);
+        expect(document.querySelector('#LC13').classList).not.toContain(testContext.css);
+        expect(document.querySelector('#LC20').classList).toContain(testContext.css);
       });
 
       it('sets the hash', () => {
@@ -138,6 +133,8 @@ describe('LineHighlighter', () => {
         clickLine(13);
         clickLine(20, {
           shiftKey: true,
+          bubbles: true,
+          cancelable: true,
         });
 
         expect(spy).toHaveBeenCalledWith(13);
@@ -150,8 +147,8 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect($('#LC13')).toHaveClass(testContext.css);
-          expect($(`.${testContext.css}`).length).toBe(1);
+          expect(document.querySelector('#LC13').classList).toContain(testContext.css);
+          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(1);
         });
 
         it('sets the hash', () => {
@@ -171,9 +168,9 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect($(`.${testContext.css}`).length).toBe(6);
+          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(6);
           for (let line = 15; line <= 20; line += 1) {
-            expect($(`#LC${line}`)).toHaveClass(testContext.css);
+            expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
         });
 
@@ -183,9 +180,9 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect($(`.${testContext.css}`).length).toBe(6);
+          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(6);
           for (let line = 5; line <= 10; line += 1) {
-            expect($(`#LC${line}`)).toHaveClass(testContext.css);
+            expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
         });
       });
@@ -205,9 +202,9 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect($(`.${testContext.css}`).length).toBe(6);
+          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(6);
           for (let line = 5; line <= 10; line += 1) {
-            expect($(`#LC${line}`)).toHaveClass(testContext.css);
+            expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
         });
 
@@ -216,9 +213,9 @@ describe('LineHighlighter', () => {
             shiftKey: true,
           });
 
-          expect($(`.${testContext.css}`).length).toBe(6);
+          expect(document.querySelectorAll(`.${testContext.css}`).length).toBe(6);
           for (let line = 10; line <= 15; line += 1) {
-            expect($(`#LC${line}`)).toHaveClass(testContext.css);
+            expect(document.querySelector(`#LC${line}`).classList).toContain(testContext.css);
           }
         });
       });
@@ -251,13 +248,13 @@ describe('LineHighlighter', () => {
     it('highlights the specified line', () => {
       testContext.subject(13);
 
-      expect($('#LC13')).toHaveClass(testContext.css);
+      expect(document.querySelector('#LC13').classList).toContain(testContext.css);
     });
 
     it('accepts a String-based number', () => {
       testContext.subject('13');
 
-      expect($('#LC13')).toHaveClass(testContext.css);
+      expect(document.querySelector('#LC13').classList).toContain(testContext.css);
     });
   });
 

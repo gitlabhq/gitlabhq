@@ -9,7 +9,8 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
   let(:commit) { create(:commit, project: project) }
   let(:signature_text) { 'signature_text' }
   let(:signed_text) { 'signed_text' }
-  let(:signature_data) { [signature_text, signed_text] }
+  let(:signer) { :SIGNER_USER }
+  let(:signature_data) { { signature: signature_text, signed_text: signed_text, signer: signer } }
   let(:verifier) { instance_double('Gitlab::Ssh::Signature') }
   let(:verification_status) { :verified }
 
@@ -27,7 +28,7 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
     })
 
     allow(Gitlab::Ssh::Signature).to receive(:new)
-      .with(signature_text, signed_text, commit.committer_email)
+      .with(signature_text, signed_text, signer, commit.committer_email)
       .and_return(verifier)
   end
 

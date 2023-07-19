@@ -1,10 +1,10 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getEnvironment from '../graphql/queries/environment.query.graphql';
+import getEnvironmentWithNamespace from '../graphql/queries/environment_with_namespace.graphql';
 import updateEnvironment from '../graphql/mutations/update_environment.mutation.graphql';
 import EnvironmentForm from './environment_form.vue';
 
@@ -14,72 +14,42 @@ export default {
     EnvironmentForm,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectEnvironmentsPath', 'updateEnvironmentPath', 'projectPath'],
-  props: {
-    environment: {
-      required: true,
-      type: Object,
-    },
-  },
+  inject: ['projectEnvironmentsPath', 'projectPath', 'environmentName'],
   apollo: {
     environment: {
-      query: getEnvironment,
+      query() {
+        return this.glFeatures?.kubernetesNamespaceForEnvironment
+          ? getEnvironmentWithNamespace
+          : getEnvironment;
+      },
       variables() {
         return {
-          environmentName: this.environment.name,
+          environmentName: this.environmentName,
           projectFullPath: this.projectPath,
         };
       },
       update(data) {
-        this.formEnvironment = data?.project?.environment || {};
+        const result = data?.project?.environment || {};
+        this.formEnvironment = { ...result, clusterAgentId: result?.clusterAgent?.id };
       },
     },
   },
   data() {
     return {
-      isQueryLoading: false,
       loading: false,
       formEnvironment: null,
     };
   },
-  mounted() {
-    if (this.glFeatures?.environmentSettingsToGraphql) {
-      this.fetchWithGraphql();
-    } else {
-      this.formEnvironment = {
-        id: this.environment.id,
-        name: this.environment.name,
-        externalUrl: this.environment.external_url,
-      };
-    }
+  computed: {
+    isQueryLoading() {
+      return this.$apollo.queries.environment.loading;
+    },
   },
   methods: {
-    async fetchWithGraphql() {
-      this.$apollo.addSmartQuery('environmentData', {
-        variables() {
-          return { environmentName: this.environment.name, projectFullPath: this.projectPath };
-        },
-        query: getEnvironment,
-        update(data) {
-          const result = data?.project?.environment || {};
-          this.formEnvironment = { ...result, clusterAgentId: result?.clusterAgent?.id };
-        },
-        watchLoading: (isLoading) => {
-          this.isQueryLoading = isLoading;
-        },
-      });
-    },
     onChange(environment) {
       this.formEnvironment = environment;
     },
-    onSubmit() {
-      if (this.glFeatures?.environmentSettingsToGraphql) {
-        this.updateWithGraphql();
-      } else {
-        this.updateWithAxios();
-      }
-    },
-    async updateWithGraphql() {
+    async onSubmit() {
       this.loading = true;
       try {
         const { data } = await this.$apollo.mutate({
@@ -89,6 +59,7 @@ export default {
               id: this.formEnvironment.id,
               externalUrl: this.formEnvironment.externalUrl,
               clusterAgentId: this.formEnvironment.clusterAgentId,
+              kubernetesNamespace: this.formEnvironment.kubernetesNamespace,
             },
           },
         });
@@ -110,20 +81,6 @@ export default {
       } finally {
         this.loading = false;
       }
-    },
-    updateWithAxios() {
-      this.loading = true;
-      axios
-        .put(this.updateEnvironmentPath, {
-          id: this.formEnvironment.id,
-          external_url: this.formEnvironment.externalUrl,
-        })
-        .then(({ data: { path } }) => visitUrl(path))
-        .catch((error) => {
-          const message = error.response.data.message[0];
-          createAlert({ message });
-          this.loading = false;
-        });
     },
   },
 };

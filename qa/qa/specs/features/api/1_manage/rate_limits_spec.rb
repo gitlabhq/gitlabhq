@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, :skip_live_env, except: { job: 'review-qa-*' } do
+  RSpec.describe 'Manage', :requires_admin, :skip_live_env, except: { job: %w[review-qa-* gdk-qa-*] } do
     describe 'rate limits', :reliable, product_group: :import_and_integrate do
       let(:rate_limited_user) { Resource::User.fabricate_via_api! }
       let(:api_client) { Runtime::API::Client.new(:gitlab, user: rate_limited_user) }

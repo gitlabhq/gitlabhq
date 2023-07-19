@@ -983,7 +983,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     describe '#make_cleanup_errored!' do
-      non_errored_states = Clusters::Cluster.state_machines[:cleanup_status].states.keys - [:cleanup_errored]
+      non_errored_states = described_class.state_machines[:cleanup_status].states.keys - [:cleanup_errored]
 
       non_errored_states.each do |state|
         it "transitions cleanup_status from #{state} to cleanup_errored" do

@@ -193,6 +193,7 @@ Consul
 Contentful
 Corosync
 corpuses
+Cosign
 Coursier
 CPU
 CPUs
@@ -374,6 +375,7 @@ FQDNs
 FreshBooks
 frontend
 Fugit
+Fulcio
 fuzzer
 fuzzing
 Gantt
@@ -516,6 +518,7 @@ Kubernetes
 Kubesec
 Kucoin
 Kustomize
+Kustomization
 kwargs
 Laravel
 LaunchDarkly
@@ -785,6 +788,7 @@ reindexes
 reindexing
 reinitialize
 reinitializing
+Rekor
 relicensing
 remediations
 renderers
@@ -879,6 +883,7 @@ Shimo
 Shippo
 Shopify
 Sidekiq
+Sigstore
 Silverlight
 Sisense
 Sitespeed

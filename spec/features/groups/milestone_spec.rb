@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
+  include ContentEditorHelpers
+
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project_empty_repo, group: group) }
   let_it_be(:user) { create(:group_member, :maintainer, user: create(:user), group: group).user }
@@ -18,6 +20,7 @@ RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
   context 'create a milestone', :js do
     before do
       visit new_group_milestone_path(group)
+      close_rich_text_promo_popover_if_present
     end
 
     it 'renders description preview' do
@@ -27,7 +30,7 @@ RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
 
       click_button("Preview")
 
-      preview = find('.js-md-preview')
+      preview = find('.js-vue-md-preview')
 
       expect(preview).to have_content('Nothing to preview.')
 
@@ -66,6 +69,7 @@ RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
     context 'when no milestones' do
       it 'renders no milestones text' do
         visit group_milestones_path(group)
+        close_rich_text_promo_popover_if_present
         expect(page).to have_content('Use milestones to track issues and merge requests')
       end
     end
@@ -95,6 +99,7 @@ RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
 
       before do
         visit group_milestones_path(group)
+        close_rich_text_promo_popover_if_present
       end
 
       it 'counts milestones correctly' do
@@ -170,6 +175,7 @@ RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
 
       before do
         visit group_milestone_path(group, milestone)
+        close_rich_text_promo_popover_if_present
       end
 
       it 'renders the issues tab' do

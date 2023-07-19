@@ -417,7 +417,7 @@ There are a number of potential causes and solutions for this error message.
 
 #### Kerberos integration not using a dedicated port
 
-GitLab CI/CD doesn’t work with a Kerberos-enabled GitLab instance unless the Kerberos integration
+GitLab CI/CD doesn't work with a Kerberos-enabled GitLab instance unless the Kerberos integration
 is configured to [use a dedicated port](kerberos.md#http-git-access-with-kerberos-token-passwordless-authentication).
 
 #### Lack of connectivity between client machine and Kerberos server
@@ -431,6 +431,11 @@ If you're experiencing this error, ensure there is connectivity between the
 client machine and the Kerberos server - this is a prerequisite! Traffic may be
 blocked by a firewall, or the DNS records may be incorrect.
 
+#### `GitLab DNS record is a CNAME record` error
+
+Kerberos fails with this error when GitLab is referenced with a `CNAME` record.
+To resolve this issue, ensure the DNS record for GitLab is an `A` record.
+
 #### Mismatched forward and reverse DNS records for GitLab instance hostname
 
 Another failure mode occurs when the forward and reverse DNS records for the
@@ -442,7 +447,7 @@ above error message.
 
 To fix this, ensure that the forward and reverse DNS for your GitLab server
 match. So for instance, if you access GitLab as `gitlab.example.com`, resolving
-to IP address `1.2.3.4`, then `4.3.2.1.in-addr.arpa` must be a `PTR` record for
+to IP address `10.0.2.2`, then `2.2.0.10.in-addr.arpa` must be a `PTR` record for
 `gitlab.example.com`.
 
 #### Missing Kerberos libraries on browser or client machine

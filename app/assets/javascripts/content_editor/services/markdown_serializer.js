@@ -8,12 +8,12 @@ import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
+import CodeSuggestion from '../extensions/code_suggestion';
 import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
 import DetailsContent from '../extensions/details_content';
 import DrawioDiagram from '../extensions/drawio_diagram';
-import Comment from '../extensions/comment';
 import Diagram from '../extensions/diagram';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
@@ -32,6 +32,7 @@ import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
+import Loading from '../extensions/loading';
 import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
@@ -52,7 +53,6 @@ import Text from '../extensions/text';
 import Video from '../extensions/video';
 import WordBreak from '../extensions/word_break';
 import {
-  renderComment,
   renderCodeBlock,
   renderHardBreak,
   renderTable,
@@ -134,8 +134,8 @@ const defaultSerializerConfig = {
     }),
     [BulletList.name]: preserveUnchanged(renderBulletList),
     [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
-    [Comment.name]: renderComment,
     [Diagram.name]: preserveUnchanged(renderCodeBlock),
+    [CodeSuggestion.name]: preserveUnchanged(renderCodeBlock),
     [DrawioDiagram.name]: preserveUnchanged({
       render: renderImage,
       inline: true,
@@ -195,6 +195,7 @@ const defaultSerializerConfig = {
       inline: true,
     }),
     [ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
+    [Loading.name]: () => {},
     [OrderedList.name]: preserveUnchanged(renderOrderedList),
     [Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
     [Reference.name]: renderReference,

@@ -129,7 +129,8 @@ Content of `.gitlab-ci.yml`:
 ```yaml
 include: 'https://company.com/autodevops-template.yml'
 
-image: alpine:latest
+default:
+  image: alpine:latest
 
 variables:
   POSTGRES_USER: root
@@ -418,7 +419,8 @@ these keywords:
 
 ### `include` with `rules:if`
 
-> Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
+> - Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
+> - Support for `when: never` and `when:always` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414517) in GitLab 16.2. Feature flag `ci_support_include_rules_when_never` removed.
 
 Use [`rules:if`](index.md#rulesif) to conditionally include other configuration files
 based on the status of CI/CD variables. For example:
@@ -447,7 +449,8 @@ test:
 
 ### `include` with `rules:exists`
 
-> Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
+> - Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
+> - Support for `when: never` and `when:always` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414517) in GitLab 16.2. Feature flag `ci_support_include_rules_when_never` removed.
 
 Use [`rules:exists`](index.md#rulesexists) to conditionally include other configuration files
 based on the existence of files. For example:
@@ -627,4 +630,4 @@ limit is reached. You can remove one included file at a time to try to narrow do
 which configuration file is the source of the loop or excessive included files.
 
 In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) self-managed users can
-change the [maximum includes](../../user/admin_area/settings/continuous_integration.md#maximum-includes) value.
+change the [maximum includes](../../administration/settings/continuous_integration.md#maximum-includes) value.

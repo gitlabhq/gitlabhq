@@ -23,6 +23,10 @@ module SidebarsHelper
     end
   end
 
+  def organization_sidebar_context(organization, user, **args)
+    Sidebars::Context.new(container: organization, current_user: user, **args)
+  end
+
   def project_sidebar_context(project, user, current_ref, ref_type: nil, **args)
     context_data = project_sidebar_context_data(project, user, current_ref, ref_type: ref_type)
     Sidebars::Projects::Context.new(**context_data, **args)
@@ -95,7 +99,7 @@ module SidebarsHelper
 
   def super_sidebar_nav_panel(
     nav: nil, project: nil, user: nil, group: nil, current_ref: nil, ref_type: nil,
-    viewed_user: nil)
+    viewed_user: nil, organization: nil)
     context_adds = { route_is_active: method(:active_nav_link?), is_super_sidebar: true }
     case nav
     when 'project'
@@ -117,10 +121,23 @@ module SidebarsHelper
       Sidebars::Search::Panel.new(context)
     when 'admin'
       Sidebars::Admin::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+    when 'organization'
+      context = organization_sidebar_context(organization, user, **context_adds)
+      Sidebars::Organizations::SuperSidebarPanel.new(context)
     else
       context = your_work_sidebar_context(user, **context_adds)
       Sidebars::YourWork::Panel.new(context)
     end
+  end
+
+  def command_palette_data(project: nil)
+    return {} unless project&.repo_exists?
+    return {} if project.empty_repo?
+
+    {
+      project_files_url: project_files_path(project, project.default_branch, format: :json),
+      project_blob_url: project_blob_path(project, project.default_branch)
+    }
   end
 
   private
@@ -142,7 +159,8 @@ module SidebarsHelper
       customized: user.status&.customized?,
       availability: user.status&.availability.to_s,
       emoji: user.status&.emoji,
-      message: user.status&.message_html&.html_safe,
+      message_html: user.status&.message_html&.html_safe,
+      message: user.status&.message,
       clear_after: user_clear_status_at(user)
     }
   end
@@ -162,7 +180,7 @@ module SidebarsHelper
                      'data-track-label': item[:id],
                      'data-track-action': 'click_link',
                      'data-track-property': 'nav_create_menu',
-                     'data-qa-selector': 'create_menu_item',
+                     'data-testid': 'create_menu_item',
                      'data-qa-create-menu-item': item[:id]
                    }
                  }

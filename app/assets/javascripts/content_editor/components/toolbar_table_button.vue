@@ -1,5 +1,6 @@
 <script>
-import { GlDisclosureDropdown, GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlButton, GlTooltip } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { clamp } from '../services/utils';
 
@@ -14,13 +15,12 @@ export default {
   components: {
     GlButton,
     GlDisclosureDropdown,
-  },
-  directives: {
     GlTooltip,
   },
   inject: ['tiptapEditor'],
   data() {
     return {
+      toggleId: uniqueId('dropdown-toggle-btn-'),
       maxRows: MIN_ROWS,
       maxCols: MIN_COLS,
       rows: 1,
@@ -82,43 +82,47 @@ export default {
 };
 </script>
 <template>
-  <gl-disclosure-dropdown
-    ref="dropdown"
-    v-gl-tooltip
-    size="small"
-    category="tertiary"
-    icon="table"
-    :aria-label="__('Insert table')"
-    :toggle-text="__('Insert table')"
-    positioning-strategy="fixed"
-    class="content-editor-table-dropdown"
-    text-sr-only
-    :fluid-width="true"
-    @shown="setFocus(1, 1)"
-  >
-    <div
-      class="gl-p-3 gl-pt-2"
-      role="grid"
-      :aria-colcount="$options.MAX_COLS"
-      :aria-rowcount="$options.MAX_ROWS"
+  <div class="gl-display-inline-flex gl-vertical-align-middle">
+    <gl-disclosure-dropdown
+      ref="dropdown"
+      :toggle-id="toggleId"
+      size="small"
+      category="tertiary"
+      icon="table"
+      no-caret
+      :aria-label="__('Insert table')"
+      :toggle-text="__('Insert table')"
+      positioning-strategy="fixed"
+      class="content-editor-table-dropdown gl-mr-3"
+      text-sr-only
+      :fluid-width="true"
+      @shown="setFocus(1, 1)"
     >
-      <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex" role="row">
-        <div v-for="c of list(maxCols)" :key="c" role="gridcell">
-          <gl-button
-            :ref="`table-${r}-${c}`"
-            :class="{ 'active gl-bg-blue-50!': r <= rows && c <= cols }"
-            :aria-label="getButtonLabel(r, c)"
-            class="table-creator-grid-item gl-display-inline gl-rounded-0! gl-w-6! gl-h-6! gl-p-0!"
-            @mouseover="setRowsAndCols(r, c)"
-            @focus="setRowsAndCols(r, c)"
-            @click="insertTable()"
-            @keydown="onKeydown($event.key)"
-          />
+      <div
+        class="gl-p-3 gl-pt-2"
+        role="grid"
+        :aria-colcount="$options.MAX_COLS"
+        :aria-rowcount="$options.MAX_ROWS"
+      >
+        <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex" role="row">
+          <div v-for="c of list(maxCols)" :key="c" role="gridcell">
+            <gl-button
+              :ref="`table-${r}-${c}`"
+              :class="{ 'active gl-bg-blue-50!': r <= rows && c <= cols }"
+              :aria-label="getButtonLabel(r, c)"
+              class="table-creator-grid-item gl-display-inline gl-rounded-0! gl-w-6! gl-h-6! gl-p-0!"
+              @mouseover="setRowsAndCols(r, c)"
+              @focus="setRowsAndCols(r, c)"
+              @click="insertTable()"
+              @keydown="onKeydown($event.key)"
+            />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="gl-border-t gl-px-4 gl-pt-3 gl-pb-2">
-      {{ getButtonLabel(rows, cols) }}
-    </div>
-  </gl-disclosure-dropdown>
+      <div class="gl-border-t gl-px-4 gl-pt-3 gl-pb-2">
+        {{ getButtonLabel(rows, cols) }}
+      </div>
+    </gl-disclosure-dropdown>
+    <gl-tooltip :target="toggleId" placement="top">{{ __('Insert table') }}</gl-tooltip>
+  </div>
 </template>

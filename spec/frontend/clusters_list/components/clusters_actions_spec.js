@@ -1,4 +1,10 @@
-import { GlButton, GlDropdown, GlDropdownItem, GlTooltip } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlTooltip,
+  GlButtonGroup,
+} from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ClustersActions from '~/clusters_list/components/clusters_actions.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -18,12 +24,13 @@ describe('ClustersActionsComponent', () => {
     certificateBasedClustersEnabled: true,
   };
 
+  const findButtonGroup = () => wrapper.findComponent(GlButtonGroup);
   const findButton = () => wrapper.findComponent(GlButton);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findDropdownItemIds = () =>
-    findDropdownItems().wrappers.map((x) => x.attributes('data-testid'));
+    findDropdownItems().wrappers.map((x) => x.find('a').attributes('data-testid'));
   const findDropdownItemTexts = () => findDropdownItems().wrappers.map((x) => x.text());
   const findNewClusterDocsLink = () => wrapper.findByTestId('create-cluster-link');
   const findConnectClusterLink = () => wrapper.findByTestId('connect-cluster-link');
@@ -33,6 +40,10 @@ describe('ClustersActionsComponent', () => {
       provide: {
         ...defaultProvide,
         ...provideData,
+      },
+      stubs: {
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
       },
       directives: {
         GlModalDirective: createMockDirective('gl-modal-directive'),
@@ -45,12 +56,10 @@ describe('ClustersActionsComponent', () => {
   });
 
   describe('when the certificate based clusters are enabled', () => {
-    it('renders actions menu', () => {
+    it('renders actions menu button group with dropdown', () => {
+      expect(findButtonGroup().exists()).toBe(true);
+      expect(findButton().exists()).toBe(true);
       expect(findDropdown().exists()).toBe(true);
-    });
-
-    it('shows split button in dropdown', () => {
-      expect(findDropdown().props('split')).toBe(true);
     });
 
     it("doesn't show the tooltip", () => {
@@ -59,11 +68,11 @@ describe('ClustersActionsComponent', () => {
 
     describe('when on project level', () => {
       it(`displays default action as ${CLUSTERS_ACTIONS.connectWithAgent}`, () => {
-        expect(findDropdown().props('text')).toBe(CLUSTERS_ACTIONS.connectWithAgent);
+        expect(findButton().text()).toBe(CLUSTERS_ACTIONS.connectWithAgent);
       });
 
       it('renders correct modal id for the default action', () => {
-        const binding = getBinding(findDropdown().element, 'gl-modal-directive');
+        const binding = getBinding(findButton().element, 'gl-modal-directive');
 
         expect(binding.value).toBe(INSTALL_AGENT_MODAL_ID);
       });
@@ -91,6 +100,7 @@ describe('ClustersActionsComponent', () => {
 
         it('disables dropdown', () => {
           expect(findDropdown().props('disabled')).toBe(true);
+          expect(findButton().props('disabled')).toBe(true);
         });
 
         it('shows tooltip explaining why dropdown is disabled', () => {
@@ -98,7 +108,7 @@ describe('ClustersActionsComponent', () => {
         });
 
         it('does not bind split dropdown button', () => {
-          const binding = getBinding(findDropdown().element, 'gl-modal-directive');
+          const binding = getBinding(findButton().element, 'gl-modal-directive');
 
           expect(binding.value).toBe(false);
         });
@@ -148,11 +158,11 @@ describe('ClustersActionsComponent', () => {
     });
 
     it(`displays default action as ${CLUSTERS_ACTIONS.connectCluster}`, () => {
-      expect(findDropdown().props('text')).toBe(CLUSTERS_ACTIONS.connectCluster);
+      expect(findButton().text()).toBe(CLUSTERS_ACTIONS.connectCluster);
     });
 
     it('renders correct modal id for the default action', () => {
-      const binding = getBinding(findDropdown().element, 'gl-modal-directive');
+      const binding = getBinding(findButton().element, 'gl-modal-directive');
 
       expect(binding.value).toBe(INSTALL_AGENT_MODAL_ID);
     });

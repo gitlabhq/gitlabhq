@@ -318,15 +318,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: cronjob:clusters_integrations_check_prometheus_health
-  :worker_name: Clusters::Integrations::CheckPrometheusHealthWorker
-  :feature_category: :incident_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:container_expiration_policy
   :worker_name: ContainerExpirationPolicyWorker
   :feature_category: :container_registry
@@ -560,15 +551,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
-- :name: cronjob:metrics_dashboard_schedule_annotations_prune
-  :worker_name: Metrics::Dashboard::ScheduleAnnotationsPruneWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
@@ -1740,15 +1722,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: package_repositories:packages_debian_process_changes
-  :worker_name: Packages::Debian::ProcessChangesWorker
-  :feature_category: :package_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: package_repositories:packages_debian_process_package_file
   :worker_name: Packages::Debian::ProcessPackageFileWorker
   :feature_category: :package_registry
@@ -2000,6 +1973,15 @@
   :resource_boundary: :cpu
   :weight: 3
   :idempotent: false
+  :tags: []
+- :name: pipeline_default:ci_pipeline_cleanup_ref
+  :worker_name: Ci::PipelineCleanupRefWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 3
+  :idempotent: true
   :tags: []
 - :name: pipeline_default:ci_retry_pipeline
   :worker_name: Ci::RetryPipelineWorker
@@ -2424,6 +2406,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: bulk_imports_finish_batched_pipeline
+  :worker_name: BulkImports::FinishBatchedPipelineWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: bulk_imports_finish_batched_relation_export
   :worker_name: BulkImports::FinishBatchedRelationExportWorker
   :feature_category: :importers
@@ -2439,6 +2430,15 @@
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :memory
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bulk_imports_pipeline_batch
+  :worker_name: BulkImports::PipelineBatchWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
   :tags: []
@@ -2856,6 +2856,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: integrations_group_mention
+  :worker_name: Integrations::GroupMentionWorker
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: integrations_irker
   :worker_name: Integrations::IrkerWorker
   :feature_category: :integrations
@@ -2973,6 +2982,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_cleanup_ref
+  :worker_name: MergeRequests::CleanupRefWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_close_issue
   :worker_name: MergeRequests::CloseIssueWorker
   :feature_category: :code_review_workflow
@@ -3069,24 +3087,6 @@
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: metrics_dashboard_prune_old_annotations
-  :worker_name: Metrics::Dashboard::PruneOldAnnotationsWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: metrics_dashboard_sync_dashboards
-  :worker_name: Metrics::Dashboard::SyncDashboardsWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
   :tags: []
@@ -3485,6 +3485,15 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
+  :tags: []
+- :name: redis_migration
+  :worker_name: RedisMigrationWorker
+  :feature_category: :redis
+  :has_external_dependencies: false
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: releases_create_evidence
   :worker_name: Releases::CreateEvidenceWorker

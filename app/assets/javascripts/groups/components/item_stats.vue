@@ -36,6 +36,9 @@ export default {
 
 <template>
   <div class="stats gl-text-gray-500">
+    <div v-if="isProjectPendingRemoval">
+      <gl-badge class="gl-mr-2" variant="warning">{{ __('pending deletion') }}</gl-badge>
+    </div>
     <item-stats-value
       v-if="displayValue(item.subgroupCount)"
       :title="__('Subgroups')"
@@ -65,9 +68,6 @@ export default {
       css-class="project-stars"
       icon-name="star"
     />
-    <div v-if="isProjectPendingRemoval">
-      <gl-badge variant="warning">{{ __('pending deletion') }}</gl-badge>
-    </div>
     <div v-if="isProject" class="last-updated">
       <time-ago-tooltip :time="item.lastActivityAt" tooltip-placement="bottom" />
     </div>

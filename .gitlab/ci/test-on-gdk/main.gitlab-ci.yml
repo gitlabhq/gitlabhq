@@ -3,6 +3,18 @@ include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@7.3.0"
+    inputs:
+      job_name: "e2e-test-report"
+      job_stage: "report"
+      aws_access_key_id_variable_name: "QA_ALLURE_AWS_ACCESS_KEY_ID"
+      aws_secret_access_key_variable_name: "QA_ALLURE_AWS_SECRET_ACCESS_KEY"
+      gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
+      allure_results_glob: "qa/tmp/allure-results"
+      allure_ref_slug: "${CI_COMMIT_REF_SLUG}"
+      allure_project_path: "${CI_PROJECT_PATH}"
+      allure_merge_request_iid: "${CI_MERGE_REQUEST_IID}"
+      allure_job_name: "${QA_RUN_TYPE}"
 
 variables:
   COLORIZED_LOGS: "true"
@@ -20,7 +32,6 @@ variables:
   tags:
     - e2e
   variables:
-    DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
@@ -29,6 +40,7 @@ variables:
     RSPEC_REPORT_OPTS: "--order random --force-color --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}.json  --format html --out tmp/rspec-${CI_JOB_ID}.htm"
     FF_NETWORK_PER_BUILD: 1
     GDK_URL: http://gdk.test:3000
+    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/*_spec.rb"
   before_script:
     - echo "SUITE_RAN=true" > suite_status.env
     - echo -e "\e[0Ksection_start:`date +%s`:pull_image\r\e[0KPull GDK QA image"
@@ -52,11 +64,11 @@ variables:
     - source scripts/utils.sh
     - cd qa && bundle install
   script:
-    - retry_exponential test_url ${GDK_URL}/users/sign_in
+    - retry_exponential test_url $GDK_URL/users/sign_in
     - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
     - echo -e "\e[0Ksection_start:`date +%s`:run_tests\r\e[0KRun E2E tests"
-    - QA_COMMAND="bundle exec bin/qa Test::Instance::All ${GDK_URL} -- ${RSPEC_TAGS} ${RSPEC_REPORT_OPTS}"
-    - echo "Running - '${QA_COMMAND}'"
+    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
     - echo -e "\e[0Ksection_end:`date +%s`:run_tests\r\e[0K"
   after_script:
@@ -75,6 +87,11 @@ variables:
     expire_in: 7 days
     when: always
   allow_failure: true
+
+download-knapsack-report:
+  extends:
+    - .download-knapsack-report
+    - .rules:download-knapsack
 
 cache-gems:
   extends:
@@ -105,9 +122,8 @@ gdk-qa-smoke:
   extends:
     - .gdk-qa-base
   variables:
-    TEST_GDK_TAGS: "--tag smoke"
+    QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
-    RSPEC_TAGS: --tag smoke
   rules:
     - when: always
 
@@ -116,37 +132,41 @@ gdk-qa-smoke-with-load-balancer:
     - .gdk-qa-base
     - .gdk-with-load-balancer-setup
   variables:
-    TEST_GDK_TAGS: "--tag smoke"
+    QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
-    RSPEC_TAGS: --tag smoke
+  artifacts:
+    paths:
+      - log
+    reports:
+      dotenv: ""
   rules:
     - changes:
         - ".gitlab/ci/test-on-gdk/**"
         - "lib/gitlab/database/load_balancing/**/*"
 
-# TODO: set non manual once smoke tests prove to be stable
 gdk-qa-reliable:
   extends:
     - .gdk-qa-base
-  parallel: 5
+    - .parallel
   variables:
+    QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
-    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
-    RSPEC_TAGS: --tag smoke --tag reliable
-  allow_failure: true
   rules:
-    - when: manual
+    - when: always
 
 gdk-qa-reliable-with-load-balancer:
   extends:
     - .gdk-qa-base
     - .gdk-with-load-balancer-setup
-  parallel: 5
+    - .parallel
   variables:
+    QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
-    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
-    RSPEC_TAGS: --tag smoke --tag reliable
-  allow_failure: true
+  artifacts:
+    paths:
+      - log
+    reports:
+      dotenv: ""
   rules:
     - changes:
         - ".gitlab/ci/test-on-gdk/**"
@@ -155,12 +175,10 @@ gdk-qa-reliable-with-load-balancer:
 gdk-qa-non-blocking:
   extends:
     - .gdk-qa-base
-  parallel: 5
+    - .parallel
   variables:
+    QA_SCENARIO: Test::Instance::NonBlocking
     QA_RUN_TYPE: gdk-qa-non-blocking
-    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
-    QA_SKIP_SMOKE_RELIABLE: "true"
-  allow_failure: true
   rules:
     - when: manual
 
@@ -168,11 +186,7 @@ gdk-qa-non-blocking:
 # Post test stage
 # ==========================================
 e2e-test-report:
-  extends:
-    - .e2e-test-report
-    - .rules:report:allure-report
-  variables:
-    ALLURE_RESULTS_GLOB: qa/tmp/allure-results
+  extends: .rules:report:allure-report
 
 upload-knapsack-report:
   extends:

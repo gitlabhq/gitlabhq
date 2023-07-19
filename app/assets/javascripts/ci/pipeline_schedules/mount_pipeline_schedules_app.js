@@ -18,7 +18,7 @@ export default () => {
     return false;
   }
 
-  const { fullPath, pipelinesPath } = containerEl.dataset;
+  const { fullPath, pipelinesPath, newSchedulePath, schedulesPath } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
@@ -27,6 +27,8 @@ export default () => {
     provide: {
       fullPath,
       pipelinesPath,
+      newSchedulePath,
+      schedulesPath,
     },
     render(createElement) {
       return createElement(PipelineSchedules);

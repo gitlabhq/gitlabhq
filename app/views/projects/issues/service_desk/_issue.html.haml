@@ -33,7 +33,7 @@
           %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue? && !issue.closed?}", title: _('Due date') }
             &nbsp;
             = sprite_icon('calendar')
-            = issue.due_date.to_s(:medium)
+            = issue.due_date.to_fs(:medium)
 
         = render_if_exists "projects/issues/issue_weight", issue: issue
         = render_if_exists "projects/issues/health_status", issue: issue

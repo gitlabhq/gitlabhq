@@ -3,6 +3,9 @@
 module Ci
   class UnitTestFailure < Ci::ApplicationRecord
     include Ci::Partitionable
+    include SafelyChangeColumnDefault
+
+    columns_changing_default :partition_id
 
     REPORT_WINDOW = 14.days
 

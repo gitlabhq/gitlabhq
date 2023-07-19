@@ -223,14 +223,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       include_examples 'includes container_registry_access_level'
 
-      context 'when projects_preloader_fix is disabled' do
-        before do
-          stub_feature_flags(projects_preloader_fix: false)
-        end
-
-        include_examples 'includes container_registry_access_level'
-      end
-
       it 'includes various project feature fields' do
         get api(path, user)
         project_response = json_response.find { |p| p['id'] == project.id }
@@ -1843,6 +1835,72 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
   end
 
+  describe 'GET /users/:user_id/contributed_projects/' do
+    let(:path) { "/users/#{user3.id}/contributed_projects/" }
+
+    let_it_be(:project1) { create(:project, :public, path: 'my-project') }
+    let_it_be(:project2) { create(:project, :public) }
+    let_it_be(:project3) { create(:project, :public) }
+    let_it_be(:private_project) { create(:project, :private) }
+
+    before do
+      private_project.add_maintainer(user3)
+
+      create(:push_event, project: project1, author: user3)
+      create(:push_event, project: project2, author: user3)
+      create(:push_event, project: private_project, author: user3)
+    end
+
+    it 'returns error when user not found' do
+      get api("/users/#{non_existing_record_id}/contributed_projects/", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    context 'with a public profile' do
+      it 'returns projects filtered by user' do
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] })
+          .to contain_exactly(project1.id, project2.id)
+      end
+    end
+
+    context 'with a private profile' do
+      before do
+        user3.update!(private_profile: true)
+        user3.reload
+      end
+
+      context 'user does not have access to view the private profile' do
+        it 'returns no projects' do
+          get api(path, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response).to be_empty
+        end
+      end
+
+      context 'user has access to view the private profile as an admin' do
+        it 'returns projects filtered by user' do
+          get api(path, admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |project| project['id'] })
+            .to contain_exactly(project1.id, project2.id, private_project.id)
+        end
+      end
+    end
+  end
+
   describe 'POST /projects/user/:id' do
     let(:path) { "/projects/user/#{user.id}" }
 
@@ -2588,12 +2646,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(diff).to be_empty, failure_message(diff)
       end
 
-      def failure_message(_diff)
+      def failure_message(diff)
         <<~MSG
           It looks like project's set of exposed attributes is different from the expected set.
 
           The following attributes are missing or newly added:
-          {diff.to_a.to_sentence}
+          #{diff.to_a.to_sentence}
 
           Please update #{project_attributes_file} file"
         MSG

@@ -1,0 +1,23 @@
+stages:
+  - publish
+  - install
+
+publish:
+  stage: publish
+  image: gradle:6.5-jdk11
+  script:
+    - 'gradle -PToken=<%= token %> publish'
+  only:
+    - "<%= project.default_branch %>"
+  tags:
+    - "runner-for-<%= project.name %>"
+
+install:
+  stage: install
+  image: gradle:6.5-jdk11
+  script:
+   - 'gradle -PToken=<%= token %> build'
+  only:
+    - "<%= project.default_branch %>"
+  tags:
+    - "runner-for-<%= project.name %>"

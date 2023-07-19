@@ -5,6 +5,7 @@ import {
 } from 'jest/vue_shared/components/filtered_search_bar/mock_data';
 
 export const mockAuthor = {
+  __typename: 'UserCore',
   id: 'gid://gitlab/User/1',
   avatarUrl: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
   name: 'Administrator',
@@ -13,6 +14,7 @@ export const mockAuthor = {
 };
 
 export const mockRegularLabel = {
+  __typename: 'Label',
   id: 'gid://gitlab/GroupLabel/2048',
   title: 'Documentation Update',
   description: null,
@@ -21,6 +23,7 @@ export const mockRegularLabel = {
 };
 
 export const mockScopedLabel = {
+  __typename: 'Label',
   id: 'gid://gitlab/ProjectLabel/2049',
   title: 'status::confirmed',
   description: null,
@@ -31,6 +34,7 @@ export const mockScopedLabel = {
 export const mockLabels = [mockRegularLabel, mockScopedLabel];
 
 export const mockCurrentUserTodo = {
+  __typename: 'Todo',
   id: 'gid://gitlab/Todo/489',
   state: 'done',
 };

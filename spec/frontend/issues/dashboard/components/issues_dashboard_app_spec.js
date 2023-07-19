@@ -54,6 +54,7 @@ describe('IssuesDashboardApp component', () => {
 
   const defaultProvide = {
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
+    autocompleteUsersPath: 'autocomplete/users.json',
     calendarPath: 'calendar/path',
     dashboardLabelsPath: 'dashboard/labels/path',
     dashboardMilestonesPath: 'dashboard/milestones/path',
@@ -120,7 +121,7 @@ describe('IssuesDashboardApp component', () => {
       await waitForPromises();
     });
 
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/391722
+    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/391722
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('renders IssuableList component', () => {
       expect(findIssuableList().props()).toMatchObject({

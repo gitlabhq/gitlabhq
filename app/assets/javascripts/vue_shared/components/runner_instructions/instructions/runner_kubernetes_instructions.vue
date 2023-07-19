@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 export default {
   components: {
@@ -16,7 +17,7 @@ export default {
     'Runners|To install Runner in Kubernetes follow the instructions described in the GitLab documentation.',
   ),
   I18N_VIEW_INSTRUCTIONS: s__('Runners|View installation instructions'),
-  HELP_URL: 'https://docs.gitlab.com/runner/install/kubernetes.html',
+  HELP_URL: `${DOCS_URL}/runner/install/kubernetes.html`,
 };
 </script>
 <template>

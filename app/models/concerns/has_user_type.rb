@@ -14,7 +14,7 @@ module HasUserType
     migration_bot: 7,
     security_bot: 8,
     automation_bot: 9,
-    security_policy_bot: 10, # Currently not in use. See https://gitlab.com/gitlab-org/gitlab/-/issues/384174
+    security_policy_bot: 10,
     admin_bot: 11,
     suggested_reviewers_bot: 12,
     service_account: 13,

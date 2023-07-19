@@ -122,7 +122,7 @@ describe('note_app', () => {
       );
     });
 
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/410409
+    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/410409
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('should render form comment button as disabled', () => {
       expect(findCommentButton().props('disabled')).toEqual(true);
@@ -250,15 +250,7 @@ describe('note_app', () => {
     it('should render markdown docs url', () => {
       const { markdownDocsPath } = mockData.notesDataMock;
 
-      expect(wrapper.find(`a[href="${markdownDocsPath}"]`).text().trim()).toEqual('Markdown');
-    });
-
-    it('should render quick action docs url', () => {
-      const { quickActionsDocsPath } = mockData.notesDataMock;
-
-      expect(wrapper.find(`a[href="${quickActionsDocsPath}"]`).text().trim()).toEqual(
-        'quick actions',
-      );
+      expect(wrapper.find(`a[href="${markdownDocsPath}"]`).exists()).toBe(true);
     });
   });
 
@@ -274,19 +266,7 @@ describe('note_app', () => {
       const { markdownDocsPath } = mockData.notesDataMock;
 
       await nextTick();
-      expect(wrapper.find(`.edit-note a[href="${markdownDocsPath}"]`).text().trim()).toEqual(
-        'Markdown',
-      );
-    });
-
-    it('should render quick actions docs url', async () => {
-      wrapper.find('.js-note-edit').trigger('click');
-      const { quickActionsDocsPath } = mockData.notesDataMock;
-
-      await nextTick();
-      expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).text().trim()).toEqual(
-        'quick actions',
-      );
+      expect(wrapper.find(`.edit-note a[href="${markdownDocsPath}"]`).exists()).toBe(true);
     });
   });
 

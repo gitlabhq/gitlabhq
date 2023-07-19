@@ -17,6 +17,9 @@ workhorse:verify:
   needs:
     - setup-test-env
   before_script:
+    - source scripts/utils.sh
+    - export BUNDLE_WITHOUT="${BUNDLE_WITHOUT}:default:test:puma:kerberos:metrics:omnibus:ed25519"
+    - bundle_install_script
     - go version
     - scripts/gitaly-test-build
   script:

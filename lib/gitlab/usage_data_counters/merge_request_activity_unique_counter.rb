@@ -70,9 +70,9 @@ module Gitlab
 
           Gitlab::InternalEvents.track_event(
             MR_USER_CREATE_ACTION,
-            user_id: user.id,
-            project_id: project.id,
-            namespace_id: project.namespace_id
+            user: user,
+            project: project,
+            namespace: project.namespace
           )
         end
 

@@ -238,7 +238,7 @@ The new workflow looks as follows:
 
       1. Creates a new runner in the `ci_runners` table (and corresponding `glrt-` prefixed authentication token);
       1. Presents the user with instructions on how to configure this new runner on a machine,
-         with possibilities for different supported deployment scenarios (e.g. shell, `docker-compose`, Helm chart, etc.)
+         with possibilities for different supported deployment scenarios (for example, shell, `docker-compose`, Helm chart, etc.)
          This information contains a token which is available to the user only once, and the UI
          makes it clear to the user that the value shall not be shown again, as registering the same runner multiple times
          is discouraged (though not impossible).
@@ -319,7 +319,7 @@ The respective `CiRunner` fields must return the values for the `ci_runner_machi
 #### Stale runner cleanup
 
 The functionality to
-[clean up stale runners](../../../ci/runners/configure_runners.md#clean-up-stale-runners) needs
+[clean up stale runners](../../../ci/runners/runners_scope.md#clean-up-stale-group-runners) needs
 to be adapted to clean up `ci_runner_machines` records instead of `ci_runners` records.
 
 At some point after the removal of the registration token support, we'll want to create a background

@@ -1,3 +1,4 @@
+import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -153,6 +154,13 @@ describe('IssuableLockForm', () => {
 
               expect(tooltip).toBeDefined();
               expect(tooltip.value.title).toBe(isLocked ? 'Locked' : 'Unlocked');
+            });
+
+            it('renders lock icon', () => {
+              const icon = findSidebarCollapseIcon().findComponent(GlIcon).props('name');
+              const expected = isLocked ? 'lock' : 'lock-open';
+
+              expect(icon).toBe(expected);
             });
           });
         });

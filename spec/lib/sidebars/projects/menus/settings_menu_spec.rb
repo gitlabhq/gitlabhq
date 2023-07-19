@@ -10,10 +10,6 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
 
   subject { described_class.new(context) }
 
-  before do
-    stub_feature_flags(show_pages_in_deployments_menu: false)
-  end
-
   describe '#render?' do
     it 'returns false when menu does not have any menu items' do
       allow(subject).to receive(:has_renderable_items?).and_return(false)
@@ -114,32 +110,6 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
 
           specify { is_expected.to be_nil }
         end
-      end
-    end
-
-    describe 'Pages' do
-      let(:item_id) { :pages }
-
-      before do
-        allow(project).to receive(:pages_available?).and_return(pages_enabled)
-      end
-
-      describe 'when pages are enabled' do
-        let(:pages_enabled) { true }
-
-        specify { is_expected.not_to be_nil }
-
-        describe 'when the user does not have access' do
-          let(:user) { nil }
-
-          specify { is_expected.to be_nil }
-        end
-      end
-
-      describe 'when pages are not enabled' do
-        let(:pages_enabled) { false }
-
-        specify { is_expected.to be_nil }
       end
     end
 

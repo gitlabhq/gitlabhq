@@ -138,7 +138,7 @@ module Spammable
     result.reject(&:blank?).join("\n")
   end
 
-  # Override in Spammable if further checks are necessary
+  # Override in included class if further checks are necessary
   def check_for_spam?(*)
     spammable_attribute_changed?
   end
@@ -153,8 +153,8 @@ module Spammable
     end
   end
 
-  # Override in Spammable if differs
-  def allow_possible_spam?
+  # Override in included class if you want to allow possible spam under specific circumstances
+  def allow_possible_spam?(*)
     Gitlab::CurrentSettings.allow_possible_spam
   end
 end

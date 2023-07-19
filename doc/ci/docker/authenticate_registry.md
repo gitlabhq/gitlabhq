@@ -17,13 +17,13 @@ In [`before_script`](../yaml/index.md#before_script), run `docker
 login`:
 
 ```yaml
-image: docker:20.10.16
+default:
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
-
-services:
-  - docker:20.10.16-dind
 
 build:
   stage: build
@@ -125,13 +125,13 @@ The following example shows [`before_script`](../yaml/index.md#before_script).
 The same commands apply for any solution you implement.
 
 ```yaml
-image: docker:20.10.16
+default:
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
-
-services:
-  - docker:20.10.16-dind
 
 build:
   stage: build

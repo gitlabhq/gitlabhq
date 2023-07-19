@@ -376,8 +376,8 @@ export function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select
   textArea = $textArea.get(0);
   const text = $textArea.val();
   const selected = selectedText(text, textArea) || tagContent;
-  $textArea.focus();
-  return insertMarkdownText({
+  textArea.focus();
+  insertMarkdownText({
     textArea,
     text,
     tag,
@@ -387,6 +387,7 @@ export function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select
     wrap,
     select,
   });
+  textArea.click();
 }
 
 /**
@@ -596,6 +597,7 @@ export function compositionEndNoteText() {
 
 export function updateTextForToolbarBtn($toolbarBtn) {
   const $textArea = $toolbarBtn.closest('.md-area').find('textarea');
+  if (!$textArea.length) return;
 
   switch ($toolbarBtn.data('mdCommand')) {
     case 'indentLines':

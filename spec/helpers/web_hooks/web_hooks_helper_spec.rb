@@ -40,7 +40,7 @@ RSpec.describe WebHooks::WebHooksHelper, :clean_gitlab_redis_shared_state, featu
       include_context 'a hook has failed'
 
       it 'is true' do
-        expect(helper).to be_show_project_hook_failed_callout(project: project)
+        expect(helper.show_project_hook_failed_callout?(project: project)).to eq(true)
       end
 
       it 'stores a value' do
@@ -64,7 +64,7 @@ RSpec.describe WebHooks::WebHooksHelper, :clean_gitlab_redis_shared_state, featu
           contexts.each { |ctx| include_context(ctx) unless ctx == name }
 
           it 'is false' do
-            expect(helper).not_to be_show_project_hook_failed_callout(project: project)
+            expect(helper.show_project_hook_failed_callout?(project: project)).to eq(false)
           end
         end
       end

@@ -8,6 +8,7 @@ import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import createStore from '~/code_navigation/store';
 import RefSelector from '~/ref/components/ref_selector.vue';
+import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
@@ -290,7 +291,12 @@ export default function setupVueRepositoryList() {
     store: createStore(),
     router,
     apolloProvider,
-    provide: { resourceId, userId, explainCodeAvailable: parseBoolean(explainCodeAvailable) },
+    provide: {
+      resourceId,
+      userId,
+      explainCodeAvailable: parseBoolean(explainCodeAvailable),
+      highlightWorker: gon.features.highlightJsWorker ? new HighlightWorker() : null,
+    },
     render(h) {
       return h(App);
     },

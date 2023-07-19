@@ -31,6 +31,7 @@ class AwardEmoji < ApplicationRecord
 
   after_destroy :expire_cache
   after_save :expire_cache
+  after_commit :broadcast_note_update, if: -> { !importing? && awardable.is_a?(Note) }
 
   class << self
     def votes_for_collection(ids, type)
@@ -73,11 +74,19 @@ class AwardEmoji < ApplicationRecord
 
   def expire_cache
     awardable.try(:bump_updated_at)
-    awardable.expire_etag_cache if awardable.is_a?(Note)
     awardable.try(:update_upvotes_count) if upvote?
+  end
+
+  def broadcast_note_update
+    awardable.expire_etag_cache
+    awardable.trigger_note_subscription_update
   end
 
   def to_ability_name
     'emoji'
+  end
+
+  def hook_attrs
+    Gitlab::HookData::EmojiBuilder.new(self).build
   end
 end

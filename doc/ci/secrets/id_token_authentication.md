@@ -74,7 +74,8 @@ The token also includes custom claims provided by GitLab:
 | `runner_id`             | Always                       | ID of the runner executing the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 | `runner_environment`    | Always                       | The type of runner used by the job. Can be either `gitlab-hosted` or `self-hosted`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 | `sha`                   | Always                       | The commit SHA for the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
-| `ci_config_ref_uri`     | Always                       | The ref path to the top-level pipeline definition, for example, `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.1 behind the `ci_jwt_v2_ref_uri_claim` feature flag. This claim is `null` unless the pipeline definition is located in the same project. |
+| `ci_config_ref_uri`     | Always                       | The ref path to the top-level pipeline definition, for example, `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. This claim is `null` unless the pipeline definition is located in the same project. |
+| `ci_config_sha`         | Always                       | Git commit SHA for the `ci_config_ref_uri`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. This claim is `null` unless the pipeline definition is located in the same project. |
 
 ```json
 {
@@ -103,6 +104,7 @@ The token also includes custom claims provided by GitLab:
   "runner_environment": "self-hosted",
   "sha": "714a629c0b401fdce83e847fc9589983fc6f46bc",
   "ci_config_ref_uri": "gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main",
+  "ci_config_sha": "714a629c0b401fdce83e847fc9589983fc6f46bc",
   "jti": "235b3a54-b797-45c7-ae9a-f72d7bc6ef5b",
   "iss": "https://gitlab.example.com",
   "iat": 1681395193,
@@ -138,6 +140,9 @@ manual_authentication:
 
 You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
 [`secrets`](../yaml/index.md#secrets) keyword.
+
+If you previously used `CI_JOB_JWT` to fetch secrets from Vault, learn how to switch
+to ID tokens with the [Update HashiCorp Vault configuration to use ID Tokens](convert-to-id-tokens.md) tutorial.
 
 ### Configure automatic ID Token authentication
 

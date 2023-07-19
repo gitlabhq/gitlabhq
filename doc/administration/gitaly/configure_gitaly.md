@@ -377,9 +377,6 @@ This can be risky because anything that prevents your Gitaly clients from reachi
 servers causes all Gitaly requests to fail. For example, any sort of network, firewall, or name
 resolution problems.
 
-Additionally, you must [disable Rugged](../nfs.md#improving-nfs-performance-with-gitlab)
-if previously enabled manually.
-
 Gitaly makes the following assumptions:
 
 - Your `gitaly1.internal` Gitaly server can be reached at `gitaly1.internal:8075` from your Gitaly
@@ -835,7 +832,7 @@ For consistent and stable performance, you should first explore other options su
 adjusting node specifications, and [reviewing large repositories](../../user/project/repository/managing_large_repositories.md) or workloads.
 
 FLAG:
-On self-managed GitLab, by default repository cgroups are not available. To make it available, ask an administrator to
+On self-managed GitLab, by default repository cgroups are not available. To make it available, an administrator can
 [enable the feature flag](../feature_flags.md) named `gitaly_run_cmds_in_cgroup`.
 
 When enabling cgroups for memory, you should ensure that no swap is configured on the Gitaly nodes as

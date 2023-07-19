@@ -1,6 +1,5 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import ConvertDescriptionModal from 'ee_component/issues/show/components/convert_description_modal.vue';
 import { getDraft, updateDraft, getLockVersion, clearDraft } from '~/lib/utils/autosave';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE, TYPENAME_USER } from '~/graphql_shared/constants';
@@ -16,7 +15,6 @@ import LockedWarning from './locked_warning.vue';
 
 export default {
   components: {
-    ConvertDescriptionModal,
     DescriptionField,
     DescriptionTemplateField,
     EditActions,
@@ -175,9 +173,6 @@ export default {
         updateDraft(this.descriptionAutosaveKey, description, this.formState.lock_version);
       }
     },
-    setDescription(desc) {
-      this.formData.description = desc;
-    },
   },
 };
 </script>
@@ -219,14 +214,6 @@ export default {
           :project-namespace="projectNamespace"
         />
       </div>
-
-      <convert-description-modal
-        v-if="issueId && glFeatures.generateDescriptionAi"
-        class="gl-pl-5 gl-md-pl-0"
-        :resource-id="resourceId"
-        :user-id="userId"
-        @contentGenerated="setDescription"
-      />
     </div>
 
     <description-field

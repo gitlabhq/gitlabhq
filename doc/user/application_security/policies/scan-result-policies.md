@@ -61,32 +61,33 @@ When you save a new policy, GitLab validates its contents against [this JSON sch
 If you're not familiar with how to read [JSON schemas](https://json-schema.org/),
 the following sections and tables provide an alternative.
 
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `scan_result_policy` | `array` of Scan Result Policy |  | List of scan result policies (maximum 5). |
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `scan_result_policy` | `array` of Scan Result Policy | true |  | List of scan result policies (maximum 5). |
 
 ## Scan result policy schema
 
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `name` | `string` |  | Name of the policy. Maximum of 255 characters.|
-| `description` (optional) | `string` |  | Description of the policy. |
-| `enabled` | `boolean` | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
-| `rules` | `array` of rules |  | List of rules that the policy applies. |
-| `actions` | `array` of actions |  | List of actions that the policy enforces. |
+| Field | Type | Required |Possible values | Description |
+|-------|------|----------|----------------|-------------|
+| `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|
+| `description` (optional) | `string` | true |  | Description of the policy. |
+| `enabled` | `boolean` | true | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
+| `rules` | `array` of rules | true |  | List of rules that the policy applies. |
+| `actions` | `array` of actions | true |  | List of actions that the policy enforces. |
 
 ## `scan_finding` rule type
 
 This rule enforces the defined actions based on security scan findings.
 
-| Field      | Type | Possible values                                                                                                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-|------------|------|--------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `type`     | `string` | `scan_finding`                                                                                                     | The rule's type.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `branches` | `array` of `string` | `[]` or the branch's name                                                                                          | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `scanners`  | `array` of `string` | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. `sast` includes results from both SAST and SAST IaC scanners.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `vulnerabilities_allowed`  | `integer` | Greater than or equal to zero                                                                                      | Number of vulnerabilities allowed before this rule is considered.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `severity_levels`  | `array` of `string` | `info`, `unknown`, `low`, `medium`, `high`, `critical`                                                             | The severity levels for this rule to consider.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `vulnerability_states`  | `array` of `string` | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed`, `new_needs_triage`, `new_dismissed`                           | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - the `newly_detected` policy option covers vulnerabilities identified in the merge request branch itself but that do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline and necessary security scans are complete. The `newly_detected` option considers both of the following statuses:<br><br> • Detected<br> • Dismissed<br><br> The `new_needs_triage` option considers the status<br><br> • Detected<br><br> The `new_dismissed` option considers the status<br><br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. |
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `type` | `string` | true | `scan_finding` | The rule's type. |
+| `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
+| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
+| `scanners` | `array` of `string` | true | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. `sast` includes results from both SAST and SAST IaC scanners. |
+| `vulnerabilities_allowed` | `integer` | true | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
+| `severity_levels` | `array` of `string` | true | `info`, `unknown`, `low`, `medium`, `high`, `critical` | The severity levels for this rule to consider. |
+| `vulnerability_states` | `array` of `string` | true | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed`, `new_needs_triage`, `new_dismissed` | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - the `newly_detected` policy option covers vulnerabilities identified in the merge request branch itself but that do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline and necessary security scans are complete. The `newly_detected` option considers both of the following statuses:<br><br> • Detected<br> • Dismissed<br><br> The `new_needs_triage` option considers the status<br><br> • Detected<br><br> The `new_dismissed` option considers the status<br><br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. |
 
 ## `license_finding` rule type
 
@@ -95,28 +96,29 @@ This rule enforces the defined actions based on security scan findings.
 
 This rule enforces the defined actions based on license findings.
 
-| Field      | Type | Possible values | Description |
-|------------|------|-----------------|-------------|
-| `type` | `string` | `license_finding` | The rule's type. |
-| `branches` | `array` of `string` | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. |
-| `match_on_inclusion` | `boolean` | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
-| `license_types` | `array` of `string` | license types | License types to match on, for example `BSD` or `MIT`. |
-| `license_states` | `array` of `string` | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
+| Field      | Type | Required | Possible values | Description |
+|------------|------|----------|-----------------|-------------|
+| `type` | `string` | true | `license_finding` | The rule's type. |
+| `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
+| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
+| `match_on_inclusion` | `boolean` | true | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
+| `license_types` | `array` of `string` | true | license types | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`. |
+| `license_states` | `array` of `string` | true | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
 
 ## `require_approval` action type
 
 This action sets an approval rule to be required when conditions are met for at least one rule in
 the defined policy.
 
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `type` | `string` | `require_approval` | The action's type. |
-| `approvals_required` | `integer` | Greater than or equal to zero | The number of MR approvals required. |
-| `user_approvers` | `array` of `string` | Username of one of more users | The users to consider as approvers. Users must have access to the project to be eligible to approve. |
-| `user_approvers_ids` | `array` of `integer` | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
-| `group_approvers` | `array` of `string` | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `group_approvers_ids` | `array` of `integer` | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `role_approvers` | `array` of `string` | One or more [roles](../../../user/permissions.md#roles) (for example: `owner`, `maintainer`)  | The roles to consider as approvers that are eligible to approve. |
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `type` | `string` | true | `require_approval` | The action's type. |
+| `approvals_required` | `integer` | true | Greater than or equal to zero | The number of MR approvals required. |
+| `user_approvers` | `array` of `string` | false | Username of one of more users | The users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `user_approvers_ids` | `array` of `integer` | false | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `group_approvers` | `array` of `string` | false | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `group_approvers_ids` | `array` of `integer` | false | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `role_approvers` | `array` of `string` | false | One or more [roles](../../../user/permissions.md#roles) (for example: `owner`, `maintainer`)  | The roles to consider as approvers that are eligible to approve. |
 
 Requirements and limitations:
 
@@ -215,7 +217,16 @@ It corresponds to a single object from the previous example:
 
 There are several situations where the scan result policy requires an additional approval step. For example:
 
-- The number of security jobs is reduced in the working branch and no longer matches the number of security jobs in the target branch. Users can't skip the Scanning Result Policies by removing scanning jobs from the CI configuration.
+- The number of security jobs is reduced in the working branch and no longer matches the number of
+  security jobs in the target branch. Users can't skip the Scanning Result Policies by removing
+  scanning jobs from the CI/CD configuration. Only the security scans that are configured in the
+  scan result policy rules are checked for removal.
+
+  For example, consider a situation where the default branch pipeline has four security scans:
+  `sast`, `secret_detection`, `container_scanning`, and `dependency_scanning`. A scan result
+  policy enforces two scanners: `container_scanning` and `dependency_scanning`. If an MR removes a
+  scan that is configured in scan result policy, `container_scanning` for example, an additional
+  approval is required.
 - Someone stops a pipeline security job, and users can't skip the security scan.
 - A job in a merge request fails and is configured with `allow_failure: false`. As a result, the pipeline is in a blocked state.
 - A pipeline has a manual job that must run successfully for the entire pipeline to pass.

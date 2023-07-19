@@ -226,6 +226,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
           expect(redis_ttl(cookie_key)).to be_within(1).of(expected_ttl)
         end
 
+        it 'does not try to set an invalid ttl at the end of expiry' do
+          with_redis { |r| r.expire(cookie_key, 1) }
+
+          sleep 0.5 # sleep 500ms to redis would round the remaining ttl to 0
+
+          expect { subject }.not_to raise_error
+        end
+
         context 'and low offsets' do
           let(:existing_cookie) do
             {
@@ -239,6 +247,24 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
             expect(cookie['wal_locations']).to eq({ 'c1' => 'loc1', 'c2' => 'loc2old', 'c3' => 'loc3' })
             expect(cookie['offsets']).to eq({ 'c1' => 1, 'c2' => 2, 'c3' => 3 })
+          end
+        end
+
+        context 'when a WAL location is nil with existing offsets' do
+          let(:existing_cookie) do
+            {
+              'offsets' => { 'main' => 8, 'ci' => 5 },
+              'wal_locations' => { 'main' => 'loc1old', 'ci' => 'loc2old' }
+            }
+          end
+
+          let(:argv) { ['main', 9, 'loc1', 'ci', nil, 'loc2'] }
+
+          it 'only updates the main connection' do
+            subject
+
+            expect(cookie['wal_locations']).to eq({ 'main' => 'loc1', 'ci' => 'loc2old' })
+            expect(cookie['offsets']).to eq({ 'main' => 9, 'ci' => 5 })
           end
         end
       end

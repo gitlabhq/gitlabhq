@@ -8,6 +8,14 @@ module Organizations
 
     before_destroy :check_if_default_organization
 
+    has_many :namespaces
+    has_many :groups
+
+    has_one :settings, class_name: "OrganizationSetting"
+
+    has_many :organization_users, inverse_of: :organization
+    has_many :users, through: :organization_users, inverse_of: :organizations
+
     validates :name,
       presence: true,
       length: { maximum: 255 }

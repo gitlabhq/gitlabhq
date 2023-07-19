@@ -32,7 +32,8 @@ you wrote yourself.
 
 GitLab offers both Container Scanning and [Dependency Scanning](../dependency_scanning/index.md)
 to ensure coverage for all of these dependency types. To cover as much of your risk area as
-possible, we encourage you to use all of our security scanners.
+possible, we encourage you to use all of our security scanners. For a comparison of these features, see
+[Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
 
 ## Overview
 
@@ -240,8 +241,7 @@ When you enable this feature, you may see [duplicate findings](../terminology/in
 in the [Vulnerability Report](../vulnerability_report/index.md)
 if [Dependency Scanning](../dependency_scanning/index.md)
 is enabled for your project. This happens because GitLab can't automatically deduplicate findings
-across different types of scanning tools. Reference [this comparison](../dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning)
-between GitLab Dependency Scanning and Container Scanning for more details on which types of dependencies are likely to be duplicated.
+across different types of scanning tools. To understand which types of dependencies are likely to be duplicated, see [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
 
 #### Available CI/CD variables
 
@@ -328,7 +328,7 @@ To enable Container Scanning in a project, create a merge request from the Secur
 page:
 
 1. In the project where you want to enable Container Scanning, go to
-   **Security and Compliance > Security configuration**.
+   **Secure > Security configuration**.
 1. In the **Container Scanning** row, select **Configure with a merge request**.
 
 This automatically creates a merge request with the changes necessary to enable Container Scanning.

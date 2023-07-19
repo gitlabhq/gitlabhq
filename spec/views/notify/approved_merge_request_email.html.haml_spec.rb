@@ -23,4 +23,6 @@ RSpec.describe 'notify/approved_merge_request_email.html.haml' do
     expect(rendered).to have_content("was approved by")
     expect(rendered).to have_content(user.name.to_s)
   end
+
+  it_behaves_like 'a layout which reflects the preferred language'
 end

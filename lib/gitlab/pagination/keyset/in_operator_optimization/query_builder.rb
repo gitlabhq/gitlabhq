@@ -67,7 +67,7 @@ module Gitlab
               .select(finder_strategy.final_projections)
               .where("count <> 0") # filter out the initializer row
 
-            model.from(q.arel.as(table_name))
+            model.select(Arel.star).from(q.arel.as(table_name))
           end
 
           private

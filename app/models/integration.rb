@@ -90,6 +90,8 @@ class Integration < ApplicationRecord
   attribute :push_events, default: true
   attribute :tag_push_events, default: true
   attribute :wiki_page_events, default: true
+  attribute :group_mention_events, default: false
+  attribute :group_confidential_mention_events, default: false
 
   after_initialize :initialize_properties
 
@@ -137,6 +139,8 @@ class Integration < ApplicationRecord
   scope :alert_hooks, -> { where(alert_events: true, active: true) }
   scope :incident_hooks, -> { where(incident_events: true, active: true) }
   scope :deployment, -> { where(category: 'deployment') }
+  scope :group_mention_hooks, -> { where(group_mention_events: true, active: true) }
+  scope :group_confidential_mention_hooks, -> { where(group_confidential_mention_events: true, active: true) }
 
   class << self
     private
@@ -586,6 +590,7 @@ class Integration < ApplicationRecord
   end
 
   def async_execute(data)
+    return if ::Gitlab::SilentMode.enabled?
     return unless supported_events.include?(data[:object_kind])
 
     Integrations::ExecuteWorker.perform_async(id, data)
@@ -598,6 +603,10 @@ class Integration < ApplicationRecord
 
   def chat?
     category == :chat
+  end
+
+  def ci?
+    category == :ci
   end
 
   private

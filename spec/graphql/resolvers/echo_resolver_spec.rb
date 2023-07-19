@@ -14,7 +14,7 @@ RSpec.describe Resolvers::EchoResolver do
 
   describe '#resolve' do
     it 'echoes text and username' do
-      expect(resolve_echo(text)).to eq %Q("#{current_user.username}" says: #{text})
+      expect(resolve_echo(text)).to eq %("#{current_user.username}" says: #{text})
     end
 
     it 'echoes text and nil as username' do

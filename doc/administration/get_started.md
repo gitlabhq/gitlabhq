@@ -41,7 +41,7 @@ Get started:
 - [Add members](../user/group/index.md#add-users-to-a-group) to the group.
 - Create a [subgroup](../user/group/subgroups/index.md#create-a-subgroup).
 - [Add members](../user/group/subgroups/index.md#subgroup-membership) to the subgroup.
-- Enable [external authorization control](../user/admin_area/settings/external_authorization.md#configuration).
+- Enable [external authorization control](../administration/settings/external_authorization.md#configuration).
 
 **More resources**
 
@@ -76,16 +76,16 @@ While this isn't an exhaustive list, following these steps gives you a solid sta
 - Use a long root password, stored in a vault.
 - Install trusted SSL certificate and establish a process for renewal and revocation.
 - [Configure SSH key restrictions](../security/ssh_keys_restrictions.md#restrict-allowed-ssh-key-technologies-and-minimum-length) per your organization's guidelines.
-- [Disable new sign-ups](../user/admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
+- [Disable new sign-ups](settings/sign_up_restrictions.md#disable-new-sign-ups).
 - Require email confirmation.
 - Set password length limit, configure SSO or SAML user management.
 - Limit email domains if allowing sign-up.
 - Require two-factor authentication (2FA).
-- [Disable password authentication](../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled) for Git over HTTPS.
-- Set up [email notification for unknown sign-ins](../user/admin_area/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins).
+- [Disable password authentication](settings/sign_in_restrictions.md#password-authentication-enabled) for Git over HTTPS.
+- Set up [email notification for unknown sign-ins](settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins).
 - Configure [user and IP rate limits](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#user-and-ip-rate-limits).
 - Limit [webhooks local access](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#webhooks).
-- Set [rate limits for protected paths](../user/admin_area/settings/protected_paths.md).
+- Set [rate limits for protected paths](settings/protected_paths.md).
 - Sign up for [Security Alerts](https://about.gitlab.com/company/preference-center/) from the Communication Preference Center.
 - Keep track of security best practices on our [blog page](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/).
 
@@ -130,7 +130,7 @@ The routine differs, depending on whether you deployed with the Linux package or
 
 When backing up (single node) GitLab server installed using the Linux package, you can use a single Rake task.
 
-Learn about [backing up Linux package or Helm variations](../raketasks/backup_restore.md).
+Learn about [backing up Linux package or Helm variations](../administration/backup_restore/index.md).
 This process backs up your entire instance, but does not back up the configuration files. Ensure those are backed up separately.
 Keep your configuration files and backup archives in a separate location to ensure the encryption keys are not kept with the encrypted data.
 
@@ -163,7 +163,7 @@ For more information about GitLab SaaS backups, see our [Backup FAQ page](https:
 ### Alternative backup strategies
 
 In some situations the Rake task for backups may not be the most optimal solution. Here are some
-[alternatives](../raketasks/backup_restore.md) to consider if the Rake task does not work for you.
+[alternatives](../administration/backup_restore/index.md) to consider if the Rake task does not work for you.
 
 #### Option 1: File system snapshot
 
@@ -236,10 +236,10 @@ Rate limits also improve the security of your application.
 
 You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#configurable-limits).
 
-- Define [issues rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md) to set a maximum number of issue creation requests per minute, per user.
-- Enforce [user and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md) for unauthenticated web requests.
-- Review the [rate limit on raw endpoints](../user/admin_area/settings/rate_limits_on_raw_endpoints.md). The default setting is 300 requests per minute for raw file access.
-- Review the [import/export rate limits](../user/admin_area/settings/import_export_rate_limits.md) of the six active defaults.
+- Define [issues rate limits](settings/rate_limit_on_issues_creation.md) to set a maximum number of issue creation requests per minute, per user.
+- Enforce [user and IP rate limits](settings/user_and_ip_rate_limits.md) for unauthenticated web requests.
+- Review the [rate limit on raw endpoints](settings/rate_limits_on_raw_endpoints.md). The default setting is 300 requests per minute for raw file access.
+- Review the [import/export rate limits](settings/import_export_rate_limits.md) of the six active defaults.
 
 For more information about API and rate limits, see our [API page](../api/rest/index.md).
 

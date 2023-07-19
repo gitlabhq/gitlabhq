@@ -1,3 +1,27 @@
+export const mockAuthor = {
+  id: 'gid://gitlab/User/1',
+  name: 'John',
+  webUrl: 'link-to-john-profile',
+  avatarUrl: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+  username: 'john.doe',
+};
+
+export const mockAwardEmoji = {
+  __typename: 'AwardEmojiConnection',
+  nodes: [
+    {
+      __typename: 'AwardEmoji',
+      name: 'briefcase',
+      user: mockAuthor,
+    },
+    {
+      __typename: 'AwardEmoji',
+      name: 'baseball',
+      user: mockAuthor,
+    },
+  ],
+};
+
 export const designListQueryResponseNodes = [
   {
     __typename: 'Design',
@@ -237,6 +261,9 @@ export const mockNoteSubmitSuccessMutationResponse = {
           webUrl: 'http://127.0.0.1:3000/root',
           __typename: 'UserCore',
         },
+        awardEmoji: {
+          nodes: [],
+        },
         body: 'New comment',
         bodyHtml: "<p data-sourcepos='1:1-1:4' dir='auto'>asdd</p>",
         createdAt: '2023-02-24T06:49:20Z',
@@ -257,6 +284,7 @@ export const mockNoteSubmitSuccessMutationResponse = {
         userPermissions: {
           adminNote: true,
           repositionNote: true,
+          awardEmoji: true,
           __typename: 'NotePermissions',
         },
         discussion: {
@@ -363,6 +391,7 @@ export const designFactory = ({
     },
     userPermissions: {
       updateDesign,
+      awardEmoji: true,
       __typename: 'IssuePermissions',
     },
     __typename: 'Issue',

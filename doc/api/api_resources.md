@@ -148,56 +148,57 @@ The following API resources are available in the group context:
 
 The following API resources are available outside of project and group contexts (including `/users`):
 
-| Resource                                                                                | Available endpoints |
-|:----------------------------------------------------------------------------------------|:--------------------|
-| [Appearance](appearance.md) **(FREE SELF)**                                             | `/application/appearance` |
-| [Applications](applications.md)                                                         | `/applications` |
-| [Audit Events](audit_events.md) **(PREMIUM SELF)**                                      | `/audit_events` |
-| [Avatar](avatar.md)                                                                     | `/avatar` |
-| [Broadcast messages](broadcast_messages.md)                                             | `/broadcast_messages` |
-| [Code snippets](snippets.md)                                                            | `/snippets` |
-| [Custom attributes](custom_attributes.md)                                               | `/users/:id/custom_attributes` (also available for groups and projects) |
-| [Deploy keys](deploy_keys.md)                                                           | `/deploy_keys` (also available for projects) |
-| [Deploy tokens](deploy_tokens.md)                                                       | `/deploy_tokens` (also available for projects and groups) |
-| [Events](events.md)                                                                     | `/events`, `/users/:id/events` (also available for projects) |
-| [Feature flags](features.md)                                                            | `/features` |
-| [Geo Nodes](geo_nodes.md) **(PREMIUM SELF)**                                            | `/geo_nodes` |
-| [Group Activity Analytics](group_activity_analytics.md)                                 | `/analytics/group_activity/{issues_count}` |
-| [Group repository storage moves](group_repository_storage_moves.md) **(PREMIUM SELF)**  | `/group_repository_storage_moves` |
-| [Import repository from GitHub](import.md#import-repository-from-github)                                              | `/import/github` |
-| [Import repository from Bitbucket Server](import.md#import-repository-from-bitbucket-server)                                              | `/import/bitbucket_server` |
-| [Instance clusters](instance_clusters.md) **(FREE SELF)**                               | `/admin/clusters` |
-| [Instance-level CI/CD variables](instance_level_ci_variables.md) **(FREE SELF)**        | `/admin/ci/variables` |
-| [Issues Statistics](issues_statistics.md)                                               | `/issues_statistics` (also available for groups and projects) |
-| [Issues](issues.md)                                                                     | `/issues` (also available for groups and projects) |
-| [Jobs](jobs.md)                                                                         | `/job` |
-| [Keys](keys.md)                                                                         | `/keys` |
-| [License](license.md) **(FREE SELF)**                                                   | `/license` |
-| [Markdown](markdown.md)                                                                 | `/markdown` |
-| [Merge requests](merge_requests.md)                                                     | `/merge_requests` (also available for groups and projects) |
-| [Metrics dashboard annotations](metrics_dashboard_annotations.md)                       | `/environments/:id/metrics_dashboard/annotations`, `/clusters/:id/metrics_dashboard/annotations` |
-| [Namespaces](namespaces.md)                                                             | `/namespaces` |
-| [Notification settings](notification_settings.md)                                       | `/notification_settings` (also available for groups and projects) |
-| [Pages domains](pages_domains.md)                                                       | `/pages/domains` (also available for projects) |
-| [Personal access tokens](personal_access_tokens.md)                                     | `/personal_access_tokens` |
-| [Plan limits](plan_limits.md)                                                           | `/application/plan_limits` |
-| [Project repository storage moves](project_repository_storage_moves.md) **(FREE SELF)** | `/project_repository_storage_moves` |
-| [Projects](projects.md)                                                                 | `/users/:id/projects` (also available for projects) |
-| [Runners](runners.md)                                                                   | `/runners` (also available for projects) |
-| [Search](search.md)                                                                     | `/search` (also available for groups and projects) |
-| [Service Data](usage_data.md)                                                           | `/usage_data` (For GitLab instance [Administrator](../user/permissions.md) users only) |
-| [Settings](settings.md) **(FREE SELF)**                                                 | `/application/settings` |
-| [Sidekiq metrics](sidekiq_metrics.md) **(FREE SELF)**                                   | `/sidekiq` |
-| [Sidekiq queues administration](admin_sidekiq_queues.md) **(FREE SELF)**                | `/admin/sidekiq/queues/:queue_name` |
-| [Snippet repository storage moves](snippet_repository_storage_moves.md) **(FREE SELF)** | `/snippet_repository_storage_moves` |
-| [Statistics](statistics.md)                                                             | `/application/statistics` |
-| [Suggestions](suggestions.md)                                                           | `/suggestions` |
-| [System hooks](system_hooks.md)                                                         | `/hooks` |
-| [To-dos](todos.md)                                                                      | `/todos` |
-| [Topics](topics.md)                                                                     | `/topics` |
-| [Users](users.md)                                                                       | `/users` |
-| [Validate `.gitlab-ci.yml` file](lint.md)                                               | `/lint` |
-| [Version](version.md)                                                                   | `/version` |
+| Resource                                                                                     | Available endpoints                                                                              |
+|:---------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
+| [Appearance](appearance.md) **(FREE SELF)**                                                  | `/application/appearance`                                                                        |
+| [Applications](applications.md)                                                              | `/applications`                                                                                  |
+| [Audit Events](audit_events.md) **(PREMIUM SELF)**                                           | `/audit_events`                                                                                  |
+| [Avatar](avatar.md)                                                                          | `/avatar`                                                                                        |
+| [Broadcast messages](broadcast_messages.md)                                                  | `/broadcast_messages`                                                                            |
+| [Code snippets](snippets.md)                                                                 | `/snippets`                                                                                      |
+| [Code suggestions](code_suggestions.md)                                                      | `/code_suggestions`                                                                              |
+| [Custom attributes](custom_attributes.md)                                                    | `/users/:id/custom_attributes` (also available for groups and projects)                          |
+| [Deploy keys](deploy_keys.md)                                                                | `/deploy_keys` (also available for projects)                                                     |
+| [Deploy tokens](deploy_tokens.md)                                                            | `/deploy_tokens` (also available for projects and groups)                                        |
+| [Events](events.md)                                                                          | `/events`, `/users/:id/events` (also available for projects)                                     |
+| [Feature flags](features.md)                                                                 | `/features`                                                                                      |
+| [Geo Nodes](geo_nodes.md) **(PREMIUM SELF)**                                                 | `/geo_nodes`                                                                                     |
+| [Group Activity Analytics](group_activity_analytics.md)                                      | `/analytics/group_activity/{issues_count}`                                                       |
+| [Group repository storage moves](group_repository_storage_moves.md) **(PREMIUM SELF)**       | `/group_repository_storage_moves`                                                                |
+| [Import repository from GitHub](import.md#import-repository-from-github)                     | `/import/github`                                                                                 |
+| [Import repository from Bitbucket Server](import.md#import-repository-from-bitbucket-server) | `/import/bitbucket_server`                                                                       |
+| [Instance clusters](instance_clusters.md) **(FREE SELF)**                                    | `/admin/clusters`                                                                                |
+| [Instance-level CI/CD variables](instance_level_ci_variables.md) **(FREE SELF)**             | `/admin/ci/variables`                                                                            |
+| [Issues Statistics](issues_statistics.md)                                                    | `/issues_statistics` (also available for groups and projects)                                    |
+| [Issues](issues.md)                                                                          | `/issues` (also available for groups and projects)                                               |
+| [Jobs](jobs.md)                                                                              | `/job`                                                                                           |
+| [Keys](keys.md)                                                                              | `/keys`                                                                                          |
+| [License](license.md) **(FREE SELF)**                                                        | `/license`                                                                                       |
+| [Markdown](markdown.md)                                                                      | `/markdown`                                                                                      |
+| [Merge requests](merge_requests.md)                                                          | `/merge_requests` (also available for groups and projects)                                       |
+| [Metrics dashboard annotations](metrics_dashboard_annotations.md)                            | `/environments/:id/metrics_dashboard/annotations`, `/clusters/:id/metrics_dashboard/annotations` |
+| [Namespaces](namespaces.md)                                                                  | `/namespaces`                                                                                    |
+| [Notification settings](notification_settings.md)                                            | `/notification_settings` (also available for groups and projects)                                |
+| [Pages domains](pages_domains.md)                                                            | `/pages/domains` (also available for projects)                                                   |
+| [Personal access tokens](personal_access_tokens.md)                                          | `/personal_access_tokens`                                                                        |
+| [Plan limits](plan_limits.md)                                                                | `/application/plan_limits`                                                                       |
+| [Project repository storage moves](project_repository_storage_moves.md) **(FREE SELF)**      | `/project_repository_storage_moves`                                                              |
+| [Projects](projects.md)                                                                      | `/users/:id/projects` (also available for projects)                                              |
+| [Runners](runners.md)                                                                        | `/runners` (also available for projects)                                                         |
+| [Search](search.md)                                                                          | `/search` (also available for groups and projects)                                               |
+| [Service Data](usage_data.md)                                                                | `/usage_data` (For GitLab instance [Administrator](../user/permissions.md) users only)           |
+| [Settings](settings.md) **(FREE SELF)**                                                      | `/application/settings`                                                                          |
+| [Sidekiq metrics](sidekiq_metrics.md) **(FREE SELF)**                                        | `/sidekiq`                                                                                       |
+| [Sidekiq queues administration](admin_sidekiq_queues.md) **(FREE SELF)**                     | `/admin/sidekiq/queues/:queue_name`                                                              |
+| [Snippet repository storage moves](snippet_repository_storage_moves.md) **(FREE SELF)**      | `/snippet_repository_storage_moves`                                                              |
+| [Statistics](statistics.md)                                                                  | `/application/statistics`                                                                        |
+| [Suggestions](suggestions.md)                                                                | `/suggestions`                                                                                   |
+| [System hooks](system_hooks.md)                                                              | `/hooks`                                                                                         |
+| [To-dos](todos.md)                                                                           | `/todos`                                                                                         |
+| [Topics](topics.md)                                                                          | `/topics`                                                                                        |
+| [Users](users.md)                                                                            | `/users`                                                                                         |
+| [Validate `.gitlab-ci.yml` file](lint.md)                                                    | `/lint`                                                                                          |
+| [Version](version.md)                                                                        | `/version`                                                                                       |
 
 ## Templates API resources
 

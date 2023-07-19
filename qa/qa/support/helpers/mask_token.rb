@@ -9,6 +9,7 @@ module QA
             ci_variable.project = project
             ci_variable.key = name
             ci_variable.value = value
+            ci_variable.masked = true
           end
           "${#{name}}"
         end
@@ -18,6 +19,7 @@ module QA
             ci_variable.group = group
             ci_variable.key = name
             ci_variable.value = value
+            ci_variable.masked = true
           end
           "${#{name}}"
         end

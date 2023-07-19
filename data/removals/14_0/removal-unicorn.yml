@@ -1,7 +1,0 @@
-- title: "Unicorn in GitLab self-managed"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: fzimmer
-  breaking_change: true
-  body: |
-    [Support for Unicorn](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6078) has been removed in GitLab 14.0 in favor of Puma. [Puma has a multi-threaded architecture](https://docs.gitlab.com/ee/administration/operations/puma.html) which uses less memory than a multi-process application server like Unicorn. On GitLab.com, we saw a 40% reduction in memory consumption by using Puma.

@@ -18,7 +18,7 @@ For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitl
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flags](../administration/feature_flags.md) named `work_items`.
+an administrator can [disable the feature flags](../administration/feature_flags.md) named `work_items`.
 On GitLab.com, this feature is available.
 
 Use tasks to track steps needed for the [issue](project/issues/index.md) to be closed.
@@ -294,7 +294,7 @@ To set issue weight of a task:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
 On GitLab.com, this feature is available.
 
 You can add a task to an [iteration](group/iterations/index.md).
@@ -359,3 +359,18 @@ To copy the task's email address:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy task email address**.
+
+## Two-column layout
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+When enabled, tasks use a two-column layout, similar to issues.
+The description and threads are on the left, and attributes, such as labels
+or assignees, on the right.
+
+![Task two column view](img/task_two_column_view_v16_2.png)

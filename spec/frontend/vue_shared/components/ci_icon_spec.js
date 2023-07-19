@@ -1,18 +1,23 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import ciIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('CI Icon component', () => {
   let wrapper;
 
-  const findIconWrapper = () => wrapper.find('[data-testid="ci-icon-wrapper"]');
+  const createComponent = (props) => {
+    wrapper = shallowMount(CiIcon, {
+      propsData: {
+        ...props,
+      },
+    });
+  };
 
   it('should render a span element with an svg', () => {
-    wrapper = shallowMount(ciIcon, {
-      propsData: {
-        status: {
-          icon: 'status_success',
-        },
+    createComponent({
+      status: {
+        group: 'success',
+        icon: 'status_success',
       },
     });
 
@@ -20,49 +25,43 @@ describe('CI Icon component', () => {
     expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
   });
 
-  describe('active icons', () => {
-    it.each`
-      isActive | cssClass
-      ${true}  | ${'active'}
-      ${false} | ${'active'}
-    `('active should be $isActive', ({ isActive, cssClass }) => {
-      wrapper = shallowMount(ciIcon, {
+  describe.each`
+    isActive
+    ${true}
+    ${false}
+  `('when isActive is $isActive', ({ isActive }) => {
+    it(`"active" class is ${isActive ? 'not ' : ''}added`, () => {
+      wrapper = shallowMount(CiIcon, {
         propsData: {
           status: {
+            group: 'success',
             icon: 'status_success',
           },
           isActive,
         },
       });
 
-      if (isActive) {
-        expect(findIconWrapper().classes()).toContain(cssClass);
-      } else {
-        expect(findIconWrapper().classes()).not.toContain(cssClass);
-      }
+      expect(wrapper.classes('active')).toBe(isActive);
     });
   });
 
-  describe('interactive icons', () => {
-    it.each`
-      isInteractive | cssClass
-      ${true}       | ${'interactive'}
-      ${false}      | ${'interactive'}
-    `('interactive should be $isInteractive', ({ isInteractive, cssClass }) => {
-      wrapper = shallowMount(ciIcon, {
+  describe.each`
+    isInteractive
+    ${true}
+    ${false}
+  `('when isInteractive is $isInteractive', ({ isInteractive }) => {
+    it(`"interactive" class is ${isInteractive ? 'not ' : ''}added`, () => {
+      wrapper = shallowMount(CiIcon, {
         propsData: {
           status: {
+            group: 'success',
             icon: 'status_success',
           },
           isInteractive,
         },
       });
 
-      if (isInteractive) {
-        expect(findIconWrapper().classes()).toContain(cssClass);
-      } else {
-        expect(findIconWrapper().classes()).not.toContain(cssClass);
-      }
+      expect(wrapper.classes('interactive')).toBe(isInteractive);
     });
   });
 
@@ -79,7 +78,7 @@ describe('CI Icon component', () => {
       ${'status_canceled'} | ${'canceled'} | ${'ci-status-icon-canceled'}
       ${'status_manual'}   | ${'manual'}   | ${'ci-status-icon-manual'}
     `('should render a $group status', ({ icon, group, cssClass }) => {
-      wrapper = shallowMount(ciIcon, {
+      wrapper = shallowMount(CiIcon, {
         propsData: {
           status: {
             icon,

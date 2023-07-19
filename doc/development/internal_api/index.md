@@ -492,14 +492,21 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
 Called from GitLab agent server (`kas`) to increase the usage
 metric counters.
 
-| Attribute                                        | Type          | Required | Description                                                                                                          |
-|:-------------------------------------------------|:--------------|:---------|:---------------------------------------------------------------------------------------------------------------------|
-| `counters`                                       | hash          | no       | Hash of counters                                                                                                     |
-| `counters["k8s_api_proxy_request"]`              | integer       | no       | The number to increase the `k8s_api_proxy_request` counter by                                                        |
-| `counters["gitops_sync"]`                        | integer       | no       | The number to increase the `gitops_sync` counter by                                                                  |
-| `counters["flux_git_push_notifications_total"]`  | integer       | no       | The number to increase the `flux_git_push_notifications_total` counter by                                            |
-| `unique_counters`                                | hash          | no       | Array of unique numbers                                                                                              |
-| `unique_counters["agent_users_using_ci_tunnel"]` | integer array | no       | The set of unique user ids that have interacted a CI Tunnel to track the `agent_users_using_ci_tunnel` metric event  |
+| Attribute                                                                 | Type          | Required | Description                                                                                                                                                    |
+|:--------------------------------------------------------------------------|:--------------|:---------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `counters`                                                                | hash          | no       | Hash of counters                                                                                                                                               |
+| `counters["k8s_api_proxy_request"]`                                       | integer       | no       | The number to increase the `k8s_api_proxy_request` counter by                                                                                                  |
+| `counters["gitops_sync"]`                                                 | integer       | no       | The number to increase the `gitops_sync` counter by                                                                                                            |
+| `counters["flux_git_push_notifications_total"]`                           | integer       | no       | The number to increase the `flux_git_push_notifications_total` counter by                                                                                      |
+| `counters["k8s_api_proxy_requests_via_ci_access"]`                        | integer       | no       | The number to increase the `k8s_api_proxy_requests_via_ci_access` counter by                                                                                   |
+| `counters["k8s_api_proxy_requests_via_user_access"]`                      | integer       | no       | The number to increase the `k8s_api_proxy_requests_via_user_access` counter by                                                                                 |
+| `unique_counters`                                                         | hash          | no       | Array of unique numbers                                                                                                                                        |
+| `unique_counters["agent_users_using_ci_tunnel"]`                          | integer array | no       | The set of unique user ids that have interacted a CI Tunnel to track the `agent_users_using_ci_tunnel` metric event                                            |
+| `unique_counters["k8s_api_proxy_requests_unique_users_via_ci_access"]`    | integer array | no       | The set of unique user ids that have interacted a CI Tunnel via `ci_access` to track the `k8s_api_proxy_requests_unique_users_via_ci_access` metric event      |
+| `unique_counters["k8s_api_proxy_requests_unique_agents_via_ci_access"]`   | integer array | no       | The set of unique user ids that have interacted a CI Tunnel via `ci_access` to track the `k8s_api_proxy_requests_unique_agents_via_ci_access` metric event     |
+| `unique_counters["k8s_api_proxy_requests_unique_users_via_user_access"]`  | integer array | no       | The set of unique user ids that have interacted a CI Tunnel via `user_access` to track the `k8s_api_proxy_requests_unique_users_via_user_access` metric event  |
+| `unique_counters["k8s_api_proxy_requests_unique_agents_via_user_access"]` | integer array | no       | The set of unique user ids that have interacted a CI Tunnel via `user_access` to track the `k8s_api_proxy_requests_unique_agents_via_user_access` metric event |
+| `unique_counters["flux_git_push_notified_unique_projects"]`               | integer array | no       | The set of unique projects ids that have been notified to reconcile their Flux workloads to track the `flux_git_push_notified_unique_projects` metric event    |
 
 ```plaintext
 POST /internal/kubernetes/usage_metrics
@@ -857,9 +864,9 @@ PUT /namespaces/:id/subscription_add_on_purchase/:add_on_name
 
 | Attribute   | Type    | Required | Description |
 |:------------|:--------|:---------|:------------|
-| `quantity` | integer | yes | Amount of units in the subscription add-on purchase (Example: Number of seats for a code suggestions add-on) |
+| `quantity` | integer | no | Amount of units in the subscription add-on purchase (Example: Number of seats for a code suggestions add-on) |
 | `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
-| `purchase_xid` | string | yes | Identifier for the subscription add-on purchase (Example: Subscription name for a code suggestions add-on) |
+| `purchase_xid` | string | no | Identifier for the subscription add-on purchase (Example: Subscription name for a code suggestions add-on) |
 
 Example request:
 
@@ -1014,10 +1021,10 @@ Example response:
 
 ## Compute quota provisioning
 
-> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "units of compute" in GitLab 16.1.
+> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
 
 The compute quota endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
-to apply additional packs of units of compute, for personal namespaces or top-level groups in GitLab.com.
+to apply additional packs of compute minutes, for personal namespaces or top-level groups in GitLab.com.
 
 ### Create an additional pack
 
@@ -1031,7 +1038,7 @@ POST /namespaces/:id/minutes
 |:------------|:--------|:---------|:------------|
 | `packs`     | array   | yes      | An array of purchased compute packs |
 | `packs[expires_at]` | date   | yes      | Expiry date of the purchased pack|
-| `packs[number_of_minutes]`  | integer    | yes       | Number of additional units of compute |
+| `packs[number_of_minutes]`  | integer    | yes       | Number of additional compute minutes |
 | `packs[purchase_xid]` | string  | yes       | The unique ID of the purchase |
 
 Example request:

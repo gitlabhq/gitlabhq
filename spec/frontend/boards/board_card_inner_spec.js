@@ -92,6 +92,7 @@ describe('Board card component', () => {
         isEpicBoard,
         issuableType: TYPE_ISSUE,
         isGroupBoard,
+        isApolloBoard: false,
       },
     });
   };
@@ -111,7 +112,6 @@ describe('Board card component', () => {
 
   afterEach(() => {
     store = null;
-    jest.clearAllMocks();
   });
 
   it('renders issue title', () => {

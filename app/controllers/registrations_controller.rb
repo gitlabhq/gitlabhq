@@ -184,8 +184,6 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def check_captcha
-    ensure_correct_params!
-
     return unless show_recaptcha_sign_up?
     return unless Gitlab::Recaptcha.load_configurations!
 
@@ -224,6 +222,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def sign_up_params
+    ensure_correct_params!
     params.require(:user).permit(sign_up_params_attributes)
   end
 

@@ -29,9 +29,9 @@ GET /projects/:project_id/secure_files
 
 Supported attributes:
 
-| Attribute    | Type           | Required               | Description |
-|--------------|----------------|------------------------|-------------|
-| `project_id` | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| Attribute    | Type           | Required | Description |
+|--------------|----------------|----------|-------------|
+| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 Example request:
 
@@ -90,10 +90,10 @@ GET /projects/:project_id/secure_files/:id
 
 Supported attributes:
 
-| Attribute    | Type           | Required               | Description |
-|--------------|----------------|------------------------|-------------|
-| `project_id` | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `id`         | integer        | **{check-circle}** Yes | The `id` of a secure file. |
+| Attribute    | Type           | Required | Description |
+|--------------|----------------|----------|-------------|
+| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`         | integer        | Yes      | The ID of a secure file. |
 
 Example request:
 
@@ -125,11 +125,11 @@ POST /projects/:project_id/secure_files
 
 Supported attributes:
 
-| Attribute       | Type           | Required               | Description |
-|-----------------|----------------|------------------------|-------------|
-| `project_id`    | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `name`          | string         | **{check-circle}** Yes | The `name` of the file being uploaded. The filename must be unique within the project. |
-| `file`          | file           | **{check-circle}** Yes | The `file` being uploaded (5 MB limit). |
+| Attribute       | Type           | Required | Description |
+|-----------------|----------------|----------|-------------|
+| `project_id`    | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `name`          | string         | Yes      | The name of the file being uploaded. The filename must be unique in the project. |
+| `file`          | file           | Yes      | The file being uploaded (5 MB limit). |
 
 Example request:
 
@@ -162,10 +162,10 @@ GET /projects/:project_id/secure_files/:id/download
 
 Supported attributes:
 
-| Attribute    | Type           | Required               | Description |
-|--------------|----------------|------------------------|-------------|
-| `project_id` | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `id`         | integer        | **{check-circle}** Yes | The `id` of a secure file. |
+| Attribute    | Type           | Required | Description |
+|--------------|----------------|----------|-------------|
+| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`         | integer        | Yes      | The ID of a secure file. |
 
 Example request:
 
@@ -183,10 +183,10 @@ DELETE /projects/:project_id/secure_files/:id
 
 Supported attributes:
 
-| Attribute    | Type           | Required               | Description |
-|--------------|----------------|------------------------|-------------|
-| `project_id` | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `id`         | integer        | **{check-circle}** Yes | The `id` of a secure file. |
+| Attribute    | Type           | Required | Description |
+|--------------|----------------|----------|-------------|
+| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `id`         | integer        | Yes      | The ID of a secure file. |
 
 Example request:
 

@@ -6,6 +6,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
   include ProjectForksHelper
   include TestReportsHelper
   include ReactiveCachingHelpers
+  include ContentEditorHelpers
 
   let(:project) { create(:project, :repository) }
   let(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
@@ -57,6 +58,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       merge_request.update!(head_pipeline: pipeline)
       deployment.update!(status: :success)
       visit project_merge_request_path(project, merge_request)
+      close_rich_text_promo_popover_if_present
     end
 
     it 'shows environments link' do
@@ -118,15 +120,19 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
   context 'view merge request with failed GitLab CI pipelines' do
     before do
       commit_status = create(:commit_status, project: project, status: 'failed')
-      pipeline = create(:ci_pipeline, project: project,
-                                      sha: merge_request.diff_head_sha,
-                                      ref: merge_request.source_branch,
-                                      status: 'failed',
-                                      statuses: [commit_status],
-                                      head_pipeline_of: merge_request)
+      pipeline = create(
+        :ci_pipeline,
+        project: project,
+        sha: merge_request.diff_head_sha,
+        ref: merge_request.source_branch,
+        status: 'failed',
+        statuses: [commit_status],
+        head_pipeline_of: merge_request
+      )
       create(:ci_build, :pending, pipeline: pipeline)
 
       visit project_merge_request_path(project, merge_request)
+      close_rich_text_promo_popover_if_present
     end
 
     it 'has merge button that shows modal when pipeline does not succeeded' do
@@ -278,12 +284,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
   context 'view merge request with MWBS button' do
     before do
       commit_status = create(:commit_status, project: project, status: 'pending')
-      pipeline = create(:ci_pipeline, project: project,
-                                      sha: merge_request.diff_head_sha,
-                                      ref: merge_request.source_branch,
-                                      status: 'pending',
-                                      statuses: [commit_status],
-                                      head_pipeline_of: merge_request)
+      pipeline = create(
+        :ci_pipeline,
+        project: project,
+        sha: merge_request.diff_head_sha,
+        ref: merge_request.source_branch,
+        status: 'pending',
+        statuses: [commit_status],
+        head_pipeline_of: merge_request
+      )
       create(:ci_build, :pending, pipeline: pipeline)
 
       visit project_merge_request_path(project, merge_request)
@@ -298,9 +307,12 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
   context 'view merge request where there is no pipeline yet' do
     before do
-      pipeline = create(:ci_pipeline, project: project,
-                                      sha: merge_request.diff_head_sha,
-                                      ref: merge_request.source_branch)
+      pipeline = create(
+        :ci_pipeline,
+        project: project,
+        sha: merge_request.diff_head_sha,
+        ref: merge_request.source_branch
+      )
       create(:ci_build, pipeline: pipeline)
 
       visit project_merge_request_path(project, merge_request)
@@ -394,6 +406,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     before do
       allow_any_instance_of(Repository).to receive(:merge).and_return(false)
       visit project_merge_request_path(project, merge_request)
+      close_rich_text_promo_popover_if_present
     end
 
     it 'updates the MR widget', :sidekiq_might_not_need_inline do
@@ -415,6 +428,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       sign_in(user2)
       merge_request.update!(source_project: forked_project)
       visit project_merge_request_path(project, merge_request)
+      close_rich_text_promo_popover_if_present
     end
 
     it 'user can merge into the target project', :sidekiq_inline do
@@ -452,6 +466,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       allow_any_instance_of(MergeRequest).to receive(:merge_ongoing?).and_return(true)
 
       visit project_merge_request_path(project, merge_request)
+      close_rich_text_promo_popover_if_present
 
       wait_for_requests
 
@@ -510,11 +525,13 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
   context 'when merge request has test reports' do
     let!(:head_pipeline) do
-      create(:ci_pipeline,
-             :success,
-             project: project,
-             ref: merge_request.source_branch,
-             sha: merge_request.diff_head_sha)
+      create(
+        :ci_pipeline,
+        :success,
+        project: project,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha
+      )
     end
 
     let!(:build) { create(:ci_build, :success, pipeline: head_pipeline, project: project) }

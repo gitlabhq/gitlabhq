@@ -6,6 +6,15 @@ RSpec.describe 'OmniAuth::Strategies::SAML', type: :strategy do
   let(:idp_sso_target_url) { 'https://login.example.com/idp' }
   let(:strategy) { [OmniAuth::Strategies::SAML, { idp_sso_target_url: idp_sso_target_url }] }
 
+  before do
+    mock_session = {}
+
+    allow(mock_session).to receive(:enabled?).and_return(true)
+    allow(mock_session).to receive(:loaded?).and_return(true)
+
+    env('rack.session', mock_session)
+  end
+
   describe 'POST /users/auth/saml' do
     it 'redirects to the provider login page', :aggregate_failures do
       post '/users/auth/saml'

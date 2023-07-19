@@ -88,17 +88,11 @@ RUN set -eux; \
     rm -rf ${GEM_HOME}/cache \
     && go clean -cache
 
-# Build metrics-exporter
-#
-COPY --chown=gdk:gdk GITLAB_METRICS_EXPORTER_VERSION ./gitlab/
-RUN set -eux; \
-    make gitlab-metrics-exporter-setup; \
-    go clean -cache
-
 # Install gitlab gem dependencies
 #
 COPY --chown=gdk:gdk Gemfile Gemfile.lock ./gitlab/
-COPY --chown=gdk:gdk vendor/gems ./gitlab/vendor/gems
+COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
+COPY --chown=gdk:gdk gems/ ./gitlab/gems/
 RUN make .gitlab-bundle && rm -rf ${GEM_HOME}/cache
 
 # Install gitlab npm dependencies

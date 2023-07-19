@@ -25,10 +25,10 @@ GitLab has a lot of
 [secrets](https://docs.gitlab.com/charts/installation/secrets.html) that needs
 to be configured.
 
-Some secrets are for inter-component communication, e.g. `GitLab Shell secret`,
+Some secrets are for inter-component communication, for example, `GitLab Shell secret`,
 and used only within a cell.
 
-Some secrets are used for features, e.g. `ci_jwt_signing_key`.
+Some secrets are used for features, for example, `ci_jwt_signing_key`.
 
 ## 2. Data flow
 

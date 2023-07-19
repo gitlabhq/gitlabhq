@@ -79,7 +79,7 @@ For example:
 
 Before you can migrate projects on a self-managed GitLab instance using file exports, GitLab administrators must:
 
-1. [Enable file exports](../../admin_area/settings/visibility_and_access_controls.md#enable-project-export) on the source
+1. [Enable file exports](../../../administration/settings/visibility_and_access_controls.md#enable-project-export) on the source
    instance.
 1. Enable file exports as an import source for the destination instance. On GitLab.com, file exports are already enabled
    as an import source.
@@ -186,7 +186,7 @@ Items that are **not** exported include:
 - Links to related merge requests
 
 Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../../group/custom_project_templates.md) and
-[instance](../../admin_area/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
+[instance](../../../administration/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
 
 ## Import a project and its data
 
@@ -243,7 +243,7 @@ If you have a larger project, consider [using a Rake task](../../../administrati
 Administrators can set the maximum import file size one of two ways:
 
 - With the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
-- In the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md#max-import-size).
+- In the [Admin Area UI](../../../administration/settings/account_and_limit_settings.md#max-import-size).
 
 The default is `0` (unlimited).
 

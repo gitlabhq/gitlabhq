@@ -4,7 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
   describe '#run' do
-    let(:signature)       { [GpgHelpers::User1.signed_commit_signature, GpgHelpers::User1.signed_commit_base_data] }
+    let(:signature) do
+      {
+        signature: GpgHelpers::User1.signed_commit_signature,
+        signed_text: GpgHelpers::User1.signed_commit_base_data
+      }
+    end
+
     let(:committer_email) { GpgHelpers::User1.emails.first }
     let!(:commit_sha)     { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
     let!(:project)        { create :project, :repository, path: 'sample-project' }
@@ -183,7 +189,13 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
     end
 
     context 'gpg signature did not have an associated gpg subkey' do
-      let(:signature)       { [GpgHelpers::User3.signed_commit_signature, GpgHelpers::User3.signed_commit_base_data] }
+      let(:signature) do
+        {
+          signature: GpgHelpers::User3.signed_commit_signature,
+          signed_text: GpgHelpers::User3.signed_commit_base_data
+        }
+      end
+
       let(:committer_email) { GpgHelpers::User3.emails.first }
       let!(:user)           { create :user, email: GpgHelpers::User3.emails.first }
 

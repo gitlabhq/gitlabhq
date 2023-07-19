@@ -21,6 +21,9 @@ export const SNIPPET_VISIBILITY = {
     label: __('Public'),
     icon: 'earth',
     description: __('The snippet can be accessed without any authentication.'),
+    description_project: __(
+      'The snippet can be accessed without any authentication. To embed snippets, a project must be public.',
+    ),
   },
 };
 

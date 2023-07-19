@@ -106,6 +106,7 @@ different actions. See the following table for all available scopes.
 | `openid`           | Grants permission to authenticate with GitLab using [OpenID Connect](openid_connect_provider.md). Also gives read-only access to the user's profile and group memberships. |
 | `profile`          | Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
 | `email`            | Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
+| `create_runner`    | Grants permission to create runners. |
 
 At any time you can revoke any access by selecting **Revoke**.
 
@@ -131,7 +132,7 @@ When applications are deleted, all grants and tokens associated with the applica
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.9.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `hash_oauth_secrets`.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `hash_oauth_secrets`.
 On GitLab.com, this feature is available.
 
 By default, GitLab stores OAuth application secrets in the database in hashed format. These secrets are only available to users immediately after creating OAuth applications. In

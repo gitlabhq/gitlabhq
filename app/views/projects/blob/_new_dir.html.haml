@@ -16,6 +16,6 @@
 
           .form-actions
             = submit_tag _("Create directory"), class: 'btn gl-button btn-confirm'
-            = link_to _('Cancel'), '#', class: "btn gl-button btn-default btn-cancel", "data-dismiss" => "modal"
+            = link_button_to _('Cancel'), '#', "data-dismiss" => "modal"
 
             = render 'shared/projects/edit_information'

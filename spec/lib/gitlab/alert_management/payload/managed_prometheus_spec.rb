@@ -150,20 +150,4 @@ RSpec.describe Gitlab::AlertManagement::Payload::ManagedPrometheus do
       it { is_expected.to eq(environment) }
     end
   end
-
-  describe '#metrics_dashboard_url' do
-    subject { parsed_payload.metrics_dashboard_url }
-
-    context 'without alert' do
-      it { is_expected.to be_nil }
-    end
-
-    context 'with gitlab alert' do
-      include_context 'gitlab-managed prometheus alert attributes' do
-        let(:raw_payload) { payload }
-      end
-
-      it { is_expected.to eq(dashboard_url_for_alert) }
-    end
-  end
 end

@@ -17,6 +17,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - Abstraction for
   - OpenAI
   - Google Vertex AI
+  - Anthropic
 - Rate Limiting
 - Circuit Breaker
 - Multi-Level feature flags
@@ -26,9 +27,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - Configuration for Moderation check of inputs
 - Automatic Markdown Rendering of responses
 - Centralised Group Level settings for experiment and 3rd party
-- Experimental API endpoints for exploration of AI API’s by GitLab team members without the need for credentials
+- Experimental API endpoints for exploration of AI APIs by GitLab team members without the need for credentials
   - OpenAI
   - Google Vertex AI
+  - Anthropic
 
 ## Feature flags
 
@@ -41,7 +43,7 @@ See the [feature flag tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/405
 
 ## Implement a new AI action
 
-To implement a new AI action, connect to the OpenAI API. You can connect to this API using either the:
+To implement a new AI action, connect to the preferred AI provider. You can connect to this API using either the:
 
 - Experimental REST API.
 - Abstraction layer.
@@ -83,6 +85,43 @@ For features that use the embedding database, additional setup is needed.
 
 1. Run `gdk reconfigure`
 1. Run database migrations to create the embedding database
+
+### Set up GitLab Duo Chat
+
+1. [Enable Anthropic API features](#configure-anthropic-access).
+1. [Enable OpenAI support](#configure-openai-access).
+1. [Ensure the embedding database is configured](#set-up-the-embedding-database).
+1. Enable feature specific feature flag.
+
+   ```ruby
+   Feature.enable(:gitlab_duo)
+   Feature.enable(:tanuki_bot)
+   Feature.enable(:ai_redis_cache)
+   ```
+
+1. Ensure that your current branch is up-to-date with `master`.
+1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
+
+#### Tips for local development
+
+1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
+1. Alternatively, bypass Sidekiq entirely and run the chat service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs.
+
+```diff
+diff --git a/ee/app/services/llm/chat_service.rb b/ee/app/services/llm/chat_service.rb
+index 5fa7ae8a2bc1..5fe996ba0345 100644
+--- a/ee/app/services/llm/chat_service.rb
++++ b/ee/app/services/llm/chat_service.rb
+@@ -5,7 +5,7 @@ class ChatService < BaseService
+     private
+
+     def perform
+-      worker_perform(user, resource, :chat, options)
++      worker_perform(user, resource, :chat, options.merge(sync: true))
+     end
+
+     def valid?
+```
 
 ### Setup for GitLab documentation chat (legacy chat)
 
@@ -133,6 +172,22 @@ Feature.enable(:anthropic_experimentation)
 Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 ```
 
+### Testing GitLab Duo Chat with predefined questions
+
+Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use following commands to validate answers to some predefined questions:
+
+1. Rake task which iterates through questions defined in CSV file and checks tools used for evaluating each question.
+
+```ruby
+rake gitlab:llm:zero_shot:test:questions[<issue_url>]
+```
+
+1. RSpec which iterates through resource-specific questions on predefined resources:
+
+```ruby
+ANTHROPIC_API_KEY='<key>' REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
+```
+
 ## Experimental REST API
 
 Use the [experimental REST API endpoints](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/ai/experimentation) to quickly experiment and prototype AI features.
@@ -153,7 +208,7 @@ The experimental endpoint is only available to GitLab team members on production
 
 ### GraphQL API
 
-To connect to the OpenAI API using the Abstraction Layer, use an extendable GraphQL API called
+To connect to the AI provider API using the Abstraction Layer, use an extendable GraphQL API called
 [`aiAction`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/graphql/mutations/ai/action.rb).
 The `input` accepts key/value pairs, where the `key` is the action that needs to be performed.
 We only allow one AI action per mutation request.
@@ -182,6 +237,8 @@ mutation {
 The GraphQL API then uses the [OpenAI Client](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/open_ai/client.rb)
 to send the response.
 
+Remember that other clients are available and you should not use OpenAI.
+
 #### How to receive a response
 
 As the OpenAI API requests are handled in a background job, we do not keep the request alive and
@@ -200,6 +257,8 @@ WARNING:
 You should only subscribe to the subscription once the mutation is sent. If multiple subscriptions are active on the same page, they currently all receive updates as our identifier is the user and the resource. To mitigate this, you should only subscribe when the mutation is sent. You can use [`skip()`](You can use [`skip()`](https://apollo.vuejs.org/guide/apollo/subscriptions.html#skipping-the-subscription)) for this case. To prevent this problem in the future, we implement a [request identifier](https://gitlab.com/gitlab-org/gitlab/-/issues/408196).
 
 #### Current abstraction layer flow
+
+The following graph uses OpenAI as an example. You can use different providers.
 
 ```mermaid
 flowchart TD

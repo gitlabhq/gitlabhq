@@ -33,7 +33,7 @@ Parameters:
 bundle exec rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"
 ```
 
-If you're running Omnibus, run the following Rake task:
+If you're running a Linux package installation, run the following Rake task:
 
 ```shell
 gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"
@@ -99,10 +99,10 @@ To fix the issue:
 1. Change the file permissions to `0400`.
 1. Move the file to a public folder (for example `/tmp/`).
 
-### `Name can contain only letters, digits, emojis ...`
+### `Name can contain only letters, digits, emoji ...`
 
 ```plaintext
-Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces. It must start with a letter,
+Name can contain only letters, digits, emoji, '_', '.', '+', dashes, or spaces. It must start with a letter,
 digit, emoji, or '_', and Path can contain only letters, digits, '_', '-', or '.'. It cannot start
 with '-', end in '.git', or end in '.atom'.
 ```

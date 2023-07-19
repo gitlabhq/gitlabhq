@@ -2,10 +2,9 @@
 - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: docs_link_url }
 - link_end = '</a>'.html_safe
 
-.row.gl-mt-3.gl-mb-3
-  .col-lg-3
-    %h4.gl-mt-0
-      = _('Recent events')
-    %p= _('GitLab events trigger webhooks. Use the request details of a webhook to help troubleshoot problems. %{link_start}How do I troubleshoot?%{link_end}').html_safe % { link_start: link_start, link_end: link_end }
-  .col-lg-9
-    = render partial: 'shared/hook_logs/recent_deliveries_table', locals: { hook: hook, hook_logs: hook_logs }
+.settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0= _('Recent events')
+  %p.gl-text-secondary= _('GitLab events trigger webhooks. Use the request details of a webhook to help troubleshoot problems. %{link_start}How do I troubleshoot?%{link_end}').html_safe % { link_start: link_start, link_end: link_end }
+  = render partial: 'shared/hook_logs/recent_deliveries_table', locals: { hook: hook, hook_logs: hook_logs }

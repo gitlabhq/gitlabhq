@@ -10,8 +10,7 @@ require 'securerandom'
 require 'socket'
 require 'logger'
 require 'fileutils'
-
-require_relative '../../../lib/gitlab/utils'
+require 'gitlab/utils/all'
 
 module GitalySetup
   extend self

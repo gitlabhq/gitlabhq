@@ -198,14 +198,6 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
 
         it { is_expected.to eq(allowed) }
       end
-
-      context 'when expose_authorized_cluster_agents feature flag is disabled' do
-        before do
-          stub_feature_flags(expose_authorized_cluster_agents: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
     end
 
     context 'with group-level authorization' do
@@ -225,14 +217,6 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
         end
 
         it { is_expected.to eq(allowed) }
-      end
-
-      context 'when expose_authorized_cluster_agents feature flag is disabled' do
-        before do
-          stub_feature_flags(expose_authorized_cluster_agents: false)
-        end
-
-        it { is_expected.to eq(false) }
       end
     end
   end
@@ -269,14 +253,6 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
 
         it { is_expected.to eq(allowed) }
       end
-
-      context 'when expose_authorized_cluster_agents feature flag is disabled' do
-        before do
-          stub_feature_flags(expose_authorized_cluster_agents: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
     end
 
     context 'with group-level authorization' do
@@ -296,14 +272,6 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
         end
 
         it { is_expected.to eq(allowed) }
-      end
-
-      context 'when expose_authorized_cluster_agents feature flag is disabled' do
-        before do
-          stub_feature_flags(expose_authorized_cluster_agents: false)
-        end
-
-        it { is_expected.to eq(false) }
       end
     end
   end

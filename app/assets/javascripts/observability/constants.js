@@ -18,6 +18,7 @@ export const SKELETON_VARIANTS_BY_ROUTE = Object.freeze({
 });
 
 export const SKELETON_VARIANT_EMBED = 'embed';
+export const SKELETON_SPINNER_VARIANT = 'spinner';
 
 export const SKELETON_STATE = Object.freeze({
   ERROR: 'error',

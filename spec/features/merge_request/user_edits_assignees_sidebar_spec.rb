@@ -32,6 +32,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
   end
 
   let(:sidebar_assignee_tooltip) { sidebar_assignee_avatar_link['title'] || '' }
+  let(:sidebar_assignee_merge_ability) { sidebar_assignee_avatar_link['data-cannot-merge'] || '' }
 
   context 'when GraphQL assignees widget feature flag is disabled' do
     let(:sidebar_assignee_dropdown_item) do
@@ -57,13 +58,13 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
         wait_for_requests
       end
 
-      shared_examples 'when assigned' do |expected_tooltip: ''|
+      shared_examples 'when assigned' do |expected_tooltip: '', expected_cannot_merge: ''|
         it 'shows assignee name' do
           expect(sidebar_assignee_block).to have_text(assignee.name)
         end
 
-        it "shows assignee tooltip '#{expected_tooltip}'" do
-          expect(sidebar_assignee_tooltip).to eql(expected_tooltip)
+        it "sets data-cannot-merge to '#{expected_cannot_merge}'" do
+          expect(sidebar_assignee_merge_ability).to eql(expected_cannot_merge)
         end
 
         context 'when edit is clicked' do
@@ -88,7 +89,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
       context 'when assigned to developer' do
         let(:assignee) { project_developers.last }
 
-        it_behaves_like 'when assigned', expected_tooltip: 'Cannot merge'
+        it_behaves_like 'when assigned', expected_tooltip: 'Cannot merge', expected_cannot_merge: 'true'
       end
     end
 
@@ -140,13 +141,13 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
         wait_for_requests
       end
 
-      shared_examples 'when assigned' do |expected_tooltip: ''|
+      shared_examples 'when assigned' do |expected_tooltip: '', expected_cannot_merge: ''|
         it 'shows assignee name' do
           expect(sidebar_assignee_block).to have_text(assignee.name)
         end
 
-        it "shows assignee tooltip '#{expected_tooltip}'" do
-          expect(sidebar_assignee_tooltip).to eql(expected_tooltip)
+        it "sets data-cannot-merge to '#{expected_cannot_merge}'" do
+          expect(sidebar_assignee_merge_ability).to eql(expected_cannot_merge)
         end
 
         context 'when edit is clicked' do
@@ -169,7 +170,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
       context 'when assigned to developer' do
         let(:assignee) { project_developers.last }
 
-        it_behaves_like 'when assigned', expected_tooltip: 'Cannot merge'
+        it_behaves_like 'when assigned', expected_tooltip: 'Cannot merge', expected_cannot_merge: 'true'
       end
     end
 

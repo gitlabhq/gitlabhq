@@ -15,8 +15,14 @@ const viewers = {
   geo_json: () => import('./geo_json/geo_json_viewer.vue'),
 };
 
-export const loadViewer = (type, isUsingLfs) => {
+export const loadViewer = (type, isUsingLfs, hljsWorkerEnabled, language) => {
   let viewer = viewers[type];
+
+  if (hljsWorkerEnabled && language === 'json') {
+    // The New Source Viewer currently only supports JSON files.
+    // More language support will be added in: https://gitlab.com/gitlab-org/gitlab/-/issues/415753
+    viewer = () => import('~/vue_shared/components/source_viewer/source_viewer_new.vue');
+  }
 
   if (!viewer && isUsingLfs) {
     viewer = viewers.lfs;

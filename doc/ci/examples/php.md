@@ -90,12 +90,12 @@ Finally, commit your files and push them to GitLab to see your build succeeding
 The final `.gitlab-ci.yml` should look similar to this:
 
 ```yaml
-# Select image from https://hub.docker.com/_/php
-image: php:5.6
-
-before_script:
-  # Install dependencies
-  - bash ci/docker_install.sh > /dev/null
+default:
+  # Select image from https://hub.docker.com/_/php
+  image: php:5.6
+  before_script:
+    # Install dependencies
+    - bash ci/docker_install.sh > /dev/null
 
 test:app:
   script:
@@ -108,9 +108,10 @@ Testing against multiple versions of PHP is super easy. Just add another job
 with a different Docker image version and the runner does the rest:
 
 ```yaml
-before_script:
-  # Install dependencies
-  - bash ci/docker_install.sh > /dev/null
+default:
+  before_script:
+    # Install dependencies
+    - bash ci/docker_install.sh > /dev/null
 
 # We test PHP5.6
 test:5.6:
@@ -206,10 +207,9 @@ Instead of PHPUnit, you can use any other tool to run unit tests. For example
 you can use [`atoum`](https://github.com/atoum/atoum):
 
 ```yaml
-before_script:
-  - wget http://downloads.atoum.org/nightly/mageekguy.atoum.phar
-
 test:atoum:
+  before_script:
+    - wget http://downloads.atoum.org/nightly/mageekguy.atoum.phar
   script:
     - php mageekguy.atoum.phar
 ```
@@ -224,18 +224,18 @@ To execute Composer before running your tests, add the following to your
 # Composer stores all downloaded packages in the vendor/ directory.
 # Do not use the following if the vendor/ directory is committed to
 # your git repository.
-cache:
-  paths:
-    - vendor/
-
-before_script:
-  # Install composer dependencies
-  - wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig
-  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  - php -r "if (hash_file('SHA384', 'composer-setup.php') === file_get_contents('installer.sig')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-  - php composer-setup.php
-  - php -r "unlink('composer-setup.php'); unlink('installer.sig');"
-  - php composer.phar install
+default:
+  cache:
+    paths:
+      - vendor/
+  before_script:
+    # Install composer dependencies
+    - wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - php -r "if (hash_file('SHA384', 'composer-setup.php') === file_get_contents('installer.sig')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    - php composer-setup.php
+    - php -r "unlink('composer-setup.php'); unlink('installer.sig');"
+    - php composer.phar install
 ```
 
 ## Access private packages or dependencies

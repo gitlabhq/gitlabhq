@@ -307,7 +307,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
 
   def stub_post_to_build_queue(branch:)
     teamcity_full_url = "#{teamcity_url}/httpAuth/app/rest/buildQueue"
-    body ||= %Q(<build branchName=\"#{branch}\"><buildType id=\"foo\"/></build>)
+    body ||= %(<build branchName=\"#{branch}\"><buildType id=\"foo\"/></build>)
     auth = %w(mic password)
 
     stub_full_request(teamcity_full_url, method: :post).with(
@@ -322,7 +322,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
   def stub_request(status: 200, body: nil, build_status: 'success')
     auth = %w(mic password)
 
-    body ||= %Q({"build":{"status":"#{build_status}","id":"666"}})
+    body ||= %({"build":{"status":"#{build_status}","id":"666"}})
 
     stub_full_request(teamcity_full_url).with(basic_auth: auth).to_return(
       status: status,

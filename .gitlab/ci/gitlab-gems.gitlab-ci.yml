@@ -1,0 +1,22 @@
+include:
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "activerecord-gitlab"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "click_house-client"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-rspec"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-schema-validation"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-utils"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "ipynbdiff"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "rspec_flaky"

@@ -240,7 +240,7 @@ module Gitlab
         yield.merge(key => Time.current)
       end
 
-      # @param event_name [String] the event name
+      # @param event_name [String, Symbol] the event name
       # @param values [Array|String] the values counted
       def track_usage_event(event_name, values)
         Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name.to_s, values: values)

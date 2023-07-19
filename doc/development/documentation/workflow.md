@@ -69,7 +69,7 @@ Remember:
 
 GitLab documentation is distributed under the [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/), which presupposes that GitLab owns the documentation.
 
-Under current law in the US and the EU, it’s possible that AI-generated works might either:
+Under current law in the US and the EU, it's possible that AI-generated works might either:
 
 - not be owned by anyone because they weren't created by a human, or
 - belong to the AI training data's creator, if the AI verbatim reproduces content that it trained on

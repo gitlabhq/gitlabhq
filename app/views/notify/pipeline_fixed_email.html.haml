@@ -1,1 +1,1 @@
-= render 'notify/successful_pipeline', title: s_('Notify|Pipeline has been fixed and #%{pipeline_id} has passed!') % {pipeline_id: @pipeline.id}
+= render 'notify/successful_pipeline', title: s_('Notify|Pipeline has been fixed and %{pipeline_name_or_id} has passed!') % { pipeline_name_or_id: sanitize_name(@pipeline.name) || "##{@pipeline.id}" }

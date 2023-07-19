@@ -93,7 +93,7 @@ module Projects
 
       # TODO: Support LFS sync over SSH
       # https://gitlab.com/gitlab-org/gitlab/-/issues/249587
-      return unless remote_mirror.url =~ %r{\Ahttps?://}i
+      return unless %r{\Ahttps?://}i.match?(remote_mirror.url)
       return unless remote_mirror.password_auth?
 
       Lfs::PushService.new(

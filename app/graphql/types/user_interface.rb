@@ -197,6 +197,17 @@ module Types
           null: true,
           description: 'Timestamp of when the user was created.'
 
+    field :pronouns,
+          type: ::GraphQL::Types::String,
+          null: true,
+          description: 'Pronouns of the user.'
+
+    field :ide,
+          type: Types::IdeType,
+          null: true,
+          description: 'IDE settings.',
+          method: :itself
+
     definition_methods do
       def resolve_type(object, context)
         # in the absence of other information, we cannot tell - just default to

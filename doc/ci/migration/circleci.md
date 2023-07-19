@@ -16,7 +16,7 @@ We have collected several resources that you may find useful before starting to 
 
 The [Quick Start Guide](../quick_start/index.md) is a good overview of how GitLab CI/CD works. You may also be interested in [Auto DevOps](../../topics/autodevops/index.md) which can be used to build, test, and deploy your applications with little to no configuration needed at all.
 
-For advanced CI/CD teams, [custom project templates](../../user/admin_area/custom_project_templates.md) can enable the reuse of pipeline configurations.
+For advanced CI/CD teams, [custom project templates](../../administration/custom_project_templates.md) can enable the reuse of pipeline configurations.
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.
 
@@ -249,18 +249,14 @@ jobs:
 Example of the same pipeline using `cache` in GitLab CI/CD:
 
 ```yaml
-image: node:latest
-
-# Cache modules in between jobs
-cache:
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - .npm/
-
-before_script:
-  - npm ci --cache .npm --prefer-offline
-
 test_async:
+  image: node:latest
+  cache:  # Cache modules in between jobs
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - .npm/
+  before_script:
+    - npm ci --cache .npm --prefer-offline
   script:
     - node ./specs/start.js ./specs/async.spec.js
 ```

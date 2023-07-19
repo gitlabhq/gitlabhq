@@ -12,14 +12,12 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
-import workItemDescriptionSubscription from '~/work_items/graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
-  workItemDescriptionSubscriptionResponse,
   workItemQueryResponse,
 } from '../mock_data';
 
@@ -34,7 +32,6 @@ describe('WorkItemDescription', () => {
   Vue.use(VueApollo);
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
-  const subscriptionHandler = jest.fn().mockResolvedValue(workItemDescriptionSubscriptionResponse);
   let workItemResponseHandler;
 
   const findForm = () => wrapper.findComponent(GlForm);
@@ -63,7 +60,6 @@ describe('WorkItemDescription', () => {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemResponseHandler],
         [updateWorkItemMutation, mutationHandler],
-        [workItemDescriptionSubscription, subscriptionHandler],
       ]),
       propsData: {
         workItemId: id,
@@ -83,14 +79,6 @@ describe('WorkItemDescription', () => {
     }
   };
 
-  it('has a subscription', async () => {
-    await createComponent();
-
-    expect(subscriptionHandler).toHaveBeenCalledWith({
-      issuableId: workItemQueryResponse.data.workItem.id,
-    });
-  });
-
   describe('editing description', () => {
     it('passes correct autocompletion data and preview markdown sources and enables quick actions', async () => {
       const {
@@ -103,7 +91,6 @@ describe('WorkItemDescription', () => {
       expect(findMarkdownEditor().props()).toMatchObject({
         supportsQuickActions: true,
         renderMarkdownPath: markdownPreviewPath(fullPath, iid),
-        quickActionsDocsPath: wrapper.vm.$options.quickActionsDocsPath,
         autocompleteDataSources: autocompleteDataSources(fullPath, iid),
       });
     });

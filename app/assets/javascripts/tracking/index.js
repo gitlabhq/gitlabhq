@@ -2,8 +2,10 @@ import { getAllExperimentContexts } from '~/experimentation/utils';
 import { DEFAULT_SNOWPLOW_OPTIONS } from './constants';
 import getStandardContext from './get_standard_context';
 import Tracking from './tracking';
+import InternalEvents from './internal_events';
 
 export { Tracking as default };
+export { InternalEvents };
 
 /**
  * Tracker initialization as defined in:
@@ -67,4 +69,6 @@ export function initDefaultTrackers() {
 
   Tracking.bindDocument();
   Tracking.trackLoadEvents();
+
+  InternalEvents.bindInternalEventDocument();
 }

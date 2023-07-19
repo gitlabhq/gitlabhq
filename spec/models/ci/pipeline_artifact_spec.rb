@@ -101,7 +101,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
   end
 
   describe '.report_exists?' do
-    subject(:pipeline_artifact) { Ci::PipelineArtifact.report_exists?(file_type) }
+    subject(:pipeline_artifact) { described_class.report_exists?(file_type) }
 
     context 'when file_type is code_coverage' do
       let(:file_type) { :code_coverage }
@@ -149,7 +149,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
   end
 
   describe '.find_by_file_type' do
-    subject(:pipeline_artifact) { Ci::PipelineArtifact.find_by_file_type(file_type) }
+    subject(:pipeline_artifact) { described_class.find_by_file_type(file_type) }
 
     context 'when file_type is code_coverage' do
       let(:file_type) { :code_coverage }
@@ -204,7 +204,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     let(:size) { file['tempfile'].size }
 
     subject do
-      Ci::PipelineArtifact.create_or_replace_for_pipeline!(
+      described_class.create_or_replace_for_pipeline!(
         pipeline: pipeline,
         file_type: file_type,
         file: file,
@@ -231,7 +231,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       end
 
       it "creates a new pipeline artifact with pipeline's locked state" do
-        artifact = Ci::PipelineArtifact.create_or_replace_for_pipeline!(
+        artifact = described_class.create_or_replace_for_pipeline!(
           pipeline: pipeline,
           file_type: file_type,
           file: file,

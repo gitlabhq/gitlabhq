@@ -132,7 +132,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
   shared_examples 'referencing a milestone in a link href' do
     let(:unquoted_reference) { "#{Milestone.reference_prefix}#{milestone.name}" }
-    let(:link_reference) { %Q{<a href="#{unquoted_reference}">Milestone</a>} }
+    let(:link_reference) { %{<a href="#{unquoted_reference}">Milestone</a>} }
 
     before do
       milestone.update!(name: 'gfm')
@@ -169,7 +169,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   shared_examples 'linking to a milestone as the entire link' do
     let(:unquoted_reference) { "#{Milestone.reference_prefix}#{milestone.name}" }
     let(:link) { urls.milestone_url(milestone) }
-    let(:link_reference) { %Q{<a href="#{link}">#{link}</a>} }
+    let(:link_reference) { %{<a href="#{link}">#{link}</a>} }
 
     it 'replaces the link text with the milestone reference' do
       doc = reference_filter("See #{link}")

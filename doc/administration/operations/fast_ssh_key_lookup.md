@@ -27,8 +27,8 @@ lookup of authorized SSH keys.
 
 ## Fast lookup is required for Geo **(PREMIUM)**
 
-Unlike [Cloud Native GitLab](https://docs.gitlab.com/charts/), Omnibus GitLab by default
-manages an `authorized_keys` file that is located in the
+Unlike [Cloud Native GitLab](https://docs.gitlab.com/charts/), by default Linux package installations
+manage an `authorized_keys` file that is located in the
 `git` user's home directory. For most installations, this file is located under
 `/var/opt/gitlab/.ssh/authorized_keys`, but you can use the following command to
 locate the `authorized_keys` on your system:
@@ -74,7 +74,7 @@ able to accept a fingerprint. Check the version of OpenSSH on your server with `
 
 Add the following to your `sshd_config` file. This file is usually located at
 `/etc/ssh/sshd_config`, but it is at `/assets/sshd_config` if you're using
-Omnibus Docker:
+Docker from a Linux package installation:
 
 ```plaintext
 Match User git    # Apply the AuthorizedKeysCommands to the git user only
@@ -146,7 +146,8 @@ This overview is brief. Refer to the above instructions for more context.
    1. On the left sidebar, select **Settings > Network**.
    1. Expand **Performance optimization**.
    1. Select the **Use authorized_keys file to authenticate SSH keys** checkbox.
-1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config` or from `/assets/sshd_config` if you are using Omnibus Docker.
+1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config` or from `/assets/sshd_config` if you are using Docker
+   from a Linux package installation.
 1. Reload `sshd`: `sudo service sshd reload`.
 
 ## SELinux support and limitations

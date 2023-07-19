@@ -16,6 +16,9 @@ module Resolvers
       argument :assignee_usernames, [GraphQL::Types::String],
                required: false,
                description: 'Usernames of users assigned to the issue.'
+      argument :assignee_wildcard_id, ::Types::AssigneeWildcardIdEnum,
+              required: false,
+              description: 'Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames.'
       argument :author_username, GraphQL::Types::String,
                required: false,
                description: 'Username of the author of the issue.'
@@ -148,6 +151,7 @@ module Resolvers
         rewrite_param_name(args, :assignee_usernames, :assignee_username)
         rewrite_param_name(args[:or], :assignee_usernames, :assignee_username)
         rewrite_param_name(args[:not], :assignee_usernames, :assignee_username)
+        rewrite_param_name(args, :assignee_wildcard_id, :assignee_id)
       end
 
       def rewrite_param_name(params, old_name, new_name)
@@ -163,7 +167,7 @@ module Resolvers
       end
 
       def mutually_exclusive_assignee_username_args
-        [:assignee_usernames, :assignee_username]
+        [:assignee_usernames, :assignee_username, :assignee_wildcard_id]
       end
 
       def params_not_mutually_exclusive(args, mutually_exclusive_args)
@@ -171,7 +175,7 @@ module Resolvers
 
         arg_str = mutually_exclusive_args.map { |x| x.to_s.camelize(:lower) }.join(', ')
         raise ::Gitlab::Graphql::Errors::ArgumentError,
-          "only one of [#{arg_str}] arguments is allowed at the same time."
+              "only one of [#{arg_str}] arguments is allowed at the same time."
       end
     end
     # rubocop:enable Graphql/ResolverType

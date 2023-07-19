@@ -40,7 +40,6 @@ export default {
   <div
     class="labels-select-dropdown-contents gl-w-full gl-my-2 gl-py-3 gl-rounded-base gl-absolute"
     data-testid="labels-select-dropdown-contents"
-    data-qa-selector="labels_dropdown_content"
     :style="directionStyle"
   >
     <component :is="dropdownContentsView" />

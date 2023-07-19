@@ -187,7 +187,7 @@ See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the fu
 
 ## Compute quota
 
-> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "units of compute" in GitLab 16.1.
+> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
 
 This diagram shows how the [Compute quota](../../ci/pipelines/cicd_minutes.md)
 feature and its components work.

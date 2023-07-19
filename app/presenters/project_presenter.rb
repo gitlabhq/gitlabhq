@@ -28,6 +28,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     [
       commits_anchor_data,
       branches_anchor_data,
+      terraform_states_anchor_data,
       tags_anchor_data,
       storage_anchor_data,
       releases_anchor_data,
@@ -234,6 +235,21 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       },
       empty_repo? ? nil : project_branches_path(project)
     )
+  end
+
+  def terraform_states_anchor_data
+    if project.terraform_states.exists? && can_read_terraform_state?
+      AnchorData.new(
+        true,
+        statistic_icon('terraform') +
+        n_('%{strong_start}%{terraform_states_count}%{strong_end} Terraform State', '%{strong_start}%{terraform_states_count}%{strong_end} Terraform States', project.terraform_states.count).html_safe % {
+          terraform_states_count: number_with_delimiter(project.terraform_states.count),
+          strong_start: '<strong class="project-stat-value">'.html_safe,
+          strong_end: '</strong>'.html_safe
+        },
+        project_terraform_index_path(project)
+      )
+    end
   end
 
   def tags_anchor_data
@@ -486,6 +502,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     strong_memoize(:project_topic_list) do
       project.topics.map { |topic| { name: topic.name, title: topic.title_or_name } }
     end
+  end
+
+  def can_read_terraform_state?
+    current_user && can?(current_user, :read_terraform_state, project)
   end
 
   # Avoid including ActionView::Helpers::UrlHelper

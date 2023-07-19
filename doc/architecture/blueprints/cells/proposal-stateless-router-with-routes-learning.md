@@ -452,7 +452,7 @@ sequenceDiagram
 ```
 
 In this case the user is not on their "default organization" so their TODO
-counter will not include their normal todos. We may choose to highlight this in
+counter will not include their typical todos. We may choose to highlight this in
 the UI somewhere. A future iteration may be able to fetch that for them from
 their default organization.
 

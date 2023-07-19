@@ -7,6 +7,8 @@ import { MOCK_QUERY, MOCK_NAVIGATION, MOCK_NAVIGATION_ITEMS } from '../../mock_d
 
 Vue.use(Vuex);
 
+const MOCK_NAVIGATION_ENTRIES = Object.entries(MOCK_NAVIGATION);
+
 describe('ScopeSidebarNavigation', () => {
   let wrapper;
 
@@ -59,7 +61,7 @@ describe('ScopeSidebarNavigation', () => {
     });
 
     it('renders all nav item components', () => {
-      expect(findNavItems()).toHaveLength(9);
+      expect(findNavItems()).toHaveLength(MOCK_NAVIGATION_ENTRIES.length);
     });
 
     it('has all proper links', () => {

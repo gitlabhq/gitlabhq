@@ -40,7 +40,7 @@ installation.
 
 ## Backup and upgrade
 
-- [Back up and restore GitLab](../raketasks/backup_restore.md): Learn the different
+- [Back up and restore GitLab](../administration/backup_restore/index.md): Learn the different
   ways you can back up or restore GitLab.
 - [Upgrade GitLab](../update/index.md): Every 22nd of the month, a new feature-rich GitLab version
   is released. Learn how to upgrade to it, or to an interim release that contains a security fix.
@@ -50,7 +50,7 @@ installation.
 
 ## License
 
-- [Add a license](../user/admin_area/license.md) or [start a free trial](https://about.gitlab.com/free-trial/):
+- [Add a license](../administration/license.md) or [start a free trial](https://about.gitlab.com/free-trial/):
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 
@@ -65,3 +65,8 @@ installation.
   GitLab supports several different types of clustering.
 - [Geo replication](../administration/geo/index.md):
   Geo is the solution for widely distributed development teams.
+
+## Install the product documentation
+
+This is an optional step. If you want to host the documentation on your own
+server, see how to [self-host the product documentation](../administration/docs_self_host.md).

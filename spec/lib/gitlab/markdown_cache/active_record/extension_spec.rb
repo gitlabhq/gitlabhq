@@ -147,7 +147,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
   end
 
   describe '.attributes' do
-    it 'excludes cache attributes that is blacklisted by default' do
+    it 'excludes cache attributes that are denylisted by default' do
       expect(thing.attributes.keys.sort).not_to include(%w[description_html])
     end
   end

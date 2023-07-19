@@ -25,6 +25,7 @@ module VerifiesWithEmail
 
       if user.valid_password?(user_params[:password])
         # The user has logged in successfully.
+
         if user.unlock_token
           # Prompt for the token if it already has been set
           prompt_for_email_verification(user)
@@ -32,7 +33,8 @@ module VerifiesWithEmail
           # require email verification if:
           # - their account has been locked because of too many failed login attempts, or
           # - they have logged in before, but never from the current ip address
-          send_verification_instructions(user)
+          reason = 'sign in from untrusted IP address' unless user.access_locked?
+          send_verification_instructions(user, reason: reason)
           prompt_for_email_verification(user)
         end
       end
@@ -75,13 +77,13 @@ module VerifiesWithEmail
     super
   end
 
-  def send_verification_instructions(user)
+  def send_verification_instructions(user, reason: nil)
     return if send_rate_limited?(user)
 
     service = Users::EmailVerification::GenerateTokenService.new(attr: :unlock_token, user: user)
     raw_token, encrypted_token = service.execute
     user.unlock_token = encrypted_token
-    user.lock_access!({ send_instructions: false })
+    user.lock_access!({ send_instructions: false, reason: reason })
     send_verification_instructions_email(user, raw_token)
   end
 

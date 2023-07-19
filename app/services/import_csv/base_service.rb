@@ -8,7 +8,7 @@ module ImportCsv
       @user = user
       @project = project
       @csv_io = csv_io
-      @results = { success: 0, error_lines: [], parse_error: false }
+      @results = { success: 0, error_lines: [], parse_error: false, preprocess_errors: {} }
     end
 
     PreprocessError = Class.new(StandardError)

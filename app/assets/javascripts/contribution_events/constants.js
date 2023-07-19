@@ -12,3 +12,7 @@ export const EVENT_TYPE_DESTROYED = 'destroyed';
 export const EVENT_TYPE_EXPIRED = 'expired';
 export const EVENT_TYPE_APPROVED = 'approved';
 export const EVENT_TYPE_PRIVATE = 'private';
+
+// From app/models/push_event_payload.rb#L22
+export const PUSH_EVENT_REF_TYPE_BRANCH = 'branch';
+export const PUSH_EVENT_REF_TYPE_TAG = 'tag';

@@ -232,12 +232,12 @@ coupled in the current implementation so we will break them out here to consider
 them each separately.
 
 - **Virtual Machine (VM) shape**. The underlying provider of a VM requires configuration to
-  know what kind of machine to create. E.g. Cores, memory, failure domain,
+  know what kind of machine to create. For example, Cores, memory, failure domain,
   etc... This information is very provider specific.
 - **VM lifecycle management**. Multiple machines will be created and a
   system must keep track of which machines belong to this executor. Typically
   a cloud provider will have a way to manage a set of homogeneous machines.
-  E.g. GCE Instance Group. The basic operations are increase, decrease and
+  For example, GCE Instance Group. The basic operations are increase, decrease and
   usually delete a specific machine.
 - **VM autoscaling**. In addition to low-level lifecycle management,
   job-aware capacity decisions must be made to the set of machines to provide
@@ -255,7 +255,7 @@ See also Glossary below.
 #### Current state
 
 The current architecture has several points of coupling between concerns.
-Coupling reduces opportunities for abstraction (e.g. community supported
+Coupling reduces opportunities for abstraction (for example, community supported
 plugins) and increases complexity, making the code harder to understand,
 test, maintain and extend.
 

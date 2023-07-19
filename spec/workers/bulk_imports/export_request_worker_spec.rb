@@ -112,6 +112,36 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
 
       it_behaves_like 'requests relations export for api resource'
     end
+
+    context 'when source supports batched migration' do
+      let_it_be(:bulk_import) { create(:bulk_import, source_version: BulkImport.min_gl_version_for_migration_in_batches) }
+      let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import) }
+      let_it_be(:entity) { create(:bulk_import_entity, :project_entity, source_full_path: 'foo/bar', bulk_import: bulk_import) }
+
+      it 'requests relations export & schedules entity worker' do
+        expected_url = "/projects/#{entity.source_xid}/export_relations?batched=true"
+
+        expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
+          expect(client).to receive(:post).with(expected_url)
+        end
+
+        described_class.new.perform(entity.id)
+      end
+
+      context 'when bulk_imports_batched_import_export feature flag is disabled' do
+        it 'requests relation export without batched param' do
+          stub_feature_flags(bulk_imports_batched_import_export: false)
+
+          expected_url = "/projects/#{entity.source_xid}/export_relations"
+
+          expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
+            expect(client).to receive(:post).with(expected_url)
+          end
+
+          described_class.new.perform(entity.id)
+        end
+      end
+    end
   end
 
   describe '#sidekiq_retries_exhausted' do

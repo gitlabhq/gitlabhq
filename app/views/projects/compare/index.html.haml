@@ -1,16 +1,6 @@
-- breadcrumb_title _("Compare revisions")
-- page_title _("Compare revisions")
+- breadcrumb_title s_("CompareRevisions|Compare revisions")
 
-%h1.page-title.gl-font-size-h-display
-  = _("Compare Git revisions")
-%div
-  - example_branch = capture do
-    %code.ref-name= @project.default_branch_or_main
-  - example_sha = capture do
-    %code.ref-name 4eedf23
-  = html_escape(_("To see what's changed or create a merge request, choose a branch or tag (like %{branch}), or enter a commit (like %{sha}).")) % { branch: example_branch.html_safe, sha: example_sha.html_safe }
-  %br
-  = html_escape(_("Changes are shown as if the %{b_open}source%{b_close} revision was being merged into the %{b_open}target%{b_close} revision.")) % { b_open: '<b>'.html_safe, b_close: '</b>'.html_safe }
+- page_title _("CompareRevisions|Compare revisions")
 
 .prepend-top-20
   #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, @compare_params) }

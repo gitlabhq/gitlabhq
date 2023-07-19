@@ -45,6 +45,8 @@ describe('ProjectSelect', () => {
   const findEntitySelect = () => wrapper.findComponent(EntitySelect);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
+  const handleInput = jest.fn();
+
   // Helpers
   const createComponent = ({ props = {} } = {}) => {
     wrapper = mountExtended(ProjectSelect, {
@@ -58,6 +60,9 @@ describe('ProjectSelect', () => {
       stubs: {
         GlAlert,
         EntitySelect,
+      },
+      listeners: {
+        input: handleInput,
       },
     });
   };
@@ -254,5 +259,12 @@ describe('ProjectSelect', () => {
 
     expect(findAlert().exists()).toBe(true);
     expect(findAlert().text()).toBe(FETCH_PROJECTS_ERROR);
+  });
+
+  it('forwards events to the parent scope via `v-on="$listeners"`', () => {
+    createComponent();
+    findEntitySelect().vm.$emit('input');
+
+    expect(handleInput).toHaveBeenCalledTimes(1);
   });
 });

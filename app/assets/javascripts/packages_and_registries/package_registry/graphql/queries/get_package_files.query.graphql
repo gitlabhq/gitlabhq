@@ -1,9 +1,17 @@
-query getPackageFiles($id: PackagesPackageID!, $first: Int) {
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getPackageFiles(
+  $id: PackagesPackageID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
   package(id: $id) {
     id
-    packageFiles(first: $first) {
+    packageFiles(after: $after, before: $before, first: $first, last: $last) {
       pageInfo {
-        hasNextPage
+        ...PageInfo
       }
       nodes {
         id

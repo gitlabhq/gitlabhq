@@ -40,8 +40,6 @@ module Clusters
       end
 
       def active_tokens_limit_reached?
-        return false unless Feature.enabled?(:cluster_agents_limit_tokens_created)
-
         ::Clusters::AgentTokensFinder.new(agent, current_user, status: :active).execute.count >= ACTIVE_TOKENS_LIMIT
       end
 

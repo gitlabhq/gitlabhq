@@ -11,15 +11,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 
 You can leave feedback on dashboard bugs or functionality in [issue 381787](https://gitlab.com/gitlab-org/gitlab/-/issues/381787).
+For more information, see also the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
-The Value Streams Dashboard is a customizable dashboard that enables decision-makers to identify trends, patterns, and opportunities for digital transformation improvements.
-This page is a work in progress, and we're updating the information as we add more features.
-For more information, see the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
+The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
 
-## Initial use case
-
-Our initial use case is focused on providing the ability to compare software delivery metrics.
-This comparison can help decision-makers understand whether projects and groups are improving.
+With the Value Streams Dashboard, you can compare software delivery metrics.
+This comparison can help you understand whether projects and groups are improving.
 
 The Value Streams Dashboard includes the following metrics:
 
@@ -57,7 +54,7 @@ To view the value streams dashboard:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
 1. Select **Analyze > Value stream analytics**.
-1. Below the **Filter results** text box, in the **Key metrics** row, select **Value Streams Dashboard / DORA**.
+1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
 1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
 (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 
@@ -79,7 +76,8 @@ For example, the parameter `query=gitlab-org/gitlab-ui,gitlab-org/plan-stage` di
 
 ### Using YAML configuration
 
-To change the default content of the page, you need to create a YAML configuration file in a project of your choice. Query parameters can still be used to override the YAML configuration.
+To customize the default content of the page, you need to create a YAML configuration file in a project of your choice. In this file you can define various settings and parameters, such as title, description, and number of panels and labels filters. The file is schema-driven and managed with version control systems like Git. This enables tracking and maintaining a history of configuration changes, reverting to previous versions if necessary, and collaborating effectively with team members.
+Query parameters can still be used to override the YAML configuration.
 
 First, you need to set up the project.
 
@@ -110,12 +108,25 @@ description: 'Custom description'
 #   title - Change the title of the panel. [optional]
 #   data.namespace - The Group or Project path to use for the chart panel.
 #   data.exclude_metrics - Hide rows by metric ID from the chart panel.
+#   data.filter_labels -
+#     Only show results for data that matches the queried label(s). If multiple labels are provided,
+#     only a single label needs to match for the data to be included in the results.
+#     Compatible metrics (other metrics will be automatically excluded):
+#       * lead_time
+#       * cycle_time
+#       * issues
+#       * issues_completed
+#       * merge_request_throughput
+#     (This option is dependant on the `vsd_graphql_dora_and_flow_metrics` feature.)
 panels:
   - title: 'My Custom Project'
     data:
       namespace: group/my-custom-project
   - data:
       namespace: group/another-project
+      filter_labels:
+        - in_development
+        - in_review
   - title: 'My Custom Group'
     data:
       namespace: group/my-custom-group
@@ -134,6 +145,9 @@ panels:
         namespace: my-group
   ```
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of editing label filters in the configuration file, see [GitLab Value Streams Dashboard - Label filters demo](https://www.youtube.com/watch?v=4qDAHCxCfik).
+
 ## Dashboard metrics and drill-down reports
 
 | Metric | Description | Drill-down report | Documentation page | ID |
@@ -142,8 +156,8 @@ panels:
 | Lead time for changes | The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines. | [Lead time tab](https://gitlab.com/groups/gitlab-org/-/analytics/ci_cd?tab=lead-time) | [Lead time for changes](dora_metrics.md#lead-time-for-changes) | `lead_time_for_changes` |
 | Time to restore service | The time it takes an organization to recover from a failure in production. | [Time to restore service tab](https://gitlab.com/groups/gitlab-org/-/analytics/ci_cd?tab=time-to-restore-service) | [Time to restore service](dora_metrics.md#time-to-restore-service) | `time_to_restore_service` |
 | Change failure rate | Percentage of deployments that cause an incident in production. | [Change failure rate tab](https://gitlab.com/groups/gitlab-org/-/analytics/ci_cd?tab=change-failure-rate) | [Change failure rate](dora_metrics.md#change-failure-rate) | `change_failure_rate` |
-| Lead time | Median time from issue created to issue closed. | [Value Stream Analytics](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [View the lead time and cycle time for issues](../group/value_stream_analytics/index.md#key-metrics) | `lead_time` |
-| Cycle time | Median time from the earliest commit of a linked issue's merge request to when that issue is closed. | [VSA overview](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [View the lead time and cycle time for issues](../group/value_stream_analytics/index.md#key-metrics) | `cycle_time` |
+| Lead time | Median time from issue created to issue closed. | [Value Stream Analytics](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [View the lead time and cycle time for issues](../group/value_stream_analytics/index.md#lifecycle-metrics) | `lead_time` |
+| Cycle time | Median time from the earliest commit of a linked issue's merge request to when that issue is closed. | [VSA overview](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [View the lead time and cycle time for issues](../group/value_stream_analytics/index.md#lifecycle-metrics) | `cycle_time` |
 | New issues | Number of new issues created. | [Issue Analytics](https://gitlab.com/groups/gitlab-org/-/issues_analytics) | Issue analytics [for projects](issue_analytics.md) and [for groups](../../user/group/issues_analytics/index.md) | `issues` |
 | Closed issues | Number of issues closed by month. | [Value Stream Analytics](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [Value Stream Analytics](../group/value_stream_analytics/index.md)  | `issues_completed` |
 | Number of deploys | Total number of deploys to production. | [Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics) | [Merge request analytics](merge_request_analytics.md) | `deploys` |

@@ -106,7 +106,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           customized: user.status&.customized?,
           availability: user.status&.availability.to_s,
           emoji: user.status&.emoji,
-          message: user.status&.message_html&.html_safe,
+          message_html: user.status&.message_html&.html_safe,
+          message: user.status&.message&.html_safe,
           clear_after: nil
         },
         settings: {
@@ -250,7 +251,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           "data-track-label": id,
           "data-track-action": "click_link",
           "data-track-property": "nav_create_menu",
-          "data-qa-selector": 'create_menu_item',
+          "data-testid": 'create_menu_item',
           "data-qa-create-menu-item": id
         }
       }
@@ -279,7 +280,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           "data-track-label": id,
           "data-track-action": "click_link",
           "data-track-property": "nav_create_menu",
-          "data-qa-selector": 'create_menu_item',
+          "data-testid": 'create_menu_item',
           "data-qa-create-menu-item": id
         }
       }
@@ -482,6 +483,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     let(:user) { build(:user) }
     let(:group) { build(:group) }
     let(:project) { build(:project) }
+    let(:organization) { build(:organization) }
 
     before do
       allow(helper).to receive(:project_sidebar_context_data).and_return(
@@ -516,6 +518,12 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       expect(helper.super_sidebar_nav_panel(nav: 'admin')).to be_a(Sidebars::Admin::Panel)
     end
 
+    it 'returns Organization Panel for organization nav' do
+      expect(
+        helper.super_sidebar_nav_panel(nav: 'organization', organization: organization)
+      ).to be_a(Sidebars::Organizations::SuperSidebarPanel)
+    end
+
     it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
       expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
     end
@@ -526,6 +534,33 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
     it 'returns "Your Work" Panel as a fallback', :use_clean_rails_memory_store_caching do
       expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
+    end
+  end
+
+  describe '#command_palette_data' do
+    it 'returns data for project files search' do
+      project = create(:project, :repository) # rubocop:disable RSpec/FactoryBot/AvoidCreate
+
+      expect(helper.command_palette_data(project: project)).to eq(
+        project_files_url: project_files_path(
+          project, project.default_branch, format: :json),
+        project_blob_url: project_blob_path(
+          project, project.default_branch)
+      )
+    end
+
+    it 'returns empty object when project is nil' do
+      expect(helper.command_palette_data(project: nil)).to eq({})
+    end
+
+    it 'returns empty object when project does not have repo' do
+      project = build(:project)
+      expect(helper.command_palette_data(project: project)).to eq({})
+    end
+
+    it 'returns empty object when project has repo but it is empty' do
+      project = build(:project, :empty_repo)
+      expect(helper.command_palette_data(project: project)).to eq({})
     end
   end
 end

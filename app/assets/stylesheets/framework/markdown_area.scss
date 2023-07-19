@@ -91,7 +91,7 @@
 }
 
 .md-preview-holder {
-  min-height: 176px;
+  min-height: 173px;
   padding: 10px 0;
   overflow-x: auto;
 }
@@ -106,6 +106,7 @@
   box-shadow: none;
   width: 100%;
   resize: none !important;
+  transition: box-shadow $gl-transition-duration-medium ease;
 }
 
 .md-suggestion-diff {

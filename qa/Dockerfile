@@ -40,6 +40,8 @@ WORKDIR /home/gitlab/qa
 # Install qa dependencies or fetch from cache if unchanged
 #
 COPY ./qa/Gemfile* /home/gitlab/qa/
+COPY ./vendor/gems/ /home/gitlab/vendor/gems/
+COPY ./gems/ /home/gitlab/gems/
 RUN bundle config set --local without development \
     && bundle install --retry=3
 
@@ -47,7 +49,6 @@ COPY ./config/initializers/0_inject_enterprise_edition_module.rb /home/gitlab/co
 COPY ./config/feature_flags /home/gitlab/config/feature_flags
 COPY ./config/bundler_setup.rb /home/gitlab/config/
 COPY ./lib/gitlab_edition.rb /home/gitlab/lib/
-COPY ./lib/gitlab/utils.rb /home/gitlab/lib/gitlab/
 COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
 
 COPY ./qa /home/gitlab/qa

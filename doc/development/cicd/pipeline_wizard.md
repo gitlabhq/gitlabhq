@@ -143,7 +143,7 @@ user to the pipeline, for example.
 
 ### Template file location
 
-Template files are normally stored as YAML files in `~/pipeline_wizard/templates/`.
+Template files are usually stored as YAML files in `~/pipeline_wizard/templates/`.
 
 The `PipelineWizard` component expects the `template` property as an un-parsed `String`,
 and Webpack is configured to load `.yml` files from the above folder as strings.

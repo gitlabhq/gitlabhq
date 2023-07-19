@@ -1,9 +1,0 @@
-- title: "Legacy DAST domain validation"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: derekferguson
-  breaking_change: true
-  body: |
-    The legacy method of DAST Domain Validation for CI/CD scans was deprecated in GitLab 13.8, and is removed in GitLab 14.0. This method of domain validation only disallows scans if the `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` environment variable is set to `true` in the `gitlab-ci.yml` file, and a `Gitlab-DAST-Permission` header on the site is not set to `allow`. This two-step method required users to opt in to using the variable before they could opt out from using the header.
-
-    For more information, see the [removal issue](https://gitlab.com/gitlab-org/gitlab/-/issues/293595).

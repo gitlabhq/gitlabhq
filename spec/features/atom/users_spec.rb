@@ -25,27 +25,33 @@ RSpec.describe "User Feed", feature_category: :devops_reports do
     context 'feed content' do
       let(:project) { create(:project, :repository) }
       let(:issue) do
-        create(:issue,
-               project: project,
-               author: user,
-               description: "Houston, we have a bug!\n\n***\n\nI guess.")
+        create(
+          :issue,
+          project: project,
+          author: user,
+          description: "Houston, we have a bug!\n\n***\n\nI guess."
+        )
       end
 
       let(:note) do
-        create(:note,
-               noteable: issue,
-               author: user,
-               note: 'Bug confirmed :+1:',
-               project: project)
+        create(
+          :note,
+          noteable: issue,
+          author: user,
+          note: 'Bug confirmed :+1:',
+          project: project
+        )
       end
 
       let(:merge_request) do
-        create(:merge_request,
-               title: 'Fix bug',
-               author: user,
-               source_project: project,
-               target_project: project,
-               description: "Here is the fix: ![an image](image.png)")
+        create(
+          :merge_request,
+          title: 'Fix bug',
+          author: user,
+          source_project: project,
+          target_project: project,
+          description: "Here is the fix: ![an image](image.png)"
+        )
       end
 
       let(:push_event) { create(:push_event, project: project, author: user) }

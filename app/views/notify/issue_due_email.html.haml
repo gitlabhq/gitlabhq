@@ -5,7 +5,7 @@
   %p
     = assignees_label(@issue)
 %p
-  = sprintf(s_('Notify|This issue is due on: %{issue_due_date}'), { issue_due_date: @issue.due_date.to_s(:medium) }).html_safe
+  = sprintf(s_('Notify|This issue is due on: %{issue_due_date}'), { issue_due_date: @issue.due_date.to_fs(:medium) }).html_safe
 
 - if @issue.description
   .md

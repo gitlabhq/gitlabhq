@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'gitlab/rspec/all'
 require_relative '../../scripts/generate-failed-package-and-test-mr-message'
-require_relative '../support/helpers/stub_env'
 
 RSpec.describe GenerateFailedPackageAndTestMrMessage, feature_category: :tooling do
   include StubENV

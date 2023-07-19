@@ -7,7 +7,7 @@ module QA
     class ParallelPipelineJobs
       include API
 
-      PARALLEL_JOB_NAME_PATTERN = %r{^\S+ \d+/\d+$}.freeze
+      PARALLEL_JOB_NAME_PATTERN = %r{^\S+ \d+/\d+$}
 
       def initialize(stage_name:, project_id:, pipeline_id:, access_token:)
         @stage_name = stage_name

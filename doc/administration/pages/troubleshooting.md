@@ -250,7 +250,7 @@ the shared pages directory is mounted on a different path on the main GitLab ser
 GitLab Pages server.
 
 In that case, it's highly recommended you to configure
-[object storage and migrate any existing pages data to it](index.md#using-object-storage).
+[object storage and migrate any existing pages data to it](index.md#object-storage-settings).
 
 Alternatively, you can mount the GitLab Pages shared directory to the same path on
 both servers.
@@ -259,7 +259,7 @@ both servers.
 
 GitLab 14.0 introduces a number of changes to GitLab Pages which may require manual intervention.
 
-1. Firstly [follow the migration guide](index.md#prepare-gitlab-pages-for-140).
+1. Firstly [follow the migration guide](https://archives.docs.gitlab.com/14.10/ee/administration/pages/#prepare-gitlab-pages-for-140).
 1. Try to upgrade to GitLab 14.3 or above. Some of the issues were fixed in GitLab 14.1, 14.2 and 14.3.
 1. If it doesn't work, see [GitLab Pages logs](#how-to-see-gitlab-pages-logs), and if you see any errors there then search them on this page.
 

@@ -134,26 +134,26 @@ describe('ServiceDeskSetting', () => {
       });
     });
 
-    describe('with customEmail', () => {
-      describe('customEmail is different than incomingEmail', () => {
+    describe('with serviceDeskEmail', () => {
+      describe('serviceDeskEmail is different than incomingEmail', () => {
         const incomingEmail = 'foo@bar.com';
-        const customEmail = 'custom@bar.com';
+        const serviceDeskEmail = 'servicedesk@bar.com';
 
         beforeEach(() => {
           wrapper = createComponent({
-            props: { incomingEmail, customEmail },
+            props: { incomingEmail, serviceDeskEmail },
           });
         });
 
-        it('should see custom email', () => {
-          expect(findIncomingEmail().element.value).toEqual(customEmail);
+        it('should see service desk email', () => {
+          expect(findIncomingEmail().element.value).toEqual(serviceDeskEmail);
         });
       });
 
       describe('project suffix', () => {
         it('input is hidden', () => {
           wrapper = createComponent({
-            props: { customEmailEnabled: false },
+            props: { serviceDeskEmailEnabled: false },
           });
 
           const input = wrapper.findByTestId('project-suffix');
@@ -163,7 +163,7 @@ describe('ServiceDeskSetting', () => {
 
         it('input is enabled', () => {
           wrapper = createComponent({
-            props: { customEmailEnabled: true },
+            props: { serviceDeskEmailEnabled: true },
           });
 
           const input = wrapper.findByTestId('project-suffix');
@@ -174,7 +174,7 @@ describe('ServiceDeskSetting', () => {
 
         it('shows error when value contains uppercase or special chars', async () => {
           wrapper = createComponent({
-            props: { email: 'foo@bar.com', customEmailEnabled: true },
+            props: { email: 'foo@bar.com', serviceDeskEmailEnabled: true },
           });
 
           const input = wrapper.findByTestId('project-suffix');
@@ -189,16 +189,16 @@ describe('ServiceDeskSetting', () => {
         });
       });
 
-      describe('customEmail is the same as incomingEmail', () => {
+      describe('serviceDeskEmail is the same as incomingEmail', () => {
         const email = 'foo@bar.com';
 
         beforeEach(() => {
           wrapper = createComponent({
-            props: { incomingEmail: email, customEmail: email },
+            props: { incomingEmail: email, serviceDeskEmail: email },
           });
         });
 
-        it('should see custom email', () => {
+        it('should see service desk email', () => {
           expect(findIncomingEmail().element.value).toEqual(email);
         });
       });

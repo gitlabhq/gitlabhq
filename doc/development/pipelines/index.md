@@ -214,7 +214,7 @@ graph LR
 
 ## Merge Trains
 
-### Why do we need to have a “stable” master branch to enable merge trains?
+### Why do we need to have a "stable" master branch to enable merge trains?
 
 If the master branch is unstable (i.e. CI/CD pipelines for the master branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **cancelled** and **added back to the train**, which would create a lot of delays if the merge train is long.
 
@@ -609,18 +609,18 @@ Exceptions to this general guideline should be motivated and documented.
 ### Ruby versions testing
 
 We're running Ruby 3.0 on GitLab.com, as well as for merge requests and the default branch.
-However, there are older versions for which we need to support Ruby 2.7, so we also run our
-test suite against Ruby 2.7 on a dedicated 2-hourly scheduled pipelines.
+To prepare for the next release, Ruby 3.1, we also run our test suite against Ruby 3.1 on
+a dedicated 2-hourly scheduled pipelines.
 
-For merge requests, you can add the `pipeline:run-in-ruby2` label to switch
-the Ruby version used for running the whole test suite to 2.7. When you do
+For merge requests, you can add the `pipeline:run-in-ruby3_1` label to switch
+the Ruby version used for running the whole test suite to 3.1. When you do
 this, the test suite will no longer run in Ruby 3.0 (default), and an
 additional job `verify-ruby-3.0` will also run and always fail to remind us to
 remove the label and run in Ruby 3.0 before merging the merge request.
 
 This should let us:
 
-- Test changes for Ruby 2.7
+- Test changes for Ruby 3.1
 - Make sure it will not break anything when it's merged into the default branch
 
 ### PostgreSQL versions testing
@@ -634,33 +634,33 @@ We also run our test suite against PostgreSQL 12 and PostgreSQL 13 upon specific
 
 #### Current versions testing
 
-| Where?                                                                                         | PostgreSQL version                              | Ruby version          |
-|------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------------------|
-| Merge requests                                                                                 | 14 (default version), 13 for DB library changes | 3.0 (default version) |
-| `master` branch commits                                                                        | 14 (default version), 13 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 14 (default version), 13 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 14 (default version), 13 for DB library changes | 2.7                   |
-| `nightly` scheduled pipelines for the `master` branch                                          | 14 (default version), 12, 13, 15                | 3.0 (default version) |
+| Where?                                                                                           | PostgreSQL version                              | Ruby version          |
+|--------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------------------|
+| Merge requests                                                                                   | 14 (default version), 13 for DB library changes | 3.0 (default version) |
+| `master` branch commits                                                                          | 14 (default version), 13 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)             | 14 (default version), 13 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `ruby3_1` branch (every odd-numbered hour), see below. | 14 (default version), 13 for DB library changes | 3.1                   |
+| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 12, 13, 15                | 3.0 (default version) |
 
-There are 2 pipeline schedules used for testing Ruby 2.7. One is triggering a
-pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest
+There are 2 pipeline schedules used for testing Ruby 3.1. One is triggering a
+pipeline in `ruby3_1-sync` branch, which updates the `ruby3_1` branch with latest
 `master`, and no pipelines will be triggered by this push. The other schedule
-is triggering a pipeline in `ruby2` 5 minutes after it, which is considered
+is triggering a pipeline in `ruby3_1` 5 minutes after it, which is considered
 the maintenance schedule to run test suites and update cache.
 
-The `ruby2` branch must not have any changes. The branch is only there to set
-`RUBY_VERSION` to `2.7` in the maintenance pipeline schedule.
+The `ruby3_1` branch must not have any changes. The branch is only there to set
+`RUBY_VERSION` to `3.1` in the maintenance pipeline schedule.
 
-The `gitlab` job in the `ruby2-sync` branch uses a `gitlab-org/gitlab` project
+The `gitlab` job in the `ruby3_1-sync` branch uses a `gitlab-org/gitlab` project
 token with `write_repository` scope and `Maintainer` role with no expiration.
-The token is stored in the `RUBY2_SYNC_TOKEN` variable in `gitlab-org/gitlab`.
+The token is stored in the `RUBY3_1_SYNC_TOKEN` variable in `gitlab-org/gitlab`.
 
 ### Redis versions testing
 
 Our test suite runs against Redis 6 as GitLab.com runs on Redis 6 and
 [Omnibus defaults to Redis 6 for new installs and upgrades](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/config/software/redis.rb).
 
-We do run our test suite against Redis 5 on `nightly` scheduled pipelines, specifically when running backward-compatible and forward-compatible PostgreSQL jobs.
+We do run our test suite against Redis 7 on `nightly` scheduled pipelines, specifically when running forward-compatible PostgreSQL 15 jobs.
 
 #### Current versions testing
 
@@ -668,7 +668,7 @@ We do run our test suite against Redis 5 on `nightly` scheduled pipelines, speci
 | ------ | ------------------ |
 | MRs    | 6 |
 | `default branch` (non-scheduled pipelines) | 6 |
-| `nightly` scheduled pipelines | 5 |
+| `nightly` scheduled pipelines | 7 |
 
 ### Single database testing
 
@@ -755,10 +755,14 @@ graph RL;
   click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   2_5-1 --> 1-3 & 1-6 & 1-14 & 1-15;
 
-  3_2-1["rspec:coverage (5 minutes)"];
+  ac-1["rspec:artifact-collector (2 minutes)<br/>(workaround for 'needs' limitation)"];
+  class ac-1 criticalPath;
+  ac-1 --> 2_5-1;
+
+  3_2-1["rspec:coverage (3 minutes)"];
   class 3_2-1 criticalPath;
   click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
-  3_2-1 -.->|"(don't use needs<br/>because of limitations)"| 2_5-1;
+  3_2-1 --> ac-1;
 
   4_3-1["rspec:undercoverage (1.3 minutes)"];
   class 4_3-1 criticalPath;

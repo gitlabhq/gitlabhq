@@ -44,7 +44,7 @@ pre-push:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb,rake}'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --config .rubocop.yml --parallel --force-exclusion {files}
     sidekiq-queues:
       tags: backend
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -61,11 +61,10 @@ pre-push:
       glob: 'doc/*.md'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://docs.errata.ai/vale/install."; exit 1; fi'
     gettext:
-      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefthook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
-      run: bin/rake gettext:updated_check
+      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot
     docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/#metadata
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -81,11 +80,6 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'data/deprecations/*.yml'
       run: echo "Changes to deprecation files detected. Checking deprecations..\n"; bundle exec rake gitlab:docs:check_deprecations
-    docs-removals:
-      tags: documentation
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: 'data/removals/*.yml'
-      run: echo "Changes to removals files detected. Checking removals..\n"; bundle exec rake gitlab:docs:check_removals
     db-schema-changes:
       tags: database
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -140,4 +134,9 @@ auto-fix:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb,rake}'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --autocorrect --force-exclusion {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --config .rubocop.yml --parallel --autocorrect --force-exclusion {files}
+    gettext:
+      tags: backend frontend view haml
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
+      glob: '*.{haml,rb,js,vue}'
+      run: tooling/bin/gettext_extractor locale/gitlab.pot

@@ -199,8 +199,9 @@ To manually apply the patch that GitLab generated for a vulnerability:
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
 
 NOTE:
-Security training is not available in an offline environment because it uses content from
-third-party vendors.
+Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
+any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/).
+GitLab does not send any user information to these third-party vendors; we do send the CWE or OWASP identifier and the language name of the file extension.
 
 Security training helps your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.
 
@@ -211,6 +212,8 @@ To enable security training for vulnerabilities in your project:
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
 
+Each integration submits the Vulnerability identifier, for example CWE or OWASP, and the language to the security training vendor. The resulting link to the vendor training is what appears in a GitLab Vulnerability.
+
 ## View security training for a vulnerability
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
@@ -218,8 +221,8 @@ To enable security training for vulnerabilities in your project:
 The vulnerability page may include a training link relevant to the detected vulnerability if security training is enabled.
 The availability of training depends on whether the enabled training vendor has content matching the particular vulnerability.
 Training content is requested based on the [vulnerability identifiers](../../../development/integrations/secure.md#identifiers).
-The identifier given to a vulnerability varies from one vulnerability to the next. The available training
-content varies between vendors. This means some vulnerabilities do not display training content.
+The identifier given to a vulnerability varies from one vulnerability to the next and the available training
+content varies between vendors. Some vulnerabilities do not display training content.
 Vulnerabilities with a CWE are most likely to return a training result.
 
 To view the security training for a vulnerability:

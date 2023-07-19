@@ -1,8 +1,0 @@
-subscription issuableTitleUpdated($issuableId: IssuableID!) {
-  issuableTitleUpdated(issuableId: $issuableId) {
-    ... on WorkItem {
-      id
-      title
-    }
-  }
-}

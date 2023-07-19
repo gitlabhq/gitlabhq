@@ -102,15 +102,16 @@ RSpec.describe 'Markdown keyboard shortcuts', :js, feature_category: :team_plann
 
     it_behaves_like 'keyboard shortcuts'
     it_behaves_like 'no side effects'
-  end
 
-  context 'Haml markdown editor' do
-    let(:path_to_visit) { new_project_issue_path(project) }
-    let(:markdown_field) { find_field('Description') }
-    let(:non_markdown_field) { find_field('Title') }
+    context 'if preview is toggled before shortcuts' do
+      before do
+        click_button "Preview"
+        click_button "Continue editing"
+      end
 
-    it_behaves_like 'keyboard shortcuts'
-    it_behaves_like 'no side effects'
+      it_behaves_like 'keyboard shortcuts'
+      it_behaves_like 'no side effects'
+    end
   end
 
   def type_and_select(text)

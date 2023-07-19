@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initReportAbuse } from '~/projects/report_abuse';
 import MrMoreDropdown from '~/vue_shared/components/mr_more_dropdown.vue';
 
 export const initMrMoreDropdown = () => {
@@ -11,6 +12,7 @@ export const initMrMoreDropdown = () => {
   const {
     mergeRequest,
     projectPath,
+    url,
     editUrl,
     isCurrentUser,
     isLoggedIn,
@@ -20,7 +22,6 @@ export const initMrMoreDropdown = () => {
     sourceProjectMissing,
     clipboardText,
     reportedUserId,
-    reportedFromUrl,
   } = el.dataset;
 
   let mr;
@@ -35,12 +36,17 @@ export const initMrMoreDropdown = () => {
     el,
     provide: {
       reportAbusePath: el.dataset.reportAbusePath,
+      showSummaryNotesToggle: Boolean(document.querySelector('#js-summary-notes')),
+    },
+    beforeCreate() {
+      initReportAbuse();
     },
     render: (createElement) =>
       createElement(MrMoreDropdown, {
         props: {
           mr,
           projectPath,
+          url,
           editUrl,
           isCurrentUser,
           isLoggedIn: Boolean(isLoggedIn),
@@ -50,7 +56,6 @@ export const initMrMoreDropdown = () => {
           sourceProjectMissing,
           clipboardText,
           reportedUserId: Number(reportedUserId),
-          reportedFromUrl,
         },
       }),
   });

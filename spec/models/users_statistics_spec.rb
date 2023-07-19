@@ -63,7 +63,7 @@ RSpec.describe UsersStatistics do
 
     context 'when unsuccessful' do
       it 'raises an ActiveRecord::RecordInvalid exception' do
-        allow(UsersStatistics).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
+        allow(described_class).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
 
         expect { described_class.create_current_stats! }.to raise_error(ActiveRecord::RecordInvalid)
       end

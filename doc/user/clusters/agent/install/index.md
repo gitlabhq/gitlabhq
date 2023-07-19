@@ -42,7 +42,7 @@ To install the agent in your cluster:
 
 For configuration settings, the agent uses a YAML file in the GitLab project. You must create this file if:
 
-- You use [a GitOps workflow](../gitops.md#gitops-workflow-steps).
+- You use [a GitOps workflow](../gitops/agent.md#gitops-workflow-steps).
 - You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#gitlab-cicd-workflow-steps) and want to authorize a different project to use the agent.
 - You [allow specific project or group members to access Kubernetes](../user_access.md).
 
@@ -181,7 +181,7 @@ GitLab also provides a [KPT package for the agent](https://gitlab.com/gitlab-org
 
 To configure your agent, add content to the `config.yaml` file:
 
-- For a GitOps workflow, [view the configuration reference](../gitops.md#gitops-configuration-reference).
+- For a GitOps workflow, [view the configuration reference](../gitops/agent.md#gitops-configuration-reference).
 - For a GitLab CI/CD workflow, [authorize the agent to access your projects](../ci_cd_workflow.md#authorize-the-agent). Then
   [add `kubectl` commands to your `.gitlab-ci.yml` file](../ci_cd_workflow.md#update-your-gitlab-ciyml-file-to-run-kubectl-commands).
 
@@ -237,6 +237,10 @@ helm upgrade gitlab-agent gitlab/gitlab-agent \
   --reuse-values \
   --set image.tag=v14.9.1
 ```
+
+The Helm chart is updated separately from the agent for Kubernetes, and might occasionally lag behind the latest version of the agent. If you run `helm repo update` and don't specify an image tag, your agent runs the version specified in the chart.
+
+To use the latest release of the agent for Kubernetes, set the image tag to match the most recent agent image.
 
 ## Uninstall the agent
 

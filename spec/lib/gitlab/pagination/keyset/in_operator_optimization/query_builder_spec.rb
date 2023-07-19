@@ -33,6 +33,18 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     ]
   end
 
+  let_it_be(:ignored_column_model) do
+    Class.new(ApplicationRecord) do
+      self.table_name = 'issues'
+
+      include IgnorableColumns
+
+      ignore_column :title, remove_with: '16.4', remove_after: '2023-08-22'
+    end
+  end
+
+  let(:scope_model) { Issue }
+  let(:created_records) { issues }
   let(:iterator) do
     Gitlab::Pagination::Keyset::Iterator.new(
       scope: scope.limit(batch_size),
@@ -75,6 +87,55 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
         loaded_attributes = record.attributes.keys - ['time_estimate'] # time_estimate is always present (has default value)
 
         expect(loaded_attributes).to eq(order_by_attribute_names)
+      end
+    end
+  end
+
+  context 'when the scope model has ignored columns' do
+    let(:scope) { ignored_column_model.order(id: :desc) }
+    let(:expected_order) { ignored_column_model.where(id: issues.map(&:id)).sort_by(&:id).reverse }
+
+    let(:in_operator_optimization_options) do
+      {
+        array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
+        array_mapping_scope: -> (id_expression) { ignored_column_model.where(ignored_column_model.arel_table[:project_id].eq(id_expression)) },
+        finder_query: -> (id_expression) { ignored_column_model.where(ignored_column_model.arel_table[:id].eq(id_expression)) }
+      }
+    end
+
+    context 'when iterating records one by one' do
+      let(:batch_size) { 1 }
+
+      it_behaves_like 'correct ordering examples'
+
+      context 'when scope selects only some columns' do
+        let(:scope) { ignored_column_model.order(id: :desc).select(:id) }
+
+        it_behaves_like 'correct ordering examples'
+      end
+    end
+
+    context 'when iterating records with LIMIT 3' do
+      let(:batch_size) { 3 }
+
+      it_behaves_like 'correct ordering examples'
+
+      context 'when scope selects only some columns' do
+        let(:scope) { ignored_column_model.order(id: :desc).select(:id) }
+
+        it_behaves_like 'correct ordering examples'
+      end
+    end
+
+    context 'when loading records at once' do
+      let(:batch_size) { issues.size + 1 }
+
+      it_behaves_like 'correct ordering examples'
+
+      context 'when scope selects only some columns' do
+        let(:scope) { ignored_column_model.order(id: :desc).select(:id) }
+
+        it_behaves_like 'correct ordering examples'
       end
     end
   end
@@ -332,7 +393,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
   end
 
   context 'when ordering by JOIN-ed columns' do
-    let(:scope) { cte_with_issues_and_projects.apply_to(Issue.where({})).reorder(order) }
+    let(:scope) { cte_with_issues_and_projects.apply_to(Issue.where({}).select(Arel.star)).reorder(order) }
 
     let(:cte_with_issues_and_projects) do
       cte_query = Issue.select('issues.id AS id', 'project_id', 'projects.id AS projects_id', 'projects.name AS projects_name').joins(:project)

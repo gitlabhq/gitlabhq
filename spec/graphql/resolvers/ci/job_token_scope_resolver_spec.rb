@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
+RSpec.describe Resolvers::Ci::JobTokenScopeResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

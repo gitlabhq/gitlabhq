@@ -2,20 +2,20 @@
 
 RSpec.shared_examples "an autodiscoverable RSS feed with current_user's feed token" do
   it "has an RSS autodiscovery link tag with current_user's feed token" do
-    expect(page).to have_css("link[type*='atom+xml'][href*='feed_token=#{user.feed_token}']", visible: false)
+    expect(page).to have_css("link[type*='atom+xml'][href*='feed_token=glft-'][href*='-#{user.id}']", visible: false)
   end
 end
 
 RSpec.shared_examples "it has an RSS button with current_user's feed token" do
   it "shows the RSS button with current_user's feed token" do
     expect(page)
-      .to have_css("a:has([data-testid='rss-icon'])[href*='feed_token=#{user.feed_token}']")
+      .to have_css("a:has([data-testid='rss-icon'])[href*='feed_token=glft-'][href*='-#{user.id}']")
   end
 end
 
 RSpec.shared_examples "it has an RSS link with current_user's feed token" do
   it "shows the RSS link with current_user's feed token" do
-    expect(page).to have_link 'Subscribe to RSS feed', href: /feed_token=#{user.feed_token}/
+    expect(page).to have_link 'Subscribe to RSS feed', href: /feed_token=glft-.*-#{user.id}/
   end
 end
 
@@ -51,11 +51,17 @@ RSpec.shared_examples "updates atom feed link" do |type|
     auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
     expected = {
-      'feed_token' => [user.feed_token],
       'assignee_id' => [user.id.to_s]
     }
 
     expect(params).to include(expected)
+    feed_token_param = params['feed_token']
+    expect(feed_token_param).to match([Gitlab::Auth::AuthFinders::PATH_DEPENDENT_FEED_TOKEN_REGEX])
+    expect(feed_token_param.first).to end_with(user.id.to_s)
+
     expect(auto_discovery_params).to include(expected)
+    feed_token_param = auto_discovery_params['feed_token']
+    expect(feed_token_param).to match([Gitlab::Auth::AuthFinders::PATH_DEPENDENT_FEED_TOKEN_REGEX])
+    expect(feed_token_param.first).to end_with(user.id.to_s)
   end
 end

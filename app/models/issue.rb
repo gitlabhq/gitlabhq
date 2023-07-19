@@ -56,6 +56,8 @@ class Issue < ApplicationRecord
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
 
+  ignore_column :issue_type, remove_with: '16.4', remove_after: '2023-08-22'
+
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
 
@@ -133,12 +135,6 @@ class Issue < ApplicationRecord
   validate :allowed_work_item_type_change, on: :update, if: :work_item_type_id_changed?
   validate :due_date_after_start_date
   validate :parent_link_confidentiality
-  # using a custom validation since we are overwriting the `issue_type` method to use the work_item_types table
-  validate :issue_type_attribute_present
-
-  enum issue_type: WorkItems::Type.base_types
-  # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/402699
-  include ::Issues::ForbidIssueTypeColumnUsage
 
   alias_method :issuing_parent, :project
   alias_attribute :issuing_parent_id, :project_id
@@ -187,7 +183,10 @@ class Issue < ApplicationRecord
   scope :order_closed_at_desc, -> { reorder(arel_table[:closed_at].desc.nulls_last) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
-  scope :with_web_entity_associations, -> { preload(:author, :namespace, project: [:project_feature, :route, namespace: :route]) }
+  scope :with_web_entity_associations, -> do
+    preload(:author, :namespace, :labels, project: [:project_feature, :route, namespace: :route])
+  end
+
   scope :preload_awardable, -> { preload(:award_emoji) }
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
@@ -201,24 +200,17 @@ class Issue < ApplicationRecord
   scope :with_issue_type, ->(types) {
     types = Array(types)
 
-    if Feature.enabled?(:issue_type_uses_work_item_types_table)
-      # Using != 1 since we also want the guard clause to handle empty arrays
-      return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+    # Using != 1 since we also want the guard clause to handle empty arrays
+    return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
 
-      where(
-        '"issues"."work_item_type_id" = (?)',
-        WorkItems::Type.by_type(types.first).select(:id).limit(1)
-      )
-    else
-      where(issue_type: types)
-    end
+    # This optimization helps the planer use the correct indexes when filtering by a single type
+    where(
+      '"issues"."work_item_type_id" = (?)',
+      WorkItems::Type.by_type(types.first).select(:id).limit(1)
+    )
   }
   scope :without_issue_type, ->(types) {
-    if Feature.enabled?(:issue_type_uses_work_item_types_table)
-      joins(:work_item_type).where.not(work_item_types: { base_type: types })
-    else
-      where.not(issue_type: types)
-    end
+    joins(:work_item_type).where.not(work_item_types: { base_type: types })
   }
 
   scope :public_only, -> { where(confidential: false) }
@@ -258,7 +250,6 @@ class Issue < ApplicationRecord
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
-  before_save :check_issue_type_in_sync!
 
   after_save :ensure_metrics!, unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
@@ -588,16 +579,12 @@ class Issue < ApplicationRecord
         user, project.external_authorization_classification_label)
   end
 
-  def check_for_spam?(user:)
-    # content created via support bots is always checked for spam, EVEN if
-    # the issue is not publicly visible and/or confidential
-    return true if user.support_bot? && spammable_attribute_changed?
+  # Always enforce spam check for support bot but allow for other users when issue is not publicly visible
+  def allow_possible_spam?(user)
+    return true if Gitlab::CurrentSettings.allow_possible_spam
+    return false if user.support_bot?
 
-    # Only check for spam on issues which are publicly visible (and thus indexed in search engines)
-    return false unless publicly_visible?
-
-    # Only check for spam if certain attributes have changed
-    spammable_attribute_changed?
+    !publicly_visible?
   end
 
   def supports_recaptcha?
@@ -753,11 +740,7 @@ class Issue < ApplicationRecord
   end
 
   def issue_type
-    if ::Feature.enabled?(:issue_type_uses_work_item_types_table)
-      work_item_type_with_default.base_type
-    else
-      super
-    end
+    work_item_type_with_default.base_type
   end
 
   def unsubscribe_email_participant(email)
@@ -766,41 +749,11 @@ class Issue < ApplicationRecord
     issue_email_participants.find_by_email(email)&.destroy
   end
 
+  def hook_attrs
+    Gitlab::HookData::IssueBuilder.new(self).build
+  end
+
   private
-
-  def check_issue_type_in_sync!
-    # We might have existing records out of sync, so we need to skip this check unless the value is changed
-    # so those records can still be updated until we fix them and remove the issue_type column
-    # https://gitlab.com/gitlab-org/gitlab/-/work_items/403158
-    return unless (changes.keys & %w[issue_type work_item_type_id]).any?
-
-    # Do not replace the use of attributes with `issue_type` here
-    if attributes['issue_type'] != work_item_type.base_type
-      error = IssueTypeOutOfSyncError.new(
-        <<~ERROR
-          Issue `issue_type` out of sync with `work_item_type_id` column.
-          `issue_type` must be equal to `work_item.base_type`.
-          You can assign the correct work_item_type like this for example:
-
-          Issue.new(issue_type: :incident, work_item_type: WorkItems::Type.default_by_type(:incident))
-
-          More details in https://gitlab.com/gitlab-org/gitlab/-/issues/338005
-        ERROR
-      )
-
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
-        error,
-        issue_type: attributes['issue_type'],
-        work_item_type_id: work_item_type_id
-      )
-    end
-  end
-
-  def issue_type_attribute_present
-    return if attributes['issue_type'].present?
-
-    errors.add(:issue_type, 'Must be present')
-  end
 
   def due_date_after_start_date
     return unless start_date.present? && due_date.present?
@@ -834,12 +787,6 @@ class Issue < ApplicationRecord
     Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
   end
 
-  def spammable_attribute_changed?
-    # NOTE: We need to check them for spam when issues are made non-confidential, because spam
-    # may have been added while they were confidential and thus not being checked for spam.
-    super || confidential_changed?(from: true, to: false)
-  end
-
   def ensure_metrics!
     Issue::Metrics.record!(self)
   end
@@ -868,9 +815,7 @@ class Issue < ApplicationRecord
   def ensure_work_item_type
     return if work_item_type_id.present? || work_item_type_id_change&.last.present?
 
-    # TODO: We should switch to DEFAULT_ISSUE_TYPE here when the issue_type column is dropped
-    # https://gitlab.com/gitlab-org/gitlab/-/work_items/402700
-    self.work_item_type = WorkItems::Type.default_by_type(attributes['issue_type'])
+    self.work_item_type = WorkItems::Type.default_by_type(DEFAULT_ISSUE_TYPE)
   end
 
   def allowed_work_item_type_change

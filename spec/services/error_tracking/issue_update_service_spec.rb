@@ -113,17 +113,45 @@ RSpec.describe ErrorTracking::IssueUpdateService, feature_category: :error_track
       include_examples 'error tracking service sentry error handling', :update_issue
 
       context 'with integrated error tracking' do
-        let(:error) { create(:error_tracking_error, project: project) }
-        let(:arguments) { { issue_id: error.id, status: 'resolved' } }
-        let(:update_issue_response) { { updated: true, status: :success, closed_issue_iid: nil } }
+        let(:error_repository) { instance_double(Gitlab::ErrorTracking::ErrorRepository) }
+        let(:error) { build_stubbed(:error_tracking_open_api_error, project_id: project.id) }
+        let(:issue_id) { error.fingerprint }
+        let(:arguments) { { issue_id: issue_id, status: 'resolved' } }
 
         before do
           error_tracking_setting.update!(integrated: true)
+
+          allow(update_service).to receive(:error_repository).and_return(error_repository)
+          allow(error_repository).to receive(:update_error)
+            .with(issue_id, status: 'resolved').and_return(updated)
         end
 
-        it 'resolves the error and responds with expected format' do
-          expect(update_service.execute).to eq(update_issue_response)
-          expect(error.reload.status).to eq('resolved')
+        context 'when update succeeded' do
+          let(:updated) { true }
+
+          it 'returns success with updated true' do
+            expect(project.error_tracking_setting).to receive(:expire_issues_cache)
+
+            expect(update_service.execute).to eq(
+              status: :success,
+              updated: true,
+              closed_issue_iid: nil
+            )
+          end
+        end
+
+        context 'when update failed' do
+          let(:updated) { false }
+
+          it 'returns success with updated false' do
+            expect(project.error_tracking_setting).to receive(:expire_issues_cache)
+
+            expect(update_service.execute).to eq(
+              status: :success,
+              updated: false,
+              closed_issue_iid: nil
+            )
+          end
         end
       end
     end

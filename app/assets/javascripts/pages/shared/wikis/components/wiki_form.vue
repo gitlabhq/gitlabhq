@@ -15,8 +15,8 @@ import { setUrlFragment } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import {
-  SAVED_USING_CONTENT_EDITOR_ACTION,
   WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   WIKI_FORMAT_LABEL,
   WIKI_FORMAT_UPDATED_ACTION,
@@ -257,9 +257,8 @@ export default {
     },
 
     trackFormSubmit() {
-      if (this.isContentEditorActive) {
-        this.track(SAVED_USING_CONTENT_EDITOR_ACTION);
-      }
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      trackSavedUsingEditor(this.isContentEditorActive, 'Wiki');
     },
 
     trackWikiFormat() {

@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', product_group: :package_registry do
-    describe 'Terraform Module Registry' do
+  RSpec.describe 'Package', :requires_admin, product_group: :package_registry do
+    describe 'Terraform Module Registry',
+      quarantine: {
+        only: { job: 'airgapped' },
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417407',
+        type: :investigating
+      } do
       include Runtime::Fixtures
 
       let(:group) { Resource::Group.fabricate_via_api! }
@@ -25,6 +30,7 @@ module QA
       end
 
       before do
+        # Remove 'requires_admin' if below method is removed
         QA::Support::Helpers::ImportSource.enable('git')
 
         Flow::Login.sign_in

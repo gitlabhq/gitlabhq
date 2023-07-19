@@ -1,10 +1,9 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import initDatePicker from '~/behaviors/date_picker';
-import GLForm from '~/gl_form';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Milestone from '~/milestones/milestone';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { mountMarkdownEditor } from '~/vue_shared/components/markdown/mount_markdown_editor';
 import Sidebar from '~/right_sidebar';
 import MountMilestoneSidebar from '~/sidebar/mount_milestone_sidebar';
 import Translate from '~/vue_shared/translate';
@@ -22,22 +21,10 @@ export const MILESTONE_DESCRIPTION_ELEMENT = '.milestone-detail .description';
 export const MILESTONE_DESCRIPTION_TASK_LIST_CONTAINER_ELEMENT = `${MILESTONE_DESCRIPTION_ELEMENT}.js-task-list-container`;
 export const MILESTONE_DETAIL_ELEMENT = '.milestone-detail';
 
-export function initForm(initGFM = true) {
+export function initForm() {
+  mountMarkdownEditor();
   new ZenMode(); // eslint-disable-line no-new
   initDatePicker();
-
-  // eslint-disable-next-line no-new
-  new GLForm($('.milestone-form'), {
-    emojis: true,
-    members: initGFM,
-    issues: initGFM,
-    mergeRequests: initGFM,
-    epics: initGFM,
-    milestones: initGFM,
-    labels: initGFM,
-    snippets: initGFM,
-    vulnerabilities: initGFM,
-  });
 }
 
 export function initShow() {

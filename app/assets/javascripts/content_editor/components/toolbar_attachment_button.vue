@@ -47,6 +47,7 @@ export default {
       category="tertiary"
       icon="paperclip"
       size="small"
+      class="gl-mr-3"
       lazy
       @click="openFileUpload"
     />

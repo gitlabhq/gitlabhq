@@ -415,7 +415,7 @@ class Project < ApplicationRecord
   has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting', inverse_of: :project, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :remote_mirrors, inverse_of: :project
-  has_many :external_pull_requests, inverse_of: :project
+  has_many :external_pull_requests, inverse_of: :project, class_name: 'Ci::ExternalPullRequest'
 
   has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
   has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
@@ -692,6 +692,10 @@ class Project < ApplicationRecord
   scope :with_integration, -> (integration_class) { joins(:integrations).merge(integration_class.all) }
   scope :with_active_integration, -> (integration_class) { with_integration(integration_class).merge(integration_class.active) }
   scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
+  # .with_slack_integration can generate poorly performing queries. It is intended only for UsagePing.
+  scope :with_slack_integration, -> { joins(:slack_integration) }
+  # .with_slack_slash_commands_integration can generate poorly performing queries. It is intended only for UsagePing.
+  scope :with_slack_slash_commands_integration, -> { joins(:slack_slash_commands_integration) }
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.
@@ -775,6 +779,7 @@ class Project < ApplicationRecord
   scope :pending_data_repair_analysis, -> do
     left_outer_joins(:container_registry_data_repair_detail)
     .where(container_registry_data_repair_details: { project_id: nil })
+    .order(id: :desc)
   end
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
@@ -903,6 +908,16 @@ class Project < ApplicationRecord
   scope :for_group_and_its_subgroups, ->(group) { where(namespace_id: group.self_and_descendants.select(:id)) }
   scope :for_group_and_its_ancestor_groups, ->(group) { where(namespace_id: group.self_and_ancestors.select(:id)) }
   scope :is_importing, -> { with_import_state.where(import_state: { status: %w[started scheduled] }) }
+
+  scope :without_created_and_owned_by_banned_user, -> do
+    where_not_exists(
+      Users::BannedUser.joins(
+        'INNER JOIN project_authorizations ON project_authorizations.user_id = banned_users.user_id'
+      ).where('projects.creator_id = banned_users.user_id')
+        .where('project_authorizations.project_id = projects.id')
+        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
+    )
+  end
 
   class << self
     # Searches for a list of projects based on the query given in `query`.
@@ -1840,10 +1855,12 @@ class Project < ApplicationRecord
     triggered.add_hooks(hooks)
   end
 
-  def execute_integrations(data, hooks_scope = :push_hooks)
+  def execute_integrations(data, hooks_scope = :push_hooks, skip_ci: false)
     # Call only service hooks that are active for this scope
     run_after_commit_or_now do
       association("#{hooks_scope}_integrations").reader.each do |integration|
+        next if skip_ci && integration.ci?
+
         integration.async_execute(data)
       end
     end
@@ -2201,42 +2218,6 @@ class Project < ApplicationRecord
     pages_metadatum&.deployed?
   end
 
-  def pages_url(with_unique_domain: false)
-    return pages_unique_url if with_unique_domain && pages_unique_domain_enabled?
-
-    url = pages_namespace_url
-    url_path = full_path.partition('/').last
-    namespace_url = "#{Settings.pages.protocol}://#{url_path}".downcase
-
-    if Rails.env.development?
-      url_without_port = URI.parse(url)
-      url_without_port.port = nil
-
-      return url if url_without_port.to_s == namespace_url
-    end
-
-    # If the project path is the same as host, we serve it as group page
-    return url if url == namespace_url
-
-    "#{url}/#{url_path}"
-  end
-
-  def pages_unique_url
-    pages_url_for(project_setting.pages_unique_domain)
-  end
-
-  def pages_unique_host
-    URI(pages_unique_url).host
-  end
-
-  def pages_namespace_url
-    pages_url_for(pages_subdomain)
-  end
-
-  def pages_subdomain
-    full_path.partition('/').first
-  end
-
   def pages_path
     # TODO: when we migrate Pages to work with new storage types, change here to use disk_path
     File.join(Settings.pages.path, full_path)
@@ -2483,7 +2464,7 @@ class Project < ApplicationRecord
       break unless pages_enabled?
 
       variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
-      variables.append(key: 'CI_PAGES_URL', value: pages_url)
+      variables.append(key: 'CI_PAGES_URL', value: Gitlab::Pages::UrlBuilder.new(self).pages_url)
     end
   end
 
@@ -3167,6 +3148,10 @@ class Project < ApplicationRecord
     pending_delete? || hidden?
   end
 
+  def created_and_owned_by_banned_user?
+    creator.banned? && team.max_member_access(creator.id) == Gitlab::Access::OWNER
+  end
+
   def content_editor_on_issues_feature_flag_enabled?
     group&.content_editor_on_issues_feature_flag_enabled? || Feature.enabled?(:content_editor_on_issues, self)
   end
@@ -3236,24 +3221,7 @@ class Project < ApplicationRecord
     group.crm_enabled?
   end
 
-  def frozen_outbound_job_token_scopes?
-    Feature.enabled?(:frozen_outbound_job_token_scopes, self) && Feature.disabled?(:frozen_outbound_job_token_scopes_override, self)
-  end
-  strong_memoize_attr :frozen_outbound_job_token_scopes?
-
   private
-
-  def pages_unique_domain_enabled?
-    Feature.enabled?(:pages_unique_domain, self) &&
-      project_setting.pages_unique_domain_enabled?
-  end
-
-  def pages_url_for(domain)
-    # The host in URL always needs to be downcased
-    Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
-      "#{prefix}#{domain}."
-    end.downcase
-  end
 
   # overridden in EE
   def project_group_links_with_preload

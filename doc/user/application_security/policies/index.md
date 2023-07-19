@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Policies in GitLab provide security teams a way to require scans of their choice to be run
 whenever a project pipeline runs according to the configuration specified. Security teams can
 therefore be confident that the scans they set up have not been changed, altered, or disabled. You
-can access these by navigating to your project's **Security and Compliance > Policies** page.
+can access these by navigating to your project's **Secure > Policies** page.
 
 GitLab supports the following security policies:
 
@@ -141,7 +141,6 @@ The workaround is to amend your group or instance push rules to allow branches f
 
 ### Troubleshooting common issues configuring security policies
 
-- Confirm that projects contain a `.gitlab-ci.yml` file. This file is required for scan execution policies.
 - Confirm that scanners are properly configured and producing results for the latest branch. Security Policies are designed to require approval when there are no results (no security report), as this ensures that no vulnerabilities are introduced. We cannot know if there are any vulnerabilities unless the scans enforced by the policy complete successfully and are evaluated.
 - When running scan execution policies based on a SAST action, ensure target repositories contain proper code files. SAST runs different analyzers [based on the types of files in the repo](../sast/index.md#supported-languages-and-frameworks), and if no supported files are found it will not run any jobs. See the [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) for more details.
 - Check for any branch configuration conflicts. If your policy is configured to enforce rules on `main` but some projects within the scope are using `master` as their default branch, the policy is not applied for the latter. Support for specifying the `default` branch in your policies is proposed in [epic 9468](https://gitlab.com/groups/gitlab-org/-/epics/9468).

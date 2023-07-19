@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 require 'fast_spec_helper'
 require 'rspec-parameterized'
-
-require_relative '../../../support/helpers/stub_env'
+require 'gitlab/rspec/all'
 
 RSpec.describe Gitlab::Metrics::Environment, feature_category: :error_budgets do
   include StubENV

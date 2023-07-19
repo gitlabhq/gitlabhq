@@ -31,7 +31,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
     project.add_reporter(@u_foo)
     project.add_reporter(@u_bar)
 
-    subject.analyze(%Q{
+    subject.analyze(%{
       Inline code: `@foo`
 
       Code block:

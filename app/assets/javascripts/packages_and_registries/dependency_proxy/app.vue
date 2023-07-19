@@ -4,9 +4,9 @@ import {
   GlButton,
   GlDropdown,
   GlDropdownItem,
-  GlEmptyState,
   GlFormGroup,
   GlFormInputGroup,
+  GlSkeletonLoader,
   GlModal,
   GlModalDirective,
   GlSprintf,
@@ -17,7 +17,6 @@ import Api from '~/api';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import ManifestsList from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
-import { DEPENDENCY_PROXY_DOCS_PATH } from '~/packages_and_registries/settings/group/constants';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
 
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
@@ -28,7 +27,7 @@ export default {
     GlButton,
     GlDropdown,
     GlDropdownItem,
-    GlEmptyState,
+    GlSkeletonLoader,
     GlFormGroup,
     GlFormInputGroup,
     GlModal,
@@ -41,13 +40,12 @@ export default {
     GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['groupPath', 'groupId', 'noManifestsIllustration', 'canClearCache', 'settingsPath'],
+  inject: ['groupPath', 'groupId', 'canClearCache', 'settingsPath'],
   i18n: {
     proxyImagePrefix: s__('DependencyProxy|Dependency Proxy image prefix'),
     copyImagePrefixText: s__('DependencyProxy|Copy prefix'),
     blobCountAndSize: s__('DependencyProxy|Contains %{count} blobs of images (%{size})'),
     pageTitle: s__('DependencyProxy|Dependency Proxy'),
-    noManifestTitle: s__('DependencyProxy|There are no images in the cache'),
     deleteCacheAlertMessageSuccess: s__(
       'DependencyProxy|All items in the cache are scheduled for removal.',
     ),
@@ -63,9 +61,6 @@ export default {
     secondary: {
       text: __('Cancel'),
     },
-  },
-  links: {
-    DEPENDENCY_PROXY_DOCS_PATH,
   },
   data() {
     return {
@@ -90,7 +85,7 @@ export default {
       return this.group.dependencyProxyManifests?.pageInfo;
     },
     manifests() {
-      return this.group.dependencyProxyManifests?.nodes;
+      return this.group.dependencyProxyManifests?.nodes ?? [];
     },
     modalTitleWithCount() {
       return sprintf(
@@ -199,10 +194,16 @@ export default {
       </template>
     </title-area>
 
-    <gl-form-group v-if="showDependencyProxyImagePrefix" :label="$options.i18n.proxyImagePrefix">
+    <gl-form-group
+      v-if="showDependencyProxyImagePrefix"
+      :label="$options.i18n.proxyImagePrefix"
+      label-for="proxy-url"
+    >
       <gl-form-input-group
+        id="proxy-url"
         readonly
         :value="group.dependencyProxyImagePrefix"
+        select-on-click
         class="gl-layout-w-limited"
         data-testid="proxy-url"
       >
@@ -222,21 +223,15 @@ export default {
         </span>
       </template>
     </gl-form-group>
+    <gl-skeleton-loader v-else-if="$apollo.queries.group.loading" />
 
     <manifests-list
-      v-if="manifests && manifests.length"
       :dependency-proxy-image-prefix="dependencyProxyImagePrefix"
       :loading="$apollo.queries.group.loading"
       :manifests="manifests"
       :pagination="pageInfo"
       @prev-page="fetchPreviousPage"
       @next-page="fetchNextPage"
-    />
-
-    <gl-empty-state
-      v-else
-      :svg-path="noManifestsIllustration"
-      :title="$options.i18n.noManifestTitle"
     />
 
     <gl-modal

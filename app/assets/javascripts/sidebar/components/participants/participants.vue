@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 export default {
@@ -81,6 +82,9 @@ export default {
     toggleMoreParticipants() {
       this.isShowingMoreParticipants = !this.isShowingMoreParticipants;
     },
+    getParticipantId(participantId) {
+      return getIdFromGraphQLId(participantId);
+    },
     onClickCollapsedIcon() {
       this.$emit('toggleSidebar');
     },
@@ -118,13 +122,14 @@ export default {
       >
         <a
           :href="participant.web_url || participant.webUrl"
-          class="author-link gl-display-inline-block gl-rounded-full"
+          :data-user-id="getParticipantId(participant.id)"
+          :data-username="participant.username"
+          class="author-link js-user-link gl-display-inline-block gl-rounded-full"
         >
           <user-avatar-image
             :lazy="lazy"
             :img-src="participant.avatar_url || participant.avatarUrl"
             :size="24"
-            :tooltip-text="participant.name"
             :img-alt="participant.name"
             css-classes="gl-mr-0!"
             tooltip-placement="bottom"

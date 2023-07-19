@@ -1,0 +1,24 @@
+---
+description: An issue has been created
+category: InternalEventTracking
+action: g_project_management_issue_created
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+  - namespace
+  - project
+  - user
+product_section: dev
+product_stage: plan
+product_group: project_management
+milestone: "16.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123184
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

@@ -21,6 +21,8 @@ export const initProfileTabs = () => {
     utcOffset,
     userId,
     snippetsEmptyState,
+    newSnippetPath,
+    followEmptyState,
   } = el.dataset;
 
   const apolloProvider = new VueApollo({
@@ -39,6 +41,8 @@ export const initProfileTabs = () => {
       utcOffset,
       userId,
       snippetsEmptyState,
+      newSnippetPath,
+      followEmptyState,
     },
     render(createElement) {
       return createElement(ProfileTabs);

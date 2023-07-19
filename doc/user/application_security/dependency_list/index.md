@@ -7,16 +7,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency list **(ULTIMATE)**
 
-> - Application dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in GitLab 12.0.
 > - System dependencies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6698) in GitLab 14.6.
+> - Group-level dependency list [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8090) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies`. Disabled by default.
 
-Use the dependency list to review your project's dependencies and key
+FLAG:
+On self-managed GitLab, by default the group-level dependency list is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `group_level_dependencies`. On GitLab.com, this feature is not available.
+
+Use the dependency list to review your project or group's dependencies and key
 details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Project Dependency](https://www.youtube.com/watch?v=ckqkn9Tnbw4).
 
-To see the dependency list, go to your project and select **Security and Compliance > Dependency list**.
+To see the dependency list, go to your project and select **Secure > Dependency list**.
 
 This information is sometimes referred to as a Software Bill of Materials, SBOM, or BOM.
 
@@ -89,4 +92,4 @@ You can download your project's list of dependencies and their details in JSON f
 
 ### Using the API
 
-You can download your project's list of dependencies [using the API](../../../api/dependencies.md#list-project-dependencies). Note this only provides the dependencies identified by the Gemnasium family of analyzers and [not any other of the GitLab dependency analyzers](../dependency_scanning/analyzers.md).
+You can download your project's list of dependencies [using the API](../../../api/dependencies.md#list-project-dependencies). Note this only provides the dependencies identified by the [Gemnasium family of analyzers](../dependency_scanning/index.md#dependency-analyzers) and not any other of the GitLab dependency analyzers.

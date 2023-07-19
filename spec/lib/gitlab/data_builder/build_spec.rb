@@ -66,25 +66,6 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
       expect(control.count).to eq(14)
     end
 
-    context 'when job_webhook_retries_count feature flag is disabled' do
-      before do
-        stub_feature_flags(job_webhook_retries_count: false)
-      end
-
-      it { expect(data).not_to have_key(:retries_count) }
-
-      it 'does not exceed number of expected queries' do
-        ci_build # Make sure the Ci::Build model is created before recording.
-
-        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          b = Ci::Build.find(ci_build.id)
-          described_class.build(b) # Don't use ci_build variable here since it has all associations loaded into memory
-        end
-
-        expect(control.count).to eq(13)
-      end
-    end
-
     context 'commit author_url' do
       context 'when no commit present' do
         let(:build) { build(:ci_build) }

@@ -226,7 +226,7 @@ $tabs-holder-z-index: 250;
     clear: left;
 
     .note-body {
-      padding: 0 0 $gl-padding-8;
+      padding: 0 $gl-padding-8 $gl-padding-8 $gl-padding-32;
     }
   }
 
@@ -234,14 +234,15 @@ $tabs-holder-z-index: 250;
     margin-top: -2px;
     margin-right: $gl-padding-8;
   }
+}
 
-  // tiny adjustment to vertical align with the note header text
-  .discussion-collapsible {
-    margin-left: 1rem;
+// tiny adjustment to vertical align with the note header text
+.discussion-collapsible {
+  border: 0 !important;
+  margin: 0;
 
-    .timeline-icon {
-      padding-top: 2px;
-    }
+  .timeline-icon {
+    padding-top: 2px;
   }
 }
 
@@ -1275,20 +1276,12 @@ $tabs-holder-z-index: 250;
 .diff-file-discussions-wrapper {
   @include gl-w-full;
 
-  max-width: 800px;
-
-  .diff-discussions > .notes {
-    @include gl-p-5;
-  }
-
   .diff-discussions:not(:first-child) >.notes {
     @include gl-pt-0;
   }
 
   .note-discussion {
-    @include gl-rounded-base;
-
-    border: 1px solid var(--gray-100, $gray-100) !important;
+    border-bottom: 1px solid var(--gray-100, $gray-100) !important;
   }
 
   .discussion-collapsible {

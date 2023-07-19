@@ -24,7 +24,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
   context 'with default target branch' do
     before do
       first('.add-to-tree').click
-      click_link('New directory')
+      click_button('New directory')
     end
 
     it 'creates the directory in the default branch' do
@@ -55,7 +55,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
       end
 
       first('.add-to-tree').click
-      click_link('New directory')
+      click_button('New directory')
 
       fill_in(:dir_name, with: 'new_directory')
       click_button('Create directory')
@@ -68,7 +68,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
   context 'with a new target branch' do
     before do
       first('.add-to-tree').click
-      click_link('New directory')
+      click_button('New directory')
       fill_in(:dir_name, with: 'new_directory')
       fill_in(:branch_name, with: 'new-feature')
       click_button('Create directory')
@@ -99,7 +99,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
 
       find('.add-to-tree').click
       wait_for_requests
-      click_link('New directory')
+      click_button('New directory')
       fill_in(:dir_name, with: 'new_directory')
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Create directory')

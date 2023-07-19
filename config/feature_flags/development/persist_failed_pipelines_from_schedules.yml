@@ -1,0 +1,8 @@
+---
+name: persist_failed_pipelines_from_schedules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124371
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416297
+milestone: '16.2'
+type: development
+group: group::pipeline execution
+default_enabled: true

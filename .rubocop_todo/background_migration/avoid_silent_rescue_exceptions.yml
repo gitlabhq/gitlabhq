@@ -1,0 +1,8 @@
+---
+BackgroundMigration/AvoidSilentRescueExceptions:
+  Exclude:
+    - 'lib/gitlab/background_migration/backfill_imported_issue_search_data.rb'
+    - 'lib/gitlab/background_migration/migrate_links_for_vulnerability_findings.rb'
+    - 'lib/gitlab/background_migration/populate_vulnerability_dismissal_fields.rb'
+    - 'lib/gitlab/background_migration/reset_status_on_container_repositories.rb'
+    - 'lib/gitlab/background_migration/migrate_remediations_for_vulnerability_findings.rb'

@@ -3,10 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Redis::CrossSlot, feature_category: :redis do
+  include RedisHelpers
+
+  let_it_be(:redis_store_class) { define_helper_redis_store_class }
+
+  before do
+    redis_store_class.with(&:flushdb)
+  end
+
   describe '.pipelined' do
     context 'when using redis client' do
       before do
-        Gitlab::Redis::Queues.with { |redis| redis.set('a', 1) }
+        redis_store_class.with { |redis| redis.set('a', 1) }
       end
 
       it 'performs redis-rb pipelined' do
@@ -14,7 +22,7 @@ RSpec.describe Gitlab::Redis::CrossSlot, feature_category: :redis do
 
         expect(
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-            Gitlab::Redis::Queues.with do |redis|
+            redis_store_class.with do |redis|
               described_class::Pipeline.new(redis).pipelined do |p|
                 p.get('a')
                 p.set('b', 1)
@@ -26,16 +34,15 @@ RSpec.describe Gitlab::Redis::CrossSlot, feature_category: :redis do
     end
 
     context 'when using with MultiStore' do
-      let(:multistore) do
-        Gitlab::Redis::MultiStore.new(
-          ::Redis.new(::Gitlab::Redis::SharedState.params),
-          ::Redis.new(::Gitlab::Redis::Sessions.params),
-          'testing')
-      end
+      let_it_be(:primary_db) { 1 }
+      let_it_be(:secondary_db) { 2 }
+      let_it_be(:primary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
+      let_it_be(:secondary_store) { create_redis_store(redis_store_class.params, db: secondary_db, serializer: nil) }
+      let_it_be(:multistore) { Gitlab::Redis::MultiStore.new(primary_store, secondary_store, 'testing') }
 
       before do
-        Gitlab::Redis::SharedState.with { |redis| redis.set('a', 1) }
-        Gitlab::Redis::Sessions.with { |redis| redis.set('a', 1) }
+        primary_store.set('a', 1)
+        secondary_store.set('a', 1)
         skip_feature_flags_yaml_validation
         skip_default_enabled_yaml_check
       end

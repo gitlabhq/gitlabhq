@@ -11,7 +11,6 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
   let(:presented_pipeline) { pipeline.present(current_user: user) }
 
   before do
-    stub_feature_flags(pipeline_details_header_vue: false)
     assign(:project, project)
     assign(:pipeline, presented_pipeline)
     allow(view).to receive(:current_user) { user }

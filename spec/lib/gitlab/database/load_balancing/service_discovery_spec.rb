@@ -58,14 +58,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
     end
   end
 
-  describe '#start' do
+  describe '#start', :freeze_time do
     before do
       allow(service)
         .to receive(:loop)
         .and_yield
     end
 
-    it 'starts service discovery in a new thread' do
+    it 'starts service discovery in a new thread with proper assignments' do
       expect(Thread).to receive(:new).ordered.and_call_original # Thread starts
 
       expect(service).to receive(:perform_service_discovery).ordered.and_return(5)
@@ -73,6 +73,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
       expect(service).to receive(:sleep).ordered.with(7) # Sleep runs after thread starts
 
       service.start.join
+
+      expect(service.refresh_thread_last_run).to eq(Time.current)
+      expect(service.refresh_thread).to be_present
     end
   end
 
@@ -140,21 +143,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
                 .with(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
 
         service.perform_service_discovery
-      end
-    end
-
-    context 'with Exception' do
-      it 'logs error and re-raises the exception' do
-        error = Exception.new('uncaught-test-error')
-
-        expect(service).to receive(:refresh_if_necessary).and_raise(error)
-
-        expect(Gitlab::Database::LoadBalancing::Logger).to receive(:error).with(
-          event: :service_discovery_unexpected_exception,
-          message: "Service discovery encountered an uncaught error: uncaught-test-error"
-        )
-
-        expect { service.perform_service_discovery }.to raise_error(Exception, error.message)
       end
     end
   end
@@ -423,6 +411,66 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
           expect(service_resolver).to be_present
           expect(service_resolver).not_to eq(resolver)
+        end
+      end
+    end
+  end
+
+  describe '#log_refresh_thread_interruption' do
+    before do
+      service.refresh_thread = refresh_thread
+      service.refresh_thread_last_run = last_run_timestamp
+    end
+
+    let(:refresh_thread) { nil }
+    let(:last_run_timestamp) { nil }
+
+    subject { service.log_refresh_thread_interruption }
+
+    context 'without refresh thread timestamp' do
+      it 'does not log any interruption' do
+        expect(service.refresh_thread_last_run).to be_nil
+
+        expect(Gitlab::Database::LoadBalancing::Logger).not_to receive(:error)
+
+        subject
+      end
+    end
+
+    context 'with refresh thread timestamp' do
+      let(:last_run_timestamp) { Time.current }
+
+      it 'does not log if last run time plus delta is in future' do
+        expect(Gitlab::Database::LoadBalancing::Logger).not_to receive(:error)
+
+        subject
+      end
+
+      context 'with way past last run timestamp' do
+        let(:refresh_thread) { instance_double(Thread, status: :run, backtrace: %w[backtrace foo]) }
+        let(:last_run_timestamp) { 20.minutes.before + described_class::DISCOVERY_THREAD_REFRESH_DELTA.minutes }
+
+        it 'does not log if the interruption is already logged' do
+          service.refresh_thread_interruption_logged = true
+
+          expect(Gitlab::Database::LoadBalancing::Logger).not_to receive(:error)
+
+          subject
+        end
+
+        it 'logs the error if the interruption was not logged before' do
+          expect(service.refresh_thread_interruption_logged).not_to be_present
+
+          expect(Gitlab::Database::LoadBalancing::Logger).to receive(:error).with(
+            event: :service_discovery_refresh_thread_interrupt,
+            refresh_thread_last_run: last_run_timestamp,
+            thread_status: refresh_thread.status.to_s,
+            thread_backtrace: 'backtrace\nfoo'
+          )
+
+          subject
+
+          expect(service.refresh_thread_interruption_logged).to be_truthy
         end
       end
     end

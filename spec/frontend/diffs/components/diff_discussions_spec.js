@@ -25,11 +25,13 @@ describe('DiffDiscussions', () => {
     });
   };
 
+  const findNoteableDiscussion = () => wrapper.findComponent(NoteableDiscussion);
+
   describe('template', () => {
     it('should have notes list', () => {
       createComponent();
 
-      expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(true);
+      expect(findNoteableDiscussion().exists()).toBe(true);
       expect(wrapper.findComponent(DiscussionNotes).exists()).toBe(true);
       expect(
         wrapper.findComponent(DiscussionNotes).findAllComponents(TimelineEntryItem).length,
@@ -51,11 +53,11 @@ describe('DiffDiscussions', () => {
 
     it('dispatches toggleDiscussion when clicking collapse button', () => {
       createComponent({ shouldCollapseDiscussions: true });
-      jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation();
-      const diffNotesToggle = findDiffNotesToggle();
-      diffNotesToggle.trigger('click');
+      jest.spyOn(store, 'dispatch').mockImplementation();
 
-      expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith('toggleDiscussion', {
+      findDiffNotesToggle().trigger('click');
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleDiscussion', {
         discussionId: discussionsMockData.id,
       });
     });
@@ -77,12 +79,12 @@ describe('DiffDiscussions', () => {
       discussions[0].expanded = false;
       createComponent({ discussions, shouldCollapseDiscussions: true });
 
-      expect(wrapper.findComponent(NoteableDiscussion).isVisible()).toBe(false);
+      expect(findNoteableDiscussion().isVisible()).toBe(false);
     });
 
     it('renders badge on avatar', () => {
       createComponent({ renderAvatarBadge: true });
-      const noteableDiscussion = wrapper.findComponent(NoteableDiscussion);
+      const noteableDiscussion = findNoteableDiscussion();
 
       expect(noteableDiscussion.find('.design-note-pin').exists()).toBe(true);
       expect(noteableDiscussion.find('.design-note-pin').text().trim()).toBe('1');

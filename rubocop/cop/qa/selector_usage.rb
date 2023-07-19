@@ -20,14 +20,14 @@ module RuboCop
         include QAHelpers
         include CodeReuseHelpers
 
-        SELECTORS = /\.qa-\w+|data-qa-\w+/.freeze
+        SELECTORS = /\.qa-\w+|data-qa-\w+/
         MESSAGE = %(Do not use `%s` as this is reserved for the end-to-end specs. Use a different selector or a data-testid instead.)
 
         def on_str(node)
           return if in_qa_file?(node)
           return unless in_spec?(node)
 
-          add_offense(node, message: MESSAGE % node.value) if SELECTORS =~ node.value
+          add_offense(node, message: MESSAGE % node.value) if SELECTORS.match?(node.value)
         rescue StandardError
           # catch all errors and ignore them.
           # without this catch-all rescue, rubocop will fail

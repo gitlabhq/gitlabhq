@@ -15,13 +15,16 @@ RSpec.describe Ci::Variable, feature_category: :secrets_management do
     it { is_expected.to include_module(Ci::Maskable) }
     it { is_expected.to include_module(HasEnvironmentScope) }
     it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope).with_message(/\(\w+\) has already been taken/) }
+    it { is_expected.to allow_values('').for(:description) }
+    it { is_expected.to allow_values(nil).for(:description) }
+    it { is_expected.to validate_length_of(:description).is_at_most(255) }
   end
 
   describe '.by_environment_scope' do
     let!(:matching_variable) { create(:ci_variable, environment_scope: 'production ') }
     let!(:non_matching_variable) { create(:ci_variable, environment_scope: 'staging') }
 
-    subject { Ci::Variable.by_environment_scope('production') }
+    subject { described_class.by_environment_scope('production') }
 
     it { is_expected.to contain_exactly(matching_variable) }
   end

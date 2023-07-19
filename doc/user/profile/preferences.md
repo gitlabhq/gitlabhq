@@ -12,14 +12,13 @@ of GitLab to their liking.
 
 To navigate to your profile's preferences:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 
 ## Navigation theme
 
 The GitLab navigation theme setting allows you to personalize your GitLab experience.
-You can choose from several color themes that add unique colors to the top navigation
-and left side navigation.
+You can choose from several color themes that add unique colors to the left sidebar.
 Using individual color themes might help you differentiate between your different
 GitLab instances.
 
@@ -158,7 +157,7 @@ You can choose one of the following options as the first day of the week:
 - Sunday
 - Monday
 
-If you select **System Default**, the [instance default](../admin_area/settings/index.md#default-first-day-of-the-week) setting is used.
+If you select **System Default**, the [instance default](../../administration/settings/index.md#default-first-day-of-the-week) setting is used.
 
 ## Time preferences
 

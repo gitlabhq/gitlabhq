@@ -5,6 +5,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { setUrlParams, joinPaths } from '~/lib/utils/url_utility';
 import {
+  EDITING_MODE_KEY,
   EDITING_MODE_MARKDOWN_FIELD,
   EDITING_MODE_CONTENT_EDITOR,
   CLEAR_AUTOSAVE_ENTRY_EVENT,
@@ -80,11 +81,6 @@ export default {
       required: false,
       default: '',
     },
-    quickActionsDocsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     drawioEnabled: {
       type: Boolean,
       required: false,
@@ -99,6 +95,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    codeSuggestionsConfig: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
   data() {
@@ -171,7 +172,7 @@ export default {
     renderMarkdown(markdown) {
       const url = setUrlParams(
         { render_quick_actions: this.supportsQuickActions },
-        joinPaths(window.location.origin, gon.relative_url_root, this.renderMarkdownPath),
+        joinPaths(gon.relative_url_root || window.location.origin, this.renderMarkdownPath),
       );
       return axios.post(url, { text: markdown }).then(({ data }) => data.body);
     },
@@ -223,14 +224,15 @@ export default {
       }
     },
   },
+  EDITING_MODE_KEY,
 };
 </script>
 <template>
-  <div class="md-area gl-px-0! gl-overflow-hidden">
+  <div class="gl-px-0!">
     <local-storage-sync
       :value="editingMode"
       as-string
-      storage-key="gl-markdown-editor-mode"
+      :storage-key="$options.EDITING_MODE_KEY"
       @input="onEditingModeRestored"
     />
     <markdown-field
@@ -240,12 +242,16 @@ export default {
       data-testid="markdown-field"
       :markdown-preview-path="renderMarkdownPath"
       :can-attach-file="!disableAttachments"
+      :can-suggest="codeSuggestionsConfig.canSuggest"
+      :line="codeSuggestionsConfig.line"
+      :lines="codeSuggestionsConfig.lines"
+      :show-suggest-popover="codeSuggestionsConfig.showPopover"
       :textarea-value="markdown"
       :uploads-path="uploadsPath"
       :enable-autocomplete="enableAutocomplete"
       :autocomplete-data-sources="autocompleteDataSources"
       :markdown-docs-path="markdownDocsPath"
-      :quick-actions-docs-path="quickActionsDocsPath"
+      :supports-quick-actions="supportsQuickActions"
       :show-content-editor-switcher="enableContentEditor"
       :drawio-enabled="drawioEnabled"
       :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
@@ -272,9 +278,10 @@ export default {
       <content-editor
         ref="contentEditor"
         :render-markdown="renderMarkdown"
+        :markdown-docs-path="markdownDocsPath"
         :uploads-path="uploadsPath"
         :markdown="markdown"
-        :quick-actions-docs-path="quickActionsDocsPath"
+        :supports-quick-actions="supportsQuickActions"
         :autofocus="contentEditorAutofocused"
         :placeholder="formFieldProps.placeholder"
         :drawio-enabled="drawioEnabled"
@@ -282,6 +289,7 @@ export default {
         :autocomplete-data-sources="autocompleteDataSources"
         :editable="!disabled"
         :disable-attachments="disableAttachments"
+        :code-suggestions-config="codeSuggestionsConfig"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
         @keydown="$emit('keydown', $event)"

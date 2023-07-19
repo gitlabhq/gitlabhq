@@ -174,6 +174,7 @@ export default {
       :note-id="note.id"
       :line="line"
       :note="note"
+      :diff-file="file"
       :save-button-title="saveButtonTitle"
       :help-page-path="helpPagePath"
       :discussion="discussion"

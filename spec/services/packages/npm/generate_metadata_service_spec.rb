@@ -11,7 +11,7 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
   let_it_be(:package2) { create(:npm_package, version: '2.0.6', project: project, name: package_name) }
   let_it_be(:latest_package) { create(:npm_package, version: '2.0.11', project: project, name: package_name) }
 
-  let(:packages) { project.packages.npm.with_name(package_name).last_of_each_version }
+  let(:packages) { project.packages.npm.with_name(package_name) }
   let(:metadata) { described_class.new(package_name, packages).execute }
 
   describe '#versions' do
@@ -157,14 +157,14 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
   end
 
   def check_n_plus_one(only_dist_tags: false)
-    pkgs = project.packages.npm.with_name(package_name).last_of_each_version.preload_files
+    pkgs = project.packages.npm.with_name(package_name).preload_files
     control = ActiveRecord::QueryRecorder.new do
       described_class.new(package_name, pkgs).execute(only_dist_tags: only_dist_tags)
     end
 
     yield
 
-    pkgs = project.packages.npm.with_name(package_name).last_of_each_version.preload_files
+    pkgs = project.packages.npm.with_name(package_name).preload_files
 
     expect do
       described_class.new(package_name, pkgs).execute(only_dist_tags: only_dist_tags)

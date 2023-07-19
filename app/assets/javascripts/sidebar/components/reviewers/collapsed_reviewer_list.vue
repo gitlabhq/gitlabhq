@@ -67,7 +67,7 @@ export default {
       const names = renderUsers.map((u) => u.name);
 
       if (!this.users.length) {
-        return __('Reviewer(s)');
+        return __('Reviewers');
       }
 
       if (this.users.length > names.length) {

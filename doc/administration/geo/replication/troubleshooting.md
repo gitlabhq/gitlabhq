@@ -51,7 +51,7 @@ Geo::MetricsUpdateWorker.new.perform
 
 If it raises an error, then the error is probably also preventing the jobs from completing. If it takes longer than 10 minutes, then there may be a performance issue, and the UI may always show "Unhealthy" even if the status eventually does get updated.
 
-If it successfully updates the status, then something may be wrong with Sidekiq. Is it running? Do the logs show errors? This job is supposed to be enqueued every minute. It takes an exclusive lease in Redis to ensure that only one of these jobs can run at a time. The primary site updates its status directly in the PostgreSQL database. Secondary sites send an HTTP Post request to the primary site with their status data.
+If it successfully updates the status, then something may be wrong with Sidekiq. Is it running? Do the logs show errors? This job is supposed to be enqueued every minute and might not run if a [job deduplication idempotency](../../sidekiq/sidekiq_troubleshooting.md#clearing-a-sidekiq-job-deduplication-idempotency-key) key was not cleared properly. It takes an exclusive lease in Redis to ensure that only one of these jobs can run at a time. The primary site updates its status directly in the PostgreSQL database. Secondary sites send an HTTP Post request to the primary site with their status data.
 
 A site also shows as "Unhealthy" if certain health checks fail. You can reveal the failure by running the following in the [Rails console](../../operations/rails_console.md) on the affected secondary site:
 
@@ -240,7 +240,7 @@ This machine's Geo node name matches a database record ... no
 ```
 
 For more information about recommended site names in the description of the Name field, see
-[Geo Admin Area Common Settings](../../../user/admin_area/geo_sites.md#common-settings).
+[Geo Admin Area Common Settings](../../../administration/geo_sites.md#common-settings).
 
 ### Reverify all uploads (or any SSF data type which is verified)
 
@@ -622,7 +622,7 @@ This happens on wrongly-formatted addresses in `postgresql['md5_auth_cidr_addres
 ```
 
 To fix this, update the IP addresses in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
-to respect the CIDR format (that is, `1.2.3.4/32`).
+to respect the CIDR format (for example, `10.0.0.1/32`).
 
 ### Message: `LOG:  invalid IP mask "md5": Name or service not known`
 
@@ -634,7 +634,7 @@ This happens when you have added IP addresses without a subnet mask in `postgres
 ```
 
 To fix this, add the subnet mask in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
-to respect the CIDR format (that is, `1.2.3.4/32`).
+to respect the CIDR format (for example, `10.0.0.1/32`).
 
 ### Message: `Found data in the gitlabhq_production database!` when running `gitlab-ctl replicate-geo-database`
 
@@ -1295,7 +1295,7 @@ When [Geo proxying for secondary sites](../secondary_proxy/index.md) is enabled,
 Check the NGINX logs for errors similar to this example:
 
 ```plaintext
-2022/01/26 00:02:13 [error] 26641#0: *829148 upstream sent too big header while reading response header from upstream, client: 1.2.3.4, server: geo.staging.gitlab.com, request: "POST /users/sign_in HTTP/2.0", upstream: "http://unix:/var/opt/gitlab/gitlab-workhorse/sockets/socket:/users/sign_in", host: "geo.staging.gitlab.com", referrer: "https://geo.staging.gitlab.com/users/sign_in"
+2022/01/26 00:02:13 [error] 26641#0: *829148 upstream sent too big header while reading response header from upstream, client: 10.0.2.2, server: geo.staging.gitlab.com, request: "POST /users/sign_in HTTP/2.0", upstream: "http://unix:/var/opt/gitlab/gitlab-workhorse/sockets/socket:/users/sign_in", host: "geo.staging.gitlab.com", referrer: "https://geo.staging.gitlab.com/users/sign_in"
 ```
 
 To resolve this issue:
@@ -1345,15 +1345,8 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 - Unique to the primary site.
 - Accessible from all secondary sites.
 
-1. Enter the [Rails console](../../operations/rails_console.md) on the primary site.
-
-1. Run the following, replacing `https://unique.url.for.primary.site` with your specific internal URL.
-   For example, depending on your network configuration, you could use an IP address, like
-   `http://1.2.3.4`.
-
-   ```ruby
-   GeoNode.where(primary: true).first.update!(internal_url: "https://unique.url.for.primary.site")
-   ```
+1. Visit the primary site.
+1. [Set up the internal URLs](../../../administration/geo_sites.md#set-up-the-internal-urls).
 
 ### Secondary site returns `Received HTTP code 403 from proxy after CONNECT`
 
@@ -1403,6 +1396,27 @@ In this case, make sure to update the changed URL on all your sites:
 1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Change the URL and save the change.
+
+### Message: `ERROR: canceling statement due to conflict with recovery` during backup
+
+Running a backup on a Geo **secondary** [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/211668).
+
+When running a backup on a **secondary** you might encounter the following error message:
+
+```plaintext
+Dumping PostgreSQL database gitlabhq_production ...
+pg_dump: error: Dumping the contents of table "notes" failed: PQgetResult() failed.
+pg_dump: error: Error message from server: ERROR:  canceling statement due to conflict with recovery
+DETAIL:  User query might have needed to see row versions that must be removed.
+pg_dump: error: The command was: COPY public.notes (id, note, [...], last_edited_at) TO stdout;
+```
+
+To prevent a database backup being made automatically during GitLab upgrades on your Geo **secondaries**,
+create the following empty file:
+
+```shell
+sudo touch /etc/gitlab/skip-auto-backup
+```
 
 ## Fixing non-PostgreSQL replication failures
 
@@ -1665,7 +1679,7 @@ Repository check failures on a Geo secondary site do not necessarily imply a rep
 
 1. Find affected repositories as mentioned below, as well as their [logged errors](../../repository_checks.md#what-to-do-if-a-check-failed).
 1. Try to diagnose specific `git fsck` errors. The range of possible errors is wide, try putting them into search engines.
-1. Test normal functions of the affected repositories. Pull from the secondary, view the files.
+1. Test typical functions of the affected repositories. Pull from the secondary, view the files.
 1. Check if the primary site's copy of the repository has an identical `git fsck` error. If you are planning a failover, then consider prioritizing that the secondary site has the same information that the primary site has. Ensure you have a backup of the primary, and follow [planned failover guidelines](../disaster_recovery/planned_failover.md).
 1. Push to the primary and check if the change gets replicated to the secondary site.
 1. If replication is not automatically working, try to manually sync the repository.
@@ -1806,3 +1820,30 @@ If the output differs on some hosts, PostgreSQL replication does not work proper
 A full index rebuild is required if the on-disk data is transferred 'at rest' to an operating system with an incompatible locale, or through replication.
 
 This check is also required when using a mixture of GitLab deployments. The locale might be different between an Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services.
+
+## Investigate causes of database replication lag
+
+If the output of `sudo gitlab-rake geo:status` shows that `Database replication lag` remains significantly high over time, the primary node in database replication can be checked to determine the status of lag for
+different parts of the database replication process. These values are known as `write_lag`, `flush_lag`, and `replay_lag`. For more information, see
+[the official PostgreSQL documentation](https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-REPLICATION-VIEW).
+
+Run the following command from the primary Geo node's database to provide relevant output:
+
+```shell
+gitlab-psql -xc 'SELECT write_lag,flush_lag,replay_lag FROM pg_stat_replication;'
+
+-[ RECORD 1 ]---------------
+write_lag  | 00:00:00.072392
+flush_lag  | 00:00:00.108168
+replay_lag | 00:00:00.108283
+```
+
+If one or more of these values is significantly high, this could indicate a problem and should be investigated further. When determining the cause, consider that:
+
+- `write_lag` indicates the time since when WAL bytes have been sent by the primary, then received to the secondary, but not yet flushed or applied.
+- A high `write_lag` value may indicate degraded network performance or insufficient network speed between the primary and secondary nodes.
+- A high `flush_lag` value may indicate degraded or sub-optimal disk I/O performance with the secondary node's storage device.
+- A high `replay_lag` value may indicate long running transactions in PostgreSQL, or the saturation of a needed resource like the CPU.
+- The difference in time between `write_lag` and `flush_lag` indicates that WAL bytes have been sent to the underlying storage system, but it has not reported that they were flushed.
+  This data is most likely not fully written to a persistent storage, and likely held in some kind of volatile write cache.
+- The difference between `flush_lag` and `replay_lag` indicates WAL bytes that have been successfully persisted to storage, but could not be replayed by the database system.

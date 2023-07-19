@@ -21,6 +21,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/emoji');
 jest.mock('autosize');
+jest.mock('~/lib/graphql');
 
 describe('vue_shared/component/markdown/markdown_editor', () => {
   useLocalStorageSpy();
@@ -29,7 +30,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   const value = 'test markdown';
   const renderMarkdownPath = '/api/markdown';
   const markdownDocsPath = '/help/markdown';
-  const quickActionsDocsPath = '/help/quickactions';
   const enableAutocomplete = true;
   const enablePreview = false;
   const formFieldId = 'markdown_field';
@@ -43,7 +43,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     value,
     renderMarkdownPath,
     markdownDocsPath,
-    quickActionsDocsPath,
     enableAutocomplete,
     autocompleteDataSources,
     enablePreview,
@@ -64,6 +63,15 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       stubs: {
         BubbleMenu: stubComponent(BubbleMenu),
         ...stubs,
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            currentUser: {
+              loading: false,
+            },
+          },
+        },
       },
     });
   };
@@ -110,7 +118,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(findMarkdownField().props()).toMatchObject({
       autocompleteDataSources,
       markdownPreviewPath: renderMarkdownPath,
-      quickActionsDocsPath,
+      supportsQuickActions: true,
       canAttachFile: true,
       enableAutocomplete,
       textareaValue: value,
@@ -120,7 +128,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
-  // quarantine flaky spec:https://gitlab.com/gitlab-org/gitlab/-/issues/412618
+  // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/412618
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('passes render_quick_actions param to renderMarkdownPath if quick actions are enabled', async () => {
     buildWrapper({ propsData: { supportsQuickActions: true } });
@@ -131,7 +139,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(mock.history.post[0].url).toContain(`render_quick_actions=true`);
   });
 
-  // quarantine flaky spec: https://gitlab.com/gitlab-org/gitlab/-/issues/411565
+  // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/411565
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled', async () => {
     buildWrapper({ propsData: { supportsQuickActions: false } });
@@ -145,27 +153,31 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   it('enables content editor switcher when contentEditorEnabled prop is true', () => {
     buildWrapper({ propsData: { enableContentEditor: true } });
 
-    expect(findMarkdownField().text()).toContain('Switch to rich text');
+    expect(findMarkdownField().text()).toContain('Switch to rich text editing');
   });
 
   it('hides content editor switcher when contentEditorEnabled prop is false', () => {
     buildWrapper({ propsData: { enableContentEditor: false } });
 
-    expect(findMarkdownField().text()).not.toContain('Switch to rich text');
+    expect(findMarkdownField().text()).not.toContain('Switch to rich text editing');
   });
 
   it('passes down any additional props to markdown field component', () => {
-    const propsData = {
+    const codeSuggestionsConfig = {
       line: { text: 'hello world', richText: 'hello world' },
       lines: [{ text: 'hello world', richText: 'hello world' }],
       canSuggest: true,
     };
 
     buildWrapper({
-      propsData: { ...propsData, myCustomProp: 'myCustomValue', 'data-testid': 'custom id' },
+      propsData: {
+        codeSuggestionsConfig,
+        myCustomProp: 'myCustomValue',
+        'data-testid': 'custom id',
+      },
     });
 
-    expect(findMarkdownField().props()).toMatchObject(propsData);
+    expect(findMarkdownField().props()).toMatchObject(codeSuggestionsConfig);
     expect(findMarkdownField().vm.$attrs).toMatchObject({
       myCustomProp: 'myCustomValue',
 
@@ -201,7 +213,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(findMarkdownField().find('textarea').attributes('disabled')).toBe(undefined);
     });
 
-    // quarantine flaky spec: https://gitlab.com/gitlab-org/gitlab/-/issues/404734
+    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/404734
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('disables content editor when disabled prop is true', async () => {
       buildWrapper({ propsData: { disabled: true } });
@@ -436,8 +448,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
   describe('when contentEditor is disabled', () => {
     it('resets the editingMode to markdownField', () => {
-      localStorage.setItem('gl-markdown-editor-mode', 'contentEditor');
-
       buildWrapper({ propsData: { autosaveKey: 'issue/1234', enableContentEditor: false } });
 
       expect(wrapper.vm.editingMode).toBe(EDITING_MODE_MARKDOWN_FIELD);

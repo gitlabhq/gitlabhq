@@ -85,6 +85,12 @@ RSpec.describe AwardEmojis::DestroyService, feature_category: :team_planning do
           expect(result[:award]).to eq(award_from_user)
           expect(result[:award]).to be_destroyed
         end
+
+        it 'executes hooks' do
+          expect(service).to receive(:execute_hooks).with(award_from_user, 'revoke')
+
+          service.execute
+        end
       end
     end
   end

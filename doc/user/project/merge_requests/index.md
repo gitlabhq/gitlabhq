@@ -77,7 +77,7 @@ or:
 
 or:
 
-1. On the left sidebar, at the top, select **Merge requests** (**{merge-request}**).
+1. On the left sidebar, select **Code > Merge requests** (**{merge-request}**).
 1. From the dropdown list, select **Assigned**.
 
 ## Filter the list of merge requests
@@ -110,9 +110,6 @@ To filter the list of merge requests:
    `AND`.
 1. Select a **Sort direction**, either **{sort-lowest}** for descending order,
    or **{sort-highest}** for ascending order.
-
-GitLab displays the results on-screen, but you can also
-[retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
 
 ### By environment or deployment date
 
@@ -263,12 +260,8 @@ after merging does not retarget open merge requests. This improvement is
 <!-- When the `moved_mr_sidebar` feature flag is removed, delete this topic and update the steps for these actions
 like in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87727/diffs?diff_id=522279685#5d9afba799c4af9920dab533571d7abb8b9e9163 -->
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`. Enabled by default.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/373757) to also move actions on issues, incidents, and epics in GitLab 16.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`.
-On GitLab.com, this feature is enabled in the following projects: `gitlab-org/gitlab`, `gitlab-com/www-gitlab-com`, and `gitlab-org/customers-gitlab-com`.
 
 When this feature flag is enabled, in the upper-right corner,
 **Merge request actions** (**{ellipsis_v}**) contains the following actions:
@@ -317,7 +310,7 @@ For a web developer writing a webpage for your company's website:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
-To make it available per user, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `mr_activity_filters` for individual or groups of users.
+To make it available per user, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `mr_activity_filters` for individual or groups of users.
 On GitLab.com, this feature is enabled for GitLab team members only.
 
 To understand the history of a merge request, filter its activity feed to show you

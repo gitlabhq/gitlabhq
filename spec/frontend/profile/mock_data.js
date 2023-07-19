@@ -22,6 +22,7 @@ export const userCalendarResponse = {
 };
 
 export const MOCK_SNIPPETS_EMPTY_STATE = 'illustrations/empty-state/empty-snippets-md.svg';
+export const MOCK_NEW_SNIPPET_PATH = '/-/snippets/new';
 
 export const MOCK_USER = {
   id: '1',

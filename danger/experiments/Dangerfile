@@ -1,0 +1,7 @@
+# frozen_string_literal: true
+
+unless experiments.class_files_removed?
+  msg = "This merge request removes experiment: `#{experiments.removed_experiments.join(',')}`" \
+        ", please also remove the class file."
+  fail msg # rubocop:disable Style/SignalException
+end

@@ -41,7 +41,7 @@ export default {
         item.extraAttrs = {
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_profile',
-          'data-qa-selector': 'user_profile_link',
+          'data-testid': 'user_profile_link',
         };
       }
 
@@ -74,13 +74,13 @@ export default {
             class="gl-display-flex gl-align-items-center gl-mt-2 gl-font-sm"
           >
             <gl-emoji :data-name="user.status.emoji" class="gl-mr-1" />
-            <span v-safe-html="user.status.message" class="gl-text-truncate"></span>
+            <span v-safe-html="user.status.message_html" class="gl-text-truncate"></span>
             <gl-tooltip
               :target="() => $refs.statusTooltipTarget"
               boundary="viewport"
               placement="bottom"
             >
-              <span v-safe-html="user.status.message"></span>
+              <span v-safe-html="user.status.message_html"></span>
             </gl-tooltip>
           </span>
         </span>

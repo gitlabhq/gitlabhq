@@ -2,7 +2,7 @@
 
 module Projects
   class DownloadService < BaseService
-    WHITELIST = [
+    ALLOWLIST = [
       /^[^.]+\.fogbugz.com$/
     ].freeze
 
@@ -33,7 +33,7 @@ module Projects
 
     def valid_domain?(url)
       host = URI.parse(url).host
-      WHITELIST.any? { |entry| entry === host }
+      ALLOWLIST.any? { |entry| entry === host }
     end
   end
 end

@@ -31,15 +31,6 @@ RSpec.describe GroupMember, feature_category: :cell do
         expect(described_class.of_ldap_type).to eq([group_member])
       end
     end
-
-    describe '.with_user' do
-      it 'returns requested user' do
-        group_member = create(:group_member, user: user_2)
-        create(:group_member, user: user_1)
-
-        expect(described_class.with_user(user_2)).to eq([group_member])
-      end
-    end
   end
 
   describe 'delegations' do

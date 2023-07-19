@@ -7,7 +7,7 @@ describe('GroupsService', () => {
   let service;
 
   beforeEach(() => {
-    service = new GroupsService(mockEndpoint);
+    service = new GroupsService(mockEndpoint, 'created_asc');
   });
 
   describe('getGroups', () => {
@@ -17,16 +17,27 @@ describe('GroupsService', () => {
         page: 2,
         filter: 'git',
         sort: 'created_asc',
-        archived: true,
       };
 
-      service.getGroups(55, 2, 'git', 'created_asc', true);
+      service.getGroups(55, 2, 'git', 'created_asc');
 
       expect(axios.get).toHaveBeenCalledWith(mockEndpoint, { params: { parent_id: 55 } });
 
-      service.getGroups(null, 2, 'git', 'created_asc', true);
+      service.getGroups(null, 2, 'git', 'created_asc');
 
       expect(axios.get).toHaveBeenCalledWith(mockEndpoint, { params });
+    });
+
+    describe('when sort argument is undefined', () => {
+      it('calls API with `initialSort` argument', () => {
+        jest.spyOn(axios, 'get').mockResolvedValue();
+
+        service.getGroups(undefined, 2, 'git', undefined);
+
+        expect(axios.get).toHaveBeenCalledWith(mockEndpoint, {
+          params: { sort: 'created_asc', filter: 'git', page: 2 },
+        });
+      });
     });
   });
 

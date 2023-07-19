@@ -1,7 +1,7 @@
-.branch-commit.gl-font-sm.gl-text-gray-500
+.branch-commit.gl-font-sm.gl-text-gray-500.gl-text-truncate
   = link_to commit.short_id, project_commit_path(project, commit.id), class: "commit-sha"
   &middot;
-  %span.str-truncated
+  %span
     = link_to_markdown commit.title, project_commit_path(project, commit.id), class: "commit-row-message gl-text-gray-500!"
   &middot;
   %span.gl-text-secondary= time_ago_with_tooltip(commit.committed_date)

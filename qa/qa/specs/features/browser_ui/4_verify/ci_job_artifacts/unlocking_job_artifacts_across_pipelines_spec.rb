@@ -24,6 +24,10 @@ module QA
         project.visit!
       end
 
+      after do
+        runner.remove_via_api!
+      end
+
       context 'when latest pipeline is successful' do
         before do
           add_ci_file(job_name: 'job_1', script: 'echo test')
@@ -127,32 +131,41 @@ module QA
 
       def add_ci_file(job_name:, script:)
         ci_file = ci_file_with_job_artifact(job_name, script)
+        original_pipeline_count = pipeline_count
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = "Set job #{job_name} script #{script}"
           commit.add_files([ci_file])
         end
+
+        wait_for_new_pipeline(original_pipeline_count)
       end
 
       def update_ci_file(job_name:, script:)
         ci_file = ci_file_with_job_artifact(job_name, script)
+        original_pipeline_count = pipeline_count
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = "Set job #{job_name} script #{script}"
           commit.update_files([ci_file])
         end
+
+        wait_for_new_pipeline(original_pipeline_count)
       end
 
       def update_ci_with_manual_job(job_name:, script:)
         ci_file = ci_file_with_manual_job(job_name, script)
+        original_pipeline_count = pipeline_count
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = "Set job #{job_name} script #{script}"
           commit.update_files([ci_file])
         end
+
+        wait_for_new_pipeline(original_pipeline_count)
       end
 
       def ci_file_with_job_artifact(job_name, script)
@@ -198,6 +211,15 @@ module QA
           job.project = project
           job.id = project.job_by_name(job_name)[:id]
         end
+      end
+
+      def pipeline_count
+        project.pipelines.length
+      end
+
+      def wait_for_new_pipeline(original_pipeline_count)
+        QA::Runtime::Logger.info('Waiting for new pipeline to be created')
+        Support::Waiter.wait_until { pipeline_count > original_pipeline_count }
       end
     end
   end

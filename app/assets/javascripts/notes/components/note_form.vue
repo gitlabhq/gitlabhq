@@ -5,6 +5,7 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
@@ -192,9 +193,6 @@ export default {
     markdownDocsPath() {
       return this.getNotesDataByProp('markdownDocsPath');
     },
-    quickActionsDocsPath() {
-      return this.getNotesDataByProp('quickActionsDocsPath');
-    },
     currentUserId() {
       return this.getUserDataByProp('id');
     },
@@ -222,6 +220,15 @@ export default {
     },
     enableContentEditor() {
       return Boolean(this.glFeatures.contentEditorOnIssues);
+    },
+    codeSuggestionsConfig() {
+      return {
+        canSuggest: this.canSuggest,
+        line: this.line,
+        lines: this.lines,
+        showPopover: this.showSuggestPopover,
+        diffFile: this.diffFile,
+      };
     },
   },
   watch: {
@@ -290,6 +297,11 @@ export default {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
 
+      trackSavedUsingEditor(
+        this.$refs.markdownEditor.isContentEditorActive,
+        `${this.getNoteableData.noteableType}_note`,
+      );
+
       this.$emit(
         'handleFormUpdate',
         this.updatedNoteBody,
@@ -321,7 +333,15 @@ export default {
         (!this.discussionResolved && this.isResolving);
       this.isSubmitting = true;
 
-      this.$emit('handleFormUpdateAddToReview', this.updatedNoteBody, shouldResolve);
+      this.$emit(
+        'handleFormUpdateAddToReview',
+        this.updatedNoteBody,
+        shouldResolve,
+        this.$refs.editNoteForm,
+        () => {
+          this.isSubmitting = false;
+        },
+      );
     },
     hasEmailParticipants() {
       return this.getNoteableData.issue_email_participants?.length;
@@ -351,15 +371,11 @@ export default {
           :value="updatedNoteBody"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="markdownDocsPath"
-          :line="line"
-          :lines="lines"
-          :can-suggest="canSuggest"
+          :code-suggestions-config="codeSuggestionsConfig"
           :add-spacing-classes="false"
           :help-page-path="helpPagePath"
           :note="discussionNote"
           :form-field-props="formFieldProps"
-          :show-suggest-popover="showSuggestPopover"
-          :quick-actions-docs-path="quickActionsDocsPath"
           :autosave-key="autosaveKey"
           :autocomplete-data-sources="autocompleteDataSources"
           :disabled="isSubmitting"

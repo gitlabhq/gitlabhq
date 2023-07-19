@@ -455,19 +455,6 @@ RSpec.describe 'Filter issues', :js, feature_category: :team_planning do
         expect(page).to have_content(issue.title)
       end
 
-      it 'filters issues by searched text containing special characters' do
-        stub_feature_flags(issues_full_text_search: false)
-
-        issue = create(:issue, project: project, author: user, title: "issue with !@\#{$%^&*()-+")
-
-        search = '!@#{$%^&*()-+'
-        submit_search_term(search)
-
-        expect_issues_list_count(1)
-        expect_search_term(search)
-        expect(page).to have_content(issue.title)
-      end
-
       it 'does not show any issues' do
         search = 'testing'
         submit_search_term(search)

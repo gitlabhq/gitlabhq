@@ -1,0 +1,7 @@
+---
+Migration/AvoidFinalizeBackgroundMigration:
+  Details: grace period
+  Exclude:
+    - 'db/post_migrate/20220502015011_clean_up_fix_merge_request_diff_commit_users.rb'
+    - 'db/post_migrate/20220525131557_cleanup_backfill_integrations_enable_ssl_verification.rb'
+    - 'db/post_migrate/20220713133515_cleanup_backfill_draft_statuses_on_merge_requests.rb'

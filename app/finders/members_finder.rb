@@ -90,8 +90,10 @@ class MembersFinder
 
     # enumerate the columns here since we are enumerating them in the union and want to be immune to
     # column caching issues when adding/removing columns
-    Member.select(*Member.column_names)
+    members = Member.select(*Member.column_names)
           .includes(:user).from([Arel.sql("(#{sql}) AS #{Member.table_name}")]) # rubocop: disable CodeReuse/ActiveRecord
+    # The left join with the table users in the method distinct_on needs to be resolved
+    members.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417456")
   end
 
   def distinct_on(union)

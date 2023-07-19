@@ -16,6 +16,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
     context 'when logged in' do
       before do
+        group.add_developer(user)
         login_as(user)
       end
 

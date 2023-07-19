@@ -27,7 +27,7 @@ RSpec.shared_examples 'creates model experiments package files' do
   end
 
   it 'returns bad request if package creation fails' do
-    allow_next_instance_of(::Packages::MlModel::CreatePackageFileService) do |instance|
+    expect_next_instance_of(::Packages::MlModel::CreatePackageFileService) do |instance|
       expect(instance).to receive(:execute).and_return(nil)
     end
 
@@ -103,6 +103,22 @@ RSpec.shared_examples 'process ml model package upload' do
       end
 
       it_behaves_like 'creates model experiments package files'
+    end
+  end
+end
+
+RSpec.shared_examples 'process ml model package download' do
+  context 'when package file exists' do
+    it { is_expected.to have_gitlab_http_status(:success) }
+  end
+
+  context 'when record does not exist' do
+    it 'response is not found' do
+      expect_next_instance_of(::Packages::MlModel::PackageFinder) do |instance|
+        expect(instance).to receive(:execute!).and_raise(ActiveRecord::RecordNotFound)
+      end
+
+      expect(api_response).to have_gitlab_http_status(:not_found)
     end
   end
 end

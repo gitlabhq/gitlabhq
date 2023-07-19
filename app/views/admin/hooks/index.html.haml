@@ -1,14 +1,7 @@
 - page_title @hook.pluralized_name
 
-.row.gl-mt-3
-  .col-lg-4
-    = render 'shared/web_hooks/title_and_docs', hook: @hook
-
-  .col-lg-8.gl-mb-3
-    = gitlab_ui_form_for @hook, as: :hook, url: admin_hooks_path do |f|
-      = render partial: 'form', locals: { form: f, hook: @hook }
-      = f.submit _('Add system hook'), pajamas_button: true
-
-    = render 'shared/web_hooks/index', hooks: @hooks, hook_class: @hook.class
+.settings-section
+  = render 'shared/web_hooks/title_and_docs', hook: @hook
+  = render 'shared/web_hooks/index', hooks: @hooks, hook_class: @hook.class, partial: 'form', url: admin_hooks_path
 
 = render 'shared/file_hooks/index'

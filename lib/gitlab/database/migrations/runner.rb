@@ -32,7 +32,7 @@ module Gitlab
             result_dir = background_migrations_dir(for_database, legacy_mode)
 
             # Only one loop iteration since we pass `only:` here
-            Gitlab::Database::EachDatabase.each_database_connection(only: for_database) do |connection|
+            Gitlab::Database::EachDatabase.each_connection(only: for_database) do |connection|
               from_id = batched_migrations_last_id(for_database).read
 
               runner = Gitlab::Database::Migrations::TestBatchedBackgroundRunner
@@ -68,7 +68,7 @@ module Gitlab
             runner = nil
             base_dir = background_migrations_dir(for_database, false)
 
-            Gitlab::Database::EachDatabase.each_database_connection(only: for_database) do |connection|
+            Gitlab::Database::EachDatabase.each_connection(only: for_database) do |connection|
               runner = Gitlab::Database::Migrations::BatchedMigrationLastId
                          .new(connection, base_dir)
             end

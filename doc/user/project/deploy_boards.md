@@ -24,7 +24,7 @@ This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/e
 to add this functionality to the [agent](../index.md).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
 
 GitLab deploy boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/index.md) running on [Kubernetes](https://kubernetes.io), displaying the status
@@ -127,7 +127,7 @@ To display the deploy boards for a specific [environment](../../ci/environments/
    ![deploy boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
 
 Once all of the above are set up and the pipeline has run at least once,
-navigate to the environments page under **Deployments > Environments**.
+go to the environments page under **Operate > Environments**.
 
 Deploy boards are visible by default. You can explicitly select
 the triangle next to their respective environment name to hide them.

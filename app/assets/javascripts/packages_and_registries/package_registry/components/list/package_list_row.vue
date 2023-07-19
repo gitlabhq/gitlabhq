@@ -7,8 +7,9 @@ import {
   GlSprintf,
   GlTooltipDirective,
   GlTruncate,
+  GlLink,
 } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { s__, __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
   DELETE_PACKAGE_TEXT,
@@ -19,7 +20,6 @@ import {
   WARNING_TEXT,
 } from '~/packages_and_registries/package_registry/constants';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
-import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -34,8 +34,8 @@ export default {
     GlIcon,
     GlSprintf,
     GlTruncate,
+    GlLink,
     PackageTags,
-    PackagePath,
     PublishMethod,
     ListItem,
     TimeagoTooltip,
@@ -43,7 +43,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['isGroupPage'],
+  inject: ['isGroupPage', 'canDeletePackages'],
   props: {
     packageEntity: {
       type: Object,
@@ -68,8 +68,28 @@ export default {
     pipeline() {
       return this.packageEntity?.pipelines?.nodes[0];
     },
+    projectName() {
+      return this.packageEntity.project.name;
+    },
+    projectLink() {
+      return this.packageEntity.project.webUrl;
+    },
     pipelineUser() {
       return this.pipeline?.user?.name;
+    },
+    publishedMessage() {
+      if (this.isGroupPage) {
+        if (this.pipelineUser) {
+          return s__(`PackageRegistry|Published to %{projectName} by %{author}, %{date}`);
+        }
+        return s__(`PackageRegistry|Published to %{projectName}, %{date}`);
+      }
+
+      if (this.pipelineUser) {
+        return s__(`PackageRegistry|Published by %{author}, %{date}`);
+      }
+
+      return s__(`PackageRegistry|Published %{date}`);
     },
     errorStatusRow() {
       return this.packageEntity.status === PACKAGE_ERROR_STATUS;
@@ -102,7 +122,7 @@ export default {
   <list-item data-testid="package-row" :selected="selected" v-bind="$attrs">
     <template #left-action>
       <gl-form-checkbox
-        v-if="packageEntity.canDestroy"
+        v-if="canDeletePackages"
         class="gl-m-0"
         :checked="selected"
         @change="$emit('select')"
@@ -142,20 +162,7 @@ export default {
           :text="packageEntity.version"
           :with-tooltip="true"
         />
-
-        <div v-if="pipelineUser" class="gl-display-none gl-sm-display-flex gl-ml-2">
-          <gl-sprintf :message="s__('PackageRegistry|published by %{author}')">
-            <template #author>{{ pipelineUser }}</template>
-          </gl-sprintf>
-        </div>
-
         <span class="gl-ml-2" data-testid="package-type">&middot; {{ packageType }}</span>
-
-        <package-path
-          v-if="isGroupPage"
-          :path="packageEntity.project.fullPath"
-          :disabled="nonDefaultRow"
-        />
       </div>
       <div v-else>
         <gl-icon
@@ -174,11 +181,15 @@ export default {
     </template>
 
     <template #right-secondary>
-      <span data-testid="created-date">
-        <gl-sprintf :message="$options.i18n.createdAt">
-          <template #timestamp>
+      <span data-testid="right-secondary">
+        <gl-sprintf :message="publishedMessage">
+          <template v-if="isGroupPage" #projectName>
+            <gl-link data-testid="root-link" :href="projectLink">{{ projectName }}</gl-link>
+          </template>
+          <template #date>
             <timeago-tooltip :time="packageEntity.createdAt" />
           </template>
+          <template v-if="pipelineUser" #author>{{ pipelineUser }}</template>
         </gl-sprintf>
       </span>
     </template>

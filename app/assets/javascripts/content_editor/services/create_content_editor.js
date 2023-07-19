@@ -9,8 +9,9 @@ import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
+import CodeSuggestion from '../extensions/code_suggestion';
 import ColorChip from '../extensions/color_chip';
-import Comment from '../extensions/comment';
+import CopyPaste from '../extensions/copy_paste';
 import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
@@ -40,10 +41,10 @@ import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
+import Loading from '../extensions/loading';
 import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
-import PasteMarkdown from '../extensions/paste_markdown';
 import Reference from '../extensions/reference';
 import ReferenceLabel from '../extensions/reference_label';
 import ReferenceDefinition from '../extensions/reference_definition';
@@ -73,11 +74,6 @@ import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
   new Editor({
     extensions: [...extensions],
-    editorProps: {
-      attributes: {
-        class: 'gl-shadow-none!',
-      },
-    },
     ...options,
   });
 
@@ -90,6 +86,7 @@ export const createContentEditor = ({
   drawioEnabled = false,
   enableAutocomplete,
   autocompleteDataSources = {},
+  codeSuggestionsConfig = {},
 } = {}) => {
   if (!isFunction(renderMarkdown)) {
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
@@ -112,8 +109,8 @@ export const createContentEditor = ({
     BulletList,
     Code,
     ColorChip,
-    Comment,
     CodeBlockHighlight,
+    CodeSuggestion.configure({ config: codeSuggestionsConfig }),
     DescriptionItem,
     DescriptionList,
     Details,
@@ -142,10 +139,11 @@ export const createContentEditor = ({
     ExternalKeydownHandler.configure({ eventHub }),
     Link,
     ListItem,
+    Loading,
     MathInline,
     OrderedList,
     Paragraph,
-    PasteMarkdown.configure({ eventHub, renderMarkdown, serializer }),
+    CopyPaste.configure({ eventHub, renderMarkdown, serializer }),
     Reference.configure({ assetResolver }),
     ReferenceLabel,
     ReferenceDefinition,
@@ -181,5 +179,6 @@ export const createContentEditor = ({
     deserializer,
     assetResolver,
     drawioEnabled,
+    codeSuggestionsConfig,
   });
 };

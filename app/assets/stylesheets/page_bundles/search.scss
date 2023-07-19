@@ -69,11 +69,9 @@ $language-filter-max-height: 20rem;
       }
 
       .label-with-color-checkbox {
-        max-height: $gl-spacing-scale-5;
-
         .custom-control-label {
+          display: flex;
           margin-bottom: 0;
-          max-height: $gl-spacing-scale-5;
 
           .label-title {
             margin-left: -$gl-spacing-scale-2;

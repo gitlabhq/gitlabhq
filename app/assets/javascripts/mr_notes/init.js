@@ -1,12 +1,13 @@
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, getCookie } from '~/lib/utils/common_utils';
 import mrNotes from '~/mr_notes/stores';
-import { getLocationHash } from '~/lib/utils/url_utility';
+import { getLocationHash, getParameterValues } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import { initReviewBar } from '~/batch_comments';
 import { initDiscussionCounter } from '~/mr_notes/discussion_counter';
 import { initOverviewTabCounter } from '~/mr_notes/init_count';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
 import { getReviewsForMergeRequest } from '~/diffs/utils/file_reviews';
+import { DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 
 function setupMrNotesState(store, notesDataset, diffsDataset) {
   const noteableData = JSON.parse(notesDataset.noteableData);
@@ -37,6 +38,8 @@ function setupMrNotesState(store, notesDataset, diffsDataset) {
     viewDiffsFileByFile: parseBoolean(diffsDataset.fileByFileDefault),
     defaultSuggestionCommitMessage: diffsDataset.defaultSuggestionCommitMessage,
     mrReviews: getReviewsForMergeRequest(mrPath),
+    diffViewType:
+      getParameterValues('view')[0] || getCookie(DIFF_VIEW_COOKIE_NAME) || INLINE_DIFF_VIEW_TYPE,
   });
 }
 

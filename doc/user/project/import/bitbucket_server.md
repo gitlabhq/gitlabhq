@@ -31,7 +31,7 @@ You can import Bitbucket repositories to GitLab.
 
 > Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
-- [Bitbucket Server import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
+- [Bitbucket Server import source](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
   by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to.
@@ -41,7 +41,7 @@ You can import Bitbucket repositories to GitLab.
 To import your Bitbucket repositories:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project**.
 1. Select **Bitbucket Server**.
 1. Log in to Bitbucket and grant GitLab access to your Bitbucket account.
@@ -93,7 +93,7 @@ repository imports under the namespace of the user who started the import proces
 
 FLAG:
 On self-managed GitLab and GitLab.com, by default this feature is not available. To make it
-available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md)
+available, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
 named `bitbucket_server_user_mapping_by_username`. This feature is not ready for production use.
 
 With this feature enabled, the importer tries to find a user in the GitLab user database with the

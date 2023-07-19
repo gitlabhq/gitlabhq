@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Git::DiffCollection do
   end
 
   subject do
-    Gitlab::Git::DiffCollection.new(
+    described_class.new(
       iterator,
       max_files: max_files,
       max_lines: max_lines,
@@ -495,7 +495,7 @@ RSpec.describe Gitlab::Git::DiffCollection do
   end
 
   describe 'empty collection' do
-    subject { Gitlab::Git::DiffCollection.new([]) }
+    subject { described_class.new([]) }
 
     it_behaves_like 'overflow stuff'
 
@@ -533,7 +533,7 @@ RSpec.describe Gitlab::Git::DiffCollection do
   describe '#each' do
     context 'when diff are too large' do
       let(:collection) do
-        Gitlab::Git::DiffCollection.new([{ diff: 'a' * 204800 }])
+        described_class.new([{ diff: 'a' * 204800 }])
       end
 
       it 'yields Diff instances even when they are too large' do
@@ -612,7 +612,7 @@ RSpec.describe Gitlab::Git::DiffCollection do
           let(:iterator) { [fake_diff(1, 1)] * 4 }
 
           before do
-            allow(Gitlab::Git::DiffCollection)
+            allow(described_class)
               .to receive(:default_limits)
               .and_return({ max_files: 2, max_lines: max_lines })
           end
@@ -641,7 +641,7 @@ RSpec.describe Gitlab::Git::DiffCollection do
           end
 
           before do
-            allow(Gitlab::Git::DiffCollection)
+            allow(described_class)
               .to receive(:default_limits)
               .and_return({ max_files: max_files, max_lines: 80 })
           end
@@ -672,7 +672,7 @@ RSpec.describe Gitlab::Git::DiffCollection do
           before do
             allow(Gitlab::CurrentSettings).to receive(:diff_max_patch_bytes).and_return(1.megabyte)
 
-            allow(Gitlab::Git::DiffCollection)
+            allow(described_class)
               .to receive(:default_limits)
               .and_return({ max_files: 4, max_lines: 3000 })
           end
@@ -713,7 +713,7 @@ RSpec.describe Gitlab::Git::DiffCollection do
 
     context 'when offset_index is given' do
       subject do
-        Gitlab::Git::DiffCollection.new(
+        described_class.new(
           iterator,
           max_files: max_files,
           max_lines: max_lines,
@@ -760,7 +760,7 @@ RSpec.describe Gitlab::Git::DiffCollection do
         end
 
         before do
-          allow(Gitlab::Git::DiffCollection)
+          allow(described_class)
             .to receive(:default_limits)
             .and_return({ max_files: max_files, max_lines: 80 })
         end

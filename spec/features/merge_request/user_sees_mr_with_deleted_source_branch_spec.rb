@@ -6,7 +6,7 @@ require 'spec_helper'
 # message to be shown by JavaScript when the source branch was deleted.
 # Please do not remove ":js".
 RSpec.describe 'Merge request > User sees MR with deleted source branch',
-               :js, feature_category: :code_review_workflow do
+  :js, feature_category: :code_review_workflow do
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let(:user) { project.creator }

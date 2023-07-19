@@ -37,11 +37,14 @@ describe('DeleteIssueModal component', () => {
     });
 
     describe('when "primary" event is emitted', () => {
-      let formSubmitSpy;
+      const submitMock = jest.fn();
+      // Mock the form submit method
+      Object.defineProperty(HTMLFormElement.prototype, 'submit', {
+        value: submitMock,
+      });
 
       beforeEach(() => {
         wrapper = mountComponent();
-        formSubmitSpy = jest.spyOn(wrapper.vm.$refs.form, 'submit');
         findModal().vm.$emit('primary');
       });
 
@@ -50,7 +53,7 @@ describe('DeleteIssueModal component', () => {
       });
 
       it('submits the form', () => {
-        expect(formSubmitSpy).toHaveBeenCalled();
+        expect(submitMock).toHaveBeenCalledTimes(1);
       });
     });
   });

@@ -12,14 +12,13 @@ require 'action_mailer/railtie'
 require 'action_cable/engine'
 require 'rails/test_unit/railtie'
 
+require 'gitlab/utils/all'
+
 Bundler.require(*Rails.groups)
 
 module Gitlab
   class Application < Rails::Application
-    config.load_defaults 6.1
-
-    config.active_support.hash_digest_class = ::OpenSSL::Digest::SHA256
-
+    config.load_defaults 7.0
     # This section contains configuration from Rails upgrades to override the new defaults so that we
     # keep existing behavior.
     #
@@ -28,6 +27,22 @@ module Gitlab
     # https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
     #
     # To switch a setting to the new default value, we just need to delete the specific line here.
+
+    # Rails 7.0
+    config.action_controller.raise_on_open_redirects = false
+    config.action_dispatch.return_only_request_media_type_on_content_type = true
+    config.action_mailer.smtp_timeout = nil # New default is 5
+    config.action_view.button_to_generates_button_tag = nil # New default is true
+    config.active_record.automatic_scope_inversing = nil # New default is true
+    config.active_record.verify_foreign_keys_for_fixtures = nil # New default is true
+    config.active_record.partial_inserts = true # New default is false
+    config.active_support.cache_format_version = nil # New default is 7.0
+    config.active_support.disable_to_s_conversion = false # New default is true
+    config.active_support.executor_around_test_case = nil # New default is true
+    config.active_support.isolation_level = nil # New default is thread
+    config.active_support.key_generator_hash_digest_class = nil # New default is OpenSSL::Digest::SHA256
+    config.active_support.remove_deprecated_time_with_zone_name = nil # New default is true
+    config.active_support.use_rfc4122_namespaced_uuids = nil # New default is true
 
     # Rails 6.1
     config.action_dispatch.cookies_same_site_protection = nil # New default is :lax
@@ -49,7 +64,6 @@ module Gitlab
     ActiveSupport.to_time_preserves_timezone = false
 
     require_dependency Rails.root.join('lib/gitlab')
-    require_dependency Rails.root.join('lib/gitlab/utils')
     require_dependency Rails.root.join('lib/gitlab/action_cable/config')
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
@@ -216,6 +230,9 @@ module Gitlab
       sharedSecret
     )
 
+    # This config option can be removed after Rails 7.1 by https://gitlab.com/gitlab-org/gitlab/-/issues/416270
+    config.active_support.use_rfc4122_namespaced_uuids = true
+
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
 
@@ -318,7 +335,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/project.css"
     config.assets.precompile << "page_bundles/projects_edit.css"
     config.assets.precompile << "page_bundles/projects_usage_quotas.css"
-    config.assets.precompile << "page_bundles/prometheus.css"
     config.assets.precompile << "page_bundles/promotions.css"
     config.assets.precompile << "page_bundles/releases.css"
     config.assets.precompile << "page_bundles/remote_development.css"
@@ -361,7 +377,6 @@ module Gitlab
     # Import woff2 for fonts
     config.assets.paths << "#{config.root}/node_modules/@gitlab/fonts/"
     config.assets.precompile << "gitlab-sans/*.woff2"
-    config.assets.precompile << "jetbrains-mono/*.woff2"
     config.assets.precompile << "gitlab-mono/*.woff2"
 
     # Import gitlab-svgs directly from vendored directory
@@ -546,15 +561,15 @@ module Gitlab
       app.config.assets.precompile << LOOSE_APP_ASSETS
     end
 
-    # This empty initializer forces the :let_zeitwerk_take_over initializer to run before we load
+    # This empty initializer forces the :setup_main_autoloader initializer to run before we load
     # initializers in config/initializers. This is done because autoloading before Zeitwerk takes
     # over is deprecated but our initializers do a lot of autoloading.
     # See https://gitlab.com/gitlab-org/gitlab/issues/197346 for more details
-    initializer :move_initializers, before: :load_config_initializers, after: :let_zeitwerk_take_over do
+    initializer :move_initializers, before: :load_config_initializers, after: :setup_main_autoloader do
     end
 
     # We need this for initializers that need to be run before Zeitwerk is loaded
-    initializer :before_zeitwerk, before: :let_zeitwerk_take_over, after: :prepend_helpers_path do
+    initializer :before_zeitwerk, before: :setup_main_autoloader, after: :prepend_helpers_path do
       Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].sort.each do |initializer|
         load_config_initializer(initializer)
       end
@@ -627,7 +642,7 @@ module Gitlab
       # [0]: https://github.com/rails/rails/commit/94d81c3c39e3ddc441c3af3f874e53b197cf3f54
       # [1]: https://salsa.debian.org/ruby-team/rails/-/commit/5663e598b41dc4e2058db22e1ee0d678e5c483ba
       #
-      ActiveRecord::Base.yaml_column_permitted_classes = config.active_record.yaml_column_permitted_classes
+      ActiveRecord.yaml_column_permitted_classes = config.active_record.yaml_column_permitted_classes
 
       # on_master_start yields immediately in unclustered environments and runs
       # when the primary process is done initializing otherwise.

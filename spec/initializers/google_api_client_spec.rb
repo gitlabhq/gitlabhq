@@ -8,7 +8,7 @@ require 'google/apis/core/base_service'
 RSpec.describe Google::Apis::Core::HttpCommand do # rubocop:disable RSpec/FilePath
   context('with a successful response') do
     let(:client) { Google::Apis::Core::BaseService.new('', '').client }
-    let(:command) { Google::Apis::Core::HttpCommand.new(:get, 'https://www.googleapis.com/zoo/animals') }
+    let(:command) { described_class.new(:get, 'https://www.googleapis.com/zoo/animals') }
 
     before do
       stub_request(:get, 'https://www.googleapis.com/zoo/animals').to_return(body: %(Hello world))

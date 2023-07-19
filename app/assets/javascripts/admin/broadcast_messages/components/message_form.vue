@@ -17,7 +17,15 @@ import { createAlert, VARIANT_DANGER } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { THEMES, TYPES, TYPE_BANNER } from '../constants';
+import {
+  THEMES,
+  TYPES,
+  TYPE_BANNER,
+  TARGET_OPTIONS,
+  TARGET_ALL,
+  TARGET_ALL_MATCHING_PATH,
+  TARGET_ROLES,
+} from '../constants';
 import DatetimePicker from './datetime_picker.vue';
 
 const FORM_HEADERS = { headers: { 'Content-Type': 'application/json; charset=utf-8' } };
@@ -59,10 +67,8 @@ export default {
     theme: s__('BroadcastMessages|Theme'),
     dismissable: s__('BroadcastMessages|Dismissable'),
     dismissableDescription: s__('BroadcastMessages|Allow users to dismiss the broadcast message'),
+    target: s__('BroadcastMessages|Target broadcast message'),
     targetRoles: s__('BroadcastMessages|Target roles'),
-    targetRolesDescription: s__(
-      'BroadcastMessages|The broadcast message displays only to users in projects and groups who have these roles.',
-    ),
     targetPath: s__('BroadcastMessages|Target Path'),
     targetPathDescription: s__('BroadcastMessages|Paths can contain wildcards, like */welcome'),
     startsAt: s__('BroadcastMessages|Starts at'),
@@ -79,6 +85,7 @@ export default {
   },
   messageThemes: THEMES,
   messageTypes: TYPES,
+  targetOptions: TARGET_OPTIONS,
   props: {
     broadcastMessage: {
       type: Object,
@@ -92,6 +99,7 @@ export default {
       type: this.broadcastMessage.broadcastType,
       theme: this.broadcastMessage.theme,
       dismissable: this.broadcastMessage.dismissable || false,
+      targetSelected: '',
       targetPath: this.broadcastMessage.targetPath,
       targetAccessLevels: this.broadcastMessage.targetAccessLevels,
       targetAccessLevelOptions: this.targetAccessLevelOptions.map(([text, value]) => ({
@@ -122,6 +130,14 @@ export default {
         ? this.messagesPath
         : `${this.messagesPath}/${this.broadcastMessage.id}`;
     },
+    showTargetRoles() {
+      return this.targetSelected === TARGET_ROLES;
+    },
+    showTargetPath() {
+      return (
+        this.targetSelected === TARGET_ROLES || this.targetSelected === TARGET_ALL_MATCHING_PATH
+      );
+    },
     formPayload() {
       return JSON.stringify({
         message: this.message,
@@ -143,6 +159,17 @@ export default {
       },
       immediate: true,
     },
+    targetSelected(newTarget) {
+      if (newTarget === TARGET_ALL) {
+        this.targetPath = '';
+        this.targetAccessLevels = [];
+      } else if (newTarget === TARGET_ALL_MATCHING_PATH) {
+        this.targetAccessLevels = [];
+      }
+    },
+  },
+  created() {
+    this.targetSelected = this.initialTarget();
   },
   methods: {
     async onSubmit() {
@@ -178,6 +205,15 @@ export default {
       } catch (e) {
         this.renderedMessage = '';
       }
+    },
+
+    initialTarget() {
+      if (this.targetAccessLevels.length > 0) {
+        return TARGET_ROLES;
+      } else if (this.targetPath !== '') {
+        return TARGET_ALL_MATCHING_PATH;
+      }
+      return TARGET_ALL;
     },
   },
   safeHtmlConfig: {
@@ -245,14 +281,29 @@ export default {
       </gl-form-group>
     </template>
 
-    <gl-form-group :label="$options.i18n.targetRoles" data-testid="target-roles-checkboxes">
-      <gl-form-checkbox-group v-model="targetAccessLevels" :options="targetAccessLevelOptions" />
-      <gl-form-text>
-        {{ $options.i18n.targetRolesDescription }}
-      </gl-form-text>
+    <gl-form-group :label="$options.i18n.target" label-for="target-select">
+      <gl-form-select
+        id="target-select"
+        v-model="targetSelected"
+        :options="$options.targetOptions"
+        data-testid="target-select"
+      />
     </gl-form-group>
 
-    <gl-form-group :label="$options.i18n.targetPath" label-for="target-path-input">
+    <gl-form-group
+      v-show="showTargetRoles"
+      :label="$options.i18n.targetRoles"
+      data-testid="target-roles-checkboxes"
+    >
+      <gl-form-checkbox-group v-model="targetAccessLevels" :options="targetAccessLevelOptions" />
+    </gl-form-group>
+
+    <gl-form-group
+      v-show="showTargetPath"
+      :label="$options.i18n.targetPath"
+      label-for="target-path-input"
+      data-testid="target-path-input"
+    >
       <gl-form-input id="target-path-input" v-model="targetPath" />
       <gl-form-text>
         {{ $options.i18n.targetPathDescription }}

@@ -34,21 +34,6 @@ namespace :gitlab do
       puts Gitlab::Json.pretty_generate(Gitlab::UsageDataMetrics.uncached_data)
     end
 
-    desc 'GitLab | UsageDataMetrics | Generate known_events/ci_templates.yml based on template definitions'
-    task generate_ci_template_events: :environment do
-      banner = <<~BANNER
-          # This file is generated automatically by
-          #   bin/rake gitlab:usage_data:generate_ci_template_events
-          #
-          # Do not edit it manually!
-      BANNER
-
-      all_includes = explicit_template_includes + implicit_auto_devops_includes
-      yaml = banner + YAML.dump(all_includes).gsub(/ *$/m, '')
-
-      File.write(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH, yaml)
-    end
-
     desc 'GitLab | UsageDataMetrics | Generate raw SQL metrics queries for RSpec'
     task generate_sql_metrics_queries: :environment do
       require 'active_support/testing/time_helpers'

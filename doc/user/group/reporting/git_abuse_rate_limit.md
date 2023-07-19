@@ -9,11 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. On GitLab.com, this feature is available.
 
 This is the group-level documentation. For self-managed instances, see the [administration documentation](../../admin_area/reporting/git_abuse_rate_limit.md).
 
-Git abuse rate limiting is a feature to automatically ban users who download, clone, or fork more than a specified number of repositories of a group in a given time frame. Banned users cannot access the top-level group or any of its non-public subgroups via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../../user/profile/personal_access_tokens.md) or [group access token](../../../user/group/settings/group_access_tokens.md). Access to unrelated groups is unaffected.
+Git abuse rate limiting is a feature to automatically ban users who download, clone, pull, fetch, or fork more than a specified number of repositories of a group in a given time frame. Banned users cannot access the top-level group or any of its non-public subgroups via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../../user/profile/personal_access_tokens.md) or [group access token](../../../user/group/settings/group_access_tokens.md). Access to unrelated groups is unaffected.
 
 Git abuse rate limiting does not apply to top-level group owners, [deploy tokens](../../../user/project/deploy_tokens/index.md), or [deploy keys](../../../user/project/deploy_keys/index.md).
 

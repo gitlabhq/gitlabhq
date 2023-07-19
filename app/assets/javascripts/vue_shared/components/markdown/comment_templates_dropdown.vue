@@ -1,7 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlTooltip, GlButton } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { updateText } from '~/lib/utils/text_markdown';
 import savedRepliesQuery from './saved_replies.query.graphql';
 
 export default {
@@ -54,20 +53,8 @@ export default {
     },
     onSelect(id) {
       const savedReply = this.savedReplies.find((r) => r.id === id);
-      const textArea = this.$el.closest('.md-area')?.querySelector('textarea');
-
-      if (savedReply && textArea) {
-        updateText({
-          textArea,
-          tag: savedReply.content,
-          cursorOffset: 0,
-          wrap: false,
-        });
-
-        // Wait for text to be added into textarea
-        requestAnimationFrame(() => {
-          textArea.focus();
-        });
+      if (savedReply) {
+        this.$emit('select', savedReply.content);
       }
     },
   },
@@ -81,13 +68,14 @@ export default {
       :items="filteredSavedReplies"
       :toggle-text="__('Insert comment template')"
       text-sr-only
+      no-caret
       toggle-class="js-comment-template-toggle"
       icon="comment-lines"
       category="tertiary"
       placement="right"
       searchable
       size="small"
-      class="comment-template-dropdown"
+      class="comment-template-dropdown gl-mr-3"
       positioning-strategy="fixed"
       :searching="$apollo.queries.savedReplies.loading"
       @shown="fetchCommentTemplates"
@@ -104,7 +92,7 @@ export default {
       </template>
       <template #footer>
         <div
-          class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-100 gl-display-flex gl-justify-content-center gl-p-3"
+          class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-200 gl-display-flex gl-justify-content-center gl-p-2"
         >
           <gl-button
             :href="newCommentTemplatePath"
@@ -129,5 +117,9 @@ export default {
 
 .comment-template-dropdown .gl-new-dropdown-item-check-icon {
   display: none;
+}
+
+.comment-template-dropdown input {
+  border-radius: 0;
 }
 </style>

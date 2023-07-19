@@ -1,6 +1,7 @@
 .js-mr-more-dropdown{ data: {
   merge_request: @merge_request.to_json,
   project_path: @project.full_path,
+  url: merge_request_url(@merge_request),
   edit_url: edit_project_merge_request_path(@project, @merge_request),
   is_current_user: issuable_author_is_current_user(@merge_request),
   is_logged_in: current_user,
@@ -11,5 +12,4 @@
   clipboard_text: @merge_request.to_reference(full: true),
   report_abuse_path: add_category_abuse_reports_path,
   reported_user_id: @merge_request.author.id,
-  reported_from_url: merge_request_url(@merge_request),
 } }

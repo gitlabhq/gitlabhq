@@ -4,9 +4,9 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Omnibus GitLab deprecation policy **(FREE SELF)**
+# Linux package deprecation policy **(FREE SELF)**
 
-The Omnibus GitLab packages come with number of different libraries and services which offers users plethora of configuration options.
+The Linux packages come with number of different libraries and services which offers users plethora of configuration options.
 
 As libraries and services get updated, their configuration options change
 and become obsolete. To increase maintainability and preserve a working
@@ -16,7 +16,7 @@ setup, various configuration requires removal.
 
 ### Policy
 
-The Omnibus GitLab package retains configuration for at least **one major**
+The Linux package retains configuration for at least **one major**
 version. We can't guarantee that deprecated configuration
 is available in the next major release. See [example](#example) for more details.
 
@@ -49,7 +49,8 @@ Deprecation procedure is similar for both `sensitive` and `regular` configuratio
 
 Common steps:
 
-1. Create an issue at the [Omnibus GitLab issue tracker](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues) with details on deprecation type and other necessary information. Apply the label `deprecation`.
+1. Create an issue at the [`omnibus-gitlab` issue tracker](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues) with
+   details on deprecation type and other necessary information. Apply the label `deprecation`.
 1. Decide on the removal target for the deprecated configuration
 1. Formulate deprecation notice for each item as noted in [Notice section](#notice)
 

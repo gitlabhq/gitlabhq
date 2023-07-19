@@ -7,6 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Offline environments **(ULTIMATE SELF)**
 
+NOTE:
+To set up an offline environment, you must receive an [opt-out exemption of cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#offline-cloud-licensing) prior to purchase. For more details, contact your GitLab sales representative.
+
 It's possible to run most of the GitLab security scanners when not connected to the internet.
 
 This document describes how to operate Secure Categories (that is, scanner types) in an offline

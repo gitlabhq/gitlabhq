@@ -43,6 +43,7 @@ module QA
           element :github_login_button
           element :oidc_login_button
           element :gitlab_oauth_login_button
+          element :facebook_login_button
         end
 
         view 'app/views/layouts/devise.html.haml' do
@@ -102,6 +103,12 @@ module QA
             click_element :sign_in_button
           end
 
+          if Runtime::Env.super_sidebar_enabled?
+            Page::Main::Menu.perform(&:enable_new_navigation)
+          else
+            Page::Main::Menu.perform(&:disable_new_navigation)
+          end
+
           Page::Main::Menu.perform(&:signed_in?)
         end
 
@@ -128,8 +135,8 @@ module QA
           '/users/sign_in'
         end
 
-        def has_sign_in_tab?
-          has_element?(:sign_in_tab)
+        def has_sign_in_tab?(wait: Capybara.default_max_wait_time)
+          has_element?(:sign_in_tab, wait: wait)
         end
 
         def has_ldap_tab?
@@ -186,6 +193,11 @@ module QA
           click_element :github_login_button
         end
 
+        def sign_in_with_facebook
+          set_initial_password_if_present
+          click_element :facebook_login_button
+        end
+
         def sign_in_with_saml
           set_initial_password_if_present
           click_element :saml_login_button
@@ -203,7 +215,6 @@ module QA
 
         def sign_out_and_sign_in_as(user:)
           Menu.perform(&:sign_out_if_signed_in)
-          has_sign_in_tab?
           sign_in_using_credentials(user: user)
         end
 
@@ -225,7 +236,7 @@ module QA
         def sign_in_using_gitlab_credentials(user:, skip_page_validation: false)
           wait_if_retry_later
 
-          switch_to_sign_in_tab if has_sign_in_tab?
+          switch_to_sign_in_tab if has_sign_in_tab?(wait: 0)
           switch_to_standard_tab if has_standard_tab?
 
           fill_in_credential(user)
@@ -258,7 +269,11 @@ module QA
 
           wait_for_gitlab_to_respond
 
-          Page::Main::Menu.perform(&:enable_new_navigation) if Runtime::Env.super_sidebar_enabled?
+          if Runtime::Env.super_sidebar_enabled?
+            Page::Main::Menu.perform(&:enable_new_navigation)
+          else
+            Page::Main::Menu.perform(&:disable_new_navigation)
+          end
 
           wait_for_gitlab_to_respond
 

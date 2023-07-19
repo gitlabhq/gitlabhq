@@ -122,7 +122,7 @@ RSpec.shared_examples Integrations::BaseSlashCommands do
           end
 
           it_behaves_like 'blocks command execution' do
-            let(:error_message) { 'your account has been deactivated by your administrator' }
+            let(:error_message) { "your #{Gitlab.config.gitlab.url} account needs to be reactivated" }
           end
         end
       end

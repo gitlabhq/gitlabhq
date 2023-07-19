@@ -46,7 +46,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931',
         quarantine: {
           type: :bug,
-          only: { condition: -> { QA::Runtime::Env.super_sidebar_enabled? } },
+          only: { condition: -> { !QA::Runtime::Env.super_sidebar_enabled? } },
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409336'
         }
       ) do

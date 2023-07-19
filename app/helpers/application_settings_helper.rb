@@ -497,7 +497,8 @@ module ApplicationSettingsHelper
       :projects_api_rate_limit_unauthenticated,
       :gitlab_dedicated_instance,
       :ci_max_includes,
-      :allow_account_deletion
+      :allow_account_deletion,
+      :gitlab_shell_operation_limit
     ].tap do |settings|
       next if Gitlab.com?
 

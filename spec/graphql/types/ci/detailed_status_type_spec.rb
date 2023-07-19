@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Types::Ci::DetailedStatusType do
   include GraphqlHelpers
 
-  let_it_be(:stage) { create(:ci_stage, status: :skipped) }
+  let_it_be(:stage) { create(:ci_stage, status: :manual) }
 
   specify { expect(described_class.graphql_name).to eq('DetailedStatus') }
 

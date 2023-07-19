@@ -6,6 +6,7 @@ module QA
       class Show < Page::Base
         include Page::Component::Note
         include Page::Component::Issuable::Sidebar
+        include Page::Component::RichTextPopover
 
         view 'app/assets/javascripts/batch_comments/components/preview_dropdown.vue' do
           element :review_preview_dropdown
@@ -285,6 +286,7 @@ module QA
         end
 
         def merge!
+          close_rich_text_promo_popover_if_present
           try_to_merge!
           finished_loading?
 
@@ -331,13 +333,15 @@ module QA
         #
         # @param [Boolean] transient_test true if the current test is a transient test (default: false)
         def wait_until_ready_to_merge(transient_test: false)
-          wait_until do
-            has_element?(:merge_button)
+          wait_until(message: "Waiting for ready to merge", sleep_interval: 1) do
+            # changes in mr are rendered async, because of that mr can sometimes show no changes and there will be no
+            # merge button, in such case we must retry loop otherwise find_element will raise ElementNotFound error
+            next false unless has_element?(:merge_button, wait: 1)
 
             break true unless find_element(:merge_button).disabled?
 
             # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
-            next false if has_element?(:head_mismatch_content)
+            next false if has_element?(:head_mismatch_content, wait: 1)
 
             # Stop waiting if we're in a transient test. By this point we're in an unexpected state and should let the
             # test fail so we can investigate. If we're not in a transient test we keep trying until we reach timeout.
@@ -364,6 +368,7 @@ module QA
         end
 
         def merge_immediately!
+          close_rich_text_promo_popover_if_present
           retry_until(reload: true, sleep_interval: 1, max_attempts: 12) do
             if has_element?(:merge_moment_dropdown)
               click_element(:merge_moment_dropdown, skip_finished_loading_check: true)
@@ -377,6 +382,7 @@ module QA
         end
 
         def try_to_merge!
+          close_rich_text_promo_popover_if_present
           # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
           # To remove page refresh logic if possible
           wait_until_ready_to_merge

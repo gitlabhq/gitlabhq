@@ -18,10 +18,12 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import updateWorkItemNoteMutation from '../../graphql/notes/update_work_item_note.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WorkItemCommentForm from './work_item_comment_form.vue';
+import WorkItemNoteAwardsList from './work_item_note_awards_list.vue';
 
 export default {
   name: 'WorkItemNoteThread',
   components: {
+    WorkItemNoteAwardsList,
     TimelineEntryItem,
     NoteBody,
     NoteHeader,
@@ -101,6 +103,9 @@ export default {
     author() {
       return this.note.author;
     },
+    authorId() {
+      return getIdFromGraphQLId(this.author.id);
+    },
     entryClass() {
       return {
         'note note-wrapper note-comment': true,
@@ -149,10 +154,10 @@ export default {
       return window.gon.current_user_id;
     },
     isCurrentUserAuthorOfNote() {
-      return getIdFromGraphQLId(this.author.id) === this.currentUserId;
+      return this.authorId === this.currentUserId;
     },
     isWorkItemAuthor() {
-      return getIdFromGraphQLId(this.workItem?.author?.id) === getIdFromGraphQLId(this.author.id);
+      return getIdFromGraphQLId(this.workItem?.author?.id) === this.authorId;
     },
     projectName() {
       return this.workItem?.project?.name;
@@ -284,7 +289,12 @@ export default {
 <template>
   <timeline-entry-item :id="noteAnchorId" :class="entryClass">
     <div :key="note.id" class="timeline-avatar gl-float-left">
-      <gl-avatar-link :href="author.webUrl">
+      <gl-avatar-link
+        :href="author.webUrl"
+        :data-user-id="authorId"
+        :data-username="author.username"
+        class="js-user-link"
+      >
         <gl-avatar
           :src="author.avatarUrl"
           :entity-name="author.username"
@@ -323,6 +333,8 @@ export default {
           <div class="gl-display-inline-flex">
             <note-actions
               :show-award-emoji="hasAwardEmojiPermission"
+              :work-item-iid="workItemIid"
+              :note="note"
               :note-url="noteUrl"
               :show-reply="showReply"
               :show-edit="hasAdminPermission"
@@ -355,6 +367,9 @@ export default {
           :updated-by-path="lastEditedBy.webPath"
           :class="isFirstNote ? 'gl-pl-3' : 'gl-pl-8'"
         />
+      </div>
+      <div class="note-awards" :class="isFirstNote ? '' : 'gl-pl-7'">
+        <work-item-note-awards-list :note="note" :work-item-iid="workItemIid" :is-modal="isModal" />
       </div>
     </div>
   </timeline-entry-item>

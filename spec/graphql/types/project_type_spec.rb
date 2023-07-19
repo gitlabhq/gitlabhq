@@ -909,6 +909,14 @@ RSpec.describe GitlabSchema.types['Project'] do
         expect(forks).to contain_exactly(a_hash_including('fullPath' => fork_developer.full_path),
 a_hash_including('fullPath' => fork_group_developer.full_path))
       end
+
+      context 'when current user is not set' do
+        let(:user) { nil }
+
+        it 'does not return any forks' do
+          expect(forks.count).to eq(0)
+        end
+      end
     end
   end
 end

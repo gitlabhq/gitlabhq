@@ -21,7 +21,8 @@ class ProjectHook < WebHook
     :wiki_page_hooks,
     :deployment_hooks,
     :feature_flag_hooks,
-    :release_hooks
+    :release_hooks,
+    :emoji_hooks
   ]
 
   belongs_to :project

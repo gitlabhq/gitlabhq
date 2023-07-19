@@ -1,8 +1,0 @@
----
-name: graphql_generic_tracing_metrics_deactivate
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123228
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415004
-milestone: '16.1'
-type: development
-group: group::application performance
-default_enabled: false

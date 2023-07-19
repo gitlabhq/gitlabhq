@@ -144,7 +144,7 @@ module QA
       end
 
       def init_repository
-        run_git("git init")
+        run_git("git init --initial-branch=#{default_branch}")
       end
 
       def pull(repository = nil, branch = nil)

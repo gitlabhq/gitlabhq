@@ -55,7 +55,7 @@ In contrast to a typical Snowplow pipeline, after enrichment, GitLab Snowplow ev
 #### Why events need to be pseudonymized
 
 GitLab is bound by its [obligations to community](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/service-usage-data-commitment/)
-and by [legal regulations](https://about.gitlab.com/handbook/legal/privacy/services-usage-data/) to protect the privacy of its users.
+and by [legal regulations](https://about.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) to protect the privacy of its users.
 
 GitLab must provide valuable insights for business decisions, and there is a need
 for a better understanding of different users' behavior patterns. The

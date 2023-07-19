@@ -27,9 +27,9 @@ Deprecation announcements can and should be created and merged into Docs at any 
 
 Please review:
 
-- The definitions of ["Deprecation", "End of Support", and "Removal"](https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology).
-- The [guidelines for deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
-- The process for [creating a deprecation entry](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
+- The definitions of ["Deprecation", "End of Support", and "Removal"](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- The [guidelines for deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+- The process for [creating a deprecation announcement](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 
 They are frequently updated, and everyone should make sure they are aware of the current standards (PM, PMM, EM, and TW).
 
@@ -38,7 +38,7 @@ They are frequently updated, and everyone should make sure they are aware of the
 - [ ] Set yourself as the Assignee, meaning you are the DRI.
 - [ ] If the deprecation is a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-change), add label `breaking change`.
 - [ ] Confirm this MR is labeled ~"release post item::deprecation"
-- [ ] Follow the process to [create a deprecation YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
+- [ ] Follow the process to [create a deprecation YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 - [ ] Add reviewers by the 10th.
 - [ ] Add scoped `devops::` and `group::` labels as necessary.
 - [ ] Add the appropriate milestone to this MR.
@@ -48,8 +48,8 @@ They are frequently updated, and everyone should make sure they are aware of the
 
 When the content is ready for review, it must be reviewed by a Technical Writer and Engineering Manager, but can also be reviewed by
 Product Marketing, Product Design, and the Product Leaders for this area. Please use the
-[reviewers](https://docs.gitlab.com/ee/user/project/merge_requests/reviews/)
-feature for all reviews. Reviewers will then `approve` the MR and remove themselves from Reviewers when their review is complete.
+[reviewers](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature)
+feature for all reviews. Reviewers will then approve the MR and remove themselves from Reviewers when their review is complete.
 
 - [ ] (Recommended) PMM
 - [ ] (Optional) Product Designer
@@ -81,7 +81,7 @@ yourself as a reviewer if it's not ready for merge yet.
   - All links must be full URLs, as the deprecation YAML files are used in two different projects. Do not use relative links. The generated doc is an exception to the relative link rule and currently uses absolute links only.
   - Make sure all links and anchors are correct. Do not link to the H1 (top) anchor on a docs page.
 - [ ] Code. Make sure any included code is wrapped in code blocks.
-- [ ] Capitalization. Make sure to capitalize feature names. Stay consistent with the Documentation Style Guidance on [Capitalization](https://docs.gitlab.com/ee/development/documentation/styleguide.html#capitalization).
+- [ ] Capitalization. Make sure to capitalize feature names. Stay consistent with the Documentation Style Guidance on [Capitalization](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#capitalization).
 - [ ] Blank spaces. Remove unnecessary spaces (end of line spaces, double spaces, extra blank lines, and lines with only spaces).
 
 </details>

@@ -16,5 +16,5 @@
       = number_with_delimiter(topic.total_projects_count)
 
   .controls.gl-flex-shrink-0.gl-ml-5
-    = link_to _('Edit'), edit_admin_topic_path(topic), id: "edit_#{dom_id(topic)}", class: 'btn gl-button btn-default'
-    = link_to _('Remove'), admin_topic_path(topic), aria: { label: _('Remove') }, data: { confirm: _("Are you sure you want to remove %{topic_name}?") % { topic_name: title }, confirm_btn_variant: 'danger' }, method: :delete, class: 'gl-button btn btn-danger'
+    = link_button_to _('Edit'), edit_admin_topic_path(topic), id: "edit_#{dom_id(topic)}"
+    = link_button_to _('Remove'), admin_topic_path(topic), aria: { label: _('Remove') }, data: { confirm: _("Are you sure you want to remove %{topic_name}?") % { topic_name: title }, confirm_btn_variant: 'danger' }, method: :delete, variant: :danger

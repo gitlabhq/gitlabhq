@@ -175,3 +175,24 @@ Previous discussions include:
 - <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44234>
 - <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36076>
 - <https://gitlab.com/gitlab-org/gitlab/-/issues/198046>
+
+### Type safety
+
+Now that we've upgraded to Ruby 3, we have more options available
+to enforce [type safety](https://en.wikipedia.org/wiki/Type_safety).
+
+Some of these options are supported as part of the Ruby syntax and do not require the use of specific type safety tools like [Sorbet](https://sorbet.org/) or [RBS](https://github.com/ruby/rbs). However, we might consider these tools in the future as well.
+
+For more information, see [Type safety](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/remote_development#type-safety) in the `remote_development` domain README.
+
+### Functional patterns
+
+Although Ruby and especially Rails are primarily based on [object-oriented programming](https://en.wikipedia.org/wiki/object-oriented_programming) patterns, Ruby is a very flexible language and supports [functional programming](https://en.wikipedia.org/wiki/Functional_programming) patterns as well.
+
+Functional programming patterns, especially in domain logic, can often result in more readable, maintainable, and bug-resistant code while still using idiomatic and familiar Ruby patterns.
+However, functional programming patterns should be used carefully because some patterns would cause confusion and should be avoided even if they're directly supported by Ruby. The [`curry` method](https://www.rubydoc.info/stdlib/core/Method:curry) is a likely example.
+
+For more information, see:
+
+- [Functional patterns](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/remote_development#functional-patterns)
+- [Railway-oriented programming and the `Result` class](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/remote_development#railway-oriented-programming-and-the-result-class)

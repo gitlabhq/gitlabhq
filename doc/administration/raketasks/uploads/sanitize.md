@@ -15,8 +15,8 @@ can remove EXIF data from existing images that were uploaded to an earlier versi
 
 To run this Rake task, you need `exiftool` installed on your system. If you installed GitLab:
 
-- Using the Omnibus package, you're all set.
-- From source, make sure `exiftool` is installed:
+- By using the Linux package, you're all set.
+- By using the self-compiled installation, make sure `exiftool` is installed:
 
   ```shell
   # Debian/Ubuntu

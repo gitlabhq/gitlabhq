@@ -189,7 +189,7 @@ For authentication CI/CD variables, see [Authentication](authentication.md).
 | `DAST_BROWSER_MAX_ACTIONS`                  | number                                                   | `10000`                                | The maximum number of actions that the crawler performs. For example, selecting a link, or filling a form.                                                                                                                                                                    |
 | `DAST_BROWSER_MAX_DEPTH`                    | number                                                   | `10`                                   | The maximum number of chained actions that the crawler takes. For example, `Click -> Form Fill -> Click` is a depth of three.                                                                                                                                                 |
 | `DAST_BROWSER_MAX_RESPONSE_SIZE_MB`         | number                                                   | `15`                                   | The maximum size of a HTTP response body. Responses with bodies larger than this are blocked by the browser. Defaults to 10 MB.                                                                                                                                               |
-| `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT` | [Duration string](https://pkg.go.dev/time#ParseDuration) | `7s`                                   | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes.                                                                                                                                               |
+| `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT` | [Duration string](https://pkg.go.dev/time#ParseDuration) | `7s`                                   | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes. Defaults to `800ms`.|
 | `DAST_BROWSER_NAVIGATION_TIMEOUT`           | [Duration string](https://pkg.go.dev/time#ParseDuration) | `15s`                                  | The maximum amount of time to wait for a browser to navigate from one page to another.                                                                                                                                                                                        |
 | `DAST_BROWSER_NUMBER_OF_BROWSERS`           | number                                                   | `3`                                    | The maximum number of concurrent browser instances to use. For shared runners on GitLab.com, we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but are likely to produce little benefit after five to seven instances. |
 | `DAST_BROWSER_PAGE_LOADING_SELECTOR`        | selector                                                 | `css:#page-is-loading`                 | Selector that when is no longer visible on the page, indicates to the analyzer that the page has finished loading and the scan can continue. Cannot be used with `DAST_BROWSER_PAGE_READY_SELECTOR`.                                                                          |
@@ -211,6 +211,75 @@ For authentication CI/CD variables, see [Authentication](authentication.md).
 | `DAST_TARGET_AVAILABILITY_TIMEOUT`          | number                                                   | `60`                                   | Time limit in seconds to wait for target availability.                                                                                                                                                                                                                        |
 | `DAST_WEBSITE`                              | URL                                                      | `https://example.com`                  | The URL of the website to scan.                                                                                                                                                                                                                                               |
 | `SECURE_ANALYZERS_PREFIX`                   | URL                                                      | `registry.organization.com`            | Set the Docker registry base address from which to download the analyzer.                                                                                                                                                                                                     |
+
+## Managing scope
+
+Scope controls what URLs DAST follows when crawling the target application. Properly managed scope minimizes scan run time while ensuring only the target application is checked for vulnerabilities.
+
+### Types of scope
+
+There are three types of scope:
+
+- in scope
+- out of scope
+- excluded from scope
+
+#### In scope
+
+DAST follows in-scope URLs and searches the DOM for subsequent actions to perform to continue the crawl.
+Recorded in-scope HTTP messages are passively checked for vulnerabilities and used to build attacks when running a full scan.
+
+#### Out of scope
+
+DAST follows out-of-scope URLs for non-document content types such as image, stylesheet, font, script, or AJAX request.
+[Authentication](#scope-works-differently-during-authentication) aside, DAST does not follow out-of-scope URLs for full page loads, such as when clicking a link to an external website.
+Except for passive checks that search for information leaks, recorded HTTP messages for out-of-scope URLs are not checked for vulnerabilities.
+
+#### Excluded from scope
+
+DAST does not follow excluded-from-scope URLs. Except for passive checks that search for information leaks, recorded HTTP messages for excluded-from-scope URLs are not checked for vulnerabilities.
+
+### Scope works differently during authentication
+
+Many target applications have an authentication process that depends on external websites, such as when using an identity access management provider for single sign on (SSO).
+To ensure that DAST can authenticate with these providers, DAST follows out-of-scope URLs for full page loads during authentication. DAST does not follow excluded-from-scope URLs.
+
+### How DAST blocks HTTP requests
+
+DAST instructs the browser to make the HTTP request as usual when blocking a request due to scope rules. The request is subsequently intercepted and rejected with the reason `BlockedByClient`.
+This approach allows DAST to record the HTTP request while ensuring it never reaches the target server. Passive checks such as [200.1](checks/200.1.md) use these recorded requests to verify information sent to external hosts.
+
+### How to configure scope
+
+By default, URLs matching the host of the target application are considered in-scope. All other hosts are considered out-of-scope.
+
+Scope is configured using the following variables:
+
+- Use `DAST_BROWSER_ALLOWED_HOSTS` to add in-scope hosts.
+- Use `DAST_BROWSER_IGNORED_HOSTS` to add to out-of-scope hosts.
+- Use `DAST_BROWSER_EXCLUDED_HOSTS` to add to excluded-from-scope hosts.
+- Use `DAST_EXCLUDE_URLS` to set specific URLs to be excluded-from-scope.
+
+Rules:
+
+- Excluding a host is given priority over ignoring a host, which is given priority over allowing a host.
+- Configuring scope for a host does not configure scope for the subdomains of that host.
+- Configuring scope for a host does not configure scope for all ports on that host.
+
+The following could be a typical configuration:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  variables:
+    DAST_WEBSITE: "https://my.site.com"                   # my.site.com URLs are considered in-scope by default
+    DAST_BROWSER_ALLOWED_HOSTS: "api.site.com:8443"       # include the API as part of the scan
+    DAST_BROWSER_IGNORED_HOSTS: "analytics.site.com"      # explicitly disregard analytics from the scan
+    DAST_BROWSER_EXCLUDED_HOSTS: "ads.site.com"           # don't visit any URLs on the ads subdomain
+    DAST_EXCLUDE_URLS: "https://my.site.com/user/logout"  # don't visit this URL
+```
 
 ## Vulnerability detection
 

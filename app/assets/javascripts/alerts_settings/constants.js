@@ -65,12 +65,6 @@ export const i18n = {
       proceedWithoutSave: s__('AlertSettings|Send without saving'),
       cancel: __('Cancel'),
     },
-    prometheusFormUrl: {
-      label: s__('AlertSettings|Prometheus API base URL'),
-      help: s__('AlertSettings|URL cannot be blank and must start with http: or https:.'),
-      blankUrlError: __('URL cannot be blank'),
-      invalidUrlError: __('URL is invalid'),
-    },
     restKeyInfo: {
       label: s__(
         'AlertSettings|If you reset the authorization key for this project, you must update the key in every enabled alert source.',

@@ -1,6 +1,6 @@
 import { setHTMLFixture } from 'helpers/fixtures';
 import * as createDefaultClient from '~/lib/graphql';
-import initIssuablePopovers from '~/issuable/popover/index';
+import initIssuablePopovers, * as popover from '~/issuable/popover/index';
 
 createDefaultClient.default = jest.fn();
 
@@ -9,6 +9,7 @@ describe('initIssuablePopovers', () => {
   let mr2;
   let mr3;
   let issue1;
+  let workItem1;
 
   beforeEach(() => {
     setHTMLFixture(`
@@ -24,30 +25,69 @@ describe('initIssuablePopovers', () => {
       <div id="four" class="gfm-issue" title="title" data-iid="1" data-project-path="group/project" data-reference-type="issue">
         MR3
       </div>
+      <div id="five" class="gfm-work_item" title="title" data-iid="1" data-project-path="group/project" data-reference-type="work_item">
+        MR3
+      </div>
     `);
 
     mr1 = document.querySelector('#one');
     mr2 = document.querySelector('#two');
     mr3 = document.querySelector('#three');
     issue1 = document.querySelector('#four');
-
-    mr1.addEventListener = jest.fn();
-    mr2.addEventListener = jest.fn();
-    mr3.addEventListener = jest.fn();
-    issue1.addEventListener = jest.fn();
+    workItem1 = document.querySelector('#five');
   });
 
-  it('does not add the same event listener twice', () => {
-    initIssuablePopovers([mr1, mr1, mr2, issue1]);
+  describe('init function', () => {
+    beforeEach(() => {
+      mr1.addEventListener = jest.fn();
+      mr2.addEventListener = jest.fn();
+      mr3.addEventListener = jest.fn();
+      issue1.addEventListener = jest.fn();
+      workItem1.addEventListener = jest.fn();
+    });
 
-    expect(mr1.addEventListener).toHaveBeenCalledTimes(1);
-    expect(mr2.addEventListener).toHaveBeenCalledTimes(1);
-    expect(issue1.addEventListener).toHaveBeenCalledTimes(1);
+    it('does not add the same event listener twice', () => {
+      initIssuablePopovers([mr1, mr1, mr2, issue1, workItem1]);
+
+      expect(mr1.addEventListener).toHaveBeenCalledTimes(1);
+      expect(mr2.addEventListener).toHaveBeenCalledTimes(1);
+      expect(issue1.addEventListener).toHaveBeenCalledTimes(1);
+      expect(workItem1.addEventListener).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not add listener if it does not have the necessary data attributes', () => {
+      initIssuablePopovers([mr1, mr2, mr3]);
+
+      expect(mr3.addEventListener).not.toHaveBeenCalled();
+    });
   });
 
-  it('does not add listener if it does not have the necessary data attributes', () => {
-    initIssuablePopovers([mr1, mr2, mr3]);
+  describe('mount function', () => {
+    const expectedMountObject = {
+      apolloProvider: expect.anything(),
+      iid: '1',
+      namespacePath: 'group/project',
+      title: 'title',
+    };
 
-    expect(mr3.addEventListener).not.toHaveBeenCalled();
+    beforeEach(() => {
+      jest.spyOn(popover, 'handleIssuablePopoverMount').mockImplementation(jest.fn());
+    });
+
+    it('calls popover mount function with components for Issue, MR, and Work Item', () => {
+      initIssuablePopovers([mr1, issue1, workItem1], popover.handleIssuablePopoverMount);
+
+      [mr1, issue1, workItem1].forEach(async (el) => {
+        await el.dispatchEvent(new Event('mouseenter', { target: el }));
+
+        expect(popover.handleIssuablePopoverMount).toHaveBeenCalledWith(
+          expect.objectContaining({
+            ...expectedMountObject,
+            referenceType: el.dataset.referenceType,
+            target: el,
+          }),
+        );
+      });
+    });
   });
 });

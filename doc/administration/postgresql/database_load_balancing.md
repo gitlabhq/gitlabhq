@@ -64,7 +64,7 @@ To enable Database Load Balancing, make sure that:
 - The HA PostgreSQL setup has one or more secondary nodes replicating the primary.
 - Each PostgreSQL node is connected with the same credentials and on the same port.
 
-For Omnibus GitLab, you also need PgBouncer configured on each PostgreSQL node to pool
+For Linux package installations, you also need PgBouncer configured on each PostgreSQL node to pool
 all load-balanced connections when [configuring a multi-node setup](replication_and_failover.md).
 
 ## Configuring Database Load Balancing
@@ -112,7 +112,7 @@ checks a DNS `A` record, using the IPs returned by this record as the addresses
 for the secondaries. For service discovery to work, all you need is a DNS server
 and an `A` record containing the IP addresses of your secondaries.
 
-When using Omnibus GitLab the provided [Consul](../consul.md) service works as
+When using a Linux package installation, the provided [Consul](../consul.md) service works as
 a DNS server and returns PostgreSQL addresses via the `postgresql-ha.service.consul`
 record. For example:
 

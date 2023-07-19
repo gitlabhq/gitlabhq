@@ -1140,4 +1140,38 @@ describe('common_utils', () => {
       expect(result).toEqual([{ hello: '' }, { helloWorld: '' }]);
     });
   });
+
+  describe('isCurrentUser', () => {
+    describe('when user is not signed in', () => {
+      it('returns `false`', () => {
+        window.gon.current_user_id = null;
+
+        expect(commonUtils.isCurrentUser(1)).toBe(false);
+      });
+    });
+
+    describe('when current user id does not match the provided user id', () => {
+      it('returns `false`', () => {
+        window.gon.current_user_id = 2;
+
+        expect(commonUtils.isCurrentUser(1)).toBe(false);
+      });
+    });
+
+    describe('when current user id matches the provided user id', () => {
+      it('returns `true`', () => {
+        window.gon.current_user_id = 1;
+
+        expect(commonUtils.isCurrentUser(1)).toBe(true);
+      });
+    });
+
+    describe('when provided user id is a string and it matches current user id', () => {
+      it('returns `true`', () => {
+        window.gon.current_user_id = 1;
+
+        expect(commonUtils.isCurrentUser('1')).toBe(true);
+      });
+    });
+  });
 });

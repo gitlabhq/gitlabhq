@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { GlAvatar } from '@gitlab/ui';
+import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { clone } from 'lodash';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -218,6 +218,18 @@ describe('issue_note', () => {
       });
     });
 
+    it('should render user avatar link with popover support', () => {
+      const { author } = note;
+      const avatarLink = wrapper.findComponent(GlAvatarLink);
+
+      expect(avatarLink.classes()).toContain('js-user-link');
+      expect(avatarLink.attributes()).toMatchObject({
+        href: author.path,
+        'data-user-id': `${author.id}`,
+        'data-username': `${author.username}`,
+      });
+    });
+
     it('should render user avatar', () => {
       const { author } = note;
       const avatar = wrapper.findComponent(GlAvatar);
@@ -373,10 +385,24 @@ describe('issue_note', () => {
 
     afterEach(() => updateNote.mockReset());
 
-    it('responds to handleFormUpdate', () => {
+    it('emits handleUpdateNote', () => {
+      const updatedNote = { ...note, note_html: `<p dir="auto">${params.noteText}</p>\n` };
+
       findNoteBody().vm.$emit('handleFormUpdate', params);
 
       expect(wrapper.emitted('handleUpdateNote')).toHaveLength(1);
+
+      expect(wrapper.emitted('handleUpdateNote')[0]).toEqual([
+        {
+          note: updatedNote,
+          noteText: params.noteText,
+          resolveDiscussion: params.resolveDiscussion,
+          position: {},
+          flashContainer: wrapper.vm.$el,
+          callback: expect.any(Function),
+          errorCallback: expect.any(Function),
+        },
+      ]);
     });
 
     it('updates note content', async () => {

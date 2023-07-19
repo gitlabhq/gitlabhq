@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JwtAuthenticatable do
+RSpec.describe Gitlab::JwtAuthenticatable, feature_category: :system_access do
   let(:test_class) do
     Class.new do
       include Gitlab::JwtAuthenticatable
@@ -195,6 +195,30 @@ RSpec.describe Gitlab::JwtAuthenticatable do
           expect do
             test_class.decode_jwt(encoded_message, iat_after: Time.current - 20.seconds)
           end.to raise_error(JWT::ExpiredSignature, 'Token has expired')
+        end
+      end
+    end
+
+    context 'algorithm' do
+      context 'with default algorithm' do
+        it 'accepts a correct header' do
+          encoded_message = JWT.encode(payload, test_class.secret, 'HS256')
+
+          expect { test_class.decode_jwt(encoded_message) }.not_to raise_error
+        end
+      end
+
+      context 'with provided algorithm' do
+        it 'accepts a correct header' do
+          encoded_message = JWT.encode(payload, test_class.secret, 'HS256')
+
+          expect { test_class.decode_jwt(encoded_message, algorithm: 'HS256') }.not_to raise_error
+        end
+
+        it 'raises an error when the header is signed with the wrong algorithm' do
+          encoded_message = JWT.encode(payload, test_class.secret, 'HS256')
+
+          expect { test_class.decode_jwt(encoded_message, algorithm: 'RS256') }.to raise_error(JWT::DecodeError)
         end
       end
     end

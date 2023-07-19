@@ -79,10 +79,11 @@ To index Git repository data, GitLab uses an [indexer written in Go](https://git
 
 Depending on your GitLab version, there are different installation procedures for the Go indexer:
 
-- For Omnibus GitLab 11.8 or greater, see [Omnibus GitLab](#omnibus-gitlab).
-- For installations from source or older versions of Omnibus GitLab,
+- For Omnibus GitLab 11.8 and later, see [Omnibus GitLab](#omnibus-gitlab).
+- For installations from source or Omnibus GitLab 11.7 and earlier,
   [install the indexer from source](#from-source).
-- If you are using GitLab Development Kit, see [GDK Elasticsearch how-to](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md).
+- If you're using the GitLab Development Kit, see [Elasticsearch in the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md).
+- If you're running a Helm deployment of GitLab 11.10 and later, [the indexer is already included](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/213).
 
 ### Omnibus GitLab
 
@@ -178,7 +179,7 @@ To enable advanced search:
 
    NOTE:
    To see the **Advanced Search** section, you need an active GitLab Premium
-   [license](../../user/admin_area/license.md).
+   [license](../../administration/license.md).
 
 1. Configure the [advanced search settings](#advanced-search-configuration) for
    your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**
@@ -186,8 +187,7 @@ To enable advanced search:
 1. Enable **Elasticsearch indexing** and select **Save changes**. This creates
    an empty index if one does not already exist.
 1. Select **Index all projects**.
-1. Select **Check progress** in the confirmation message to see the status of
-   the background jobs.
+1. Optional. Select **Check progress** to see the status of background jobs.
 1. Personal snippets must be indexed using another Rake task:
 
    ```shell
@@ -217,6 +217,7 @@ The following Elasticsearch settings are available:
 | `Elasticsearch indexing`                              | Enables or disables Elasticsearch indexing and creates an empty index if one does not already exist. You may want to enable indexing but disable search to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
 | `Pause Elasticsearch indexing`                        | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until resumed. |
 | `Search with Elasticsearch enabled`                   | Enables or disables using Elasticsearch in search. |
+| `Requeue indexing workers`                            | Enable automatic requeuing of indexing workers. This improves non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed. Requeuing indexing workers is not recommended for smaller instances or instances with few Sidekiq processes. |
 | `URL`                                                 | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields described below. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. |
 | `Username`                                                 | The `username` of your Elasticsearch instance. |
 | `Password`                                                 | The password of your Elasticsearch instance. |
@@ -228,6 +229,7 @@ The following Elasticsearch settings are available:
 | `AWS Secret Access Key`                               | The AWS secret access key. |
 | `Maximum file size indexed`                           | See [the explanation in instance limits.](../../administration/instance_limits.md#maximum-file-size-indexed). |
 | `Maximum field length`                                | See [the explanation in instance limits.](../../administration/instance_limits.md#maximum-field-length). |
+| `Number of shards for non-code indexing` | Number of indexing worker shards. This improves non-code indexing throughput by enqueuing more parallel Sidekiq jobs. Increasing the number of shards is not recommended for smaller instances or instances with few Sidekiq processes. Default is `2`. |
 | `Maximum bulk request size (MiB)` | Used by the GitLab Ruby and Go-based indexer processes. This setting indicates how much data must be collected (and stored in memory) in a given indexing process before submitting the payload to the Elasticsearch Bulk API. For the GitLab Go-based indexer, you should use this setting with `Bulk request concurrency`. `Maximum bulk request size (MiB)` must accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer from either the `gitlab-rake` command or the Sidekiq tasks. |
 | `Bulk request concurrency`                            | The Bulk request concurrency indicates how many of the GitLab Go-based indexer processes (or threads) can run in parallel to collect data to subsequently submit to the Elasticsearch Bulk API. This increases indexing performance, but fills the Elasticsearch bulk requests queue faster. This setting should be used together with the Maximum bulk request size setting (see above) and needs to accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer either from the `gitlab-rake` command or the Sidekiq tasks. |
 | `Client request timeout` | Elasticsearch HTTP client request timeout value in seconds. `0` means using the system default timeout value, which depends on the libraries that GitLab application is built upon. |

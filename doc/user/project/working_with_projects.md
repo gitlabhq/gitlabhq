@@ -9,78 +9,27 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 Most work in GitLab is done in a [project](../../user/project/index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
 
-## View projects
+## View all projects for the instance
 
-To view all your projects:
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
-
-To browse all projects you can access:
+To view all projects for the GitLab instance:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Explore**.
 
-### Who can view the Projects page
+On the left sidebar, **Projects** is selected. On the right, the list shows
+all projects for the instance.
 
-When you select a project, the project landing page shows the project contents.
+If you are not authenticated, then the list shows public projects only.
 
-For public projects, and members of internal and private projects
-with [permissions to view the project's code](../permissions.md#project-members-permissions),
-the project landing page shows:
+## View projects you are a member of
 
-- A [`README` or index file](repository/index.md#readme-and-index-files).
-- A list of directories in the project's repository.
-
-For users without permission to view the project's code, the landing page shows:
-
-- The wiki homepage.
-- The list of issues in the project.
-
-### Access a project page with the project ID
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
-
-To access a project from the GitLab UI using the project ID,
-visit the `/projects/:id` URL in your browser or other tool accessing the project.
-
-## Explore topics
-
-To explore project topics:
+To view projects you are a member of:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Explore**.
-1. On the left sidebar, select **Topics**.
-1. To view projects associated with a topic, select a topic.
+1. Select **Your work**.
 
-The **Explore topics** page shows a list of topics, sorted by the number of associated projects.
-
-You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
-
-If you're an instance administrator, you can administer all project topics from the
-[Admin Area's Topics page](../admin_area/index.md#administering-topics).
-
-## Star a project
-
-You can add a star to projects you use frequently to make them easier to find.
-
-To add a star to a project:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. In the upper-right corner of the page, select **Star**.
-
-## View starred projects
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
-1. Select the **Starred** tab.
-1. GitLab displays information about your starred projects, including:
-
-   - Project description, including name, description, and icon.
-   - Number of times this project has been starred.
-   - Number of times this project has been forked.
-   - Number of open merge requests.
-   - Number of open issues.
+On the left sidebar, **Projects** is selected. On the list, on the **Yours** tab,
+all the projects you are a member of are displayed.
 
 ## View personal projects
 
@@ -91,9 +40,100 @@ called `my-project` under your username, the project is created at `https://gitl
 
 To view your personal projects:
 
+1. On the left sidebar, select your avatar and then your username.
+1. On the left sidebar, select **Personal projects**.
+
+## View starred projects
+
+To view projects you have [starred](#star-a-project):
+
+1. On the left sidebar, select your avatar and then your username.
+1. On the left sidebar, select **Starred projects**.
+
+## Organizing projects with topics
+
+Topics are labels that you can assign to projects to help you organize and find them.
+A topic is typically a short name that describes the content or purpose of a project.
+You can assign a topic to several projects.
+
+For example, you can create and assign the topics `python` and `hackathon` to all projects that use Python and are intended for Hackathon contributions.
+
+Topics assigned to a project are listed in the **Project overview**, below the project name and activity information.
+
+Only users with access to the project can see the topics assigned to that project,
+but everyone (including unauthenticated users) can see the topics available on the GitLab instance.
+Do not include sensitive information in the name of a topic.
+
+### Explore topics
+
+To explore project topics:
+
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
-1. In the **Yours** tab, select **Personal**.
+1. Select **Explore**.
+1. On the left sidebar, select **Topics**.
+1. To view projects associated with a topic, select a topic.
+
+The **Explore topics** page shows a list of projects with this topic.
+
+### Filter and sort topics
+
+You can filter the list of projects that have a certain topic by:
+
+- Name
+- Language
+- Owner
+- Archive status
+- Visibility
+
+You can sort the projects by:
+
+- Date created
+- Date updated
+- Name
+- Number of stars
+
+### Subscribe to a topic
+
+If you want to know when new projects are added to a topic, you can use its RSS feed.
+
+You can do this either from the **Explore topics** page or a project with topics.
+
+To subscribe to a topic:
+
+- From the **Explore topics** page:
+
+  1. On the left sidebar, expand the top-most chevron ({**chevron-down**}).
+  1. Select **Explore**.
+  1. Select **Topics**.
+  1. Select the topic you want to subscribe to.
+  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
+
+- From a project:
+
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. In the **Project overview** page, from the **Topics** list select the topic you want to subscribe to.
+  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
+
+The results are displayed as an RSS feed in Atom format.
+The URL of the result contains a feed token and the list of projects that have the topic. You can add this URL to your feed reader.
+
+### Assign a topic to a project
+
+You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
+
+### Administer topics
+
+Instance administrators can administer all project topics from the
+[Admin Area's Topics page](../../administration/admin_area.md#administering-topics).
+
+## Star a project
+
+You can add a star to projects you use frequently to make them easier to find.
+
+To add a star to a project:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. In the upper-right corner of the page, select **Star**.
 
 ## Delete a project
 
@@ -187,6 +227,34 @@ Prerequisite:
 1. Expand **Visibility, project features, permissions**.
 1. Use the toggle by each feature you want to turn on or off, or change access for.
 1. Select **Save changes**.
+
+## Access the Project overview page by using the project ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
+
+To access a project by using the project ID instead of its name,
+go to `https://gitlab.example.com/projects/:id`.
+
+The project ID is displayed in the **Project overview** page, under the project name.
+
+For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`, you can access the project
+either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
+
+## Who can view the Project overview page
+
+When you select a project, the **Project overview** page shows the project contents.
+
+For public projects, and members of internal and private projects
+with [permissions to view the project's code](../permissions.md#project-members-permissions),
+the project landing page shows:
+
+- A [`README` or index file](repository/index.md#readme-and-index-files).
+- A list of directories in the project's repository.
+
+For users without permission to view the project's code, the landing page shows:
+
+- The wiki homepage.
+- The list of issues in the project.
 
 ## Leave a project
 

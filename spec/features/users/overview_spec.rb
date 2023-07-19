@@ -9,12 +9,14 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
   def push_code_contribution
     event = create(:push_event, project: contributed_project, author: user)
 
-    create(:push_event_payload,
-           event: event,
-           commit_from: '11f9ac0a48b62cef25eedede4c1819964f08d5ce',
-           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
-           commit_count: 3,
-           ref: 'master')
+    create(
+      :push_event_payload,
+      event: event,
+      commit_from: '11f9ac0a48b62cef25eedede4c1819964f08d5ce',
+      commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+      commit_count: 3,
+      ref: 'master'
+    )
   end
 
   before do

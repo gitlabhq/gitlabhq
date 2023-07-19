@@ -101,9 +101,13 @@
   - 1
 - - bulk_imports_export_request
   - 1
+- - bulk_imports_finish_batched_pipeline
+  - 1
 - - bulk_imports_finish_batched_relation_export
   - 1
 - - bulk_imports_pipeline
+  - 1
+- - bulk_imports_pipeline_batch
   - 1
 - - bulk_imports_relation_batch_export
   - 1
@@ -136,6 +140,10 @@
 - - compliance_management_framework_export_mailer
   - 1
 - - compliance_management_merge_requests_compliance_violations
+  - 1
+- - compliance_management_standards_gitlab_prevent_approval_by_author
+  - 1
+- - compliance_management_standards_gitlab_prevent_approval_by_author_group
   - 1
 - - compliance_management_update_default_framework
   - 1
@@ -299,6 +307,8 @@
   - 1
 - - integrations_execute
   - 1
+- - integrations_group_mention
+  - 1
 - - integrations_irker
   - 1
 - - integrations_slack_event
@@ -343,6 +353,8 @@
   - 1
 - - merge_requests_capture_suggested_reviewers_accepted
   - 1
+- - merge_requests_cleanup_ref
+  - 1
 - - merge_requests_close_issue
   - 1
 - - merge_requests_create_approval_event
@@ -373,10 +385,6 @@
   - 1
 - - merge_requests_update_head_pipeline
   - 1
-- - metrics_dashboard_prune_old_annotations
-  - 1
-- - metrics_dashboard_sync_dashboards
-  - 1
 - - migrate_external_diffs
   - 1
 - - ml_experiment_tracking_associate_ml_candidate_to_package
@@ -402,6 +410,8 @@
 - - object_pool
   - 1
 - - object_storage
+  - 1
+- - onboarding_create_iterable_trigger
   - 1
 - - onboarding_issue_created
   - 1
@@ -511,6 +521,8 @@
   - 1
 - - rebase
   - 2
+- - redis_migration
+  - 1
 - - refresh_license_compliance_checks
   - 2
 - - releases_create_evidence
@@ -534,6 +546,8 @@
 - - requirements_management_process_requirements_reports
   - 1
 - - sbom_reports
+  - 1
+- - search_elastic_group_association_deletion
   - 1
 - - search_namespace_index_integrity
   - 1
@@ -576,6 +590,8 @@
 - - status_page_publish
   - 1
 - - sync_seat_link_request
+  - 1
+- - system_access_group_saml_microsoft_group_sync
   - 1
 - - system_hook_push
   - 1

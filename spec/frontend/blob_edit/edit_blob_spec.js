@@ -61,7 +61,6 @@ describe('Blob Editing', () => {
   });
   afterEach(() => {
     mock.restore();
-    jest.clearAllMocks();
     unuseMock.mockClear();
     useMock.mockClear();
     resetHTMLFixture();

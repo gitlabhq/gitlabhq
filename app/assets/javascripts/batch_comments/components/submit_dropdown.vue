@@ -1,10 +1,14 @@
 <script>
 import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
+import { __ } from '~/locale';
 import { createAlert } from '~/alert';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
-import Autosave from '~/autosave';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 
 export default {
   components: {
@@ -14,9 +18,10 @@ export default {
     GlForm,
     GlFormGroup,
     GlFormCheckbox,
-    MarkdownField,
+    MarkdownEditor,
     ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       isSubmitting: false,
@@ -27,11 +32,24 @@ export default {
         approve: false,
         approval_password: '',
       },
+      formFieldProps: {
+        id: 'review-note-body',
+        name: 'review[note]',
+        placeholder: __('Write a comment or drag your files here…'),
+        'aria-label': __('Comment'),
+        'data-testid': 'comment-textarea',
+      },
     };
   },
   computed: {
     ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
     ...mapState('batchComments', ['shouldAnimateReviewButton']),
+    autocompleteDataSources() {
+      return gl.GfmAutoComplete?.dataSources;
+    },
+    autosaveKey() {
+      return `submit_review_dropdown/${this.getNoteableData.id}`;
+    },
   },
   watch: {
     'noteData.approve': function noteDataApproveWatch() {
@@ -41,10 +59,6 @@ export default {
     },
   },
   mounted() {
-    this.autosave = new Autosave(
-      this.$refs.textarea,
-      `submit_review_dropdown/${this.getNoteableData.id}`,
-    );
     this.noteData.noteable_type = this.noteableType;
     this.noteData.noteable_id = this.getNoteableData.id;
 
@@ -67,10 +81,12 @@ export default {
     async submitReview() {
       this.isSubmitting = true;
 
+      trackSavedUsingEditor(this.$refs.markdownEditor.isContentEditorActive, 'MergeRequest_review');
+
       try {
         await this.publishReview(this.noteData);
 
-        this.autosave.reset();
+        markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.descriptionAutosaveKey);
 
         if (window.mrTabs && (this.noteData.note || this.noteData.approve)) {
           if (this.noteData.note) {
@@ -117,37 +133,26 @@ export default {
           {{ __('Summary comment (optional)') }}
         </template>
         <div class="common-note-form gfm-form">
-          <div class="comment-warning-wrapper-large gl-border-0 gl-bg-white gl-overflow-hidden">
-            <markdown-field
-              :is-submitting="isSubmitting"
-              :add-spacing-classes="false"
-              :textarea-value="noteData.note"
-              :markdown-preview-path="getNoteableData.preview_note_path"
-              :markdown-docs-path="getNotesData.markdownDocsPath"
-              :quick-actions-docs-path="getNotesData.quickActionsDocsPath"
-              :restricted-tool-bar-items="$options.restrictedToolbarItems"
-              :force-autosize="false"
-              class="js-no-autosize"
-            >
-              <template #textarea>
-                <textarea
-                  id="review-note-body"
-                  ref="textarea"
-                  v-model="noteData.note"
-                  dir="auto"
-                  :disabled="isSubmitting"
-                  name="review[note]"
-                  class="note-textarea js-gfm-input markdown-area"
-                  data-supports-quick-actions="true"
-                  data-testid="comment-textarea"
-                  :aria-label="__('Comment')"
-                  :placeholder="__('Write a comment or drag your files here…')"
-                  @keydown.meta.enter="submitReview"
-                  @keydown.ctrl.enter="submitReview"
-                ></textarea>
-              </template>
-            </markdown-field>
-          </div>
+          <markdown-editor
+            ref="markdownEditor"
+            v-model="noteData.note"
+            :enable-content-editor="Boolean(glFeatures.contentEditorOnIssues)"
+            class="js-no-autosize"
+            :is-submitting="isSubmitting"
+            :render-markdown-path="getNoteableData.preview_note_path"
+            :markdown-docs-path="getNotesData.markdownDocsPath"
+            :form-field-props="formFieldProps"
+            enable-autocomplete
+            :autocomplete-data-sources="autocompleteDataSources"
+            :disabled="isSubmitting"
+            :restricted-tool-bar-items="$options.restrictedToolbarItems"
+            :force-autosize="false"
+            :autosave-key="autosaveKey"
+            supports-quick-actions
+            @input="$emit('input', $event)"
+            @keydown.meta.enter="submitReview"
+            @keydown.ctrl.enter="submitReview"
+          />
         </div>
       </gl-form-group>
       <template v-if="getNoteableData.current_user.can_approve">

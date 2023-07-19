@@ -241,4 +241,3 @@ Style/SymbolProc:
     - 'spec/views/layouts/_published_experiments.html.haml_spec.rb'
     - 'spec/workers/snippets/schedule_bulk_repository_shard_moves_worker_spec.rb'
     - 'tooling/lib/tooling/test_map_generator.rb'
-    - 'tooling/rspec_flaky/flaky_examples_collection.rb'

@@ -8,20 +8,21 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
   describe 'CI' do
     before do
-      stub_feature_flags(pipeline_details_header_vue: false)
       sign_in(user)
       stub_ci_pipeline_to_return_yaml_file
     end
 
     let(:creator) { create(:user, developer_projects: [project]) }
     let!(:pipeline) do
-      create(:ci_pipeline,
-             project: project,
-             user: creator,
-             ref: project.default_branch,
-             sha: project.commit.sha,
-             status: :success,
-             created_at: 5.months.ago)
+      create(
+        :ci_pipeline,
+        project: project,
+        user: creator,
+        ref: project.default_branch,
+        sha: project.commit.sha,
+        status: :success,
+        created_at: 5.months.ago
+      )
     end
 
     context 'commit status is Generic Commit Status' do
@@ -39,7 +40,11 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
           wait_for_requests
         end
 
-        it { expect(page).to have_content pipeline.sha[0..7] }
+        it 'contains commit short id' do
+          page.within('[data-testid="pipeline-details-header"]') do
+            expect(page).to have_content pipeline.sha[0..7]
+          end
+        end
 
         it 'contains generic commit status build' do
           page.within('[data-testid="jobs-tab-table"]') do
@@ -61,11 +66,13 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
         describe 'Project commits' do
           let!(:pipeline_from_other_branch) do
-            create(:ci_pipeline,
-                   project: project,
-                   ref: 'fix',
-                   sha: project.commit.sha,
-                   status: :failed)
+            create(
+              :ci_pipeline,
+              project: project,
+              ref: 'fix',
+              sha: project.commit.sha,
+              status: :failed
+            )
           end
 
           before do
@@ -88,7 +95,6 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
           it 'shows pipeline data' do
             expect(page).to have_content pipeline.sha[0..7]
-            expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
             expect(page).to have_content pipeline.user.name
           end
         end
@@ -116,7 +122,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         describe 'Cancel build' do
           it 'cancels build', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
-            find('[data-testid="cancelPipeline"]').click
+            find('[data-testid="cancel-pipeline"]').click
             expect(page).to have_content 'canceled'
           end
         end
@@ -132,7 +138,6 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
         it 'renders header' do
           expect(page).to have_content pipeline.sha[0..7]
-          expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
           expect(page).to have_content pipeline.user.name
           expect(page).not_to have_link('Cancel pipeline')
           expect(page).not_to have_link('Retry')

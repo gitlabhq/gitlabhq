@@ -2,7 +2,7 @@
 
 module NextFoundInstanceOf
   ERROR_MESSAGE = 'NextFoundInstanceOf mock helpers can only be used with ActiveRecord targets'
-  HELPER_METHOD_PATTERN = /(?:allow|expect)_next_found_(?<number>\d+)_instances_of/.freeze
+  HELPER_METHOD_PATTERN = /(?:allow|expect)_next_found_(?<number>\d+)_instances_of/
 
   def method_missing(method_name, ...)
     return super unless match_data = method_name.match(HELPER_METHOD_PATTERN)

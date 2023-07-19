@@ -172,6 +172,7 @@ GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately
 Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
 - C, in the Semgrep-based analyzer only
+- C#, in the Semgrep-based analyzer only
 - Go, in the Semgrep-based analyzer only
 - Java, in the Semgrep-based analyzer only
 - JavaScript, in the Semgrep-based analyzer only
@@ -186,6 +187,7 @@ For more information, see the confidential project `https://gitlab.com/gitlab-or
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`.
 > - Enabled by default in GitLab 15.10. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2.
 
 To help you focus on the vulnerabilities that are still relevant, GitLab SAST automatically [resolves](../vulnerabilities/index.md#vulnerability-status-values) vulnerabilities when:
 
@@ -290,9 +292,7 @@ The method you can use depends on your GitLab license tier.
 
 #### Configure SAST with customizations **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab 13.3.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in GitLab 13.4.
-> - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/3635) in GitLab 13.5.
+> [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
 
 NOTE:
 The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
@@ -309,9 +309,6 @@ To enable and configure SAST with customizations:
 
    Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST
    Configuration page, their values are inherited from the GitLab SAST template.
-
-1. Optionally, expand the **SAST analyzers** section, select individual
-   [SAST analyzers](analyzers.md) and enter custom analyzer values.
 1. Select **Create Merge Request**.
 1. Review and merge the merge request.
 
@@ -519,21 +516,6 @@ variables:
   SEARCH_MAX_DEPTH: 10
 ```
 
-#### Logging level
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1.
-
-To control the verbosity of logs, set the `SECURE_LOG_LEVEL` environment variable. Messages of this
-logging level or higher are output.
-
-From highest to lowest severity, the logging levels are:
-
-- `fatal`
-- `error`
-- `warn`
-- `info` (default)
-- `debug`
-
 #### Custom Certificate Authority
 
 To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
@@ -616,7 +598,7 @@ flags are added to the scanner's CLI options.
 | Analyzer                                                                     | CLI option         | Description |
 |------------------------------------------------------------------------------|--------------------|------------------------------------------------------------------------------|
 | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) | `--max-memory`     | Sets the maximum system memory to use when running a rule on a single file. Measured in MB. |
-| [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) | `--neverignore` | Never ignore security issues, even if they have an “ignore” directive in a comment. Adding this option is likely to result in the analyzer detecting additional vulnerability findings which cannot be automatically resolved. |
+| [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) | `--neverignore` | Never ignore security issues, even if they have an "ignore" directive in a comment. Adding this option is likely to result in the analyzer detecting additional vulnerability findings which cannot be automatically resolved. |
 | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) | `-effort` | Sets the analysis effort level. Valid values are `min`, `less`, `more` and `max`, defined in increasing order of scan's precision and ability to detect more vulnerabilities. Default value is set to `max` which may require more memory and time to complete the scan, depending on the project's size. In case you face memory or performance issues, you may reduce the analysis effort level to a lower value. For example: `-effort less`. |
 
 #### Custom CI/CD variables
@@ -772,14 +754,10 @@ By default SAST analyzers are supported in GitLab instances hosted on SELinux. A
 
 ## Troubleshooting
 
-### SAST debug logging
+### Debug-level logging
 
-Increase the [Secure scanner log verbosity](#logging-level) to `debug` in a global CI variable to help troubleshoot SAST jobs.
-
-```yaml
-variables:
-  SECURE_LOG_LEVEL: "debug"
-```
+Debug-level logging can help when troubleshooting. For details, see
+[debug-level logging](../index.md#debug-level-logging).
 
 ### Pipeline errors related to changes in the GitLab-managed CI/CD template
 

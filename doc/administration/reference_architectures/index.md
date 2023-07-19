@@ -63,7 +63,7 @@ This section explains the designs you can choose from. It begins with the least 
 
 ### Standalone (non-HA)
 
-For environments serving 2,000 or fewer users, we generally recommend a standalone approach by deploying a non-highly available single or multi-node environment. With this approach, you can employ strategies such as [automated backups](../../raketasks/backup_gitlab.md#configuring-cron-to-make-daily-backups) for recovery to provide a good level of RPO / RTO while avoiding the complexities that come with HA.
+For environments serving 2,000 or fewer users, we generally recommend a standalone approach by deploying a non-highly available single or multi-node environment. With this approach, you can employ strategies such as [automated backups](../../administration/backup_restore/backup_gitlab.md#configuring-cron-to-make-daily-backups) for recovery to provide a good level of RPO / RTO while avoiding the complexities that come with HA.
 
 *[RTO]: Recovery time objective
 *[RPO]: Recovery point objective
@@ -312,7 +312,7 @@ Additionally, the following cloud provider services are validated and supported 
   </tr>
   <tr>
     <td>Redis</td>
-    <td></td>
+    <td>🟢 &nbsp; <a href="https://cloud.google.com/memorystore" target="_blank" rel="noopener noreferrer">Memorystore</a></td>
     <td>🟢 &nbsp; <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">ElastiCache</a></td>
     <td></td>
   </tr>
@@ -633,8 +633,8 @@ Most setups would only need vertical scaling, but there are some specific areas 
   - Gitaly to Gitaly Cluster w/ Praefect
 - From 10k users and higher, Redis is recommended to be split into multiple HA servers as it's single threaded.
 
-Conversely, if you have robust metrics in place that show the environment is over-provisioned you can apply the same process for
-scaling downloads. It's recommended to take an iterative approach when scaling downwards however to ensure there are no issues.
+Conversely, if you have robust metrics in place that show the environment is over-provisioned, you can apply the same process for
+scaling downwards. You should take an iterative approach when scaling downwards, however, to ensure there are no issues.
 
 ### How to monitor your environment
 

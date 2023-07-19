@@ -46,7 +46,7 @@ module QA
           when 'LICENSE'
             click_element :license_dropdown
           else
-            raise %Q(Unsupported template_type "#{template_type}". Please confirm that it is a valid option.)
+            raise %(Unsupported template_type "#{template_type}". Please confirm that it is a valid option.)
           end
           filter_and_select template
         end

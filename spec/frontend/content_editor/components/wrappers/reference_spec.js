@@ -1,4 +1,5 @@
 import { GlLink } from '@gitlab/ui';
+import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ReferenceWrapper from '~/content_editor/components/wrappers/reference.vue';
 
@@ -8,6 +9,13 @@ describe('content/components/wrappers/reference', () => {
   const createWrapper = (node = {}) => {
     wrapper = shallowMountExtended(ReferenceWrapper, {
       propsData: { node },
+      provide: {
+        contentEditor: {
+          resolveReference: jest.fn().mockResolvedValue({
+            href: 'https://gitlab.com/gitlab-org/gitlab-test/-/issues/252522',
+          }),
+        },
+      },
     });
   };
 
@@ -42,5 +50,15 @@ describe('content/components/wrappers/reference', () => {
     const link = wrapper.findComponent(GlLink);
     expect(link.text()).toBe('@root');
     expect(link.classes('current-user')).toBe(true);
+  });
+
+  it('renders the href of the reference correctly', async () => {
+    createWrapper({ attrs: { referenceType: 'issue', text: '#252522' } });
+    await waitForPromises();
+
+    const link = wrapper.findComponent(GlLink);
+    expect(link.attributes('href')).toBe(
+      'https://gitlab.com/gitlab-org/gitlab-test/-/issues/252522',
+    );
   });
 });

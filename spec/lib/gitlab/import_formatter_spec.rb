@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::ImportFormatter do
-  let(:formatter) { Gitlab::ImportFormatter.new }
+  let(:formatter) { described_class.new }
 
   describe '#comment' do
     it 'creates the correct string' do

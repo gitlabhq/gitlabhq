@@ -7,50 +7,50 @@
 - if Feature.enabled?(:edit_user_profile_vue, current_user)
   .js-user-profile
 - else
-  = gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user gl-mt-3 js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
-    .row.js-search-settings-section
-      .col-lg-4.profile-settings-sidebar
-        %h4.gl-mt-0
-          = s_("Profiles|Public avatar")
-        %p
-          - if @user.avatar?
-            - if gravatar_enabled?
-              = s_("Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
-            - else
-              = s_("Profiles|You can change your avatar here")
-          - else
-            - if gravatar_enabled?
-              = s_("Profiles|You can upload your avatar here or change it at %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
-            - else
-              = s_("Profiles|You can upload your avatar here")
-          - if current_appearance&.profile_image_guidelines?
-            .md
-              = brand_profile_image_guidelines
-      .col-lg-8
-        .avatar-image
-          = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
-            = render Pajamas::AvatarComponent.new(@user, size: 96, alt: "", class: 'gl-float-left gl-mr-5')
-        %h5.gl-mt-0= s_("Profiles|Upload new avatar")
-        .gl-display-flex.gl-align-items-center.gl-my-3
-          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-choose-user-avatar-button' }) do
-            = s_("Profiles|Choose file...")
-          %span.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen.")
-          = f.file_field :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
-        .gl-text-gray-500= s_("Profiles|The maximum file size allowed is 200KB.")
+  = gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
+    .settings-section.js-search-settings-section
+      .settings-sticky-header
+        .settings-sticky-header-inner
+          %h4.gl-my-0
+            = s_("Profiles|Public avatar")
+      %p.gl-text-secondary
         - if @user.avatar?
-          = render Pajamas::ButtonComponent.new(variant: :danger,
-            category: :secondary,
-            href: profile_avatar_path,
-            button_options: { class: 'gl-mt-3', data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") } },
-            method: :delete) do
-            = s_("Profiles|Remove avatar")
-      .col-lg-12
-        %hr
-    .row.js-search-settings-section
-      .col-lg-4.profile-settings-sidebar
-        %h4.gl-mt-0= s_("Profiles|Current status")
-        %p= s_("Profiles|This emoji and message will appear on your profile and throughout the interface.")
-      .col-lg-8
+          - if gravatar_enabled?
+            = s_("Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
+          - else
+            = s_("Profiles|You can change your avatar here")
+        - else
+          - if gravatar_enabled?
+            = s_("Profiles|You can upload your avatar here or change it at %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
+          - else
+            = s_("Profiles|You can upload your avatar here")
+        - if current_appearance&.profile_image_guidelines?
+          .md
+            = brand_profile_image_guidelines
+      .avatar-image
+        = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
+          = render Pajamas::AvatarComponent.new(@user, size: 96, alt: "", class: 'gl-float-left gl-mr-5')
+      %h5.gl-mt-0= s_("Profiles|Upload new avatar")
+      .gl-display-flex.gl-align-items-center.gl-my-3
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-choose-user-avatar-button' }) do
+          = s_("Profiles|Choose file...")
+        %span.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen.")
+        = f.file_field :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
+      .gl-text-gray-500= s_("Profiles|The maximum file size allowed is 200KB.")
+      - if @user.avatar?
+        = render Pajamas::ButtonComponent.new(variant: :danger,
+          category: :secondary,
+          href: profile_avatar_path,
+          button_options: { class: 'gl-mt-3', data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") } },
+          method: :delete) do
+          = s_("Profiles|Remove avatar")
+
+    .settings-section.js-search-settings-section.gl-border-t.gl-pt-6
+      .settings-sticky-header
+        .settings-sticky-header-inner
+          %h4.gl-my-0= s_("Profiles|Current status")
+      %p.gl-text-secondary= s_("Profiles|This emoji and message will appear on your profile and throughout the interface.")
+      .gl-max-w-80
         #js-user-profile-set-status-form
           = f.fields_for :status, @user.status do |status_form|
             = status_form.hidden_field :emoji, data: { js_name: 'emoji' }
@@ -59,121 +59,117 @@
             = status_form.hidden_field :clear_status_after,
               value: user_clear_status_at(@user),
               data: { js_name: 'clearStatusAfter' }
-      .col-lg-12
-        %hr
-    .row.user-time-preferences.js-search-settings-section
-      .col-lg-4.profile-settings-sidebar
-        %h4.gl-mt-0= s_("Profiles|Time settings")
-        %p= s_("Profiles|Set your local time zone.")
-      .col-lg-8
-        = f.label :user_timezone, _("Time zone")
-        .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone, name: 'user[timezone]' } }
-      .col-lg-12
-        %hr
-    .row.js-search-settings-section
-      .col-lg-4.profile-settings-sidebar
-        %h4.gl-mt-0
-          = s_("Profiles|Main settings")
-        %p
-          = s_("Profiles|This information will appear on your profile.")
-          - if current_user.ldap_user?
-            = s_("Profiles|Some options are unavailable for LDAP accounts")
-      .col-lg-8
-        .row
-          .form-group.gl-form-group.col-md-9.rspec-full-name
-            = render 'profiles/name', form: f, user: @user
-          .form-group.gl-form-group.col-md-3
-            = f.label :id, s_('Profiles|User ID')
-            = f.text_field :id, class: 'gl-form-input form-control', readonly: true
-        .form-group.gl-form-group
-          = f.label :pronouns, s_('Profiles|Pronouns')
-          = f.text_field :pronouns, class: 'gl-form-input form-control gl-md-form-input-lg'
-          %small.form-text.text-gl-muted
-            = s_("Profiles|Enter your pronouns to let people know how to refer to you.")
-        .form-group.gl-form-group
-          = f.label :pronunciation, s_('Profiles|Pronunciation')
-          = f.text_field :pronunciation, class: 'gl-form-input form-control gl-md-form-input-lg'
-          %small.form-text.text-gl-muted
-            = s_("Profiles|Enter how your name is pronounced to help people address you correctly.")
-        = render_if_exists 'profiles/extra_settings', form: f
-        = render_if_exists 'profiles/email_settings', form: f
-        .form-group.gl-form-group
-          = f.label :skype
-          = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
-        .form-group.gl-form-group
-          = f.label :linkedin
-          = f.text_field :linkedin, class: 'gl-form-input form-control gl-md-form-input-lg'
-          %small.form-text.text-gl-muted
-            = s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
-        .form-group.gl-form-group
-          = f.label :twitter
-          = f.text_field :twitter, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|@username")
-        .form-group.gl-form-group
-          - external_accounts_help_url = help_page_path('user/profile/index', anchor: 'add-external-accounts-to-your-user-profile-page')
-          - external_accounts_link = link_to '', external_accounts_help_url, target: "_blank", rel: "noopener noreferrer"
-          - external_accounts_docs_link = safe_format(s_('Profiles|Your Discord user ID. %{external_accounts_link_start}Learn more.%{external_accounts_link_end}'), tag_pair(external_accounts_link, :external_accounts_link_start, :external_accounts_link_end))
-          - min_discord_length = 17
-          - max_discord_length = 20
-          = f.label :discord
-          = f.text_field :discord,
-            class: 'gl-form-input form-control gl-md-form-input-lg js-validate-length',
-            placeholder: s_("Profiles|User ID"),
-            data: { min_length: min_discord_length,
-            min_length_message: s_('Profiles|Discord ID is too short (minimum is %{min_length} characters).') % { min_length: min_discord_length },
-            max_length: max_discord_length,
-            max_length_message: s_('Profiles|Discord ID is too long (maximum is %{max_length} characters).') % { max_length: max_discord_length },
-            allow_empty: true}
-          %small.form-text.text-gl-muted
-            = external_accounts_docs_link
 
-        .form-group.gl-form-group
-          = f.label :website_url, s_('Profiles|Website url')
-          = f.text_field :website_url, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|https://website.com")
-        .form-group.gl-form-group
-          = f.label :location, s_('Profiles|Location')
-          - if @user.read_only_attribute?(:location)
-            = f.text_field :location, class: 'gl-form-input form-control gl-md-form-input-lg', readonly: true
-            %small.form-text.text-gl-muted
-              = s_("Profiles|Your location was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:location) }
-          - else
-            = f.text_field :location, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|City, country")
-        .form-group.gl-form-group
-          = f.label :job_title, s_('Profiles|Job title')
-          = f.text_field :job_title, class: 'gl-form-input form-control gl-md-form-input-lg'
-        .form-group.gl-form-group
-          = f.label :organization, s_('Profiles|Organization')
-          = f.text_field :organization, class: 'gl-form-input form-control gl-md-form-input-lg'
+    .settings-section.user-time-preferences.js-search-settings-section.gl-border-t.gl-pt-6
+      .settings-sticky-header
+        .settings-sticky-header-inner
+          %h4.gl-my-0= s_("Profiles|Time settings")
+      %p.gl-text-secondary= s_("Profiles|Set your local time zone.")
+      = f.label :user_timezone, _("Time zone")
+      .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone, name: 'user[timezone]' } }
+
+    .settings-section.js-search-settings-section.gl-border-t.gl-pt-6
+      .settings-sticky-header
+        .settings-sticky-header-inner
+          %h4.gl-my-0
+            = s_("Profiles|Main settings")
+      %p.gl-text-secondary
+        = s_("Profiles|This information will appear on your profile.")
+        - if current_user.ldap_user?
+          = s_("Profiles|Some options are unavailable for LDAP accounts")
+      .form-group.gl-form-group.rspec-full-name.gl-max-w-80
+        = render 'profiles/name', form: f, user: @user
+      .form-group.gl-form-group.gl-md-form-input-lg
+        = f.label :id, s_('Profiles|User ID')
+        = f.text_field :id, class: 'gl-form-input form-control', readonly: true
+      .form-group.gl-form-group
+        = f.label :pronouns, s_('Profiles|Pronouns')
+        = f.text_field :pronouns, class: 'gl-form-input form-control gl-md-form-input-lg'
+        %small.form-text.text-gl-muted
+          = s_("Profiles|Enter your pronouns to let people know how to refer to you.")
+      .form-group.gl-form-group
+        = f.label :pronunciation, s_('Profiles|Pronunciation')
+        = f.text_field :pronunciation, class: 'gl-form-input form-control gl-md-form-input-lg'
+        %small.form-text.text-gl-muted
+          = s_("Profiles|Enter how your name is pronounced to help people address you correctly.")
+      = render_if_exists 'profiles/extra_settings', form: f
+      = render_if_exists 'profiles/email_settings', form: f
+      .form-group.gl-form-group
+        = f.label :skype
+        = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
+      .form-group.gl-form-group
+        = f.label :linkedin
+        = f.text_field :linkedin, class: 'gl-form-input form-control gl-md-form-input-lg'
+        %small.form-text.text-gl-muted
+          = s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
+      .form-group.gl-form-group
+        = f.label :twitter
+        = f.text_field :twitter, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|@username")
+      .form-group.gl-form-group
+        - external_accounts_help_url = help_page_path('user/profile/index', anchor: 'add-external-accounts-to-your-user-profile-page')
+        - external_accounts_link = link_to '', external_accounts_help_url, target: "_blank", rel: "noopener noreferrer"
+        - external_accounts_docs_link = safe_format(s_('Profiles|Your Discord user ID. %{external_accounts_link_start}Learn more.%{external_accounts_link_end}'), tag_pair(external_accounts_link, :external_accounts_link_start, :external_accounts_link_end))
+        - min_discord_length = 17
+        - max_discord_length = 20
+        = f.label :discord
+        = f.text_field :discord,
+          class: 'gl-form-input form-control gl-md-form-input-lg js-validate-length',
+          placeholder: s_("Profiles|User ID"),
+          data: { min_length: min_discord_length,
+          min_length_message: s_('Profiles|Discord ID is too short (minimum is %{min_length} characters).') % { min_length: min_discord_length },
+          max_length: max_discord_length,
+          max_length_message: s_('Profiles|Discord ID is too long (maximum is %{max_length} characters).') % { max_length: max_discord_length },
+          allow_empty: true}
+        %small.form-text.text-gl-muted
+          = external_accounts_docs_link
+
+      .form-group.gl-form-group
+        = f.label :website_url, s_('Profiles|Website url')
+        = f.text_field :website_url, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|https://website.com")
+      .form-group.gl-form-group
+        = f.label :location, s_('Profiles|Location')
+        - if @user.read_only_attribute?(:location)
+          = f.text_field :location, class: 'gl-form-input form-control gl-md-form-input-lg', readonly: true
           %small.form-text.text-gl-muted
-            = s_("Profiles|Who you represent or work for.")
-        .form-group.gl-form-group
-          = f.label :bio, s_('Profiles|Bio')
-          = f.text_area :bio, class: 'gl-form-input gl-form-textarea form-control', rows: 4, maxlength: 250
-          %small.form-text.text-gl-muted
-            = s_("Profiles|Tell us about yourself in fewer than 250 characters.")
-        %hr
+            = s_("Profiles|Your location was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:location) }
+        - else
+          = f.text_field :location, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|City, country")
+      .form-group.gl-form-group
+        = f.label :job_title, s_('Profiles|Job title')
+        = f.text_field :job_title, class: 'gl-form-input form-control gl-md-form-input-lg'
+      .form-group.gl-form-group
+        = f.label :organization, s_('Profiles|Organization')
+        = f.text_field :organization, class: 'gl-form-input form-control gl-md-form-input-lg'
+        %small.form-text.text-gl-muted
+          = s_("Profiles|Who you represent or work for.")
+      .form-group.gl-form-group.gl-mb-6.gl-max-w-80
+        = f.label :bio, s_('Profiles|Bio')
+        = f.text_area :bio, class: 'gl-form-input gl-form-textarea form-control', rows: 4, maxlength: 250
+        %small.form-text.text-gl-muted
+          = s_("Profiles|Tell us about yourself in fewer than 250 characters.")
+      .gl-border-t.gl-pt-6
         %fieldset.form-group.gl-form-group
-          %legend.col-form-label.col-form-label
+          %legend.col-form-label
             = _('Private profile')
           - private_profile_label = s_("Profiles|Don't display activity-related personal information on your profile.")
           - private_profile_help_link = link_to sprite_icon('question-o'), help_page_path('user/profile/index.md', anchor: 'make-your-user-profile-page-private')
           = f.gitlab_ui_checkbox_component :private_profile, '%{private_profile_label} %{private_profile_help_link}'.html_safe % { private_profile_label: private_profile_label, private_profile_help_link: private_profile_help_link.html_safe }
         %fieldset.form-group.gl-form-group
-          %legend.col-form-label.col-form-label
+          %legend.col-form-label
             = s_("Profiles|Private contributions")
           = f.gitlab_ui_checkbox_component :include_private_contributions,
             s_('Profiles|Include private contributions on your profile'),
             help_text: s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information.")
-        %fieldset.form-group.gl-form-group
-          %legend.col-form-label.col-form-label
+        %fieldset.form-group.gl-form-group.gl-mb-0
+          %legend.col-form-label
             = s_("Profiles|Achievements")
           = f.gitlab_ui_checkbox_component :achievements_enabled,
             s_('Profiles|Display achievements on your profile')
-    .row.js-hide-when-nothing-matches-search
-      .col-lg-12
-        %hr
-        = f.submit s_("Profiles|Update profile settings"), class: 'gl-mr-3 js-password-prompt-btn', pajamas_button: true
-        = render Pajamas::ButtonComponent.new(href: user_path(current_user)) do
-          = s_('TagsPage|Cancel')
+
+    .js-hide-when-nothing-matches-search.settings-sticky-footer
+      = f.submit s_("Profiles|Update profile settings"), class: 'gl-mr-3 js-password-prompt-btn', pajamas_button: true
+      = render Pajamas::ButtonComponent.new(href: user_path(current_user)) do
+        = s_('TagsPage|Cancel')
 
   #password-prompt-modal
 

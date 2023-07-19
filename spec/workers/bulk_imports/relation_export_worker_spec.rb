@@ -47,28 +47,14 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
       context 'when export is batched' do
         let(:batched) { true }
 
-        context 'when bulk_imports_batched_import_export feature flag is disabled' do
-          before do
-            stub_feature_flags(bulk_imports_batched_import_export: false)
-          end
-
-          include_examples 'export service', BulkImports::RelationExportService
+        context 'when relation is batchable' do
+          include_examples 'export service', BulkImports::BatchedRelationExportService
         end
 
-        context 'when bulk_imports_batched_import_export feature flag is enabled' do
-          before do
-            stub_feature_flags(bulk_imports_batched_import_export: true)
-          end
+        context 'when relation is not batchable' do
+          let(:relation) { 'namespace_settings' }
 
-          context 'when relation is batchable' do
-            include_examples 'export service', BulkImports::BatchedRelationExportService
-          end
-
-          context 'when relation is not batchable' do
-            let(:relation) { 'namespace_settings' }
-
-            include_examples 'export service', BulkImports::RelationExportService
-          end
+          include_examples 'export service', BulkImports::RelationExportService
         end
       end
 

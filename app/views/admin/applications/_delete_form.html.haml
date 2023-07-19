@@ -1,4 +1,2 @@
-- submit_btn_css ||= 'gl-button btn btn-danger btn-danger-secondary btn-sm js-application-delete-button'
-
-%button{ class: submit_btn_css, data: { path: admin_application_path(application), name: application.name } }
+= render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, button_options: { data: { path: admin_application_path(application), name: application.name }, class: 'js-application-delete-button' }) do
   = _('Destroy')

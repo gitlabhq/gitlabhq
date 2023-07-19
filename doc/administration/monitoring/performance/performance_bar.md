@@ -22,7 +22,7 @@ From left to right, the performance bar displays:
 - **Current Host**: the current host serving the page.
 - **Database queries**: the time taken (in milliseconds) and the total number
   of database queries, displayed in the format `00ms / 00 (00 cached) pg`. Select to display
-  a modal window with more details. You can use this to see the following
+  a dialog with more details. You can use this to see the following
   details for each query:
   - **In a transaction**: shows up below the query if it was executed in
     the context of a transaction
@@ -38,8 +38,7 @@ From left to right, the performance bar displays:
   [Gitaly](../../gitaly/index.md) calls. Select to display a modal window with more
   details.
 - **Rugged calls**: the time taken (in milliseconds) and the total number of
-  [Rugged](../../nfs.md#improving-nfs-performance-with-gitlab) calls.
-  Select to display a modal window with more details.
+  Rugged calls. Select to display a modal window with more details.
 - **Redis calls**: the time taken (in milliseconds) and the total number of
   Redis calls. Select to display a modal window with more details.
 - **Elasticsearch calls**: the time taken (in milliseconds) and the total number of

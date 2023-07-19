@@ -10,6 +10,7 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   MIN_SEARCH_LENGTH = 3
   PAGE_LIMIT = 50
+  RSS_ENTRIES_LIMIT = 20
 
   before_action :set_non_archived_param
   before_action :set_sorting
@@ -83,6 +84,14 @@ class Explore::ProjectsController < Explore::ApplicationController
 
     params[:topic] = @topic.name
     @projects = load_projects
+
+    respond_to do |format|
+      format.html
+      format.atom do
+        @projects = @projects.projects_order_id_desc.limit(RSS_ENTRIES_LIMIT)
+        render layout: 'xml'
+      end
+    end
   end
 
   private

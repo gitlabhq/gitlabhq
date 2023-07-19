@@ -164,6 +164,25 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           expect(pipeline_metadata.project_id).to eq(pipeline.project_id)
         end
 
+        it 'preserves work_item_type for all issues (legacy with issue_type and new with work_item_type)',
+          :aggregate_failures do
+          task_issue1 = Issue.find_by(title: 'task by issue_type')
+          task_issue2 = Issue.find_by(title: 'task by both attributes')
+          incident_issue = Issue.find_by(title: 'incident by work_item_type')
+          issue_type = WorkItems::Type.default_by_type(:issue)
+          task_type = WorkItems::Type.default_by_type(:task)
+
+          expect(task_issue1.work_item_type).to eq(task_type)
+          expect(task_issue2.work_item_type).to eq(task_type)
+          expect(incident_issue.work_item_type).to eq(WorkItems::Type.default_by_type(:incident))
+
+          other_issue_types = Issue.preload(:work_item_type).where.not(
+            id: [task_issue1.id, task_issue2.id, incident_issue.id]
+          ).map(&:work_item_type)
+
+          expect(other_issue_types).to all(eq(issue_type))
+        end
+
         it 'preserves updated_at on issues' do
           issue = Issue.find_by(description: 'Aliquam enim illo et possimus.')
 

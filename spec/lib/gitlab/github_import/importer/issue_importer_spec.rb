@@ -58,54 +58,24 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
   describe '#execute' do
     let(:importer) { described_class.new(issue, project, client) }
 
-    context 'when :issues_full_test_search is disabled' do
-      before do
-        stub_feature_flags(issues_full_text_search: false)
-      end
+    it 'creates the issue and assignees and updates_search_data' do
+      expect(importer)
+        .to receive(:create_issue)
+        .and_return(10)
 
-      it 'creates the issue and assignees but does not update search data' do
-        expect(importer)
-          .to receive(:create_issue)
-          .and_return(10)
+      expect(importer)
+        .to receive(:create_assignees)
+        .with(10)
 
-        expect(importer)
-          .to receive(:create_assignees)
-          .with(10)
+      expect(importer.issuable_finder)
+        .to receive(:cache_database_id)
+        .with(10)
 
-        expect(importer.issuable_finder)
-          .to receive(:cache_database_id)
-          .with(10)
+      expect(importer)
+        .to receive(:update_search_data)
+        .with(10)
 
-        expect(importer).not_to receive(:update_search_data)
-
-        importer.execute
-      end
-    end
-
-    context 'when :issues_full_text_search feature is enabled' do
-      before do
-        stub_feature_flags(issues_full_text_search: true)
-      end
-
-      it 'creates the issue and assignees and updates_search_data' do
-        expect(importer)
-          .to receive(:create_issue)
-          .and_return(10)
-
-        expect(importer)
-          .to receive(:create_assignees)
-          .with(10)
-
-        expect(importer.issuable_finder)
-          .to receive(:cache_database_id)
-          .with(10)
-
-        expect(importer)
-          .to receive(:update_search_data)
-          .with(10)
-
-        importer.execute
-      end
+      importer.execute
     end
   end
 

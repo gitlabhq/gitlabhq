@@ -113,18 +113,6 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
     end
   end
 
-  it_behaves_like 'GET #metrics_dashboard for dashboard', 'Cluster health' do
-    let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-
-    let(:metrics_dashboard_req_params) do
-      {
-        id: cluster.id,
-        namespace_id: project.namespace.full_path,
-        project_id: project.path
-      }
-    end
-  end
-
   describe 'POST create for existing cluster' do
     let(:params) do
       {

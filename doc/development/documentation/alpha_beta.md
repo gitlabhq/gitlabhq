@@ -29,7 +29,7 @@ For example:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to enable the feature flag named `example_flag`.
+To make it available, an administrator can enable the feature flag named `example_flag`.
 On GitLab.com, this feature is not available. This feature is not ready for production use.
 
 Use this great new feature when you need to do this new thing.

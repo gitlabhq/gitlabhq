@@ -26,6 +26,11 @@ class Packages::Npm::Metadatum < ApplicationRecord
   def ensure_package_json_size
     return if package_json.to_s.size < MAX_PACKAGE_JSON_SIZE
 
-    errors.add(:package_json, _('structure is too large'))
+    errors.add(:package_json, :too_large,
+      message: format(
+        _('structure is too large. Maximum size is %{max_size} characters'),
+        max_size: MAX_PACKAGE_JSON_SIZE
+      )
+    )
   end
 end

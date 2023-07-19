@@ -49,11 +49,13 @@ export default {
         return data.users?.nodes || [];
       },
       result({ data }) {
-        const {
-          users: { pageInfo },
-        } = data;
-        this.pageInfo = pageInfo;
-        this.fetchNextPage();
+        if (data) {
+          const {
+            users: { pageInfo },
+          } = data;
+          this.pageInfo = pageInfo;
+          this.fetchNextPage();
+        }
       },
       error(error) {
         this.handleError(error);

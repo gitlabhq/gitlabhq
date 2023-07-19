@@ -69,7 +69,7 @@ class Admin::ApplicationSettings::AppearancesController < Admin::ApplicationCont
     @appearance = Appearance.current || Appearance.new
   end
 
-  # Only allow a trusted parameter "white list" through.
+  # Only allow a trusted parameter "allow list" through.
   def appearance_params
     params.require(:appearance).permit(allowed_appearance_params)
   end

@@ -26,6 +26,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['conan_max_file_size']).to eq(Plan.default.actual_limits.conan_max_file_size)
           expect(json_response['generic_packages_max_file_size']).to eq(Plan.default.actual_limits.generic_packages_max_file_size)
           expect(json_response['helm_max_file_size']).to eq(Plan.default.actual_limits.helm_max_file_size)
+          expect(json_response['limits_history']).to eq(Plan.default.actual_limits.limits_history)
           expect(json_response['maven_max_file_size']).to eq(Plan.default.actual_limits.maven_max_file_size)
           expect(json_response['npm_max_file_size']).to eq(Plan.default.actual_limits.npm_max_file_size)
           expect(json_response['nuget_max_file_size']).to eq(Plan.default.actual_limits.nuget_max_file_size)
@@ -86,7 +87,9 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
       let(:params) { { 'plan_name': 'default' } }
     end
 
-    context 'as an admin user' do
+    context 'as an admin user', :freeze_time do
+      let(:current_timestamp) { Time.current.utc.to_i }
+
       context 'correct params' do
         it 'updates multiple plan limits', :aggregate_failures do
           put api(path, admin, admin_mode: true), params: {
@@ -124,6 +127,11 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['enforcement_limit']).to eq(15)
           expect(json_response['generic_packages_max_file_size']).to eq(20)
           expect(json_response['helm_max_file_size']).to eq(25)
+          expect(json_response['limits_history']).to eq(
+            { "enforcement_limit" => [{ "user_id" => admin.id, "username" => admin.username, "timestamp" => current_timestamp, "value" => 15 }],
+              "notification_limit" => [{ "user_id" => admin.id, "username" => admin.username, "timestamp" => current_timestamp, "value" => 90 }],
+              "storage_size_limit" => [{ "user_id" => admin.id, "username" => admin.username, "timestamp" => current_timestamp, "value" => 80 }] }
+          )
           expect(json_response['maven_max_file_size']).to eq(30)
           expect(json_response['notification_limit']).to eq(90)
           expect(json_response['npm_max_file_size']).to eq(40)

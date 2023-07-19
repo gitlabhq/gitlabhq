@@ -31,12 +31,13 @@ const TEST_ACTION_2 = {
 describe('vue_shared/components/actions_button', () => {
   let wrapper;
 
-  function createComponent(props) {
+  function createComponent({ props = {}, slots = {} } = {}) {
     wrapper = shallowMountExtended(ActionsButton, {
       propsData: { actions: [TEST_ACTION, TEST_ACTION_2], toggleText: 'Edit', ...props },
       stubs: {
         GlDisclosureDropdownItem,
       },
+      slots,
     });
   }
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
@@ -47,11 +48,29 @@ describe('vue_shared/components/actions_button', () => {
     expect(findDropdown().props().toggleText).toBe('Edit');
   });
 
+  it('dropdown has a fluid width', () => {
+    createComponent();
+
+    expect(findDropdown().props().fluidWidth).toBe(true);
+  });
+
+  it('provides a default slot', () => {
+    const slotContent = 'default text';
+
+    createComponent({
+      slots: {
+        default: slotContent,
+      },
+    });
+
+    expect(findDropdown().text()).toContain(slotContent);
+  });
+
   it('allows customizing variant and category', () => {
     const variant = 'confirm';
     const category = 'secondary';
 
-    createComponent({ variant, category });
+    createComponent({ props: { variant, category } });
 
     expect(findDropdown().props()).toMatchObject({ category, variant });
   });
@@ -88,4 +107,13 @@ describe('vue_shared/components/actions_button', () => {
       });
     });
   });
+
+  it.each(['shown', 'hidden'])(
+    'bubbles up %s event from the disclosure dropdown component',
+    (event) => {
+      createComponent();
+      findDropdown().vm.$emit(event);
+      expect(wrapper.emitted(event)).toHaveLength(1);
+    },
+  );
 });

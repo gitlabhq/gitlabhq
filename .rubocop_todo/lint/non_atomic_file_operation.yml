@@ -41,5 +41,3 @@ Lint/NonAtomicFileOperation:
     - 'spec/services/bulk_imports/repository_bundle_export_service_spec.rb'
     - 'spec/services/bulk_imports/uploads_export_service_spec.rb'
     - 'spec/support/database/query_recorder.rb'
-    - 'spec/tooling/rspec_flaky/report_spec.rb'
-    - 'tooling/rspec_flaky/report.rb'

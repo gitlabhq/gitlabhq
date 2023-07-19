@@ -673,16 +673,16 @@ Prerequisites:
 1. Use the following information, and follow the instructions in
 [Set up your own custom SAML application in Google Workspace](https://support.google.com/a/answer/6087519?hl=en).
 
-   |                  | Typical value                                    | Description                                              |
-   |------------------|--------------------------------------------------|----------------------------------------------------------|
-   | Name of SAML App | GitLab                                           | Other names OK.                                          |
-   | ACS URL          | `https://<GITLAB_DOMAIN>/users/auth/saml/callback` | Assertion Consumer Service URL.             |
-   | GITLAB_DOMAIN    | `gitlab.example.com`                             | Your GitLab instance domain.               |
-   | Entity ID        | `https://gitlab.example.com`                     | A value unique to your SAML application. Set it to the `issuer` in your GitLab configuration.                         |
-   | Name ID format   | EMAIL                                            | Required value. Also known as `name_identifier_format`.                    |
-   | Name ID          | Primary email address                            | Your email address. Make sure someone receives content sent to that address.                |
-   | First name       | `first_name`                                     | First name. Required value to communicate with GitLab.               |
-   | Last name        | `last_name`                                      | Last name. Required value to communicate with GitLab.               |
+   |                  | Typical value                                      | Description                                                                                   |
+   |:-----------------|:---------------------------------------------------|:----------------------------------------------------------------------------------------------|
+   | Name of SAML App | GitLab                                             | Other names OK.                                                                               |
+   | ACS URL          | `https://<GITLAB_DOMAIN>/users/auth/saml/callback` | Assertion Consumer Service URL.                                                               |
+   | `GITLAB_DOMAIN`  | `gitlab.example.com`                               | Your GitLab instance domain.                                                                  |
+   | Entity ID        | `https://gitlab.example.com`                       | A value unique to your SAML application. Set it to the `issuer` in your GitLab configuration. |
+   | Name ID format   | `EMAIL`                                            | Required value. Also known as `name_identifier_format`.                                       |
+   | Name ID          | Primary email address                              | Your email address. Make sure someone receives content sent to that address.                  |
+   | First name       | `first_name`                                       | First name. Required value to communicate with GitLab.                                        |
+   | Last name        | `last_name`                                        | Last name. Required value to communicate with GitLab.                                         |
 
 1. Set up the following SAML attribute mappings:
 
@@ -742,7 +742,7 @@ As a result, SAML Group Sync only supports a single SAML provider. For more info
 You can:
 
 - Require users to be members of a certain group.
-- Assign users [external](../user/admin_area/external_users.md), administrator or [auditor](../administration/auditor_users.md) roles based on group membership.
+- Assign users [external](../administration/external_users.md), administrator or [auditor](../administration/auditor_users.md) roles based on group membership.
 
 GitLab checks these groups on each SAML sign in and updates user attributes as necessary.
 This feature **does not** allow you to automatically add users to GitLab
@@ -948,7 +948,7 @@ response, configure GitLab to identify:
 - Information about a group or user, using a group setting.
 
 SAML can automatically identify a user as an
-[external user](../user/admin_area/external_users.md), based on the `external_groups`
+[external user](../administration/external_users.md), based on the `external_groups`
 setting.
 
 Example configuration:

@@ -333,17 +333,27 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       described_class.new(internal_group, user, default_branch_protection: Gitlab::Access::PROTECTION_NONE)
     end
 
+    let(:settings) { internal_group.namespace_settings }
+    let(:expected_settings) { Gitlab::Access::BranchProtection.protection_none.stringify_keys }
+
     context 'for users who have the ability to update default_branch_protection' do
-      it 'updates the attribute' do
+      it 'updates default_branch_protection attribute' do
         internal_group.add_owner(user)
 
-        expect { service.execute }.to change { internal_group.default_branch_protection }.to(Gitlab::Access::PROTECTION_NONE)
+        expect { service.execute }.to change { internal_group.default_branch_protection }.from(Gitlab::Access::PROTECTION_FULL).to(Gitlab::Access::PROTECTION_NONE)
+      end
+
+      it 'updates default_branch_protection_defaults to match default_branch_protection' do
+        internal_group.add_owner(user)
+
+        expect { service.execute }.to change { settings.default_branch_protection_defaults  }.from({}).to(expected_settings)
       end
     end
 
     context 'for users who do not have the ability to update default_branch_protection' do
       it 'does not update the attribute' do
         expect { service.execute }.not_to change { internal_group.default_branch_protection }
+        expect { service.execute }.not_to change { internal_group.namespace_settings.default_branch_protection_defaults }
       end
     end
   end

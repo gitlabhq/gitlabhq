@@ -8,7 +8,7 @@ RSpec.describe Gitlab::UrlSanitizer do
   describe '.sanitize' do
     def sanitize_url(url)
       # We want to try with multi-line content because is how error messages are formatted
-      described_class.sanitize(%Q{
+      described_class.sanitize(%{
          remote: Not Found
          fatal: repository `#{url}` not found
       })

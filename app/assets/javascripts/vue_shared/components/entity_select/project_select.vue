@@ -166,6 +166,7 @@ export default {
     :fetch-initial-selection-text="fetchProjectName"
     :block="block"
     clearable
+    v-on="$listeners"
   >
     <template v-if="hasHtmlLabel" #label>
       <span v-safe-html="label"></span>

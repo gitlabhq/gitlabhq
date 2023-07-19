@@ -22,7 +22,7 @@ module Gitlab
                 return error('Insufficient permissions to create a new pipeline')
               end
 
-              unless allowed_to_write_ref?
+              unless allowed_to_run_pipeline?
                 error("You do not have sufficient permission to run a pipeline on '#{command.ref}'. Please select a different branch or contact your administrator for assistance.")
               end
             end
@@ -35,6 +35,10 @@ module Gitlab
 
             def allowed_to_create_pipeline?
               can?(current_user, :create_pipeline, project)
+            end
+
+            def allowed_to_run_pipeline?
+              allowed_to_write_ref?
             end
 
             def allowed_to_write_ref?

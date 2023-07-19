@@ -166,6 +166,7 @@ export default {
     'releasesPath',
     'rssPath',
     'showNewIssueLink',
+    'groupId',
   ],
   props: {
     eeSearchTokens: {
@@ -365,6 +366,7 @@ export default {
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
           token: UserToken,
+          dataType: 'user',
           defaultUsers: [],
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
           fetchUsers: this.fetchUsers,
@@ -376,6 +378,7 @@ export default {
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
           token: UserToken,
+          dataType: 'user',
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
           fetchUsers: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
@@ -893,6 +896,7 @@ export default {
           :query="$options.searchProjectsQuery"
           :query-variables="newIssueDropdownQueryVariables"
           :extract-projects="extractProjects"
+          :group-id="groupId"
         />
         <gl-disclosure-dropdown
           v-gl-tooltip.hover="$options.i18n.actionsLabel"

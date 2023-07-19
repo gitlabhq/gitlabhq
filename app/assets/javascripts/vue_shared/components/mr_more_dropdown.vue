@@ -51,6 +51,8 @@ export default {
     SidebarSubscriptionsWidget,
     AbuseCategorySelector,
     NewHeaderActionsPopover,
+    SummaryNotesToggle: () =>
+      import('ee_component/merge_requests/components/summary_notes_toggle.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -60,6 +62,9 @@ export default {
     reportAbusePath: {
       default: '',
     },
+    showSummaryNotesToggle: {
+      default: false,
+    },
   },
   props: {
     mr: {
@@ -67,6 +72,11 @@ export default {
       required: true,
     },
     projectPath: {
+      type: String,
+      default: '',
+      required: false,
+    },
+    url: {
       type: String,
       default: '',
       required: false,
@@ -116,11 +126,6 @@ export default {
       default: 0,
       required: false,
     },
-    reportedFromUrl: {
-      type: String,
-      default: '',
-      required: false,
-    },
   },
   data() {
     return {
@@ -156,7 +161,7 @@ export default {
       this.isLoadingDraft = true;
 
       axios
-        .put(`?merge_request[wip_event]=${this.draftState}`, null, {
+        .put(`${this.url}?merge_request[wip_event]=${this.draftState}`, null, {
           params: { format: 'json' },
         })
         .then(({ data }) => {
@@ -226,10 +231,12 @@ export default {
       :auto-close="false"
     >
       <template #toggle>
-        <div class="gl-min-h-7 gl-mb-2 gl-md-mb-0!" :aria-label="$options.i18n.mergeRequestActions">
+        <div class="gl-min-h-7 gl-mb-2 gl-md-mb-0!">
           <gl-button
             class="gl-md-display-none! gl-new-dropdown-toggle gl-absolute gl-top-0 gl-left-0 gl-w-full"
             category="secondary"
+            :aria-label="$options.i18n.mergeRequestActions"
+            :title="$options.i18n.mergeRequestActions"
           >
             <span class="">{{ $options.i18n.mergeRequestActions }}</span>
             <gl-icon class="dropdown-chevron" name="chevron-down" />
@@ -238,6 +245,8 @@ export default {
             class="gl-display-none gl-md-display-flex! gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-ml-3"
             category="tertiary"
             icon="ellipsis_v"
+            :aria-label="$options.i18n.mergeRequestActions"
+            :title="$options.i18n.mergeRequestActions"
           />
         </div>
       </template>
@@ -329,6 +338,8 @@ export default {
             {{ $options.i18n.copyReferenceText }}
           </template>
         </gl-disclosure-dropdown-item>
+
+        <summary-notes-toggle v-if="showSummaryNotesToggle" @action="closeActionsDropdown" />
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group
@@ -353,7 +364,7 @@ export default {
     <abuse-category-selector
       v-if="!isCurrentUser && isReportAbuseDrawerOpen"
       :reported-user-id="reportedUserId"
-      :reported-from-url="reportedFromUrl"
+      :reported-from-url="url"
       :show-drawer="isReportAbuseDrawerOpen"
       @close-drawer="reportAbuseAction(false)"
     />

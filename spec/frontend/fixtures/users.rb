@@ -7,11 +7,18 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
   include ApiHelpers
 
   let_it_be(:followers) { create_list(:user, 5) }
-  let_it_be(:user) { create(:user, followers: followers) }
+  let_it_be(:followees) { create_list(:user, 5) }
+  let_it_be(:user) { create(:user, followers: followers, followees: followees) }
 
   describe API::Users, '(JavaScript fixtures)', type: :request do
     it 'api/users/followers/get.json' do
       get api("/users/#{user.id}/followers", user)
+
+      expect(response).to be_successful
+    end
+
+    it 'api/users/following/get.json' do
+      get api("/users/#{user.id}/following", user)
 
       expect(response).to be_successful
     end

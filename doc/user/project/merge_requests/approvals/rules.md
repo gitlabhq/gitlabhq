@@ -42,7 +42,7 @@ To add a merge request approval rule:
    - To apply the rule to a specific branch, select it from the list.
 1. Set the number of required approvals in **Approvals required**. A value of `0` makes
    [the rule optional](#configure-optional-approval-rules), and any number greater than `0`
-   creates a required rule.
+   creates a required rule. Maximum number of required approvals is `100`.
 1. To add users or groups as approvers, search for users or groups that are
    [eligible to approve](#eligible-approvers), and select **Add**. GitLab suggests approvers based on
    previous authors of the files changed by the merge request.
@@ -261,7 +261,12 @@ For more information, see [Coverage check approval rule](../../../../ci/testing/
 
 ## Security Approvals **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
+> - Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default the bot comment for approvals is available. To hide the feature, an administrator can [disable the feature flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`.
+On GitLab.com, the bot comment for approvals is available.
 
 You can use [scan result policies](../../../application_security/policies/scan-result-policies.md#scan-result-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
 Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.
@@ -269,6 +274,8 @@ Details for each security policy is shown in the Security Approvals section of y
 The security approval rules are applied to all merge requests until the pipeline is complete. The application of the
 security approval rules prevents users from merging in code before the security scans run. After the pipeline is
 complete, the security approval rules are checked to determine if the security approvals are still required.
+In case the scanners in the pipeline identify an issue and security approvals are required, a bot comment is generated
+on the merge request to indicate which steps are needed to proceed.
 
 ![Security Approvals](img/security_approvals_v15_0.png)
 

@@ -32,9 +32,7 @@ module BulkImports
       end
 
       event :finish do
-        transition started: :finished
-        transition finished: :finished
-        transition failed: :failed
+        transition any => :finished
       end
 
       event :fail_op do
@@ -62,6 +60,13 @@ module BulkImports
       strong_memoize(:config) do
         FileTransfer.config_for(portable)
       end
+    end
+
+    def remove_existing_upload!
+      return unless upload&.export_file&.file
+
+      upload.remove_export_file!
+      upload.save!
     end
   end
 end

@@ -109,23 +109,22 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334698) in GitLab 15.1.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389905) in GitLab 15.11 [with a flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`. Disabled by default.
-> - [Enabled by default on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.1.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.2. Feature flag `invalid_scan_result_policy_prevents_merge` removed.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
+an administrator can [disable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
 
-Whenever an approval rule cannot be satisfied, the rule is displayed as **(!) Auto approved**. This applies to the following conditions:
+Whenever an approval rule cannot be satisfied, the rule is displayed as **Auto approved**. This applies to the following conditions:
 
 - The only eligible approver is the author of the merge request.
 - No eligible approvers (either groups or users) have been assigned to the approval rule.
 - The number of required approvals is more than the number of eligible approvers.
 
-These rules are automatically approved to unblock their respective merge requests,
-unless they were created through a security policy.
-
-Invalid approval rules created through a security policy are presented with **(!) Action Required**
-and are not automatically approved, blocking their respective merge requests.
+These rules are automatically approved to unblock their respective merge requests, unless they were
+created through a [scan result policy](../../../application_security/policies/scan-result-policies.md).
+Invalid approval rules created through a scan result policy are presented with
+**Action required** and are not automatically approved, blocking their respective merge requests.
 
 ## Related topics
 

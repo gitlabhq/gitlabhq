@@ -6,6 +6,7 @@ module QA
       module Members
         module InviteMembersModal
           extend QA::Page::PageConcern
+          include QA::Page::Component::Dropdown
 
           def self.included(base)
             super
@@ -14,11 +15,6 @@ module QA
               element :invite_button
               element :access_level_dropdown
               element :invite_members_modal_content
-            end
-
-            base.view 'app/assets/javascripts/invite_members/components/group_select.vue' do
-              element :group_select_dropdown_search_field
-              element :group_select_dropdown_item
             end
 
             base.view 'app/assets/javascripts/invite_members/components/members_token_select.vue' do
@@ -61,11 +57,9 @@ module QA
             within_element(:invite_members_modal_content) do
               click_button 'Select a group'
 
-              Support::Waiter.wait_until { has_element?(:group_select_dropdown_item) }
-
-              fill_element :group_select_dropdown_search_field, group_name
               Support::WaitForRequests.wait_for_requests
-              click_button group_name
+
+              search_and_select(group_name)
 
               set_access_level(access_level)
             end

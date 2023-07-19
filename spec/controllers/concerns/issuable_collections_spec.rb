@@ -92,7 +92,7 @@ RSpec.describe IssuableCollections do
         }
       end
 
-      it 'only allows whitelisted params' do
+      it 'only allows allowlisted params' do
         is_expected.to include({
           'assignee_id' => '1',
           'assignee_username' => 'user1',
@@ -123,7 +123,7 @@ RSpec.describe IssuableCollections do
         }
       end
 
-      it 'only allows whitelisted params' do
+      it 'only allows allowlisted params' do
         is_expected.to include({
           'label_name' => %w[label1 label2],
           'assignee_username' => %w[user1 user2]

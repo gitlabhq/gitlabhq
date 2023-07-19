@@ -9,6 +9,9 @@ info: A tutorial using Flux
 This tutorial teaches you how to set up Flux for GitOps. You'll complete a bootstrap installation,
 install `agentk` in your cluster, and deploy a simple `nginx` application.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an overview of an example Flux
+configuration, see [Flux bootstrap and manifest synchronization with GitLab](https://www.youtube.com/watch?v=EjPVRM-N_PQ).
+
 To set up Flux for GitOps:
 
 1. [Create a personal access token](#create-a-personal-access-token)
@@ -97,7 +100,7 @@ To install `agentk`:
    apiVersion: v1
    kind: Namespace
    metadata:
-   name: gitlab
+     name: gitlab
    ```
 
 1. Apply the agent registration token as a secret in the cluster:
@@ -140,7 +143,7 @@ To install `agentk`:
          sourceRef:
            kind: HelmRepository
            name: gitlab-agent
-           namespace: gitlab-agent
+           namespace: gitlab
      interval: 1h0m0s
      values:
        config:
@@ -177,8 +180,6 @@ To demonstrate, deploy an `nginx` application and point Flux at it:
      interval: 1m0s
      ref:
        branch: main
-     secretRef:
-       name: example-nginx-app
      url: https://gitlab.com/gitlab-examples/ops/gitops-demo/example-mini-flux-deployment.git
    ---
    apiVersion: kustomize.toolkit.fluxcd.io/v1

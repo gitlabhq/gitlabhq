@@ -415,8 +415,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'does not create duplicated metrics records when MR is concurrently updated' do
         merge_request.metrics.destroy!
 
-        instance1 = MergeRequest.find(merge_request.id)
-        instance2 = MergeRequest.find(merge_request.id)
+        instance1 = described_class.find(merge_request.id)
+        instance2 = described_class.find(merge_request.id)
 
         instance1.ensure_metrics!
         instance2.ensure_metrics!
@@ -3259,6 +3259,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#skipped_mergeable_checks' do
+    subject { build_stubbed(:merge_request).skipped_mergeable_checks(options) }
+
+    where(:options, :skip_ci_check) do
+      {}                              | false
+      { auto_merge_requested: false } | false
+      { auto_merge_requested: true }  | true
+    end
+
+    with_them do
+      it { is_expected.to include(skip_ci_check: skip_ci_check) }
+    end
+  end
+
   describe '#check_mergeability' do
     let(:mergeability_service) { double }
 
@@ -5105,6 +5119,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#schedule_cleanup_refs' do
+    subject { merge_request.schedule_cleanup_refs(only: :train) }
+
+    let(:merge_request) { build(:merge_request, source_project: create(:project, :repository)) }
+
+    it 'does schedule MergeRequests::CleanupRefWorker' do
+      expect(MergeRequests::CleanupRefWorker).to receive(:perform_async).with(merge_request.id, 'train')
+
+      subject
+    end
+
+    context 'when merge_request_cleanup_ref_worker_async is disabled' do
+      before do
+        stub_feature_flags(merge_request_cleanup_ref_worker_async: false)
+      end
+
+      it 'deletes all refs from the target project' do
+        expect(merge_request.target_project.repository)
+          .to receive(:delete_refs)
+          .with(merge_request.train_ref_path)
+
+        subject
+      end
+    end
+  end
+
   describe '#cleanup_refs' do
     subject { merge_request.cleanup_refs(only: only) }
 
@@ -5272,7 +5312,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         environment: envs[2]
       )
 
-      merge_request_relation = MergeRequest.where(id: merge_request.id)
+      merge_request_relation = described_class.where(id: merge_request.id)
       created.link_merge_requests(merge_request_relation)
       success.link_merge_requests(merge_request_relation)
       failed.link_merge_requests(merge_request_relation)

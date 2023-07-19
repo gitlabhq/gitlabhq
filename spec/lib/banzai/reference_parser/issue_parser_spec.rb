@@ -136,7 +136,7 @@ RSpec.describe Banzai::ReferenceParser::IssueParser, feature_category: :team_pla
     end
 
     def issue_link(issue)
-      Nokogiri::HTML.fragment(%Q{<a data-issue="#{issue.id}"></a>}).children[0]
+      Nokogiri::HTML.fragment(%{<a data-issue="#{issue.id}"></a>}).children[0]
     end
 
     before do

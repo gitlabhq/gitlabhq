@@ -148,7 +148,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       end
 
       let(:order) do
-        Gitlab::Pagination::Keyset::Order.build(
+        described_class.build(
           [
             Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
               attribute_name: 'id',
@@ -193,7 +193,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       end
 
       let(:order) do
-        Gitlab::Pagination::Keyset::Order.build(
+        described_class.build(
           [
             Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
               attribute_name: 'year',
@@ -260,7 +260,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       end
 
       let(:order) do
-        Gitlab::Pagination::Keyset::Order.build(
+        described_class.build(
           [
             Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
               attribute_name: 'year',
@@ -327,7 +327,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       end
 
       let(:order) do
-        Gitlab::Pagination::Keyset::Order.build(
+        described_class.build(
           [
             Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
               attribute_name: 'year',
@@ -394,7 +394,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       end
 
       let(:order) do
-        Gitlab::Pagination::Keyset::Order.build(
+        described_class.build(
           [
             Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
               attribute_name: 'year',
@@ -452,7 +452,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
 
     context 'when ordering by the named function LOWER' do
       let(:order) do
-        Gitlab::Pagination::Keyset::Order.build(
+        described_class.build(
           [
             Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
               attribute_name: 'title',
@@ -494,7 +494,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
 
     context 'when the passed cursor values do not match with the order definition' do
       let(:order) do
-        Gitlab::Pagination::Keyset::Order.build(
+        described_class.build(
           [
             Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
               attribute_name: 'year',
@@ -564,7 +564,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
 
       context 'when string attribute name is given' do
         let(:order) do
-          Gitlab::Pagination::Keyset::Order.build(
+          described_class.build(
             [
               Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                 attribute_name: 'id',
@@ -580,7 +580,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
 
       context 'when symbol attribute name is given' do
         let(:order) do
-          Gitlab::Pagination::Keyset::Order.build(
+          described_class.build(
             [
               Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                 attribute_name: :id,
@@ -606,7 +606,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
 
           context 'when there are additional_projections' do
             let(:order) do
-              order = Gitlab::Pagination::Keyset::Order.build(
+              order = described_class.build(
                 [
                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                     attribute_name: 'created_at_field',
@@ -645,6 +645,16 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
     let_it_be(:user_2) { create(:user, created_at: five_months_ago) }
     let_it_be(:user_3) { create(:user, created_at: 1.month.ago) }
     let_it_be(:user_4) { create(:user, created_at: 2.months.ago) }
+    let_it_be(:ignored_column_model) do
+      Class.new(ApplicationRecord) do
+        self.table_name = 'users'
+
+        include IgnorableColumns
+        include FromUnion
+
+        ignore_column :username, remove_with: '16.4', remove_after: '2023-08-22'
+      end
+    end
 
     let(:expected_results) { [user_3, user_4, user_2, user_1] }
     let(:scope) { User.order(created_at: :desc, id: :desc) }
@@ -672,6 +682,26 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
         iterator_options[:use_union_optimization] = true
       end
 
+      context 'when the scope model has ignored columns' do
+        let(:ignored_expected_results) { expected_results.map { |r| r.becomes(ignored_column_model) } } # rubocop:disable Cop/AvoidBecomes
+
+        context 'when scope selects all columns' do
+          let(:scope) { ignored_column_model.order(created_at: :desc, id: :desc) }
+
+          it 'returns items in the correct order' do
+            expect(items).to eq(ignored_expected_results)
+          end
+        end
+
+        context 'when scope selects only specific columns' do
+          let(:scope) { ignored_column_model.order(created_at: :desc, id: :desc).select(:id, :created_at) }
+
+          it 'returns items in the correct order' do
+            expect(items).to eq(ignored_expected_results)
+          end
+        end
+      end
+
       it 'returns items in the correct order' do
         expect(items).to eq(expected_results)
       end
@@ -687,7 +717,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
 
       it 'builds UNION query' do
         cursor_attributes = { created_at: five_months_ago, id: user_2.id }
-        order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(keyset_aware_scope)
+        order = described_class.extract_keyset_order_object(keyset_aware_scope)
 
         query = order.apply_cursor_conditions(scope, cursor_attributes, use_union_optimization: true).to_sql
         expect(query).to include('UNION ALL')
@@ -698,7 +728,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
   describe '#attribute_names' do
     let(:expected_attribute_names) { %w(id name) }
     let(:order) do
-      Gitlab::Pagination::Keyset::Order.build(
+      described_class.build(
         [
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'id',

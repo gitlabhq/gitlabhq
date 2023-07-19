@@ -23,11 +23,13 @@ export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: '
 export const ICON_MAP = {
   blobs: 'code',
   issues: 'issues',
+  epics: 'epic',
   merge_requests: 'merge-request',
   commits: 'commit',
   notes: 'comments',
-  milestones: 'tag',
+  milestones: 'clock',
   users: 'users',
   projects: 'project',
-  wiki_blobs: 'overview',
+  wiki_blobs: 'book',
+  snippet_titles: 'snippet',
 };

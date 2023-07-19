@@ -55,7 +55,7 @@
 - name: "User impersonation audit events for groups"
   description: |
     GitLab now provides audit events on the group audit events page for
-    [user impersonation](https://docs.gitlab.com/ee/user/admin_area/#user-impersonation) starting and stopping. This was previously
+    [user impersonation](https://docs.gitlab.com/ee/administration/#user-impersonation) starting and stopping. This was previously
     only available on a page unavailable to GitLab SaaS customers. We are excited to bring
     it to the group page which allows both self-managed and SaaS users to view these events!
 

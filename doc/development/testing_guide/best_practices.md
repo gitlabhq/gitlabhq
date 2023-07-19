@@ -50,6 +50,32 @@ bundle exec guard
 
 When using spring and guard together, use `SPRING=1 bundle exec guard` instead to make use of spring.
 
+### General guidelines
+
+- Use a single, top-level `RSpec.describe ClassName` block.
+- Use `.method` to describe class methods and `#method` to describe instance
+  methods.
+- Use `context` to test branching logic (`RSpec/AvoidConditionalStatements` Rubocop Cop - [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117152)).
+- Try to match the ordering of tests to the ordering in the class.
+- Try to follow the [Four-Phase Test](https://thoughtbot.com/blog/four-phase-test) pattern, using newlines
+  to separate phases.
+- Use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`.
+- Don't assert against the absolute value of a sequence-generated attribute (see
+  [Gotchas](../gotchas.md#do-not-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
+- Avoid using `expect_any_instance_of` or `allow_any_instance_of` (see
+  [Gotchas](../gotchas.md#avoid-using-expect_any_instance_of-or-allow_any_instance_of-in-rspec)).
+- Don't supply the `:each` argument to hooks because it's the default.
+- On `before` and `after` hooks, prefer it scoped to `:context` over `:all`.
+- When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
+  use a Capybara matcher beforehand (such as `find('.js-foo')`) to ensure the element actually exists.
+- Use `focus: true` to isolate parts of the specs you want to run.
+- Use [`:aggregate_failures`](https://rspec.info/features/3-12/rspec-core/expectation-framework-integration/aggregating-failures/) when there is more than one expectation in a test.
+- For [empty test description blocks](https://github.com/rubocop-hq/rspec-style-guide#it-and-specify), use `specify` rather than `it do` if the test is self-explanatory.
+- Use `non_existing_record_id`/`non_existing_record_iid`/`non_existing_record_access_level`
+  when you need an ID/IID/access level that doesn't actually exist. Using 123, 1234,
+  or even 999 is brittle as these IDs could actually exist in the database in the
+  context of a CI run.
+
 ### Eager loading the application code
 
 By default, the application code:
@@ -132,8 +158,43 @@ We should reduce test dependencies, and avoiding
 capabilities also reduces the amount of set-up needed.
 
 `:js` is particularly important to avoid. This must only be used if the feature
-test requires JavaScript reactivity in the browser. Using a headless
+test requires JavaScript reactivity in the browser (for example, clicking a Vue.js component). Using a headless
 browser is much slower than parsing the HTML response from the app.
+
+#### Profiling: see where your test spend its time
+
+[`rspec-stackprof`](https://github.com/dkhroad/rspec-stackprof) can be used to generate a flame graph that shows you where you test spend its time.
+
+The gem generates a JSON report that we can upload to <https://www.speedscope.app> for an interactive visualization.
+
+##### Installation
+
+`stackprof` gem is [already installed with GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/695fcee0c5541b4ead0a90eb9b8bf0b69bee796c/Gemfile#L487), and we also have a script available that generates the JSON report (`bin/rspec-stackprof`).
+
+```shell
+# Optional: install the `speedscope` package to easily upload the JSON report to https://www.speedscope.app
+npm install -g speedscope
+```
+
+##### Generate the JSON report
+
+```shell
+bin/rspec-stackprof --speedscope=true <your_slow_spec>
+# There will be the name of the report displayed when the script ends.
+
+# Upload the JSON report to speedscope.app
+speedscope tmp/<your-json-report>.json
+```
+
+##### How to interpret the flamegraph
+
+Below are some useful tips to interpret and navigate the flamegraph:
+
+- There are [several views available](https://github.com/jlfwong/speedscope#views) for the flamegraph. `Left Heavy` is particularly useful when there are a lot of function calls (for example, feature specs).
+- You can zoom in or out! See [the navigation documentation](https://github.com/jlfwong/speedscope#navigation)
+- If you are working on a slow feature test, search for `Capybara::DSL#` in the search to see the capybara actions that are made, and how long they take!
+
+See [#414929](https://gitlab.com/gitlab-org/gitlab/-/issues/414929#note_1425239887) or [#375004](https://gitlab.com/gitlab-org/gitlab/-/issues/375004#note_1109867718) for some analysis examples.
 
 #### Optimize factory usage
 
@@ -240,9 +301,21 @@ There are various ways to create objects and store them in variables in your tes
 - `let` lazily creates the object. It isn't created until the object is called. `let` is generally inefficient as it creates a new object for every example. `let` is fine for simple values. However, more efficient variants of `let` are best when dealing with database models such as factories.
 - `let_it_be_with_refind` works similar to `let_it_be_with_reload`, but the [former calls `ActiveRecord::Base#find`](https://github.com/test-prof/test-prof/blob/936b29f87b36f88a134e064aa6d8ade143ae7a13/lib/test_prof/ext/active_record_refind.rb#L15) instead of `ActiveRecord::Base#reload`. `reload` is usually faster than `refind`.
 - `let_it_be_with_reload` creates an object one time for all examples in the same context, but after each example, the database changes are rolled back, and `object.reload` will be called to restore the object to its original state. This means you can make changes to the object before or during an example. However, there are cases where [state leaks across other models](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection) can occur. In these cases, `let` may be an easier option, especially if only a few examples exist.
-- `let_it_be` creates an immutable object one time for all of the examples in the same context. This is a great alternative to `let` and `let!` for objects that do not need to change from one example to another. Using `let_it_be` can dramatically speed up tests that create database models. See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#let-it-be> for more details and examples.
+- `let_it_be` creates an object one time for all of the examples in the same context. This is a great alternative to `let` and `let!` for objects that do not need to change from one example to another. Using `let_it_be` can dramatically speed up tests that create database models. See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#let-it-be> for more details and examples.
 
-`let_it_be` is the most optimized option since it instantiates an object once and does not change it. If you find yourself needing `let` instead of `let_it_be`, try `let_it_be_with_reload`.
+Pro-tip: When writing tests, it is best to consider the objects inside a `let_it_be` as **immutable**, as there are some important caveats when modifying objects inside a `let_it_be` declaration ([1](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#database-is-rolled-back-to-a-pristine-state-but-the-objects-are-not), [2](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#modifiers)). To make your `let_it_be` objects immutable, consider using `.freeze`:
+
+```shell
+# Before
+let_it_be(:namespace) { create_default(:namespace)
+
+# After
+let_it_be(:namespace) { create_default(:namespace).freeze
+```
+
+See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection> for more information on `let_it_be` freezing.
+
+`let_it_be` is the most optimized option since it instantiates an object once and shares its instance across examples. If you find yourself needing `let` instead of `let_it_be`, try `let_it_be_with_reload`.
 
 ```ruby
 # Old
@@ -335,6 +408,35 @@ end
 NOTE:
 Refrain from using this stub helper if the test code relies on persisting
 `project_authorizations` or `Member` records. Use `Project#add_member` or `Group#add_member` instead.
+
+#### Additional profiling metrics
+
+We can use the `rspec_profiling` gem to diagnose, for instance, the number of SQL queries we're making when running a test.
+
+This could be caused by some application side SQL queries **triggered by a test that could mock parts that are not under test** (for example, [!123810](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123810)).
+
+[See the instructions in the performance docs](../performance.md#rspec-profiling).
+
+#### Troubleshoot slow feature test
+
+A slow feature test can generally be optimized the same way as any other test. However, there are some specific techniques that can make the troubleshooting session more fruitful.
+
+##### See what the feature test is doing in the UI
+
+```shell
+# Before
+bin/rspec ./spec/features/admin/admin_settings_spec.rb:992
+
+# After
+WEBDRIVER_HEADLESS=0 bin/rspec ./spec/features/admin/admin_settings_spec.rb:992
+```
+
+See [Run `:js` spec in a visible browser](#run-js-spec-in-a-visible-browser) for more info.
+
+##### Search for `Capybara::DSL#` when using profiling
+
+<!-- TODO: Add the search keywords -->
+When using [`stackprof` flamegraphs](#profiling-see-where-your-test-spend-its-time), search for `Capybara::DSL#` in the search to see the capybara actions that are made, and how long they take!
 
 #### Identify slow tests
 
@@ -437,31 +539,11 @@ performance gains.
 When combining tests, consider using `:aggregate_failures`, so that the full
 results are available, and not just the first failure.
 
-### General guidelines
+#### In case you're stuck
 
-- Use a single, top-level `RSpec.describe ClassName` block.
-- Use `.method` to describe class methods and `#method` to describe instance
-  methods.
-- Use `context` to test branching logic.
-- Try to match the ordering of tests to the ordering in the class.
-- Try to follow the [Four-Phase Test](https://thoughtbot.com/blog/four-phase-test) pattern, using newlines
-  to separate phases.
-- Use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
-- Don't assert against the absolute value of a sequence-generated attribute (see
-  [Gotchas](../gotchas.md#do-not-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
-- Avoid using `expect_any_instance_of` or `allow_any_instance_of` (see
-  [Gotchas](../gotchas.md#avoid-using-expect_any_instance_of-or-allow_any_instance_of-in-rspec)).
-- Don't supply the `:each` argument to hooks because it's the default.
-- On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
-- When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
-  use a Capybara matcher beforehand (such as `find('.js-foo')`) to ensure the element actually exists.
-- Use `focus: true` to isolate parts of the specs you want to run.
-- Use [`:aggregate_failures`](https://rspec.info/features/3-12/rspec-core/expectation-framework-integration/aggregating-failures/) when there is more than one expectation in a test.
-- For [empty test description blocks](https://github.com/rubocop-hq/rspec-style-guide#it-and-specify), use `specify` rather than `it do` if the test is self-explanatory.
-- Use `non_existing_record_id`/`non_existing_record_iid`/`non_existing_record_access_level`
-  when you need an ID/IID/access level that doesn't actually exists. Using 123, 1234,
-  or even 999 is brittle as these IDs could actually exist in the database in the
-  context of a CI run.
+We have a `backend_testing_performance` [domain expertise](https://about.gitlab.com/handbook/engineering/workflow/code-review/#domain-experts) to list people that could help refactor slow backend specs.
+
+To find people that could help, search for `backend testing performance` on the [Engineering Projects page](https://about.gitlab.com/handbook/engineering/projects/), or look directly in [the `www-gitlab-org` project](https://gitlab.com/search?group_id=6543&nav_source=navbar&project_id=7764&repository_ref=master&scope=blobs&search=backend_testing_performance+path%3Adata%2Fteam_members%2F*&search_code=true).
 
 ### Feature category metadata
 
@@ -918,7 +1000,7 @@ describe 'specs which require time to be frozen to a specific date and/or time',
 end
 ```
 
-[Under the hood](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/time_travel.rb), these helpers use the `around(:each)` hook and the block syntax of the
+[Under the hood](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-rspec/lib/gitlab/rspec/configurations/time_travel.rb), these helpers use the `around(:each)` hook and the block syntax of the
 [`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/classes/ActiveSupport/Testing/TimeHelpers.html)
 methods:
 
@@ -929,6 +1011,19 @@ end
 
 around(:each) do |example|
   travel_to(date_or_time) { example.run }
+end
+```
+
+Remember that any objects created before the examples run (such as objects created via `let_it_be`) will be outside spec scope.
+If the time for everything needs to be frozen, `before :all` can be used to encapsulate the setup as well.
+
+```ruby
+before :all do
+  freeze_time
+end
+
+after :all do
+  unfreeze_time
 end
 ```
 
@@ -1292,6 +1387,19 @@ describe "#==" do
 end
 ```
 
+If, after creating a table-based test, you see an error that looks like this:
+
+```ruby
+NoMethodError:
+  undefined method `to_params'
+
+  param_sets = extracted.is_a?(Array) ? extracted : extracted.to_params
+                                                                       ^^^^^^^^^^
+  Did you mean?  to_param
+```
+
+That indicates that you need to include the line `using RSpec::Parameterized::TableSyntax` in the spec file.
+
 <!-- vale gitlab.Spelling = NO -->
 
 WARNING:
@@ -1470,19 +1578,17 @@ under `spec/support/helpers/`. Helpers can be placed in a subfolder if they appl
 to a certain type of specs only (such as features or requests) but shouldn't be
 if they apply to multiple type of specs.
 
-Helpers should follow the Rails naming / namespacing convention. For instance
-`spec/support/helpers/cycle_analytics_helpers.rb` should define:
+Helpers should follow the Rails naming / namespacing convention, where
+`spec/support/helpers/` is the root. For instance
+`spec/support/helpers/features/iteration_helpers.rb` should define:
 
 ```ruby
-module Spec
-  module Support
-    module Helpers
-      module CycleAnalyticsHelpers
-        def create_commit_referencing_issue(issue, branch_name: random_git_name)
-          project.repository.add_branch(user, branch_name, 'main')
-          create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
-        end
-      end
+# frozen_string_literal: true
+
+module Features
+  module IterationHelpers
+    def iteration_period(iteration)
+      "#{iteration.start_date.to_fs(:medium)} - #{iteration.due_date.to_fs(:medium)}"
     end
   end
 end
@@ -1492,8 +1598,14 @@ Helpers should not change the RSpec configuration. For instance, the helpers mod
 described above should not include:
 
 ```ruby
+# bad
 RSpec.configure do |config|
-  config.include Spec::Support::Helpers::CycleAnalyticsHelpers
+  config.include Features::IterationHelpers
+end
+
+# good, include in specific spec
+RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
+  include Features::IterationHelpers
 end
 ```
 

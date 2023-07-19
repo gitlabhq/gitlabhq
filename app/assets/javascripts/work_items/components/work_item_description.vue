@@ -9,7 +9,6 @@ import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { autocompleteDataSources, markdownPreviewPath } from '../utils';
-import workItemDescriptionSubscription from '../graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
@@ -37,8 +36,7 @@ export default {
       required: true,
     },
   },
-  markdownDocsPath: helpPagePath('user/project/quick_actions'),
-  quickActionsDocsPath: helpPagePath('user/project/quick_actions'),
+  markdownDocsPath: helpPagePath('user/markdown'),
   data() {
     return {
       workItem: {},
@@ -74,14 +72,6 @@ export default {
       },
       error() {
         this.$emit('error', i18n.fetchError);
-      },
-      subscribeToMore: {
-        document: workItemDescriptionSubscription,
-        variables() {
-          return {
-            issuableId: this.workItemId,
-          };
-        },
       },
     },
   },

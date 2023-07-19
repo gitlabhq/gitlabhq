@@ -3,6 +3,7 @@ import { escape, find, countBy } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { createAlert } from '~/alert';
 import { n__, s__, __, sprintf } from '~/locale';
+import { renderAvatar } from '~/helpers/avatar_helper';
 import { getUsers, getGroups, getDeployKeys } from './api/access_dropdown_api';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';
 
@@ -534,13 +535,22 @@ export default class AccessDropdown {
 
   userRowHtml(user, isActive) {
     const isActiveClass = isActive || '';
+    const avatarEl = renderAvatar(user, {
+      sizeClass: 's32',
+    });
 
     return `
       <li>
         <a href="#" class="${isActiveClass}">
-          <img src="${user.avatar_url}" class="avatar avatar-inline" width="30">
-          <strong class="dropdown-menu-user-full-name">${escape(user.name)}</strong>
-          <span class="dropdown-menu-user-username">${user.username}</span>
+          <div class="gl-avatar-labeled">
+            ${avatarEl}
+            <div>
+              <strong class="dropdown-menu-user-full-name">${escape(user.name)}</strong>
+              <span class="gl-avatar-labeled-sublabel dropdown-menu-user-username">@${
+                user.username
+              }</span>
+            </div>
+          </div>
         </a>
       </li>
     `;

@@ -53,7 +53,7 @@
   self-managed: true
   gitlab-com: false
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/admin_area/settings/sign_up_restrictions.html#password-complexity-requirements
+  documentation_link: https://docs.gitlab.com/ee/administration/settings/sign_up_restrictions.html#password-complexity-requirements
   image_url: https://about.gitlab.com/images/15_3/manage-password-complexity-policy.png
   published_at: 2022-08-22
   release: 15.3

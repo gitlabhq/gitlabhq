@@ -1,12 +1,13 @@
 ---
 owning-stage: "~devops::verify"
-description: 'GitLab CI Events Proposal 4: Creating events via CI files'
+description: 'GitLab CI Events Proposal 4: Defining subscriptions in a dedicated configuration file'
 ---
 
-# GitLab CI Events Proposal 4: Creating events via CI files
+# GitLab CI Events Proposal 4: Defining subscriptions in a dedicated configuration file
 
-Each project can have its own event configuration file. Let's call it `.gitlab-ci-event.yml` for now.
-In this file, we can define events in the following format:
+Each project can have its own configuration file for defining subscriptions to
+events. For example, `.gitlab-ci-event.yml`. In this file, we can define events
+in the following format:
 
 ```yaml
 events:
@@ -14,12 +15,13 @@ events:
   - issue/created
 ```
 
-When this file is changed in the project repository, it is parsed and the events are created, updated, or deleted.
-This is highly similar to [Proposal 1](proposal-1-using-the-gitlab-ci-file.md) except that we don't need to
-track pipeline creations every time.
+When this file is changed in the project repository, it is parsed and the
+events are created, updated, or deleted. This is highly similar to
+[Proposal 1](proposal-1-using-the-gitlab-ci-file.md) except that we don't need
+to track pipeline creations every time.
 
-1. Upsert events to the database when `.gitlab-ci-event.yml` is updated.
-1. Create [EventStore subscriptions](../../../development/event_store.md) to handle the events.
+1. Upsert events to the database when `.gitlab-ci-event.yml` gets updated.
+1. Create inline reactions to events in code to trigger pipelines.
 
 ## Filtering jobs
 
@@ -51,7 +53,7 @@ test_package_removed:
     - if: $CI_EVENT == "package/removed"
 ```
 
-or an input like in the [Proposal 3](proposal-3-using-the-gitlab-ci-events-folder.md);
+or an input like in the [Proposal 3](proposal-3-using-the-gitlab-ci-events-folder.md):
 
 ```yaml
 spec:
@@ -71,3 +73,7 @@ test_package_removed:
   rules:
     - if: $[[ inputs.event ]] == "package/removed"
 ```
+
+## Challenges
+
+1. This will not work on GitLab.com scale.

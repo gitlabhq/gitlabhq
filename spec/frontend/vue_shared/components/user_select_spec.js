@@ -1,10 +1,10 @@
 import { GlSearchBoxByType } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import searchUsersQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import searchUsersQueryOnMR from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
@@ -44,20 +44,20 @@ Vue.use(VueApollo);
 describe('User select dropdown', () => {
   let wrapper;
   let fakeApollo;
+  const hideDropdownMock = jest.fn();
 
   const findSearchField = () => wrapper.findComponent(GlSearchBoxByType);
-  const findParticipantsLoading = () => wrapper.find('[data-testid="loading-participants"]');
-  const findSelectedParticipants = () => wrapper.findAll('[data-testid="selected-participant"]');
+  const findParticipantsLoading = () => wrapper.findByTestId('loading-participants');
+  const findSelectedParticipants = () => wrapper.findAllByTestId('selected-participant');
   const findSelectedParticipantByIndex = (index) =>
     findSelectedParticipants().at(index).findComponent(SidebarParticipant);
-  const findUnselectedParticipants = () =>
-    wrapper.findAll('[data-testid="unselected-participant"]');
+  const findUnselectedParticipants = () => wrapper.findAllByTestId('unselected-participant');
   const findUnselectedParticipantByIndex = (index) =>
     findUnselectedParticipants().at(index).findComponent(SidebarParticipant);
-  const findCurrentUser = () => wrapper.findAll('[data-testid="current-user"]');
-  const findIssuableAuthor = () => wrapper.findAll('[data-testid="issuable-author"]');
-  const findUnassignLink = () => wrapper.find('[data-testid="unassign"]');
-  const findEmptySearchResults = () => wrapper.find('[data-testid="empty-results"]');
+  const findCurrentUser = () => wrapper.findAllByTestId('current-user');
+  const findIssuableAuthor = () => wrapper.findAllByTestId('issuable-author');
+  const findUnassignLink = () => wrapper.findByTestId('unassign');
+  const findEmptySearchResults = () => wrapper.findAllByTestId('empty-results');
 
   const searchQueryHandlerSuccess = jest.fn().mockResolvedValue(projectMembersResponse);
   const participantsQueryHandlerSuccess = jest.fn().mockResolvedValue(participantsQueryResponse);
@@ -72,7 +72,7 @@ describe('User select dropdown', () => {
       [searchUsersQueryOnMR, jest.fn().mockResolvedValue(searchResponseOnMR)],
       [getIssueParticipantsQuery, participantsQueryHandler],
     ]);
-    wrapper = shallowMount(UserSelect, {
+    wrapper = shallowMountExtended(UserSelect, {
       apolloProvider: fakeApollo,
       propsData: {
         headerText: 'test',
@@ -97,7 +97,7 @@ describe('User select dropdown', () => {
             </div>
           `,
           methods: {
-            hide: jest.fn(),
+            hide: hideDropdownMock,
           },
         },
       },
@@ -106,6 +106,7 @@ describe('User select dropdown', () => {
 
   afterEach(() => {
     fakeApollo = null;
+    hideDropdownMock.mockClear();
   });
 
   it('renders a loading spinner if participants are loading', () => {
@@ -290,12 +291,12 @@ describe('User select dropdown', () => {
           value: [assignee],
         },
       });
-      wrapper.vm.$refs.dropdown.hide = jest.fn();
+
       await waitForPromises();
 
       findUnassignLink().trigger('click');
 
-      expect(wrapper.vm.$refs.dropdown.hide).toHaveBeenCalledTimes(1);
+      expect(hideDropdownMock).toHaveBeenCalledTimes(1);
     });
 
     it('emits an empty array after unselecting the only selected assignee', async () => {

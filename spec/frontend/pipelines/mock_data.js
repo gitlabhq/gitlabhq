@@ -26,19 +26,19 @@ export const pipelineRetryMutationResponseFailed = {
 };
 
 export const pipelineCancelMutationResponseSuccess = {
-  data: { pipelineRetry: { errors: [] } },
+  data: { pipelineCancel: { errors: [] } },
 };
 
 export const pipelineCancelMutationResponseFailed = {
-  data: { pipelineRetry: { errors: ['error'] } },
+  data: { pipelineCancel: { errors: ['error'] } },
 };
 
 export const pipelineDeleteMutationResponseSuccess = {
-  data: { pipelineRetry: { errors: [] } },
+  data: { pipelineDestroy: { errors: [] } },
 };
 
 export const pipelineDeleteMutationResponseFailed = {
-  data: { pipelineRetry: { errors: ['error'] } },
+  data: { pipelineDestroy: { errors: ['error'] } },
 };
 
 export const mockPipelineHeader = {

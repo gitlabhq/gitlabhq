@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_composi
       it 'raises FormatError' do
         expect { loader }.to raise_error(
           Gitlab::Config::Loader::FormatError,
-          'Unknown alias: bad_alias'
+          %r{unknown .+ bad_alias}i
         )
       end
     end

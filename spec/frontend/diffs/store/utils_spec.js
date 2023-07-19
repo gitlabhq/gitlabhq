@@ -437,7 +437,7 @@ describe('DiffsStoreUtils', () => {
         });
       });
 
-      it('sets the renderIt and collapsed attribute on files', () => {
+      it('sets the collapsed attribute on files', () => {
         const checkLine = preparedDiff.diff_files[0][INLINE_DIFF_LINES_KEY][0];
 
         expect(checkLine.discussions.length).toBe(0);
@@ -448,7 +448,6 @@ describe('DiffsStoreUtils', () => {
         expect(firstChar).not.toBe('+');
         expect(firstChar).not.toBe('-');
 
-        expect(preparedDiff.diff_files[0].renderIt).toBe(true);
         expect(preparedDiff.diff_files[0].collapsed).toBe(false);
       });
 
@@ -529,8 +528,7 @@ describe('DiffsStoreUtils', () => {
         preparedDiffFiles = utils.prepareDiffData({ diff: mock, meta: true });
       });
 
-      it('sets the renderIt and collapsed attribute on files', () => {
-        expect(preparedDiffFiles[0].renderIt).toBe(true);
+      it('sets the collapsed attribute on files', () => {
         expect(preparedDiffFiles[0].collapsed).toBeUndefined();
       });
 

@@ -64,7 +64,7 @@ class CommitRange
 
     range_string = range_string.strip
 
-    unless range_string =~ /\A#{PATTERN}\z/o
+    unless /\A#{PATTERN}\z/o.match?(range_string)
       raise ArgumentError, "invalid CommitRange string format: #{range_string}"
     end
 

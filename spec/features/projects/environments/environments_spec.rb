@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:project) { create(:project) }
@@ -159,9 +159,7 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
       let(:project) { create(:project, :repository) }
 
       let!(:deployment) do
-        create(:deployment, :success,
-                            environment: environment,
-                            sha: project.commit.id)
+        create(:deployment, :success, environment: environment, sha: project.commit.id)
       end
 
       it 'shows deployment SHA and internal ID' do
@@ -182,10 +180,7 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
         end
 
         let!(:deployment) do
-          create(:deployment, :success,
-                              environment: environment,
-                              deployable: build,
-                              sha: project.commit.id)
+          create(:deployment, :success, environment: environment, deployable: build, sha: project.commit.id)
         end
 
         before do
@@ -241,10 +236,7 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
           end
 
           let(:deployment) do
-            create(:deployment, :success,
-                                environment: environment,
-                                deployable: build,
-                                on_stop: 'close_app')
+            create(:deployment, :success, environment: environment, deployable: build, on_stop: 'close_app')
           end
 
           it 'shows a stop button and dialog' do
@@ -296,18 +288,11 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
         let!(:build) { create(:ci_build, pipeline: pipeline) }
 
         let!(:delayed_job) do
-          create(:ci_build, :scheduled,
-                 pipeline: pipeline,
-                 name: 'delayed job',
-                 stage: 'test')
+          create(:ci_build, :scheduled, pipeline: pipeline, name: 'delayed job', stage: 'test')
         end
 
         let!(:deployment) do
-          create(:deployment,
-                 :success,
-                 environment: environment,
-                 deployable: build,
-                 sha: project.commit.id)
+          create(:deployment, :success, environment: environment, deployable: build, sha: project.commit.id)
         end
 
         before do
@@ -327,10 +312,7 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
 
         context 'when delayed job is expired already' do
           let!(:delayed_job) do
-            create(:ci_build, :expired_scheduled,
-                   pipeline: pipeline,
-                   name: 'delayed job',
-                   stage: 'test')
+            create(:ci_build, :expired_scheduled, pipeline: pipeline, name: 'delayed job', stage: 'test')
           end
 
           it "shows 00:00:00 as the remaining time" do
@@ -365,9 +347,7 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
       let(:project) { create(:project, :repository) }
 
       let!(:deployment) do
-        create(:deployment, :failed,
-                            environment: environment,
-                            sha: project.commit.id)
+        create(:deployment, :failed, environment: environment, sha: project.commit.id)
       end
 
       it 'does not show deployments', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409990' do
@@ -382,9 +362,7 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
       let_it_be(:project) { create(:project, :repository) }
 
       let!(:deployment) do
-        create(:deployment, :running,
-                            environment: environment,
-                            sha: project.commit.id)
+        create(:deployment, :running, environment: environment, sha: project.commit.id)
       end
 
       it "renders the upcoming deployment", :aggregate_failures do
@@ -443,14 +421,8 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
   describe 'environments folders' do
     describe 'available environments' do
       before do
-        create(:environment, :will_auto_stop,
-                            project: project,
-                            name: 'staging/review-1',
-                            state: :available)
-        create(:environment, :will_auto_stop,
-                            project: project,
-                            name: 'staging/review-2',
-                            state: :available)
+        create(:environment, :will_auto_stop, project: project, name: 'staging/review-1', state: :available)
+        create(:environment, :will_auto_stop, project: project, name: 'staging/review-2', state: :available)
       end
 
       it 'users unfurls an environment folder' do
@@ -470,14 +442,8 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
 
     describe 'stopped environments' do
       before do
-        create(:environment, :will_auto_stop,
-                            project: project,
-                            name: 'staging/review-1',
-                            state: :stopped)
-        create(:environment, :will_auto_stop,
-                            project: project,
-                            name: 'staging/review-2',
-                            state: :stopped)
+        create(:environment, :will_auto_stop, project: project, name: 'staging/review-1', state: :stopped)
+        create(:environment, :will_auto_stop, project: project, name: 'staging/review-2', state: :stopped)
       end
 
       it 'users unfurls an environment folder' do
@@ -497,12 +463,8 @@ RSpec.describe 'Environments page', :js, feature_category: :groups_and_projects 
 
   describe 'environments folders view' do
     before do
-      create(:environment, project: project,
-                           name: 'staging.review/review-1',
-                           state: :available)
-      create(:environment, project: project,
-                           name: 'staging.review/review-2',
-                           state: :available)
+      create(:environment, project: project, name: 'staging.review/review-1', state: :available)
+      create(:environment, project: project, name: 'staging.review/review-2', state: :available)
     end
 
     it 'user opens folder view' do

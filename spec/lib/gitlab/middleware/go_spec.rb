@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                       it_behaves_like 'unauthorized'
                     end
 
-                    context 'with a blacklisted ip' do
+                    context 'with a denylisted ip' do
                       it 'returns forbidden' do
                         expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::IpBlocked)
                         response = go

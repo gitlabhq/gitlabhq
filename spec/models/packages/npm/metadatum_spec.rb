@@ -38,7 +38,9 @@ RSpec.describe Packages::Npm::Metadatum, type: :model, feature_category: :packag
 
       it { is_expected.not_to allow_value({}).for(:package_json) }
 
-      it { is_expected.not_to allow_value(test: 'test' * 10000).for(:package_json) }
+      it {
+        is_expected.not_to allow_value(test: 'test' * 10000).for(:package_json).with_message(/structure is too large/)
+      }
 
       def with_dist
         valid_json.tap do |h|

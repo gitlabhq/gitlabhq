@@ -1,9 +1,8 @@
 - release_btn_text = s_('TagsPage|Create release')
 - release_btn_path = new_project_release_path(project, tag_name: tag.name)
 - option_css_classes = local_assigns.fetch(:option_css_classes, '')
-- css_classes = "btn gl-button btn-default btn-icon btn-edit has-tooltip #{option_css_classes}"
 - if release
   - release_btn_text = s_('TagsPage|Edit release')
   - release_btn_path = edit_project_release_path(project, release)
-= link_to release_btn_path, class: css_classes do
+= render Pajamas::ButtonComponent.new(href: release_btn_path, button_options: { class: option_css_classes }) do
   = release_btn_text

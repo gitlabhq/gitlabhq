@@ -1,8 +1,0 @@
----
-name: linear_group_descendants_finder_upto
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78991
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350972
-milestone: '14.8'
-type: development
-group: group::tenant scale
-default_enabled: true

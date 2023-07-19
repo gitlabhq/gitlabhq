@@ -496,13 +496,17 @@ RSpec.describe UsersHelper do
 
   describe '#user_profile_tabs_app_data' do
     before do
+      allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:user_calendar_path).with(user, :json).and_return('/users/root/calendar.json')
       allow(helper).to receive(:user_activity_path).with(user, :json).and_return('/users/root/activity.json')
+      allow(helper).to receive(:new_snippet_path).and_return('/-/snippets/new')
       allow(user).to receive_message_chain(:followers, :count).and_return(2)
       allow(user).to receive_message_chain(:followees, :count).and_return(3)
     end
 
     it 'returns expected hash' do
+      allow(helper).to receive(:can?).with(user, :create_snippet).and_return(true)
+
       expect(helper.user_profile_tabs_app_data(user)).to match({
         followees_count: 3,
         followers_count: 2,
@@ -510,8 +514,20 @@ RSpec.describe UsersHelper do
         user_activity_path: '/users/root/activity.json',
         utc_offset: 0,
         user_id: user.id,
-        snippets_empty_state: match_asset_path('illustrations/empty-state/empty-snippets-md.svg')
+        new_snippet_path: '/-/snippets/new',
+        snippets_empty_state: match_asset_path('illustrations/empty-state/empty-snippets-md.svg'),
+        follow_empty_state: match_asset_path('illustrations/empty-state/empty-friends-md.svg')
       })
+    end
+
+    context 'when user does not have create_snippet permissions' do
+      before do
+        allow(helper).to receive(:can?).with(user, :create_snippet).and_return(false)
+      end
+
+      it 'returns nil for new_snippet_path property' do
+        expect(helper.user_profile_tabs_app_data(user)[:new_snippet_path]).to be_nil
+      end
     end
   end
 

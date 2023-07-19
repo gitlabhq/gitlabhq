@@ -7,18 +7,11 @@ RSpec.describe 'Projects > Files > Download buttons in files tree', feature_cate
   let(:user) { project.creator }
 
   let(:pipeline) do
-    create(:ci_pipeline,
-           project: project,
-           sha: project.commit.sha,
-           ref: project.default_branch,
-           status: 'success')
+    create(:ci_pipeline, project: project, sha: project.commit.sha, ref: project.default_branch, status: 'success')
   end
 
   let!(:build) do
-    create(:ci_build, :success, :artifacts,
-           pipeline: pipeline,
-           status: pipeline.status,
-           name: 'build')
+    create(:ci_build, :success, :artifacts, pipeline: pipeline, status: pipeline.status, name: 'build')
   end
 
   before do

@@ -203,6 +203,13 @@ module API
       optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'
       optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
       optional :security_policy_global_group_approvers_enabled, type: Boolean, desc: 'Query scan result policy approval groups globally'
+      optional :slack_app_enabled, type: Grape::API::Boolean, desc: 'Enable the GitLab for Slack app'
+      given slack_app_enabled: -> (val) { val } do
+        requires :slack_app_id, type: String, desc: 'The client ID of the GitLab for Slack app'
+        requires :slack_app_secret, type: String, desc: 'The client secret of the GitLab for Slack app. Used for authenticating OAuth requests from the app'
+        requires :slack_app_signing_secret, type: String, desc: 'The signing secret of the GitLab for Slack app. Used for authenticating API requests from the app'
+        requires :slack_app_verification_token, type: String, desc: 'The verification token of the GitLab for Slack app. This method of authentication is deprecated by Slack and used only for authenticating slash commands from the app'
+      end
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

@@ -152,7 +152,7 @@ module Gitlab
             config = YAML.dump({ default: { interruptible: true },
                                  rspec: { script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            config_processor = described_class.new(config).execute
             builds = config_processor.builds.select { |b| b[:stage] == "test" }
 
             expect(builds.size).to eq(1)
@@ -851,7 +851,7 @@ module Gitlab
         context 'when `only` has an invalid value' do
           let(:config) { { rspec: { script: "rspec", stage: "test", only: only } } }
 
-          subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+          subject { described_class.new(YAML.dump(config)).execute }
 
           context 'when it is integer' do
             let(:only) { 1 }
@@ -875,7 +875,7 @@ module Gitlab
         context 'when `except` has an invalid value' do
           let(:config) { { rspec: { script: "rspec", except: except } } }
 
-          subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+          subject { described_class.new(YAML.dump(config)).execute }
 
           context 'when it is integer' do
             let(:except) { 1 }
@@ -899,7 +899,7 @@ module Gitlab
 
       describe "Scripts handling" do
         let(:config_data) { YAML.dump(config) }
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config_data).execute }
+        let(:config_processor) { described_class.new(config_data).execute }
 
         subject(:test_build) { config_processor.builds.find { |build| build[:name] == 'test' } }
 
@@ -1131,7 +1131,7 @@ module Gitlab
                                  before_script: ["pwd"],
                                  rspec: { script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            config_processor = described_class.new(config).execute
             rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
             expect(rspec_build).to eq({
@@ -1165,7 +1165,7 @@ module Gitlab
                                                        command: ["/usr/local/bin/init", "run"] }, "docker:dind"],
                                           script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            config_processor = described_class.new(config).execute
             rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
             expect(rspec_build).to eq({
@@ -1197,7 +1197,7 @@ module Gitlab
                                  before_script: ["pwd"],
                                  rspec: { script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            config_processor = described_class.new(config).execute
             rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
             expect(rspec_build).to eq({
@@ -1225,7 +1225,7 @@ module Gitlab
                                  before_script: ["pwd"],
                                  rspec: { image: "image:1.0", services: ["postgresql", "docker:dind"], script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            config_processor = described_class.new(config).execute
             rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
             expect(rspec_build).to eq({
@@ -1492,7 +1492,7 @@ module Gitlab
       end
 
       context 'when using `extends`' do
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
+        let(:config_processor) { described_class.new(config).execute }
 
         subject { config_processor.builds.first }
 
@@ -1612,7 +1612,7 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config), opts).execute }
+        subject { described_class.new(YAML.dump(config), opts).execute }
 
         context "when validating a ci config file with no project context" do
           context "when a single string is provided" do
@@ -1744,7 +1744,7 @@ module Gitlab
                              variables: { 'VAR1' => 1 } })
         end
 
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
+        let(:config_processor) { described_class.new(config).execute }
         let(:builds) { config_processor.builds }
 
         context 'when job is parallelized' do
@@ -1860,7 +1860,7 @@ module Gitlab
                               }
                             })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          config_processor = described_class.new(config).execute
           rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
           expect(rspec_build[:cache]).to eq(
@@ -1886,7 +1886,7 @@ module Gitlab
               }
             })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          config_processor = described_class.new(config).execute
           rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
           expect(rspec_build[:cache]).to eq(
@@ -1913,7 +1913,7 @@ module Gitlab
               }
             })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          config_processor = described_class.new(config).execute
           rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
           expect(rspec_build[:cache]).to eq(
@@ -1952,7 +1952,7 @@ module Gitlab
             }
           )
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          config_processor = described_class.new(config).execute
           rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
           expect(rspec_build[:cache]).to eq(
@@ -1979,7 +1979,7 @@ module Gitlab
             }
           )
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          config_processor = described_class.new(config).execute
           rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
           expect(rspec_build[:cache]).to eq(
@@ -2004,7 +2004,7 @@ module Gitlab
               }
             })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          config_processor = described_class.new(config).execute
           rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
           expect(rspec_build[:cache]).to eq(
@@ -2039,7 +2039,7 @@ module Gitlab
               }
             })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          config_processor = described_class.new(config).execute
           rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
           expect(rspec_build).to eq({
@@ -2076,7 +2076,7 @@ module Gitlab
                                 }
                               })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          config_processor = described_class.new(config).execute
           builds = config_processor.builds
 
           expect(builds.size).to eq(1)
@@ -2133,7 +2133,7 @@ module Gitlab
       end
 
       describe "release" do
-        let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+        let(:processor) { described_class.new(YAML.dump(config)).execute }
         let(:config) do
           {
             stages: %w[build test release],
@@ -2179,7 +2179,7 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+        subject { described_class.new(YAML.dump(config)).execute }
 
         let(:builds) { subject.builds }
 
@@ -2289,7 +2289,7 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+        subject { described_class.new(YAML.dump(config)).execute }
 
         let(:builds) { subject.builds }
 
@@ -2331,7 +2331,7 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+        subject { described_class.new(YAML.dump(config)).execute }
 
         context 'no dependencies' do
           let(:dependencies) {}
@@ -2404,7 +2404,7 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+        subject { described_class.new(YAML.dump(config)).execute }
 
         context 'no needs' do
           it { is_expected.to be_valid }
@@ -2678,7 +2678,7 @@ module Gitlab
       end
 
       context 'with when/rules' do
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
+        subject { described_class.new(YAML.dump(config)).execute }
 
         let(:config) do
           {
@@ -2798,7 +2798,7 @@ module Gitlab
       end
 
       describe "Hidden jobs" do
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
+        let(:config_processor) { described_class.new(config).execute }
 
         subject { config_processor.builds }
 
@@ -2846,7 +2846,7 @@ module Gitlab
       end
 
       describe "YAML Alias/Anchor" do
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
+        let(:config_processor) { described_class.new(config).execute }
 
         subject { config_processor.builds }
 
@@ -3390,7 +3390,7 @@ module Gitlab
       end
 
       describe '#execute' do
-        subject { Gitlab::Ci::YamlProcessor.new(content).execute }
+        subject { described_class.new(content).execute }
 
         context 'when the YAML could not be parsed' do
           let(:content) { YAML.dump('invalid: yaml: test') }
@@ -3435,7 +3435,7 @@ module Gitlab
 
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
-            expect(subject.errors).to eq(['Unknown alias: bad_alias'])
+            expect(subject.errors).to all match(%r{unknown .+ bad_alias}i)
           end
         end
 

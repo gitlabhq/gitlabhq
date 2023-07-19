@@ -32,6 +32,8 @@ module TestHooks
           wiki_page_events_data
         when 'releases_events'
           releases_events_data
+        when 'emoji_events'
+          emoji_events_data
         end
       end
     end

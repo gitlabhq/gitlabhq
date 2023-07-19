@@ -24,7 +24,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
   let(:push_access_check) { access.check('git-receive-pack', changes) }
   let(:pull_access_check) { access.check('git-upload-pack', changes) }
 
-  subject(:access) { Gitlab::GitAccessSnippet.new(actor, snippet, protocol, authentication_abilities: authentication_abilities) }
+  subject(:access) { described_class.new(actor, snippet, protocol, authentication_abilities: authentication_abilities) }
 
   describe 'when actor is a DeployKey' do
     let(:actor) { build(:deploy_key) }

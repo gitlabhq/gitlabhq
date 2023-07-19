@@ -42,7 +42,9 @@ else
     # https://gitlab.com/gitlab-org/gitlab/-/issues/410086
     /Using `return`, `break` or `throw` to exit a transaction block/,
     # https://gitlab.com/gitlab-org/gitlab/-/issues/414556
-    /Merging .* no longer maintain both conditions, and will be replaced by the latter in Rails 7\.0/
+    /Merging .* no longer maintain both conditions, and will be replaced by the latter in Rails 7\.0/,
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/415890
+    /(Date|Time|TimeWithZone)#to_s.+ is deprecated/
   ]
 
   view_component_3_warnings = [

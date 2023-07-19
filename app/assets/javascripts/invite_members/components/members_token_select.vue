@@ -59,6 +59,7 @@ export default {
     return {
       loading: false,
       query: '',
+      originalInput: '',
       users: [],
       selectedTokens: [],
       hasBeenFocused: false,
@@ -67,9 +68,9 @@ export default {
   },
   computed: {
     emailIsValid() {
-      const regex = /.+@/;
+      const regex = /^\S+@\S+$/;
 
-      return this.query.match(regex) !== null;
+      return this.originalInput.match(regex) !== null;
     },
     placeholderText() {
       if (this.selectedTokens.length === 0) {
@@ -116,6 +117,7 @@ export default {
   methods: {
     handleTextInput(inputQuery) {
       this.hideDropdownWithNoItems = false;
+      this.originalInput = inputQuery;
       this.query = inputQuery.trim();
       this.loading = true;
       this.retrieveUsers();

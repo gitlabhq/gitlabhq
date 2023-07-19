@@ -33,7 +33,6 @@ module Gitlab
           :has_required_attributes?,
           :hosts,
           :metric_id,
-          :metrics_dashboard_url,
           :monitoring_tool,
           :resolved?,
           :runbook,

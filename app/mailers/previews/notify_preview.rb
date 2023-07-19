@@ -64,6 +64,11 @@ class NotifyPreview < ActionMailer::Preview
     Notify.access_token_created_email(user, 'token_name').message
   end
 
+  def access_token_expired_email
+    token_names = []
+    Notify.access_token_expired_email(user, token_names).message
+  end
+
   def access_token_revoked_email
     Notify.access_token_revoked_email(user, 'token_name').message
   end

@@ -82,7 +82,9 @@ module API
 
             unauthorized! unless award.user == current_user || current_user&.can_admin_all_resources?
 
-            destroy_conditionally!(award)
+            destroy_conditionally!(award) do
+              AwardEmojis::DestroyService.new(awardable, award.name, award.user).execute
+            end
           end
         end
       end

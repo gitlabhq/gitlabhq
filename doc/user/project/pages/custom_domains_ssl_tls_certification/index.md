@@ -54,10 +54,7 @@ this document for an [overview on DNS records](dns_concepts.md).
 To add your custom domain to GitLab Pages:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Settings > Pages**.
-
-   If this path is not visible, select **Deployments > Pages**.
-   [This location is part of an experiment](../index.md#menu-position-test).
+1. On the left sidebar, select **Deploy > Pages**.
 1. In the upper-right corner, select **New Domain**.
 1. In **Domain**, enter the domain name.
 1. Optional. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages). You can also add the certificate and key later.
@@ -168,10 +165,7 @@ If you're using Cloudflare, check
 After you have added all the DNS records:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Settings > Pages**.
-
-   If this path is not visible, select **Deployments > Pages**.
-   [This location is part of an experiment](../index.md#menu-position-test).
+1. On the left sidebar, select **Deploy > Pages**.
 1. Next to the domain name, select **Edit**.
 1. In **Verification status**, select **Retry verification** (**{retry}**).
 
@@ -263,10 +257,7 @@ meet these requirements.
 - To add the certificate at the time you add a new domain:
 
   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-  1. Select **Settings > Pages**.
-
-     If this path is not visible, select **Deployments > Pages**.
-     [This location is part of an experiment](../index.md#menu-position-test).
+  1. On the left sidebar, select **Deploy > Pages**.
   1. In the upper-right corner, select **New Domain**.
   1. In **Domain**, enter the domain name.
   1. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages).
@@ -275,16 +266,10 @@ meet these requirements.
 - To add the certificate to a domain previously added:
 
   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-  1. Select **Settings > Pages**.
-
-     If this path is not visible, select **Deployments > Pages**.
-     [This location is part of an experiment](../index.md#menu-position-test).
+  1. On the left sidebar, select **Deploy > Pages**.
   1. Next to the domain name, select **Edit**.
   1. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages).
   1. Select **Save changes**.
-
-NOTE:
-The Pages menu entry may also be located at **Deployments > Pages**, [more information](../index.md#menu-position-test)
 
 1. Add the PEM certificate to its corresponding field.
 1. If your certificate is missing its intermediate, copy
@@ -309,10 +294,7 @@ domain (as long as you've set a valid certificate for it).
 To enable this setting:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Settings > Pages**.
-
-   If this path is not visible, select **Deployments > Pages**.
-   [This location is part of an experiment](../index.md#menu-position-test).
+1. On the left sidebar, select **Deploy > Pages**.
 1. Select the **Force HTTPS (requires valid certificates)** checkbox.
 1. Select **Save changes**.
 

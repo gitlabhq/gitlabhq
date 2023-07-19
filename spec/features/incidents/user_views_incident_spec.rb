@@ -31,10 +31,12 @@ RSpec.describe "User views incident", feature_category: :incident_management do
 
   describe 'user actions' do
     it 'shows the merge request and incident actions', :js, :aggregate_failures do
-      expected_href = new_project_issue_path(project,
-                                             issuable_template: 'incident',
-                                             issue: { issue_type: 'incident' },
-                                             add_related_issue: incident.iid)
+      expected_href = new_project_issue_path(
+        project,
+        issuable_template: 'incident',
+        issue: { issue_type: 'incident' },
+        add_related_issue: incident.iid
+      )
 
       click_button 'Incident actions'
 

@@ -23,8 +23,9 @@ For more information, see [GitLab CI/CD variables](../variables/index.md).
 First, in your `.gitlab-ci.yml` add:
 
 ```yaml
-services:
-  - postgres:12.2-alpine
+default:
+  services:
+    - postgres:12.2-alpine
 
 variables:
   POSTGRES_DB: $POSTGRES_DB

@@ -1,9 +1,0 @@
-- title: "Service Templates"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: deuley
-  breaking_change: true
-  body: |
-    Service Templates are [removed in GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/5672). They were used to apply identical settings to a large number of projects, but they only did so at the time of project creation.
-
-    While they solved part of the problem, _updating_ those values later proved to be a major pain point. [Project Integration Management](https://docs.gitlab.com/ee/user/admin_area/settings/project_integration_management.html) solves this problem by enabling you to create settings at the Group or Instance level, and projects within that namespace inheriting those settings.

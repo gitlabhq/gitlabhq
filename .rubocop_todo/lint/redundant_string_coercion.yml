@@ -1,0 +1,7 @@
+---
+# Cop supports --autocorrect.
+Lint/RedundantStringCoercion:
+  Details: grace period
+  Exclude:
+    - 'ee/bin/geo_log_cursor'
+    - 'ee/db/fixtures/development/31_devops_adoption.rb'

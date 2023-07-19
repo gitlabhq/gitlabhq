@@ -204,7 +204,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
   describe '.associated_file_types_for' do
     using RSpec::Parameterized::TableSyntax
 
-    subject { Ci::JobArtifact.associated_file_types_for(file_type) }
+    subject { described_class.associated_file_types_for(file_type) }
 
     where(:file_type, :result) do
       'codequality' | %w(codequality)

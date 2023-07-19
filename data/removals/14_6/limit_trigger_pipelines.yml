@@ -1,6 +1,0 @@
-- title: "Limit the number of triggered pipeline to 25K in free tier"
-  removal_date: Dec 22, 2021  # day the removal was released
-  removal_milestone: "14.6"
-  reporter: dhershkovitch  # GitLab username of the person reporting the removal
-  body: |
-    A large amount of triggered pipelines in a single project impacts the performance of GitLab.com. In GitLab 14.6, we are limiting the number of triggered pipelines in a single project on GitLab.com at any given moment to 25,000. This change applies to projects in the free tier only, Premium and Ultimate are not affected by this change.

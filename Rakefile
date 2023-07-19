@@ -11,8 +11,6 @@ require File.expand_path('config/application', __dir__)
 relative_url_conf = File.expand_path('config/initializers/relative_url', __dir__)
 require relative_url_conf if File.exist?("#{relative_url_conf}.rb")
 
-require File.expand_path('config/initializers/01_active_record_database_tasks_configuration_flag.rb', __dir__)
-
 Gitlab::Application.load_tasks
 
 Knapsack.load_tasks if defined?(Knapsack)

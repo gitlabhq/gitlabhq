@@ -46,14 +46,6 @@ describe('content_editor/services/create_content_editor', () => {
     });
   });
 
-  it('sets gl-shadow-none! class selector to the tiptapEditor instance', () => {
-    expect(editor.tiptapEditor.options.editorProps).toMatchObject({
-      attributes: {
-        class: 'gl-shadow-none!',
-      },
-    });
-  });
-
   it('allows providing external content editor extensions', () => {
     const labelReference = 'this is a ~group::editor';
     const { tiptapExtension, serializer } = createTestContentEditorExtension();

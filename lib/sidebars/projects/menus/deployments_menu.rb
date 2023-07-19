@@ -9,10 +9,7 @@ module Sidebars
           add_item(environments_menu_item)
           add_item(feature_flags_menu_item)
           add_item(releases_menu_item)
-
-          if Feature.enabled?(:show_pages_in_deployments_menu, context.current_user, type: :experiment)
-            add_item(pages_menu_item)
-          end
+          add_item(pages_menu_item)
 
           true
         end
@@ -95,8 +92,8 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Pages'),
             link: project_pages_path(context.project),
-            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
-            active_routes: { path: 'pages#show' },
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
+            active_routes: { path: %w[pages#new pages#show] },
             item_id: :pages
           )
         end

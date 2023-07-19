@@ -31,6 +31,8 @@ RSpec.describe Clusters::Agents::AuthorizeProxyUserService, feature_category: :d
   it 'returns forbidden when user has no access to any project', :aggregate_failures do
     expect(service_response).to be_error
     expect(service_response.reason).to eq :forbidden
+    expect(service_response.message)
+      .to eq 'You must be a member of `projects` or `groups` under the `user_access` keyword.'
   end
 
   context 'when user is member of an authorized group' do
@@ -45,6 +47,8 @@ RSpec.describe Clusters::Agents::AuthorizeProxyUserService, feature_category: :d
       deployment_group.add_member(user, :reporter)
       expect(service_response).to be_error
       expect(service_response.reason).to eq :forbidden
+      expect(service_response.message)
+        .to eq 'You must be a member of `projects` or `groups` under the `user_access` keyword.'
     end
   end
 
@@ -60,6 +64,18 @@ RSpec.describe Clusters::Agents::AuthorizeProxyUserService, feature_category: :d
       deployment_project.add_member(user, :reporter)
       expect(service_response).to be_error
       expect(service_response.reason).to eq :forbidden
+      expect(service_response.message)
+        .to eq 'You must be a member of `projects` or `groups` under the `user_access` keyword.'
+    end
+  end
+
+  context 'when config is empty' do
+    let(:user_access_config) { {} }
+
+    it 'returns an error', :aggregate_failures do
+      expect(service_response).to be_error
+      expect(service_response.reason).to eq :forbidden
+      expect(service_response.message).to eq '`user_access` keyword is not found in agent config file.'
     end
   end
 end

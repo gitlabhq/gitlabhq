@@ -17,7 +17,7 @@ By default, existing users can continue to sign in with a username and password 
 authentication is enabled.
 
 To force existing users to use only smartcard authentication,
-[disable username and password authentication](../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
+[disable username and password authentication](../settings/sign_in_restrictions.md#password-authentication-enabled).
 
 ## Authentication methods
 

@@ -6,11 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Mattermost slash commands **(FREE)**
 
-You can use slash commands to run common GitLab operations, like creating an issue,
-from a [Mattermost](https://mattermost.com/) chat environment.
+You can use [slash commands](gitlab_slack_application.md#slash-commands) to run common GitLab operations,
+like creating an issue, from a [Mattermost](https://mattermost.com/) chat environment.
 
 GitLab can also send events (such as `issue created`) to Mattermost as part of the
 separately configured [Mattermost notifications](mattermost.md).
+
+For a list of available slash commands, see [Slash commands](gitlab_slack_application.md#slash-commands).
 
 ## Configuration options
 
@@ -109,7 +111,7 @@ Your slash command can now communicate with your GitLab project.
 
 Prerequisite:
 
-- To run [slash commands](#available-slash-commands), you must have
+- To run [slash commands](gitlab_slack_application.md#slash-commands), you must have
   [permission](../../permissions.md#project-members-permissions) to
   perform the action in the GitLab project.
 
@@ -120,21 +122,10 @@ To interact with GitLab using Mattermost slash commands:
 
 You can see all authorized chat accounts in your Mattermost profile page under **Chat**.
 
-## Available slash commands
-
-The available slash commands for Mattermost are:
-
-| Command | Description | Example |
-| ------- | ----------- | ------- |
-| `/<trigger> issue new <title>` <kbd>Shift</kbd>+<kbd>Enter</kbd> `<description>` | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | `/gitlab issue new We need to change the homepage` |
-| `/<trigger> issue show <issue-number>` | Show the issue with ID `<issue-number>` from the project that `<trigger>` is tied to. | `/gitlab issue show 42` |
-| `/<trigger> deploy <environment> to <environment>` | Start the CI/CD job that deploys from one environment to another (for example, `staging` to `production`). CI/CD must be [properly configured](../../../ci/yaml/index.md). | `/gitlab deploy staging to production` |
-| `/<trigger> help` | View a list of available slash commands. | `/gitlab help` |
-
 ## Related topics
 
-- [Mattermost slash commands](https://developers.mattermost.com/integrate/slash-commands/)
-- [Linux package Mattermost](../../../integration/mattermost/index.md)
+- [Mattermost Linux package](../../../integration/mattermost/index.md)
+- [Slash commands at Mattermost](https://developers.mattermost.com/integrate/slash-commands/)
 
 ## Troubleshooting
 

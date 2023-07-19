@@ -20,9 +20,10 @@ header {
 }
 body {
   margin: 0;
-  font-family: "GitLab Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--default-regular-font, "GitLab Sans"), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell,
+    "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -50,9 +51,9 @@ a:not([href]):not([class]) {
   text-decoration: none;
 }
 kbd {
-  font-family: "GitLab Mono", "JetBrains Mono", "Menlo", "DejaVu Sans Mono",
-    "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono",
-    "lucida console", monospace;
+  font-family: var(--default-mono-font, "GitLab Mono"), "JetBrains Mono",
+    "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas", "Ubuntu Mono",
+    "Courier New", "andale mono", "lucida console", monospace;
   font-size: 1em;
 }
 img {
@@ -415,9 +416,10 @@ a.gl-badge.badge-warning:active {
 .gl-form-input,
 .gl-form-input.form-control {
   background-color: #333238;
-  font-family: "GitLab Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--default-regular-font, "GitLab Sans"), -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell,
+    "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 0.875rem;
   line-height: 1rem;
   padding-top: 0.5rem;

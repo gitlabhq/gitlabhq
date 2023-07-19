@@ -3,7 +3,9 @@
 require "spec_helper"
 
 RSpec.describe "User comments on issue", :js, feature_category: :team_planning do
+  include Features::AutocompleteHelpers
   include Features::NotesHelpers
+  include ContentEditorHelpers
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
@@ -14,6 +16,7 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
     sign_in(user)
 
     visit(project_issue_path(project, issue))
+    close_rich_text_promo_popover_if_present
   end
 
   context "when adding comments" do
@@ -91,11 +94,5 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
         expect(page).to have_content(comment)
       end
     end
-  end
-
-  private
-
-  def find_highlighted_autocomplete_item
-    find('.atwho-view li.cur', visible: true)
   end
 end

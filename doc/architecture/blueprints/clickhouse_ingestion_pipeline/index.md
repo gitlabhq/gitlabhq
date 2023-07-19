@@ -129,7 +129,7 @@ We're also not addressing any client-side specific details into the design at th
 
 ## General Considerations
 
-Having addressed the details of the two aformentioned problem-domains, we can model a proposed solution with the following logical structure:
+Having addressed the details of the two aforementioned problem-domains, we can model a proposed solution with the following logical structure:
 
 - Ingestion
   - APIs/SDKs
@@ -208,7 +208,7 @@ Gitlab::Database::Writer.config do |config|
   # then backend-specific configurations hereafter
   #
   config.url = 'tcp://user:pwd@localhost:9000/database'
-  # e.g. a serializer helps define how data travels over the wire
+  # for example, a serializer helps define how data travels over the wire
   config.json_serializer = ClickHouse::Serializer::JsonSerializer
   # ...
 end

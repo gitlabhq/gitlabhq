@@ -56,6 +56,10 @@ class ServiceResponse
       reason: reason)
   end
 
+  def deconstruct_keys(keys)
+    to_h.slice(*keys)
+  end
+
   def success?
     status == :success
   end

@@ -40,6 +40,7 @@ For this bot:
 
 Other examples of internal users:
 
+- [GitLab Admin Bot](https://gitlab.com/gitlab-org/gitlab/-/blob/278bc9018dd1515a10cbf15b6c6cd55cb5431407/app/models/user.rb#L950-960)
 - [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
 - [Ghost User](../user/profile/account/delete_account.md#associated-records)
 - [Support Bot](../user/project/service_desk.md#support-bot-user)

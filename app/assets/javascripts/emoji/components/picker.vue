@@ -2,7 +2,7 @@
 import { GlIcon, GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
 import { findLastIndex } from 'lodash';
 import VirtualList from 'vue-virtual-scroll-list';
-import { CATEGORY_NAMES } from '~/emoji';
+import { CATEGORY_NAMES, getEmojiCategoryMap, state } from '~/emoji';
 import { CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from '../constants';
 import Category from './category.vue';
 import EmojiList from './emoji_list.vue';
@@ -49,6 +49,7 @@ export default {
     categoryNames() {
       return CATEGORY_NAMES.filter((c) => {
         if (c === FREQUENTLY_USED_KEY) return hasFrequentlyUsedEmojis();
+        if (c === 'custom') return !state.loading && getEmojiCategoryMap().custom.length > 0;
         return true;
       }).map((category) => ({
         name: category,
@@ -66,10 +67,13 @@ export default {
 
       this.$refs.virtualScoller.setScrollTop(top);
     },
-    selectEmoji(name) {
-      this.$emit('click', name);
+    selectEmoji({ category, emoji }) {
+      this.$emit('click', emoji);
       this.$refs.dropdown.hide();
-      addToFrequentlyUsed(name);
+
+      if (category !== 'custom') {
+        addToFrequentlyUsed(emoji);
+      }
     },
     getBoundaryElement() {
       return this.boundary || document.querySelector('.content-wrapper') || 'scrollParent';
@@ -102,7 +106,20 @@ export default {
       @shown="$emit('shown')"
       @hidden="$emit('hidden')"
     >
-      <template #button-content><slot name="button-content"></slot></template>
+      <template #button-content>
+        <slot name="button-content">
+          <gl-icon class="award-control-icon-neutral gl-button-icon gl-icon" name="slight-smile" />
+          <gl-icon
+            class="award-control-icon-positive gl-button-icon gl-icon gl-left-3!"
+            name="smiley"
+          />
+          <gl-icon
+            class="award-control-icon-super-positive gl-button-icon gl-icon gl-left-3!"
+            name="smile"
+          />
+        </slot>
+        <span class="gl-sr-only">{{ __('Add reaction') }}</span>
+      </template>
       <gl-search-box-by-type
         v-model="searchValue"
         class="gl-mx-5! gl-mb-2!"

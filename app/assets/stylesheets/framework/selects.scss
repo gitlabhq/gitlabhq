@@ -39,6 +39,12 @@
 }
 
 .approvers-select {
+  width: calc(70% - #{$gl-spacing-scale-5});
+
+  .gl-new-dropdown-toggle {
+    @include gl-w-full;
+  }
+
   .dropdown-menu {
     @include gl-w-full;
     @include gl-max-w-none;

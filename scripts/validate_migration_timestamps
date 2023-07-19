@@ -6,7 +6,7 @@ require 'time'
 
 MIGRATION_DIRS = %w[db/migrate db/post_migrate].freeze
 VERSION_DIGITS = 14
-MIGRATION_TIMESTAMP_REGEX = /\A(?<version>\d{#{VERSION_DIGITS}})_/.freeze
+MIGRATION_TIMESTAMP_REGEX = /\A(?<version>\d{#{VERSION_DIGITS}})_/
 
 maximum_timestamp = Time.now.utc.strftime('%Y%m%d%H%M%S').to_i
 

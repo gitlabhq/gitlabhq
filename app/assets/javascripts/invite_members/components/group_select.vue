@@ -1,29 +1,25 @@
 <script>
-import {
-  GlAvatarLabeled,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownText,
-  GlSearchBoxByType,
-} from '@gitlab/ui';
+import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { s__ } from '~/locale';
 import { getGroups, getDescendentGroups } from '~/rest_api';
+import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import { SEARCH_DELAY, GROUP_FILTERS } from '../constants';
 
 export default {
   name: 'GroupSelect',
   components: {
     GlAvatarLabeled,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownText,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
   model: {
     prop: 'selectedGroup',
   },
   props: {
+    selectedGroup: {
+      type: Object,
+      required: true,
+    },
     groupsFilter: {
       type: String,
       required: false,
@@ -43,40 +39,43 @@ export default {
     return {
       isFetching: false,
       groups: [],
-      selectedGroup: {},
       searchTerm: '',
+      pagination: {},
+      infiniteScrollLoading: false,
     };
   },
   computed: {
-    selectedGroupName() {
+    toggleText() {
       return this.selectedGroup.name || this.$options.i18n.dropdownText;
     },
     isFetchResultEmpty() {
       return this.groups.length === 0;
     },
-  },
-  watch: {
-    searchTerm() {
-      this.retrieveGroups();
+    infiniteScroll() {
+      return Boolean(this.pagination.nextPage);
     },
   },
   mounted() {
     this.retrieveGroups();
   },
   methods: {
-    retrieveGroups: debounce(function debouncedRetrieveGroups() {
+    retrieveGroups: debounce(async function debouncedRetrieveGroups() {
       this.isFetching = true;
-      return this.fetchGroups()
-        .then((response) => {
-          this.groups = this.processGroups(response);
-          this.isFetching = false;
-        })
-        .catch(() => {
-          this.isFetching = false;
-        });
+
+      try {
+        const response = await this.fetchGroups();
+        this.pagination = this.processPagination(response);
+        this.groups = this.processGroups(response);
+      } catch {
+        this.onApiError();
+      } finally {
+        this.isFetching = false;
+      }
     }, SEARCH_DELAY),
-    processGroups(response) {
-      const rawGroups = response.map((group) => ({
+    processGroups({ data }) {
+      const rawGroups = data.map((group) => ({
+        // `value` is needed for `GlCollapsibleListbox`
+        value: group.id,
         id: group.id,
         name: group.full_name,
         path: group.path,
@@ -85,31 +84,56 @@ export default {
 
       return this.filterOutInvalidGroups(rawGroups);
     },
+    processPagination({ headers }) {
+      return parseIntPagination(normalizeHeaders(headers));
+    },
     filterOutInvalidGroups(groups) {
       return groups.filter((group) => this.invalidGroups.indexOf(group.id) === -1);
     },
-    selectGroup(group) {
-      this.selectedGroup = group;
-
-      this.$emit('input', this.selectedGroup);
+    onSelect(id) {
+      this.$emit('input', this.groups.find((group) => group.value === id) || {});
     },
-    fetchGroups() {
+    onSearch(searchTerm) {
+      this.searchTerm = searchTerm;
+      this.retrieveGroups();
+    },
+    fetchGroups(options = {}) {
+      const combinedOptions = {
+        ...this.$options.defaultFetchOptions,
+        ...options,
+      };
+
       switch (this.groupsFilter) {
         case GROUP_FILTERS.DESCENDANT_GROUPS:
-          return getDescendentGroups(
-            this.parentGroupId,
-            this.searchTerm,
-            this.$options.defaultFetchOptions,
-          );
+          return getDescendentGroups(this.parentGroupId, this.searchTerm, combinedOptions);
         default:
-          return getGroups(this.searchTerm, this.$options.defaultFetchOptions);
+          return getGroups(this.searchTerm, combinedOptions);
       }
+    },
+    async onBottomReached() {
+      this.infiniteScrollLoading = true;
+
+      try {
+        const response = await this.fetchGroups({ page: this.pagination.page + 1 });
+        this.pagination = this.processPagination(response);
+        this.groups.push(...this.processGroups(response));
+      } catch {
+        this.onApiError();
+      } finally {
+        this.infiniteScrollLoading = false;
+      }
+    },
+    onApiError() {
+      this.$emit('error', this.$options.i18n.errorMessage);
     },
   },
   i18n: {
     dropdownText: s__('GroupSelect|Select a group'),
     searchPlaceholder: s__('GroupSelect|Search groups'),
     emptySearchResult: s__('GroupSelect|No matching results'),
+    errorMessage: s__(
+      'GroupSelect|An error occurred fetching the groups. Please refresh the page to try again.',
+    ),
   },
   defaultFetchOptions: {
     exclude_internal: true,
@@ -120,37 +144,34 @@ export default {
 </script>
 <template>
   <div>
-    <gl-dropdown
+    <gl-collapsible-listbox
       data-testid="group-select-dropdown"
-      :text="selectedGroupName"
+      :selected="selectedGroup.value"
+      :items="groups"
+      :toggle-text="toggleText"
+      searchable
+      :search-placeholder="$options.i18n.searchPlaceholder"
       block
-      toggle-class="gl-mb-2"
-      menu-class="gl-w-full!"
+      fluid-width
+      is-check-centered
+      :searching="isFetching"
+      :no-results-text="$options.i18n.emptySearchResult"
+      :infinite-scroll="infiniteScroll"
+      :infinite-scroll-loading="infiniteScrollLoading"
+      :total-items="pagination.total"
+      @bottom-reached="onBottomReached"
+      @select="onSelect"
+      @search="onSearch"
     >
-      <gl-search-box-by-type
-        v-model="searchTerm"
-        :is-loading="isFetching"
-        :placeholder="$options.i18n.searchPlaceholder"
-        data-qa-selector="group_select_dropdown_search_field"
-      />
-      <gl-dropdown-item
-        v-for="group in groups"
-        :key="group.id"
-        :name="group.name"
-        data-qa-selector="group_select_dropdown_item"
-        @click="selectGroup(group)"
-      >
+      <template #list-item="{ item }">
         <gl-avatar-labeled
-          :label="group.name"
-          :src="group.avatarUrl"
-          :entity-id="group.id"
-          :entity-name="group.name"
+          :label="item.name"
+          :src="item.avatarUrl"
+          :entity-id="item.value"
+          :entity-name="item.name"
           :size="32"
         />
-      </gl-dropdown-item>
-      <gl-dropdown-text v-if="isFetchResultEmpty && !isFetching" data-testid="empty-result-message">
-        <span class="gl-text-gray-500">{{ $options.i18n.emptySearchResult }}</span>
-      </gl-dropdown-text>
-    </gl-dropdown>
+      </template>
+    </gl-collapsible-listbox>
   </div>
 </template>

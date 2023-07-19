@@ -97,10 +97,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_scope :subject
   condition(:crm_enabled, score: 0, scope: :subject) { @subject.crm_enabled? }
 
-  condition(:create_runner_workflow_enabled) do
-    Feature.enabled?(:create_runner_workflow_for_namespace, group)
-  end
-
   condition(:achievements_enabled, scope: :subject) do
     Feature.enabled?(:achievements, @subject)
   end
@@ -373,10 +369,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:maintainer_access) & observability_enabled }.policy do
     enable :admin_observability
-  end
-
-  rule { ~create_runner_workflow_enabled }.policy do
-    prevent :create_runner
   end
 
   # Should be matched with ProjectPolicy#read_internal_note

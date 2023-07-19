@@ -1,17 +1,15 @@
 <template>
-  <section class="settings gl-py-7">
-    <div class="row">
-      <div class="col-lg-4">
-        <h4>
+  <section class="settings-section">
+    <div class="settings-sticky-header">
+      <div class="settings-sticky-header-inner">
+        <h4 class="gl-my-0">
           <slot name="title"></slot>
         </h4>
-        <p>
-          <slot name="description"></slot>
-        </p>
-      </div>
-      <div class="col-lg-8 gl-pt-3">
-        <slot></slot>
       </div>
     </div>
+    <p class="gl-text-secondary">
+      <slot name="description"></slot>
+    </p>
+    <slot></slot>
   </section>
 </template>

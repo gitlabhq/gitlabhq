@@ -6,7 +6,7 @@ module InternalRedirect
   def safe_redirect_path(path)
     return unless path
     # Verify that the string starts with a `/` and a known route character.
-    return unless path =~ %r{\A/[-\w].*\z}
+    return unless %r{\A/[-\w].*\z}.match?(path)
 
     uri = URI(path)
     # Ignore anything path of the redirect except for the path, querystring and,

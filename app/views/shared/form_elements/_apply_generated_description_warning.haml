@@ -1,0 +1,13 @@
+.form-group.row.js-ai-description-warning.hidden.js-issuable-ai-description-warning
+  .col-sm-12
+    .warning_message.mb-0{ role: 'alert' }
+      %btn.js-close-btn.js-dismiss-btn.close{ type: "button", "aria-hidden": "true", "aria-label": _("Close") }
+        = sprite_icon("close")
+
+      %p
+        = s_("AI|Replace the existing description with an AI-generated description? Any changes you have made will be lost.")
+
+      = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'gl-mr-3 js-ai-override-description' }) do
+        = s_("AI|Apply AI-generated description")
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-cancel-btn' }) do
+        = _("Cancel")

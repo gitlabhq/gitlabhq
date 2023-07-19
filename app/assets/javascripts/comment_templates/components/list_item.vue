@@ -94,7 +94,7 @@ export default {
         </gl-tooltip>
       </div>
     </div>
-    <div class="gl-mt-3 gl-font-monospace">{{ template.content }}</div>
+    <div class="gl-mt-3 gl-font-monospace gl-white-space-pre-wrap">{{ template.content }}</div>
     <gl-modal
       ref="delete-modal"
       :title="__('Delete comment template')"

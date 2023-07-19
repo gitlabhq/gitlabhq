@@ -53,7 +53,7 @@ RSpec.describe Prometheus::ProxyVariableSubstitutionService, feature_category: :
         end
 
         it_behaves_like 'success' do
-          let(:expected_query) { %Q[up{environment="#{environment.slug}"}] }
+          let(:expected_query) { %[up{environment="#{environment.slug}"}] }
         end
       end
     end

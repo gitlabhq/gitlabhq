@@ -57,7 +57,7 @@ verify-ruby-3.0:
     - .setup:rules:verify-ruby-3.0
   stage: prepare
   script:
-    - echo 'Please remove label ~"pipeline:run-in-ruby2" so we do test against Ruby 3.0 (default version) before merging the merge request'
+    - echo 'Please remove label ~"pipeline:run-in-ruby3_1" so we do test against Ruby 3.0 (default version) before merging the merge request'
     - exit 1
 
 verify-tests-yml:
@@ -185,15 +185,15 @@ trigger-omnibus-env:
   before_script:
     - source scripts/utils.sh
   script:
+    # Note that OMNIBUS_GITLAB_CACHE_UPDATE is not used in the code, but it is actually used in the 2-hourly maintenance pipeline schedule.
     - |
       SECURITY_SOURCES=$([[ ! "$CI_PROJECT_NAMESPACE" =~ ^gitlab-org\/security ]] || echo "true")
       echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
       echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
       for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
-      echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
-      echo "OMNIBUS_GITLAB_RUBY2_BUILD=${OMNIBUS_GITLAB_RUBY2_BUILD:-false}" >> $BUILD_ENV
-      echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
       echo "OMNIBUS_GITLAB_BUILD_ON_ALL_OS=${OMNIBUS_GITLAB_BUILD_ON_ALL_OS:-false}" >> $BUILD_ENV
+      echo "USE_OLD_RUBY_VERSION=${USE_OLD_RUBY_VERSION:-false}" >> $BUILD_ENV
+      echo "NEXT_RUBY_VERSION=${NEXT_RUBY_VERSION}" >> $BUILD_ENV
       echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
       echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
       target_branch_name="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-${CI_COMMIT_REF_NAME}}"
@@ -214,3 +214,5 @@ trigger-omnibus-env as-if-foss:
     - .qa:rules:package-and-test-ce
   needs:
     - compile-production-assets as-if-foss
+  variables:
+    FOSS_ONLY: "1"

@@ -14,6 +14,7 @@ module API
       expose :job_events, documentation: { type: 'boolean' }
       expose :releases_events, documentation: { type: 'boolean' }
       expose :push_events_branch_filter, documentation: { type: 'string', example: 'my-branch-*' }
+      expose :emoji_events, documentation: { type: 'boolean' }
     end
   end
 end

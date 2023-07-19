@@ -19,7 +19,7 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
   let(:confidential)      { false }
   let(:board_parent_type) { board_parent.class.to_s.downcase }
   let(:board_data)        { graphql_data[board_parent_type]['boards']['nodes'][0] }
-  let(:lists_data)        { board_data['lists']['nodes'][0] }
+  let(:lists_data)        { board_data['lists']['nodes'][1] }
   let(:issues_data)       { lists_data['issues']['nodes'] }
   let(:issue_params)      { { filters: { label_name: label2.title, confidential: confidential }, first: 3 } }
 

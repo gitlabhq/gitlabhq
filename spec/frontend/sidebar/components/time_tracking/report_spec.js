@@ -12,6 +12,7 @@ import getIssueTimelogsQuery from '~/sidebar/queries/get_issue_timelogs.query.gr
 import getMrTimelogsQuery from '~/sidebar/queries/get_mr_timelogs.query.graphql';
 import deleteTimelogMutation from '~/sidebar/queries/delete_timelog.mutation.graphql';
 import {
+  deleteTimelogMutationResponse,
   getIssueTimelogsQueryResponse,
   getMrTimelogsQueryResponse,
   timelogToRemoveId,
@@ -22,7 +23,7 @@ jest.mock('~/alert');
 describe('Issuable Time Tracking Report', () => {
   Vue.use(VueApollo);
   let wrapper;
-  let fakeApollo;
+
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDeleteButton = () => wrapper.findByTestId('deleteButton');
   const successIssueQueryHandler = jest.fn().mockResolvedValue(getIssueTimelogsQueryResponse);
@@ -30,29 +31,26 @@ describe('Issuable Time Tracking Report', () => {
 
   const mountComponent = ({
     queryHandler = successIssueQueryHandler,
+    mutationHandler,
     issuableType = 'issue',
     mountFunction = shallowMount,
     limitToHours = false,
   } = {}) => {
-    fakeApollo = createMockApollo([
-      [getIssueTimelogsQuery, queryHandler],
-      [getMrTimelogsQuery, queryHandler],
-    ]);
     wrapper = extendedWrapper(
       mountFunction(Report, {
+        apolloProvider: createMockApollo([
+          [getIssueTimelogsQuery, queryHandler],
+          [getMrTimelogsQuery, queryHandler],
+          [deleteTimelogMutation, mutationHandler],
+        ]),
         provide: {
           issuableId: 1,
           issuableType,
         },
         propsData: { limitToHours, issuableId: '1' },
-        apolloProvider: fakeApollo,
       }),
     );
   };
-
-  afterEach(() => {
-    fakeApollo = null;
-  });
 
   it('should render loading spinner', () => {
     mountComponent();
@@ -135,50 +133,27 @@ describe('Issuable Time Tracking Report', () => {
   });
 
   describe('when clicking on the delete timelog button', () => {
-    beforeEach(() => {
-      mountComponent({ mountFunction: mount });
-    });
-
     it('calls `$apollo.mutate` with deleteTimelogMutation mutation and removes the row', async () => {
-      const mutateSpy = jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
-        data: {
-          timelogDelete: {
-            errors: [],
-          },
-        },
-      });
-
+      const mutateSpy = jest.fn().mockResolvedValue(deleteTimelogMutationResponse);
+      mountComponent({ mutationHandler: mutateSpy, mountFunction: mount });
       await waitForPromises();
+
       await findDeleteButton().trigger('click');
       await waitForPromises();
 
       expect(createAlert).not.toHaveBeenCalled();
-      expect(mutateSpy).toHaveBeenCalledWith({
-        mutation: deleteTimelogMutation,
-        variables: {
-          input: {
-            id: timelogToRemoveId,
-          },
-        },
-      });
+      expect(mutateSpy).toHaveBeenCalledWith({ input: { id: timelogToRemoveId } });
     });
 
     it('calls `createAlert` with errorMessage and does not remove the row on promise reject', async () => {
-      const mutateSpy = jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({});
-
+      const mutateSpy = jest.fn().mockRejectedValue({});
+      mountComponent({ mutationHandler: mutateSpy, mountFunction: mount });
       await waitForPromises();
+
       await findDeleteButton().trigger('click');
       await waitForPromises();
 
-      expect(mutateSpy).toHaveBeenCalledWith({
-        mutation: deleteTimelogMutation,
-        variables: {
-          input: {
-            id: timelogToRemoveId,
-          },
-        },
-      });
-
+      expect(mutateSpy).toHaveBeenCalledWith({ input: { id: timelogToRemoveId } });
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while removing the timelog.',
         captureError: true,

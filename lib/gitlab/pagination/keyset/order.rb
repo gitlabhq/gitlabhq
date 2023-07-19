@@ -98,7 +98,7 @@ module Gitlab
             hash[column_definition.attribute_name] = if field_value.is_a?(Time)
                                                        # use :inspect formatter to provide specific timezone info
                                                        # eg 2022-07-05 21:57:56.041499000 +0800
-                                                       field_value.to_s(:inspect)
+                                                       field_value.to_fs(:inspect)
                                                      elsif field_value.nil?
                                                        nil
                                                      elsif lower_named_function?(column_definition)
@@ -246,7 +246,8 @@ module Gitlab
           scopes = where_values.map do |where_value|
             scope.dup.where(where_value).reorder(self) # rubocop: disable CodeReuse/ActiveRecord
           end
-          scope.model.from_union(scopes, remove_duplicates: false, remove_order: false)
+
+          scope.model.select(scope.select_values).from_union(scopes, remove_duplicates: false, remove_order: false)
         end
 
         def to_sql_literal(column_definitions)

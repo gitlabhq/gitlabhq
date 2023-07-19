@@ -60,9 +60,22 @@ describe('releases_pagination.vue', () => {
   const findPrevButton = () => wrapper.findByTestId('prevButton');
   const findNextButton = () => wrapper.findByTestId('nextButton');
 
+  describe('when there is only one page of results', () => {
+    beforeEach(() => {
+      createComponent(singlePageInfo);
+    });
+
+    it('hides the "Prev" button', () => {
+      expect(findPrevButton().exists()).toBe(false);
+    });
+
+    it('hides the "Next" button', () => {
+      expect(findNextButton().exists()).toBe(false);
+    });
+  });
+
   describe.each`
     description                                             | pageInfo               | prevEnabled | nextEnabled
-    ${'when there is only one page of results'}             | ${singlePageInfo}      | ${false}    | ${false}
     ${'when there is a next page, but not a previous page'} | ${onlyNextPageInfo}    | ${false}    | ${true}
     ${'when there is a previous page, but not a next page'} | ${onlyPrevPageInfo}    | ${true}     | ${false}
     ${'when there is both a previous and next page'}        | ${prevAndNextPageInfo} | ${true}     | ${true}

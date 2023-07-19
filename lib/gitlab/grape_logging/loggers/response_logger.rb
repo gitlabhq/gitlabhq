@@ -5,8 +5,6 @@ module Gitlab
     module Loggers
       class ResponseLogger < ::GrapeLogging::Loggers::Base
         def parameters(_, response)
-          return {} unless Feature.enabled?(:log_response_length)
-
           response_bytes = 0
 
           case response

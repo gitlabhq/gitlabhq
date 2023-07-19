@@ -47,12 +47,6 @@
 }
 
 .project-repo-buttons {
-  .btn {
-    svg {
-      fill: var(--gray-500, $gray-500);
-    }
-  }
-
   .download-button {
     @include media-breakpoint-down(md) {
       margin-left: 0;

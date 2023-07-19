@@ -1,11 +1,12 @@
 import axios from '~/lib/utils/axios_utils';
 
 export default class GroupsService {
-  constructor(endpoint) {
+  constructor(endpoint, initialSort) {
     this.endpoint = endpoint;
+    this.initialSort = initialSort;
   }
 
-  getGroups(parentId, page, filterGroups, sort, archived) {
+  getGroups(parentId, page, filterGroups, sort) {
     const params = {};
 
     if (parentId) {
@@ -20,12 +21,8 @@ export default class GroupsService {
         params.filter = filterGroups;
       }
 
-      if (sort) {
-        params.sort = sort;
-      }
-
-      if (archived) {
-        params.archived = archived;
+      if (sort || this.initialSort) {
+        params.sort = sort || this.initialSort;
       }
     }
 

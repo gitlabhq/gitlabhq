@@ -42,17 +42,17 @@ This task loops through the project code repositories and runs the integrity che
 described previously. If a project uses a pool repository, that is also checked.
 Other types of Git repositories [are not checked](https://gitlab.com/gitlab-org/gitaly/-/issues/3643).
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:git:fsck
-```
+  ```shell
+  sudo gitlab-rake gitlab:git:fsck
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
-```
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
+  ```
 
 ## Checksum of repository refs
 
@@ -73,17 +73,17 @@ checksums in the format `<PROJECT ID>,<CHECKSUM>`.
 - If a repository exists but is empty, the output checksum is `0000000000000000000000000000000000000000`.
 - Projects which don't exist are skipped.
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:git:checksum_projects
-```
+  ```shell
+  sudo gitlab-rake gitlab:git:checksum_projects
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-sudo -u git -H bundle exec rake gitlab:git:checksum_projects RAILS_ENV=production
-```
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:git:checksum_projects RAILS_ENV=production
+  ```
 
 For example, if:
 
@@ -124,23 +124,23 @@ Integrity checks are supported for the following types of file:
 - Project-level Secure Files (introduced in GitLab 16.1.0)
 - User uploads (introduced in GitLab 10.6.0)
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:artifacts:check
-sudo gitlab-rake gitlab:ci_secure_files:check
-sudo gitlab-rake gitlab:lfs:check
-sudo gitlab-rake gitlab:uploads:check
-```
+  ```shell
+  sudo gitlab-rake gitlab:artifacts:check
+  sudo gitlab-rake gitlab:ci_secure_files:check
+  sudo gitlab-rake gitlab:lfs:check
+  sudo gitlab-rake gitlab:uploads:check
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-sudo -u git -H bundle exec rake gitlab:artifacts:check RAILS_ENV=production
-sudo -u git -H bundle exec rake gitlab:ci_secure_files:check RAILS_ENV=production
-sudo -u git -H bundle exec rake gitlab:lfs:check RAILS_ENV=production
-sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
-```
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:artifacts:check RAILS_ENV=production
+  sudo -u git -H bundle exec rake gitlab:ci_secure_files:check RAILS_ENV=production
+  sudo -u git -H bundle exec rake gitlab:lfs:check RAILS_ENV=production
+  sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
+  ```
 
 These tasks also accept some environment variables which you can use to override
 certain values:
@@ -215,22 +215,22 @@ secrets file (`gitlab-secrets.json`).
 
 Automatic resolution is not yet implemented. If you have values that
 cannot be decrypted, you can follow steps to reset them, see our
-documentation on what to do [when the secrets file is lost](../../raketasks/backup_restore.md#when-the-secrets-file-is-lost).
+documentation on what to do [when the secrets file is lost](../../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost).
 
 This can take a very long time, depending on the size of your
 database, as it checks all rows in all tables.
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:doctor:secrets
-```
+  ```shell
+  sudo gitlab-rake gitlab:doctor:secrets
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-bundle exec rake gitlab:doctor:secrets RAILS_ENV=production
-```
+  ```shell
+  bundle exec rake gitlab:doctor:secrets RAILS_ENV=production
+  ```
 
 **Example output**
 
@@ -251,17 +251,17 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 To get more detailed information about which rows and columns can't be
 decrypted, you can pass a `VERBOSE` environment variable:
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:doctor:secrets VERBOSE=1
-```
+  ```shell
+  sudo gitlab-rake gitlab:doctor:secrets VERBOSE=1
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-bundle exec rake gitlab:doctor:secrets RAILS_ENV=production VERBOSE=1
-```
+  ```shell
+  bundle exec rake gitlab:doctor:secrets RAILS_ENV=production VERBOSE=1
+  ```
 
 **Example verbose output**
 

@@ -10,8 +10,6 @@ module Packages
         include FileStoreMounter
         include IgnorableColumns
 
-        ignore_column :file_md5, remove_with: '16.2', remove_after: '2023-06-22'
-
         def self.container_foreign_key
           "#{container_type}_id".to_sym
         end

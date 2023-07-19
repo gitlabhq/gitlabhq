@@ -14,7 +14,7 @@ You can select the tag in the version dropdown list in the upper-left corner of 
 
 ### 0. Backup
 
-Make a backup just in case things go south. Depending on the installation method, backup commands vary. See the [backing up and restoring GitLab](../raketasks/backup_restore.md) documentation.
+Make a backup just in case things go south. Depending on the installation method, backup commands vary. See the [backing up and restoring GitLab](../administration/backup_restore/index.md) documentation.
 
 ### 1. Stop server
 

@@ -1541,8 +1541,8 @@ describe('addListNewIssue', () => {
   it('should add board scope to the issue being created', async () => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
-        createIssue: {
-          issue: mockIssue,
+        createIssuable: {
+          issuable: mockIssue,
           errors: [],
         },
       },
@@ -1600,8 +1600,8 @@ describe('addListNewIssue', () => {
     it('dispatches a correct set of mutations', () => {
       jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
         data: {
-          createIssue: {
-            issue: mockIssue,
+          createIssuable: {
+            issuable: mockIssue,
             errors: [],
           },
         },

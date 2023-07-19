@@ -1,7 +1,0 @@
-- title: "List project pipelines API endpoint removes `name` support in 14.3"
-  removal_date: September 22, 2021  # day the removal was released
-  removal_milestone: "14.3"
-  reporter: jreporter  # GitLab username of the person reporting the removal
-  breaking_change: false
-  body: |
-    In GitLab 14.3, we will remove the ability to filter by `name` in the [list project pipelines API endpoint](https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines) to improve performance. If you currently use this parameter with this endpoint, you must switch to `username`.

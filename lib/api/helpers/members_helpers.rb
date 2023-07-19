@@ -29,6 +29,7 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       def retrieve_members(source, params:, deep: false)
         members = deep ? find_all_members(source) : source_members(source).connected_to_user
+        members = members.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417456")
         members = members.includes(:user)
         members = members.references(:user).merge(User.search(params[:query], use_minimum_char_limit: false)) if params[:query].present?
         members = members.where(user_id: params[:user_ids]) if params[:user_ids].present?

@@ -195,7 +195,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver do
 
         context 'when both assignee_username and assignee_usernames are provided' do
           it 'generates a mutually exclusive filter error' do
-            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [assigneeUsernames, assigneeUsername] arguments is allowed at the same time.') do
+            expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [assigneeUsernames, assigneeUsername, assigneeWildcardId] arguments is allowed at the same time.') do
               resolve_issues(assignee_usernames: [assignee.username], assignee_username: assignee.username)
             end
           end

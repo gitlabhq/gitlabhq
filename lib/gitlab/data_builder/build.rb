@@ -12,13 +12,14 @@ module Gitlab
 
         author_url = build_author_url(build.commit, commit)
 
-        data = {
+        {
           object_kind: 'build',
 
           ref: build.ref,
           tag: build.tag,
           before_sha: build.before_sha,
           sha: build.sha,
+          retries_count: build.retries_count,
 
           # TODO: should this be not prefixed with build_?
           # Leaving this way to have backward compatibility
@@ -69,10 +70,6 @@ module Gitlab
 
           environment: build_environment(build)
         }
-
-        data[:retries_count] = build.retries_count if Feature.enabled?(:job_webhook_retries_count, project)
-
-        data
       end
 
       private

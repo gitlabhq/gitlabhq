@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver do
+RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver, feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:guest) { create(:user) }
@@ -13,6 +13,7 @@ RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver do
   let_it_be(:active_http_integration) { create(:alert_management_http_integration, project: project) }
   let_it_be(:inactive_http_integration) { create(:alert_management_http_integration, :inactive, project: project) }
   let_it_be(:other_proj_integration) { create(:alert_management_http_integration) }
+  let_it_be(:migrated_integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
 
   let(:params) { {} }
 

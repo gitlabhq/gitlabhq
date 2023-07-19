@@ -3,6 +3,62 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :secrets_management do
+  describe '.fabricate' do
+    using RSpec::Parameterized::TableSyntax
+
+    where do
+      {
+        "given an array of variables": {
+          input: [
+            { key: 'VAR1', value: 'value1' },
+            { key: 'VAR2', value: 'value2' }
+          ]
+        },
+        "given a hash of variables": {
+          input: { 'VAR1' => 'value1', 'VAR2' => 'value2' }
+        },
+        "given a proc that evaluates to an array": {
+          input: -> do
+            [
+              { key: 'VAR1', value: 'value1' },
+              { key: 'VAR2', value: 'value2' }
+            ]
+          end
+        },
+        "given a proc that evaluates to a hash": {
+          input: -> do
+            { 'VAR1' => 'value1', 'VAR2' => 'value2' }
+          end
+        },
+        "given a collection": {
+          input: Gitlab::Ci::Variables::Collection.new(
+            [
+              { key: 'VAR1', value: 'value1' },
+              { key: 'VAR2', value: 'value2' }
+            ]
+          )
+        }
+      }
+    end
+
+    with_them do
+      subject(:collection) { Gitlab::Ci::Variables::Collection.fabricate(input) }
+
+      it 'returns a collection' do
+        expect(collection).to be_a(Gitlab::Ci::Variables::Collection)
+        expect(collection.size).to eq(2)
+        expect(collection.map(&:key)).to contain_exactly('VAR1', 'VAR2')
+        expect(collection.map(&:value)).to contain_exactly('value1', 'value2')
+      end
+    end
+
+    context 'when given an unrecognized type' do
+      it 'raises error' do
+        expect { described_class.fabricate(1) }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
   describe '.new' do
     it 'can be initialized with an array' do
       variable = { key: 'VAR', value: 'value', public: true, masked: false }
@@ -123,7 +179,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :secrets_man
   end
 
   describe '#[]' do
-    subject { Gitlab::Ci::Variables::Collection.new(variables)[var_name] }
+    subject { described_class.new(variables)[var_name] }
 
     shared_examples 'an array access operator' do
       context 'for a non-existent variable name' do
@@ -570,7 +626,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :secrets_man
     end
 
     let(:errors) { 'circular variable reference detected' }
-    let(:collection) { Gitlab::Ci::Variables::Collection.new(variables, errors) }
+    let(:collection) { described_class.new(variables, errors) }
 
     subject(:result) { collection.to_s }
 

@@ -29,14 +29,30 @@ module ProtectedRefAccess
     def humanize(access_level)
       human_access_levels[access_level]
     end
+
+    def non_role_types
+      []
+    end
   end
 
   included do
     scope :maintainer, -> { where(access_level: Gitlab::Access::MAINTAINER) }
     scope :developer, -> { where(access_level: Gitlab::Access::DEVELOPER) }
-    scope :for_role, -> { where(user_id: nil, group_id: nil) }
+    scope :for_role, -> {
+      if non_role_types.present?
+        where.missing(*non_role_types)
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417457")
+      else
+        all
+      end
+    }
 
-    validates :access_level, presence: true, if: :role?, inclusion: { in: allowed_access_levels }
+    protected_ref_fk = "#{module_parent.model_name.singular}_id"
+    validates :access_level,
+      presence: true,
+      inclusion: { in: allowed_access_levels },
+      uniqueness: { scope: protected_ref_fk, conditions: -> { for_role } },
+      if: :role?
   end
 
   def humanize

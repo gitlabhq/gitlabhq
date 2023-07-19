@@ -40,7 +40,7 @@ For more information, see [Bitmask Searches in LDAP](https://ctovswild.com/2009/
 The process also updates the following user information:
 
 - Name. Because of a [sync issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342598), `name` is not synchronized if
-  [**Prevent users from changing their profile name**](../../../user/admin_area/settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled or `sync_name` is set to `false`.
+  [**Prevent users from changing their profile name**](../../../administration/settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled or `sync_name` is set to `false`.
 - Email address.
 - SSH public keys if `sync_ssh_keys` is set.
 - Kerberos identity if Kerberos is enabled.
@@ -627,7 +627,7 @@ sync to run once every two hours at the top of the hour.
 ### External groups
 
 Using the `external_groups` setting allows you to mark all users belonging
-to these groups as [external users](../../../user/admin_area/external_users.md).
+to these groups as [external users](../../../administration/external_users.md).
 Group membership is checked periodically through the `LdapGroupSync` background
 task.
 

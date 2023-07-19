@@ -2,6 +2,9 @@
 
 class PlanLimits < ApplicationRecord
   include IgnorableColumns
+  ALLOWED_LIMITS_HISTORY_ATTRIBUTES = %i[notification_limit enforcement_limit storage_size_limit
+    dashboard_limit_enabled_at].freeze
+
   ignore_column :ci_max_artifact_size_running_container_scanning, remove_with: '14.3', remove_after: '2021-08-22'
   ignore_column :web_hook_calls_high, remove_with: '15.10', remove_after: '2022-02-22'
   ignore_column :ci_active_pipelines, remove_with: '16.3', remove_after: '2022-07-22'
@@ -50,32 +53,23 @@ class PlanLimits < ApplicationRecord
     false
   end
 
-  def log_limits_changes(user, new_limits)
-    new_limits.each do |attribute, value|
+  def format_limits_history(user, new_limits)
+    allowed_limits = new_limits.slice(*ALLOWED_LIMITS_HISTORY_ATTRIBUTES)
+    return {} if allowed_limits.empty?
+
+    allowed_limits.each do |attribute, value|
+      next if value == self[attribute]
+
       limits_history[attribute] ||= []
       limits_history[attribute] << {
-        user_id: user&.id,
-        username: user&.username,
-        timestamp: Time.current.utc.to_i,
-        value: value
+        "user_id" => user.id,
+        "username" => user.username,
+        "timestamp" => Time.current.utc.to_i,
+        "value" => value
       }
     end
 
-    update(limits_history: limits_history)
-  end
-
-  def limit_attribute_changes(attribute)
-    limit_history = limits_history[attribute]
-    return [] unless limit_history
-
-    limit_history.map do |entry|
-      {
-        timestamp: entry[:timestamp],
-        value: entry[:value],
-        username: entry[:username],
-        user_id: entry[:user_id]
-      }
-    end
+    limits_history
   end
 end
 

@@ -15,35 +15,10 @@ is recommended over NFS where possible, due to better performance.
 When eliminating the usage of NFS, there are [additional steps you need to take](object_storage.md#alternatives-to-file-system-storage)
 in addition to moving to Object Storage.
 
-File system performance can impact overall GitLab performance, especially for
-actions that read or write to Git repositories. For steps you can use to test
-file system performance, see
+NFS cannot be used for repository storage.
+
+For steps you can use to test file system performance, see
 [File System Performance Benchmarking](operations/filesystem_benchmarking.md).
-
-## Gitaly with NFS not supported
-
-Technical and engineering support for using NFS to store Git repository data is officially at end-of-life. No product
-changes or troubleshooting is provided through engineering, security or paid support channels.
-
-If an issue is reproducible, or if it happens intermittently but regularly, GitLab Support can investigate providing the
-issue can be reproduced without NFS. To reproduce without NFS, migrate the affected repositories to a different Gitaly
-shard. For example, a Gitaly Cluster or a standalone Gitaly VM, backed with block storage.
-
-## Known kernel version incompatibilities
-
-RedHat Enterprise Linux (RHEL) and CentOS v7.7 and v7.8 ship with kernel
-version `3.10.0-1127`, which [contains a bug](https://bugzilla.redhat.com/show_bug.cgi?id=1783554) that causes
-[uploads to fail to copy over NFS](https://gitlab.com/gitlab-org/gitlab/-/issues/218999). The
-following GitLab versions include a fix to work properly with that
-kernel version:
-
-- [12.10.12](https://about.gitlab.com/releases/2020/06/25/gitlab-12-10-12-released/)
-- [13.0.7](https://about.gitlab.com/releases/2020/06/25/gitlab-13-0-7-released/)
-- [13.1.1](https://about.gitlab.com/releases/2020/06/24/gitlab-13-1-1-released/)
-- 13.2 and up
-
-If you are using that kernel version, be sure to upgrade GitLab to avoid
-errors.
 
 ## Fast lookup of authorized SSH keys
 
@@ -58,26 +33,6 @@ is moved to NFS.
 
 We are investigating the use of
 [fast lookup as the default](https://gitlab.com/groups/gitlab-org/-/epics/3104).
-
-## Improving NFS performance with GitLab
-
-NFS performance with GitLab can in some cases be improved with
-[direct Git access](gitaly/index.md#direct-access-to-git-in-gitlab) using [Rugged](https://github.com/libgit2/rugged).
-
-Depending on the GitLab version, GitLab [automatically detects](gitaly/index.md#automatic-detection) if Rugged can and should
-be used per storage.
-
-If the Rugged feature flag is explicitly set to either `true` or `false`, GitLab uses the value explicitly set. If you
-previously enabled Rugged using the feature flag and you want to use automatic detection instead, you must unset
-the feature flag:
-
-```shell
-sudo gitlab-rake gitlab:features:unset_rugged
-```
-
-From GitLab 12.7, Rugged is only automatically enabled for use with Puma if the
-[Puma thread count is set to `1`](../install/requirements.md#puma-settings). To use Rugged with a Puma thread count of
-more than `1`, enable Rugged using the [feature flag](../development/gitaly.md#legacy-rugged-code).
 
 ## NFS server
 
@@ -293,7 +248,7 @@ NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
 
 Using bind mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the
-[restore prerequisites](../raketasks/backup_restore.md).
+[restore prerequisites](../administration/backup_restore/index.md).
 
 ### Multiple NFS mounts
 
@@ -315,7 +270,7 @@ provide configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/set
 
 Having multiple NFS mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the
-[restore prerequisites](../raketasks/backup_restore.md).
+[restore prerequisites](../administration/backup_restore/index.md).
 
 ## Testing NFS
 
@@ -360,33 +315,6 @@ sudo ufw allow from <client_ip_address> to any port nfs
 ```
 
 ## Known issues
-
-### Upgrade to Gitaly Cluster or disable caching if experiencing data loss
-
-WARNING:
-Engineering support for NFS for Git repositories
-[is unavailable](../update/removals.md#nfs-as-git-repository-storage-is-no-longer-supported).
-
-Customers and users have reported data loss on high-traffic repositories when using NFS for Git repositories.
-For example, we have seen:
-
-- [Inconsistent updates after a push](https://gitlab.com/gitlab-org/gitaly/-/issues/2589).
-- `git ls-remote` [returning the wrong (or no branches)](https://gitlab.com/gitlab-org/gitaly/-/issues/3083)
-causing Jenkins to intermittently re-run all pipelines for a repository.
-
-The problem may be partially mitigated by adjusting caching using the following NFS client mount options:
-
-| Setting | Description |
-| ------- | ----------- |
-| `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
-| `actimeo=0` | Sets the time to zero that the NFS client caches files and directories before requesting fresh information from a server. |
-| `noac` | Tells the NFS client not to cache file attributes and forces application writes to become synchronous so that local changes to a file become visible on the server immediately. |
-
-WARNING:
-The `actimeo=0` and `noac` options both result in a significant reduction in performance, possibly leading to timeouts.
-You may be able to avoid timeouts and data loss using `actimeo=0` and `lookupcache=positive` _without_ `noac`, however
-we expect the performance reduction is still significant. Upgrade to
-[Gitaly Cluster](gitaly/praefect.md) as soon as possible.
 
 ### Avoid using cloud-based file systems
 
@@ -447,10 +375,3 @@ On Ubuntu 16.04, use:
 ```shell
 sudo perf trace --no-syscalls --event 'nfs4:*' -p $(pgrep -fd ',' puma)
 ```
-
-### Warnings `garbage found: .../repositories/@hashed/...git/objects/pack/.nfs...` in Gitaly logs
-
-If you find any warnings like `garbage found: .../repositories/@hashed/...git/objects/pack/.nfs...` in [Gitaly logs](logs/index.md#gitaly-logs),
-this problem occurs if `lookupcache=positive` is not set, which we recommend as an
-[NFS mount option](#mount-options).
-See [Gitaly issue #3175](https://gitlab.com/gitlab-org/gitaly/-/issues/3175) for more details.

@@ -16,7 +16,7 @@ To manage cluster applications, use the [GitLab agent](agent/index.md)
 with the [Cluster Management Project Template](management_project_template.md).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
 
 A project can be designated as the management project for a cluster.
 A management project can be used to run deployment jobs with
@@ -58,7 +58,7 @@ To associate a cluster management project with your cluster:
 
 1. Navigate to the appropriate configuration page. For a:
    - [Project-level cluster](../project/clusters/index.md), go to your project's
-     **Infrastructure > Kubernetes clusters** page.
+     **Operate > Kubernetes clusters** page.
    - [Group-level cluster](../group/clusters/index.md), go to your group's **Kubernetes**
      page.
    - [Instance-level cluster](../instance/clusters/index.md):

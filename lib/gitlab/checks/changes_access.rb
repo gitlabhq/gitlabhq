@@ -117,6 +117,7 @@ module Gitlab
 
       def bulk_access_checks!
         Gitlab::Checks::LfsCheck.new(self).validate!
+        Gitlab::Checks::GlobalFileSizeCheck.new(self).validate!
       end
 
       def blank_rev?(rev)

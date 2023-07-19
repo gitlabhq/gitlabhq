@@ -12,7 +12,7 @@ OKRs are an [Experiment](../policy/experiment-beta-support.md#experiment).
 For the OKR feature roadmap, see [epic 7864](https://gitlab.com/groups/gitlab-org/-/epics/7864).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project, ask an administrator to [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
+On self-managed GitLab, by default this feature is not available. To make it available per project, an administrator can [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
 On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
@@ -353,3 +353,18 @@ Prerequisites:
 
 By default, child OKRs are ordered by creation date.
 To reorder them, drag them around.
+
+## Two-column layout
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+When enabled, OKRs use a two-column layout, similar to issues.
+The description and threads are on the left, and attributes, such as labels
+or assignees, on the right.
+
+![OKR two column view](img/objective_two_column_view_v16_2.png)

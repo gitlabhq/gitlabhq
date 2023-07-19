@@ -310,7 +310,7 @@ see the [feature deprecation guidelines](../../development/deprecation_guideline
 You must announce any deprecation [no later than the third milestone preceding intended removal](../../development/deprecation_guidelines/index.md#when-can-a-feature-be-deprecated).
 To deprecate an integration:
 
-- [Add a deprecation entry](../../development/deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation-pages).
+- [Add a deprecation entry](../../development/deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation).
 - [Mark the integration documentation as deprecated](../../development/documentation/versions.md#deprecate-a-page-or-topic).
 - Optional. To prevent any new project-level records from
   being created, add the integration to `Project#disabled_integrations` (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114835)).
@@ -324,7 +324,6 @@ In the major milestone of intended removal (M.0), disable the integration and de
 - Remove the integration from `Integration::INTEGRATION_NAMES`.
 - Delete the integration model's `#execute` and `#test` methods (if defined), but keep the model.
 - Add a post-migration to delete the integration records from PostgreSQL (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114721)).
-- [Add a removal entry](../../development/deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation-pages).
 - [Mark the integration documentation as removed](../../development/documentation/versions.md#remove-a-page).
 - [Update the integration API documentation](../../api/integrations.md).
 

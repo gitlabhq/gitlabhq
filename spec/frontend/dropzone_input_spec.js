@@ -1,6 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import htmlNewMilestone from 'test_fixtures/milestones/new-milestone.html';
 import mock from 'xhr-mock';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,6 +8,7 @@ import PasteMarkdownTable from '~/behaviors/markdown/paste_markdown_table';
 import dropzoneInput from '~/dropzone_input';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import htmlNewMilestone from 'test_fixtures_static/textarea.html';
 
 const TEST_FILE = new File([], 'somefile.jpg');
 TEST_FILE.upload = {};

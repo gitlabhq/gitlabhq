@@ -40,12 +40,12 @@ export default {
 
 <template>
   <div class="gl-display-contents">
-    <dt class="gl-mb-5 gl-mr-6 gl-max-w-26">
+    <dt class="gl-mb-5 gl-mr-6 gl-max-w-26" data-testid="label-slot">
       <template v-if="label || $scopedSlots.label">
         <slot name="label">{{ label }}</slot>
       </template>
     </dt>
-    <dd class="gl-mb-5">
+    <dd class="gl-mb-5" data-testid="value-slot">
       <template v-if="value || $scopedSlots.value">
         <slot name="value">{{ value }}</slot>
       </template>

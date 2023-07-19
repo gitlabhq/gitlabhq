@@ -11,7 +11,7 @@ type: reference
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/270059) in GitLab 13.10.
 
 The pipeline editor is the primary place to edit the GitLab CI/CD configuration in
-the `.gitlab-ci.yml` file in the root of your repository. To access the editor, go to **CI/CD > Editor**.
+the `.gitlab-ci.yml` file in the root of your repository. To access the editor, go to **Build > Pipeline editor**.
 
 From the pipeline editor page you can:
 
@@ -45,7 +45,7 @@ The **Lint** tab is replaced with the **Validate** tab in GitLab 15.3. The lint 
 in a successful [pipeline simulation](#simulate-a-cicd-pipeline).
 
 To test the validity of your GitLab CI/CD configuration before committing the changes,
-you can use the CI lint tool. To access it, go to **CI/CD > Editor** and select the **Lint** tab.
+you can use the CI lint tool. To access it, go to **Build > Pipeline editor** and select the **Lint** tab.
 
 This tool checks for syntax and logical errors but goes into more detail than the
 automatic [validation](#validate-ci-configuration) in the editor.
@@ -77,11 +77,11 @@ for review.
 ## Visualize CI configuration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241722) in GitLab 13.5.
-> - [Moved to **CI/CD > Editor**](https://gitlab.com/gitlab-org/gitlab/-/issues/263141) in GitLab 13.7.
+> - [Moved to **Build > Pipeline editor**](https://gitlab.com/gitlab-org/gitlab/-/issues/263141) in GitLab 13.7.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290117) in GitLab 13.12.
 
 To view a visualization of your `.gitlab-ci.yml` configuration, in your project,
-go to **CI/CD > Editor**, and then select the **Visualize** tab. The
+go to **Build > Pipeline editor**, and then select the **Visualize** tab. The
 visualization shows all stages and jobs. Any [`needs`](../yaml/index.md#needs)
 relationships are displayed as lines connecting jobs together, showing the
 hierarchy of execution:

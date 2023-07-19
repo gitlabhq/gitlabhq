@@ -57,6 +57,7 @@ describe('Pipeline schedules app', () => {
     wrapper = mountExtended(PipelineSchedules, {
       provide: {
         fullPath: 'gitlab-org/gitlab',
+        newSchedulePath: '/root/ci-project/-/pipeline_schedules/new',
       },
       mocks: {
         $toast,
@@ -100,6 +101,10 @@ describe('Pipeline schedules app', () => {
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    it('new schedule button links to new schedule path', () => {
+      expect(findNewButton().attributes('href')).toBe('/root/ci-project/-/pipeline_schedules/new');
     });
   });
 
@@ -146,15 +151,13 @@ describe('Pipeline schedules app', () => {
         [deletePipelineScheduleMutation, deleteMutationHandlerSuccess],
       ]);
 
-      jest.spyOn(wrapper.vm.$apollo.queries.schedules, 'refetch');
-
       await waitForPromises();
 
       const scheduleId = mockPipelineScheduleNodes[0].id;
 
       findTable().vm.$emit('showDeleteModal', scheduleId);
 
-      expect(wrapper.vm.$apollo.queries.schedules.refetch).not.toHaveBeenCalled();
+      expect(successHandler).toHaveBeenCalledTimes(1);
 
       findDeleteModal().vm.$emit('deleteSchedule');
 
@@ -163,7 +166,7 @@ describe('Pipeline schedules app', () => {
       expect(deleteMutationHandlerSuccess).toHaveBeenCalledWith({
         id: scheduleId,
       });
-      expect(wrapper.vm.$apollo.queries.schedules.refetch).toHaveBeenCalled();
+      expect(successHandler).toHaveBeenCalledTimes(2);
       expect($toast.show).toHaveBeenCalledWith('Pipeline schedule successfully deleted.');
     });
 
@@ -252,15 +255,13 @@ describe('Pipeline schedules app', () => {
         [takeOwnershipMutation, takeOwnershipMutationHandlerSuccess],
       ]);
 
-      jest.spyOn(wrapper.vm.$apollo.queries.schedules, 'refetch');
-
       await waitForPromises();
 
       const scheduleId = mockPipelineScheduleNodes[1].id;
 
       findTable().vm.$emit('showTakeOwnershipModal', scheduleId);
 
-      expect(wrapper.vm.$apollo.queries.schedules.refetch).not.toHaveBeenCalled();
+      expect(successHandler).toHaveBeenCalledTimes(1);
 
       findTakeOwnershipModal().vm.$emit('takeOwnership');
 
@@ -269,7 +270,7 @@ describe('Pipeline schedules app', () => {
       expect(takeOwnershipMutationHandlerSuccess).toHaveBeenCalledWith({
         id: scheduleId,
       });
-      expect(wrapper.vm.$apollo.queries.schedules.refetch).toHaveBeenCalled();
+      expect(successHandler).toHaveBeenCalledTimes(2);
       expect($toast.show).toHaveBeenCalledWith('Successfully taken ownership from Admin.');
     });
 
@@ -297,7 +298,7 @@ describe('Pipeline schedules app', () => {
 
   describe('pipeline schedule tabs', () => {
     beforeEach(async () => {
-      createComponent();
+      createComponent([[getPipelineSchedulesQuery, successHandler]]);
 
       await waitForPromises();
     });
@@ -315,13 +316,23 @@ describe('Pipeline schedules app', () => {
     });
 
     it('should refetch the schedules query on a tab click', async () => {
-      jest.spyOn(wrapper.vm.$apollo.queries.schedules, 'refetch').mockImplementation(jest.fn());
-
-      expect(wrapper.vm.$apollo.queries.schedules.refetch).toHaveBeenCalledTimes(0);
+      expect(successHandler).toHaveBeenCalledTimes(1);
 
       await findAllTab().trigger('click');
 
-      expect(wrapper.vm.$apollo.queries.schedules.refetch).toHaveBeenCalledTimes(1);
+      expect(successHandler).toHaveBeenCalledTimes(3);
+    });
+
+    it('all tab click should not send scope value with query', async () => {
+      findAllTab().trigger('click');
+
+      await nextTick();
+
+      expect(successHandler).toHaveBeenCalledWith({
+        ids: null,
+        projectPath: 'gitlab-org/gitlab',
+        status: null,
+      });
     });
   });
 

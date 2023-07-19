@@ -23,7 +23,6 @@ describe('Todo Button', () => {
 
   afterEach(() => {
     dispatchEventSpy = null;
-    jest.clearAllMocks();
   });
 
   it('renders GlButton', () => {

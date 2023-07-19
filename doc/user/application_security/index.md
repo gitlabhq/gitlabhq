@@ -82,7 +82,7 @@ Dependency analysis can run:
   image is built - [Container Scanning](container_scanning/index.md).
 
 For more details, see
-[Dependency Scanning compared to Container Scanning](dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning).
+[Dependency Scanning compared to Container Scanning](comparison_dependency_and_container_scanning.md).
 
 Additionally, dependencies in operational container images can be analyzed for vulnerabilities
 on a regular schedule or cadence. For more details, see [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md).
@@ -239,6 +239,16 @@ reports are available to download. To download a report, select
 
 ![Security widget](img/security_widget_v13_7.png)
 
+Security scans produce at least one of these [CI `artifacts:reports` types](../../ci/yaml/artifacts_reports.md):
+
+- `artifacts:reports:api_fuzzing`
+- `artifacts:reports:container_scanning`
+- `artifacts:reports:coverage_fuzzing`
+- `artifacts:reports:dast`
+- `artifacts:reports:dependency_scanning`
+- `artifacts:reports:sast`
+- `artifacts:reports:secret_detection`
+
 ### Ultimate
 
 A merge request contains a security widget which displays a summary of the _new_ results. New results are determined by comparing the findings of the merge request against the findings of the most recent completed pipeline (`success`, `failed`, `canceled` or `skipped`) for the commit when the feature branch was created from the target branch.
@@ -247,7 +257,10 @@ If security scans have not run for the completed pipeline in the target branch w
 
 The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both new and existing findings.
 
-From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type. Select **View full report** to go directly to the **Security** tab in the latest branch pipeline.
+From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type.
+
+For each security report type, the widget displays the first 25 added and 25 fixed findings, sorted by severity. To see all
+findings, select **View full report** to go directly to the **Security** tab in the latest branch pipeline.
 
 ![Security scanning results in a merge request](img/mr_security_scanning_results_v14_3.png)
 
@@ -523,23 +536,47 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 
 ## Troubleshooting
 
-<!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, please ensure to update the corresponding URL in the mentioned repository.
--->
+### Logging level
 
-### Secure job failing with exit code 1
+The verbosity of logs output by GitLab analyzers is determined by the `SECURE_LOG_LEVEL` environment
+variable. Messages of this logging level or higher are output.
+
+From highest to lowest severity, the logging levels are:
+
+- `fatal`
+- `error`
+- `warn`
+- `info` (default)
+- `debug`
+
+#### Debug-level logging
 
 WARNING:
 Debug logging can be a serious security risk. The output may contain the content of
 environment variables and other secrets available to the job. The output is uploaded
-to the GitLab server and visible in job logs.
+to the GitLab server and is visible in job logs.
 
-If a Secure job is failing and it's unclear why, add `SECURE_LOG_LEVEL: "debug"` as a global CI/CD variable for
-more verbose output that is helpful for troubleshooting.
+To enable debug-level logging, add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 variables:
   SECURE_LOG_LEVEL: "debug"
 ```
+
+This indicates to all GitLab analyzers that they are to output **all** messages. For more details,
+see [logging level](#logging-level).
+
+<!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, please ensure to update the corresponding URL in the mentioned repository.
+-->
+
+### Secure job failing with exit code 1
+
+If a Secure job is failing and it's unclear why:
+
+1. Enable [debug-level logging](#debug-level-logging).
+1. Run the job.
+1. Examine the job's output.
+1. Set the logging level to `info` (default).
 
 ### Outdated security reports
 

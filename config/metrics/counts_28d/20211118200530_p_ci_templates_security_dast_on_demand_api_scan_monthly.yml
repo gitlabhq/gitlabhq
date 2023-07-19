@@ -1,0 +1,26 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_security_dast_on_demand_api_scan_monthly
+name: "dast_on_demand_api_scan"
+description: Count of pipelines using the latest DAST API template
+product_section: sec
+product_stage: secure
+product_group: "dynamic_analysis"
+value_type: number
+status: active
+milestone: "14.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73564
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - p_ci_templates_security_dast_on_demand_api_scan
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

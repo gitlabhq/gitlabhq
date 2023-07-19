@@ -5,16 +5,24 @@ export default {
       import(
         '~/vue_merge_request_widget/extensions/security_reports/mr_widget_security_reports.vue'
       ),
+
+    MrTerraformWidget: () => import('~/vue_merge_request_widget/extensions/terraform/index.vue'),
   },
+
   props: {
     mr: {
       type: Object,
       required: true,
     },
   },
+
   computed: {
+    terraformPlansWidget() {
+      return this.mr.terraformReportsPath && 'MrTerraformWidget';
+    },
+
     widgets() {
-      return ['MrSecurityWidget'];
+      return [this.terraformPlansWidget, 'MrSecurityWidget'].filter((w) => w);
     },
   },
 };

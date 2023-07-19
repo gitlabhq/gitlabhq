@@ -15,6 +15,8 @@ class UserCustomAttribute < ApplicationRecord
   UNBLOCKED_BY = 'unblocked_by'
   ARKOSE_RISK_BAND = 'arkose_risk_band'
   AUTO_BANNED_BY_ABUSE_REPORT_ID = 'auto_banned_by_abuse_report_id'
+  ALLOW_POSSIBLE_SPAM = 'allow_possible_spam'
+  IDENTITY_VERIFICATION_PHONE_EXEMPT = 'identity_verification_phone_exempt'
 
   class << self
     def upsert_custom_attributes(custom_attributes)

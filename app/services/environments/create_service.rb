@@ -2,7 +2,7 @@
 
 module Environments
   class CreateService < BaseService
-    ALLOWED_ATTRIBUTES = %i[name external_url tier cluster_agent].freeze
+    ALLOWED_ATTRIBUTES = %i[name external_url tier cluster_agent kubernetes_namespace].freeze
 
     def execute
       unless can?(current_user, :create_environment, project)

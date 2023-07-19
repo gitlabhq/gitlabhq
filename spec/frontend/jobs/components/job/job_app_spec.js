@@ -9,7 +9,7 @@ import EnvironmentsBlock from '~/jobs/components/job/environments_block.vue';
 import ErasedBlock from '~/jobs/components/job/erased_block.vue';
 import JobApp from '~/jobs/components/job/job_app.vue';
 import JobLog from '~/jobs/components/log/log.vue';
-import JobLogTopBar from '~/jobs/components/job/job_log_controllers.vue';
+import JobLogTopBar from 'ee_else_ce/jobs/components/job/job_log_controllers.vue';
 import Sidebar from '~/jobs/components/job/sidebar/sidebar.vue';
 import StuckBlock from '~/jobs/components/job/stuck_block.vue';
 import UnmetPrerequisitesBlock from '~/jobs/components/job/unmet_prerequisites_block.vue';

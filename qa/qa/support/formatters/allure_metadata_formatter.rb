@@ -98,7 +98,6 @@ module QA
           return unless flaky_specs.key?(example.metadata[:testcase]) && example.execution_result.status != :pending
 
           example.set_flaky
-          example.parameter("pass_rate", "#{flaky_specs[example.metadata[:testcase]].round(0)}%")
           log(:debug, "Setting spec as flaky because it's pass rate is below 98%")
         rescue StandardError => e
           log(:error, "Failed to add spec pass rate data for example '#{example.description}', error: #{e}")

@@ -107,7 +107,13 @@ export default {
 <template>
   <div class="discussion-header gl-display-flex gl-align-items-center">
     <div v-once class="timeline-avatar gl-align-self-start gl-flex-shrink-0 gl-flex-shrink">
-      <gl-avatar-link v-if="author" :href="author.path">
+      <gl-avatar-link
+        v-if="author"
+        :href="author.path"
+        :data-user-id="author.id"
+        :data-username="author.username"
+        class="js-user-link"
+      >
         <gl-avatar :src="author.avatar_url" :alt="author.name" :size="32" />
       </gl-avatar-link>
     </div>

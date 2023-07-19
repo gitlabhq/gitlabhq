@@ -51,11 +51,11 @@
       = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control gl-form-input gl-mt-2'
       .help-block
         = _('Specify an email address regex pattern to identify default internal users.')
-        = link_to _('Learn more.'), help_page_path('user/admin_area/external_users', anchor: 'set-a-new-user-to-external'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more.'), help_page_path('administration/external_users', anchor: 'set-a-new-user-to-external'), target: '_blank', rel: 'noopener noreferrer'
     - unless Gitlab.com?
       .form-group
         = f.label :deactivate_dormant_users, _('Dormant users'), class: 'label-bold'
-        - dormant_users_help_link = help_page_path('user/admin_area/moderate_users', anchor: 'automatically-deactivate-dormant-users')
+        - dormant_users_help_link = help_page_path('administration/moderate_users', anchor: 'automatically-deactivate-dormant-users')
         - dormant_users_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: dormant_users_help_link }
         = f.gitlab_ui_checkbox_component :deactivate_dormant_users, _('Deactivate dormant users after a period of inactivity'), help_text: _('Users can reactivate their account by signing in. %{link_start}Learn more.%{link_end}').html_safe % { link_start: dormant_users_help_link_start, link_end: '</a>'.html_safe }
         .form-group

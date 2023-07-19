@@ -7,12 +7,10 @@
 
 = render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 
-- if Feature.enabled?(:show_pages_in_deployments_menu, current_user, type: :experiment)
-  = render Pajamas::AlertComponent.new(variant: :info,
-      title: _('GitLab Pages has moved'),
-      alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-    - c.with_body do
-      = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deployments > Pages', project_pages_path(@project)).html_safe}
+= render Pajamas::AlertComponent.new(title: _('GitLab Pages has moved'),
+    alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
+  - c.with_body do
+    = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deploy > Pages', project_pages_path(@project)).html_safe}
 
 %section.settings.general-settings.no-animate.expanded#js-general-settings
   .settings-header
@@ -79,8 +77,8 @@
       %p
         = _('Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.')
         = link_to _('Learn more.'), help_page_path('administration/housekeeping'), target: '_blank', rel: 'noopener noreferrer'
-      = link_to _('Run housekeeping'), housekeeping_project_path(@project),
-        method: :post, class: "btn gl-button btn-default"
+      = render Pajamas::ButtonComponent.new(method: :post, href: housekeeping_project_path(@project)) do
+        = _('Run housekeeping')
 
       .gl-display-inline-flex
         #js-project-prune-unreachable-objects-button{ data: { prune_objects_path: housekeeping_project_path(@project, prune: true), prune_objects_doc_path: help_page_path('administration/housekeeping', anchor: 'prune-unreachable-objects') } }

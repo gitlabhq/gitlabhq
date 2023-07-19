@@ -198,7 +198,7 @@ In this phase we are migrating basic, high-priority project functionality from `
 - [Unify members/members actions](https://gitlab.com/groups/gitlab-org/-/epics/8010) - on UI and API level.
 - Starring: Right now only projects can be starred. We want to bring this to the group level.
 - Common actions: Destroying, transferring, restoring. This can be unified on the controller level and then propagated lower.
-- Archiving currently only works on the project level. This can be brought to the group level, similar to the mechanism for “pending deletion”.
+- Archiving currently only works on the project level. This can be brought to the group level, similar to the mechanism for "pending deletion".
 - Avatar's serving and actions.
 
 ### Phase 4

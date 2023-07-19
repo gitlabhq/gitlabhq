@@ -456,14 +456,63 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   end
 
   context 'repository removal' do
-    # 1. Project repository
-    # 2. Wiki repository
-    it 'removal of existing repos' do
-      expect_next_instances_of(Repositories::DestroyService, 2) do |instance|
-        expect(instance).to receive(:execute).and_return(status: :success)
+    describe '.trash_project_repositories!' do
+      let(:trash_project_repositories!) { described_class.new(project, user, {}).send(:trash_project_repositories!) }
+
+      # Destroys 3 repositories:
+      # 1. Project repository
+      # 2. Wiki repository
+      # 3. Design repository
+
+      it 'Repositories::DestroyService is called for existing repos' do
+        expect_next_instances_of(Repositories::DestroyService, 3) do |instance|
+          expect(instance).to receive(:execute).and_return(status: :success)
+        end
+
+        trash_project_repositories!
       end
 
-      described_class.new(project, user, {}).execute
+      context 'when the removal has errors' do
+        using RSpec::Parameterized::TableSyntax
+
+        let(:mock_error) { instance_double(Repositories::DestroyService, execute: { message: 'foo', status: :error }) }
+        let(:project_repository) { project.repository }
+        let(:wiki_repository) { project.wiki.repository }
+        let(:design_repository) { project.design_repository }
+
+        where(:repo, :message) do
+          ref(:project_repository) | 'Failed to remove project repository. Please try again or contact administrator.'
+          ref(:wiki_repository)    | 'Failed to remove wiki repository. Please try again or contact administrator.'
+          ref(:design_repository)  | 'Failed to remove design repository. Please try again or contact administrator.'
+        end
+
+        with_them do
+          before do
+            allow(Repositories::DestroyService).to receive(:new).with(anything).and_call_original
+            allow(Repositories::DestroyService).to receive(:new).with(repo).and_return(mock_error)
+          end
+
+          it 'raises correct error' do
+            expect { trash_project_repositories! }.to raise_error(Projects::DestroyService::DestroyError, message)
+          end
+        end
+      end
+    end
+
+    it 'removes project repository' do
+      expect { destroy_project(project, user, {}) }.to change { project.repository.exists? }.from(true).to(false)
+    end
+
+    it 'removes wiki repository' do
+      project.create_wiki unless project.wiki.repository.exists?
+
+      expect { destroy_project(project, user, {}) }.to change { project.wiki.repository.exists? }.from(true).to(false)
+    end
+
+    it 'removes design repository' do
+      project.design_repository.create_if_not_exists
+
+      expect { destroy_project(project, user, {}) }.to change { project.design_repository.exists? }.from(true).to(false)
     end
   end
 

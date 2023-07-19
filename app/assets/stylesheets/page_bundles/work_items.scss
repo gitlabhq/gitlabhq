@@ -1,5 +1,8 @@
 @import 'mixins_and_variables_and_functions';
 
+$work-item-overview-right-sidebar-width: 340px;
+$work-item-sticky-header-height: 52px;
+
 .gl-token-selector-token-container {
   display: flex;
   align-items: center;
@@ -102,5 +105,56 @@
 
   .gl-toggle-label {
     @include gl-font-weight-normal;
+  }
+}
+
+.work-item-overview {
+  @include media-breakpoint-up(md) {
+    display: grid;
+    grid-template-columns: 1fr $work-item-overview-right-sidebar-width;
+    gap: 2rem;
+  }
+}
+
+.work-item-overview-right-sidebar {
+  @include media-breakpoint-up(md) {
+    &.is-modal {
+      .work-item-attributes-wrapper {
+        top: 0;
+      }
+    }
+  }
+}
+
+.work-item-attributes-wrapper {
+  .work-item-overview & {
+    @include media-breakpoint-up(md) {
+      top: calc(#{$calc-application-header-height} + #{$work-item-sticky-header-height});
+      height: calc(#{$calc-application-viewport-height} - #{$work-item-sticky-header-height});
+      margin-bottom: calc(#{$content-wrapper-padding} * -1);
+      position: sticky;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
+}
+
+.work-item-field-label {
+  .work-item-overview & {
+    max-width: 30%;
+    flex: none;
+  }
+}
+
+.work-item-field-value {
+  .work-item-overview & {
+    max-width: 65%;
+  }
+}
+
+.token-selector-menu-class {
+  .work-item-overview & {
+    width: 100%;
+    min-width: 100%;
   }
 }

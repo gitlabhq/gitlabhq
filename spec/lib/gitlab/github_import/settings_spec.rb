@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Settings do
+RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
   subject(:settings) { described_class.new(project) }
 
   let_it_be(:project) { create(:project) }
@@ -55,19 +55,26 @@ RSpec.describe Gitlab::GithubImport::Settings do
   describe '#write' do
     let(:data_input) do
       {
-        single_endpoint_issue_events_import: true,
-        single_endpoint_notes_import: 'false',
-        attachments_import: nil,
-        collaborators_import: false,
-        foo: :bar
+        optional_stages: {
+          single_endpoint_issue_events_import: true,
+          single_endpoint_notes_import: 'false',
+          attachments_import: nil,
+          collaborators_import: false,
+          foo: :bar
+        },
+        additional_access_tokens: %w[foo bar]
       }.stringify_keys
     end
 
-    it 'puts optional steps flags into projects import_data' do
+    it 'puts optional steps & access tokens into projects import_data' do
+      project.create_or_update_import_data(credentials: { user: 'token' })
+
       settings.write(data_input)
 
       expect(project.import_data.data['optional_stages'])
         .to eq optional_stages.stringify_keys
+      expect(project.import_data.credentials.fetch(:additional_access_tokens))
+        .to eq(data_input['additional_access_tokens'])
     end
   end
 

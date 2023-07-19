@@ -53,7 +53,7 @@ RSpec.describe 'Destroying a Snippet', feature_category: :source_code_management
         let!(:snippet_gid) { project.to_gid.to_s }
 
         it 'returns an error' do
-          err_message = %Q["#{snippet_gid}" does not represent an instance of Snippet]
+          err_message = %["#{snippet_gid}" does not represent an instance of Snippet]
 
           post_graphql_mutation(mutation, current_user: current_user)
 

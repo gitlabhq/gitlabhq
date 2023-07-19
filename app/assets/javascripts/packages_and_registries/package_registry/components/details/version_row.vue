@@ -1,7 +1,6 @@
 <script>
 import {
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
   GlFormCheckbox,
   GlIcon,
   GlLink,
@@ -25,8 +24,7 @@ import {
 export default {
   name: 'PackageVersionRow',
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
     GlFormCheckbox,
     GlIcon,
     GlLink,
@@ -60,6 +58,18 @@ export default {
     },
     errorStatusRow() {
       return this.packageEntity?.status === PACKAGE_ERROR_STATUS;
+    },
+    dropdownItems() {
+      return [
+        {
+          text: this.$options.i18n.deletePackage,
+          action: () => this.$emit('delete'),
+          extraAttrs: {
+            class: 'gl-text-red-500!',
+            'data-testid': 'action-delete',
+          },
+        },
+      ];
     },
   },
   i18n: {
@@ -129,18 +139,15 @@ export default {
     </template>
 
     <template v-if="packageEntity.canDestroy" #right-action>
-      <gl-dropdown
+      <gl-disclosure-dropdown
         data-testid="delete-dropdown"
         icon="ellipsis_v"
-        :text="$options.i18n.moreActions"
-        :text-sr-only="true"
+        :items="dropdownItems"
+        :toggle-text="$options.i18n.moreActions"
         category="tertiary"
+        text-sr-only
         no-caret
-      >
-        <gl-dropdown-item data-testid="action-delete" variant="danger" @click="$emit('delete')">{{
-          $options.i18n.deletePackage
-        }}</gl-dropdown-item>
-      </gl-dropdown>
+      />
     </template>
   </list-item>
 </template>

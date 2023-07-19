@@ -188,7 +188,11 @@ export default {
     coverage: '92.16',
     path: '/root/acets-app/pipelines/172',
     details: {
-      artifacts,
+      artifacts: artifacts.map(({ text, url, ...rest }) => ({
+        name: text,
+        path: url,
+        ...rest,
+      })),
       status: {
         icon: 'status_success',
         favicon: 'favicon_status_success',

@@ -4,7 +4,7 @@
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}, body_options: { class: 'gl-py-0'}) do |c|
   - c.with_header do
-    Commits (#{@total_commit_count})
+    = s_('CompareRevisions|Commits on Source (%{commits_amount})').html_safe % { commits_amount: @total_commit_count }
   - c.with_body do
     - if hidden > 0
       %ul.content-list

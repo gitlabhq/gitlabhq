@@ -33,7 +33,7 @@ class AwardEmojisFinder
   def validate_params
     return unless params.present?
 
-    validate_name_param
+    validate_name_param unless Feature.enabled?(:custom_emoji)
     validate_awarded_by_param
   end
 

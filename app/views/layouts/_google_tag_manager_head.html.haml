@@ -1,4 +1,5 @@
 - return unless google_tag_manager_enabled?
+
 - if Feature.enabled?(:gitlab_gtm_datalayer, type: :ops)
   = javascript_tag do
     :plain

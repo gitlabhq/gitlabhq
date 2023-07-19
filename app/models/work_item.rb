@@ -65,6 +65,12 @@ class WorkItem < Issue
     'issue'
   end
 
+  # Todo: remove method after target_type cleanup
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/416009
+  def todoable_target_type_name
+    %w[Issue WorkItem]
+  end
+
   def widgets
     strong_memoize(:widgets) do
       work_item_type.widgets.map do |widget_class|
@@ -114,7 +120,9 @@ class WorkItem < Issue
               .filter { |param_name| common_params.key?(param_name) }
               .each do |param_name|
                 widget_params[widget.api_symbol] ||= {}
-                widget_params[widget.api_symbol][param_name] = common_params.delete(param_name)
+                param_value = common_params.delete(param_name)
+
+                widget_params[widget.api_symbol].merge!(widget.process_quick_action_param(param_name, param_value))
               end
           end
 

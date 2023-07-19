@@ -7,6 +7,7 @@ import {
   GlCollapsibleListbox,
   GlLink,
   GlSprintf,
+  GlAlert,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { isAbsolute } from '~/lib/utils/url_utility';
@@ -15,7 +16,10 @@ import {
   ENVIRONMENT_NEW_HELP_TEXT,
   ENVIRONMENT_EDIT_HELP_TEXT,
 } from 'ee_else_ce/environments/constants';
+import csrf from '~/lib/utils/csrf';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import getNamespacesQuery from '../graphql/queries/k8s_namespaces.query.graphql';
 import getUserAuthorizedAgents from '../graphql/queries/user_authorized_agents.query.graphql';
 
 export default {
@@ -27,11 +31,13 @@ export default {
     GlCollapsibleListbox,
     GlLink,
     GlSprintf,
+    GlAlert,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
     protectedEnvironmentSettingsPath: { default: '' },
     projectPath: { default: '' },
+    kasTunnelUrl: { default: '' },
   },
   props: {
     environment: {
@@ -64,11 +70,13 @@ export default {
     urlFeedback: __('The URL should start with http:// or https://'),
     agentLabel: s__('Environments|GitLab agent'),
     agentHelpText: s__('Environments|Select agent'),
+    namespaceLabel: s__('Environments|Kubernetes namespace (optional)'),
+    namespaceHelpText: s__('Environments|Select namespace'),
     save: __('Save'),
     cancel: __('Cancel'),
     reset: __('Reset'),
   },
-  helpPagePath: helpPagePath('ci/environments/index.md'),
+  environmentsHelpPagePath: helpPagePath('ci/environments/index.md'),
   renamingDisabledHelpPagePath: helpPagePath('ci/environments/index.md', {
     anchor: 'rename-an-environment',
   }),
@@ -81,10 +89,41 @@ export default {
       userAccessAuthorizedAgents: [],
       loadingAgentsList: false,
       selectedAgentId: this.environment.clusterAgentId,
-      searchTerm: '',
+      agentSearchTerm: '',
+      selectedNamespace: this.environment.kubernetesNamespace,
+      k8sNamespaces: [],
+      namespaceSearchTerm: '',
+      kubernetesError: '',
     };
   },
+  apollo: {
+    k8sNamespaces: {
+      query: getNamespacesQuery,
+      skip() {
+        return !this.showNamespaceSelector;
+      },
+      variables() {
+        return {
+          configuration: this.k8sAccessConfiguration,
+        };
+      },
+      update(data) {
+        return data?.k8sNamespaces || [];
+      },
+      error(error) {
+        this.kubernetesError = error.message;
+      },
+      result(result) {
+        if (!result?.error && !result.errors?.length) {
+          this.kubernetesError = null;
+        }
+      },
+    },
+  },
   computed: {
+    loadingNamespacesList() {
+      return this.$apollo.queries.k8sNamespaces.loading;
+    },
     isNameDisabled() {
       return Boolean(this.environment.id);
     },
@@ -105,7 +144,7 @@ export default {
         };
       });
     },
-    dropdownToggleText() {
+    agentDropdownToggleText() {
       if (!this.selectedAgentId) {
         return this.$options.i18n.agentHelpText;
       }
@@ -115,13 +154,48 @@ export default {
       return selectedAgentById?.text || this.environment.clusterAgent?.name;
     },
     filteredAgentsList() {
-      const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
+      const lowerCasedSearchTerm = this.agentSearchTerm.toLowerCase();
       return this.agentsList.filter((item) =>
         item.text.toLowerCase().includes(lowerCasedSearchTerm),
       );
     },
-    showAgentsSelect() {
-      return this.glFeatures?.environmentSettingsToGraphql;
+    namespacesList() {
+      return this.k8sNamespaces.map((item) => {
+        return {
+          value: item.metadata.name,
+          text: item.metadata.name,
+        };
+      });
+    },
+    filteredNamespacesList() {
+      const lowerCasedSearchTerm = this.namespaceSearchTerm.toLowerCase();
+      return this.namespacesList.filter((item) =>
+        item.text.toLowerCase().includes(lowerCasedSearchTerm),
+      );
+    },
+    isKasKubernetesNamespaceAvailable() {
+      return this.glFeatures?.kubernetesNamespaceForEnvironment;
+    },
+    showNamespaceSelector() {
+      return Boolean(this.isKasKubernetesNamespaceAvailable && this.selectedAgentId);
+    },
+    namespaceDropdownToggleText() {
+      return this.selectedNamespace || this.$options.i18n.namespaceHelpText;
+    },
+    k8sAccessConfiguration() {
+      if (!this.showNamespaceSelector) {
+        return null;
+      }
+      return {
+        basePath: this.kasTunnelUrl,
+        baseOptions: {
+          headers: {
+            'GitLab-Agent-Id': getIdFromGraphQLId(this.selectedAgentId),
+            ...csrf.headers,
+          },
+          withCredentials: true,
+        },
+      };
     },
   },
   watch: {
@@ -151,7 +225,14 @@ export default {
       });
     },
     onAgentSearch(search) {
-      this.searchTerm = search;
+      this.agentSearchTerm = search;
+    },
+    onAgentChange($event) {
+      this.selectedNamespace = null;
+      this.onChange({ ...this.environment, clusterAgentId: $event, kubernetesNamespace: null });
+    },
+    onNamespaceSearch(search) {
+      this.namespaceSearchTerm = search;
     },
   },
 };
@@ -171,7 +252,9 @@ export default {
         >
           <template #link="{ content }">
             <gl-link
-              :href="showEditHelp ? protectedEnvironmentSettingsPath : $options.helpPagePath"
+              :href="
+                showEditHelp ? protectedEnvironmentSettingsPath : $options.environmentsHelpPagePath
+              "
               >{{ content }}</gl-link
             >
           </template>
@@ -223,26 +306,50 @@ export default {
           />
         </gl-form-group>
 
-        <gl-form-group
-          v-if="showAgentsSelect"
-          :label="$options.i18n.agentLabel"
-          label-for="environment_agent"
-        >
+        <gl-form-group :label="$options.i18n.agentLabel" label-for="environment_agent">
           <gl-collapsible-listbox
             id="environment_agent"
             v-model="selectedAgentId"
             class="gl-w-full"
+            data-testid="agent-selector"
             block
             :items="filteredAgentsList"
             :loading="loadingAgentsList"
-            :toggle-text="dropdownToggleText"
+            :toggle-text="agentDropdownToggleText"
             :header-text="$options.i18n.agentHelpText"
             :reset-button-label="$options.i18n.reset"
             :searchable="true"
             @shown="getAgentsList"
             @search="onAgentSearch"
-            @select="onChange({ ...environment, clusterAgentId: $event })"
+            @select="onAgentChange"
             @reset="onChange({ ...environment, clusterAgentId: null })"
+          />
+        </gl-form-group>
+
+        <gl-form-group
+          v-if="showNamespaceSelector"
+          :label="$options.i18n.namespaceLabel"
+          label-for="environment_namespace"
+        >
+          <gl-alert v-if="kubernetesError" variant="warning" :dismissible="false" class="gl-mb-5">
+            {{ kubernetesError }}
+          </gl-alert>
+          <gl-collapsible-listbox
+            v-else
+            id="environment_namespace"
+            v-model="selectedNamespace"
+            class="gl-w-full"
+            data-testid="namespace-selector"
+            block
+            :items="filteredNamespacesList"
+            :loading="loadingNamespacesList"
+            :toggle-text="namespaceDropdownToggleText"
+            :header-text="$options.i18n.namespaceHelpText"
+            :reset-button-label="$options.i18n.reset"
+            :searchable="true"
+            @search="onNamespaceSearch"
+            @select="onChange({ ...environment, kubernetesNamespace: $event })"
+            @reset="onChange({ ...environment, kubernetesNamespace: null })"
           />
         </gl-form-group>
 

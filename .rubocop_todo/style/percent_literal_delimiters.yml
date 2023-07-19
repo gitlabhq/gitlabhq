@@ -843,7 +843,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/lib/gitlab/usage_data_counters/hll_redis_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_spec.rb'
     - 'spec/lib/gitlab/utils/log_limited_array_spec.rb'
-    - 'spec/lib/gitlab/utils_spec.rb'
     - 'spec/lib/gitlab/webpack/graphql_known_operations_spec.rb'
     - 'spec/lib/gitlab/wiki_pages/front_matter_parser_spec.rb'
     - 'spec/lib/object_storage/config_spec.rb'

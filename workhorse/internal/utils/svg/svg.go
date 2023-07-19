@@ -13,7 +13,7 @@ import (
 
 var (
 	htmlCommentRegex = regexp.MustCompile(`(?i)<!--([\s\S]*?)-->`)
-	svgRegex         = regexp.MustCompile(`(?i)^\s*(?:<\?xml[^>]*>\s*)?(?:<!doctype svg[^>]*>\s*)?<svg[^>]*>`)
+	svgRegex         = regexp.MustCompile(`(?i)^\s*(?:<\?xml[^>]*>\s*)?(?:<!doctype svg[^>]*>\s*)?<svg[^>]*`)
 )
 
 // isBinary checks if the given buffer is a binary file.

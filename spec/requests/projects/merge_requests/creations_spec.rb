@@ -6,8 +6,13 @@ RSpec.describe 'merge requests creations', feature_category: :code_review_workfl
   describe 'GET /:namespace/:project/merge_requests/new' do
     include ProjectForksHelper
 
-    let(:project) { create(:project, :repository) }
-    let(:user) { project.first_owner }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :repository, group: group) }
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      group.add_developer(user)
+    end
 
     before do
       login_as(user)
@@ -26,16 +31,13 @@ RSpec.describe 'merge requests creations', feature_category: :code_review_workfl
     end
 
     it_behaves_like "observability csp policy", Projects::MergeRequests::CreationsController do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:user) { create(:user) }
-      let_it_be(:project) { create(:project, group: group) }
       let(:tested_path) do
         project_new_merge_request_path(project, merge_request: {
           title: 'Some feature',
-            source_branch: 'fix',
-            target_branch: 'feature',
-            target_project: project,
-            source_project: project
+          source_branch: 'fix',
+          target_branch: 'feature',
+          target_project: project,
+          source_project: project
         })
       end
     end

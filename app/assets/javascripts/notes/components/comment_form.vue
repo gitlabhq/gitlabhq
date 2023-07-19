@@ -16,11 +16,12 @@ import { sprintf } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import { COMMENT_FORM } from '../i18n';
-import { getErrorMessages } from '../utils';
+import { createNoteErrorMessages } from '../utils';
 
 import issuableStateMixin from '../mixins/issuable_state';
 import CommentFieldLayout from './comment_field_layout.vue';
@@ -146,9 +147,6 @@ export default {
     markdownDocsPath() {
       return this.getNotesData.markdownDocsPath;
     },
-    quickActionsDocsPath() {
-      return this.getNotesData.quickActionsDocsPath;
-    },
     markdownPreviewPath() {
       return this.getNoteableData.preview_note_path;
     },
@@ -219,7 +217,7 @@ export default {
       'toggleIssueLocalState',
     ]),
     handleSaveError({ data, status }) {
-      this.errors = getErrorMessages(data, status);
+      this.errors = createNoteErrorMessages(data, status);
     },
     handleSaveDraft() {
       this.handleSave({ isDraft: true });
@@ -257,6 +255,11 @@ export default {
         this.stopPolling();
 
         this.isSubmitting = true;
+
+        trackSavedUsingEditor(
+          this.$refs.markdownEditor.isContentEditorActive,
+          `${this.noteableType}_${this.noteType}`,
+        );
 
         this.saveNote(noteData)
           .then(() => {
@@ -366,7 +369,6 @@ export default {
                 :render-markdown-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
                 :add-spacing-classes="false"
-                :quick-actions-docs-path="quickActionsDocsPath"
                 :form-field-props="formFieldProps"
                 :autosave-key="autosaveKey"
                 :disabled="isSubmitting"

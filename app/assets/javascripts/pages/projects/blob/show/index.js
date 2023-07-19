@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
 import TableOfContents from '~/blob/components/table_contents.vue';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
 import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
@@ -10,7 +11,7 @@ import createDefaultClient from '~/lib/graphql';
 import initBlob from '~/pages/projects/init_blob';
 import ForkInfo from '~/repository/components/fork_info.vue';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
-import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
@@ -18,6 +19,7 @@ import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_util
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -69,6 +71,7 @@ if (viewBlobEl) {
     resourceId,
     userId,
     explainCodeAvailable,
+    ...dataset
   } = viewBlobEl.dataset;
 
   // eslint-disable-next-line no-new
@@ -78,11 +81,13 @@ if (viewBlobEl) {
     router,
     apolloProvider,
     provide: {
+      highlightWorker: gon.features.highlightJsWorker ? new HighlightWorker() : null,
       targetBranch,
       originalBranch,
       resourceId,
       userId,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
+      ...provideWebIdeLink(dataset),
     },
     render(createElement) {
       return createElement(BlobContentViewer, {

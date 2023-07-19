@@ -353,10 +353,11 @@ return new Vue({
 
 #### Accessing feature flags
 
-Use the [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject) mechanisms
-in Vue to make feature flags available to any descendant components in a Vue
-application. The `glFeatures` object is already provided in `commons/vue.js`, so
-only the mixin is required to use the flags:
+After pushing a feature flag to the [frontend](../feature_flags/index.md#frontend),
+use the [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject)
+mechanisms in Vue to make feature flags available to any descendant components
+in a Vue application. The `glFeatures` object is already provided in
+`commons/vue.js`, so only the mixin is required to use the flags:
 
 ```javascript
 // An arbitrary descendant component

@@ -8,6 +8,7 @@ module QA
           element :import_table
           element :import_item
           element :import_status_indicator
+          element :filter_groups
         end
 
         view "app/assets/javascripts/import_entities/import_groups/components/import_target_cell.vue" do
@@ -22,6 +23,12 @@ module QA
           element :import_group_button
         end
 
+        def filter_group(source_group_name)
+          find('input[data-testid="filter-groups"]').set(source_group_name).send_keys(:return)
+
+          finished_loading?
+        end
+
         # Import source group in to target group
         #
         # @param [String] source_group_name
@@ -29,6 +36,8 @@ module QA
         # @return [void]
         def import_group(source_group_name, target_group_name)
           finished_loading?
+
+          filter_group(source_group_name)
 
           within_element(:import_item, source_group: source_group_name) do
             click_element(:target_namespace_selector_dropdown)

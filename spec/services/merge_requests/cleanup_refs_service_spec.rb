@@ -18,6 +18,8 @@ RSpec.describe MergeRequests::CleanupRefsService, feature_category: :code_review
 
   describe '#execute' do
     before do
+      stub_feature_flags(merge_request_cleanup_ref_worker_async: false)
+
       # Need to re-enable this as it's being stubbed in spec_helper for
       # performance reasons but is needed to run for this test.
       allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original

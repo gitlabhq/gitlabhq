@@ -33,6 +33,9 @@ module Types
     field :external_url, GraphQL::Types::String, null: true,
                                                  description: 'External URL of the environment.'
 
+    field :kubernetes_namespace, GraphQL::Types::String, null: true,
+                                                 description: 'Kubernetes namespace of the environment.'
+
     field :created_at, Types::TimeType,
       description: 'When the environment was created.'
 
@@ -50,11 +53,6 @@ module Types
 
     field :environment_type, GraphQL::Types::String,
       description: 'Folder name of the environment.'
-
-    field :metrics_dashboard, Types::Metrics::DashboardType, null: true,
-                                                             description: 'Metrics dashboard schema for the environment.',
-                                                             resolver: Resolvers::Metrics::DashboardResolver,
-                                                             deprecated: { reason: 'Returns no data. Underlying feature was removed in 16.0', milestone: '16.0' }
 
     field :latest_opened_most_severe_alert,
           Types::AlertManagement::AlertType,

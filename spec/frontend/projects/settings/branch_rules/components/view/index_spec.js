@@ -91,7 +91,6 @@ describe('View branch rules', () => {
 
     expect(findBranchName().text()).toBe(I18N.allBranches);
     expect(findBranchTitle().text()).toBe(I18N.targetBranch);
-    jest.restoreAllMocks();
   });
 
   it('renders the correct branch title', () => {

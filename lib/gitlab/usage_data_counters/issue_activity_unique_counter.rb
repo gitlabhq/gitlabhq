@@ -38,8 +38,7 @@ module Gitlab
 
       class << self
         def track_issue_created_action(author:, namespace:)
-          track_snowplow_action(ISSUE_CREATED, author, namespace)
-          track_unique_action(ISSUE_CREATED, author)
+          track_internal_action(ISSUE_CREATED, author, namespace)
         end
 
         def track_issue_title_changed_action(author:, project:)
@@ -180,14 +179,7 @@ module Gitlab
         private
 
         def track_snowplow_action(event_name, author, container)
-          namespace, project = case container
-                               when Project
-                                 [container.namespace, container]
-                               when Namespaces::ProjectNamespace
-                                 [container.parent, container.project]
-                               else
-                                 [container, nil]
-                               end
+          namespace, project = get_params_from_container(container)
 
           return unless author
 
@@ -207,6 +199,30 @@ module Gitlab
           return unless author
 
           Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: author.id)
+        end
+
+        def track_internal_action(event_name, author, container)
+          return unless author
+
+          namespace, project = get_params_from_container(container)
+
+          Gitlab::InternalEvents.track_event(
+            event_name,
+            user: author,
+            project: project,
+            namespace: namespace
+          )
+        end
+
+        def get_params_from_container(container)
+          case container
+          when Project
+            [container.namespace, container]
+          when Namespaces::ProjectNamespace
+            [container.parent, container.project]
+          else
+            [container, nil]
+          end
         end
       end
     end

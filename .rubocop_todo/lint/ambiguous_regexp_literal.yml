@@ -66,7 +66,6 @@ Lint/AmbiguousRegexpLiteral:
     - 'spec/lib/gitlab/pagination/keyset/iterator_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/aggregates/sources/postgres_hll_spec.rb'
-    - 'spec/lib/gitlab/utils/strong_memoize_spec.rb'
     - 'spec/lib/gitlab/web_ide/config/entry/global_spec.rb'
     - 'spec/lib/gitlab/web_ide/config/entry/terminal_spec.rb'
     - 'spec/lib/object_storage/direct_upload_spec.rb'

@@ -14,6 +14,21 @@ RSpec.describe Ml::Experiment, feature_category: :mlops do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:candidates) }
     it { is_expected.to have_many(:metadata) }
+    it { is_expected.to belong_to(:model).class_name('Ml::Model') }
+  end
+
+  describe '#destroy' do
+    it 'allow experiment without model to be destroyed' do
+      experiment = create(:ml_experiments, project: exp.project)
+
+      expect { experiment.destroy! }.to change { Ml::Experiment.count }.by(-1)
+    end
+
+    it 'throws error when destroying experiment with model' do
+      experiment = create(:ml_models, project: exp.project).default_experiment
+
+      expect { experiment.destroy! }.to raise_error(ActiveRecord::ActiveRecordError)
+    end
   end
 
   describe '.package_name' do

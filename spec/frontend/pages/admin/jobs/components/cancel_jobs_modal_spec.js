@@ -1,10 +1,11 @@
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import CancelJobsModal from '~/pages/admin/jobs/components/cancel_jobs_modal.vue';
+import { setVueErrorHandler } from '../../../../__helpers__/set_vue_error_handler';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -45,8 +46,6 @@ describe('Cancel jobs modal', () => {
     });
 
     it('displays error if canceling jobs failed', async () => {
-      Vue.config.errorHandler = () => {}; // silencing thrown error
-
       const dummyError = new Error('canceling jobs failed');
       // TODO: We can't use axios-mock-adapter because our current version
       // does not support responseURL
@@ -57,6 +56,7 @@ describe('Cancel jobs modal', () => {
         return Promise.reject(dummyError);
       });
 
+      setVueErrorHandler({ instance: wrapper.vm, handler: () => {} }); // silencing thrown error
       wrapper.findComponent(GlModal).vm.$emit('primary');
       await nextTick();
 

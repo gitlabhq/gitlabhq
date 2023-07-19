@@ -19,7 +19,7 @@ function findStorageTypeUsagesSerialized() {
     .wrappers.map((wp) => wp.element.style.flex);
 }
 
-describe('Storage Counter usage graph component', () => {
+describe('UsageGraph', () => {
   beforeEach(() => {
     data = {
       rootStorageStatistics: {
@@ -29,7 +29,6 @@ describe('Storage Counter usage graph component', () => {
         containerRegistrySize: 2500,
         lfsObjectsSize: 2000,
         buildArtifactsSize: 700,
-        pipelineArtifactsSize: 300,
         snippetsSize: 2000,
         storageSize: 17000,
       },
@@ -43,7 +42,6 @@ describe('Storage Counter usage graph component', () => {
 
     const {
       buildArtifactsSize,
-      pipelineArtifactsSize,
       lfsObjectsSize,
       packagesSize,
       containerRegistrySize,
@@ -68,9 +66,6 @@ describe('Storage Counter usage graph component', () => {
     );
     expect(types.at(6).text()).toMatchInterpolatedText(
       `Job artifacts ${numberToHumanSize(buildArtifactsSize)}`,
-    );
-    expect(types.at(7).text()).toMatchInterpolatedText(
-      `Pipeline artifacts ${numberToHumanSize(pipelineArtifactsSize)}`,
     );
   });
 
@@ -111,7 +106,6 @@ describe('Storage Counter usage graph component', () => {
         '0.11764705882352941',
         '0.11764705882352941',
         '0.041176470588235294',
-        '0.01764705882352941',
       ]);
     });
   });
@@ -131,7 +125,6 @@ describe('Storage Counter usage graph component', () => {
         '0.11764705882352941',
         '0.11764705882352941',
         '0.041176470588235294',
-        '0.01764705882352941',
       ]);
     });
   });

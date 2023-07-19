@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::ConfigResolver do
+RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
   describe '#resolve' do

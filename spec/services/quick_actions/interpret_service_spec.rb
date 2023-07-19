@@ -35,6 +35,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   end
 
   describe '#execute' do
+    let_it_be(:work_item) { create(:work_item, :task, project: project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     shared_examples 'reopen command' do
@@ -301,7 +302,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns due_date message: Date.new(2016, 8, 28) if content contains /due 2016-08-28' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Set the due date to #{expected_date.to_s(:medium)}.")
+        expect(message).to eq("Set the due date to #{expected_date.to_fs(:medium)}.")
       end
     end
 
@@ -538,7 +539,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, updates, message = service.execute(content, issuable)
 
         expect(updates).to eq(merge: merge_request.diff_head_sha)
-        expect(message).to eq('Scheduled to merge this merge request (Merge when pipeline succeeds).')
+
+        if Gitlab.ee?
+          expect(message).to eq('Scheduled to merge this merge request (Merge when checks pass).')
+        else
+          expect(message).to eq('Scheduled to merge this merge request (Merge when pipeline succeeds).')
+        end
       end
     end
 
@@ -1369,6 +1375,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:issuable) { merge_request }
     end
 
+    it_behaves_like 'done command' do
+      let(:content) { '/done' }
+      let(:issuable) { work_item }
+    end
+
     it_behaves_like 'subscribe command' do
       let(:content) { '/subscribe' }
       let(:issuable) { issue }
@@ -1587,6 +1598,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       context 'if issuable is an Issue' do
         it_behaves_like 'todo command' do
           let(:issuable) { issue }
+        end
+      end
+
+      context 'if issuable is a work item' do
+        it_behaves_like 'todo command' do
+          let(:issuable) { work_item }
         end
       end
 
@@ -2860,13 +2877,13 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let_it_be(:project) { create(:project, :private) }
       let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
-      let(:command) { '/type Issue' }
+      let(:command) { '/type issue' }
 
       it 'has command available' do
         _, explanations = service.explain(command, work_item)
 
         expect(explanations)
-          .to contain_exactly("Converts work item to Issue. Widgets not supported in new type are removed.")
+          .to contain_exactly("Converts work item to issue. Widgets not supported in new type are removed.")
       end
     end
 

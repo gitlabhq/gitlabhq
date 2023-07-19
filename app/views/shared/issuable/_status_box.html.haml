@@ -2,7 +2,7 @@
 - badge_icon = state_name_with_icon(issuable)[1]
 - badge_variant = issuable.open? ? :success : issuable.merged? ? :info : :danger
 - badge_status_class = issuable.open? ? 'issuable-status-badge-open' : issuable.merged? ? 'issuable-status-badge-merged' : 'issuable-status-badge-closed'
-- badge_classes = "js-mr-status-box issuable-status-badge gl-mr-3 #{badge_status_class} #{'gl-vertical-align-bottom' if issuable.is_a?(MergeRequest)}"
+- badge_classes = "js-mr-status-box issuable-status-badge gl-mr-3 gl-align-self-center #{badge_status_class} #{'gl-vertical-align-bottom' if issuable.is_a?(MergeRequest)}"
 
 = gl_badge_tag({ variant: badge_variant, icon: badge_icon, icon_classes: 'gl-mr-0!' }, { class: badge_classes, data: { project_path: issuable.project.path_with_namespace, iid: issuable.iid, issuable_type: 'merge_request', state: issuable.state } }) do
   %span.gl-display-none.gl-sm-display-block.gl-ml-2

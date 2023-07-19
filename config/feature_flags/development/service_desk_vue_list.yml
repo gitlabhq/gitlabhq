@@ -1,0 +1,8 @@
+---
+name: service_desk_vue_list
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123064
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415385
+milestone: '16.1'
+type: development
+group: group::respond
+default_enabled: false

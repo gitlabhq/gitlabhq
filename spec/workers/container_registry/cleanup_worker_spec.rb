@@ -71,6 +71,7 @@ RSpec.describe ContainerRegistry::CleanupWorker, :aggregate_failures, feature_ca
         let(:relation) { instance_double(ActiveRecord::Relation) }
 
         before do
+          allow(::Gitlab).to receive(:com_except_jh?).and_return(true)
           allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
           allow(Project).to receive(:pending_data_repair_analysis).and_return(relation)
         end
@@ -115,24 +116,6 @@ RSpec.describe ContainerRegistry::CleanupWorker, :aggregate_failures, feature_ca
       end
 
       it_behaves_like 'does not enqueue record repair detail jobs'
-    end
-
-    context 'for counts logging' do
-      let_it_be(:delete_started_at) { (described_class::STALE_DELETE_THRESHOLD + 5.minutes).ago }
-      let_it_be(:stale_delete_container_repository) do
-        create(:container_repository, :status_delete_ongoing, delete_started_at: delete_started_at)
-      end
-
-      before do
-        container_repository.delete_scheduled!
-      end
-
-      it 'logs the counts' do
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:delete_scheduled_container_repositories_count, 1)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:stale_delete_container_repositories_count, 1)
-
-        perform
-      end
     end
   end
 end

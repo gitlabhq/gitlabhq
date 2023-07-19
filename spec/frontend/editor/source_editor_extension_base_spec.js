@@ -56,7 +56,6 @@ describe('The basis for an Source Editor extension', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
     resetHTMLFixture();
   });
 

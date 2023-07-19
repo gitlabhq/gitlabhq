@@ -1,7 +1,6 @@
 #import "~/graphql_shared/fragments/label.fragment.graphql"
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/work_items/graphql/milestone.fragment.graphql"
-#import "~/work_items/graphql/award_emoji.fragment.graphql"
 
 fragment WorkItemMetadataWidgets on WorkItemWidget {
   ... on WorkItemWidgetDescription {
@@ -45,20 +44,12 @@ fragment WorkItemMetadataWidgets on WorkItemWidget {
   ... on WorkItemWidgetCurrentUserTodos {
     type
     currentUserTodos(state: pending) {
-      edges {
-        node {
-          id
-          state
-        }
+      nodes {
+        id
       }
     }
   }
   ... on WorkItemWidgetAwardEmoji {
     type
-    awardEmoji {
-      nodes {
-        ...AwardEmojiFragment
-      }
-    }
   }
 }

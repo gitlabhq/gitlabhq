@@ -25,9 +25,7 @@ module BulkImports
       end
 
       event :finish do
-        transition started: :finished
-        transition failed: :failed
-        transition skipped: :skipped
+        transition any => :finished
       end
 
       event :skip do

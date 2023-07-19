@@ -137,6 +137,7 @@ class RemoteMirror < ApplicationRecord
     return false unless project.remote_mirror_available?
     return false unless project.repository_exists?
     return false if project.pending_delete?
+    return false if Gitlab::SilentMode.enabled?
 
     true
   end

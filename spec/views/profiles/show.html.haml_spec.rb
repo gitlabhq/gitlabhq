@@ -46,7 +46,7 @@ RSpec.describe 'profiles/show' do
       )
       expect(rendered).to have_field(
         'user[status][clear_status_after]',
-        with: user_status.clear_status_at.to_s(:iso8601),
+        with: user_status.clear_status_at.to_fs(:iso8601),
         type: :hidden
       )
     end

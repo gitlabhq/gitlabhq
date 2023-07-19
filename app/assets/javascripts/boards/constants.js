@@ -1,6 +1,7 @@
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import { TYPE_EPIC, TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { s__, __ } from '~/locale';
+import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
 import createBoardListMutation from './graphql/board_list_create.mutation.graphql';
@@ -11,6 +12,7 @@ import toggleListCollapsedMutation from './graphql/client/board_toggle_collapsed
 import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutation.graphql';
 import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
 import issueMoveListMutation from './graphql/issue_move_list.mutation.graphql';
+import issueCreateMutation from './graphql/issue_create.mutation.graphql';
 import groupBoardQuery from './graphql/group_board.query.graphql';
 import projectBoardQuery from './graphql/project_board.query.graphql';
 import listIssuesQuery from './graphql/lists_issues.query.graphql';
@@ -126,6 +128,30 @@ export const listIssuablesQueries = {
   [TYPE_ISSUE]: {
     query: listIssuesQuery,
     moveMutation: issueMoveListMutation,
+    createMutation: issueCreateMutation,
+    optimisticResponse: {
+      assignees: { nodes: [], __typename: 'UserCoreConnection' },
+      confidential: false,
+      dueDate: null,
+      emailsDisabled: false,
+      hidden: false,
+      humanTimeEstimate: null,
+      humanTotalTimeSpent: null,
+      id: 'gid://gitlab/Issue/-1',
+      iid: '-1',
+      labels: { nodes: [], __typename: 'LabelConnection' },
+      milestone: null,
+      referencePath: '',
+      relativePosition: null,
+      severity: 'UNKNOWN',
+      timeEstimate: 0,
+      title: '',
+      totalTimeSpent: 0,
+      type: 'ISSUE',
+      webUrl: '',
+      weight: null,
+      __typename: TYPENAME_ISSUE,
+    },
   },
 };
 

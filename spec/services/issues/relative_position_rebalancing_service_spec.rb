@@ -156,5 +156,98 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
         subject.execute
       end
     end
+
+    shared_examples 'no-op on the retried job' do
+      it 'does not update positions in the 2nd .execute' do
+        original_order = issues_in_position_order.map(&:id)
+
+        # preloads issue ids on both runs
+        expect(service).to receive(:preload_issue_ids).twice.and_call_original
+
+        # 1st run performs rebalancing
+        expect(service).to receive(:update_positions_with_retry).exactly(9).times.and_call_original
+        expect { service.execute }.to raise_error(StandardError)
+
+        # 2nd run is a no-op
+        expect(service).not_to receive(:update_positions_with_retry)
+        expect { service.execute }.to raise_error(StandardError)
+
+        # order is preserved
+        expect(original_order).to match_array(issues_in_position_order.map(&:id))
+      end
+    end
+
+    context 'when error is raised in cache cleanup step' do
+      let_it_be(:root_namespace_id) { project.root_namespace.id }
+
+      context 'when srem fails' do
+        before do
+          Gitlab::Redis::SharedState.with do |redis|
+            allow(redis).to receive(:srem?).and_raise(StandardError)
+          end
+        end
+
+        it_behaves_like 'no-op on the retried job'
+      end
+
+      context 'when delete issues ids sorted set fails' do
+        before do
+          Gitlab::Redis::SharedState.with do |redis|
+            allow(redis).to receive(:del).and_call_original
+            allow(redis).to receive(:del)
+              .with("#{Gitlab::Issues::Rebalancing::State::REDIS_KEY_PREFIX}:#{root_namespace_id}")
+              .and_raise(StandardError)
+          end
+        end
+
+        it_behaves_like 'no-op on the retried job'
+      end
+
+      context 'when delete current_index_key fails' do
+        before do
+          Gitlab::Redis::SharedState.with do |redis|
+            allow(redis).to receive(:del).and_call_original
+            allow(redis).to receive(:del)
+              .with("#{Gitlab::Issues::Rebalancing::State::REDIS_KEY_PREFIX}:#{root_namespace_id}:current_index")
+              .and_raise(StandardError)
+          end
+        end
+
+        it_behaves_like 'no-op on the retried job'
+      end
+
+      context 'when setting recently finished key fails' do
+        before do
+          Gitlab::Redis::SharedState.with do |redis|
+            allow(redis).to receive(:set).and_call_original
+            allow(redis).to receive(:set)
+              .with(
+                "#{Gitlab::Issues::Rebalancing::State::RECENTLY_FINISHED_REBALANCE_PREFIX}:2:#{project.id}",
+                anything,
+                anything
+              )
+              .and_raise(StandardError)
+          end
+        end
+
+        it 'reruns the next job in full' do
+          original_order = issues_in_position_order.map(&:id)
+
+          # preloads issue ids on both runs
+          expect(service).to receive(:preload_issue_ids).twice.and_call_original
+
+          # 1st run performs rebalancing
+          expect(service).to receive(:update_positions_with_retry).exactly(9).times.and_call_original
+          expect { service.execute }.to raise_error(StandardError)
+
+          # 2nd run performs rebalancing in full
+          expect(service).to receive(:update_positions_with_retry).exactly(9).times.and_call_original
+          expect { service.execute }.to raise_error(StandardError)
+
+          # order is preserved
+          expect(original_order).to match_array(issues_in_position_order.map(&:id))
+        end
+      end
+    end
   end
 end

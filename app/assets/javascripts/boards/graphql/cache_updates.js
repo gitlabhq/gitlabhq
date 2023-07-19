@@ -1,11 +1,26 @@
+import * as Sentry from '@sentry/browser';
 import produce from 'immer';
+import { defaultClient } from '~/graphql_shared/issuable_client';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { listsDeferredQuery } from 'ee_else_ce/boards/constants';
 
-export function removeItemFromList({ query, variables, boardType, id, issuableType, cache }) {
+import setErrorMutation from './client/set_error.mutation.graphql';
+
+export function removeItemFromList({
+  query,
+  variables,
+  boardType,
+  id,
+  issuableType,
+  listId = undefined,
+  cache,
+}) {
   cache.updateQuery({ query, variables }, (sourceData) =>
     produce(sourceData, (draftData) => {
-      const { nodes: items } = draftData[boardType].board.lists.nodes[0][`${issuableType}s`];
+      const list = listId
+        ? draftData[boardType]?.board.lists.nodes.find((l) => l.id === listId)
+        : draftData[boardType].board.lists.nodes[0];
+      const { nodes: items } = list[`${issuableType}s`];
       items.splice(
         items.findIndex((item) => item.id === id),
         1,
@@ -21,11 +36,15 @@ export function addItemToList({
   issuable,
   newIndex,
   issuableType,
+  listId = undefined,
   cache,
 }) {
   cache.updateQuery({ query, variables }, (sourceData) =>
     produce(sourceData, (draftData) => {
-      const { nodes: items } = draftData[boardType].board.lists.nodes[0][`${issuableType}s`];
+      const list = listId
+        ? draftData[boardType]?.board.lists.nodes.find((l) => l.id === listId)
+        : draftData[boardType].board.lists.nodes[0];
+      const { nodes: items } = list[`${issuableType}s`];
       items.splice(newIndex, 0, issuable);
     }),
   );
@@ -115,4 +134,17 @@ export function updateEpicsCount({
       },
     }),
   );
+}
+
+export function setError({ message, error, captureError = true }) {
+  defaultClient.mutate({
+    mutation: setErrorMutation,
+    variables: {
+      error: message,
+    },
+  });
+
+  if (captureError) {
+    Sentry.captureException(error);
+  }
 }

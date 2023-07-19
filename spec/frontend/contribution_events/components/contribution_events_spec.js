@@ -1,10 +1,21 @@
-import events from 'test_fixtures/controller/users/activity.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { EVENT_TYPE_APPROVED } from '~/contribution_events/constants';
 import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
 import ContributionEventApproved from '~/contribution_events/components/contribution_event/contribution_event_approved.vue';
-
-const eventApproved = events.find((event) => event.action === EVENT_TYPE_APPROVED);
+import ContributionEventExpired from '~/contribution_events/components/contribution_event/contribution_event_expired.vue';
+import ContributionEventJoined from '~/contribution_events/components/contribution_event/contribution_event_joined.vue';
+import ContributionEventLeft from '~/contribution_events/components/contribution_event/contribution_event_left.vue';
+import ContributionEventPushed from '~/contribution_events/components/contribution_event/contribution_event_pushed.vue';
+import ContributionEventPrivate from '~/contribution_events/components/contribution_event/contribution_event_private.vue';
+import ContributionEventMerged from '~/contribution_events/components/contribution_event/contribution_event_merged.vue';
+import {
+  eventApproved,
+  eventExpired,
+  eventJoined,
+  eventLeft,
+  eventPushedBranch,
+  eventPrivate,
+  eventMerged,
+} from '../utils';
 
 describe('ContributionEvents', () => {
   let wrapper;
@@ -12,14 +23,28 @@ describe('ContributionEvents', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(ContributionEvents, {
       propsData: {
-        events,
+        events: [
+          eventApproved(),
+          eventExpired(),
+          eventJoined(),
+          eventLeft(),
+          eventPushedBranch(),
+          eventPrivate(),
+          eventMerged(),
+        ],
       },
     });
   };
 
   it.each`
     expectedComponent            | expectedEvent
-    ${ContributionEventApproved} | ${eventApproved}
+    ${ContributionEventApproved} | ${eventApproved()}
+    ${ContributionEventExpired}  | ${eventExpired()}
+    ${ContributionEventJoined}   | ${eventJoined()}
+    ${ContributionEventLeft}     | ${eventLeft()}
+    ${ContributionEventPushed}   | ${eventPushedBranch()}
+    ${ContributionEventPrivate}  | ${eventPrivate()}
+    ${ContributionEventMerged}   | ${eventMerged()}
   `(
     'renders `$expectedComponent.name` component and passes expected event',
     ({ expectedComponent, expectedEvent }) => {

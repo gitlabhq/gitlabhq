@@ -112,7 +112,7 @@ module QA
         QA::Service::Shellout.shell("docker cp #{runner_name}:/etc/gitlab-runner/config.toml #{tempdir.path}")
 
         File.open(tempdir.path, 'a') do |f|
-          f << %Q[    allowed_pull_policies = #{allowed_policies}\n]
+          f << %[    allowed_pull_policies = #{allowed_policies}\n]
         end
 
         QA::Service::Shellout.shell("docker cp #{tempdir.path} #{runner_name}:/etc/gitlab-runner/config.toml")

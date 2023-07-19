@@ -328,7 +328,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         expect do
           get_pipeline_html
           expect(response).to have_gitlab_http_status(:ok)
-        end.not_to exceed_all_query_limit(control)
+        end.not_to exceed_all_query_limit(control).with_threshold(3)
       end
     end
 

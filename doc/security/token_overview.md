@@ -139,7 +139,10 @@ Each user has a long-lived feed token that does not expire. This token allows au
 - RSS readers to load a personalized RSS feed.
 - Calendar applications to load a personalized calendar.
 
-This token is visible in those feed URLs. You cannot use this token to access any other data.
+You cannot use this token to access any other data.
+
+The user-scoped feed token can be used for all feeds, however feed and calendar URLs are generated
+with a different token that is only valid for one feed.
 
 Anyone who has your token can read activity and issue RSS feeds or your calendar feed as if they were you, including confidential issues. If that happens, [reset the token](../user/profile/contributions_calendar.md#reset-the-user-activity-feed-token).
 
@@ -171,16 +174,25 @@ This table shows available scopes per token. Scopes can be limited further on to
 
 ## Security considerations
 
-- Access tokens should be treated like passwords and kept secure.
-- Adding access tokens to URLs is a security risk, especially when cloning or adding a remote because Git then writes the URL to its `.git/config` file in plain text. URLs are
+1. Treat access tokens like passwords and keep them secure.
+1. When creating a scoped token, consider using the most limited scope possible to reduce the impact of accidentally leaking the token.
+1. When creating a token, consider setting a token that expires when your task is complete. For example, if performing a one-off import, set the
+  token to expire after a few hours or a day. This reduces the impact of a token that is accidentally leaked because it is useless when it expires.
+1. If you are recording a video that might contain a sensitive secret like a personal access token (PAT), feed token, or trigger token, you must mask that secret before uploading the video to GitLab Unfiltered or any other video hosting service. As an additional defense-in-depth security measure, you must revoke those secrets before you share the video publicly. For more information, see [revoking a PAT](../user/profile/personal_access_tokens.md#revoke-a-personal-access-token).
+1. Adding access tokens to URLs is a security risk, especially when cloning or adding a remote because Git then writes the URL to its `.git/config` file in plain text. URLs are
   also generally logged by proxies and application servers, which makes those credentials visible to system administrators. Instead, pass API calls an access token using
   headers like [the `Private-Token` header](../api/rest/index.md#personalprojectgroup-access-tokens).
-- Tokens can also be stored using a [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
-- Tokens must not be committed to your source code. Instead, consider an approach such as [using external secrets in CI](../ci/secrets/index.md).
-- When creating a scoped token, consider using the most limited scope possible to reduce the impact of accidentally leaking the token.
-- When creating a token, consider setting a token that expires when your task is complete. For example, if performing a one-off import, set the
-  token to expire after a few hours or a day. This reduces the impact of a token that is accidentally leaked because it is useless when it expires.
-- Be careful not to include tokens when pasting code, console commands, or log outputs into an issue or MR description or comment.
-- Don’t log credentials in the console logs. Consider [protecting](../ci/variables/index.md#protect-a-cicd-variable) and
+1. You can also store token using a [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
+1. Do not:
+   - Store tokens in plain text in your projects.
+   - Include tokens when pasting code, console commands, or log outputs into an issue, MR description, or comment.
+   Consider an approach such as [using external secrets in CI](../ci/secrets/index.md).
+1. Do not log credentials in the console logs or artifacts. Consider [protecting](../ci/variables/index.md#protect-a-cicd-variable) and
   [masking](../ci/variables/index.md#mask-a-cicd-variable) your credentials.
-- Review all currently active access tokens of all types on a regular basis and revoke any that are no longer needed.
+1. If you have set up a demo environment to showcase a project you have been working on and you are recording a video or writing a blog post describing that project, make sure you are not leaking sensitive secrets during that process. If you are done with the demo, you must revoke all the secrets created during that demo.
+1. Review all active access tokens of all types on a regular basis and revoke any that are no longer needed. This includes:
+   - Personal, project, and group access tokens.
+   - Feed tokens.
+   - Trigger tokens.
+   - Runner registration tokens.
+   - Any other sensitive secrets etc.

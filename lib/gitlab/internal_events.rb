@@ -2,21 +2,38 @@
 
 module Gitlab
   module InternalEvents
+    UnknownEventError = Class.new(StandardError)
+    InvalidPropertyError = Class.new(StandardError)
+    InvalidMethodError = Class.new(StandardError)
+
     class << self
       include Gitlab::Tracking::Helpers
 
       def track_event(event_name, **kwargs)
-        user_id = kwargs.delete(:user_id)
-        UsageDataCounters::HLLRedisCounter.track_event(event_name, values: user_id)
+        raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
 
-        project_id = kwargs.delete(:project_id)
-        namespace_id = kwargs.delete(:namespace_id)
+        unique_property = EventDefinitions.unique_property(event_name)
+        unique_method = :id
 
-        namespace = Namespace.find(namespace_id) if namespace_id
+        unless kwargs.has_key?(unique_property)
+          raise InvalidPropertyError, "#{event_name} should be triggered with a named parameter '#{unique_property}'."
+        end
+
+        unless kwargs[unique_property].respond_to?(unique_method)
+          raise InvalidMethodError, "'#{unique_property}' should have a '#{unique_method}' method."
+        end
+
+        unique_value = kwargs[unique_property].public_send(unique_method) # rubocop:disable GitlabSecurity/PublicSend
+
+        UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_value)
+
+        user = kwargs[:user]
+        project = kwargs[:project]
+        namespace = kwargs[:namespace]
 
         standard_context = Tracking::StandardContext.new(
-          project_id: project_id,
-          user_id: user_id,
+          project_id: project&.id,
+          user_id: user&.id,
           namespace_id: namespace&.id,
           plan_name: namespace&.actual_plan_name
         ).to_context
@@ -27,6 +44,9 @@ module Gitlab
         ).to_context
 
         track_struct_event(event_name, contexts: [standard_context, service_ping_context])
+      rescue StandardError => e
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name, kwargs: kwargs)
+        nil
       end
 
       private

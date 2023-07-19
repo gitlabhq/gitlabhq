@@ -99,10 +99,19 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [Cloud deployment](cloud_deployment/index.md)                                                | Deploy your application to a main cloud provider. |
 | **Secure**                                                                                   |             |
 | [Code Quality](testing/code_quality.md)                                                      | Analyze your source code quality. |
-| [Container Scanning](../user/application_security/container_scanning/index.md)               | Check your Docker containers for known vulnerabilities. |
+| [Container Scanning](../user/application_security/container_scanning/index.md)               | Scan your container images for known vulnerabilities. |
+| [Coverage-guided fuzz testing](../user/application_security/coverage_fuzzing/index.md)       | Test your application's behavior by providing randomized input. |
+| [Dynamic Application Security Testing](../user/application_security/dast/index.md)           | Test your application's runtime behavior for vulnerabilities. |
 | [Dependency Scanning](../user/application_security/dependency_scanning/index.md)             | Analyze your dependencies for known vulnerabilities. |
+| [Infrastructure as Code scanning](../user/application_security/iac_scanning/index.md)        | Scan your IaC configuration files for known vulnerabilities. |
 | [License Compliance](../user/compliance/license_compliance/index.md)                         | Search your project dependencies for their licenses. |
-| [Security Test reports](../user/application_security/index.md)                               | Check for app vulnerabilities. |
+| [Secret Detection](../user/application_security/secret_detection/index.md)                   | Search your application's source code for secrets. |
+| [Static Application Security Testing](../user/application_security/sast/index.md)            | Test your application's source code for known vulnerabilities. |
+| [Web API fuzz testing](../user/application_security/api_fuzzing/index.md)                    | Test your application's API behavior by providing randomized input. |
+| **Govern**                                                                                   |             |
+| [Compliance frameworks](../user/group/compliance_frameworks.md)                              | Enforce a GitLab CI/CD configuration on all projects in a group. |
+| [Scan execution policies](../user/application_security/policies/scan-execution-policies.md)  | Enforce security scans run on a specified schedule or with the project pipeline. |
+| [Scan results policies](../user/application_security/policies/scan-result-policies.md)       | Enforce action based on results of a pipeline security scan. |
 
 ## Examples
 

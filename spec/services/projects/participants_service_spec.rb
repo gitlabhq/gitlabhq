@@ -10,10 +10,16 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
 
     before_all do
       project.add_developer(user)
+
+      stub_feature_flags(disable_all_mention: false)
     end
 
     def run_service
       described_class.new(project, user).execute(noteable)
+    end
+
+    it 'includes `All Project and Group Members`' do
+      expect(run_service).to include(a_hash_including({ username: "all", name: "All Project and Group Members" }))
     end
 
     context 'N+1 checks' do
@@ -97,6 +103,16 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
           expect(group_items.size).to eq 1
           expect(group_items.first[:avatar_url]).to eq("/gitlab/uploads/-/system/group/avatar/#{group.id}/dk.png")
         end
+      end
+    end
+
+    context 'when `disable_all_mention` FF is enabled' do
+      before do
+        stub_feature_flags(disable_all_mention: true)
+      end
+
+      it 'does not include `All Project and Group Members`' do
+        expect(run_service).not_to include(a_hash_including({ username: "all", name: "All Project and Group Members" }))
       end
     end
   end

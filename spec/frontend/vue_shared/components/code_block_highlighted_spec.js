@@ -58,4 +58,11 @@ describe('Code Block Highlighted', () => {
       </code-block-stub>
     `);
   });
+
+  it('renders content as plain text language is not supported', () => {
+    const content = '<script>alert("xss")</script>';
+    createComponent({ code: content, language: 'foobar' });
+
+    expect(wrapper.text()).toContain(content);
+  });
 });

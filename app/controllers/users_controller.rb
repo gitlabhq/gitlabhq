@@ -97,11 +97,11 @@ class UsersController < ApplicationController
   end
 
   def groups
-    load_groups
-
     respond_to do |format|
       format.html { render 'show' }
       format.json do
+        load_groups
+
         render json: {
           html: view_to_html_string("shared/groups/_list", groups: @groups)
         }
@@ -110,36 +110,36 @@ class UsersController < ApplicationController
   end
 
   def projects
-    load_projects
-
-    present_projects(@projects)
+    present_projects do
+      load_projects
+    end
   end
 
   def contributed
-    load_contributed_projects
-
-    present_projects(@contributed_projects)
+    present_projects do
+      load_contributed_projects
+    end
   end
 
   def starred
-    load_starred_projects
-
-    present_projects(@starred_projects)
+    present_projects do
+      load_starred_projects
+    end
   end
 
   def followers
-    @user_followers = user.followers.page(params[:page])
-
-    present_users(@user_followers)
+    present_users do
+      @user_followers = user.followers.page(params[:page])
+    end
   end
 
   def following
-    @user_following = user.followees.page(params[:page])
-
-    present_users(@user_following)
+    present_users do
+      @user_following = user.followees.page(params[:page])
+    end
   end
 
-  def present_projects(projects)
+  def present_projects
     skip_pagination = Gitlab::Utils.to_boolean(params[:skip_pagination])
     skip_namespace = Gitlab::Utils.to_boolean(params[:skip_namespace])
     compact_mode = Gitlab::Utils.to_boolean(params[:compact_mode])
@@ -147,17 +147,19 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { render 'show' }
       format.json do
+        projects = yield
+
         pager_json("shared/projects/_list", projects.count, projects: projects, skip_pagination: skip_pagination, skip_namespace: skip_namespace, compact_mode: compact_mode)
       end
     end
   end
 
   def snippets
-    load_snippets
-
     respond_to do |format|
       format.html { render 'show' }
       format.json do
+        load_snippets
+
         render json: {
           html: view_to_html_string("snippets/_snippets", collection: @snippets)
         }
@@ -281,10 +283,11 @@ class UsersController < ApplicationController
     access_denied! unless can?(current_user, :read_user_profile, user)
   end
 
-  def present_users(users)
+  def present_users
     respond_to do |format|
       format.html { render 'show' }
       format.json do
+        users = yield
         render json: {
           html: view_to_html_string("shared/users/index", users: users)
         }

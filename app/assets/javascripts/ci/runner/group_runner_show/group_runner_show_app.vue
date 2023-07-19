@@ -4,10 +4,8 @@ import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 
-import RunnerDeleteButton from '../components/runner_delete_button.vue';
-import RunnerEditButton from '../components/runner_edit_button.vue';
-import RunnerPauseButton from '../components/runner_pause_button.vue';
 import RunnerHeader from '../components/runner_header.vue';
+import RunnerHeaderActions from '../components/runner_header_actions.vue';
 import RunnerDetailsTabs from '../components/runner_details_tabs.vue';
 
 import { I18N_FETCH_ERROR } from '../constants';
@@ -18,10 +16,8 @@ import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_lo
 export default {
   name: 'GroupRunnerShowApp',
   components: {
-    RunnerDeleteButton,
-    RunnerEditButton,
-    RunnerPauseButton,
     RunnerHeader,
+    RunnerHeaderActions,
     RunnerDetailsTabs,
   },
   props: {
@@ -85,9 +81,11 @@ export default {
   <div>
     <runner-header v-if="runner" :runner="runner">
       <template #actions>
-        <runner-edit-button v-if="canUpdate && editGroupRunnerPath" :href="editGroupRunnerPath" />
-        <runner-pause-button v-if="canUpdate" :runner="runner" />
-        <runner-delete-button v-if="canDelete" :runner="runner" @deleted="onDeleted" />
+        <runner-header-actions
+          :runner="runner"
+          :edit-path="editGroupRunnerPath"
+          @deleted="onDeleted"
+        />
       </template>
     </runner-header>
 

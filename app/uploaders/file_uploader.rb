@@ -165,7 +165,7 @@ class FileUploader < GitlabUploader
   def secret
     @secret ||= self.class.generate_secret
 
-    raise InvalidSecret unless @secret =~ VALID_SECRET_PATTERN
+    raise InvalidSecret unless VALID_SECRET_PATTERN.match?(@secret)
 
     @secret
   end

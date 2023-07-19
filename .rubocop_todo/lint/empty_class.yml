@@ -1,4 +1,0 @@
----
-Lint/EmptyClass:
-  Exclude:
-    - 'spec/lib/gitlab/multi_destination_logger_spec.rb'

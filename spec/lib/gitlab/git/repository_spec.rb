@@ -285,6 +285,28 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     subject { repository.size }
 
     it { is_expected.to be > 0 }
+    it { is_expected.to be_a(Float) }
+
+    it "uses repository_info for size" do
+      expect(repository.gitaly_repository_client).to receive(:repository_info).and_call_original
+
+      subject
+    end
+
+    context "when use_repository_info_for_repository_size feature flag is disabled" do
+      before do
+        stub_feature_flags(use_repository_info_for_repository_size: false)
+      end
+
+      it { is_expected.to be > 0 }
+      it { is_expected.to be_a(Float) }
+
+      it "uses repository_size for size" do
+        expect(repository.gitaly_repository_client).to receive(:repository_size).and_call_original
+
+        subject
+      end
+    end
   end
 
   describe '#to_s' do
@@ -1151,7 +1173,31 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       commit_result.newrev
     end
 
-    subject { repository.new_blobs(newrevs).to_a }
+    subject { repository.new_blobs(newrevs) }
+
+    describe 'memoization' do
+      before do
+        allow(repository).to receive(:blobs).once.with(["--not", "--all", "--not", "revision1"], kind_of(Hash))
+          .and_return(['first result'])
+        repository.new_blobs(['revision1'])
+      end
+
+      it 'calls blobs only once' do
+        expect(repository.new_blobs(['revision1'])).to eq(['first result'])
+      end
+
+      context 'when called with a different revision' do
+        before do
+          allow(repository).to receive(:blobs).once.with(["--not", "--all", "--not", "revision2"], kind_of(Hash))
+            .and_return(['second result'])
+          repository.new_blobs(['revision2'])
+        end
+
+        it 'memoizes the different arguments' do
+          expect(repository.new_blobs(['revision2'])).to eq(['second result'])
+        end
+      end
+    end
 
     shared_examples '#new_blobs with revisions' do
       before do
@@ -1173,7 +1219,9 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       it 'memoizes results' do
         expect(subject).to match_array(expected_blobs)
-        expect(subject).to match_array(expected_blobs)
+
+        # call subject again
+        expect(repository.new_blobs(newrevs)).to match_array(expected_blobs)
       end
     end
 
@@ -2146,10 +2194,10 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect(repository.refs_by_oid(oid: Gitlab::Git::BLANK_SHA, limit: 0)).to eq([])
     end
 
-    it 'returns nil for an empty repo' do
+    it 'returns empty for an empty repo' do
       project = create(:project)
 
-      expect(project.repository.refs_by_oid(oid: TestEnv::BRANCH_SHA['master'], limit: 0)).to be_nil
+      expect(project.repository.refs_by_oid(oid: TestEnv::BRANCH_SHA['master'], limit: 0)).to eq([])
     end
   end
 

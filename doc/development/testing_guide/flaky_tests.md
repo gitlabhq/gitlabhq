@@ -63,7 +63,7 @@ difficult to achieve locally. Ordering issues are easier to reproduce by repeate
   `master` if the order of tests changes.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91016/diffs): A test asserts
   that trying to find a record with an nonexistent ID returns an error message. The test uses an
-  hardcoded ID that's supposed to not exist (e.g. `42`). If the test is run early in the test
+  hardcoded ID that's supposed to not exist (for example, `42`). If the test is run early in the test
   suite, it might pass as not enough records were created before it, but as soon as it would run
   later in the suite, there could be a record that actually has the ID `42`, hence the test would
   start to fail.
@@ -185,7 +185,7 @@ After the long-term quarantining MR has reached production, you should revert th
 For Jest specs, you can use the `.skip` method along with the `eslint-disable-next-line` comment to disable the `jest/no-disabled-tests` ESLint rule and include the issue URL. Here's an example:
 
 ```javascript
-// https://gitlab.com/gitlab-org/gitlab/-/issues/56789
+// quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/56789
 // eslint-disable-next-line jest/no-disabled-tests
 it.skip('should throw an error', () => {
   expect(response).toThrowError(expected_error)
@@ -196,6 +196,12 @@ This means it is skipped unless the test suit is run with `--runInBand` Jest com
 
 ```shell
 jest --runInBand
+```
+
+A list of files with quarantined specs in them can be found with the command:
+
+```shell
+yarn jest:quarantine
 ```
 
 For both test frameworks, make sure to add the `~"quarantined test"` label to the issue.
@@ -210,10 +216,10 @@ Once a test is in quarantine, there are 3 choices:
 
 ## Automatic retries and flaky tests detection
 
-On our CI, we use [RSpec::Retry](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few
+On our CI, we use [`RSpec::Retry`](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few
 times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
 
-We also use a custom [`RspecFlaky::Listener`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/rspec_flaky/listener.rb).
+We also use a custom [`RspecFlaky::Listener`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/rspec_flaky/lib/rspec_flaky/listener.rb).
 This listener runs in the `update-tests-metadata` job in `maintenance` scheduled pipelines
 on the `master` branch, and saves flaky examples to `rspec/flaky/report-suite.json`.
 The report file is then retrieved by the `retrieve-tests-metadata` job in all pipelines.

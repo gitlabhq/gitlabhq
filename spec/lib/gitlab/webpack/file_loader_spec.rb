@@ -32,15 +32,15 @@ RSpec.describe Gitlab::Webpack::FileLoader do
     end
 
     it "returns content when responds successfully" do
-      expect(Gitlab::Webpack::FileLoader.load(file_path)).to eq(file_contents)
+      expect(described_class.load(file_path)).to eq(file_contents)
     end
 
     it "raises error when 404" do
-      expect { Gitlab::Webpack::FileLoader.load("not_found") }.to raise_error("HTTP error 404")
+      expect { described_class.load("not_found") }.to raise_error("HTTP error 404")
     end
 
     it "raises error when errors out" do
-      expect { Gitlab::Webpack::FileLoader.load(error_file_path) }.to raise_error(Gitlab::Webpack::FileLoader::DevServerLoadError)
+      expect { described_class.load(error_file_path) }.to raise_error(Gitlab::Webpack::FileLoader::DevServerLoadError)
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Webpack::FileLoader do
     end
 
     it "raises error if catches SSLError" do
-      expect { Gitlab::Webpack::FileLoader.load(error_file_path) }.to raise_error(Gitlab::Webpack::FileLoader::DevServerSSLError)
+      expect { described_class.load(error_file_path) }.to raise_error(Gitlab::Webpack::FileLoader::DevServerSSLError)
     end
   end
 
@@ -66,11 +66,11 @@ RSpec.describe Gitlab::Webpack::FileLoader do
 
     describe ".load" do
       it "returns file content from file path" do
-        expect(Gitlab::Webpack::FileLoader.load(file_path)).to be(file_contents)
+        expect(described_class.load(file_path)).to be(file_contents)
       end
 
       it "throws error if file cannot be read" do
-        expect { Gitlab::Webpack::FileLoader.load(error_file_path) }.to raise_error(Gitlab::Webpack::FileLoader::StaticLoadError)
+        expect { described_class.load(error_file_path) }.to raise_error(Gitlab::Webpack::FileLoader::StaticLoadError)
       end
     end
   end

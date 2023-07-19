@@ -663,18 +663,6 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
             expect(items).to contain_exactly(japanese)
           end
         end
-
-        context 'when full-text search is disabled' do
-          let(:search_term) { 'ometh' }
-
-          before do
-            stub_feature_flags(issues_full_text_search: false)
-          end
-
-          it 'allows partial word matches' do
-            expect(items).to contain_exactly(english)
-          end
-        end
       end
 
       context 'filtering by item term in title' do

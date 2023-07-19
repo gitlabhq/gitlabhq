@@ -39,7 +39,7 @@ Prerequisites:
   - Have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
   see [changing your username in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
 - Your username must be between 2 and 255 characters in length, and must not:
-  - Contain special characters or emojis.
+  - Contain special characters or emoji.
   - End with `.<reserved file extension>`, for example `jon.png`. However, `jonpng` is valid.
 
 To change your username:
@@ -90,7 +90,7 @@ not.
 
 When visiting the public page of a user, you can only see the projects which you have privileges to.
 
-If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
+If the [public level is restricted](../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels),
 user profiles are only visible to authenticated users.
 
 ## Add details to your profile with a README
@@ -104,7 +104,7 @@ the README file with information, it's included on your profile page.
 
 To create a new project and add its README to your profile:
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name for your new project.
@@ -250,7 +250,7 @@ Your primary email is used by default.
 
 To change your commit email:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Commit email** dropdown list, select an email address.
 1. Select **Update profile settings**.
@@ -261,7 +261,7 @@ Your primary email is the default email address for your login, commit email, an
 
 To change your primary email:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Email** field, enter your new email address.
 1. Select **Update profile settings**.
@@ -271,7 +271,7 @@ To change your primary email:
 
 You can select one of your [configured email addresses](#add-emails-to-your-user-profile) to be displayed on your public profile:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Public email** field, select one of the available email addresses.
 1. Select **Update profile settings**.
@@ -354,7 +354,7 @@ By default, you are signed out of GitLab after seven days (10080 minutes) of ina
 window, whichever comes first.
 
 GitLab administrators can
-[change this default](../admin_area/settings/account_and_limit_settings.md#customize-the-default-session-duration).
+[change this default](../../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration).
 
 ### Stay signed in indefinitely
 
@@ -365,7 +365,7 @@ To remain signed in indefinitely, select the **Remember me** checkbox on the Git
 You remain signed in because, although the server sets a session time of one week, your browser stores a secure token
 that enables automatic reauthentication.
 
-GitLab administrators can [turn off the **Remember me** setting](../admin_area/settings/account_and_limit_settings.md#session-duration) for environments
+GitLab administrators can [turn off the **Remember me** setting](../../administration/settings/account_and_limit_settings.md#session-duration) for environments
 that require sessions to expire periodically for security or compliance purposes.
 
 ### Cookies used for sign-in

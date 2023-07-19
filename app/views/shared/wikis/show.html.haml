@@ -14,18 +14,23 @@
     = render 'shared/wikis/main_links'
 
 - if @page.historical?
-  .warning_message
-    = s_("WikiHistoricalPage|This is an old version of this page.")
-    - most_recent_link = link_to s_("WikiHistoricalPage|most recent version"), wiki_page_path(@wiki, @page)
-    - history_link = link_to s_("WikiHistoricalPage|history"), wiki_page_path(@wiki, @page, action: :history)
-    = (s_("WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}.") % { most_recent_link: most_recent_link, history_link: history_link }).html_safe
+  = render Pajamas::AlertComponent.new(variant: :warning,
+    dismissible: false) do |c|
+    - c.with_body do
+      = s_("WikiHistoricalPage|This is an old version of this page.")
+    - c.with_actions do
+      .gl-display-flex.gl-gap-3
+        = render Pajamas::ButtonComponent.new(category: :primary, variant: :confirm, href: wiki_page_path(@wiki, @page)) do
+          = s_('WikiHistoricalPage|Go to most recent version')
+        = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :history)) do
+          = s_('WikiHistoricalPage|Browse history')
 
 .gl-mt-5.gl-mb-3
   .gl-display-flex.gl-justify-content-space-between
     %h2.gl-mt-0.gl-mb-5{ data: { qa_selector: 'wiki_page_title', testid: 'wiki_page_title' } }= @page.human_title
     %div
       - if can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding
-        = link_to sprite_icon('pencil', css_class: 'gl-icon'), wiki_page_path(@wiki, @page, action: :edit), title: 'Edit', role: "button", class: 'btn gl-button btn-icon btn-default js-wiki-edit', data: { qa_selector: 'edit_page_button', testid: 'wiki_edit_button' }
+        = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :edit), icon: 'pencil', button_options: { class: 'js-wiki-edit', title: "Edit", data: { qa_selector: 'edit_page_button', testid: 'wiki_edit_button' }})
 
   .js-async-wiki-page-content.md.gl-pt-2{ data: { qa_selector: 'wiki_page_content', testid: 'wiki-page-content', tracking_context: wiki_page_tracking_context(@page).to_json, get_wiki_content_url: wiki_page_render_api_endpoint(@page) } }
 

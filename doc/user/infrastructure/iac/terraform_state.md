@@ -321,7 +321,7 @@ curl --header "Private-Token: <your_access_token>" --request DELETE "https://git
 
 If you have at least the Maintainer role, you can remove a state file.
 
-1. On the left sidebar, select **Infrastructure > Terraform states**.
+1. On the left sidebar, select **Operate > Terraform states**.
 1. In the **Actions** column, select **Actions** (**{ellipsis_v}**) and then **Remove state file and versions**.
 
 ### Remove a state file by using the API

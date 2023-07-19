@@ -1,11 +1,4 @@
-import { getCookie } from '~/lib/utils/common_utils';
-import { getParameterValues } from '~/lib/utils/url_utility';
-import { INLINE_DIFF_VIEW_TYPE, DIFF_VIEW_COOKIE_NAME } from '../../constants';
-
-const getViewTypeFromQueryString = () => getParameterValues('view')[0];
-
-const viewTypeFromCookie = getCookie(DIFF_VIEW_COOKIE_NAME);
-const defaultViewType = INLINE_DIFF_VIEW_TYPE;
+import { INLINE_DIFF_VIEW_TYPE } from '../../constants';
 
 export default () => ({
   isLoading: true,
@@ -25,7 +18,7 @@ export default () => ({
   coverageLoaded: false,
   mergeRequestDiffs: [],
   mergeRequestDiff: null,
-  diffViewType: getViewTypeFromQueryString() || viewTypeFromCookie || defaultViewType,
+  diffViewType: INLINE_DIFF_VIEW_TYPE,
   tree: [],
   treeEntries: {},
   showTreeList: true,

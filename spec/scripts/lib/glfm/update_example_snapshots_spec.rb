@@ -312,7 +312,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
         static: |-
           <p>This is the manually modified static HTML which will be preserved</p>
         wysiwyg: |-
-          <p>This is the manually modified WYSIWYG HTML which will be preserved</p>
+          <p dir="auto">This is the manually modified WYSIWYG HTML which will be preserved</p>
     YAML
   end
 
@@ -631,33 +631,33 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
             static: |-
               <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
             wysiwyg: |-
-              <p><strong>bold</strong></p>
+              <p dir="auto"><strong>bold</strong></p>
           02_01_00__inlines__strong__002:
             canonical: |
               <p><strong>bold with more text</strong></p>
             static: |-
               <p data-sourcepos="1:1-1:23" dir="auto"><strong>bold with more text</strong></p>
             wysiwyg: |-
-              <p><strong>bold with more text</strong></p>
+              <p dir="auto"><strong>bold with more text</strong></p>
           02_03_00__inlines__strikethrough_extension__001:
             canonical: |
               <p><del>Hi</del> Hello, world!</p>
             static: |-
               <p data-sourcepos="1:1-1:20" dir="auto"><del>Hi</del> Hello, world!</p>
             wysiwyg: |-
-              <p><s>Hi</s> Hello, world!</p>
+              <p dir="auto"><s>Hi</s> Hello, world!</p>
           03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
             canonical: |
               <p><strong>bold</strong></p>
             wysiwyg: |-
-              <p><strong>bold</strong></p>
+              <p dir="auto"><strong>bold</strong></p>
           03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001:
             canonical: |
               <p>Example in an H3</p>
             static: |-
               <p data-sourcepos="1:1-1:16" dir="auto">Example in an H3</p>
             wysiwyg: |-
-              <p>Example in an H3</p>
+              <p dir="auto">Example in an H3</p>
           04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
             canonical: |
               <p><strong>
@@ -673,42 +673,42 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
             static: |-
               <p>This is the manually modified static HTML which will be preserved</p>
             wysiwyg: |-
-              <p>This is the manually modified WYSIWYG HTML which will be preserved</p>
+              <p dir="auto">This is the manually modified WYSIWYG HTML which will be preserved</p>
           06_01_00__api_request_overrides__group_upload_link__001:
             canonical: |
               <p><a href="groups-test-file">groups-test-file</a></p>
             static: |-
               <p data-sourcepos="1:1-1:45" dir="auto"><a href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
             wysiwyg: |-
-              <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/groups-test-file">groups-test-file</a></p>
+              <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/groups-test-file">groups-test-file</a></p>
           06_02_00__api_request_overrides__project_repo_link__001:
             canonical: |
               <p><a href="projects-test-file">projects-test-file</a></p>
             static: |-
               <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file" class="gfm">projects-test-file</a></p>
             wysiwyg: |-
-              <p><a target="_blank" rel="noopener noreferrer nofollow" href="projects-test-file">projects-test-file</a></p>
+              <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="projects-test-file">projects-test-file</a></p>
           06_03_00__api_request_overrides__project_snippet_ref__001:
             canonical: |
               <p>This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888">$88888</a>
             static: |-
               <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-project="77777" data-snippet="88888" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
             wysiwyg: |-
-              <p>This project snippet ID reference IS filtered: $88888</p>
+              <p dir="auto">This project snippet ID reference IS filtered: $88888</p>
           06_04_00__api_request_overrides__personal_snippet_ref__001:
             canonical: |
               <p>This personal snippet ID reference is NOT filtered: $99999</p>
             static: |-
               <p data-sourcepos="1:1-1:58" dir="auto">This personal snippet ID reference is NOT filtered: $99999</p>
             wysiwyg: |-
-              <p>This personal snippet ID reference is NOT filtered: $99999</p>
+              <p dir="auto">This personal snippet ID reference is NOT filtered: $99999</p>
           06_05_00__api_request_overrides__project_wiki_link__001:
             canonical: |
               <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
             static: |-
               <p data-sourcepos="1:1-1:50" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
             wysiwyg: |-
-              <p><a target="_blank" rel="noopener noreferrer nofollow" href="project-wikis-test-file">project-wikis-test-file</a></p>
+              <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="project-wikis-test-file">project-wikis-test-file</a></p>
         YAML
       end
 

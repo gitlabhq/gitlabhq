@@ -47,7 +47,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/ci/pipelines/settings.html#coverage-check-approval-rule'
+  documentation_link: 'https://docs.gitlab.com/ee/ci/testing/code_coverage.html#coverage-check-approval-rule'
   image_url: https://about.gitlab.com/images/14_1/coverage-mr-approval-rule.png
   published_at: 2021-07-22
   release: 14.1

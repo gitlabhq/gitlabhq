@@ -1,0 +1,8 @@
+---
+name: compliance_adherence_report
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124167
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416988
+milestone: '16.2'
+type: development
+group: group::compliance
+default_enabled: false

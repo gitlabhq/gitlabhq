@@ -220,10 +220,6 @@ describe('Design management design presentation component', () => {
       );
     });
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
     it('sets overlay position correctly when overlay is smaller than viewport', () => {
       jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetWidth', 'get').mockReturnValue(200);
       jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetHeight', 'get').mockReturnValue(200);

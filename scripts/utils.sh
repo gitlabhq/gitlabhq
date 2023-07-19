@@ -127,6 +127,50 @@ function assets_compile_script() {
   section_end "assets-compile"
 }
 
+function setup_database_yml() {
+  if [ "$DECOMPOSED_DB" == "true" ]; then
+    if [ "$CLUSTERWIDE_DB" == "true" ]; then
+      echo "Using decomposed database config, containing clusterwide connection (config/database.yml.decomposed-clusterwide-postgresql)"
+      cp config/database.yml.decomposed-clusterwide-postgresql config/database.yml
+    else
+      echo "Using decomposed database config (config/database.yml.decomposed-postgresql)"
+      cp config/database.yml.decomposed-postgresql config/database.yml
+    fi
+  else
+    echo "Using two connections, single database config (config/database.yml.postgresql)"
+    cp config/database.yml.postgresql config/database.yml
+
+    if [ "$CI_CONNECTION_DB" != "true" ]; then
+      echo "Disabling ci connection in config/database.yml"
+      sed -i "/ci:$/, /geo:$/ {s|^|#|;s|#  geo:|  geo:|;}" config/database.yml
+    fi
+  fi
+
+  # Set up Geo database if the job name matches `rspec-ee` or `geo`.
+  # Since Geo is an EE feature, we shouldn't set it up for non-EE tests.
+  if [[ "${CI_JOB_NAME}" =~ "rspec-ee" ]] || [[ "${CI_JOB_NAME}" =~ "geo" ]]; then
+    echoinfo "Geo DB will be set up."
+  else
+    echoinfo "Geo DB won't be set up."
+    sed -i '/geo:/,/^$/d' config/database.yml
+  fi
+
+  # Set up Embedding database if the job name matches `rspec-ee`
+  # Since Embedding is an EE feature, we shouldn't set it up for non-EE tests.
+  if [[ "${CI_JOB_NAME}" =~ "rspec-ee" ]]; then
+    echoinfo "Embedding DB will be set up."
+  else
+    echoinfo "Embedding DB won't be set up."
+    sed -i '/embedding:/,/^$/d' config/database.yml
+  fi
+
+  # Set user to a non-superuser to ensure we test permissions
+  sed -i 's/username: root/username: gitlab/g' config/database.yml
+
+  sed -i 's/localhost/postgres/g' config/database.yml
+  sed -i 's/username: git/username: postgres/g' config/database.yml
+}
+
 function setup_db_user_only() {
   source scripts/create_postgres_user.sh
 }
@@ -160,6 +204,10 @@ function install_activesupport_gem() {
 
 function install_junit_merge_gem() {
   run_timed_command "gem install junit_merge --no-document --version 0.1.2"
+}
+
+function select_existing_files() {
+  ruby -e 'print $stdin.read.split(" ").select { |f| File.exist?(f) }.join(" ")'
 }
 
 function fail_on_warnings() {

@@ -5,5 +5,5 @@
     - c.with_body do
       = s_("MissingSSHKeyWarningLink|You can't push or pull repositories using SSH until you add an SSH key to your profile.")
     - c.with_actions do
-      = link_to s_('MissingSSHKeyWarningLink|Add SSH key'), profile_keys_path, class: "gl-alert-action btn btn-confirm btn-md gl-button"
-      = link_to s_("MissingSSHKeyWarningLink|Don't show again"), profile_path(user: { hide_no_ssh_key: true }), method: :put, role: 'button', class: 'gl-alert-action btn btn-default btn-md gl-button'
+      = link_button_to s_('MissingSSHKeyWarningLink|Add SSH key'), profile_keys_path, class: 'gl-alert-action', variant: :confirm
+      = link_button_to s_("MissingSSHKeyWarningLink|Don't show again"), profile_path(user: { hide_no_ssh_key: true }), method: :put, role: 'button', class: 'gl-alert-action'

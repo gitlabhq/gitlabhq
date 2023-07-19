@@ -108,3 +108,19 @@ export const PHASE_RUNNING = 'Running';
 export const PHASE_PENDING = 'Pending';
 export const PHASE_SUCCEEDED = 'Succeeded';
 export const PHASE_FAILED = 'Failed';
+
+const ERROR_UNAUTHORIZED = 'unauthorized';
+const ERROR_FORBIDDEN = 'forbidden';
+const ERROR_NOT_FOUND = 'not found';
+const ERROR_OTHER = 'other';
+
+export const CLUSTER_AGENT_ERROR_MESSAGES = {
+  [ERROR_UNAUTHORIZED]: s__(
+    'Environment|Unauthorized to access the cluster agent from this environment. Check your authentication and try again.',
+  ),
+  [ERROR_FORBIDDEN]: s__(
+    'Environment|Forbidden to access the cluster agent from this environment.',
+  ),
+  [ERROR_NOT_FOUND]: s__('Environment|Cluster agent not found.'),
+  [ERROR_OTHER]: s__('Environment|There was an error connecting to the cluster agent.'),
+};

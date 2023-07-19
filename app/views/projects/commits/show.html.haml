@@ -18,7 +18,7 @@
       .tree-controls
         - if @merge_request.present?
           .control.d-none.d-md-block
-            = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'btn gl-button'
+            = link_button_to _("View open merge request"), project_merge_request_path(@project, @merge_request)
         - elsif create_mr_button?(from: @ref, source_project: @project)
           .control.d-none.d-md-block
             = render Pajamas::ButtonComponent.new(variant: :confirm, href: create_mr_path(from: @ref, source_project: @project)) do
@@ -28,8 +28,7 @@
           = form_tag(project_commits_path(@project, @id, ref_type: @ref_type), method: :get, class: 'commits-search-form js-signature-container', data: { 'signatures-path' => namespace_project_signatures_path(ref_type: @ref_type)}) do
             = search_field_tag :search, params[:search], { placeholder: _('Search by message'), id: 'commits-search', class: 'form-control gl-form-input input-short gl-mt-3 gl-sm-mt-0 gl-min-w-full', spellcheck: false }
         .control.d-none.d-md-block
-          = link_to project_commits_path(@project, @id, rss_url_options), title: _("Commits feed"), class: 'btn gl-button btn-default btn-icon' do
-            = sprite_icon('rss')
+          = link_button_to nil, project_commits_path(@project, @id, rss_url_options), title: _("Commits feed"), icon: 'rss'
 
   = render_if_exists 'projects/commits/mirror_status'
 

@@ -75,3 +75,70 @@
     }
   }
 }
+
+.settings-section {
+  @include gl-pt-6;
+
+  &::after {
+    content: '';
+    display: block;
+    @include gl-pb-5;
+  }
+}
+
+.settings-section,
+.settings-section-no-bottom + .settings-section {
+  @include gl-pt-0;
+}
+
+.settings-section ~ .settings-section {
+  @include gl-pt-6;
+}
+
+.settings-section:not(.settings-section-no-bottom) + .settings-section {
+  @include gl-border-t;
+}
+
+.settings-section-no-bottom::after {
+  @include gl-pb-0;
+
+  @include media-breakpoint-up(sm) {
+    @include gl-pb-5;
+  }
+}
+
+$sticky-header-z-index: 98;
+
+.settings-sticky-header,
+.settings-sticky-footer {
+  position: sticky;
+  z-index: $sticky-header-z-index;
+  background: $body-bg;
+}
+
+.settings-sticky-header {
+  top: $calc-application-header-height;
+
+  &::before {
+    content: '';
+    display: block;
+    height: $gl-padding-8;
+    position: sticky;
+    top: calc(#{$calc-application-header-height}  + 40px);
+    box-shadow: 0 1px 1px $gray-200;
+  }
+}
+
+.settings-sticky-header-inner {
+  position: sticky;
+  padding: $gl-padding $gl-padding $gl-padding-12;
+  margin: #{-$gl-padding} #{-$gl-padding} 0;
+  background: $body-bg;
+}
+
+.settings-sticky-footer {
+  bottom: 0;
+  padding-top: $gl-padding-8;
+  padding-bottom: $gl-padding-8;
+  box-shadow: 0 #{-$gl-padding-4} $gl-padding-12 $gl-padding-4 $body-bg;
+}

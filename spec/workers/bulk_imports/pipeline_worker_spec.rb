@@ -387,8 +387,9 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       stub_const('NdjsonPipeline', file_extraction_pipeline)
 
       allow_next_instance_of(BulkImports::Groups::Stage) do |instance|
-        allow(instance).to receive(:pipelines)
-                             .and_return([{ stage: 0, pipeline: file_extraction_pipeline }])
+        allow(instance)
+          .to receive(:pipelines)
+          .and_return([{ stage: 0, pipeline: file_extraction_pipeline }])
       end
     end
 
@@ -397,6 +398,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         allow(status).to receive(:started?).and_return(false)
         allow(status).to receive(:empty?).and_return(false)
         allow(status).to receive(:failed?).and_return(false)
+        allow(status).to receive(:batched?).and_return(false)
       end
 
       subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
@@ -410,6 +412,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           allow(status).to receive(:started?).and_return(true)
           allow(status).to receive(:empty?).and_return(false)
           allow(status).to receive(:failed?).and_return(false)
+          allow(status).to receive(:batched?).and_return(false)
         end
 
         expect(described_class)
@@ -431,6 +434,7 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           allow(status).to receive(:started?).and_return(false)
           allow(status).to receive(:empty?).and_return(true)
           allow(status).to receive(:failed?).and_return(false)
+          allow(status).to receive(:batched?).and_return(false)
         end
 
         pipeline_tracker.update!(created_at: created_at)
@@ -570,6 +574,44 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
         expect(pipeline_tracker.reload.status_name).to eq(:failed)
+      end
+    end
+
+    context 'when export is batched' do
+      let(:batches_count) { 2 }
+
+      before do
+        allow_next_instance_of(BulkImports::ExportStatus) do |status|
+          allow(status).to receive(:batched?).and_return(true)
+          allow(status).to receive(:batches_count).and_return(batches_count)
+          allow(status).to receive(:started?).and_return(false)
+          allow(status).to receive(:empty?).and_return(false)
+          allow(status).to receive(:failed?).and_return(false)
+        end
+      end
+
+      it 'enqueues pipeline batches' do
+        expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
+
+        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+        pipeline_tracker.reload
+
+        expect(pipeline_tracker.status_name).to eq(:started)
+        expect(pipeline_tracker.batched).to eq(true)
+        expect(pipeline_tracker.batches.count).to eq(batches_count)
+      end
+
+      context 'when batches count is less than 1' do
+        let(:batches_count) { 0 }
+
+        it 'marks tracker as finished' do
+          expect(subject).not_to receive(:enqueue_batches)
+
+          subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+          expect(pipeline_tracker.reload.status_name).to eq(:finished)
+        end
       end
     end
   end

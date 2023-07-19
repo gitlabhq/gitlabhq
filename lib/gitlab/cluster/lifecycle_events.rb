@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../utils' # Gitlab::Utils
+require 'gitlab/utils/all' # Gitlab::Utils
 
 module Gitlab
   module Cluster
