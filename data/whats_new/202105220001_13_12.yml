@@ -121,7 +121,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/admin_area/settings/floc.html
+  documentation_link: https://docs.gitlab.com/ee/administration/settings/floc.html
   image_url: https://about.gitlab.com/images/growth/enablement.png
   published_at: 2021-05-22
   release: 13.12

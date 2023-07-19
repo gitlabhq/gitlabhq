@@ -24,7 +24,7 @@
   self-managed: true
   gitlab-com: false
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/admin_area/settings/scim_setup.html
+  documentation_link: https://docs.gitlab.com/ee/administration/settings/scim_setup.html
   image_url: https://about.gitlab.com/images/15_8/manage-scim-token.png
   published_at: 2023-01-22
   release: 15.8

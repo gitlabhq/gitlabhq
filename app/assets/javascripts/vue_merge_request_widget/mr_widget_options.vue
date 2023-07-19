@@ -218,14 +218,6 @@ export default {
     shouldRenderCodeQuality() {
       return this.mr?.codequalityReportsPath;
     },
-    shouldRenderSourceBranchRemovalStatus() {
-      return (
-        !this.mr.canRemoveSourceBranch &&
-        this.mr.shouldRemoveSourceBranch &&
-        !this.mr.isNothingToMergeState &&
-        !this.mr.isMergedState
-      );
-    },
     shouldRenderCollaborationStatus() {
       return this.mr.allowCollaboration && this.mr.isOpen;
     },
@@ -576,7 +568,11 @@ export default {
       :user-callout-feature-id="mr.suggestPipelineFeatureId"
       @dismiss="dismissSuggestPipelines"
     />
-    <mr-widget-pipeline-container v-if="shouldRenderPipelines" :mr="mr" />
+    <mr-widget-pipeline-container
+      v-if="shouldRenderPipelines"
+      :mr="mr"
+      data-testid="pipeline-container"
+    />
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
       <extensions-container v-if="hasExtensions" :mr="mr" />
@@ -623,6 +619,7 @@ export default {
       class="js-post-merge-pipeline mr-widget-workflow"
       :mr="mr"
       :is-post-merge="true"
+      data-testid="merged-pipeline-container"
     />
   </div>
   <loading v-else />

@@ -21,10 +21,9 @@ module Groups
     private
 
     def all_members
-      return [] if Feature.enabled?(:disable_all_mention)
+      return [] if group.nil? || Feature.enabled?(:disable_all_mention)
 
-      count = group_members.count
-      [{ username: "all", name: "All Group Members", count: count }]
+      [{ username: "all", name: "All Group Members", count: group.users_count }]
     end
 
     def group_members
@@ -34,6 +33,5 @@ module Groups
         group.direct_and_indirect_users(share_with_groups: group.member?(current_user))
       )
     end
-    strong_memoize_attr :group_members
   end
 end

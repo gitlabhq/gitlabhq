@@ -30882,6 +30882,9 @@ msgstr ""
 msgid "Normal text"
 msgstr ""
 
+msgid "Normal view"
+msgstr ""
+
 msgid "NorthstarNavigation|Could not update the new navigation preference. Please try again later."
 msgstr ""
 
@@ -41353,13 +41356,7 @@ msgstr ""
 msgid "SecurityOrchestration|%{agent} for %{namespaces}"
 msgstr ""
 
-msgid "SecurityOrchestration|%{branches} and %{lastBranch} branches"
-msgstr ""
-
-msgid "SecurityOrchestration|%{branches} branch"
-msgstr ""
-
-msgid "SecurityOrchestration|%{cadence} on the %{branches}"
+msgid "SecurityOrchestration|%{cadence} on %{branches}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{licenses} and %{lastLicense}"
@@ -41488,6 +41485,9 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}"
+msgstr ""
+
 msgid "SecurityOrchestration|Failed to load cluster agents."
 msgstr ""
 
@@ -41510,6 +41510,9 @@ msgid "SecurityOrchestration|Inherited"
 msgstr ""
 
 msgid "SecurityOrchestration|Inherited from %{namespace}"
+msgstr ""
+
+msgid "SecurityOrchestration|Invalid branch type detected - rule will not be applied."
 msgstr ""
 
 msgid "SecurityOrchestration|Invalid policy"
@@ -41760,10 +41763,13 @@ msgstr ""
 msgid "SecurityOrchestration|Vulnerabilities are %{vulnerabilityStates}."
 msgstr ""
 
-msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} in an open merge request targeting %{branches}%{criteriaApply}"
+msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} in an open merge request %{targeting}%{branches}%{criteriaApply}"
 msgstr ""
 
-msgid "SecurityOrchestration|When license scanner finds any license %{matching} %{licenses}%{detection} in an open merge request targeting %{branches}."
+msgid "SecurityOrchestration|When license scanner finds any license except %{licenses}%{detection} in an open merge request %{targeting}%{branches}."
+msgstr ""
+
+msgid "SecurityOrchestration|When license scanner finds any license matching %{licenses}%{detection} in an open merge request %{targeting}%{branches}."
 msgstr ""
 
 msgid "SecurityOrchestration|With the following customized CI variables:"
@@ -41778,10 +41784,16 @@ msgstr ""
 msgid "SecurityOrchestration|all namespaces"
 msgstr ""
 
-msgid "SecurityOrchestration|all protected branches"
+msgid "SecurityOrchestration|any"
 msgstr ""
 
-msgid "SecurityOrchestration|any"
+msgid "SecurityOrchestration|any branch"
+msgstr ""
+
+msgid "SecurityOrchestration|any default branch"
+msgstr ""
+
+msgid "SecurityOrchestration|any protected branch"
 msgstr ""
 
 msgid "SecurityOrchestration|any security scanner finds"
@@ -41805,9 +41817,6 @@ msgstr ""
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr ""
 
-msgid "SecurityOrchestration|on every pipeline on the %{branches}"
-msgstr ""
-
 msgid "SecurityOrchestration|or from:"
 msgstr ""
 
@@ -41817,13 +41826,25 @@ msgstr ""
 msgid "SecurityOrchestration|scanners find"
 msgstr ""
 
+msgid "SecurityOrchestration|targeting %{branchTypeText}"
+msgstr ""
+
 msgid "SecurityOrchestration|the %{branches}"
+msgstr ""
+
+msgid "SecurityOrchestration|the %{branches} and %{lastBranch} branches"
+msgstr ""
+
+msgid "SecurityOrchestration|the %{branches} branch"
 msgstr ""
 
 msgid "SecurityOrchestration|the %{namespaces} and %{lastNamespace} namespaces"
 msgstr ""
 
 msgid "SecurityOrchestration|the %{namespaces} namespace"
+msgstr ""
+
+msgid "SecurityOrchestration|the default branch"
 msgstr ""
 
 msgid "SecurityPolicies|Invalid or empty policy"
@@ -55704,6 +55725,9 @@ msgid "supported SSH public key."
 msgstr ""
 
 msgid "tag name"
+msgstr ""
+
+msgid "targeting "
 msgstr ""
 
 msgid "terraform states"

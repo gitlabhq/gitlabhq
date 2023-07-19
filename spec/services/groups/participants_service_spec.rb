@@ -23,7 +23,13 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
     end
 
     it 'includes `All Group Members`' do
-      expect(service_result).to include(a_hash_including({ username: "all", name: "All Group Members" }))
+      group.add_developer(create(:user))
+
+      # These should not be included in the count for the @all entry
+      subgroup.add_developer(create(:user))
+      subproject.add_developer(create(:user))
+
+      expect(service_result).to include(a_hash_including({ username: "all", name: "All Group Members", count: 1 }))
     end
 
     context 'when `disable_all_mention` FF is enabled' do
