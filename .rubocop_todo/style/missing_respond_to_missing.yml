@@ -5,7 +5,6 @@ Style/MissingRespondToMissing:
     - 'app/models/network/commit.rb'
     - 'app/services/notification_service.rb'
     - 'ee/app/controllers/ee/groups/application_controller.rb'
-    - 'ee/app/models/elastic/migration_record.rb'
     - 'ee/app/services/ee/audit_event_service.rb'
     - 'lib/declarative_enum.rb'
     - 'lib/gitlab/auth/ldap/dn.rb'

@@ -920,7 +920,6 @@ Layout/LineLength:
     - 'ee/app/models/ee/upload.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/ee/vulnerability.rb'
-    - 'ee/app/models/elastic/migration_record.rb'
     - 'ee/app/models/elastic/reindexing_slice.rb'
     - 'ee/app/models/epic_issue.rb'
     - 'ee/app/models/geo/project_registry.rb'

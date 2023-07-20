@@ -11,7 +11,7 @@ If you're hosting GitLab on a cloud provider, you can optionally use a managed
 service for Redis. For example, AWS offers ElastiCache that runs Redis.
 
 Alternatively, you may opt to manage your own Redis instance separate from the
-Omnibus GitLab package.
+Linux package.
 
 ## Requirements
 
@@ -52,7 +52,7 @@ Note the Redis node's IP address or hostname, port, and password (if required).
 
 This is the documentation for configuring a scalable Redis setup when
 you have installed Redis all by yourself and not using the bundled one that
-comes with the Omnibus packages, although using the Omnibus GitLab packages is
+comes with the Linux packages, although using the Linux packages is
 highly recommend as we optimize them specifically for GitLab, and we take
 care of upgrading Redis to the latest supported version.
 
@@ -63,7 +63,7 @@ settings outlined in
 
 We cannot stress enough the importance of reading the
 [replication and failover](replication_and_failover.md) documentation of the
-Omnibus Redis HA as it provides some invaluable information to the configuration
+Linux package Redis HA because it provides some invaluable information to the configuration
 of Redis. Read it before going forward with this guide.
 
 Before proceeding on setting up the new Redis instances, here are some
@@ -79,9 +79,8 @@ requirements:
 - If you are using Redis with Sentinel, you also need to define the same
   password for the replica password definition (`masterauth`) in the same instance.
 
-In addition, read the prerequisites as described in the
-[Omnibus Redis document](replication_and_failover.md#requirements) since they provide some
-valuable information for the general setup.
+In addition, read the prerequisites as described in
+[Redis replication and failover with the Linux package](replication_and_failover.md#requirements).
 
 ### Step 1. Configuring the primary Redis instance
 

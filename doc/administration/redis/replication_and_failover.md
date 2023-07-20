@@ -5,13 +5,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Redis replication and failover with Omnibus GitLab **(PREMIUM SELF)**
+# Redis replication and failover with the Linux package **(PREMIUM SELF)**
 
-NOTE:
-This is the documentation for the Omnibus GitLab packages. For using your own
-non-bundled Redis, follow the [relevant documentation](replication_and_failover_external.md).
+This documentation is for the Linux package. To use your own
+non-bundled Redis, see [Redis replication and failover providing your own instance](replication_and_failover_external.md).
 
-NOTE:
 In Redis lingo, `primary` is called `master`. In this document, `primary` is used
 instead of `master`, except the settings where `master` is required.
 
@@ -73,7 +71,7 @@ whole cluster down, invalidating the failover effort.
 
 ## Recommended setup
 
-For a minimal setup, you need to install the Omnibus GitLab package in `3`
+For a minimal setup, you need to install the Linux package in `3`
 **independent** machines, both with **Redis** and **Sentinel**:
 
 - Redis Primary + Sentinel
@@ -85,7 +83,7 @@ from, read [Redis setup overview](#redis-setup-overview) and
 [Sentinel setup overview](#sentinel-setup-overview).
 
 For a recommended setup that can resist more failures, you need to install
-the Omnibus GitLab package in `5` **independent** machines, both with
+the Linux package in `5` **independent** machines, both with
 **Redis** and **Sentinel**:
 
 - Redis Primary + Sentinel
@@ -241,9 +239,9 @@ If you fail to replicate first, you may loose data (unprocessed background jobs)
 ### Step 1. Configuring the primary Redis instance
 
 1. SSH into the **Primary** Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
+   - Make sure you select the correct Linux package, with the same version
      and type (Community, Enterprise editions) of your current install.
    - Do not complete any other steps on the download page.
 
@@ -285,9 +283,9 @@ Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
 ### Step 2. Configuring the replica Redis instances
 
 1. SSH into the **replica** Redis server.
-1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package you want using **steps 1 and 2** from the GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
+   - Make sure you select the correct Linux package, with the same version
      and type (Community, Enterprise editions) of your current install.
    - Do not complete any other steps on the download page.
 
@@ -361,19 +359,17 @@ You must have at least `3` Redis Sentinel servers, and they need to
 be each in an independent machine. You can configure them in the same
 machines where you've configured the other Redis servers.
 
-With GitLab Enterprise Edition, you can use the Omnibus package to set up
+With GitLab Enterprise Edition, you can use the Linux package to set up
 multiple machines with the Sentinel daemon.
-
----
 
 1. SSH into the server that hosts Redis Sentinel.
 1. **You can omit this step if the Sentinels is hosted in the same node as
    the other Redis instances.**
 
-   [Download/install](https://about.gitlab.com/install/) the
-   Omnibus GitLab Enterprise Edition package using **steps 1 and 2** from the
+   [Download and install](https://about.gitlab.com/install/) the
+   Linux Enterprise Edition package using **steps 1 and 2** from the
    GitLab downloads page.
-   - Make sure you select the correct Omnibus package, with the same version
+   - Make sure you select the correct Linux package, with the same version
      the GitLab application is running.
    - Do not complete any other steps on the download page.
 
@@ -644,12 +640,11 @@ gitlab_rails['redis_sentinels'] = [
 
 ## Advanced configuration
 
-Omnibus GitLab configures some things behind the curtains to make the sysadmins'
-lives easier. If you want to know what happens underneath keep reading.
+This section covers configuration options that go beyond the recommended and minimal configurations.
 
 ### Running multiple Redis clusters
 
-Omnibus GitLab supports running separate Redis and Sentinel instances for different
+The Linux package supports running separate Redis and Sentinel instances for different
 persistence classes.
 
 | Class          | Purpose                                          |

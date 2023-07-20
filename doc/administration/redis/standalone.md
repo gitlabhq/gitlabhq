@@ -5,9 +5,9 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Standalone Redis using Omnibus GitLab **(FREE SELF)**
+# Standalone Redis using the Linux package **(FREE SELF)**
 
-The Omnibus GitLab package can be used to configure a standalone Redis server.
+The Linux package can be used to configure a standalone Redis server.
 In this configuration, Redis is not scaled, and represents a single
 point of failure. However, in a scaled environment the objective is to allow
 the environment to handle more users or to increase throughput. Redis itself
@@ -18,10 +18,10 @@ page for an overview of GitLab scaling options.
 ## Set up the standalone Redis instance
 
 The steps below are the minimum necessary to configure a Redis server with
-Omnibus GitLab:
+the Linux package:
 
 1. SSH into the Redis server.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package you want by using **steps 1 and 2** from the GitLab downloads page.
    Do not complete any other steps on the download page.
 

@@ -88,10 +88,8 @@ You must make sure you are defining the same value in `redis['master_name']`
 and `redis['master_password']` as you defined for your sentinel node.
 
 The way the Redis connector `redis-rb` works with sentinel is a bit
-non-intuitive. We try to hide the complexity in omnibus, but it still requires
+non-intuitive. We try to hide the complexity in the Linux package, but it still requires
 a few extra configurations.
-
----
 
 To make sure your configuration is correct:
 

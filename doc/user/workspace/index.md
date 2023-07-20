@@ -28,10 +28,10 @@ For a demo of this feature, see [GitLab Workspaces Demo](https://go.gitlab.com/q
 - Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports. See the [supported Kubernetes versions](../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features).
 - Ensure autoscaling for the Kubernetes cluster is enabled.
 - In the Kubernetes cluster, verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/) is defined so that volumes can be dynamically provisioned for each workspace.
-- In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`), and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
+- In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`) and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
 - In the Kubernetes cluster, [install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
 - In the Kubernetes cluster, [install the GitLab agent for Kubernetes](../clusters/agent/install/index.md).
-- Configure remote development settings for the GitLab agent with this snippet, and update `dns_zone` as needed:
+- Configure remote development settings for the GitLab agent with this snippet and update `dns_zone` as needed:
 
   ```yaml
   remote_development:
@@ -59,7 +59,7 @@ To create a workspace:
 1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates. This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
 1. Select **Create workspace**.
 
-The workspace might take a few minutes to start. To access the workspace, under **Preview**, select the workspace link.
+The workspace might take a few minutes to start. To open the workspace, under **Preview**, select the workspace.
 You also have access to the terminal and can install any necessary dependencies.
 
 ## Workspaces and projects

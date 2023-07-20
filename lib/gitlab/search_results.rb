@@ -203,7 +203,13 @@ module Gitlab
       merge_requests = MergeRequestsFinder.new(current_user, issuable_params).execute
 
       unless default_project_filter
-        merge_requests = merge_requests.of_projects(project_ids_relation)
+        project_ids = if Feature.enabled?(:search_merge_requests_hide_archived_projects) && !filters[:include_archived]
+                        project_ids_relation.non_archived
+                      else
+                        project_ids_relation
+                      end
+
+        merge_requests = merge_requests.of_projects(project_ids)
       end
 
       apply_sort(merge_requests, scope: 'merge_requests')

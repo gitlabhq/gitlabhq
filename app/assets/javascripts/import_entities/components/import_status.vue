@@ -1,7 +1,6 @@
 <script>
 import { GlAccordion, GlAccordionItem, GlBadge, GlIcon, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { STATISTIC_ITEMS } from '~/import/constants';
 import { STATUSES } from '../constants';
@@ -58,7 +57,6 @@ export default {
     GlIcon,
     GlLink,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     detailsPath: {
       default: undefined,
@@ -116,11 +114,7 @@ export default {
     },
 
     showDetails() {
-      return (
-        Boolean(this.detailsPathForProject) &&
-        this.glFeatures.importDetailsPage &&
-        this.isIncomplete
-      );
+      return Boolean(this.detailsPathForProject) && this.isIncomplete;
     },
 
     detailsPathForProject() {

@@ -12,31 +12,13 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       stub_application_setting(import_sources: ['github'])
 
       login_as(user)
+
+      request
     end
 
-    context 'with feature enabled' do
-      before do
-        stub_feature_flags(import_details_page: true)
-
-        request
-      end
-
-      it 'responds with a 200 and shows the template', :aggregate_failures do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template(:details)
-      end
-    end
-
-    context 'with feature disabled' do
-      before do
-        stub_feature_flags(import_details_page: false)
-
-        request
-      end
-
-      it 'responds with a 404' do
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+    it 'responds with a 200 and shows the template', :aggregate_failures do
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:details)
     end
   end
 end

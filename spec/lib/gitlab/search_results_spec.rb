@@ -187,11 +187,16 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       end
 
       context 'filtering' do
+        let_it_be(:unarchived_project) { create(:project, :public) }
+        let_it_be(:archived_project) { create(:project, :public, :archived) }
         let!(:opened_result) { create(:merge_request, :opened, source_project: project, title: 'foo opened') }
         let!(:closed_result) { create(:merge_request, :closed, source_project: project, title: 'foo closed') }
+        let(:unarchived_result) { create(:merge_request, source_project: unarchived_project, title: 'foo unarchived') }
+        let(:archived_result) { create(:merge_request, source_project: archived_project, title: 'foo archived') }
         let(:query) { 'foo' }
 
         include_examples 'search results filtered by state'
+        include_examples 'search results filtered by archived', 'search_merge_requests_hide_archived_projects'
       end
 
       context 'ordering' do
@@ -266,25 +271,10 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
       describe 'filtering' do
         let_it_be(:group) { create(:group) }
-        let_it_be(:unarchived_project) { create(:project, :public, group: group, name: 'Test1') }
-        let_it_be(:archived_project) { create(:project, :archived, :public, group: group, name: 'Test2') }
+        let_it_be(:unarchived_result) { create(:project, :public, group: group, name: 'Test1') }
+        let_it_be(:archived_result) { create(:project, :archived, :public, group: group, name: 'Test2') }
 
-        it_behaves_like 'search results filtered by archived'
-
-        context 'when the search_projects_hide_archived feature flag is disabled' do
-          before do
-            stub_feature_flags(search_projects_hide_archived: false)
-          end
-
-          context 'when filter not provided' do
-            let(:filters) { {} }
-
-            it 'returns archived and unarchived results', :aggregate_failures do
-              expect(results.objects('projects')).to include unarchived_project
-              expect(results.objects('projects')).to include archived_project
-            end
-          end
-        end
+        it_behaves_like 'search results filtered by archived', 'search_projects_hide_archived'
       end
     end
 

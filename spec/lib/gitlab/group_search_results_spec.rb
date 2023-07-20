@@ -32,8 +32,12 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
   end
 
   describe 'merge_requests search' do
+    let_it_be(:unarchived_project) { create(:project, :public, group: group) }
+    let_it_be(:archived_project) { create(:project, :public, :archived, group: group) }
     let(:opened_result) { create(:merge_request, :opened, source_project: project, title: 'foo opened') }
     let(:closed_result) { create(:merge_request, :closed, source_project: project, title: 'foo closed') }
+    let_it_be(:unarchived_result) { create(:merge_request, source_project: unarchived_project, title: 'foo') }
+    let_it_be(:archived_result) { create(:merge_request, source_project: archived_project, title: 'foo') }
     let(:query) { 'foo' }
     let(:scope) { 'merge_requests' }
 
@@ -44,6 +48,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     end
 
     include_examples 'search results filtered by state'
+    include_examples 'search results filtered by archived', 'search_merge_requests_hide_archived_projects'
   end
 
   describe '#projects' do
@@ -52,10 +57,10 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
 
     describe 'filtering' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:unarchived_project) { create(:project, :public, group: group, name: 'Test1') }
-      let_it_be(:archived_project) { create(:project, :archived, :public, group: group, name: 'Test2') }
+      let_it_be(:unarchived_result) { create(:project, :public, group: group, name: 'Test1') }
+      let_it_be(:archived_result) { create(:project, :archived, :public, group: group, name: 'Test2') }
 
-      it_behaves_like 'search results filtered by archived'
+      it_behaves_like 'search results filtered by archived', 'search_projects_hide_archived'
     end
   end
 

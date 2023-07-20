@@ -138,6 +138,7 @@
     "WorkItem"
   ],
   "User": [
+    "AutocompletedUser",
     "MergeRequestAssignee",
     "MergeRequestAuthor",
     "MergeRequestParticipant",

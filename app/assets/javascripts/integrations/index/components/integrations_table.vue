@@ -30,19 +30,30 @@ export default {
       required: false,
       default: undefined,
     },
+    inactive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     fields() {
-      return [
+      if (this.filteredIntegrations.length === 0) {
+        return [];
+      }
+
+      const fields = [];
+
+      fields.push(
         {
           key: 'active',
           label: '',
-          thClass: 'gl-w-10',
+          thClass: 'gl-w-7',
         },
         {
           key: 'title',
           label: __('Integration'),
-          thClass: 'gl-w-quarter',
+          thClass: 'gl-w-quarter gl-xs-w-full',
         },
         {
           key: 'description',
@@ -50,12 +61,18 @@ export default {
           thClass: 'gl-display-none d-sm-table-cell',
           tdClass: 'gl-display-none d-sm-table-cell',
         },
-        {
+      );
+
+      if (!this.inactive && this.filteredIntegrations.length > 0) {
+        fields.push({
           key: 'updated_at',
           label: this.showUpdatedAt ? __('Last updated') : '',
-          thClass: 'gl-w-20p',
-        },
-      ];
+          thClass: 'gl-w-20 gl-text-right',
+          tdClass: 'gl-text-right',
+        });
+      }
+
+      return fields;
     },
     filteredIntegrations() {
       return this.integrations.filter(

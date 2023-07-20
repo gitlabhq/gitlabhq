@@ -623,6 +623,11 @@ module Types
       alpha: { milestone: '16.0' },
       description: "Get tag names containing a given commit."
 
+    field :autocomplete_users,
+      null: true,
+      resolver: Resolvers::Projects::AutocompleteUsersResolver,
+      description: 'Search users for autocompletion'
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end

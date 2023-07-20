@@ -62,4 +62,24 @@ describe('IntegrationsTable', () => {
       });
     },
   );
+
+  describe('when no integrations are received', () => {
+    beforeEach(() => {
+      createComponent({ integrations: [] });
+    });
+
+    it('does not display fields in the table', () => {
+      expect(findTable().findAll('th')).toHaveLength(0);
+    });
+  });
+
+  describe.each([true, false])('when integrations inactive property is %p', (inactive) => {
+    beforeEach(() => {
+      createComponent({ integrations: [mockInactiveIntegrations], inactive });
+    });
+
+    it(`${inactive ? 'does not render' : 'render'} updated_at field`, () => {
+      expect(findTable().find('[aria-label="Updated At"]').exists()).toBe(!inactive);
+    });
+  });
 });

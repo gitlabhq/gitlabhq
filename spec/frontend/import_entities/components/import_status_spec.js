@@ -168,18 +168,14 @@ describe('Import entities status component', () => {
     };
 
     describe.each`
-      detailsPath        | importDetailsPage | partialImport | expectLink
-      ${undefined}       | ${false}          | ${false}      | ${false}
-      ${undefined}       | ${false}          | ${true}       | ${false}
-      ${undefined}       | ${true}           | ${false}      | ${false}
-      ${undefined}       | ${true}           | ${true}       | ${false}
-      ${mockDetailsPath} | ${false}          | ${false}      | ${false}
-      ${mockDetailsPath} | ${false}          | ${true}       | ${false}
-      ${mockDetailsPath} | ${true}           | ${false}      | ${false}
-      ${mockDetailsPath} | ${true}           | ${true}       | ${true}
+      detailsPath        | partialImport | expectLink
+      ${undefined}       | ${false}      | ${false}
+      ${undefined}       | ${true}       | ${false}
+      ${mockDetailsPath} | ${false}      | ${false}
+      ${mockDetailsPath} | ${true}       | ${true}
     `(
-      'when detailsPath is $detailsPath, feature flag importDetailsPage is $importDetailsPage, partial import is $partialImport',
-      ({ detailsPath, importDetailsPage, partialImport, expectLink }) => {
+      'when detailsPath is $detailsPath, partial import is $partialImport',
+      ({ detailsPath, partialImport, expectLink }) => {
         beforeEach(() => {
           createComponent(
             {
@@ -190,7 +186,6 @@ describe('Import entities status component', () => {
             {
               provide: {
                 detailsPath,
-                glFeatures: { importDetailsPage },
               },
             },
           );
