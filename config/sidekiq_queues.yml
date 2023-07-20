@@ -375,6 +375,8 @@
   - 1
 - - merge_requests_mergeability_check_batch
   - 1
+- - merge_requests_process_approval_auto_merge
+  - 1
 - - merge_requests_resolve_todos
   - 1
 - - merge_requests_resolve_todos_after_approval

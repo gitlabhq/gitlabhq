@@ -12943,6 +12943,23 @@ CREATE SEQUENCE bulk_imports_id_seq
 
 ALTER SEQUENCE bulk_imports_id_seq OWNED BY bulk_imports.id;
 
+CREATE TABLE catalog_resource_versions (
+    id bigint NOT NULL,
+    release_id bigint NOT NULL,
+    catalog_resource_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE catalog_resource_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE catalog_resource_versions_id_seq OWNED BY catalog_resource_versions.id;
+
 CREATE TABLE catalog_resources (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -25173,6 +25190,8 @@ ALTER TABLE ONLY bulk_import_trackers ALTER COLUMN id SET DEFAULT nextval('bulk_
 
 ALTER TABLE ONLY bulk_imports ALTER COLUMN id SET DEFAULT nextval('bulk_imports_id_seq'::regclass);
 
+ALTER TABLE ONLY catalog_resource_versions ALTER COLUMN id SET DEFAULT nextval('catalog_resource_versions_id_seq'::regclass);
+
 ALTER TABLE ONLY catalog_resources ALTER COLUMN id SET DEFAULT nextval('catalog_resources_id_seq'::regclass);
 
 ALTER TABLE ONLY chat_names ALTER COLUMN id SET DEFAULT nextval('chat_names_id_seq'::regclass);
@@ -27000,6 +27019,9 @@ ALTER TABLE ONLY bulk_import_trackers
 
 ALTER TABLE ONLY bulk_imports
     ADD CONSTRAINT bulk_imports_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY catalog_resource_versions
+    ADD CONSTRAINT catalog_resource_versions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY catalog_resources
     ADD CONSTRAINT catalog_resources_pkey PRIMARY KEY (id);
@@ -30432,6 +30454,12 @@ CREATE INDEX index_bulk_import_failures_on_bulk_import_entity_id ON bulk_import_
 CREATE INDEX index_bulk_import_failures_on_correlation_id_value ON bulk_import_failures USING btree (correlation_id_value);
 
 CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id);
+
+CREATE INDEX index_catalog_resource_versions_on_catalog_resource_id ON catalog_resource_versions USING btree (catalog_resource_id);
+
+CREATE INDEX index_catalog_resource_versions_on_project_id ON catalog_resource_versions USING btree (project_id);
+
+CREATE UNIQUE INDEX index_catalog_resource_versions_on_release_id ON catalog_resource_versions USING btree (release_id);
 
 CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
 
@@ -35467,6 +35495,9 @@ ALTER TABLE ONLY vulnerabilities
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_131d289c65 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY catalog_resource_versions
+    ADD CONSTRAINT fk_15376d917e FOREIGN KEY (release_id) REFERENCES releases(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_157506c0e2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -35872,6 +35903,9 @@ ALTER TABLE ONLY scan_result_policies
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_7ac31eacb9 FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY catalog_resource_versions
+    ADD CONSTRAINT fk_7ad8849db4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_7b92f835bb FOREIGN KEY (contact_id) REFERENCES customer_relations_contacts(id) ON DELETE CASCADE;
 
@@ -36108,6 +36142,9 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_b4eb82fe3c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY catalog_resource_versions
+    ADD CONSTRAINT fk_b670eae96b FOREIGN KEY (catalog_resource_id) REFERENCES catalog_resources(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_b69fa2b2df FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;

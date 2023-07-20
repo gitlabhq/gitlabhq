@@ -2483,6 +2483,9 @@ msgstr ""
 msgid "AccessTokens|Feed token"
 msgstr ""
 
+msgid "AccessTokens|For example, the application using the token or the purpose of the token."
+msgstr ""
+
 msgid "AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
 msgstr ""
 
@@ -17438,6 +17441,9 @@ msgstr ""
 msgid "Enhance security by storing service account keys in secret managers - learn more about %{docLinkStart}secret management with GitLab%{docLinkEnd}"
 msgstr ""
 
+msgid "Enhance your coding experience with intelligent recommendations. %{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing. Not available for Guest roles."
+msgstr ""
+
 msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd} of your CI pipeline to track deployments to your cluster."
 msgstr ""
 
@@ -24946,6 +24952,9 @@ msgid "Interval Pattern"
 msgstr ""
 
 msgid "Introducing Your DevOps Reports"
+msgstr ""
+
+msgid "Introducing the Code Suggestions add-on"
 msgstr ""
 
 msgid "Invalid 'schemaVersion' '%{schema_version}'"
@@ -37359,9 +37368,6 @@ msgstr ""
 msgid "ProtectedBranch|Create wildcard"
 msgstr ""
 
-msgid "ProtectedBranch|Does not apply to users allowed to push. Optional sections are not enforced."
-msgstr ""
-
 msgid "ProtectedBranch|Inherited - This setting can be changed at the group level"
 msgstr ""
 
@@ -37435,6 +37441,9 @@ msgid "ProtectedBranch|View protected branches as branch rules"
 msgstr ""
 
 msgid "ProtectedBranch|What are protected branches?"
+msgstr ""
+
+msgid "ProtectedBranch|When pushing directly to the branch. Does not apply to users **Allowed to push**. Optional sections are not enforced."
 msgstr ""
 
 msgid "ProtectedBranch|You can add only groups that have this project shared. %{learn_more_link}"
@@ -53441,6 +53450,12 @@ msgstr ""
 msgid "Your DevOps Reports give an overview of how you are using GitLab from a feature perspective. Use them to view how you compare with other organizations, and how your teams compare against each other."
 msgstr ""
 
+msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To ensure that your group does not become read-only, you should contact a user with the Owner role for this group to upgrade to a paid tier, or manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}."
+msgstr ""
+
+msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. You should reduce the number of users or upgrade to a paid tier %{strong_start}before%{strong_end} you manage your storage usage. Otherwise, your Free top-level group will become read-only immediately because the 5-user limit applies. For more information, see our %{faq_link_start}FAQ%{link_end}."
+msgstr ""
+
 msgid "Your GPG keys (%{count})"
 msgstr ""
 
@@ -53731,12 +53746,6 @@ msgid "Your top-level group %{namespace_name} is over the %{free_limit} user lim
 msgstr ""
 
 msgid "Your top-level group is over the user limit and has been placed in a read-only state."
-msgstr ""
-
-msgid "Your top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To ensure that your group does not become read-only, you should contact a user with the Owner role for this group to upgrade to a paid tier, or manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}"
-msgstr ""
-
-msgid "Your top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To get more seats and additional storage, upgrade to a paid tier. You can also manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}"
 msgstr ""
 
 msgid "Your update failed. You can only upload one design when dropping onto an existing design."

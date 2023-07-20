@@ -322,7 +322,7 @@ module API
       # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/211498
       get ":id/projects", feature_category: :groups_and_projects, urgency: :low do
         finder_options = {
-          only_owned: !params[:with_shared],
+          exclude_shared: !params[:with_shared],
           include_subgroups: params[:include_subgroups],
           include_ancestor_groups: params[:include_ancestor_groups]
         }

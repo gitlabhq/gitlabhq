@@ -3868,8 +3868,6 @@ Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 - Make available in the job as [CI/CD variables](../variables/index.md)
   ([`file` type](../variables/index.md#use-file-type-cicd-variables) by default).
 
-This keyword must be used with `secrets:vault`.
-
 #### `secrets:vault`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
@@ -3919,6 +3917,34 @@ job:
     DATABASE_PASSWORD:  # Store the path to the secret in this CI/CD variable
       vault: production/db/password@ops  # Translates to secret: `ops/data/production/db`, field: `password`
 ```
+
+#### `secrets:azure_key_vault`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab 16.3 and GitLab Runner 16.3.
+
+Use `secrets:azure_key_vault` to specify secrets provided by a [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/).
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `name`: Name of the secret.
+- `version`: Version of the secret.
+
+**Example of `secrets:azure_key_vault`**:
+
+```yaml
+job:
+  secrets:
+    DATABASE_PASSWORD:
+      azure_key_vault:
+        name: 'test'
+        version: 'test'
+```
+
+**Related topics**:
+
+- [Use Azure Key Vault secrets in GitLab CI/CD](../secrets/azure_key_vault.md).
 
 #### `secrets:file`
 

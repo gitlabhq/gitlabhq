@@ -5,10 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::Yaml::Interpolator, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project) }
 
-  let(:current_user) { build(:user, id: 1234) }
   let(:result) { ::Gitlab::Ci::Config::Yaml::Result.new(config: [header, content]) }
 
-  subject { described_class.new(result, arguments, current_user: current_user) }
+  subject { described_class.new(result, arguments) }
 
   context 'when input data is valid' do
     let(:header) do
@@ -28,13 +27,6 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Interpolator, feature_category: :pipeli
 
       expect(subject).to be_valid
       expect(subject.to_hash).to eq({ test: 'deploy gitlab.com' })
-    end
-
-    it 'tracks the event' do
-      expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
-        .with('ci_interpolation_users', { values: 1234 })
-
-      subject.interpolate!
     end
   end
 
@@ -156,6 +148,7 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Interpolator, feature_category: :pipeli
       it 'returns original content' do
         subject.interpolate!
 
+        expect(subject).not_to be_interpolated
         expect(subject.to_hash).to eq(content)
       end
     end
@@ -176,6 +169,7 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Interpolator, feature_category: :pipeli
       it 'correctly interpolates content' do
         subject.interpolate!
 
+        expect(subject).to be_interpolated
         expect(subject.to_hash).to eq({ test: 'deploy gitlab.com' })
       end
     end

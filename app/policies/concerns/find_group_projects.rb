@@ -3,11 +3,11 @@
 module FindGroupProjects
   extend ActiveSupport::Concern
 
-  def group_projects_for(user:, group:, only_owned: true)
+  def group_projects_for(user:, group:, exclude_shared: true)
     GroupProjectsFinder.new(
       group: group,
       current_user: user,
-      options: { include_subgroups: true, only_owned: only_owned }
+      options: { include_subgroups: true, exclude_shared: exclude_shared }
     ).execute
   end
 end

@@ -17,6 +17,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:milestone_releases) }
     it { is_expected.to have_many(:evidences).class_name('Releases::Evidence') }
+    it { is_expected.to have_one(:catalog_resource_version).class_name('Ci::Catalog::Resources::Version') }
   end
 
   describe 'validation' do

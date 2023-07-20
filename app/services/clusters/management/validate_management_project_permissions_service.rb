@@ -46,7 +46,7 @@ module Clusters
         ::GroupProjectsFinder.new(
           group: group,
           current_user: current_user,
-          options: { only_owned: true, include_subgroups: include_subgroups }
+          options: { exclude_shared: true, include_subgroups: include_subgroups }
         ).execute
       end
     end

@@ -15,9 +15,13 @@
 
   .form-group
     = f.label :name, s_('AccessTokens|Token name'), class: 'label-bold'
-    - resource_type = resource.is_a?(Group) ? "group" : "project"
     = f.text_field :name, class: 'form-control gl-form-input gl-max-w-80', required: true, data: { qa_selector: 'access_token_name_field' }, :'aria-describedby' => 'access_token_help_text'
-    %span.form-text.text-muted#access_token_help_text= s_("AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members.") % { resource_type: resource_type }
+    %span.form-text.text-muted#access_token_help_text
+      - if resource
+        - resource_type = resource.is_a?(Group) ? "group" : "project"
+        = s_("AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members.") % { resource_type: resource_type }
+      - else
+        = s_("AccessTokens|For example, the application using the token or the purpose of the token.")
 
   .js-access-tokens-expires-at{ data: expires_at_field_data }
     = f.text_field :expires_at, class: 'gl-datepicker-input form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off', data: { js_name: 'expiresAt' }

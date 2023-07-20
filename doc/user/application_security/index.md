@@ -66,7 +66,7 @@ A source code analysis can:
 Analysis of the web application occurs on every code commit. As part of the CI/CD pipeline, your
 application is built, deployed to a test environment, and subjected to the following tests:
 
-- Test for known application vectors - [Dynamic Application Security Testing (DAST)](dast/index.md).
+- Test application for known attack vectors - [Dynamic Application Security Testing (DAST)](dast/index.md).
 - Analysis of APIs for known attack vectors - [API Security](dast_api/index.md).
 - Analysis of web APIs for unknown bugs and vulnerabilities - [API fuzzing](api_fuzzing/index.md).
 

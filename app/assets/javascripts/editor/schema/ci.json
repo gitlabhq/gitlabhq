@@ -703,6 +703,21 @@
                 }
               ]
             },
+            "azure_key_vault": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
             "file": {
               "type": "boolean",
               "default": true,
@@ -713,8 +728,17 @@
               "description": "Specifies the JWT variable that should be used to authenticate with Hashicorp Vault."
             }
           },
-          "required": [
-            "vault"
+          "anyOf": [
+            {
+              "required": [
+                "vault"
+              ]
+            },
+            {
+              "required": [
+                "azure_key_vault"
+              ]
+            }
           ],
           "additionalProperties": false
         }

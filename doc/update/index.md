@@ -295,7 +295,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 16.0.0
 
-- Sidekiq crashes if there are non-ASCII characters in the GitLab.rb file. You can fix this
+- Sidekiq crashes if there are non-ASCII characters in the `/etc/gitlab/gitlab.rb` file. You can fix this
   by following the workaround in [issue 412767](https://gitlab.com/gitlab-org/gitlab/-/issues/412767#note_1404507549).
 - Sidekiq jobs are only routed to `default` and `mailers` queues by default, and as a result,
   every Sidekiq process also listens to those queues to ensure all jobs are processed across
@@ -322,9 +322,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.11.0
 
-- Upgrades to GitLab 15.11 directly from GitLab versions 15.5.0 and earlier on self-managed installs will fail due to a missing migration until the fix for [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) is released in version 15.11.3. Affected users wanting to upgrade to 15.11 can either:
-  - Perform an intermediate upgrade to any version between 15.5 and 15.10 before upgrading to 15.11, or
-  - Target version 15.11.3 or later.
+- **Upgrade to patch release 15.11.3 or later**. This avoids [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) when upgrading from 15.5.0 and earlier.
 - Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
   - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
   - Versions containing fix: GitLab 16.1.3 and later.

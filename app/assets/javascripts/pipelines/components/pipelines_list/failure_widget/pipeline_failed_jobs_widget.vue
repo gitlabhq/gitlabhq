@@ -107,6 +107,7 @@ export default {
     <gl-collapse v-model="isExpanded">
       <failed-jobs-list
         v-if="isExpanded"
+        :failed-jobs-count="failedJobsCount"
         :is-pipeline-active="isPipelineActive"
         :pipeline-iid="pipelineIid"
         :project-path="projectPath"

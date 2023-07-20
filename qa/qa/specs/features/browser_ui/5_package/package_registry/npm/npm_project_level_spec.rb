@@ -27,9 +27,8 @@ module QA
           end
         end
 
-        let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }
-        let(:gitlab_address_with_port) { "#{uri.scheme}://#{uri.host}:#{uri.port}" }
-        let(:gitlab_host_with_port) { "#{uri.host}:#{uri.port}" }
+        let(:gitlab_address_with_port) { Support::GitlabAddress.address_with_port }
+        let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port }
 
         let!(:project) do
           Resource::Project.fabricate_via_api! do |project|

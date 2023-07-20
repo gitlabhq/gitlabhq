@@ -132,7 +132,8 @@ class Packages::Package < ApplicationRecord
   scope :including_project_route, -> { includes(project: :route) }
   scope :including_project_namespace_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
-  scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
+  scope :including_dependency_links, -> { includes(:dependency_links) }
+  scope :including_dependency_links_with_dependencies, -> { includes(dependency_links: :dependency) }
   scope :including_dependency_links_with_nuget_metadatum, -> { includes(dependency_links: [:dependency, :nuget_metadatum]) }
 
   scope :with_conan_channel, ->(package_channel) do

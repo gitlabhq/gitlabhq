@@ -254,13 +254,39 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
   describe '#load_and_validate_expanded_hash!' do
     let(:location) { 'some/file/config.yml' }
     let(:logger) { instance_double(::Gitlab::Ci::Pipeline::Logger, :instrument) }
-    let(:context_params) { { sha: 'HEAD', variables: variables, project: project, logger: logger } }
+    let(:context_params) { { sha: 'HEAD', variables: variables, project: project, logger: logger, user: user } }
+    let(:user) { instance_double(User, id: 'test-user-id') }
+
+    before do
+      allow(logger).to receive(:instrument).and_yield
+    end
 
     it 'includes instrumentation for loading and expanding the content' do
       expect(logger).to receive(:instrument).once.ordered.with(:config_file_fetch_content_hash).and_yield
       expect(logger).to receive(:instrument).once.ordered.with(:config_file_expand_content_includes).and_yield
 
       file.load_and_validate_expanded_hash!
+    end
+
+    context 'when the content is interpolated' do
+      let(:content) { "spec:\n  inputs:\n    website:\n---\nkey: value" }
+
+      subject(:file) { test_class.new({ inputs: { website: 'test' }, location: location, content: content }, ctx) }
+
+      it 'increments the ci_interpolation_users usage counter' do
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+          .with('ci_interpolation_users', values: 'test-user-id')
+
+        file.load_and_validate_expanded_hash!
+      end
+    end
+
+    context 'when the content is not interpolated' do
+      it 'does not increment the ci_interpolation_users usage counter' do
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+        file.load_and_validate_expanded_hash!
+      end
     end
   end
 end

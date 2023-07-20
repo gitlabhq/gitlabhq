@@ -40,6 +40,17 @@ module Gitlab
           end
         end
 
+        class OnlyOneOfKeysValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            present_keys = value.try(:keys).to_a
+
+            unless options[:in].one? { |key| present_keys.include?(key) }
+              record.errors.add(attribute, "must use exactly one of these keys: " +
+                options[:in].join(', '))
+            end
+          end
+        end
+
         class MutuallyExclusiveKeysValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
             mutually_exclusive_keys = value.try(:keys).to_a & options[:in]

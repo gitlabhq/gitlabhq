@@ -398,7 +398,6 @@ export default {
       v-show="previewMarkdown"
       ref="markdown-preview"
       class="js-vue-md-preview md-preview-holder gl-px-5"
-      :class="{ md: !hasSuggestion }"
     >
       <suggestions
         v-if="hasSuggestion"
@@ -409,7 +408,7 @@ export default {
         :help-page-path="helpPagePath"
       />
       <template v-else>
-        <div v-safe-html:[$options.safeHtmlConfig]="markdownPreview"></div>
+        <div v-safe-html:[$options.safeHtmlConfig]="markdownPreview" class="md"></div>
       </template>
     </div>
     <div

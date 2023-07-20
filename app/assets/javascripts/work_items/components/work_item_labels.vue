@@ -121,7 +121,7 @@ export default {
       return this.labelsWidget?.allowsScopedLabels;
     },
     containerClass() {
-      return !this.isEditing ? 'gl-shadow-none!' : '';
+      return !this.isEditing ? 'gl-shadow-none! hide-unfocused-input-decoration' : '';
     },
     isLoading() {
       return this.$apollo.queries.searchLabels.loading;
@@ -272,7 +272,7 @@ export default {
       :loading="isLoading"
       :view-only="!canUpdate"
       :allow-clear-all="isEditing"
-      class="gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2! work-item-field-value"
+      class="hide-unfocused-input-decoration work-item-field-value gl-flex-grow-1 gl-border gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2!"
       menu-class="token-selector-menu-class"
       data-testid="work-item-labels-input"
       :class="{ 'gl-hover-border-gray-200': canUpdate }"

@@ -40,8 +40,7 @@ module MergeRequests
     private
 
     def merge_status_recheck_not_allowed?(merge_request, user)
-      ::Feature.enabled?(:restrict_merge_status_recheck, merge_request.project) &&
-        !Ability.allowed?(user, :update_merge_request, merge_request.project)
+      !Ability.allowed?(user, :update_merge_request, merge_request.project)
     end
   end
 end

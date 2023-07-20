@@ -162,6 +162,7 @@ releases:
 - milestone_releases
 - milestones
 - evidences
+- catalog_resource_version
 links:
 - release
 project_members:
@@ -516,6 +517,7 @@ container_repositories:
 - name
 project:
 - catalog_resource
+- catalog_resource_versions
 - external_status_checks
 - base_tags
 - project_topics
@@ -1039,6 +1041,11 @@ iterations_cadence:
   - iterations
 catalog_resource:
   - project
+  - catalog_resource_versions
+catalog_resource_versions:
+  - project
+  - release
+  - catalog_resource
 approval_rules:
   - users
   - groups

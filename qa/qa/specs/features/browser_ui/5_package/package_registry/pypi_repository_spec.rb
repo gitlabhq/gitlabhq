@@ -40,15 +40,8 @@ module QA
         use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: Runtime::Env.personal_access_token, project: project)
       end
 
-      let(:gitlab_address_with_port) { "#{uri.scheme}://#{uri.host}:#{uri.port}" }
-      let(:gitlab_host_with_port) do
-        # Don't specify port if it is a standard one
-        if uri.port == 80 || uri.port == 443
-          uri.host
-        else
-          "#{uri.host}:#{uri.port}"
-        end
-      end
+      let(:gitlab_address_with_port) { Support::GitlabAddress.address_with_port }
+      let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port(with_default_port: false) }
 
       before do
         Flow::Login.sign_in

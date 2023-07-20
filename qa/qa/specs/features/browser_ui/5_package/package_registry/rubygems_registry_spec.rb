@@ -30,8 +30,7 @@ module QA
       end
 
       let(:gitlab_address_with_port) do
-        uri = URI.parse(Runtime::Scenario.gitlab_address)
-        "#{uri.scheme}://#{uri.host}:#{uri.port}"
+        Support::GitlabAddress.address_with_port
       end
 
       before do

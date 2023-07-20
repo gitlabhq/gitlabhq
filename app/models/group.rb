@@ -641,11 +641,18 @@ class Group < Namespace
       .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
   end
 
-  def direct_and_indirect_members_with_inactive
+  def hierarchy_members_with_inactive
     GroupMember
       .non_request
       .non_invite
       .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
+  end
+
+  def descendant_project_members_with_inactive
+    ProjectMember
+      .with_source_id(all_projects)
+      .non_request
+      .non_invite
   end
 
   def users_with_parents
@@ -683,20 +690,6 @@ class Group < Namespace
       User.where(id: members.select(:user_id)).reorder(nil),
       project_users_with_descendants
     ])
-  end
-
-  # Returns all users (also inactive) that are members of the group because:
-  # 1. They belong to the group
-  # 2. They belong to a project that belongs to the group
-  # 3. They belong to a sub-group or project in such sub-group
-  # 4. They belong to an ancestor group
-  def direct_and_indirect_users_with_inactive
-    User.from_union([
-                      User
-                        .where(id: direct_and_indirect_members_with_inactive.select(:user_id))
-                        .reorder(nil),
-                      project_users_with_descendants
-                    ]).allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455") # failed in spec/tasks/gitlab/user_management_rake_spec.rb
   end
 
   def users_count

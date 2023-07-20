@@ -114,6 +114,18 @@
     max-width: 100%;
   }
 
+  > ul {
+    list-style-type: disc;
+
+    ul {
+      list-style-type: circle;
+
+      ul {
+        list-style-type: square;
+      }
+    }
+  }
+
   ul[data-type='taskList'] {
     list-style: none;
     padding: 0;

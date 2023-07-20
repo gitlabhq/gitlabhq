@@ -102,4 +102,37 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
       end
     end
   end
+
+  describe described_class::OnlyOneOfKeysValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :valid_result) do
+      { foo: '1' }                     | true
+      { foo: '1', bar: '2', baz: '3' } | false
+      { bar: '2' }                     | true
+      { foo: '1' }                     | true
+      {}                               | false
+      { baz: '3' }                     | false
+    end
+
+    with_them do
+      before do
+        klass.instance_eval do
+          validates :config, only_one_of_keys: %i[foo bar]
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(valid_result)
+
+        unless valid_result
+          expect(instance.errors.messages_for(:config)).to(
+            include "must use exactly one of these keys: foo, bar"
+          )
+        end
+      end
+    end
+  end
 end

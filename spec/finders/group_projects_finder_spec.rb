@@ -34,8 +34,8 @@ RSpec.describe GroupProjectsFinder do
       end
     end
 
-    context "only owned" do
-      let(:options) { { only_owned: true } }
+    context "when shared projects are excluded" do
+      let(:options) { { exclude_shared: true } }
 
       context 'with subgroups projects' do
         before do
@@ -146,8 +146,8 @@ RSpec.describe GroupProjectsFinder do
       end
     end
 
-    context "only owned" do
-      let(:options) { { only_owned: true } }
+    context "when shared projects are excluded" do
+      let(:options) { { exclude_shared: true } }
 
       context "without external user" do
         before do
@@ -247,8 +247,8 @@ RSpec.describe GroupProjectsFinder do
         it            { is_expected.to contain_exactly(shared_project_3, shared_project_2, shared_project_1) }
       end
 
-      context "only owned" do
-        let(:options) { { only_owned: true } }
+      context "when shared projects are excluded" do
+        let(:options) { { exclude_shared: true } }
 
         it            { is_expected.to contain_exactly(private_project, public_project) }
       end
@@ -265,8 +265,8 @@ RSpec.describe GroupProjectsFinder do
         it            { is_expected.to contain_exactly(shared_project_3, shared_project_1) }
       end
 
-      context "only owned" do
-        let(:options) { { only_owned: true } }
+      context "when shared projects are excluded" do
+        let(:options) { { exclude_shared: true } }
 
         it            { is_expected.to contain_exactly(public_project) }
       end
@@ -284,8 +284,8 @@ RSpec.describe GroupProjectsFinder do
       it { is_expected.to match_array([shared_project_3, shared_project_1]) }
     end
 
-    context "only owned" do
-      let(:options) { { only_owned: true } }
+    context "when shared projects are excluded" do
+      let(:options) { { exclude_shared: true } }
 
       context 'with subgroups projects' do
         before do

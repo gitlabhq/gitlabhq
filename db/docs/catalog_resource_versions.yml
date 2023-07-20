@@ -1,0 +1,8 @@
+---
+table_name: catalog_resource_versions
+feature_categories:
+- pipeline_composition
+description: Catalog resource versions that contain valid CI components.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124668
+milestone: '16.2'
+gitlab_schema: gitlab_main

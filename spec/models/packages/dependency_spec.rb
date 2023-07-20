@@ -18,6 +18,19 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:version_pattern) }
   end
 
+  describe '.with_packages' do
+    subject { described_class.with_packages(packages) }
+
+    let_it_be(:package) { create(:package) }
+    let_it_be(:dependency_link) { create(:packages_dependency_link) }
+
+    let(:package_with_dependency) { dependency_link.package }
+    let(:dependency) { dependency_link.dependency }
+    let(:packages) { Packages::Package.where(id: [package, package_with_dependency]) }
+
+    it { is_expected.to contain_exactly(dependency) }
+  end
+
   describe '.ids_for_package_names_and_version_patterns' do
     let_it_be(:package_dependency1) { create(:packages_dependency, name: 'foo', version_pattern: '~1.0.0') }
     let_it_be(:package_dependency2) { create(:packages_dependency, name: 'bar', version_pattern: '~2.5.0') }

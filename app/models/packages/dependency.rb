@@ -8,6 +8,10 @@ class Packages::Dependency < ApplicationRecord
 
   validates :name, uniqueness: { scope: :version_pattern }
 
+  scope :with_packages, ->(packages) do
+    joins(:dependency_links).where(dependency_links: { package: packages })
+  end
+
   NAME_VERSION_PATTERN_TUPLE_MATCHING = '(name, version_pattern) = (?, ?)'
   MAX_STRING_LENGTH = 255
   MAX_CHUNKED_QUERIES_COUNT = 10

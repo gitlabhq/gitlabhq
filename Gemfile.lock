@@ -548,8 +548,8 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    ffi-yajl (2.3.4)
-      libyajl2 (~> 1.2)
+    ffi-yajl (2.6.0)
+      libyajl2 (>= 1.2)
     filelock (1.1.1)
     find_a_port (1.0.1)
     flipper (0.25.0)

@@ -7,14 +7,19 @@ module Gitlab
         class Result
           attr_reader :error, :error_class
 
-          def initialize(config: nil, error: nil, error_class: nil)
+          def initialize(config: nil, error: nil, error_class: nil, interpolated: false)
             @config = Array.wrap(config)
             @error = error
             @error_class = error_class
+            @interpolated = interpolated
           end
 
           def valid?
             error.nil?
+          end
+
+          def interpolated?
+            !!@interpolated
           end
 
           def has_header?

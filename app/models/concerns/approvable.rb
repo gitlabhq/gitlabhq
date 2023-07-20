@@ -51,7 +51,7 @@ module Approvable
   end
 
   def eligible_for_approval_by?(user)
-    user && !approved_by?(user) && user.can?(:approve_merge_request, self)
+    user.present? && !approved_by?(user) && user.can?(:approve_merge_request, self)
   end
 
   def eligible_for_unapproval_by?(user)

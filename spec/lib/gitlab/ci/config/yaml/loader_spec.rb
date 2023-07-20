@@ -21,12 +21,13 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
       YAML
     end
 
-    subject(:result) { described_class.new(yaml, inputs: inputs, current_user: project.creator).load }
+    subject(:result) { described_class.new(yaml, inputs: inputs).load }
 
     it 'loads and interpolates CI config YAML' do
       expected_config = { test_job: { script: ['echo "hello test"'] } }
 
       expect(result).to be_valid
+      expect(result).to be_interpolated
       expect(result.content).to eq(expected_config)
     end
 

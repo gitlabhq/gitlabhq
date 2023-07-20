@@ -13,6 +13,7 @@ module Packages
       def initialize(name, packages)
         @name = name
         @packages = packages
+        @dependencies_cache = {}
       end
 
       def execute(only_dist_tags: false)
@@ -21,7 +22,7 @@ module Packages
 
       private
 
-      attr_reader :name, :packages
+      attr_reader :name, :packages, :dependencies_cache
 
       def metadata(only_dist_tags)
         result = { dist_tags: dist_tags }
@@ -38,9 +39,17 @@ module Packages
         package_versions = {}
 
         packages.each_batch do |relation|
-          batched_packages = relation.including_dependency_links
-                                     .preload_files
-                                     .preload_npm_metadatum
+          batched_packages = if Feature.enabled?(:npm_optimize_metadata_generation)
+                               fill_dependencies_cache(relation)
+
+                               relation.including_dependency_links
+                                       .preload_files
+                                       .preload_npm_metadatum
+                             else
+                               relation.including_dependency_links_with_dependencies
+                                       .preload_files
+                                       .preload_npm_metadatum
+                             end
 
           batched_packages.each do |package|
             package_file = package.installable_package_files.last
@@ -85,7 +94,12 @@ module Packages
         dependencies = Hash.new { |h, key| h[key] = {} }
 
         package.dependency_links.each do |dependency_link|
-          dependency = dependency_link.dependency
+          dependency = if Feature.enabled?(:npm_optimize_metadata_generation)
+                         dependencies_cache[dependency_link.dependency_id]
+                       else
+                         dependency_link.dependency
+                       end
+
           dependencies[dependency_link.dependency_type][dependency.name] = dependency.version_pattern
         end
 
@@ -105,6 +119,17 @@ module Packages
       def abbreviated_package_json(package)
         json = package.npm_metadatum&.package_json || {}
         json.slice(*PACKAGE_JSON_ALLOWED_FIELDS)
+      end
+
+      def fill_dependencies_cache(packages)
+        Packages::Dependency
+          .with_packages(packages)
+          .id_not_in(dependencies_cache.keys)
+          .each_batch do |dependencies|
+            dependencies.each do |dependency|
+              dependencies_cache[dependency.id] = dependency
+            end
+          end
       end
     end
   end

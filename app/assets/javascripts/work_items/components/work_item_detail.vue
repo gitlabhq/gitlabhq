@@ -397,13 +397,13 @@ export default {
         <div class="gl-display-flex gl-align-items-center" data-testid="work-item-body">
           <ul
             v-if="parentWorkItem"
-            class="list-unstyled gl-display-flex gl-mr-auto gl-max-w-26 gl-md-max-w-50p gl-min-w-0 gl-mb-0 gl-z-index-0"
+            class="list-unstyled gl-display-flex gl-min-w-0 gl-mr-auto gl-mb-0 gl-z-index-0"
             data-testid="work-item-parent"
           >
-            <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-overflow-hidden">
+            <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-min-w-0">
               <gl-button
                 v-gl-tooltip.hover
-                class="gl-text-truncate gl-max-w-full"
+                class="gl-text-truncate"
                 :icon="parentWorkItemIconName"
                 category="tertiary"
                 :href="parentUrl"

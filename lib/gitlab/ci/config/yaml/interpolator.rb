@@ -9,13 +9,13 @@ module Gitlab
         # errors. It is designed to provide an external file's validation context too.
         #
         class Interpolator
-          attr_reader :config, :args, :current_user, :errors
+          attr_reader :config, :args, :errors
 
-          def initialize(config, args, current_user: nil)
+          def initialize(config, args)
             @config = config
             @args = args.to_h
-            @current_user = current_user
             @errors = []
+            @interpolated = false
           end
 
           def valid?
@@ -45,12 +45,13 @@ module Gitlab
             return @errors.concat(context.errors) unless context.valid?
             return @errors.concat(template.errors) unless template.valid?
 
-            if current_user.present?
-              ::Gitlab::UsageDataCounters::HLLRedisCounter
-                .track_event('ci_interpolation_users', values: current_user.id)
-            end
+            @interpolated = true
 
             @result ||= template.interpolated.to_h.deep_symbolize_keys
+          end
+
+          def interpolated?
+            @interpolated
           end
 
           private

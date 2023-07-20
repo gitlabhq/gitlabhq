@@ -38,7 +38,7 @@ projects =
   if current_user && params[:authorized_only].presence && !current_user_related?
     current_user.authorized_projects
   elsif group
-    finder_options = { include_subgroups: params[:include_subgroups], only_owned: true }
+    finder_options = { include_subgroups: params[:include_subgroups], exclude_shared: true }
     GroupProjectsFinder.new(group: group, current_user: current_user, options: finder_options).execute
   else
     ProjectsFinder.new(current_user: current_user).execute
