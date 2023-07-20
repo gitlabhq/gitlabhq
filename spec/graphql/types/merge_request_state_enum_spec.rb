@@ -8,6 +8,6 @@ RSpec.describe GitlabSchema.types['MergeRequestState'] do
   it_behaves_like 'issuable state'
 
   it 'exposes all the existing merge request states' do
-    expect(described_class.values.keys).to include('merged')
+    expect(described_class.values.keys).to include('merged', 'opened')
   end
 end

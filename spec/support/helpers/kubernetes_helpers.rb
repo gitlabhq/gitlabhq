@@ -676,7 +676,6 @@ module KubernetesHelpers
     }
   end
 
-  # noinspection RubyStringKeysInHashInspection
   def knative_06_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production', cluster_id: 9)
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",
@@ -736,7 +735,6 @@ module KubernetesHelpers
       "podcount" => 0 }
   end
 
-  # noinspection RubyStringKeysInHashInspection
   def knative_07_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production', cluster_id: 5)
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",
@@ -788,7 +786,6 @@ module KubernetesHelpers
       "podcount" => 0 }
   end
 
-  # noinspection RubyStringKeysInHashInspection
   def knative_09_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production', cluster_id: 5)
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",
@@ -840,7 +837,6 @@ module KubernetesHelpers
       "podcount" => 0 }
   end
 
-  # noinspection RubyStringKeysInHashInspection
   def knative_05_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production', cluster_id: 8)
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",

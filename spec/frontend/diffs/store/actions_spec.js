@@ -147,6 +147,175 @@ describe('DiffsStoreActions', () => {
     });
   });
 
+  describe('prefetchSingleFile', () => {
+    beforeEach(() => {
+      window.location.hash = 'e334a2a10f036c00151a04cea7938a5d4213a818';
+    });
+
+    it('should do nothing if the tree entry is already loading', () => {
+      return testAction(diffActions.prefetchSingleFile, { diffLoading: true }, {}, [], []);
+    });
+
+    it('should do nothing if the tree entry has already been marked as loaded', () => {
+      return testAction(
+        diffActions.prefetchSingleFile,
+        { diffLoaded: true },
+        {
+          flatBlobsList: [
+            { fileHash: 'e334a2a10f036c00151a04cea7938a5d4213a818', diffLoaded: true },
+          ],
+        },
+        [],
+        [],
+      );
+    });
+
+    describe('when a tree entry exists for the file, but it has not been marked as loaded', () => {
+      let state;
+      let getters;
+      let commit;
+      let hubSpy;
+      const defaultParams = {
+        old_path: 'old/123',
+        new_path: 'new/123',
+        w: '1',
+        view: 'inline',
+      };
+      const endpointDiffForPath = '/diffs/set/endpoint/path';
+      const diffForPath = mergeUrlParams(defaultParams, endpointDiffForPath);
+      const treeEntry = {
+        fileHash: 'e334a2a10f036c00151a04cea7938a5d4213a818',
+        filePaths: { old: 'old/123', new: 'new/123' },
+      };
+      const fileResult = {
+        diff_files: [{ file_hash: 'e334a2a10f036c00151a04cea7938a5d4213a818' }],
+      };
+
+      beforeEach(() => {
+        commit = jest.fn();
+        state = {
+          endpointDiffForPath,
+          diffFiles: [],
+        };
+        getters = {
+          flatBlobsList: [treeEntry],
+          getDiffFileByHash(hash) {
+            return state.diffFiles?.find((entry) => entry.file_hash === hash);
+          },
+        };
+        hubSpy = jest.spyOn(diffsEventHub, '$emit');
+      });
+
+      it('does nothing if the file already exists in the loaded diff files', () => {
+        state.diffFiles = fileResult.diff_files;
+
+        return testAction(diffActions.prefetchSingleFile, treeEntry, getters, [], []);
+      });
+
+      it('does some standard work every time', async () => {
+        mock.onGet(diffForPath).reply(HTTP_STATUS_OK, fileResult);
+
+        await diffActions.prefetchSingleFile({ state, getters, commit }, treeEntry);
+
+        expect(commit).toHaveBeenCalledWith(types.TREE_ENTRY_DIFF_LOADING, {
+          path: treeEntry.filePaths.new,
+        });
+
+        // wait for the mocked network request to return
+        await waitForPromises();
+
+        expect(commit).toHaveBeenCalledWith(types.SET_DIFF_DATA_BATCH, fileResult);
+
+        expect(hubSpy).toHaveBeenCalledWith('diffFilesModified');
+      });
+
+      it('should fetch data without commit ID', async () => {
+        getters.commitId = null;
+        mock.onGet(diffForPath).reply(HTTP_STATUS_OK, fileResult);
+
+        await diffActions.prefetchSingleFile({ state, getters, commit }, treeEntry);
+
+        // wait for the mocked network request to return and start processing the .then
+        await waitForPromises();
+
+        // This tests that commit_id is NOT added, if there isn't one in the store
+        expect(mock.history.get[0].url).toEqual(diffForPath);
+      });
+
+      it('should fetch data with commit ID', async () => {
+        const finalPath = mergeUrlParams(
+          { ...defaultParams, commit_id: '123' },
+          endpointDiffForPath,
+        );
+
+        getters.commitId = '123';
+        mock.onGet(finalPath).reply(HTTP_STATUS_OK, fileResult);
+
+        await diffActions.prefetchSingleFile({ state, getters, commit }, treeEntry);
+
+        // wait for the mocked network request to return and start processing the .then
+        await waitForPromises();
+
+        expect(mock.history.get[0].url).toEqual(finalPath);
+      });
+
+      describe('version parameters', () => {
+        const diffId = '4';
+        const startSha = 'abc';
+        const pathRoot = 'a/a/-/merge_requests/1';
+
+        it('fetches the data when there is no mergeRequestDiff', async () => {
+          diffActions.prefetchSingleFile({ state, getters, commit }, treeEntry);
+
+          // wait for the mocked network request to return and start processing the .then
+          await waitForPromises();
+
+          expect(mock.history.get[0].url).toEqual(diffForPath);
+        });
+
+        it.each`
+          desc                                   | versionPath                                              | start_sha    | diff_id
+          ${'no additional version information'} | ${`${pathRoot}?search=terms`}                            | ${undefined} | ${undefined}
+          ${'the diff_id'}                       | ${`${pathRoot}?diff_id=${diffId}`}                       | ${undefined} | ${diffId}
+          ${'the start_sha'}                     | ${`${pathRoot}?start_sha=${startSha}`}                   | ${startSha}  | ${undefined}
+          ${'all available version information'} | ${`${pathRoot}?diff_id=${diffId}&start_sha=${startSha}`} | ${startSha}  | ${diffId}
+        `('fetches the data and includes $desc', async ({ versionPath, start_sha, diff_id }) => {
+          const finalPath = mergeUrlParams(
+            { ...defaultParams, diff_id, start_sha },
+            endpointDiffForPath,
+          );
+          state.mergeRequestDiff = { version_path: versionPath };
+          mock.onGet(finalPath).reply(HTTP_STATUS_OK, fileResult);
+
+          diffActions.prefetchSingleFile({ state, getters, commit }, treeEntry);
+
+          // wait for the mocked network request to return
+          await waitForPromises();
+
+          expect(mock.history.get[0].url).toEqual(finalPath);
+        });
+      });
+
+      describe('when the prefetch fails', () => {
+        beforeEach(() => {
+          mock.onGet(diffForPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        });
+
+        it('should commit a mutation to set the tree entry diff loading to false', async () => {
+          diffActions.prefetchSingleFile({ state, getters, commit }, treeEntry);
+
+          // wait for the mocked network request to return
+          await waitForPromises();
+
+          expect(commit).toHaveBeenCalledWith(types.TREE_ENTRY_DIFF_LOADING, {
+            path: treeEntry.filePaths.new,
+            loading: false,
+          });
+        });
+      });
+    });
+  });
+
   describe('fetchFileByFile', () => {
     beforeEach(() => {
       window.location.hash = 'e334a2a10f036c00151a04cea7938a5d4213a818';
@@ -457,6 +626,37 @@ describe('DiffsStoreActions', () => {
       }
 
       expect(createAlert).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('prefetchFileNeighbors', () => {
+    it('dispatches two requests to prefetch the next/previous files', () => {
+      testAction(
+        diffActions.prefetchFileNeighbors,
+        {},
+        {
+          currentDiffIndex: 0,
+          flatBlobsList: [
+            {
+              type: 'blob',
+              fileHash: 'abc',
+            },
+            {
+              type: 'blob',
+              fileHash: 'def',
+            },
+            {
+              type: 'blob',
+              fileHash: 'ghi',
+            },
+          ],
+        },
+        [],
+        [
+          { type: 'prefetchSingleFile', payload: { type: 'blob', fileHash: 'def' } },
+          { type: 'prefetchSingleFile', payload: { type: 'blob', fileHash: 'abc' } },
+        ],
+      );
     });
   });
 

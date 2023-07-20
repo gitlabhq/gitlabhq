@@ -86,6 +86,7 @@ export const generateTreeList = (files) => {
             Object.assign(entry, {
               changed: true,
               diffLoaded: false,
+              diffLoading: false,
               filePaths: {
                 old: file.old_path,
                 new: file.new_path,

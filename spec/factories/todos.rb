@@ -45,6 +45,10 @@ FactoryBot.define do
       action { Todo::MEMBER_ACCESS_REQUESTED }
     end
 
+    trait :review_submitted do
+      action { Todo::REVIEW_SUBMITTED }
+    end
+
     trait :pending do
       state { :pending }
     end

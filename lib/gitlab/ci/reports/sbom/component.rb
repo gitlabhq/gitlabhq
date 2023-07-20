@@ -14,6 +14,10 @@ module Gitlab
             @version = version
           end
 
+          def <=>(other)
+            sort_by_attributes(self) <=> sort_by_attributes(other)
+          end
+
           def ingestible?
             supported_component_type? && supported_purl_type?
           end
@@ -36,6 +40,23 @@ module Gitlab
 
             # however, if the purl type is provided, it _must be valid_
             ::Enums::Sbom.purl_types.include?(purl.type.to_sym)
+          end
+
+          def sort_by_attributes(component)
+            [
+              component.name,
+              purl_type_int(component),
+              component_type_int(component),
+              component.version.to_s
+            ]
+          end
+
+          def component_type_int(component)
+            ::Enums::Sbom::COMPONENT_TYPES.fetch(component.component_type.to_sym)
+          end
+
+          def purl_type_int(component)
+            ::Enums::Sbom::PURL_TYPES.fetch(component.purl&.type&.to_sym, 0)
           end
         end
       end

@@ -2,7 +2,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DiffInlineFindings from '~/diffs/components/diff_inline_findings.vue';
 import DiffInlineFindingsItem from '~/diffs/components/diff_inline_findings_item.vue';
 import { NEW_CODE_QUALITY_FINDINGS } from '~/diffs/i18n';
-import { multipleCodeQualityNoSast } from '../mock_data/diff_code_quality';
+import { multipleCodeQualityNoSast } from '../mock_data/inline_findings';
 
 let wrapper;
 const heading = () => wrapper.findByTestId('diff-inline-findings-heading');

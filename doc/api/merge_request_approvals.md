@@ -89,7 +89,7 @@ Supported attributes:
 > - Pagination support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31011) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
 > - Pagination support [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366823) in GitLab 15.7. Feature flag `approval_rules_pagination` removed.
-> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 15.8.
+> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
 
 You can request information about a project's approval rules using the following endpoint:
 
@@ -193,7 +193,7 @@ Supported attributes:
 
 > - Introduced in GitLab 13.7.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 1x.x.
+> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
 
 You can request information about a single project approval rules using the following endpoint:
 
@@ -295,7 +295,7 @@ Supported attributes:
 > - Moved to GitLab Premium in 13.9.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 1x.x.
+> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
 
 You can create project approval rules using the following endpoint:
 
@@ -422,7 +422,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 > - Moved to GitLab Premium in 13.9.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 1x.x.
+> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
 
 You can update project approval rules using the following endpoint:
 

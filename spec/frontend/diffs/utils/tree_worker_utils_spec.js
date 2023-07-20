@@ -76,6 +76,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
               addedLines: 0,
               changed: true,
               diffLoaded: false,
+              diffLoading: false,
               deleted: false,
               fileHash: 'test',
               filePaths: {
@@ -103,6 +104,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
                   addedLines: 0,
                   changed: true,
                   diffLoaded: false,
+                  diffLoading: false,
                   deleted: false,
                   fileHash: 'test',
                   filePaths: {
@@ -123,6 +125,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
                   addedLines: 0,
                   changed: true,
                   diffLoaded: false,
+                  diffLoading: false,
                   deleted: false,
                   fileHash: 'test',
                   filePaths: {
@@ -154,6 +157,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
               addedLines: 42,
               changed: true,
               diffLoaded: false,
+              diffLoading: false,
               deleted: false,
               fileHash: 'test',
               filePaths: {
@@ -181,6 +185,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
           type: 'blob',
           changed: true,
           diffLoaded: false,
+          diffLoading: false,
           tempFile: true,
           submodule: true,
           deleted: false,
@@ -201,6 +206,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
           type: 'blob',
           changed: true,
           diffLoaded: false,
+          diffLoading: false,
           tempFile: false,
           submodule: undefined,
           deleted: true,

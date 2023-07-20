@@ -3584,6 +3584,9 @@ msgstr ""
 msgid "AdminSettings|Set a CI/CD template as the required pipeline configuration for all projects in the instance. Project CI/CD configuration merges into the required pipeline configuration when the pipeline runs. %{link_start}What is a required pipeline configuration?%{link_end}"
 msgstr ""
 
+msgid "AdminSettings|Set options for cost factors of forks"
+msgstr ""
+
 msgid "AdminSettings|Set the expiration time of authentication tokens of newly registered group runners."
 msgstr ""
 
@@ -3630,6 +3633,9 @@ msgid "AdminSettings|The template for the required pipeline configuration can be
 msgstr ""
 
 msgid "AdminSettings|There are Advanced Search migrations pending that require indexing to pause. Indexing must remain paused until GitLab completes the migrations."
+msgstr ""
+
+msgid "AdminSettings|This cost factor will be applied to the storage consumed by forks."
 msgstr ""
 
 msgid "AdminSettings|This limit cannot be disabled. Set to 0 to block all DAG dependencies."
@@ -12961,6 +12967,12 @@ msgstr ""
 msgid "CorpusManagement|Total Size: %{totalSize}"
 msgstr ""
 
+msgid "Cost Factor Settings"
+msgstr ""
+
+msgid "Cost factor for forks of projects"
+msgstr ""
+
 msgid "Could not access the Wiki Repository at this time."
 msgstr ""
 
@@ -13553,9 +13565,6 @@ msgid "Creates a branch and a merge request to resolve this issue."
 msgstr ""
 
 msgid "Creates a summary of all comments"
-msgstr ""
-
-msgid "Creates a summary of all your draft code comments"
 msgstr ""
 
 msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue."
@@ -29962,6 +29971,9 @@ msgstr ""
 msgid "Namespace Limits"
 msgstr ""
 
+msgid "Namespace Storage"
+msgstr ""
+
 msgid "Namespace doesn't exist or you don't have permission."
 msgstr ""
 
@@ -29977,7 +29989,7 @@ msgstr ""
 msgid "Namespace:"
 msgstr ""
 
-msgid "NamespaceLimits|%{linkStart}%{username}%{linkEnd} changed the limit to %{limit} at %{date}"
+msgid "NamespaceLimits|%{date} %{linkStart}%{username}%{linkEnd} changed the limit to %{limit}"
 msgstr ""
 
 msgid "NamespaceLimits|Add minimum free storage amount (in MiB) that will be used to enforce storage usage for namespaces on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
@@ -30035,6 +30047,9 @@ msgid "NamespaceLimits|Exclusion added successfully"
 msgstr ""
 
 msgid "NamespaceLimits|Free Tier"
+msgstr ""
+
+msgid "NamespaceLimits|NONE"
 msgstr ""
 
 msgid "NamespaceLimits|Namespace limits could not be loaded. Reload the page to try again."
@@ -45107,7 +45122,7 @@ msgstr ""
 msgid "Summarize comments"
 msgstr ""
 
-msgid "Summarize my code review"
+msgid "Summarize my pending comments"
 msgstr ""
 
 msgid "Summary"
@@ -47018,6 +47033,9 @@ msgstr ""
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 
+msgid "There was an summarizing your pending comments."
+msgstr ""
+
 msgid "These dates affect how your epics appear in the roadmap. Set a fixed date or one inherited from the milestones assigned to issues in this epic."
 msgstr ""
 
@@ -48423,6 +48441,9 @@ msgid "Todos|mentioned %{who}"
 msgstr ""
 
 msgid "Todos|requested a review"
+msgstr ""
+
+msgid "Todos|reviewed your merge request"
 msgstr ""
 
 msgid "Todos|set %{who} as an approver"
@@ -51228,10 +51249,16 @@ msgstr ""
 msgid "Vulnerability|Crash address"
 msgstr ""
 
+msgid "Vulnerability|Crash address:"
+msgstr ""
+
 msgid "Vulnerability|Crash state"
 msgstr ""
 
 msgid "Vulnerability|Crash type"
+msgstr ""
+
+msgid "Vulnerability|Crash type:"
 msgstr ""
 
 msgid "Vulnerability|Description"
@@ -51297,6 +51324,9 @@ msgstr ""
 msgid "Vulnerability|Image"
 msgstr ""
 
+msgid "Vulnerability|Image:"
+msgstr ""
+
 msgid "Vulnerability|Information related to how the vulnerability was discovered and its impact on the system."
 msgstr ""
 
@@ -51310,6 +51340,9 @@ msgid "Vulnerability|Method"
 msgstr ""
 
 msgid "Vulnerability|Namespace"
+msgstr ""
+
+msgid "Vulnerability|Namespace:"
 msgstr ""
 
 msgid "Vulnerability|Project"
@@ -51360,6 +51393,9 @@ msgstr ""
 msgid "Vulnerability|Show prompt"
 msgstr ""
 
+msgid "Vulnerability|Stacktrace snippet:"
+msgstr ""
+
 msgid "Vulnerability|Status"
 msgstr ""
 
@@ -51400,6 +51436,12 @@ msgid "Vulnerability|Unmodified response:"
 msgstr ""
 
 msgid "Vulnerability|View training"
+msgstr ""
+
+msgid "Vulnerability|Vulnerable class:"
+msgstr ""
+
+msgid "Vulnerability|Vulnerable method:"
 msgstr ""
 
 msgid "WARNING:"

@@ -13199,6 +13199,8 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. ID of the catalog resource. |
 | <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`Release`](#release) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Latest version of the catalog resource. |
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Name of the catalog resource. |
+| <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Count of open issues that belong to the the catalog resource. |
+| <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Count of open merge requests that belong to the the catalog resource. |
 | <a id="cicatalogresourcereadmehtml"></a>`readmeHtml` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. GitLab Flavored Markdown rendering of `readme`. |
 | <a id="cicatalogresourcerootnamespace"></a>`rootNamespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Root namespace of the catalog resource. |
 | <a id="cicatalogresourcestarcount"></a>`starCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Number of times the catalog resource has been starred. |
@@ -26576,7 +26578,7 @@ State of a GitLab merge request.
 | <a id="mergerequeststateclosed"></a>`closed` | In closed state. |
 | <a id="mergerequeststatelocked"></a>`locked` | Discussion has been locked. |
 | <a id="mergerequeststatemerged"></a>`merged` | Merge request has been merged. |
-| <a id="mergerequeststateopened"></a>`opened` | In open state. |
+| <a id="mergerequeststateopened"></a>`opened` | Opened merge request. |
 
 ### `MergeStatus`
 
@@ -27259,6 +27261,7 @@ Values for sorting timelogs.
 | <a id="todoactionenummentioned"></a>`mentioned` | User was mentioned. |
 | <a id="todoactionenummerge_train_removed"></a>`merge_train_removed` | Merge request authored by the user was removed from the merge train. |
 | <a id="todoactionenumreview_requested"></a>`review_requested` | Review was requested from the user. |
+| <a id="todoactionenumreview_submitted"></a>`review_submitted` | Merge request authored by the user received a review. |
 | <a id="todoactionenumunmergeable"></a>`unmergeable` | Merge request authored by the user could not be merged. |
 
 ### `TodoStateEnum`

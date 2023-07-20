@@ -2,7 +2,7 @@ import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DiffInlineFindingsItem from '~/diffs/components/diff_inline_findings_item.vue';
 import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/ci/reports/codequality_report/constants';
-import { multipleFindingsArrCodeQualityScale } from '../mock_data/diff_code_quality';
+import { multipleFindingsArrCodeQualityScale } from '../mock_data/inline_findings';
 
 let wrapper;
 

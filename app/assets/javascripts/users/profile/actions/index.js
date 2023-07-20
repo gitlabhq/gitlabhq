@@ -7,7 +7,7 @@ export const initUserActionsApp = () => {
 
   if (!mountingEl) return false;
 
-  const { userId } = mountingEl.dataset;
+  const { userId, rssSubscriptionPath } = mountingEl.dataset;
 
   Vue.use(GlToast);
 
@@ -18,6 +18,7 @@ export const initUserActionsApp = () => {
       return createElement(UserActionsApp, {
         props: {
           userId,
+          rssSubscriptionPath,
         },
       });
     },

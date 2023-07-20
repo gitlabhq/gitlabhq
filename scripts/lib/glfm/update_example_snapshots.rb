@@ -358,7 +358,6 @@ module Glfm
           glfm_examples_statuses[name][:already_printed] = true
 
           # Copy over the existing example only if it exists and preserve_existing is true, otherwise omit this example
-          # noinspection RubyScope
           hash[name] = existing_hash[name] if existing_hash[name]
 
           next

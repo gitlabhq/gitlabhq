@@ -29,7 +29,6 @@ RSpec.shared_context 'with API::Markdown Snapshot shared context' do |ee_only: f
       let(:normalizations) { normalizations_by_example_name.dig(name, :html, :static, :snapshot) }
 
       it "verifies conversion of GLFM to HTML", :unlimited_max_formatted_output_length do
-        # noinspection RubyResolve
         normalized_html = normalize_html(html, normalizations)
         api_url = metadata_by_example_name&.dig(name, :api_request_override_path) || (api "/markdown")
 

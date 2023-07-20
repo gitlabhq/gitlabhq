@@ -189,6 +189,8 @@ potential replication issues. The Linux package automatically configures a track
 when `roles ['geo_secondary_role']` is set.
 If you want to run this database external to your Linux package installation, use the following instructions.
 
+#### Cloud-managed database services
+
 If you are using a cloud-managed service for the tracking database, you may need
 to grant additional roles to your tracking database user (by default, this is
 `gitlab_geo`):
@@ -200,14 +202,16 @@ to grant additional roles to your tracking database user (by default, this is
 This is for the installation of extensions during installation and upgrades. As an alternative,
 [ensure the extensions are installed manually, and read about the problems that may arise during future GitLab upgrades](../../../install/postgresql_extensions.md).
 
-To setup an external tracking database, follow the instructions below:
-
 NOTE:
 If you want to use Amazon RDS as a tracking database, make sure it has access to
 the secondary database. Unfortunately, just assigning the same security group is not enough as
 outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
 rule to the read-replica's security group allowing any TCP traffic from
 the tracking database on port 5432.
+
+#### Create the tracking database
+
+Create and configure the tracking database in your PostgreSQL instance:
 
 1. Set up PostgreSQL according to the
    [database requirements document](../../../install/requirements.md#database).
@@ -225,6 +229,10 @@ the tracking database on port 5432.
    host    all         all               <trusted tracking IP>/32      md5
    host    all         all               <trusted secondary IP>/32     md5
    ```
+
+#### Configure GitLab
+
+Configure GitLab to use this database. These steps are for Linux package and Docker deployments.
 
 1. SSH into a GitLab **secondary** server and login as root:
 
@@ -246,14 +254,19 @@ the tracking database on port 5432.
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
 
-1. The reconfigure should automatically create the database. If needed, you can perform this task manually. This task (whether run by itself or during reconfigure) requires the database user to be a superuser.
+#### Set up the database schema
+
+The reconfigure in the [steps above](#configure-gitlab) for Linux package and Docker deployments should handle these steps automatically.
+
+1. This task creates the database schema. It requires the database user to be a superuser.
 
    ```shell
-   gitlab-rake db:create:geo
+   sudo gitlab-rake db:create:geo
    ```
 
-1. The reconfigure should automatically migrate the database. You can migrate the database manually if needed, for example if `geo_secondary['auto_migrate'] = false`:
+1. Applying Rails database migrations (schema and data updates) is also performed by reconfigure. If `geo_secondary['auto_migrate'] = false` is set, or
+   the schema was created manually, this step will be required:
 
    ```shell
-   gitlab-rake db:migrate:geo
+   sudo gitlab-rake db:migrate:geo
    ```

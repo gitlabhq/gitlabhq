@@ -226,6 +226,12 @@ export default {
     }
 
     this.manageViewedEffects();
+
+    if (this.viewDiffsFileByFile) {
+      requestIdleCallback(() => {
+        this.prefetchFileNeighbors();
+      });
+    }
   },
   beforeDestroy() {
     eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
@@ -234,6 +240,7 @@ export default {
     ...mapActions('diffs', [
       'loadCollapsedDiff',
       'assignDiscussionsToDiff',
+      'prefetchFileNeighbors',
       'setFileCollapsedByUser',
       'saveDiffDiscussion',
       'toggleFileCommentForm',

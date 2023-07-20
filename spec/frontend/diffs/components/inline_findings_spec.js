@@ -1,20 +1,17 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import DiffCodeQuality from '~/diffs/components/diff_code_quality.vue';
+import InlineFindings from '~/diffs/components/inline_findings.vue';
 import DiffInlineFindings from '~/diffs/components/diff_inline_findings.vue';
 import { NEW_CODE_QUALITY_FINDINGS, NEW_SAST_FINDINGS } from '~/diffs/i18n';
-import {
-  multipleCodeQualityNoSast,
-  multipleSastNoCodeQuality,
-} from '../mock_data/diff_code_quality';
+import { multipleCodeQualityNoSast, multipleSastNoCodeQuality } from '../mock_data/inline_findings';
 
 let wrapper;
 
 const diffInlineFindings = () => wrapper.findComponent(DiffInlineFindings);
 const allDiffInlineFindings = () => wrapper.findAllComponents(DiffInlineFindings);
 
-describe('DiffCodeQuality', () => {
+describe('InlineFindings', () => {
   const createWrapper = (findings) => {
-    return mountExtended(DiffCodeQuality, {
+    return mountExtended(InlineFindings, {
       propsData: {
         expandedLines: [],
         codeQuality: findings.codeQuality,
@@ -23,12 +20,12 @@ describe('DiffCodeQuality', () => {
     });
   };
 
-  it('hides details and throws hideCodeQualityFindings event on close click', async () => {
+  it('hides details and throws hideInlineFindings event on close click', async () => {
     wrapper = createWrapper(multipleCodeQualityNoSast);
-    expect(wrapper.findByTestId('diff-codequality').exists()).toBe(true);
+    expect(wrapper.findByTestId('inline-findings').exists()).toBe(true);
 
-    await wrapper.findByTestId('diff-codequality-close').trigger('click');
-    expect(wrapper.emitted('hideCodeQualityFindings')).toHaveLength(1);
+    await wrapper.findByTestId('inline-findings-close').trigger('click');
+    expect(wrapper.emitted('hideInlineFindings')).toHaveLength(1);
   });
 
   it('renders diff inline findings component with correct props for codequality array', () => {

@@ -30,6 +30,7 @@ module TodosHelper
     when Todo::MEMBER_ACCESS_REQUESTED then format(
       s_("Todos|has requested access to %{what} %{which}"), what: _(todo.member_access_type), which: _(todo.target.name)
     )
+    when Todo::REVIEW_SUBMITTED then s_('Todos|reviewed your merge request')
     end
   end
 

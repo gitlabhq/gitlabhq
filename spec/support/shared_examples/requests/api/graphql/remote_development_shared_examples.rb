@@ -10,9 +10,7 @@ RSpec.shared_examples 'workspaces query in licensed environment and with feature
 
     it_behaves_like 'a working graphql query'
 
-    # noinspection RubyResolve
     it { is_expected.to match_array(a_hash_including('name' => workspace.name)) }
-    # noinspection RubyResolve
 
     context 'when user is not authorized' do
       let(:current_user) { create(:user) }

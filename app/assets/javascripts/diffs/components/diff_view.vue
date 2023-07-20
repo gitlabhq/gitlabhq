@@ -100,7 +100,7 @@ export default {
       }
       this.idState.dragStart = line;
     },
-    hideCodeQualityFindings(line) {
+    hideInlineFindings(line) {
       const index = this.codeQualityExpandedLines.indexOf(line);
       if (index > -1) {
         this.codeQualityExpandedLines.splice(index, 1);
@@ -110,7 +110,7 @@ export default {
       if (!this.codeQualityExpandedLines.includes(line)) {
         this.codeQualityExpandedLines.push(line);
       } else {
-        this.hideCodeQualityFindings(line);
+        this.hideInlineFindings(line);
       }
     },
     onDragOver(line) {
@@ -274,7 +274,7 @@ export default {
         v-if="codeQualityExpandedLines.includes(getCodeQualityLine(line))"
         :key="line.line_code"
         :line="line"
-        @hideCodeQualityFindings="hideCodeQualityFindings"
+        @hideInlineFindings="hideInlineFindings"
       />
       <div
         v-if="line.renderCommentRow"

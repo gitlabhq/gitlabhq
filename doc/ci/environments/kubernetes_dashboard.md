@@ -20,6 +20,9 @@ For Flux users, the synchronization status of a given environment is not display
 
 ## Configure a dashboard
 
+> - Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `kubernetes_namespace_for_environment`. Disabled by default.
+> - Feature flag `kubernetes_namespace_for_environment` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127043) in GitLab 16.3.
+
 Configure a dashboard to use it for a given environment.
 You can configure dashboard for an environment that already exists, or
 add one when you create an environment.
@@ -36,6 +39,7 @@ Prerequisites:
 1. Select the environment to be associated with the Kubernetes.
 1. Select **Edit**.
 1. Select a GitLab agent for Kubernetes.
+1. Optional. From the **Kubernetes namespace** dropdown list, select a namespace.
 1. Select **Save**.
 
 ### The environment doesn't exist
@@ -45,6 +49,7 @@ Prerequisites:
 1. Select **New environment**.
 1. Complete the **Name** field.
 1. Select a GitLab agent for Kubernetes.
+1. Optional. From the **Kubernetes namespace** dropdown list, select a namespace.
 1. Select **Save**.
 
 ## View a dashboard

@@ -309,6 +309,10 @@ module MergeRequestsHelper
   def tab_count_display(merge_request, count)
     merge_request.preparing? ? "-" : count
   end
+
+  def review_bar_data(_merge_request, _user)
+    { new_comment_template_path: profile_comment_templates_path }
+  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

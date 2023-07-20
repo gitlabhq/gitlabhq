@@ -42,6 +42,7 @@ jest.mock('~/notes/mixins/diff_line_note_form', () => ({
 Vue.use(Vuex);
 
 const saveDiffDiscussionMock = jest.fn();
+const prefetchFileNeighborsMock = jest.fn();
 
 function changeViewer(store, index, { automaticallyCollapsed, manuallyCollapsed, name }) {
   const file = store.state.diffs.diffFiles[index];
@@ -91,6 +92,7 @@ function createComponent({ file, first = false, last = false, options = {}, prop
   const diffs = diffsModule();
   diffs.actions = {
     ...diffs.actions,
+    prefetchFileNeighbors: prefetchFileNeighborsMock,
     saveDiffDiscussion: saveDiffDiscussionMock,
   };
 
@@ -155,17 +157,42 @@ const triggerSaveDraftNote = (wrapper, note, parent, error) =>
   findNoteForm(wrapper).vm.$emit('handleFormUpdateAddToReview', note, false, parent, error);
 
 describe('DiffFile', () => {
+  let readableFile;
   let wrapper;
   let store;
   let axiosMock;
 
   beforeEach(() => {
+    readableFile = getReadableFile();
     axiosMock = new MockAdapter(axios);
-    ({ wrapper, store } = createComponent({ file: getReadableFile() }));
+    ({ wrapper, store } = createComponent({ file: readableFile }));
   });
 
   afterEach(() => {
     axiosMock.restore();
+  });
+
+  describe('mounted', () => {
+    beforeEach(() => {
+      jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
+    });
+
+    it.each`
+      description                                        | fileByFile
+      ${'does not prefetch if not in file-by-file mode'} | ${false}
+      ${'prefetches when in file-by-file mode'}          | ${true}
+    `('$description', ({ fileByFile }) => {
+      createComponent({
+        props: { viewDiffsFileByFile: fileByFile },
+        file: readableFile,
+      });
+
+      if (fileByFile) {
+        expect(prefetchFileNeighborsMock).toHaveBeenCalled();
+      } else {
+        expect(prefetchFileNeighborsMock).not.toHaveBeenCalled();
+      }
+    });
   });
 
   describe('bus events', () => {

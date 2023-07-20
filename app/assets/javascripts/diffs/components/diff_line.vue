@@ -1,9 +1,9 @@
 <script>
-import DiffCodeQuality from './diff_code_quality.vue';
+import InlineFindings from './inline_findings.vue';
 
 export default {
   components: {
-    DiffCodeQuality,
+    InlineFindings,
   },
   props: {
     line: {
@@ -26,9 +26,9 @@ export default {
     },
   },
   methods: {
-    hideCodeQualityFindings() {
+    hideInlineFindings() {
       this.$emit(
-        'hideCodeQualityFindings',
+        'hideInlineFindings',
         this.codeQualityLineNumber ? this.codeQualityLineNumber : this.sastLineNumber,
       );
     },
@@ -37,9 +37,9 @@ export default {
 </script>
 
 <template>
-  <diff-code-quality
+  <inline-findings
     :code-quality="parsedCodeQuality"
     :sast="parsedSast"
-    @hideCodeQualityFindings="hideCodeQualityFindings"
+    @hideInlineFindings="hideInlineFindings"
   />
 </template>

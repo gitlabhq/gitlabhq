@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import { throttle } from 'lodash';
 import DiffView from '~/diffs/components/diff_view.vue';
 import DiffLine from '~/diffs/components/diff_line.vue';
-import { diffCodeQuality } from '../mock_data/diff_code_quality';
+import { diffCodeQuality } from '../mock_data/inline_findings';
 
 jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
 const lodash = jest.requireActual('lodash');

@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapActions, mapGetters } from 'vuex';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import store from '~/mr_notes/stores';
 
-export const initReviewBar = ({ editorAiActions = [] } = {}) => {
+export const initReviewBar = () => {
   const el = document.getElementById('js-review-bar');
 
   if (!el) return;
@@ -21,7 +22,7 @@ export const initReviewBar = ({ editorAiActions = [] } = {}) => {
     },
     provide: {
       newCommentTemplatePath: el.dataset.newCommentTemplatePath,
-      editorAiActions,
+      canSummarize: parseBoolean(el.dataset.canSummarize),
     },
     computed: {
       ...mapGetters('batchComments', ['draftsCount']),

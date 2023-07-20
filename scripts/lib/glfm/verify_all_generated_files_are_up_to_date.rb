@@ -25,9 +25,7 @@ module Glfm
       output("Running `yarn install --frozen-lockfile` to ensure `yarn check-dependencies` doesn't fail...")
       run_external_cmd('yarn install --frozen-lockfile')
 
-      # noinspection RubyMismatchedArgumentType
       update_specification_script = File.expand_path('../../glfm/update-specification.rb', __dir__)
-      # noinspection RubyMismatchedArgumentType
       update_example_snapshots_script = File.expand_path('../../glfm/update-example-snapshots.rb', __dir__)
 
       output("Running `#{update_specification_script}`...")

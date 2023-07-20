@@ -44,6 +44,13 @@ The next section of the comment contains detailed information for each migration
   calls, timings, and the number of the changed rows.
 - **Runtime histogram** - Indicates the distribution of query times for the migration.
 
+### Database size increase
+
+Occasionally, a migration shows a +8.00 KiB size increase, even if the migration was not
+expected to result in a size increase. Completing any migration adds a row to the
+`schema_migrations` table, which may require a new disk page to be created.
+If a new disk page is created, the size of the database will grow by exactly 8 KiB.
+
 ## Background migration details
 
 The next section of the comment contains detailed information about each batched background migration, including:

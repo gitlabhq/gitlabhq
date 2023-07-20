@@ -123,7 +123,6 @@ module Glfm
       validate_expected_spec_version!(ghfm_spec_lines[2])
 
       # Reset IO stream and re-read into a single string for easy writing
-      # noinspection RubyNilAnalysis
       ghfm_spec_txt_uri_io.seek(0)
       ghfm_spec_string = ghfm_spec_txt_uri_io.read
       raise "Unable to read string from #{GHFM_SPEC_TXT_URI}" unless ghfm_spec_string
@@ -268,9 +267,7 @@ module Glfm
     end
 
     # NOTE: body, title, and version are used by the ERB binding.
-    # noinspection RubyUnusedLocalVariable
     def add_styling_to_specification_html(body:, title:, version:)
-      # noinspection RubyMismatchedArgumentType
       ERB.new(File.read(File.expand_path('specification_html_template.erb', __dir__))).result(binding)
     end
 
