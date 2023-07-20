@@ -275,6 +275,7 @@ export default {
         }
         this.$toast.show(s__('WorkItem|Promoted to objective.'));
         this.track('promote_kr_to_objective');
+        this.$emit('promotedToObjective');
       } catch (error) {
         this.throwConvertError();
         Sentry.captureException(error);

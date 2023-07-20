@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -16,6 +17,15 @@ import {
   TOKEN_TYPE_LABEL,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
+import {
+  WORK_ITEM_TO_ISSUE_MAP,
+  WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_AWARD_EMOJI,
+  EMOJI_THUMBSUP,
+  EMOJI_THUMBSDOWN,
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_LABELS,
+} from '~/work_items/constants';
 import {
   ALTERNATIVE_FILTER,
   API_PARAM,
@@ -318,3 +328,59 @@ export const convertToSearchQuery = (filterTokens) =>
     .filter((token) => token.type === FILTERED_SEARCH_TERM && token.value.data)
     .map((token) => token.value.data)
     .join(' ') || undefined;
+
+function findWidget(type, workItem) {
+  return workItem?.widgets?.find((widget) => widget.type === type);
+}
+
+export function mapWorkItemWidgetsToIssueFields(issuesList, workItem) {
+  return produce(issuesList, (draftData) => {
+    const activeItem = draftData.project.issues.nodes.find((issue) => issue.iid === workItem.iid);
+
+    Object.keys(WORK_ITEM_TO_ISSUE_MAP).forEach((type) => {
+      const currentWidget = findWidget(type, workItem);
+      if (!currentWidget) {
+        return;
+      }
+      const property = WORK_ITEM_TO_ISSUE_MAP[type];
+
+      // handling the case for assignees and labels
+      if (
+        property === WORK_ITEM_TO_ISSUE_MAP[WIDGET_TYPE_ASSIGNEES] ||
+        property === WORK_ITEM_TO_ISSUE_MAP[WIDGET_TYPE_LABELS]
+      ) {
+        activeItem[property] = {
+          ...currentWidget[property],
+          nodes: currentWidget[property].nodes.map((node) => ({
+            __persist: true,
+            ...node,
+          })),
+        };
+        return;
+      }
+
+      // handling the case for milestone
+      if (property === WORK_ITEM_TO_ISSUE_MAP[WIDGET_TYPE_MILESTONE] && currentWidget[property]) {
+        activeItem[property] = { __persist: true, ...currentWidget[property] };
+        return;
+      }
+
+      // handling emojis
+      if (property === WORK_ITEM_TO_ISSUE_MAP[WIDGET_TYPE_AWARD_EMOJI]) {
+        const upvotesCount =
+          currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBSUP)?.length ??
+          0;
+        const downvotesCount =
+          currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBSDOWN)
+            ?.length ?? 0;
+        activeItem.upvotes = upvotesCount;
+        activeItem.downvotes = downvotesCount;
+        return;
+      }
+      activeItem[property] = currentWidget[property];
+    });
+
+    activeItem.title = workItem.title;
+    activeItem.confidential = workItem.confidential;
+  });
+}

@@ -203,6 +203,16 @@ export default {
       required: false,
       default: false,
     },
+    activeIssuable: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    preventRedirect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -299,6 +309,9 @@ export default {
     handlePageSizeChange(newPageSize) {
       this.$emit('page-size-change', newPageSize);
     },
+    isIssuableActive(issuable) {
+      return Boolean(issuable.iid === this.activeIssuable?.iid);
+    },
   },
   PAGE_SIZE_STORAGE_KEY,
 };
@@ -373,7 +386,10 @@ export default {
           :show-checkbox="showBulkEditSidebar"
           :checked="issuableChecked(issuable)"
           :show-work-item-type-icon="showWorkItemTypeIcon"
+          :prevent-redirect="preventRedirect"
+          :is-active="isIssuableActive(issuable)"
           @checked-input="handleIssuableCheckedInput(issuable, $event)"
+          @select-issuable="$emit('select-issuable', $event)"
         >
           <template #reference>
             <slot name="reference" :issuable="issuable"></slot>

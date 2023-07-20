@@ -1,4 +1,4 @@
-import { GlButton, GlDisclosureDropdown } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlDrawer } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -70,6 +70,14 @@ import {
   TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
+import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
+import {
+  workItemResponseFactory,
+  mockAssignees,
+  mockLabels,
+  mockMilestone,
+} from 'jest/work_items/mock_data';
 
 import('~/issuable');
 import('~/users_select');
@@ -130,6 +138,10 @@ describe('CE IssuesListApp component', () => {
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
   const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
 
+  const deleteWorkItemMutationHandler = jest
+    .fn()
+    .mockResolvedValue({ data: { workItemDelete: { errors: [] } } });
+
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
@@ -142,6 +154,8 @@ describe('CE IssuesListApp component', () => {
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
   const findCalendarButton = () => wrapper.findByTestId('subscribe-calendar');
   const findRssButton = () => wrapper.findByTestId('subscribe-rss');
+  const findIssuableDrawer = () => wrapper.findComponent(GlDrawer);
+  const findDrawerWorkItem = () => wrapper.findComponent(WorkItemDetail);
 
   const findLabelsToken = () =>
     findIssuableList()
@@ -156,11 +170,13 @@ describe('CE IssuesListApp component', () => {
     sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
     stubs = {},
     mountFn = shallowMount,
+    deleteMutationHandler = deleteWorkItemMutationHandler,
   } = {}) => {
     const requestHandlers = [
       [getIssuesQuery, issuesQueryResponse],
       [getIssuesCountsQuery, issuesCountsQueryResponse],
       [setSortPreferenceMutation, sortPreferenceMutationResponse],
+      [deleteWorkItemMutation, deleteMutationHandler],
     ];
 
     router = new VueRouter({ mode: 'history' });
@@ -1016,5 +1032,210 @@ describe('CE IssuesListApp component', () => {
 
       expect(findLabelsToken().fetchLatestLabels).toBe(null);
     });
+  });
+
+  describe('when issue drawer is enabled', () => {
+    beforeEach(() => {
+      wrapper = mountComponent({
+        provide: {
+          glFeatures: {
+            issuesListDrawer: true,
+          },
+        },
+        stubs: {
+          GlDrawer,
+        },
+      });
+    });
+
+    it('renders issuable drawer component', () => {
+      expect(findIssuableDrawer().exists()).toBe(true);
+    });
+
+    it('renders issuable drawer closed by default', () => {
+      expect(findIssuableDrawer().props('open')).toBe(false);
+    });
+
+    describe('on selecting an issuable', () => {
+      beforeEach(() => {
+        findIssuableList().vm.$emit(
+          'select-issuable',
+          getIssuesQueryResponse.data.project.issues.nodes[0],
+        );
+        return nextTick();
+      });
+
+      it('opens issuable drawer', () => {
+        expect(findIssuableDrawer().props('open')).toBe(true);
+      });
+
+      it('selects active issuable', () => {
+        expect(findIssuableList().props('activeIssuable')).toEqual(
+          getIssuesQueryResponse.data.project.issues.nodes[0],
+        );
+      });
+
+      describe('when closing the drawer', () => {
+        it('closes the drawer on drawer `close` event', async () => {
+          findIssuableDrawer().vm.$emit('close');
+          await nextTick();
+
+          expect(findIssuableDrawer().props('open')).toBe(false);
+        });
+
+        it('removes active issuable', async () => {
+          findIssuableDrawer().vm.$emit('close');
+          await nextTick();
+
+          expect(findIssuableList().props('activeIssuable')).toBe(null);
+        });
+      });
+
+      describe('when updating an issuable', () => {
+        it('refetches the list if the issuable changed state', async () => {
+          const {
+            data: { workItem },
+          } = workItemResponseFactory({ iid: '789', state: 'CLOSED' });
+          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+
+          await waitForPromises();
+
+          expect(mockIssuesQueryResponse).toHaveBeenCalledTimes(2);
+          expect(mockIssuesCountsQueryResponse).toHaveBeenCalledTimes(2);
+        });
+
+        it('updates the assignees field of active issuable', async () => {
+          const {
+            data: { workItem },
+          } = workItemResponseFactory({ iid: '789' });
+          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+
+          await waitForPromises();
+
+          expect(findIssuableList().props('issuables')[0].assignees.nodes).toEqual(
+            mockAssignees.map((assignee) => ({
+              ...assignee,
+              __persist: true,
+            })),
+          );
+        });
+
+        it('updates the labels field of active issuable', async () => {
+          const {
+            data: { workItem },
+          } = workItemResponseFactory({ iid: '789' });
+          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+
+          await waitForPromises();
+
+          expect(findIssuableList().props('issuables')[0].labels.nodes).toEqual(
+            mockLabels.map((label) => ({
+              ...label,
+              __persist: true,
+              textColor: undefined,
+            })),
+          );
+        });
+
+        it('updates the milestone field of active issuable', async () => {
+          const {
+            data: { workItem },
+          } = workItemResponseFactory({ iid: '789' });
+          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+
+          await waitForPromises();
+
+          expect(findIssuableList().props('issuables')[0].milestone).toEqual({
+            ...mockMilestone,
+            __persist: true,
+            expired: undefined,
+            state: undefined,
+          });
+        });
+
+        it('updates the title and confidential state of active issuable', async () => {
+          const {
+            data: { workItem },
+          } = workItemResponseFactory({ iid: '789', confidential: true });
+          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+
+          await waitForPromises();
+
+          expect(findIssuableList().props('issuables')[0].title).toBe('Updated title');
+          expect(findIssuableList().props('issuables')[0].confidential).toBe(true);
+        });
+
+        it('refetches the list if new child was added to active issuable', async () => {
+          findDrawerWorkItem().vm.$emit('addChild');
+
+          await waitForPromises();
+
+          expect(mockIssuesQueryResponse).toHaveBeenCalledTimes(2);
+          expect(mockIssuesCountsQueryResponse).toHaveBeenCalledTimes(2);
+        });
+
+        it('updates issuable type to objective if promoted to objective', async () => {
+          findDrawerWorkItem().vm.$emit('promotedToObjective', '789');
+
+          await waitForPromises();
+          // required for cache updates
+          jest.runOnlyPendingTimers();
+          await nextTick();
+
+          expect(findIssuableList().props('issuables')[0].type).toBe('OBJECTIVE');
+        });
+      });
+
+      describe('when deleting an issuable from the drawer', () => {
+        beforeEach(async () => {
+          const {
+            data: { workItem },
+          } = workItemResponseFactory({ iid: '789' });
+          findDrawerWorkItem().vm.$emit('deleteWorkItem', workItem);
+
+          await waitForPromises();
+        });
+
+        it('should refetch issues and issues count', () => {
+          expect(mockIssuesQueryResponse).toHaveBeenCalledTimes(2);
+          expect(mockIssuesCountsQueryResponse).toHaveBeenCalledTimes(2);
+        });
+
+        it('should close the issue drawer', () => {
+          expect(findIssuableDrawer().props('open')).toBe(false);
+        });
+      });
+    });
+  });
+
+  it('shows an error when deleting from the drawer fails', async () => {
+    const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
+    const {
+      data: { workItem },
+    } = workItemResponseFactory({ iid: '789' });
+
+    wrapper = mountComponent({
+      provide: {
+        glFeatures: {
+          issuesListDrawer: true,
+        },
+      },
+      stubs: {
+        GlDrawer,
+      },
+      deleteMutationHandler: errorHandler,
+    });
+
+    findIssuableList().vm.$emit(
+      'select-issuable',
+      getIssuesQueryResponse.data.project.issues.nodes[0],
+    );
+    await nextTick();
+
+    findDrawerWorkItem().vm.$emit('deleteWorkItem', workItem);
+    await waitForPromises();
+
+    expect(Sentry.captureException).toHaveBeenCalled();
+    expect(findIssuableList().props('error')).toBe('An error occurred while deleting an issuable.');
   });
 });

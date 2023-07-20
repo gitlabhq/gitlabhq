@@ -7458,6 +7458,7 @@ The connection type for [`Achievement`](#achievement).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="achievementconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="achievementconnectionedges"></a>`edges` | [`[AchievementEdge]`](#achievementedge) | A list of edges. |
 | <a id="achievementconnectionnodes"></a>`nodes` | [`[Achievement]`](#achievement) | A list of nodes. |
 | <a id="achievementconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -11808,6 +11809,7 @@ The connection type for [`UserAchievement`](#userachievement).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="userachievementconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="userachievementconnectionedges"></a>`edges` | [`[UserAchievementEdge]`](#userachievementedge) | A list of edges. |
 | <a id="userachievementconnectionnodes"></a>`nodes` | [`[UserAchievement]`](#userachievement) | A list of nodes. |
 | <a id="userachievementconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |

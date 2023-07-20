@@ -359,6 +359,7 @@ describe('WorkItemActions component', () => {
 
       expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalled();
       expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
+      expect(wrapper.emitted('promotedToObjective')).toEqual([[]]);
     });
 
     it('emits error when promote mutation fails', async () => {

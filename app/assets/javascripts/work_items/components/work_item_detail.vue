@@ -134,6 +134,7 @@ export default {
         if (!res.data) {
           return;
         }
+        this.$emit('work-item-updated', this.workItem);
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
         }
@@ -467,6 +468,7 @@ export default {
             @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
             @toggleWorkItemConfidentiality="toggleConfidentiality"
             @error="updateError = $event"
+            @promotedToObjective="$emit('promotedToObjective', workItemIid)"
           />
           <gl-button
             v-if="isModal"
@@ -542,6 +544,7 @@ export default {
                   "
                   @toggleWorkItemConfidentiality="toggleConfidentiality"
                   @error="updateError = $event"
+                  @promotedToObjective="$emit('promotedToObjective', workItemIid)"
                 />
               </div>
             </div>
@@ -584,6 +587,7 @@ export default {
               :can-update="canUpdate"
               :confidential="workItem.confidential"
               @show-modal="openInModal"
+              @addChild="$emit('addChild')"
             />
             <work-item-notes
               v-if="workItemNotes"

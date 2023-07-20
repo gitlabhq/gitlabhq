@@ -25,8 +25,8 @@ RSpec.describe 'shared/_label_row.html.haml' do
       expect(rendered).to have_text(label.title)
     end
 
-    it 'has a non-linked label title' do
-      expect(rendered).not_to have_link(label.title)
+    it 'has a linked label title' do
+      expect(rendered).to have_link(label.title)
     end
 
     it 'has Issues link' do
@@ -57,8 +57,8 @@ RSpec.describe 'shared/_label_row.html.haml' do
       expect(rendered).to have_text(label.title)
     end
 
-    it 'has a non-linked label title' do
-      expect(rendered).not_to have_link(label.title)
+    it 'has a linked label title' do
+      expect(rendered).to have_link(label.title)
     end
 
     it 'has Issues link' do
@@ -85,8 +85,8 @@ RSpec.describe 'shared/_label_row.html.haml' do
       expect(rendered).to have_text(label.title)
     end
 
-    it 'has a non-linked label title' do
-      expect(rendered).not_to have_link(label.title)
+    it 'has a linked label title' do
+      expect(rendered).to have_link(label.title)
     end
 
     it 'has Issues link' do
@@ -111,8 +111,8 @@ RSpec.describe 'shared/_label_row.html.haml' do
       expect(rendered).to have_text(label.title)
     end
 
-    it 'has a non-linked label title' do
-      expect(rendered).not_to have_link(label.title)
+    it 'has a linked label title' do
+      expect(rendered).to have_link(label.title)
     end
 
     it 'does not show Issues link' do

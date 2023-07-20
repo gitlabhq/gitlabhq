@@ -95,6 +95,8 @@ export async function mountIssuesListApp() {
     showNewIssueLink,
     signInPath,
     groupId = '',
+    reportAbusePath,
+    registerPath,
   } = el.dataset;
 
   return new Vue({
@@ -117,7 +119,10 @@ export async function mountIssuesListApp() {
       canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
       emptyStateSvgPath,
       fullPath,
+      projectPath: fullPath,
       groupPath,
+      reportAbusePath,
+      registerPath,
       hasAnyIssues: parseBoolean(hasAnyIssues),
       hasAnyProjects: parseBoolean(hasAnyProjects),
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),

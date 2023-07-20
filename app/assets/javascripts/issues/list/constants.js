@@ -115,6 +115,7 @@ export const i18n = {
   noSearchResultsTitle: __('Sorry, your filter produced no results'),
   relatedMergeRequests: __('Related merge requests'),
   reorderError: __('An error occurred while reordering issues.'),
+  deleteError: __('An error occurred while deleting an issuable.'),
   rssLabel: __('Subscribe to RSS feed'),
   searchPlaceholder: __('Search or filter results...'),
   upvotes: __('Upvotes'),

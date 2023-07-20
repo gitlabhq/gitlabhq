@@ -5,4 +5,5 @@ fragment MilestoneFragment on Milestone {
   state
   startDate
   dueDate
+  webPath
 }

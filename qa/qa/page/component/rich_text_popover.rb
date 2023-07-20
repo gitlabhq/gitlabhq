@@ -24,6 +24,7 @@ module QA
           within_element(:rich_text_promo_popover) do
             click_element(:close_button)
           end
+          has_no_element?(:rich_text_promo_popover)
         end
       end
     end

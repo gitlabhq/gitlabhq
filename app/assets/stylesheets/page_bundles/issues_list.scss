@@ -34,3 +34,13 @@
   opacity: 0.3;
   pointer-events: none;
 }
+
+.work-item-labels {
+  .gl-token {
+    padding-left: $gl-spacing-scale-1;
+  }
+
+  .gl-token-close {
+    display: none;
+  }
+}

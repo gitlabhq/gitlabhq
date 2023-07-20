@@ -44,6 +44,7 @@ export const mockMilestone = {
   expired: false,
   startDate: '2022-10-17',
   dueDate: '2022-10-24',
+  webPath: '123',
 };
 
 export const mockAwardEmojiThumbsUp = {
@@ -451,6 +452,7 @@ export const objectiveType = {
 };
 
 export const workItemResponseFactory = ({
+  iid = '1',
   canUpdate = false,
   canDelete = false,
   canCreateNote = false,
@@ -482,14 +484,15 @@ export const workItemResponseFactory = ({
   createdAt = '2022-08-03T12:41:54Z',
   updatedAt = '2022-08-08T12:32:54Z',
   awardEmoji = mockAwardsWidget,
+  state = 'OPEN',
 } = {}) => ({
   data: {
     workItem: {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
-      iid: '1',
+      iid,
       title: 'Updated title',
-      state: 'OPEN',
+      state,
       description: 'description',
       confidential,
       createdAt,

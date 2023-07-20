@@ -1,0 +1,8 @@
+---
+name: issues_list_drawer
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123019
+rollout_issue_url:
+milestone: '16.3'
+type: development
+group: group::product planning
+default_enabled: false

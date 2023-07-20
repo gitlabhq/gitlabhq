@@ -57,6 +57,16 @@ export default {
       required: false,
       default: false,
     },
+    isActive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    preventRedirect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     issuableId() {
@@ -177,6 +187,13 @@ export default {
       }
       return '';
     },
+    handleIssuableItemClick(e) {
+      if (e.metaKey || e.ctrlKey || !this.preventRedirect) {
+        return;
+      }
+      e.preventDefault();
+      this.$emit('select-issuable', { iid: this.issuableIid, webUrl: this.webUrl });
+    },
   },
 };
 </script>
@@ -185,9 +202,10 @@ export default {
   <li
     :id="`issuable_${issuableId}`"
     class="issue gl-display-flex! gl-px-5!"
-    :class="{ closed: issuable.closedAt }"
+    :class="{ closed: issuable.closedAt, 'gl-bg-blue-50': isActive }"
     :data-labels="labelIdsString"
     :data-qa-issue-id="issuableId"
+    data-testid="issuable-item-wrapper"
   >
     <gl-form-checkbox
       v-if="showCheckbox"
@@ -226,7 +244,9 @@ export default {
           dir="auto"
           :href="webUrl"
           data-qa-selector="issuable_title_link"
+          data-testid="issuable-title-link"
           v-bind="issuableTitleProps"
+          @click="handleIssuableItemClick"
         >
           {{ issuable.title }}
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
