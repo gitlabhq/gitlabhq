@@ -44,6 +44,18 @@ that are the largest value contributors, overperforming, or underperforming.
 You can also drill down the metrics for further analysis.
 When you hover over a metric, a tooltip displays an explanation of the metric and a link to the related documentation page.
 
+## DORA Performers score panel
+
+The DORA Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
+
+The chart is a breakdown of your project's DORA scores, categorized as high, medium, or low.
+Each bar on the chart displays the sum of total projects per score category, calculated monthly.
+Hovering over each bar reveals a dialog that explains the score's definition.
+
+For example, if a project has a high score for Deployment Frequency (Velocity), it means that the project has one or more deploys to production per day.
+
+![DORA performers score](img/dora_performers_score_panel_v16_3.png)
+
 ## View the value streams dashboard
 
 Prerequisite:

@@ -1,4 +1,4 @@
-import { GlFormGroup, GlSprintf, GlModal } from '@gitlab/ui';
+import { GlFormGroup, GlSprintf, GlModal, GlCollapse, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { createWrapper } from '@vue/test-utils';
@@ -12,6 +12,7 @@ import eventHub from '~/invite_members/event_hub';
 import ImportProjectMembersModal from '~/invite_members/components/import_project_members_modal.vue';
 import ProjectSelect from '~/invite_members/components/project_select.vue';
 import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_CREATED } from '~/lib/utils/http_status';
 
 import {
   displaySuccessfulInvitationAlert,
@@ -19,9 +20,14 @@ import {
 } from '~/invite_members/utils/trigger_successful_invite_alert';
 
 import {
+  EXPANDED_ERRORS,
   IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY,
   IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL,
 } from '~/invite_members/constants';
+import {
+  IMPORT_PROJECT_MEMBERS_PATH,
+  importProjectMembersApiResponse,
+} from '../mock_data/api_responses';
 
 jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 
@@ -92,6 +98,14 @@ describe('ImportProjectMembersModal', () => {
   const formGroupInvalidFeedback = () => findFormGroup().props('invalidFeedback');
   const formGroupErrorState = () => findFormGroup().props('state');
   const findProjectSelect = () => wrapper.findComponent(ProjectSelect);
+  const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
+  const findMoreInviteErrorsButton = () => wrapper.findByTestId('accordion-button');
+  const findAccordion = () => wrapper.findComponent(GlCollapse);
+  const findErrorsIcon = () => wrapper.findComponent(GlIcon);
+  const findMemberErrorMessage = (element) =>
+    `@${Object.keys(importProjectMembersApiResponse.EXPANDED_IMPORT_ERRORS.message)[element]}: ${
+      Object.values(importProjectMembersApiResponse.EXPANDED_IMPORT_ERRORS.message)[element]
+    }`;
 
   describe('rendering the modal', () => {
     beforeEach(() => {
@@ -241,7 +255,7 @@ describe('ImportProjectMembersModal', () => {
       });
     });
 
-    describe('when the import fails', () => {
+    describe('when the import fails due to generic api error', () => {
       beforeEach(async () => {
         createComponent();
 
@@ -274,6 +288,83 @@ describe('ImportProjectMembersModal', () => {
 
         expect(formGroupInvalidFeedback()).toBe('');
         expect(formGroupErrorState()).not.toBe(false);
+      });
+    });
+
+    describe('when the import fails with member import errors', () => {
+      const mockInvitationsApi = (code, data) => {
+        mock.onPost(IMPORT_PROJECT_MEMBERS_PATH).reply(code, data);
+      };
+
+      beforeEach(() => {
+        createComponent();
+        findProjectSelect().vm.$emit('input', projectToBeImported);
+      });
+
+      it('displays the error alert', async () => {
+        mockInvitationsApi(
+          HTTP_STATUS_CREATED,
+          importProjectMembersApiResponse.NO_COLLAPSE_IMPORT_ERRORS,
+        );
+
+        clickImportButton();
+        await waitForPromises();
+
+        expect(findMemberErrorAlert().props('title')).toContain(
+          'The following 2 out of 2 members could not be added',
+        );
+        expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(0));
+        expect(findMemberErrorAlert().text()).toContain(findMemberErrorMessage(1));
+      });
+
+      it('displays collapse when there are more than 2 errors', async () => {
+        mockInvitationsApi(
+          HTTP_STATUS_CREATED,
+          importProjectMembersApiResponse.EXPANDED_IMPORT_ERRORS,
+        );
+
+        clickImportButton();
+        await waitForPromises();
+
+        expect(findAccordion().exists()).toBe(true);
+        expect(findMoreInviteErrorsButton().text()).toContain('Show more (2)');
+      });
+
+      it('toggles the collapse on click', async () => {
+        mockInvitationsApi(
+          HTTP_STATUS_CREATED,
+          importProjectMembersApiResponse.EXPANDED_IMPORT_ERRORS,
+        );
+
+        clickImportButton();
+        await waitForPromises();
+
+        expect(findMoreInviteErrorsButton().text()).toContain('Show more (2)');
+        expect(findErrorsIcon().attributes('class')).not.toContain('gl-rotate-180');
+        expect(findAccordion().attributes('visible')).toBeUndefined();
+
+        await findMoreInviteErrorsButton().vm.$emit('click');
+
+        expect(findMoreInviteErrorsButton().text()).toContain(EXPANDED_ERRORS);
+        expect(findErrorsIcon().attributes('class')).toContain('gl-rotate-180');
+        expect(findAccordion().attributes('visible')).toBeDefined();
+
+        await findMoreInviteErrorsButton().vm.$emit('click');
+
+        expect(findMoreInviteErrorsButton().text()).toContain('Show more (2)');
+      });
+
+      it("doesn't display collapse when there are 2 or less errors", async () => {
+        mockInvitationsApi(
+          HTTP_STATUS_CREATED,
+          importProjectMembersApiResponse.NO_COLLAPSE_IMPORT_ERRORS,
+        );
+
+        clickImportButton();
+        await waitForPromises();
+
+        expect(findAccordion().exists()).toBe(false);
+        expect(findMoreInviteErrorsButton().exists()).toBe(false);
       });
     });
   });

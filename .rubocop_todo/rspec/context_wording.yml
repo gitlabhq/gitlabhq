@@ -689,7 +689,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/ee/keys/destroy_service_spec.rb'
     - 'ee/spec/services/ee/members/create_service_spec.rb'
     - 'ee/spec/services/ee/members/destroy_service_spec.rb'
-    - 'ee/spec/services/ee/members/import_project_team_service_spec.rb'
     - 'ee/spec/services/ee/members/invite_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/base_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/create_service_spec.rb'

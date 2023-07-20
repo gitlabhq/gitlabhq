@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User manages project members', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Settings > User manages project members', :js, feature_category: :groups_and_projects do
   include Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
   include ListboxHelpers
@@ -20,7 +20,7 @@ RSpec.describe 'Projects > Settings > User manages project members', feature_cat
     sign_in(user)
   end
 
-  it 'cancels a team member', :js do
+  it 'cancels a team member' do
     visit(project_project_members_path(project))
 
     show_actions_for_username(user_dmitriy)
@@ -37,24 +37,7 @@ RSpec.describe 'Projects > Settings > User manages project members', feature_cat
     expect(members_table).not_to have_content(user_dmitriy.username)
   end
 
-  it 'imports a team from another project', :js do
-    project2.add_maintainer(user)
-    project2.add_reporter(user_mike)
-
-    visit(project_project_members_path(project))
-
-    click_on 'Import from a project'
-    click_on 'Select a project'
-    wait_for_requests
-
-    select_listbox_item(project2.name_with_namespace)
-    click_button 'Import project members'
-    wait_for_requests
-
-    expect(find_member_row(user_mike)).to have_content('Reporter')
-  end
-
-  it 'shows all members of project shared group', :js do
+  it 'shows all members of project shared group' do
     group.add_owner(user)
     group.add_developer(user_dmitriy)
 

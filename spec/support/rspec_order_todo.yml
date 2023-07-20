@@ -4149,7 +4149,7 @@
 - './spec/features/projects/settings/user_changes_default_branch_spec.rb'
 - './spec/features/projects/settings/user_interacts_with_deploy_keys_spec.rb'
 - './spec/features/projects/settings/user_manages_merge_requests_settings_spec.rb'
-- './spec/features/projects/settings/user_manages_project_members_spec.rb'
+- './spec/features/projects/members/user_manages_project_members_spec.rb'
 - './spec/features/projects/settings/user_renames_a_project_spec.rb'
 - './spec/features/projects/settings/user_searches_in_settings_spec.rb'
 - './spec/features/projects/settings/user_sees_revoke_deploy_token_modal_spec.rb'

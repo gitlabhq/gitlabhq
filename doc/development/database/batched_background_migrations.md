@@ -13,6 +13,13 @@ in our guidelines. For example, you can use batched background
 migrations to migrate data that's stored in a single JSON column
 to a separate table instead.
 
+NOTE:
+Batched background migrations replaced the legacy background migrations framework.
+Check that documentation in reference to any changes involving that framework.
+
+NOTE:
+The batched background migrations framework has ChatOps support. Using ChatOps, GitLab engineers can interact with the batched background migrations present in the system.
+
 ## When to use batched background migrations
 
 Use a batched background migration when you migrate _data_ in tables containing
@@ -200,6 +207,13 @@ Batched background migrations must be isolated and cannot use application code (
 models defined in `app/models` except the `ApplicationRecord` classes).
 Because these migrations can take a long time to run, it's possible
 for new versions to deploy while the migrations are still running.
+
+### Depending on migrated data
+
+Unlike a regular or a post migration, waiting for the next release is not enough to guarantee that the data was fully migrated.
+That means that you shouldn't depend on the data until the BBM is finished. If having 100% of the data migrated is a requirement,
+then, the `ensure_batched_background_migration_is_finished` helper can be used to guarantee that the migration was finished and the
+data fully migrated. ([See an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L13-18)).
 
 ## How to
 
@@ -538,6 +552,107 @@ Bumping the [import/export version](../../user/project/settings/import_export.md
 be required, if importing a project from a prior version of GitLab requires the
 data to be in the new format.
 
+### Add indexes to support batched background migrations
+
+Sometimes it is necessary to add a new or temporary index to support a batched background migration.
+To do this, create the index in a post-deployment migration that precedes the post-deployment
+migration that queues the background migration.
+
+See the documentation for [adding database indexes](adding_database_indexes.md#analyzing-a-new-index-before-a-batched-background-migration)
+for additional information about some cases that require special attention to allow the index to be used directly after
+creation.
+
+### Execute a particular batch on the database testing pipeline
+
+NOTE:
+Only [database maintainers](https://gitlab.com/groups/gitlab-org/maintainers/database/-/group_members?with_inherited_permissions=exclude) can view the database testing pipeline artifacts. Ask one for help if you need to use this method.
+
+Let's assume that a batched background migration failed on a particular batch on GitLab.com and you want to figure out which query failed and why. At the moment, we don't have a good way to retrieve query information (especially the query parameters) and rerunning the entire migration with more logging would be a long process.
+
+Fortunately you can leverage our [database migration pipeline](database_migration_pipeline.md) to rerun a particular batch with additional logging and/or fix to see if it solves the problem.
+
+For an example see [Draft: `Test PG::CardinalityViolation` fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110910) but make sure to read the entire section.
+
+To do that, you need to:
+
+1. [Find the batch `start_id` and `end_id`](#find-the-batch-start_id-and-end_id)
+1. [Create a regular migration](#create-a-regular-migration)
+1. [Apply a workaround for our migration helpers](#apply-a-workaround-for-our-migration-helpers-optional) (optional)
+1. [Start the database migration pipeline](#start-the-database-migration-pipeline)
+
+#### Find the batch `start_id` and `end_id`
+
+You should be able to find those in [Kibana](#viewing-failure-error-logs).
+
+#### Create a regular migration
+
+Schedule the batch in the `up` block of a regular migration:
+
+```ruby
+def up
+  instance = Gitlab::BackgroundMigration::YourBackgroundMigrationClass.new(
+      start_id: <batch start_id>,
+      end_id: <batch end_id>,
+      batch_table: <table name>,
+      batch_column: <batching column>,
+      sub_batch_size: <sub batch size>,
+      pause_ms: <miliseconds between batches>,
+      job_arguments: <job arguments if any>,
+      connection: connection
+    )
+
+    instance.perform
+end
+
+def down
+  # no-op
+end
+```
+
+#### Apply a workaround for our migration helpers (optional)
+
+If your batched background migration touches tables from a schema other than the one you specified by using `restrict_gitlab_migration` helper (example: the scheduling migration has `restrict_gitlab_migration gitlab_schema: :gitlab_main` but the background job uses tables from the `:gitlab_ci` schema) then the migration will fail. To prevent that from happening you must to monkey patch database helpers so they don't fail the testing pipeline job:
+
+1. Add the schema names to [`RestrictGitlabSchema`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb#L57)
+
+```diff
+diff --git a/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb b/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb
+index b8d1d21a0d2d2a23d9e8c8a0a17db98ed1ed40b7..912e20659a6919f771045178c66828563cb5a4a1 100644
+--- a/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb
++++ b/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb
+@@ -55,7 +55,7 @@ def unmatched_schemas
+         end
+
+         def allowed_schemas_for_connection
+-          Gitlab::Database.gitlab_schemas_for_connection(connection)
++          Gitlab::Database.gitlab_schemas_for_connection(connection) << :gitlab_ci
+         end
+       end
+     end
+```
+
+1. Add the schema names to [`RestrictAllowedSchemas`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb#L82)
+
+```diff
+diff --git a/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb b/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb
+index 4ae3622479f0800c0553959e132143ec9051898e..d556ec7f55adae9d46a56665ce02de782cb09f2d 100644
+--- a/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb
++++ b/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb
+@@ -79,7 +79,7 @@ def restrict_to_dml_only(parsed)
+             tables = self.dml_tables(parsed)
+             schemas = self.dml_schemas(tables)
+
+-            if (schemas - self.allowed_gitlab_schemas).any?
++            if (schemas - (self.allowed_gitlab_schemas << :gitlab_ci)).any?
+               raise DMLAccessDeniedError, \
+                 "Select/DML queries (SELECT/UPDATE/DELETE) do access '#{tables}' (#{schemas.to_a}) " \
+                 "which is outside of list of allowed schemas: '#{self.allowed_gitlab_schemas}'. " \
+```
+
+#### Start the database migration pipeline
+
+Create a Draft merge request with your changes and trigger the manual `db:gitlabcom-database-testing` job.
+
 ## Managing
 
 NOTE:
@@ -683,22 +798,109 @@ migration is scheduled in the GitLab FOSS context.
 You can use the [generator](#generate-a-batched-background-migration) to generate an EE-only migration scaffold by passing
 `--ee-only` flag when generating a new batched background migration.
 
-## Throttling batched migrations
+## Debug
 
-Because batched migrations are update-heavy and there were few incidents in the past because of the heavy load from migrations while the database was underperforming, a throttling mechanism exists to mitigate them.
+### Viewing failure error logs
 
-These database indicators are checked to throttle a migration. On getting a
-stop signal, the migration is paused for a set time (10 minutes):
+You can view failures in two ways:
 
-- WAL queue pending archival crossing a threshold.
-- Active autovacuum on the tables on which the migration works on.
-- Patroni apdex SLI dropping below the SLO.
+- Via GitLab logs:
+  1. After running a batched background migration, if any jobs fail,
+     view the logs in [Kibana](https://log.gprd.gitlab.net/goto/4cb43f40-f861-11ec-b86b-d963a1a6788e).
+     View the production Sidekiq log and filter for:
 
-It's an ongoing effort to add more indicators to further enhance the
-database health check framework. For more details, see
-[epic 7594](https://gitlab.com/groups/gitlab-org/-/epics/7594).
+     - `json.new_state: failed`
+     - `json.job_class_name: <Batched Background Migration job class name>`
+     - `json.job_arguments: <Batched Background Migration job class arguments>`
 
-## Example
+  1. Review the `json.exception_class` and `json.exception_message` values to help
+     understand why the jobs failed.
+
+  1. Remember the retry mechanism. Having a failure does not mean the job failed.
+     Always check the last status of the job.
+
+- Via database:
+
+  1. Get the batched background migration `CLASS_NAME`.
+  1. Execute the following query in the PostgreSQL console:
+
+     ```sql
+      SELECT migration.id, migration.job_class_name, transition_logs.exception_class, transition_logs.exception_message
+      FROM batched_background_migrations as migration
+      INNER JOIN batched_background_migration_jobs as jobs
+      ON jobs.batched_background_migration_id = migration.id
+      INNER JOIN batched_background_migration_job_transition_logs as transition_logs
+      ON transition_logs.batched_background_migration_job_id = jobs.id
+      WHERE transition_logs.next_status = '2' AND migration.job_class_name = "CLASS_NAME";
+     ```
+
+## Testing
+
+Writing tests is required for:
+
+- The batched background migrations' queueing migration.
+- The batched background migration itself.
+- A cleanup migration.
+
+The `:migration` and `schema: :latest` RSpec tags are automatically set for
+background migration specs. Refer to the
+[Testing Rails migrations](../testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
+style guide.
+
+Remember that `before` and `after` RSpec hooks
+migrate your database down and up. These hooks can result in other batched background
+migrations being called. Using `spy` test doubles with
+`have_received` is encouraged, instead of using regular test doubles, because
+your expectations defined in a `it` block can conflict with what is
+called in RSpec hooks. Refer to [issue #35351](https://gitlab.com/gitlab-org/gitlab/-/issues/18839)
+for more details.
+
+## Best practices
+
+1. Know how much data you're dealing with.
+1. Make sure the batched background migration jobs are idempotent.
+1. Confirm the tests you write are not false positives.
+1. If the data being migrated is critical and cannot be lost, the
+   clean-up migration must also check the final state of the data before completing.
+1. Discuss the numbers with a database specialist. The migration may add
+   more pressure on DB than you expect. Measure on staging,
+   or ask someone to measure on production.
+1. Know how much time is required to run the batched background migration.
+1. Be careful when silently rescuing exceptions inside job classes. This may lead to
+   jobs being marked as successful, even in a failure scenario.
+
+   ```ruby
+   # good
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.update_all(name: 'My Name')
+     end
+   end
+
+   # acceptable
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.update_all(name: 'My Name')
+     rescue Exception => error
+       logger.error(message: error.message, class: error.class)
+
+       raise
+     end
+   end
+
+   # bad
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.update_all(name: 'My Name')
+     rescue Exception => error
+       logger.error(message: error.message, class: self.class.name)
+     end
+   end
+   ```
+
+## Examples
+
+### Routes use-case
 
 The `routes` table has a `source_type` field that's used for a polymorphic relationship.
 As part of a database redesign, we're removing the polymorphic relationship. One step of
@@ -867,216 +1069,3 @@ background migration.
 
 After the batched migration is completed, you can safely depend on the
 data in `routes.namespace_id` being populated.
-
-## Testing
-
-Writing tests is required for:
-
-- The batched background migrations' queueing migration.
-- The batched background migration itself.
-- A cleanup migration.
-
-The `:migration` and `schema: :latest` RSpec tags are automatically set for
-background migration specs. Refer to the
-[Testing Rails migrations](../testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
-style guide.
-
-Remember that `before` and `after` RSpec hooks
-migrate your database down and up. These hooks can result in other batched background
-migrations being called. Using `spy` test doubles with
-`have_received` is encouraged, instead of using regular test doubles, because
-your expectations defined in a `it` block can conflict with what is
-called in RSpec hooks. Refer to [issue #35351](https://gitlab.com/gitlab-org/gitlab/-/issues/18839)
-for more details.
-
-## Best practices
-
-1. Know how much data you're dealing with.
-1. Make sure the batched background migration jobs are idempotent.
-1. Confirm the tests you write are not false positives.
-1. If the data being migrated is critical and cannot be lost, the
-   clean-up migration must also check the final state of the data before completing.
-1. Discuss the numbers with a database specialist. The migration may add
-   more pressure on DB than you expect. Measure on staging,
-   or ask someone to measure on production.
-1. Know how much time is required to run the batched background migration.
-1. Be careful when silently rescuing exceptions inside job classes. This may lead to
-   jobs being marked as successful, even in a failure scenario.
-
-   ```ruby
-   # good
-   def perform
-     each_sub_batch do |sub_batch|
-       sub_batch.update_all(name: 'My Name')
-     end
-   end
-
-   # acceptable
-   def perform
-     each_sub_batch do |sub_batch|
-       sub_batch.update_all(name: 'My Name')
-     rescue Exception => error
-       logger.error(message: error.message, class: error.class)
-
-       raise
-     end
-   end
-
-   # bad
-   def perform
-     each_sub_batch do |sub_batch|
-       sub_batch.update_all(name: 'My Name')
-     rescue Exception => error
-       logger.error(message: error.message, class: self.class.name)
-     end
-   end
-   ```
-
-## Additional tips and strategies
-
-### ChatOps integration
-
-The batched background migrations framework has ChatOps support. Using ChatOps, GitLab engineers can interact with the batched background migrations present in the system.
-
-### Viewing failure error logs
-
-You can view failures in two ways:
-
-- Via GitLab logs:
-  1. After running a batched background migration, if any jobs fail,
-     view the logs in [Kibana](https://log.gprd.gitlab.net/goto/4cb43f40-f861-11ec-b86b-d963a1a6788e).
-     View the production Sidekiq log and filter for:
-
-     - `json.new_state: failed`
-     - `json.job_class_name: <Batched Background Migration job class name>`
-     - `json.job_arguments: <Batched Background Migration job class arguments>`
-
-  1. Review the `json.exception_class` and `json.exception_message` values to help
-     understand why the jobs failed.
-
-  1. Remember the retry mechanism. Having a failure does not mean the job failed.
-     Always check the last status of the job.
-
-- Via database:
-
-  1. Get the batched background migration `CLASS_NAME`.
-  1. Execute the following query in the PostgreSQL console:
-
-     ```sql
-      SELECT migration.id, migration.job_class_name, transition_logs.exception_class, transition_logs.exception_message
-      FROM batched_background_migrations as migration
-      INNER JOIN batched_background_migration_jobs as jobs
-      ON jobs.batched_background_migration_id = migration.id
-      INNER JOIN batched_background_migration_job_transition_logs as transition_logs
-      ON transition_logs.batched_background_migration_job_id = jobs.id
-      WHERE transition_logs.next_status = '2' AND migration.job_class_name = "CLASS_NAME";
-     ```
-
-### Executing a particular batch on the database testing pipeline
-
-NOTE:
-Only [database maintainers](https://gitlab.com/groups/gitlab-org/maintainers/database/-/group_members?with_inherited_permissions=exclude) can view the database testing pipeline artifacts. Ask one for help if you need to use this method.
-
-Let's assume that a batched background migration failed on a particular batch on GitLab.com and you want to figure out which query failed and why. At the moment, we don't have a good way to retrieve query information (especially the query parameters) and rerunning the entire migration with more logging would be a long process.
-
-Fortunately you can leverage our [database migration pipeline](database_migration_pipeline.md) to rerun a particular batch with additional logging and/or fix to see if it solves the problem.
-
-<!-- vale gitlab.Substitutions = NO -->
-
-For an example see [Draft: Test PG::CardinalityViolation fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110910) but make sure to read the entire section.
-
-To do that, you need to:
-
-1. Find the batch `start_id` and `end_id`
-1. Create a regular migration
-1. Apply a workaround for our migration helpers (optional)
-1. Start the database migration pipeline
-
-#### 1. Find the batch `start_id` and `end_id`
-
-You should be able to find those in [Kibana](#viewing-failure-error-logs).
-
-#### 2. Create a regular migration
-
-Schedule the batch in the `up` block of a regular migration:
-
-```ruby
-def up
-  instance = Gitlab::BackgroundMigration::YourBackgroundMigrationClass.new(
-      start_id: <batch start_id>,
-      end_id: <batch end_id>,
-      batch_table: <table name>,
-      batch_column: <batching column>,
-      sub_batch_size: <sub batch size>,
-      pause_ms: <miliseconds between batches>,
-      job_arguments: <job arguments if any>,
-      connection: connection
-    )
-
-    instance.perform
-end
-
-
-def down
-  # no-op
-end
-```
-
-#### 3. Apply a workaround for our migration helpers (optional)
-
-If your batched background migration touches tables from a schema other than the one you specified by using `restrict_gitlab_migration` helper (example: the scheduling migration has `restrict_gitlab_migration gitlab_schema: :gitlab_main` but the background job uses tables from the `:gitlab_ci` schema) then the migration will fail. To prevent that from happening you must to monkey patch database helpers so they don't fail the testing pipeline job:
-
-1. Add the schema names to [`RestrictGitlabSchema`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb#L57)
-
-```diff
-diff --git a/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb b/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb
-index b8d1d21a0d2d2a23d9e8c8a0a17db98ed1ed40b7..912e20659a6919f771045178c66828563cb5a4a1 100644
---- a/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb
-+++ b/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb
-@@ -55,7 +55,7 @@ def unmatched_schemas
-         end
-
-         def allowed_schemas_for_connection
--          Gitlab::Database.gitlab_schemas_for_connection(connection)
-+          Gitlab::Database.gitlab_schemas_for_connection(connection) << :gitlab_ci
-         end
-       end
-     end
-```
-
-1. Add the schema names to [`RestrictAllowedSchemas`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb#L82)
-
-```diff
-diff --git a/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb b/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb
-index 4ae3622479f0800c0553959e132143ec9051898e..d556ec7f55adae9d46a56665ce02de782cb09f2d 100644
---- a/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb
-+++ b/lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb
-@@ -79,7 +79,7 @@ def restrict_to_dml_only(parsed)
-             tables = self.dml_tables(parsed)
-             schemas = self.dml_schemas(tables)
-
--            if (schemas - self.allowed_gitlab_schemas).any?
-+            if (schemas - (self.allowed_gitlab_schemas << :gitlab_ci)).any?
-               raise DMLAccessDeniedError, \
-                 "Select/DML queries (SELECT/UPDATE/DELETE) do access '#{tables}' (#{schemas.to_a}) " \
-                 "which is outside of list of allowed schemas: '#{self.allowed_gitlab_schemas}'. " \
-```
-
-#### 4. Start the database migration pipeline
-
-Create a Draft merge request with your changes and trigger the manual `db:gitlabcom-database-testing` job.
-
-### Adding indexes to support batched background migrations
-
-Sometimes it is necessary to add a new or temporary index to support a batched background migration.
-To do this, create the index in a post-deployment migration that precedes the post-deployment
-migration that queues the background migration.
-
-See the documentation for [adding database indexes](adding_database_indexes.md#analyzing-a-new-index-before-a-batched-background-migration)
-for additional information about some cases that require special attention to allow the index to be used directly after
-creation.
-
-## Legacy background migrations
-
-Batched background migrations replaced the legacy background migrations framework.
-Check that documentation in reference to any changes involving that framework.

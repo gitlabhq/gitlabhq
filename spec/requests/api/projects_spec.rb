@@ -3654,7 +3654,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end.to change { project.members.count }.by(2)
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['message']).to eq('Successfully imported')
+      expect(json_response['status']).to eq('success')
     end
 
     it 'returns 404 if the source project does not exist' do
@@ -3711,6 +3711,22 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to eq('Import failed')
+    end
+
+    context 'when importing of members did not work for some or all members' do
+      it 'fails to import some members' do
+        project_bot = create(:user, :project_bot)
+        project2.add_developer(project_bot)
+
+        expect do
+          post api(path, user)
+        end.to change { project.members.count }.by(2)
+
+        expect(response).to have_gitlab_http_status(:created)
+        error_message = { project_bot.username => 'User project bots cannot be added to other groups / projects' }
+        expect(json_response['message']).to eq(error_message)
+        expect(json_response['total_members_count']).to eq(3)
+      end
     end
   end
 

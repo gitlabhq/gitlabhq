@@ -14016,6 +14016,11 @@ msgstr ""
 msgid "DNS"
 msgstr ""
 
+msgid "DORA4Metrics|%d project"
+msgid_plural "DORA4Metrics|%d projects"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "DORA4Metrics|Accept testing terms"
 msgstr ""
 
@@ -14035,6 +14040,9 @@ msgid "DORA4Metrics|By enabling this feature, you accept the %{url}"
 msgstr ""
 
 msgid "DORA4Metrics|Change Failure Rate"
+msgstr ""
+
+msgid "DORA4Metrics|Change Failure Rate (Quality)"
 msgstr ""
 
 msgid "DORA4Metrics|Change failure rate"
@@ -14064,10 +14072,16 @@ msgstr ""
 msgid "DORA4Metrics|Deployment Frequency"
 msgstr ""
 
+msgid "DORA4Metrics|Deployment Frequency (Velocity)"
+msgstr ""
+
 msgid "DORA4Metrics|Deployment frequency"
 msgstr ""
 
 msgid "DORA4Metrics|Deploys"
+msgstr ""
+
+msgid "DORA4Metrics|Failed to load DORA performance scores for Namespace: %{fullPath}"
 msgstr ""
 
 msgid "DORA4Metrics|Failed to load YAML config from Project: %{fullPath}"
@@ -14091,10 +14105,30 @@ msgstr ""
 msgid "DORA4Metrics|Go to docs"
 msgstr ""
 
+msgid "DORA4Metrics|Has no calculated data."
+msgid_plural "DORA4Metrics|Have no calculated data."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "DORA4Metrics|Have 30 or more deploys to production per day."
+msgstr ""
+
+msgid "DORA4Metrics|Have between 1 to 29 deploys to production per day."
+msgstr ""
+
+msgid "DORA4Metrics|Have less than 1 deploy to production per day."
+msgstr ""
+
+msgid "DORA4Metrics|High"
+msgstr ""
+
 msgid "DORA4Metrics|High Vulnerabilities over time"
 msgstr ""
 
 msgid "DORA4Metrics|Lead Time for Changes"
+msgstr ""
+
+msgid "DORA4Metrics|Lead Time for Changes (Velocity)"
 msgstr ""
 
 msgid "DORA4Metrics|Lead time"
@@ -14106,6 +14140,18 @@ msgstr ""
 msgid "DORA4Metrics|Lead time for changes (median days)"
 msgstr ""
 
+msgid "DORA4Metrics|Low"
+msgstr ""
+
+msgid "DORA4Metrics|Made 15%% or less changes to production resulted in degraded service."
+msgstr ""
+
+msgid "DORA4Metrics|Made between 16%% to 44%% of changes to production resulted in degraded service."
+msgstr ""
+
+msgid "DORA4Metrics|Made more than 45%% of changes to production resulted in degraded service."
+msgstr ""
+
 msgid "DORA4Metrics|Median (last %{days}d)"
 msgstr ""
 
@@ -14113,6 +14159,9 @@ msgid "DORA4Metrics|Median time (last %{days}d)"
 msgstr ""
 
 msgid "DORA4Metrics|Median time an incident was open in a production environment over the given time period."
+msgstr ""
+
+msgid "DORA4Metrics|Medium"
 msgstr ""
 
 msgid "DORA4Metrics|Merge request throughput"
@@ -14130,10 +14179,16 @@ msgstr ""
 msgid "DORA4Metrics|New issues"
 msgstr ""
 
+msgid "DORA4Metrics|No data available for Namespace: %{fullPath}"
+msgstr ""
+
 msgid "DORA4Metrics|No incidents during this period"
 msgstr ""
 
 msgid "DORA4Metrics|No merge requests were deployed during this period"
+msgstr ""
+
+msgid "DORA4Metrics|Not included"
 msgstr ""
 
 msgid "DORA4Metrics|Number of incidents divided by the number of deployments to a production environment in the given time period."
@@ -14175,13 +14230,43 @@ msgstr ""
 msgid "DORA4Metrics|This is a lower-bound approximation. Your group has too many issues and MRs to calculate in real time."
 msgstr ""
 
+msgid "DORA4Metrics|This visualization is not supported for project namespaces."
+msgstr ""
+
 msgid "DORA4Metrics|Time to Restore Service"
+msgstr ""
+
+msgid "DORA4Metrics|Time to Restore Service (Quality)"
 msgstr ""
 
 msgid "DORA4Metrics|Time to restore service"
 msgstr ""
 
 msgid "DORA4Metrics|Time to restore service (median days)"
+msgstr ""
+
+msgid "DORA4Metrics|Took 1 day or less to restore service when a service incident or a defect that impacts users occurs."
+msgstr ""
+
+msgid "DORA4Metrics|Took 7 days or less to go from code committed to code successfully running in production."
+msgstr ""
+
+msgid "DORA4Metrics|Took between 2 to 6 days to restore service when a service incident or a defect that impacts users occurs."
+msgstr ""
+
+msgid "DORA4Metrics|Took between 8 to 29 days to go from code committed to code successfully running in production."
+msgstr ""
+
+msgid "DORA4Metrics|Took more than 30 days to go from code committed to code successfully running in production."
+msgstr ""
+
+msgid "DORA4Metrics|Took more than 7 days to restore service when a service incident or a defect that impacts users occurs."
+msgstr ""
+
+msgid "DORA4Metrics|Total projects (%{count}) by DORA performers score for %{groupName} group"
+msgstr ""
+
+msgid "DORA4Metrics|Total projects by DORA performers score"
 msgstr ""
 
 msgid "DORA4Metrics|Value Streams Dashboard"
@@ -25115,6 +25200,9 @@ msgstr ""
 msgid "InviteMembersModal|Something went wrong"
 msgstr ""
 
+msgid "InviteMembersModal|The following %{errorMembersLength} out of %{totalMembersCount} members could not be added"
+msgstr ""
+
 msgid "InviteMembersModal|The following member couldn't be invited"
 msgid_plural "InviteMembersModal|The following %d members couldn't be invited"
 msgstr[0] ""
@@ -30632,6 +30720,9 @@ msgid "No credit card data for matching"
 msgstr ""
 
 msgid "No credit card required."
+msgstr ""
+
+msgid "No data"
 msgstr ""
 
 msgid "No data available"

@@ -2647,6 +2647,33 @@ Returns:
 - `404 Project Not Found` if the target or source project does not exist or cannot be accessed by the requester.
 - `422 Unprocessable Entity` if the import of project members does not complete successfully.
 
+Example responses:
+
+When all emails were successfully sent (`200` HTTP status code):
+
+```json
+{  "status":  "success"  }
+```
+
+When there was any error importing 1 or more members (`200` HTTP status code):
+
+```json
+{
+  "status": "error",
+  "message": {
+               "john_smith": "Some individual error message",
+               "jane_smith": "Some individual error message"
+             },
+  "total_members_count": 3
+}
+```
+
+When there is a system error (`404` and `422` HTTP status codes):
+
+```json
+{  "message":  "Import failed"  }
+```
+
 ## Hooks
 
 Also called Project Hooks and Webhooks. These are different for [System Hooks](system_hooks.md)

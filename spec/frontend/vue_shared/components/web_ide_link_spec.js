@@ -1,14 +1,17 @@
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 
 import getWritableForksResponse from 'test_fixtures/graphql/vue_shared/components/web_ide/get_writable_forks.query.graphql_none.json';
-import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import WebIdeLink, { i18n } from '~/vue_shared/components/web_ide_link.vue';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 
 import { stubComponent } from 'helpers/stub_component';
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import {
+  shallowMountExtended,
+  mountExtended,
+  extendedWrapper,
+} from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -26,11 +29,11 @@ const forkPath = '/some/fork/path';
 
 const ACTION_EDIT = {
   href: TEST_EDIT_URL,
-  key: 'edit',
+  handle: undefined,
   text: 'Edit single file',
   secondaryText: 'Edit this file only.',
   attrs: {
-    'data-qa-selector': 'edit_button',
+    'data-qa-selector': 'edit_menu_item',
     'data-track-action': 'click_consolidated_edit',
     'data-track-label': 'edit',
   },
@@ -41,14 +44,14 @@ const ACTION_EDIT_CONFIRM_FORK = {
   handle: expect.any(Function),
 };
 const ACTION_WEB_IDE = {
-  key: 'webide',
   secondaryText: i18n.webIdeText,
   text: 'Web IDE',
   attrs: {
-    'data-qa-selector': 'web_ide_button',
+    'data-qa-selector': 'webide_menu_item',
     'data-track-action': 'click_consolidated_edit_ide',
     'data-track-label': 'web_ide',
   },
+  href: undefined,
   handle: expect.any(Function),
 };
 const ACTION_WEB_IDE_CONFIRM_FORK = {
@@ -58,11 +61,11 @@ const ACTION_WEB_IDE_CONFIRM_FORK = {
 const ACTION_WEB_IDE_EDIT_FORK = { ...ACTION_WEB_IDE, text: 'Edit fork in Web IDE' };
 const ACTION_GITPOD = {
   href: TEST_GITPOD_URL,
-  key: 'gitpod',
+  handle: undefined,
   secondaryText: 'Launch a ready-to-code development environment for your project.',
   text: 'Gitpod',
   attrs: {
-    'data-qa-selector': 'gitpod_button',
+    'data-qa-selector': 'gitpod_menu_item',
   },
 };
 const ACTION_GITPOD_ENABLE = {
@@ -72,11 +75,12 @@ const ACTION_GITPOD_ENABLE = {
 };
 const ACTION_PIPELINE_EDITOR = {
   href: TEST_PIPELINE_EDITOR_URL,
-  key: 'pipeline_editor',
   secondaryText: 'Edit, lint, and visualize your pipeline.',
   text: 'Edit in pipeline editor',
   attrs: {
-    'data-qa-selector': 'pipeline_editor_button',
+    'data-qa-selector': 'pipeline_editor_menu_item',
+    'data-track-action': 'click_consolidated_pipeline_editor',
+    'data-track-label': 'pipeline_editor',
   },
 };
 
@@ -108,14 +112,34 @@ describe('vue_shared/components/web_ide_link', () => {
               <slot name="modal-footer"></slot>
             </div>`,
         }),
+        GlDisclosureDropdownItem,
       },
       apolloProvider: fakeApollo,
     });
   }
 
-  const findActionsButton = () => wrapper.findComponent(ActionsButton);
+  const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDisclosureDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findModal = () => wrapper.findComponent(GlModal);
   const findForkConfirmModal = () => wrapper.findComponent(ConfirmForkModal);
+  const getDropdownItemsAsData = () =>
+    findDisclosureDropdownItems().wrappers.map((item) => {
+      const extendedWrapperItem = extendedWrapper(item);
+      const attributes = extendedWrapperItem.attributes();
+      const props = extendedWrapperItem.props();
+
+      return {
+        text: extendedWrapperItem.findByTestId('action-primary-text').text(),
+        secondaryText: extendedWrapperItem.findByTestId('action-secondary-text').text(),
+        href: props.item.href,
+        handle: props.item.handle,
+        attrs: {
+          'data-qa-selector': attributes['data-qa-selector'],
+          'data-track-action': attributes['data-track-action'],
+          'data-track-label': attributes['data-track-label'],
+        },
+      };
+    });
 
   it.each([
     {
@@ -210,7 +234,7 @@ describe('vue_shared/components/web_ide_link', () => {
   ])('renders actions with appropriately for given props', ({ props, expectedActions }) => {
     createComponent(props);
 
-    expect(findActionsButton().props('actions')).toEqual(expectedActions);
+    expect(getDropdownItemsAsData()).toEqual(expectedActions);
   });
 
   it('bubbles up shown and hidden events triggered by actions button component', () => {
@@ -219,17 +243,17 @@ describe('vue_shared/components/web_ide_link', () => {
     expect(wrapper.emitted('shown')).toBe(undefined);
     expect(wrapper.emitted('hidden')).toBe(undefined);
 
-    findActionsButton().vm.$emit('shown');
-    findActionsButton().vm.$emit('hidden');
+    findDisclosureDropdown().vm.$emit('shown');
+    findDisclosureDropdown().vm.$emit('hidden');
 
     expect(wrapper.emitted('shown')).toHaveLength(1);
     expect(wrapper.emitted('hidden')).toHaveLength(1);
   });
 
-  it('exposes a default slot', () => {
-    const slotContent = 'default slot content';
+  it.each(['before-actions', 'after-actions'])('exposes a %s slot', (slot) => {
+    const slotContent = 'slot content';
 
-    createComponent({}, { slots: { default: slotContent } });
+    createComponent({}, { slots: { [slot]: slotContent } });
 
     expect(wrapper.text()).toContain(slotContent);
   });
@@ -248,13 +272,15 @@ describe('vue_shared/components/web_ide_link', () => {
     });
 
     it('displays Pipeline Editor as the first action', () => {
-      expect(findActionsButton().props()).toMatchObject({
-        actions: [ACTION_PIPELINE_EDITOR, ACTION_WEB_IDE, ACTION_GITPOD],
-      });
+      expect(getDropdownItemsAsData()).toEqual([
+        ACTION_PIPELINE_EDITOR,
+        ACTION_WEB_IDE,
+        ACTION_GITPOD,
+      ]);
     });
 
     it('when web ide button is clicked it opens in a new tab', async () => {
-      findActionsButton().props('actions')[1].handle();
+      findDisclosureDropdownItems().at(1).props().item.handle();
       await nextTick();
       expect(visitUrl).toHaveBeenCalledWith(TEST_WEB_IDE_URL, true);
     });
@@ -289,7 +315,7 @@ describe('vue_shared/components/web_ide_link', () => {
       ({ props, expectedEventPayload }) => {
         createComponent({ ...props, needsToFork: true, disableForkModal: true });
 
-        findActionsButton().props('actions')[0].handle();
+        findDisclosureDropdownItems().at(0).props().item.handle();
 
         expect(wrapper.emitted('edit')).toEqual([[expectedEventPayload]]);
       },
@@ -309,7 +335,7 @@ describe('vue_shared/components/web_ide_link', () => {
     it.each(testActions)('opens the modal when the button is clicked', async ({ props }) => {
       createComponent({ ...props, needsToFork: true }, { mountFn: mountExtended });
 
-      wrapper.findComponent(ActionsButton).props().actions[0].handle();
+      findDisclosureDropdownItems().at(0).props().item.handle();
 
       await nextTick();
       await wrapper.findByRole('button', { name: /Web IDE|Edit/im }).trigger('click');

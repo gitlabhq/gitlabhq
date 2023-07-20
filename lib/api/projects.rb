@@ -792,10 +792,12 @@ module API
 
       desc 'Import members from another project' do
         detail 'This feature was introduced in GitLab 14.2'
-        success code: 201
+        success code: 200
         failure [
           { code: 403, message: 'Unauthenticated' },
-          { code: 404, message: 'Not found' }
+          { code: 403, message: 'Forbidden - Project' },
+          { code: 404, message: 'Project Not Found' },
+          { code: 422, message: 'Import failed' }
         ]
         tags %w[projects]
       end
@@ -812,10 +814,12 @@ module API
 
         result = ::Members::ImportProjectTeamService.new(current_user, params).execute
 
-        if result
-          { status: result, message: 'Successfully imported' }
+        if result.success?
+          { status: result.status }
+        elsif result.reason == :unprocessable_entity
+          render_api_error!(result.message, result.reason)
         else
-          render_api_error!('Import failed', :unprocessable_entity)
+          { status: result.status, message: result.message, total_members_count: result.payload[:total_members_count] }
         end
       end
 

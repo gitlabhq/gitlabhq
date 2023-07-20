@@ -57,3 +57,27 @@ export const invitationsApiResponse = {
   EMAIL_TAKEN,
   EXPANDED_RESTRICTED,
 };
+
+export const IMPORT_PROJECT_MEMBERS_PATH = '/api/v4/projects/1/import_project_members/2';
+const EXPANDED_IMPORT_ERRORS = {
+  message: {
+    bob_smith: 'Something is wrong for this member.',
+    john_smith: 'Something is wrong for this member.',
+    doug_logan: 'Something is wrong for this member.',
+    root: 'Something is wrong for this member.',
+  },
+  total_members_count: '4',
+  status: 'error',
+};
+const NO_COLLAPSE_IMPORT_ERRORS = {
+  message: {
+    bob_smith: 'Something is wrong for this member.',
+    john_smith: 'Something is wrong for this member.',
+  },
+  total_members_count: '2',
+  status: 'error',
+};
+export const importProjectMembersApiResponse = {
+  EXPANDED_IMPORT_ERRORS,
+  NO_COLLAPSE_IMPORT_ERRORS,
+};
