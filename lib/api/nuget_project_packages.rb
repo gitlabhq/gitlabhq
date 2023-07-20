@@ -98,6 +98,22 @@ module API
         created!
       end
 
+      def publish_package(symbol_package: false)
+        upload_nuget_package_file(symbol_package: symbol_package) do |package|
+          track_package_event(
+            symbol_package ? 'push_symbol_package' : 'push_package',
+            :nuget,
+            **{ category: 'API::NugetPackages',
+                project: package.project,
+                namespace: package.project.namespace }.tap { |args| args[:feed] = 'v2' if request.path.include?('nuget/v2') }
+          )
+        end
+      rescue ObjectStorage::RemoteStoreError => e
+        Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project_or_group.id })
+
+        forbidden!
+      end
+
       def required_permission
         :read_package
       end
@@ -179,7 +195,7 @@ module API
           end
         end
 
-        # To support an additional authentication option for download endpoints,
+        # To support an additional authentication option for publish endpoints,
         # we redefine the `authenticate_with` method by combining the previous
         # authentication option with the new one.
         authenticate_with do |accept|
@@ -191,7 +207,7 @@ module API
 
         namespace '/nuget' do
           # https://docs.microsoft.com/en-us/nuget/api/package-publish-resource
-          desc 'The NuGet Package Publish endpoint' do
+          desc 'The NuGet V3 Feed Package Publish endpoint' do
             detail 'This feature was introduced in GitLab 12.6'
             success code: 201
             failure [
@@ -207,19 +223,7 @@ module API
             use :file_params
           end
           put urgency: :low do
-            upload_nuget_package_file do |package|
-              track_package_event(
-                'push_package',
-                :nuget,
-                category: 'API::NugetPackages',
-                project: package.project,
-                namespace: package.project.namespace
-              )
-            end
-          rescue ObjectStorage::RemoteStoreError => e
-            Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project_or_group.id })
-
-            forbidden!
+            publish_package
           end
 
           desc 'The NuGet Package Authorize endpoint' do
@@ -252,19 +256,7 @@ module API
             use :file_params
           end
           put 'symbolpackage', urgency: :low do
-            upload_nuget_package_file(symbol_package: true) do |package|
-              track_package_event(
-                'push_symbol_package',
-                :nuget,
-                category: 'API::NugetPackages',
-                project: package.project,
-                namespace: package.project.namespace
-              )
-            end
-          rescue ObjectStorage::RemoteStoreError => e
-            Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project_or_group.id })
-
-            forbidden!
+            publish_package(symbol_package: true)
           end
 
           desc 'The NuGet Symbol Package Authorize endpoint' do
@@ -279,6 +271,42 @@ module API
           end
           put 'symbolpackage/authorize', urgency: :low do
             authorize_nuget_upload
+          end
+
+          namespace '/v2' do
+            desc 'The NuGet V2 Feed Package Publish endpoint' do
+              detail 'This feature was introduced in GitLab 16.2'
+              success code: 201
+              failure [
+                { code: 400, message: 'Bad Request' },
+                { code: 401, message: 'Unauthorized' },
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not Found' }
+              ]
+              tags %w[nuget_packages]
+            end
+
+            params do
+              use :file_params
+            end
+            put do
+              publish_package
+            end
+
+            desc 'The NuGet V2 Feed Package Authorize endpoint' do
+              detail 'This feature was introduced in GitLab 16.2'
+              success code: 200
+              failure [
+                { code: 401, message: 'Unauthorized' },
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not Found' }
+              ]
+              tags %w[nuget_packages]
+            end
+
+            put 'authorize', urgency: :low do
+              authorize_nuget_upload
+            end
           end
         end
       end

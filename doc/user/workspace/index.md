@@ -64,14 +64,29 @@ You also have access to the terminal and can install any necessary dependencies.
 
 ## Workspaces and projects
 
-A workspace is scoped to a project. When you create a workspace, you must:
+Workspaces are scoped to a project. When you create a workspace, you must:
 
 - Assign the workspace to a specific project.
 - Select a project with a `.devfile.yaml` file.
 
 The workspace can then interact with the GitLab API based on the permissions granted to the current user.
 
-## Deleting data associated with a workspace
+### Open and manage workspaces from a project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
+
+To open a workspace from a file or the repository file list:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. In the upper right, select **Edit**.
+1. From the dropdown list, under **Your workspaces**, select the workspace.
+
+From the dropdown list, you can also:
+
+- Restart, stop, or terminate an existing workspace.
+- Create a new workspace.
+
+### Deleting data associated with a workspace
 
 When you delete a project, agent, user, or token associated with a workspace:
 

@@ -7026,10 +7026,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     where(:shared_runners_setting, :project_shared_runners_enabled, :valid_record) do
       :shared_runners_enabled     | true  | true
       :shared_runners_enabled     | false | true
-      :disabled_and_overridable   | true  | true
-      :disabled_and_overridable   | false | true
-      :disabled_and_unoverridable | true  | false
-      :disabled_and_unoverridable | false | true
+      :shared_runners_disabled_and_overridable   | true  | true
+      :shared_runners_disabled_and_overridable   | false | true
+      :shared_runners_disabled_and_unoverridable | true  | false
+      :shared_runners_disabled_and_unoverridable | false | true
     end
 
     with_them do

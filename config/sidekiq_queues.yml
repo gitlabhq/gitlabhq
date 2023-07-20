@@ -273,6 +273,8 @@
   - 1
 - - groups_create_event
   - 1
+- - groups_enterprise_users_disassociate
+  - 1
 - - groups_export_memberships
   - 1
 - - groups_schedule_bulk_repository_shard_moves

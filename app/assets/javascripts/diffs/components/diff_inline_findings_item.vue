@@ -42,7 +42,7 @@ export default {
         :size="12"
         :name="enhancedFinding.name"
         :class="enhancedFinding.class"
-        class="codequality-severity-icon"
+        class="inline-findings-severity-icon"
       />
     </span>
     <span

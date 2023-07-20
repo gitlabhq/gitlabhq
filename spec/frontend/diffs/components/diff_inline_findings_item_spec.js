@@ -1,6 +1,6 @@
 import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import DiffCodeQualityItem from '~/diffs/components/diff_code_quality_item.vue';
+import DiffInlineFindingsItem from '~/diffs/components/diff_inline_findings_item.vue';
 import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/ci/reports/codequality_report/constants';
 import { multipleFindingsArrCodeQualityScale } from '../mock_data/diff_code_quality';
 
@@ -14,7 +14,7 @@ const findDescriptionLinkSection = () => wrapper.findByTestId('description-butto
 
 describe('DiffCodeQuality', () => {
   const createWrapper = ({ glFeatures = {}, link = true } = {}) => {
-    return shallowMountExtended(DiffCodeQualityItem, {
+    return shallowMountExtended(DiffInlineFindingsItem, {
       propsData: {
         finding: codeQualityFinding,
         link,
@@ -30,7 +30,7 @@ describe('DiffCodeQuality', () => {
     expect(findIcon().exists()).toBe(true);
 
     expect(findIcon().attributes()).toMatchObject({
-      class: `codequality-severity-icon ${SEVERITY_CLASSES[codeQualityFinding.severity]}`,
+      class: `inline-findings-severity-icon ${SEVERITY_CLASSES[codeQualityFinding.severity]}`,
       name: SEVERITY_ICONS[codeQualityFinding.severity],
       size: '12',
     });

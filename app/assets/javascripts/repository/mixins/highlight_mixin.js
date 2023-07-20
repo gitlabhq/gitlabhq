@@ -8,7 +8,6 @@ import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/h
 import LineHighlighter from '~/blob/line_highlighter';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import Tracking from '~/tracking';
-import { TEXT_FILE_TYPE } from '../constants';
 
 /*
  * This mixin is intended to be used as an interface between our highlight worker and Vue components
@@ -37,8 +36,8 @@ export default {
       this.trackEvent(EVENT_LABEL_FALLBACK, language);
       this?.onError();
     },
-    initHighlightWorker({ rawTextBlob, language, simpleViewer, fileType }) {
-      if (simpleViewer?.fileType !== TEXT_FILE_TYPE || !this.glFeatures.highlightJsWorker) return;
+    initHighlightWorker({ rawTextBlob, language, fileType }) {
+      if (language !== 'json' || !this.glFeatures.highlightJsWorker) return;
 
       if (this.isUnsupportedLanguage(language)) {
         this.handleUnsupportedLanguage(language);

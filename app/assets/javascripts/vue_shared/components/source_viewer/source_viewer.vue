@@ -14,6 +14,7 @@ import {
   LEGACY_FALLBACKS,
   CODEOWNERS_FILE_NAME,
   CODEOWNERS_LANGUAGE,
+  SVELTE_LANGUAGE,
 } from './constants';
 import Chunk from './components/chunk.vue';
 import { registerPlugins } from './plugins/index';
@@ -56,9 +57,15 @@ export default {
       return this.content.split(/\r?\n/);
     },
     language() {
-      return this.blob.name === this.$options.codeownersFileName
-        ? this.$options.codeownersLanguage
-        : ROUGE_TO_HLJS_LANGUAGE_MAP[this.blob.language?.toLowerCase()];
+      if (this.blob.name && this.blob.name.endsWith(`.${SVELTE_LANGUAGE}`)) {
+        // override for svelte files until https://github.com/rouge-ruby/rouge/issues/1717 is resolved
+        return SVELTE_LANGUAGE;
+      } else if (this.blob.name === this.$options.codeownersFileName) {
+        // override for codeowners files
+        return this.$options.codeownersLanguage;
+      }
+
+      return ROUGE_TO_HLJS_LANGUAGE_MAP[this.blob.language?.toLowerCase()];
     },
     lineNumbers() {
       return this.splitContent.length;
@@ -168,12 +175,36 @@ export default {
       // If no language can be mapped to highlight.js we load all common languages else we load only the core (smallest footprint)
       return !this.language ? import('highlight.js/lib/common') : import('highlight.js/lib/core');
     },
+    async loadSubLanguages(languageDefinition) {
+      if (!languageDefinition?.contains) return;
+
+      // generate list of languages to load
+      const languages = new Set(
+        languageDefinition.contains
+          .filter((component) => Boolean(component.subLanguage))
+          .map((component) => component.subLanguage),
+      );
+
+      if (languageDefinition.subLanguage) {
+        languages.add(languageDefinition.subLanguage);
+      }
+
+      // load all sub-languages at once
+      await Promise.all(
+        [...languages].map(async (subLanguage) => {
+          const subLanguageDefinition = await languageLoader[subLanguage]();
+          this.hljs.registerLanguage(subLanguage, subLanguageDefinition.default);
+        }),
+      );
+    },
     async loadLanguage() {
       let languageDefinition;
 
       try {
         languageDefinition = await languageLoader[this.language]();
         this.hljs.registerLanguage(this.language, languageDefinition.default);
+
+        await this.loadSubLanguages(this.hljs.getLanguage(this.language));
       } catch (message) {
         this.$emit('error', message);
       }

@@ -14,6 +14,7 @@ import {
   LEGACY_FALLBACKS,
   CODEOWNERS_FILE_NAME,
   CODEOWNERS_LANGUAGE,
+  SVELTE_LANGUAGE,
 } from '~/vue_shared/components/source_viewer/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -120,6 +121,33 @@ describe('Source Viewer component', () => {
       );
     });
 
+    describe('sub-languages', () => {
+      const languageDefinition = {
+        subLanguage: 'xml',
+        contains: [{ subLanguage: 'javascript' }, { subLanguage: 'typescript' }],
+      };
+
+      beforeEach(async () => {
+        jest.spyOn(hljs, 'getLanguage').mockReturnValue(languageDefinition);
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('registers the primary sub-language', () => {
+        expect(hljs.registerLanguage).toHaveBeenCalledWith(
+          languageDefinition.subLanguage,
+          expect.any(Function),
+        );
+      });
+
+      it.each(languageDefinition.contains)(
+        'registers the rest of the sub-languages',
+        ({ subLanguage }) => {
+          expect(hljs.registerLanguage).toHaveBeenCalledWith(subLanguage, expect.any(Function));
+        },
+      );
+    });
+
     it('registers json language definition if fileType is package_json', async () => {
       await createComponent({ language: 'json', fileType: 'package_json' });
       const languageDefinition = await import(`highlight.js/lib/languages/json`);
@@ -142,6 +170,18 @@ describe('Source Viewer component', () => {
 
       expect(hljs.registerLanguage).toHaveBeenCalledWith(
         CODEOWNERS_LANGUAGE,
+        languageDefinition.default,
+      );
+    });
+
+    it('registers svelte language definition if file name ends with .svelte', async () => {
+      await createComponent({ name: `component.${SVELTE_LANGUAGE}` });
+      const languageDefinition = await import(
+        '~/vue_shared/components/source_viewer/languages/svelte'
+      );
+
+      expect(hljs.registerLanguage).toHaveBeenCalledWith(
+        SVELTE_LANGUAGE,
         languageDefinition.default,
       );
     });

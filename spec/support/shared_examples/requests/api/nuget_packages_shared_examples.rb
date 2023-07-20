@@ -18,7 +18,7 @@ RSpec.shared_examples 'rejects nuget packages access' do |user_type, status, add
   end
 end
 
-RSpec.shared_examples 'process nuget service index request' do |user_type, status, add_member = true|
+RSpec.shared_examples 'process nuget service index request' do |user_type, status, add_member = true, v2 = false|
   context "for user type #{user_type}" do
     before do
       target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
@@ -28,15 +28,22 @@ RSpec.shared_examples 'process nuget service index request' do |user_type, statu
 
     it_behaves_like 'a package tracking event', 'API::NugetPackages', 'cli_metadata'
 
-    it 'returns a valid json response' do
+    it 'returns a valid json or xml response' do
       subject
 
-      expect(response.media_type).to eq('application/json')
-      expect(json_response).to match_schema('public_api/v4/packages/nuget/service_index')
-      expect(json_response).to be_a(Hash)
+      if v2
+        expect(response.media_type).to eq('application/xml')
+        expect(body).to have_xpath('//service')
+          .and have_xpath('//service/workspace')
+          .and have_xpath('//service/workspace/collection[@href]')
+      else
+        expect(response.media_type).to eq('application/json')
+        expect(json_response).to match_schema('public_api/v4/packages/nuget/service_index')
+        expect(json_response).to be_a(Hash)
+      end
     end
 
-    context 'with invalid format' do
+    context 'with invalid format', unless: v2 do
       let(:url) { "/#{target_type}/#{target.id}/packages/nuget/index.xls" }
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
@@ -439,6 +446,13 @@ end
 
 RSpec.shared_examples 'nuget authorize upload endpoint' do
   using RSpec::Parameterized::TableSyntax
+  include_context 'workhorse headers'
+
+  let(:headers) { {} }
+
+  subject { put api(url), headers: headers }
+
+  it { is_expected.to have_request_urgency(:low) }
 
   context 'with valid project' do
     where(:visibility_level, :user_role, :member, :user_token, :sent_through, :shared_examples_name, :expected_status) do
@@ -517,6 +531,26 @@ end
 
 RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
   using RSpec::Parameterized::TableSyntax
+  include_context 'workhorse headers'
+
+  let(:headers) { {} }
+  let(:file_name) { symbol_package ? 'package.snupkg' : 'package.nupkg' }
+  let(:params) { { package: temp_file(file_name) } }
+  let(:file_key) { :package }
+  let(:send_rewritten_field) { true }
+
+  subject do
+    workhorse_finalize(
+      api(url),
+      method: :put,
+      file_key: file_key,
+      params: params,
+      headers: headers,
+      send_rewritten_field: send_rewritten_field
+    )
+  end
+
+  it { is_expected.to have_request_urgency(:low) }
 
   context 'with valid project' do
     where(:visibility_level, :user_role, :member, :user_token, :sent_through, :shared_examples_name, :expected_status) do
@@ -573,7 +607,12 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
       end
 
       let(:headers) { user_headers.merge(workhorse_headers) }
-      let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace, property: 'i_package_nuget_user' } }
+
+      let(:snowplow_gitlab_standard_context) do
+        { project: project, user: user, namespace: project.namespace, property: 'i_package_nuget_user' }.tap do |ctx|
+          ctx[:feed] = 'v2' if url.include?('nuget/v2')
+        end
+      end
 
       before do
         update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
@@ -603,5 +642,17 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
     end
 
     it_behaves_like 'returning response status', :bad_request
+  end
+
+  context 'when ObjectStorage::RemoteStoreError is raised' do
+    let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
+
+    before do
+      allow_next_instance_of(::Packages::CreatePackageFileService) do |instance|
+        allow(instance).to receive(:execute).and_raise(ObjectStorage::RemoteStoreError)
+      end
+    end
+
+    it_behaves_like 'returning response status', :forbidden
   end
 end

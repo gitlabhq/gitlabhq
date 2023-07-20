@@ -22432,7 +22432,9 @@ CREATE TABLE scan_result_policies (
     age_interval smallint,
     vulnerability_attributes jsonb DEFAULT '{}'::jsonb,
     project_id bigint,
-    CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0)))
+    rule_idx smallint,
+    CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
+    CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0)))
 );
 
 CREATE SEQUENCE scan_result_policies_id_seq
@@ -32932,6 +32934,8 @@ CREATE UNIQUE INDEX index_sbom_occurrences_on_uuid ON sbom_occurrences USING btr
 CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source ON sbom_sources USING btree (source_type, source);
 
 CREATE INDEX index_scan_result_policies_on_policy_configuration_id ON scan_result_policies USING btree (security_orchestration_policy_configuration_id);
+
+CREATE UNIQUE INDEX index_scan_result_policies_on_position_in_configuration ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, project_id, orchestration_policy_idx, rule_idx);
 
 CREATE INDEX index_scan_result_policies_on_project_id ON scan_result_policies USING btree (project_id);
 

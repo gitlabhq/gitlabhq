@@ -285,6 +285,9 @@ func configureRoutes(u *upstream) {
 		// NuGet Artifact Repository
 		u.route("PUT", apiProjectPattern+`/packages/nuget/`, mimeMultipartUploader),
 
+		// NuGet v2 Artifact Repository
+		u.route("PUT", apiProjectPattern+`/packages/nuget/v2`, mimeMultipartUploader),
+
 		// PyPI Artifact Repository
 		u.route("POST", apiProjectPattern+`/packages/pypi`, mimeMultipartUploader),
 

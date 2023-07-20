@@ -527,7 +527,29 @@ With reindex migrations running in the background, there's no need for a manual
 intervention. This usually happens in situations where new features are added to
 advanced search, which means adding or changing the way content is indexed.
 
-To confirm that the advanced search migrations ran, you can check with:
+### Migration dictionary files
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
+
+Every migration has a corresponding dictionary file in the `ee/elastic/docs/` folder with the following information:
+
+```yaml
+name:
+version:
+description:
+group:
+milestone:
+introduced_by_url:
+obsolete:
+marked_obsolete_by_url:
+marked_obsolete_in_milestone:
+```
+
+You can use this information, for example, to identify when a migration was introduced or was marked as obsolete.
+
+### Check for pending migrations
+
+To check for pending advanced search migrations, run this command:
 
 ```shell
 curl "$CLUSTER_URL/gitlab-production-migrations/_search?q=*" | jq .
@@ -566,7 +588,7 @@ This should return something similar to:
 }
 ```
 
-To debug issues with the migrations you can check the [`elasticsearch.log` file](../../administration/logs/index.md#elasticsearchlog).
+To debug issues with the migrations, check the [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file.
 
 ### Retry a halted migration
 

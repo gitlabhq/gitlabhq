@@ -31,6 +31,12 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
       end
     end
 
+    describe 'GET /api/v4/groups/:id/-/packages/nuget/v2' do
+      it_behaves_like 'handling nuget service requests', v2: true do
+        let(:url) { "/groups/#{target.id}/-/packages/nuget/v2" }
+      end
+    end
+
     describe 'GET /api/v4/groups/:id/-/packages/nuget/metadata/*package_name/index' do
       it_behaves_like 'handling nuget metadata requests with package name',
                       example_names_with_status:

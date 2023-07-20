@@ -218,9 +218,9 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
       using RSpec::Parameterized::TableSyntax
 
       where(:shared_runners_setting, :is_disabled_and_unoverridable) do
-        :shared_runners_enabled     | "false"
-        :disabled_and_overridable   | "false"
-        :disabled_and_unoverridable | "true"
+        :shared_runners_enabled                    | "false"
+        :shared_runners_disabled_and_overridable   | "false"
+        :shared_runners_disabled_and_unoverridable | "true"
       end
 
       with_them do

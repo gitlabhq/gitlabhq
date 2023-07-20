@@ -1,16 +1,28 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import * as Sentry from '@sentry/browser';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
-import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { STATUS_CLOSED, STATUS_OPEN } from '~/service_desk/constants';
 import getServiceDeskIssuesQuery from '~/service_desk/queries/get_service_desk_issues.query.graphql';
 import getServiceDeskIssuesCountsQuery from '~/service_desk/queries/get_service_desk_issues_counts.query.graphql';
 import ServiceDeskListApp from '~/service_desk/components/service_desk_list_app.vue';
 import InfoBanner from '~/service_desk/components/info_banner.vue';
+import {
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_SEARCH_WITHIN,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   getServiceDeskIssuesQueryResponse,
   getServiceDeskIssuesCountsQueryResponse,
@@ -24,6 +36,10 @@ describe('ServiceDeskListApp', () => {
   Vue.use(VueApollo);
 
   const defaultProvide = {
+    releasesPath: 'releases/path',
+    autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
+    hasIterationsFeature: true,
+    groupPath: 'group/path',
     emptyStateSvgPath: 'empty-state.svg',
     isProject: true,
     isSignedIn: true,
@@ -34,28 +50,31 @@ describe('ServiceDeskListApp', () => {
 
   const defaultQueryResponse = getServiceDeskIssuesQueryResponse;
 
-  const mockServiceDeskIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
-  const mockServiceDeskIssuesCountsQueryResponse = jest
+  const mockServiceDeskIssuesQueryResponseHandler = jest
+    .fn()
+    .mockResolvedValue(defaultQueryResponse);
+  const mockServiceDeskIssuesCountsQueryResponseHandler = jest
     .fn()
     .mockResolvedValue(getServiceDeskIssuesCountsQueryResponse);
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findInfoBanner = () => wrapper.findComponent(InfoBanner);
+  const findLabelsToken = () =>
+    findIssuableList()
+      .props('searchTokens')
+      .find((token) => token.type === TOKEN_TYPE_LABEL);
 
-  const mountComponent = ({
+  const createComponent = ({
     provide = {},
-    data = {},
-    serviceDeskIssuesQueryResponse = mockServiceDeskIssuesQueryResponse,
-    serviceDeskIssuesCountsQueryResponse = mockServiceDeskIssuesCountsQueryResponse,
-    stubs = {},
-    mountFn = shallowMount,
+    serviceDeskIssuesQueryResponseHandler = mockServiceDeskIssuesQueryResponseHandler,
+    serviceDeskIssuesCountsQueryResponseHandler = mockServiceDeskIssuesCountsQueryResponseHandler,
   } = {}) => {
     const requestHandlers = [
-      [getServiceDeskIssuesQuery, serviceDeskIssuesQueryResponse],
-      [getServiceDeskIssuesCountsQuery, serviceDeskIssuesCountsQueryResponse],
+      [getServiceDeskIssuesQuery, serviceDeskIssuesQueryResponseHandler],
+      [getServiceDeskIssuesCountsQuery, serviceDeskIssuesCountsQueryResponseHandler],
     ];
 
-    return mountFn(ServiceDeskListApp, {
+    return shallowMount(ServiceDeskListApp, {
       apolloProvider: createMockApollo(
         requestHandlers,
         {},
@@ -75,15 +94,11 @@ describe('ServiceDeskListApp', () => {
         ...defaultProvide,
         ...provide,
       },
-      data() {
-        return data;
-      },
-      stubs,
     });
   };
 
   beforeEach(() => {
-    wrapper = mountComponent();
+    wrapper = createComponent();
     return waitForPromises();
   });
 
@@ -107,23 +122,82 @@ describe('ServiceDeskListApp', () => {
       expect(findInfoBanner().exists()).toBe(true);
     });
 
+    it('does not render when Service Desk is not supported and has any number of issues', async () => {
+      wrapper = createComponent({ provide: { isServiceDeskSupported: false } });
+      await waitForPromises();
+
+      expect(findInfoBanner().exists()).toBe(false);
+    });
+
     it('does not render, when there are no issues', async () => {
-      wrapper = mountComponent({ provide: { hasAnyIssues: false } });
+      wrapper = createComponent({ provide: { hasAnyIssues: false } });
       await waitForPromises();
 
       expect(findInfoBanner().exists()).toBe(false);
     });
   });
 
-  describe('Events', () => {
-    describe('when "click-tab" event is emitted by IssuableList', () => {
-      beforeEach(() => {
-        mountComponent();
+  describe('Tokens', () => {
+    const mockCurrentUser = {
+      id: 1,
+      name: 'Administrator',
+      username: 'root',
+      avatar_url: 'avatar/url',
+    };
 
-        findIssuableList().vm.$emit('click-tab', STATUS_CLOSED);
+    describe('when user is signed out', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ provide: { isSignedIn: false } });
       });
 
-      it('updates ui to the new tab', () => {
+      it('does not render My-Reaction or Confidential tokens', () => {
+        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [mockCurrentUser] },
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers: [mockCurrentUser] },
+          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_CONFIDENTIAL },
+        ]);
+      });
+    });
+
+    describe('when all tokens are available', () => {
+      beforeEach(() => {
+        window.gon = {
+          current_user_id: mockCurrentUser.id,
+          current_user_fullname: mockCurrentUser.name,
+          current_username: mockCurrentUser.username,
+          current_user_avatar_url: mockCurrentUser.avatar_url,
+        };
+
+        wrapper = createComponent();
+      });
+
+      it('renders all tokens alphabetically', () => {
+        const preloadedUsers = [
+          { ...mockCurrentUser, id: convertToGraphQLId(TYPENAME_USER, mockCurrentUser.id) },
+        ];
+
+        expect(findIssuableList().props('searchTokens')).toMatchObject([
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
+          { type: TOKEN_TYPE_CONFIDENTIAL },
+          { type: TOKEN_TYPE_LABEL },
+          { type: TOKEN_TYPE_MILESTONE },
+          { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
+        ]);
+      });
+    });
+  });
+
+  describe('Events', () => {
+    describe('when "click-tab" event is emitted by IssuableList', () => {
+      it('updates ui to the new tab', async () => {
+        createComponent();
+
+        findIssuableList().vm.$emit('click-tab', STATUS_CLOSED);
+
+        await nextTick();
         expect(findIssuableList().props('currentTab')).toBe(STATUS_CLOSED);
       });
     });
@@ -131,13 +205,13 @@ describe('ServiceDeskListApp', () => {
 
   describe('Errors', () => {
     describe.each`
-      error                      | mountOption                               | message
-      ${'fetching issues'}       | ${'serviceDeskIssuesQueryResponse'}       | ${ServiceDeskListApp.i18n.errorFetchingIssues}
-      ${'fetching issue counts'} | ${'serviceDeskIssuesCountsQueryResponse'} | ${ServiceDeskListApp.i18n.errorFetchingCounts}
-    `('when there is an error $error', ({ mountOption, message }) => {
+      error                      | responseHandler                                  | message
+      ${'fetching issues'}       | ${'serviceDeskIssuesQueryResponseHandler'}       | ${ServiceDeskListApp.i18n.errorFetchingIssues}
+      ${'fetching issue counts'} | ${'serviceDeskIssuesCountsQueryResponseHandler'} | ${ServiceDeskListApp.i18n.errorFetchingCounts}
+    `('when there is an error $error', ({ responseHandler, message }) => {
       beforeEach(() => {
-        wrapper = mountComponent({
-          [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')),
+        wrapper = createComponent({
+          [responseHandler]: jest.fn().mockRejectedValue(new Error('ERROR')),
         });
         return waitForPromises();
       });
@@ -146,6 +220,32 @@ describe('ServiceDeskListApp', () => {
         expect(findIssuableList().props('error')).toBe(message);
         expect(Sentry.captureException).toHaveBeenCalledWith(new Error('ERROR'));
       });
+    });
+  });
+
+  describe('When providing token for labels', () => {
+    it('passes function to fetchLatestLabels property if frontend caching is enabled', () => {
+      wrapper = createComponent({
+        provide: {
+          glFeatures: {
+            frontendCaching: true,
+          },
+        },
+      });
+
+      expect(typeof findLabelsToken().fetchLatestLabels).toBe('function');
+    });
+
+    it('passes null to fetchLatestLabels property if frontend caching is disabled', () => {
+      wrapper = createComponent({
+        provide: {
+          glFeatures: {
+            frontendCaching: false,
+          },
+        },
+      });
+
+      expect(findLabelsToken().fetchLatestLabels).toBe(null);
     });
   });
 });

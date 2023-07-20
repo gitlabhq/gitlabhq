@@ -12,6 +12,12 @@ export async function mountServiceDeskListApp() {
   }
 
   const {
+    projectDataReleasesPath,
+    projectDataAutocompleteAwardEmojisPath,
+    projectDataHasIterationsFeature,
+    projectDataHasIssueWeightsFeature,
+    projectDataHasIssuableHealthStatusFeature,
+    projectDataGroupPath,
     projectDataEmptyStateSvgPath,
     projectDataFullPath,
     projectDataIsProject,
@@ -36,6 +42,12 @@ export async function mountServiceDeskListApp() {
       defaultClient: await gqlClient(),
     }),
     provide: {
+      releasesPath: projectDataReleasesPath,
+      autocompleteAwardEmojisPath: projectDataAutocompleteAwardEmojisPath,
+      hasIterationsFeature: parseBoolean(projectDataHasIterationsFeature),
+      hasIssueWeightsFeature: parseBoolean(projectDataHasIssueWeightsFeature),
+      hasIssuableHealthStatusFeature: parseBoolean(projectDataHasIssuableHealthStatusFeature),
+      groupPath: projectDataGroupPath,
       emptyStateSvgPath: projectDataEmptyStateSvgPath,
       fullPath: projectDataFullPath,
       isProject: parseBoolean(projectDataIsProject),

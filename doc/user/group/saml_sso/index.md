@@ -225,8 +225,7 @@ After you set up your identity provider to work with GitLab, you must configure 
 1. In the **Default membership role** field, select the role to assign to new users.
    The default role is **Guest**. In [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523)
    and later, group owners can set a default membership role other than **Guest**.
-   To do so, [configure the SAML SSO for the group](#configure-gitlab). That role
-   becomes the starting role of all users added to the group.
+   That role becomes the starting role of all users added to the group.
 1. Select the **Enable SAML authentication for this group** checkbox.
 1. Optional. Select:
    - **Enforce SSO-only authentication for web activity for this group**.

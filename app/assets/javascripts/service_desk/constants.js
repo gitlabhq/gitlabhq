@@ -1,6 +1,11 @@
 import { __, s__ } from '~/locale';
 
 export const SERVICE_DESK_BOT_USERNAME = 'support-bot';
+export const MAX_LIST_SIZE = 10;
+export const STATUS_ALL = 'all';
+export const STATUS_CLOSED = 'closed';
+export const STATUS_OPEN = 'opened';
+export const WORKSPACE_PROJECT = 'project';
 
 export const errorFetchingCounts = __('An error occurred while getting issue counts');
 export const errorFetchingIssues = __('An error occurred while loading issues');
@@ -15,3 +20,7 @@ export const infoBannerUserNote = s__(
 );
 export const enableServiceDesk = s__('ServiceDesk|Enable Service Desk');
 export const learnMore = __('Learn more');
+export const titles = __('Titles');
+export const descriptions = __('Descriptions');
+export const no = __('No');
+export const yes = __('Yes');

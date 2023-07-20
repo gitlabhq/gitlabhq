@@ -196,23 +196,28 @@ RSpec.describe Projects::AutocompleteSourcesController do
         end
       end
 
-      shared_examples 'only public members are returned for public project' do
+      shared_examples 'returns all members of public project' do
         before do
           stub_feature_flags(disable_all_mention: false)
         end
 
-        it 'only returns public members' do
+        it 'returns members including those from invited private groups' do
           get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type }
 
           expect(members_by_username('all').symbolize_keys).to include(
             username: 'all',
             name: 'All Project and Group Members',
-            count: 1)
+            count: 2)
 
           expect(members_by_username(user.username).symbolize_keys).to include(
             type: user.class.name,
             name: user.name,
             avatar_url: user.avatar_url)
+
+          expect(members_by_username(invited_private_member.username).symbolize_keys).to include(
+            type: invited_private_member.class.name,
+            name: invited_private_member.name,
+            avatar_url: invited_private_member.avatar_url)
         end
 
         context 'when `disable_all_mention` FF is enabled' do
@@ -234,7 +239,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
           let(:issuable_type) { private_issue.class.name }
         end
 
-        it_behaves_like 'only public members are returned for public project' do
+        it_behaves_like 'returns all members of public project' do
           let(:issuable_type) { issue.class.name }
         end
       end
@@ -244,7 +249,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
           let(:issuable_type) { private_work_item.class.name }
         end
 
-        it_behaves_like 'only public members are returned for public project' do
+        it_behaves_like 'returns all members of public project' do
           let(:issuable_type) { work_item.class.name }
         end
       end

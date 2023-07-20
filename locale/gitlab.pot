@@ -53985,6 +53985,9 @@ msgstr ""
 msgid "can not be set for this type of note"
 msgstr ""
 
+msgid "can not be true if shared runners are enabled"
+msgstr ""
+
 msgid "can only be changed by a group admin."
 msgstr ""
 
@@ -54031,9 +54034,6 @@ msgid "cannot be changed"
 msgstr ""
 
 msgid "cannot be changed if a personal project has container registry tags."
-msgstr ""
-
-msgid "cannot be changed if shared runners are enabled"
 msgstr ""
 
 msgid "cannot be changed since member is associated with a custom role"

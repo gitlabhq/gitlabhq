@@ -543,8 +543,8 @@ class Namespace < ApplicationRecord
   def changing_allow_descendants_override_disabled_shared_runners_is_allowed
     return unless new_record? || changes.has_key?(:allow_descendants_override_disabled_shared_runners)
 
-    if shared_runners_enabled && !new_record?
-      errors.add(:allow_descendants_override_disabled_shared_runners, _('cannot be changed if shared runners are enabled'))
+    if shared_runners_enabled && allow_descendants_override_disabled_shared_runners
+      errors.add(:allow_descendants_override_disabled_shared_runners, _('can not be true if shared runners are enabled'))
     end
 
     if allow_descendants_override_disabled_shared_runners && has_parent? && parent.shared_runners_setting == SR_DISABLED_AND_UNOVERRIDABLE
