@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountDeploymentsMetric, feature_category: :service_ping do
   using RSpec::Parameterized::TableSyntax
 
-  before(:all) do
+  before_all do
     env = create(:environment)
     [3, 60].each do |n|
       deployment_options = { created_at: n.days.ago, project: env.project, environment: env }

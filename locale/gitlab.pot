@@ -50795,9 +50795,6 @@ msgstr ""
 msgid "Viewing commit"
 msgstr ""
 
-msgid "Viewing projects data from a primary site is not possible when using a unified URL. Visit the secondary site directly. %{geo_help_url}"
-msgstr ""
-
 msgid "Violation"
 msgstr ""
 

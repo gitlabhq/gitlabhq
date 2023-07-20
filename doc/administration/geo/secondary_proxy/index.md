@@ -122,8 +122,6 @@ for details.
   To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate
   the certificate, then copy it to all other sites.
 
-- [Viewing projects data from a primary site is not possible when using a unified URL](../index.md#view-replication-data-on-the-primary-site).
-
 - When secondary proxying is used together with separate URLs, registering [GitLab runners](https://docs.gitlab.com/runner/) to clone from
 secondary sites is not supported. The runner registration succeeds, but the clone URL defaults to the primary site. The runner
 [clone URL](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) is configured per GitLab deployment

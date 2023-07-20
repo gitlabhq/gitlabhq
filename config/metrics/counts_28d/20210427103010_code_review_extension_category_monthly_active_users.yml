@@ -7,7 +7,7 @@ product_stage: create
 product_group: code_review
 value_type: number
 status: active
-milestone: "13.12"
+milestone: '13.12'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53553
 time_frame: 28d
 instrumentation_class: AggregatedMetric
@@ -21,11 +21,12 @@ options:
     - 'i_code_review_user_jetbrains_api_request'
     - 'i_editor_extensions_user_jetbrains_bundled_api_request'
     - 'i_code_review_user_gitlab_cli_api_request'
+    - 'i_editor_extensions_user_visual_studio_api_request'
 distribution:
-- ce
-- ee
+  - ce
+  - ee
 tier:
-- free
-- premium
-- ultimate
+  - free
+  - premium
+  - ultimate
 performance_indicator_type: []

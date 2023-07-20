@@ -38,6 +38,7 @@ class GraphqlController < ApplicationController
   before_action :track_jetbrains_usage
   before_action :track_jetbrains_bundled_usage
   before_action :track_gitlab_cli_usage
+  before_action :track_visual_studio_usage
   before_action :disable_query_limiting
   before_action :limit_query_size
 
@@ -181,6 +182,11 @@ class GraphqlController < ApplicationController
 
   def track_jetbrains_bundled_usage
     Gitlab::UsageDataCounters::JetBrainsBundledPluginActivityUniqueCounter
+      .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
+  end
+
+  def track_visual_studio_usage
+    Gitlab::UsageDataCounters::VisualStudioExtensionActivityUniqueCounter
       .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
   end
 

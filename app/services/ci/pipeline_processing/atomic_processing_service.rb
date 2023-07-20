@@ -144,6 +144,10 @@ module Ci
         DEFAULT_LEASE_TIMEOUT
       end
 
+      def lease_taken_log_level
+        :info
+      end
+
       def log_running_reset_skipped_jobs_service(jobs)
         Gitlab::AppJsonLogger.info(
           class: self.class.name.to_s,

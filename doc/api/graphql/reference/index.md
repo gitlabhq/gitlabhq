@@ -15831,10 +15831,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Find Project registries on this Geo node. Ignored if `geo_project_repository_replication` feature flag is disabled.
 
-WARNING:
-**Introduced** in 16.2.
-This feature is an Experiment. It can be changed or removed at any time.
-
 Returns [`ProjectRepositoryRegistryConnection`](#projectrepositoryregistryconnection).
 
 This field returns a [connection](#connections). It accepts the

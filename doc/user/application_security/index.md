@@ -576,7 +576,7 @@ If a Secure job is failing and it's unclear why:
 1. Enable [debug-level logging](#debug-level-logging).
 1. Run the job.
 1. Examine the job's output.
-1. Set the logging level to `info` (default).
+1. Remove the `debug` log level to return to the default `info` value.
 
 ### Outdated security reports
 
