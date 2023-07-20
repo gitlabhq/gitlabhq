@@ -33,9 +33,6 @@ export default {
     };
   },
   computed: {
-    activeClass() {
-      return this.isHovered ? 'gl-bg-gray-50' : '';
-    },
     canReadBuild() {
       return this.job.userPermissions.readBuild;
     },
@@ -114,8 +111,7 @@ export default {
 <template>
   <div class="container-fluid gl-grid-tpl-rows-auto">
     <div
-      class="row gl-py-4 gl-cursor-pointer gl-display-flex gl-align-items-center"
-      :class="activeClass"
+      class="row gl-my-3 gl-cursor-pointer gl-display-flex gl-align-items-center"
       :aria-pressed="isJobLogVisible"
       role="button"
       tabindex="0"
@@ -127,7 +123,7 @@ export default {
       @mouseout="resetActiveRow"
     >
       <div class="col-6 gl-text-gray-900 gl-font-weight-bold gl-text-left">
-        <gl-icon :name="jobChevronName" class="gl-fill-blue-500" />
+        <gl-icon :name="jobChevronName" />
         <ci-icon :status="job.detailedStatus" />
         {{ job.name }}
       </div>
@@ -138,11 +134,12 @@ export default {
       <gl-tooltip v-if="!canRetryJob" :target="() => $refs.retryBtn" placement="top">
         {{ $options.i18n.cannotRetry }}
       </gl-tooltip>
-      <div class="col-2 gl-text-left">
+      <div class="col-2 gl-text-right">
         <span ref="retryBtn">
           <gl-button
             :disabled="!canRetryJob"
             icon="retry"
+            category="tertiary"
             :loading="isLoadingAction"
             :title="$options.i18n.retry"
             :aria-label="$options.i18n.retry"

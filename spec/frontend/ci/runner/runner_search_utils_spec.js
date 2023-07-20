@@ -50,8 +50,7 @@ describe('search_params.js', () => {
 
     it('When search params appear as array, they are concatenated', () => {
       expect(fromUrlQueryToSearch('?search[]=my&search[]=text').filters).toEqual([
-        { type: FILTERED_SEARCH_TERM, value: { data: 'my' } },
-        { type: FILTERED_SEARCH_TERM, value: { data: 'text' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: 'my text' } },
       ]);
     });
   });

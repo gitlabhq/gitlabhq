@@ -105,7 +105,7 @@ describe('FailedJobsList component', () => {
     });
 
     it('renders table column', () => {
-      expect(findAllHeaders()).toHaveLength(4);
+      expect(findAllHeaders()).toHaveLength(3);
     });
 
     it('shows the list of failed jobs', () => {

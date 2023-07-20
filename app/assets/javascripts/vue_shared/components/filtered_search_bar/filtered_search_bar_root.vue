@@ -105,6 +105,11 @@ export default {
       required: false,
       default: false,
     },
+    searchTextOptionLabel: {
+      type: String,
+      required: false,
+      default: __('Search for this text'),
+    },
   },
   data() {
     return {
@@ -362,7 +367,7 @@ export default {
       :close-button-title="__('Close')"
       :clear-recent-searches-text="__('Clear recent searches')"
       :no-recent-searches-text="__(`You don't have any recent searches`)"
-      :search-text-option-label="__('Search for this text')"
+      :search-text-option-label="searchTextOptionLabel"
       :show-friendly-text="showFriendlyText"
       :terms-as-tokens="termsAsTokens"
       class="flex-grow-1"

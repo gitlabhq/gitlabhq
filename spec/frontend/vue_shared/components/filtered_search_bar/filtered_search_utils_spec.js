@@ -275,28 +275,28 @@ describe('urlQueryToFilter', () => {
     [
       'search=my terms',
       {
-        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
       },
       { filteredSearchTermKey: 'search' },
     ],
     [
       'search[]=my&search[]=terms',
       {
-        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
       },
       { filteredSearchTermKey: 'search' },
     ],
     [
       'search=my+terms',
       {
-        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
       },
       { filteredSearchTermKey: 'search' },
     ],
     [
       'search=my terms&foo=bar&nop=xxx',
       {
-        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
         foo: { value: 'bar', operator: '=' },
       },
       { filteredSearchTermKey: 'search', filterNamesAllowList: ['foo'] },

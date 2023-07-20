@@ -1,4 +1,4 @@
-import { GlButton, GlIcon, GlPopover } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlPopover } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
 import FailedJobsList from '~/pipelines/components/pipelines_list/failure_widget/failed_jobs_list.vue';
@@ -30,6 +30,7 @@ describe('PipelineFailedJobsWidget component', () => {
         ...defaultProvide,
         ...provide,
       },
+      stubs: { GlCard },
     });
   };
 

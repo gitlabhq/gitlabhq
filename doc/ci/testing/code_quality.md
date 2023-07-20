@@ -630,8 +630,9 @@ To work around this problem, set `TIMEOUT_SECONDS` to a higher value in your `.g
 For example:
 
 ```yaml
-variables:
-  TIMEOUT_SECONDS: 3600
+code_quality:
+  variables:
+    TIMEOUT_SECONDS: 3600
 ```
 
 ### Using Code Quality with Kubernetes CI executor

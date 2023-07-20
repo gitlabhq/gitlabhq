@@ -13096,9 +13096,6 @@ msgstr ""
 msgid "Create AI-generated commit message"
 msgstr ""
 
-msgid "Create LLM-generated summary from diff(s)"
-msgstr ""
-
 msgid "Create New Directory"
 msgstr ""
 
@@ -13547,9 +13544,6 @@ msgid "Created on %{created_at}"
 msgstr ""
 
 msgid "Created on:"
-msgstr ""
-
-msgid "Creates a LLM-generated summary from diff(s)."
 msgstr ""
 
 msgid "Creates a branch and a merge request to resolve this issue."
@@ -26294,9 +26288,6 @@ msgstr ""
 msgid "Job Failed #%{build_id}"
 msgstr ""
 
-msgid "Job ID"
-msgstr ""
-
 msgid "Job artifacts"
 msgstr ""
 
@@ -26313,9 +26304,6 @@ msgid "Job is stuck. Check runners."
 msgstr ""
 
 msgid "Job logs and artifacts"
-msgstr ""
-
-msgid "Job name"
 msgstr ""
 
 msgid "Job was retried"
@@ -39164,9 +39152,6 @@ msgstr ""
 msgid "Request details"
 msgstr ""
 
-msgid "Request for summary queued."
-msgstr ""
-
 msgid "Request parameter %{param} is missing."
 msgstr ""
 
@@ -40246,6 +40231,9 @@ msgid "Runners|Running Jobs"
 msgstr ""
 
 msgid "Runners|Runs untagged jobs"
+msgstr ""
+
+msgid "Runners|Search description..."
 msgstr ""
 
 msgid "Runners|Security or compatibility upgrades are recommended."

@@ -416,7 +416,11 @@ Read more about local state management with Apollo in the [Vue Apollo documentat
 
 ### Using with Vuex
 
-We do not recommend creating new applications with Vuex and Apollo Client combined
+We do not recommend creating new applications with Vuex and Apollo Client combined. There are a few reasons:
+
+- VueX and Apollo are both **global stores**, which means sharing responsibilities and having two sources of truth.
+- Keeping VueX and Apollo in sync can be high maintenance.
+- Bugs that would come from the communication between Apollo and VueX would be subtle and hard to debug.
 
 ### Working on GraphQL-based features when frontend and backend are not in sync
 

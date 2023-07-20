@@ -49,9 +49,8 @@ module Features
 
         # For OPERATORS_IS, clicking the filter
         # immediately preselects "=" operator
-
-        page.find('input').send_keys(value)
-        page.find('input').send_keys(:enter)
+        send_keys(value)
+        send_keys(:enter)
 
         click_on 'Search'
       end

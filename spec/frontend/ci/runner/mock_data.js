@@ -104,7 +104,7 @@ export const mockSearchExamples = [
     },
   },
   {
-    name: 'a two terms text search',
+    name: 'a two words text search',
     urlQuery: '?search=something+else',
     search: {
       runnerType: null,
@@ -112,11 +112,7 @@ export const mockSearchExamples = [
       filters: [
         {
           type: FILTERED_SEARCH_TERM,
-          value: { data: 'something' },
-        },
-        {
-          type: FILTERED_SEARCH_TERM,
-          value: { data: 'else' },
+          value: { data: 'something else' },
         },
       ],
       pagination: {},

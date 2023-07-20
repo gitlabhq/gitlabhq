@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCollapse, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlCollapse, GlCard, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import FailedJobsList from './failed_jobs_list.vue';
 
@@ -7,6 +7,7 @@ export default {
   components: {
     GlButton,
     GlCollapse,
+    GlCard,
     GlIcon,
     GlLink,
     GlPopover,
@@ -80,26 +81,30 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-border-none!">
-    <gl-button variant="link" @click="toggleWidget">
-      <gl-icon :name="iconName" />
-      {{ failedJobsCountText }}
-      <gl-icon :id="popoverId" name="information-o" />
-      <gl-popover :target="popoverId" placement="top">
-        <template #title> {{ $options.i18n.additionalInfoTitle }} </template>
-        <slot>
-          <gl-sprintf :message="$options.i18n.additionalInfoPopover">
-            <template #link="{ content }">
-              <gl-link class="gl-font-sm" :href="pipelinePath"> {{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </slot>
-      </gl-popover>
-    </gl-button>
-    <gl-collapse
-      v-model="isExpanded"
-      class="gl-bg-gray-10 gl-border-1 gl-border-t gl-border-color-gray-100 gl-mt-4 gl-pt-3"
-    >
+  <gl-card
+    class="gl-new-card"
+    header-class="gl-new-card-header"
+    body-class="gl-new-card-body"
+    :aria-expanded="isExpanded.toString()"
+  >
+    <template #header>
+      <gl-button variant="link" class="gl-text-gray-600!" @click="toggleWidget">
+        <gl-icon :name="iconName" />
+        {{ failedJobsCountText }}
+        <gl-icon :id="popoverId" name="information-o" class="gl-ml-2" />
+        <gl-popover :target="popoverId" placement="top">
+          <template #title> {{ $options.i18n.additionalInfoTitle }} </template>
+          <slot>
+            <gl-sprintf :message="$options.i18n.additionalInfoPopover">
+              <template #link="{ content }">
+                <gl-link class="gl-font-sm" :href="pipelinePath">{{ content }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </slot>
+        </gl-popover>
+      </gl-button>
+    </template>
+    <gl-collapse v-model="isExpanded">
       <failed-jobs-list
         v-if="isExpanded"
         :is-pipeline-active="isPipelineActive"
@@ -108,5 +113,5 @@ export default {
         @failed-jobs-count="setFailedJobsCount"
       />
     </gl-collapse>
-  </div>
+  </gl-card>
 </template>

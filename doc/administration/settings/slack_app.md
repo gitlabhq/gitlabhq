@@ -70,6 +70,10 @@ To use Slash commands for a project, configure the [GitLab for Slack app](../../
 
 ## Update the GitLab for Slack app
 
+Prerequisite:
+
+- You must be at least a [Slack workspace administrator](https://slack.com/help/articles/360018112273-Types-of-roles-in-Slack).
+
 When GitLab releases new features for the GitLab for Slack app, you might have to manually update your copy to use the new features.
 
 To update your copy of the GitLab for Slack app:

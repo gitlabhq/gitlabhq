@@ -151,11 +151,7 @@ function extractNameAndOperator(filterName) {
  */
 function filteredSearchTermValue(value) {
   const values = Array.isArray(value) ? value : [value];
-  return values
-    .filter((term) => term)
-    .join(' ')
-    .split(' ')
-    .map((term) => ({ value: term }));
+  return [{ value: values.filter((term) => term).join(' ') }];
 }
 
 /**

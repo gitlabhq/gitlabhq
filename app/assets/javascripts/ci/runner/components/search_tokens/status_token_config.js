@@ -15,28 +15,17 @@ import {
   PARAM_KEY_STATUS,
 } from '../../constants';
 
-const options = [
-  { value: STATUS_ONLINE, title: I18N_STATUS_ONLINE },
-  { value: STATUS_OFFLINE, title: I18N_STATUS_OFFLINE },
-  { value: STATUS_NEVER_CONTACTED, title: I18N_STATUS_NEVER_CONTACTED },
-  { value: STATUS_STALE, title: I18N_STATUS_STALE },
-];
-
 export const statusTokenConfig = {
   icon: 'status',
   title: TOKEN_TITLE_STATUS,
   type: PARAM_KEY_STATUS,
   token: BaseToken,
   unique: true,
-  options: options.map(({ value, title }) => ({
-    value,
-    // Replace whitespace with a special character to avoid
-    // splitting this value.
-    // Replacing in each option, as translations may also
-    // contain spaces!
-    // see: https://gitlab.com/gitlab-org/gitlab/-/issues/344142
-    // see: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1438
-    title: title.replace(/\s/g, '\u00a0'),
-  })),
+  options: [
+    { value: STATUS_ONLINE, title: I18N_STATUS_ONLINE },
+    { value: STATUS_OFFLINE, title: I18N_STATUS_OFFLINE },
+    { value: STATUS_NEVER_CONTACTED, title: I18N_STATUS_NEVER_CONTACTED },
+    { value: STATUS_STALE, title: I18N_STATUS_STALE },
+  ],
   operators: OPERATORS_IS,
 };

@@ -117,8 +117,8 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
       describe 'search' do
         before_all do
-          create(:ci_runner, :instance, description: 'runner-foo')
-          create(:ci_runner, :instance, description: 'runner-bar')
+          create(:ci_runner, :instance, description: 'runner foo')
+          create(:ci_runner, :instance, description: 'runner bar')
         end
 
         before do
@@ -133,23 +133,23 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         end
 
         it 'shows runners' do
-          expect(page).to have_content("runner-foo")
-          expect(page).to have_content("runner-bar")
+          expect(page).to have_content("runner foo")
+          expect(page).to have_content("runner bar")
         end
 
         it 'shows correct runner when description matches' do
-          input_filtered_search_keys('runner-foo')
+          input_filtered_search_keys('runner foo')
 
           expect(page).to have_link('All 1')
           expect(page).to have_link('Instance 1')
 
-          expect(page).to have_content("runner-foo")
-          expect(page).not_to have_content("runner-bar")
+          expect(page).to have_content("runner foo")
+          expect(page).not_to have_content("runner bar")
         end
 
         context 'when description does not match' do
           before do
-            input_filtered_search_keys('runner-baz')
+            input_filtered_search_keys('runner baz')
           end
 
           it_behaves_like 'shows no runners found'

@@ -129,8 +129,6 @@ class AddExtendedTitleToSprints < Gitlab::Database::Migration[2.1]
   end
 
   def down
-    remove_text_limit :sprints, :extended_title
-
     with_lock_retries do
       remove_column :sprints, :extended_title, if_exists: true
     end

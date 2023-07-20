@@ -339,3 +339,28 @@ due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To
    # If both flags are enabled, disable the `jira_connect_oauth_self_managed` flag.
    Feature.disable(:jira_connect_oauth_self_managed)
    ```
+
+### `Failed to link group` for self-managed instances
+
+After you connect the GitLab for Jira Cloud app for self-managed instances, you might get one of these errors:
+
+```plaintext
+Failed to load Jira Connect Application ID. Please try again.
+```
+
+```plaintext
+Failed to link group. Please try again.
+```
+
+When you check the browser console, you might see the following message:
+
+```plaintext
+Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://gitlab.example.com/-/jira_connect/oauth_application_id. (Reason: CORS header 'Access-Control-Allow-Origin' missing). Status code: 403.
+```
+
+A `403` status code is returned if:
+
+- The user information cannot be fetched from Jira.
+- The authenticated Jira user does not have administrator access.
+
+To resolve this issue, ensure the authenticated user is a Jira site administrator and try again.

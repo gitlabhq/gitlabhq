@@ -12,13 +12,13 @@ export default {
   },
   fields: [
     {
-      key: 'date',
+      key: 'timestamp',
       label: __('Date'),
       tdClass: tableDataClass,
       sortable: true,
     },
     {
-      key: 'service',
+      key: 'service_name',
       label: __('Service'),
       tdClass: tableDataClass,
       sortable: true,
@@ -59,15 +59,17 @@ export default {
       :items="traces"
       :fields="$options.fields"
       show-empty
+      sort-by="timestamp"
+      :sort-desc="true"
       fixed
       stacked="md"
       tbody-tr-class="table-row"
     >
-      <template #cell(date)="data">
+      <template #cell(timestamp)="data">
         {{ data.item.timestamp }}
       </template>
 
-      <template #cell(service)="data">
+      <template #cell(service_name)="data">
         {{ data.item.service_name }}
       </template>
 

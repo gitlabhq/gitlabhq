@@ -68,13 +68,13 @@ graph TD
   ns[Namespace] -. has many .- ns[Namespace]
 ```
 
-Self-managed instances would set a default Organization.
+All instances would set a default Organization.
 
 ### Benefits
 
 - No changes to URL's for Groups moving under an Organization, which makes moving around top-level Groups very easy.
 - Low risk rollout strategy, as there is no conversion process for existing top-level Groups.
-- Organization becomes the key for identifying what is part of an Organization, which is likely on its own table for performance and clarity.
+- Organization becomes the key for identifying what is part of an Organization, which is on its own table for performance and clarity.
 
 ### Drawbacks
 
@@ -104,15 +104,15 @@ Based on this analysis we expect to see similar behavior when rolling out Organi
 The Organization MVC will contain the following functionality:
 
 - Instance setting to allow the creation of multiple Organizations. This will be enabled by default on GitLab.com, and disabled for self-managed GitLab.
-- Every instance will have a default organization. Initially, all Users will be managed by this default Organization.
+- Every instance will have a default Organization named `Default Organization`. Initially, all Users will be managed by this default Organization.
 - Organization Owner. The creation of an Organization appoints that User as the Organization Owner. Once established, the Organization Owner can appoint other Organization Owners.
 - Organization Users. A User is managed by one Organization, but can be part of multiple Organizations. Users are able to navigate between the different Organizations they are part of.
 - Setup settings. Containing the Organization name, ID, description, and avatar. Settings are editable by the Organization Owner.
-- Setup flow. Users are able to build an Organization on top of an existing top-level Group. New Users are able to create an Organization from scratch and to start building top-level Groups from there.
-- Visibility. Options will be `public` and `private`. A Non-User of a specific Organization will not see private Organizations in the explore section. Visibility is editable by the Organization Owner.
+- Setup flow. Users are able to build new Organizations and transfer existing top-level Groups into them. They can also create new top-level Groups in an Organization.
+- Visibility. Initially, Organizations can only be `public`. Public Organizations can be seen by everyone. They can contain public and private Groups and Projects.
 - Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented.
-- Groups. This includes the ability to create, edit, and delete Groups, as well as a Groups overview that can be accessed by the Organization Owner.
-- Projects. This includes the ability to create, edit, and delete Projects, as well as a Projects overview that can be accessed by the Organization Owner.
+- Groups. This includes the ability to create, edit, and delete Groups, as well as a Groups overview that can be accessed by the Organization Owner and Users.
+- Projects. This includes the ability to create, edit, and delete Projects, as well as a Projects overview that can be accessed by the Organization Owner and Users.
 
 ### Organization Access
 
@@ -127,7 +127,7 @@ Organization Users can get access to Groups and Projects as:
 Organization Users can be managed in the following ways:
 
 - As [Enterprise Users](../../../user/enterprise_user/index.md), managed by the Organization. This includes control over their User account and the ability to block the User.
-- As Non-Enterprise Users, managed by the Default Organization. Non-Enterprise Users can be removed from an Organization, but the User keeps ownership of their User account.
+- As Non-Enterprise Users, managed by the default Organization. Non-Enterprise Users can be removed from an Organization, but the User keeps ownership of their User account.
 
 Enterprise Users are only available to Organizations with a Premium or Ultimate subscription. Organizations on the free tier will only be able to host Non-Enterprise Users.
 
@@ -141,9 +141,32 @@ Users are visible across all Organizations. This allows Users to move between Or
    - Being invited by email address
    - Requesting access. This requires visibility of the Organization and Namespace and must be accepted by the owner of the Namespace. Access cannot be requested to private Groups or Projects.
 
-1. Becoming an Enterprise Users of an Organization. Bringing Enterprise Users to the Organization level is planned post MVC.
+1. Becoming an Enterprise User of an Organization. Bringing Enterprise Users to the Organization level is planned post MVC. For the Organization MVC Enterprise Users will remain at the top-level Group.
+
+The creator of an Organization automatically becomes the Organization Owner.
 
 ##### When can Users see an Organization?
+
+For the MVC, an Organization can only be public. Public Organizations can be seen by everyone. They can contain public and private Groups and Projects.
+
+In the future, Organizations will get an additional internal visibility setting for Groups and Projects. This will allow us to introduce internal Organizations that can only be seen by the Users it contains. This would mean that only Users that are part of the Organization will see:
+
+- The Organization front page, instead of a 404 when navigating the Organization URL
+- Name of the organization
+- Description of the organization
+- Organization pages, such as the Activity page, Groups, Projects and Users overview
+
+Content of these pages will be determined by each User's access to specific Groups and Projects. For instance, private Projects would only be seen by the members of this Project in the Project overview.
+
+As an end goal, we plan to offer the following scenarios:
+
+| Organization visibility | Group/Project visibility | Who sees the Organization? | Who sees Groups/Projects? |
+| ------ | ------ | ------ | ------ |
+| public | public | Everyone | Everyone |
+| public | internal | Everyone | Organization Users |
+| public | private | Everyone | Group/Project members |
+| internal | internal | Organization Users | Organization Users |
+| internal | private | Organization Users | Group/Project members |
 
 ##### What can Users see in an Organization?
 
@@ -176,9 +199,9 @@ graph TD
         F[ProjectMember] <-.type of.- D
         G -.has many.-> E -.belongs to.-> A
 
-        GGL[GroupGroupLink<br/> See note 1] -.belongs_to.->A
-        PGL[ProjectGroupLink<br/> See note 2] -.belongs_to.->A
-        PGL -.belongs_to.->C
+        GGL[GroupGroupLink] -.belongs to.->A
+        PGL[ProjectGroupLink] -.belongs to.->A
+        PGL -.belongs to.->C
 ```
 
 GroupGroupLink is the join table between two Group records, indicating that one Group has invited the other.
@@ -206,6 +229,28 @@ Actions such as banning and deleting a User will be added to the Organization at
 #### Organization Non-Users
 
 Non-Users are external to the Organization and can only access the public resources of an Organization, such as public Projects.
+
+### Roles and Permissions
+
+Organizations will have an Owner role. Compared to Users, they can perform the following actions:
+
+| Action | Owner | User | 
+| ------ | ------ | ----- |
+| View Organization settings | :white_check_mark: | :x: |
+| Edit Organization settings | :white_check_mark: | :x: |
+| Delete Organization | :white_check_mark: | :x: |
+| Remove Users | :white_check_mark: | :x: |
+| View Organization front page | :white_check_mark: | :white_check_mark: |
+| View Groups overview | :white_check_mark: | :white_check_mark:* |
+| View Projects overview | :white_check_mark: | :white_check_mark:* |
+| View Users overview | :white_check_mark: | :white_check_mark:** |
+| Transfer top-level Group into Organization if Owner of both | :white_check_mark: | :x: |
+
+*... can only see what they have access to
+
+**... can only see Users from groups and projects they have access to
+
+[Roles](../../../user/permissions.md) at the Group and Project level remain as they currently are.
 
 ### Routing
 
@@ -254,6 +299,7 @@ In iteration 4, the Organization MVC will be rolled out.
 After the initial rollout of Organizations, the following functionality will be added to address customer needs relating to their implementation of GitLab:
 
 1. Internal visibility will be made available on Organizations that are part of GitLab.com.
+1. Restrict inviting Users outside of the Organization.
 1. Enterprise Users will be made available at the Organization level.
 1. Organizations are able to ban and delete Users.
 1. Projects can be created from the Organization-level Projects overview.
@@ -270,6 +316,21 @@ After the initial rollout of Organizations, the following functionality will be 
 
 ## Organization Rollout
 
+We propose the following steps to successfully roll out Organizations:
+
+- Phase 1: Rollout
+  - Organizations will be rolled out using the concept of a `default Organization`. All existing top-level groups on GitLab.com are already part of this `default Organization`. The Organization UI is feature flagged and can be enabled for a specific set of users initially, and the global user pool at the end of this phase. This way, users will already become familiar with the concept of an Organization and the Organization UI. No features would be impacted by enabling the `default Organization`. See issue [#418225](https://gitlab.com/gitlab-org/gitlab/-/issues/418225) for more details.
+- Phase 2: Migrations 
+  - GitLab, the organization, will be the first one to bud off into a separate Organization. We move all top-level groups that belong to GitLab into the new GitLab Organization, including the `gitLab-org` and `gitLab-com` top-level Groups. See issue [#418228](https://gitlab.com/gitlab-org/gitlab/-/issues/418228) for more details.
+  - Existing customers can create their own Organization. Creation of an Organization remains optional.
+- Phase 3: Onboarding changes
+  - New customers will only have the option to start their journey by creating an Organization.
+- Phase 4: Targeted efforts
+  - Organizations are promoted, e.g. via a banner message, targeted conversations with large customers via the CSMs. Creating a separate Organization will remain a voluntary action.
+  - We increase the value proposition of the Organization, for instance by moving billing to the Organization level to provide incentives for more customers to move to a separate Organization. Adoption will be monitored.
+
+A force-option will only be considered if the we do not achieve the load distribution we are aiming for with Cells.
+
 ## Alternative Solutions
 
 An alternative approach to building Organizations is to convert top-level Groups into Organizations. The main advantage of this approach is that features could be built on top of the Namespace framework and therewith leverage functionality that is already available at the Group level. We would avoid building the same feature multiple times. However, Organizations have been identified as a critical driver of Cells. Due to the urgency of delivering Cells, we decided to opt for the quickest and most straightforward solution to deliver an Organization, which is the lightweight design described above. More details on comparing the two Organization proposals can be found [here](https://gitlab.com/gitlab-org/tenant-scale-group/group-tasks/-/issues/56).
@@ -282,5 +343,8 @@ An alternative approach to building Organizations is to convert top-level Groups
 ## Links
 
 - [Organization epic](https://gitlab.com/groups/gitlab-org/-/epics/9265)
+- [Organization MVC design](https://gitlab.com/groups/gitlab-org/-/epics/10068)
 - [Enterprise Users](../../../user/enterprise_user/index.md)
 - [Cells blueprint](../cells/index.md)
+- [Cells epic](https://gitlab.com/groups/gitlab-org/-/epics/7582)
+- [Namespaces](../../../user/namespace/index.md)

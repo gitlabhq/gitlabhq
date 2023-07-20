@@ -9,9 +9,8 @@ import FailedJobDetails from './failed_job_details.vue';
 
 const POLL_INTERVAL = 10000;
 
-const JOB_ACTION_HEADER = __('Actions');
-const JOB_ID_HEADER = __('Job ID');
-const JOB_NAME_HEADER = __('Job name');
+const JOB_ID_HEADER = __('ID');
+const JOB_NAME_HEADER = __('Name');
 const STAGE_HEADER = __('Stage');
 
 export default {
@@ -133,7 +132,6 @@ export default {
     { text: JOB_NAME_HEADER, class: 'col-6' },
     { text: STAGE_HEADER, class: 'col-2' },
     { text: JOB_ID_HEADER, class: 'col-2' },
-    { text: JOB_ACTION_HEADER, class: 'col-2' },
   ],
   i18n: {
     fetchError: __('There was a problem fetching failed jobs'),
@@ -146,9 +144,9 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="isInitialLoading" />
-    <div v-else-if="!hasFailedJobs">{{ $options.i18n.noFailedJobs }}</div>
+    <div v-else-if="!hasFailedJobs" class="gl-p-4">{{ $options.i18n.noFailedJobs }}</div>
     <div v-else class="container-fluid gl-grid-tpl-rows-auto">
-      <div class="row gl-mb-6 gl-text-gray-900">
+      <div class="row gl-my-4 gl-text-gray-900">
         <div
           v-for="col in $options.columns"
           :key="col.text"
