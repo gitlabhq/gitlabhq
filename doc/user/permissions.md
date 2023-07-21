@@ -473,6 +473,9 @@ To work around the issue, give these users the Guest role or higher to any proje
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
 > - The ability for a custom role to view a vulnerability report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10160) in GitLab 16.1.
 
+FLAG:
+On self-managed GitLab, by default the ability for a custom role to view a vulnerability report is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `elevated_guests`. On GitLab.com, this feature is available.
+
 Custom roles allow group members who are assigned the Owner role to create roles
 specific to the needs of their organization.
 
@@ -482,9 +485,16 @@ For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code
 The following custom roles are available:
 
 - The Guest+1 role, which allows users with the Guest role to view code.
-- In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and update (change status) of the vulnerabilities.
+- In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and change the status of the vulnerabilities.
 
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
+
+When you enable the view vulnerability custom role for a user with the Guest role, that user has access to elevated permissions, and therefore:
+
+- Is considered a [billable user](../subscriptions/self_managed/index.md#billable-users) on self-managed GitLab.
+- [Uses a seat](../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined) on GitLab.com.
+
+This does not apply to the Guest+1 custom role because the `view_code` ability is excluded from this behavior.
 
 ### Create a custom role
 

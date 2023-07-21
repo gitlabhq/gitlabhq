@@ -10,20 +10,41 @@ RSpec.describe Gitlab::Kas do
   end
 
   describe '.verify_api_request' do
-    let(:payload) { { 'iss' => described_class::JWT_ISSUER } }
+    let(:payload) { { 'iss' => described_class::JWT_ISSUER, 'aud' => described_class::JWT_AUDIENCE } }
 
-    it 'returns nil if fails to validate the JWT' do
-      encoded_token = JWT.encode(payload, 'wrongsecret', 'HS256')
-      headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+    context 'returns nil if fails to validate the JWT' do
+      it 'when secret is wrong' do
+        encoded_token = JWT.encode(payload, 'wrong secret', 'HS256')
+        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
-      expect(described_class.verify_api_request(headers)).to be_nil
+        expect(described_class.verify_api_request(headers)).to be_nil
+      end
+
+      it 'when issuer is wrong' do
+        payload['iss'] = 'wrong issuer'
+        encoded_token = JWT.encode(payload, described_class.secret, 'HS256')
+        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+
+        expect(described_class.verify_api_request(headers)).to be_nil
+      end
+
+      it 'when audience is wrong' do
+        payload['aud'] = 'wrong audience'
+        encoded_token = JWT.encode(payload, described_class.secret, 'HS256')
+        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+
+        expect(described_class.verify_api_request(headers)).to be_nil
+      end
     end
 
     it 'returns the decoded JWT' do
       encoded_token = JWT.encode(payload, described_class.secret, 'HS256')
       headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
-      expect(described_class.verify_api_request(headers)).to eq([{ "iss" => described_class::JWT_ISSUER }, { "alg" => "HS256" }])
+      expect(described_class.verify_api_request(headers)).to eq([
+        { 'iss' => described_class::JWT_ISSUER, 'aud' => described_class::JWT_AUDIENCE },
+        { 'alg' => 'HS256' }
+      ])
     end
   end
 

@@ -1100,7 +1100,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/helpers/broadcast_messages_helper_spec.rb'
     - 'spec/helpers/ci/pipelines_helper_spec.rb'
     - 'spec/helpers/clusters_helper_spec.rb'
-    - 'spec/helpers/events_helper_spec.rb'
     - 'spec/helpers/groups_helper_spec.rb'
     - 'spec/helpers/issuables_helper_spec.rb'
     - 'spec/helpers/packages_helper_spec.rb'

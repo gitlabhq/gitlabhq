@@ -1,8 +1,8 @@
 <script>
 import { mapState } from 'vuex';
-import { confidentialFilterData } from '../constants/confidential_filter_data';
-import { HR_DEFAULT_CLASSES } from '../constants';
-import RadioFilter from './radio_filter.vue';
+import { HR_DEFAULT_CLASSES } from '../../constants';
+import RadioFilter from '../radio_filter.vue';
+import { confidentialFilterData } from './data';
 
 export default {
   name: 'ConfidentialityFilter',
@@ -20,6 +20,5 @@ export default {
 <template>
   <div>
     <radio-filter :filter-data="$options.confidentialFilterData" />
-    <hr v-if="!useNewNavigation" :class="$options.HR_DEFAULT_CLASSES" />
   </div>
 </template>

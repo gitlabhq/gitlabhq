@@ -298,6 +298,26 @@ In some cases, pull mirroring does not transfer LFS files. This issue occurs whe
 - You mirror an external repository using object storage.
   An issue exists [to fix this problem](https://gitlab.com/gitlab-org/gitlab/-/issues/335495).
 
+### Pull mirroring is not triggering pipelines
+
+Pipelines might not run for multiple reasons:
+
+- [Trigger pipelines for mirror updates](pull.md#trigger-pipelines-for-mirror-updates)
+  might not be enabled. This setting can only be enabled when initially
+  [configuring pull mirroring](pull.md#configure-pull-mirroring). The status
+  [is not displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/346630)
+  when checking the project afterwards.
+
+  When mirroring is set up using [CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/index.md)
+  this setting is enabled by default. If repository mirroring is manually reconfigured, triggering pipelines
+  is off by default and this could be why pipelines stop running.
+- [`rules`](../../../../ci/yaml/index.md#rules) configuration prevents any jobs from
+  being added to the pipeline.
+- Pipelines are triggered using [the account that set up the pull mirror](https://gitlab.com/gitlab-org/gitlab/-/issues/13697).
+  If the account is no longer valid, pipelines do not run.
+- [Branch protection](../../protected_branches.md#run-pipelines-on-protected-branches)
+  might prevent the account that set up mirroring from running pipelines.
+
 ### `The repository is being updated`, but neither fails nor succeeds visibly
 
 In rare cases, mirroring slots on Redis can become exhausted,

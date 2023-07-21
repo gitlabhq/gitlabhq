@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter.vue';
+import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter/index.vue';
 import RadioFilter from '~/search/sidebar/components/radio_filter.vue';
 
 Vue.use(Vuex);
@@ -20,7 +20,6 @@ describe('ConfidentialityFilter', () => {
   };
 
   const findRadioFilter = () => wrapper.findComponent(RadioFilter);
-  const findHR = () => wrapper.findComponent('hr');
 
   describe('old sidebar', () => {
     beforeEach(() => {
@@ -29,10 +28,6 @@ describe('ConfidentialityFilter', () => {
 
     it('renders the component', () => {
       expect(findRadioFilter().exists()).toBe(true);
-    });
-
-    it('renders the divider', () => {
-      expect(findHR().exists()).toBe(true);
     });
   });
 
@@ -43,10 +38,6 @@ describe('ConfidentialityFilter', () => {
 
     it('renders the component', () => {
       expect(findRadioFilter().exists()).toBe(true);
-    });
-
-    it("doesn't render the divider", () => {
-      expect(findHR().exists()).toBe(false);
     });
   });
 });

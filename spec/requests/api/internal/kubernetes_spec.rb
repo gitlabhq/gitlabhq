@@ -4,7 +4,11 @@ require 'spec_helper'
 
 RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_management do
   let(:jwt_auth_headers) do
-    jwt_token = JWT.encode({ 'iss' => Gitlab::Kas::JWT_ISSUER }, Gitlab::Kas.secret, 'HS256')
+    jwt_token = JWT.encode(
+      { 'iss' => Gitlab::Kas::JWT_ISSUER, 'aud' => Gitlab::Kas::JWT_AUDIENCE },
+      Gitlab::Kas.secret,
+      'HS256'
+    )
 
     { Gitlab::Kas::INTERNAL_API_REQUEST_HEADER => jwt_token }
   end

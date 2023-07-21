@@ -2,10 +2,10 @@
   = form_errors(@deploy_keys.new_key)
   .form-group.row
     = f.label :title, class: "label-bold"
-    = f.text_field :title, class: 'form-control gl-form-input', required: true, data: { qa_selector: 'deploy_key_title_field' }
+    = f.text_field :title, class: 'form-control gl-form-input', required: true, data: { testid: 'deploy-key-title-field' }
   .form-group.row
     = f.label :key, class: "label-bold"
-    = f.text_area :key, class: 'form-control gl-form-input', rows: 5, required: true, data: { qa_selector: 'deploy_key_field' }
+    = f.text_area :key, class: 'form-control gl-form-input', rows: 5, required: true, data: { testid: 'deploy-key-field' }
   .form-group.row
     %p.light.gl-mb-0
       = _('Paste a public key here.')
@@ -17,8 +17,8 @@
         help_text: _('Allow this key to push to this repository')
   .form-group.row
     = f.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
-    = f.gitlab_ui_datepicker :expires_at, data: { qa_selector: 'deploy_key_expires_at_field' }, value: f.object.expires_at
+    = f.gitlab_ui_datepicker :expires_at, data: { testid: 'deploy-key-expires-at-field' }, value: f.object.expires_at
     %p.form-text.text-muted= ssh_key_expires_field_description
 
   .form-group.row
-    = f.submit _("Add key"), data: { qa_selector: "add_deploy_key_button"}, pajamas_button: true
+    = f.submit _("Add key"), data: { testid: "add-deploy-key-button"}, pajamas_button: true

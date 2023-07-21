@@ -25,25 +25,13 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def create
-    if ::Feature.enabled?(:ci_refactoring_pipeline_schedule_create_service, @project)
-      response = Ci::PipelineSchedules::CreateService.new(@project, current_user, schedule_params).execute
-      @schedule = response.payload
+    response = Ci::PipelineSchedules::CreateService.new(@project, current_user, schedule_params).execute
+    @schedule = response.payload
 
-      if response.success?
-        redirect_to pipeline_schedules_path(@project)
-      else
-        render :new
-      end
+    if response.success?
+      redirect_to pipeline_schedules_path(@project)
     else
-      @schedule = Ci::CreatePipelineScheduleService
-        .new(@project, current_user, schedule_params)
-        .execute
-
-      if @schedule.persisted?
-        redirect_to pipeline_schedules_path(@project)
-      else
-        render :new
-      end
+      render :new
     end
   end
 

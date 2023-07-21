@@ -33,7 +33,7 @@ const filterByScope = {
 
 const filterParam = 'state';
 
-export const stateFilterData = {
+export const statusFilterData = {
   header,
   filters,
   scopes,

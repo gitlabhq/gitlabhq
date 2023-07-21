@@ -56,13 +56,13 @@ For deprecation reviewers (Technical Writers only):
 ### <%= deprecation["title"] %>
 
 <div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone"><%= deprecation["announcement_milestone"]%></span>
+- Announced in GitLab <span class="milestone"><%= deprecation["announcement_milestone"]%></span>
 <% if deprecation["end_of_support_milestone"] -%>
-- End of Support: GitLab <span class="milestone"><%= deprecation["end_of_support_milestone"]%></span>
+- End of Support GitLab <span class="milestone"><%= deprecation["end_of_support_milestone"]%></span>
 <% end -%>
-<% if deprecation["breaking_change"] -%>
-- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
-<%- end -%>
+<% if deprecation["removal_milestone"] -%>
+- Removal in GitLab <span class="milestone"><%= deprecation["removal_milestone"]%></span><% if deprecation["breaking_change"] -%> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))<% end %>
+<% end -%>
 <% if deprecation["issue_url"] -%>
 - To discuss this change or learn more, see the [deprecation issue](<%= deprecation["issue_url"]%>).
 <%- end -%>

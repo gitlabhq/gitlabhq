@@ -113,18 +113,18 @@ export default {
   <div class="gl-responsive-table-row deploy-key">
     <div class="table-section section-40">
       <div role="rowheader" class="table-mobile-header">{{ s__('DeployKeys|Deploy key') }}</div>
-      <div class="table-mobile-content" data-qa-selector="key_container">
-        <strong class="title" data-qa-selector="key_title_content"> {{ deployKey.title }} </strong>
+      <div class="table-mobile-content" data-testid="key-container">
+        <strong class="title" data-testid="key-title-content"> {{ deployKey.title }} </strong>
         <dl>
           <dt>{{ __('SHA256') }}</dt>
-          <dd class="fingerprint" data-qa-selector="key_sha256_fingerprint_content">
+          <dd class="fingerprint" data-testid="key-sha256-fingerprint-content">
             {{ deployKey.fingerprint_sha256 }}
           </dd>
           <template v-if="deployKey.fingerprint">
             <dt>
               {{ __('MD5') }}
             </dt>
-            <dd class="fingerprint" data-qa-selector="key_md5_fingerprint_content">
+            <dd class="fingerprint" data-testid="key-md5-fingerprint-content">
               {{ deployKey.fingerprint }}
             </dd>
           </template>

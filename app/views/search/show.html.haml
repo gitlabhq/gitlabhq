@@ -8,7 +8,7 @@
   = hidden_field_tag :project_id, params[:project_id]
 - group_attributes = @group&.attributes&.slice('id', 'name')&.merge(full_name: @group&.full_name)
 - project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
-- search_bar_classes = 'search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4'
+- search_bar_classes = !show_super_sidebar? ? 'search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4' : ''
 
 - if @search_results && !(@search_results.respond_to?(:failed?) && @search_results.failed?)
   - if @search_service_presenter.without_count?

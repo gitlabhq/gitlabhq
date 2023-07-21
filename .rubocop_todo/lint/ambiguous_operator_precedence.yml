@@ -94,7 +94,6 @@ Lint/AmbiguousOperatorPrecedence:
     - 'scripts/review_apps/automated_cleanup.rb'
     - 'spec/controllers/projects/issues_controller_spec.rb'
     - 'spec/controllers/search_controller_spec.rb'
-    - 'spec/helpers/events_helper_spec.rb'
     - 'spec/helpers/time_helper_spec.rb'
     - 'spec/lib/api/helpers/pagination_strategies_spec.rb'
     - 'spec/lib/banzai/filter/front_matter_filter_spec.rb'

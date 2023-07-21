@@ -4,8 +4,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import RadioFilter from '~/search/sidebar/components/radio_filter.vue';
-import { confidentialFilterData } from '~/search/sidebar/constants/confidential_filter_data';
-import { stateFilterData } from '~/search/sidebar/constants/state_filter_data';
+import { confidentialFilterData } from '~/search/sidebar/components/confidentiality_filter/data';
+import { statusFilterData } from '~/search/sidebar/components/status_filter/data';
 
 Vue.use(Vuex);
 
@@ -21,7 +21,7 @@ describe('RadioFilter', () => {
   };
 
   const defaultProps = {
-    filterData: stateFilterData,
+    filterData: statusFilterData,
   };
 
   const createComponent = (initialState, props = {}) => {
@@ -60,20 +60,20 @@ describe('RadioFilter', () => {
       describe('Status Filter', () => {
         it('renders a radio button for each filterOption', () => {
           expect(findGlRadioButtonsText()).toStrictEqual(
-            stateFilterData.filterByScope[stateFilterData.scopes.ISSUES].map((f) => {
-              return f.value === stateFilterData.filters.ANY.value
-                ? `Any ${stateFilterData.header.toLowerCase()}`
+            statusFilterData.filterByScope[statusFilterData.scopes.ISSUES].map((f) => {
+              return f.value === statusFilterData.filters.ANY.value
+                ? `Any ${statusFilterData.header.toLowerCase()}`
                 : f.label;
             }),
           );
         });
 
         it('clicking a radio button item calls setQuery', () => {
-          const filter = stateFilterData.filters[Object.keys(stateFilterData.filters)[0]].value;
+          const filter = statusFilterData.filters[Object.keys(statusFilterData.filters)[0]].value;
           findGlRadioButtonGroup().vm.$emit('input', filter);
 
           expect(actionSpies.setQuery).toHaveBeenCalledWith(expect.any(Object), {
-            key: stateFilterData.filterParam,
+            key: statusFilterData.filterParam,
             value: filter,
           });
         });

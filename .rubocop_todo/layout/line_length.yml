@@ -3576,7 +3576,6 @@ Layout/LineLength:
     - 'spec/helpers/diff_helper_spec.rb'
     - 'spec/helpers/emails_helper_spec.rb'
     - 'spec/helpers/environments_helper_spec.rb'
-    - 'spec/helpers/events_helper_spec.rb'
     - 'spec/helpers/external_link_helper_spec.rb'
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
     - 'spec/helpers/gitlab_script_tag_helper_spec.rb'

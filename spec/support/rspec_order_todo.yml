@@ -5026,7 +5026,6 @@
 - './spec/helpers/enable_search_settings_helper_spec.rb'
 - './spec/helpers/environment_helper_spec.rb'
 - './spec/helpers/environments_helper_spec.rb'
-- './spec/helpers/events_helper_spec.rb'
 - './spec/helpers/explore_helper_spec.rb'
 - './spec/helpers/export_helper_spec.rb'
 - './spec/helpers/external_link_helper_spec.rb'

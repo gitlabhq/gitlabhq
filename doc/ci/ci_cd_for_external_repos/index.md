@@ -103,3 +103,8 @@ references an open Pull Request, both contribute to the status of the Pull Reque
 via GitHub integration. If you want to exclusively run pipelines on external pull
 requests and not on branches you can add `except: [branches]` to the job specs.
 [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/24089#workaround).
+
+## Troubleshooting
+
+- [Pull mirroring is not triggering pipelines](../../user/project/repository/mirror/index.md#pull-mirroring-is-not-triggering-pipelines).
+- [Fix hard failures when mirroring](../../user/project/repository/mirror/pull.md#fix-hard-failures-when-mirroring).

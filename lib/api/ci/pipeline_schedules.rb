@@ -90,28 +90,16 @@ module API
         post ':id/pipeline_schedules' do
           authorize! :create_pipeline_schedule, user_project
 
-          if ::Feature.enabled?(:ci_refactoring_pipeline_schedule_create_service, @project)
-            response = ::Ci::PipelineSchedules::CreateService
-              .new(user_project, current_user, declared_params(include_missing: false))
-              .execute
+          response = ::Ci::PipelineSchedules::CreateService
+            .new(user_project, current_user, declared_params(include_missing: false))
+            .execute
 
-            pipeline_schedule = response.payload
+          pipeline_schedule = response.payload
 
-            if response.success?
-              present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
-            else
-              render_validation_error!(pipeline_schedule)
-            end
+          if response.success?
+            present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
           else
-            pipeline_schedule = ::Ci::CreatePipelineScheduleService
-              .new(user_project, current_user, declared_params(include_missing: false))
-              .execute
-
-            if pipeline_schedule.persisted?
-              present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
-            else
-              render_validation_error!(pipeline_schedule)
-            end
+            render_validation_error!(pipeline_schedule)
           end
         end
 
@@ -135,22 +123,14 @@ module API
         put ':id/pipeline_schedules/:pipeline_schedule_id' do
           authorize! :update_pipeline_schedule, pipeline_schedule
 
-          if ::Feature.enabled?(:ci_refactoring_pipeline_schedule_create_service, @project)
-            response = ::Ci::PipelineSchedules::UpdateService
-              .new(pipeline_schedule, current_user, declared_params(include_missing: false))
-              .execute
+          response = ::Ci::PipelineSchedules::UpdateService
+            .new(pipeline_schedule, current_user, declared_params(include_missing: false))
+            .execute
 
-            if response.success?
-              present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
-            else
-              render_validation_error!(pipeline_schedule)
-            end
+          if response.success?
+            present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
           else
-            if pipeline_schedule.update(declared_params(include_missing: false)) # rubocop:disable Style/IfInsideElse
-              present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails
-            else
-              render_validation_error!(pipeline_schedule)
-            end
+            render_validation_error!(pipeline_schedule)
           end
         end
 

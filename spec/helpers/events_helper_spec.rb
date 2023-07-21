@@ -2,9 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe EventsHelper do
+# Persisting records is required because Event#target's AR scope.
+# We are trying hard to minimize record creations by:
+# * Using `let_it_be`
+# * Factory defaults via `create_default` + `factory_default: :keep`
+#
+# rubocop:disable RSpec/FactoryBot/AvoidCreate
+RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_profile do
   include Gitlab::Routing
   include Banzai::Filter::OutputSafety
+
+  let_it_be(:project) { create_default(:project).freeze }
+  let_it_be(:project_with_repo) { create(:project, :public, :repository).freeze }
+  let_it_be(:user) { create_default(:user).freeze }
 
   describe '#link_to_author' do
     let(:user) { create(:user) }
@@ -40,9 +50,8 @@ RSpec.describe EventsHelper do
     end
 
     context 'when target is not a work item' do
-      let(:project) { create(:project) }
-      let(:issue) { create(:issue, project: project) }
-      let(:event) { create(:event, target: issue, project: project) }
+      let(:issue) { create(:issue) }
+      let(:event) { create(:event, target: issue) }
 
       it { is_expected.to eq([project, issue]) }
     end
@@ -51,7 +60,7 @@ RSpec.describe EventsHelper do
   describe '#localized_action_name' do
     it 'handles all valid design events' do
       created, updated, destroyed = %i[created updated destroyed].map do |trait|
-        event = build(:design_event, trait)
+        event = build_stubbed(:design_event, trait)
         helper.localized_action_name(event)
       end
 
@@ -60,44 +69,46 @@ RSpec.describe EventsHelper do
       expect(destroyed).to eq(_('removed'))
     end
 
-    context 'handles correct base actions' do
+    describe 'handles correct base actions' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:trait, :localized_action_name) do
-        :created   | s_('Event|created')
-        :updated   | s_('Event|opened')
-        :closed    | s_('Event|closed')
-        :reopened  | s_('Event|opened')
-        :commented | s_('Event|commented on')
-        :merged    | s_('Event|accepted')
-        :joined    | s_('Event|joined')
-        :left      | s_('Event|left')
-        :destroyed | s_('Event|destroyed')
-        :expired | s_('Event|removed due to membership expiration from')
-        :approved | s_('Event|approved')
+      where(:trait, :localized_action_key) do
+        :created   | 'Event|created'
+        :updated   | 'Event|opened'
+        :closed    | 'Event|closed'
+        :reopened  | 'Event|opened'
+        :commented | 'Event|commented on'
+        :merged    | 'Event|accepted'
+        :joined    | 'Event|joined'
+        :left      | 'Event|left'
+        :destroyed | 'Event|destroyed'
+        :expired   | 'Event|removed due to membership expiration from'
+        :approved  | 'Event|approved'
       end
 
       with_them do
         it 'with correct name and method' do
-          event = build(:event, trait)
+          Gitlab::I18n.with_locale(:de) do
+            event = build_stubbed(:event, trait)
 
-          expect(helper.localized_action_name(event)).to eq(localized_action_name)
+            expect(helper.localized_action_name(event)).to eq(s_(localized_action_key))
+          end
         end
       end
     end
   end
 
   describe '#event_commit_title' do
-    let(:message) { 'foo & bar ' + 'A' * 70 + '\n' + 'B' * 80 }
+    let(:message) { "foo & bar #{'A' * 70}\\n#{'B' * 80}" }
 
     subject { helper.event_commit_title(message) }
 
     it 'returns the first line, truncated to 70 chars' do
-      is_expected.to eq(message[0..66] + "...")
+      is_expected.to eq("#{message[0..66]}...")
     end
 
     it 'is not html-safe' do
-      is_expected.not_to be_a(ActiveSupport::SafeBuffer)
+      is_expected.not_to be_html_safe
     end
 
     it 'handles empty strings' do
@@ -115,9 +126,8 @@ RSpec.describe EventsHelper do
 
   describe '#event_feed_url' do
     let(:event) { create(:event).present }
-    let(:project) { create(:project, :public, :repository) }
 
-    context 'issue' do
+    context 'for issue' do
       before do
         event.target = create(:issue)
       end
@@ -131,9 +141,9 @@ RSpec.describe EventsHelper do
       end
     end
 
-    context 'merge request' do
+    context 'for merge request' do
       before do
-        event.target = create(:merge_request)
+        event.target = create(:merge_request, source_project: project_with_repo)
       end
 
       it 'returns the project merge request url' do
@@ -146,7 +156,7 @@ RSpec.describe EventsHelper do
     end
 
     it 'returns project commit url' do
-      event.target = create(:note_on_commit, project: project)
+      event.target = create(:note_on_commit, project: project_with_repo)
 
       expect(helper.event_feed_url(event)).to eq(project_commit_url(event.project, event.note_target))
     end
@@ -158,7 +168,6 @@ RSpec.describe EventsHelper do
     end
 
     it 'returns project url' do
-      event.project = project
       event.action = 1
 
       expect(helper.event_feed_url(event)).to eq(project_url(event.project))
@@ -173,7 +182,8 @@ RSpec.describe EventsHelper do
 
     it 'returns nil for push event with multiple refs' do
       event = create(:push_event)
-      create(:push_event_payload, event: event, ref_count: 2, ref: nil, ref_type: :tag, commit_count: 0, action: :pushed)
+      create(:push_event_payload, event: event, ref_count: 2, ref: nil, ref_type: :tag, commit_count: 0,
+        action: :pushed)
 
       expect(helper.event_feed_url(event)).to eq(nil)
     end
@@ -229,8 +239,8 @@ RSpec.describe EventsHelper do
     end
   end
 
-  describe 'event_wiki_page_target_url' do
-    let(:project) { create(:project) }
+  describe '#event_wiki_page_target_url' do
+    let_it_be_with_reload(:project) { create(:project) }
     let(:wiki_page) { create(:wiki_page, wiki: create(:project_wiki, project: project)) }
     let(:event) { create(:wiki_page_event, project: project, wiki_page: wiki_page) }
 
@@ -240,7 +250,7 @@ RSpec.describe EventsHelper do
       expect(helper.event_wiki_page_target_url(event)).to eq(url)
     end
 
-    context 'there is no canonical slug' do
+    context 'without canonical slug' do
       let(:event) { create(:wiki_page_event, project: project) }
 
       before do
@@ -274,14 +284,13 @@ RSpec.describe EventsHelper do
   end
 
   describe '#event_note_target_url' do
-    let(:project) { create(:project, :public, :repository) }
-    let(:event) { create(:event, project: project) }
+    let_it_be(:event) { create(:event) }
     let(:project_base_url) { namespace_project_url(namespace_id: project.namespace, id: project) }
 
     subject { helper.event_note_target_url(event) }
 
     it 'returns a commit note url' do
-      event.target = create(:note_on_commit, note: '+1 from me')
+      event.target = create(:note_on_commit, project: project_with_repo, note: '+1 from me')
 
       expect(subject).to eq("#{project_base_url}/-/commit/#{event.target.commit_id}#note_#{event.target.id}")
     end
@@ -289,7 +298,8 @@ RSpec.describe EventsHelper do
     it 'returns a project snippet note url' do
       event.target = create(:note_on_project_snippet, note: 'keep going')
 
-      expect(subject).to eq("#{project_snippet_url(event.note_target.project, event.note_target)}#note_#{event.target.id}")
+      expect(subject).to eq("#{project_snippet_url(event.note_target.project,
+        event.note_target)}#note_#{event.target.id}")
     end
 
     it 'returns a personal snippet note url' do
@@ -311,7 +321,7 @@ RSpec.describe EventsHelper do
     end
 
     context 'for design note events' do
-      let(:event) { create(:event, :for_design, project: project) }
+      let(:event) { create(:event, :for_design) }
 
       it 'returns an appropriate URL' do
         iid = event.note_target.issue.iid
@@ -326,54 +336,62 @@ RSpec.describe EventsHelper do
   describe '#event_filter_visible' do
     include DesignManagementTestHelpers
 
-    let_it_be(:project) { create(:project) }
-    let_it_be(:current_user) { create(:user) }
-
     subject { helper.event_filter_visible(key) }
 
     before do
       enable_design_management
-      project.add_reporter(current_user)
-      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:current_user).and_return(user)
     end
 
-    def disable_read_design_activity(object)
+    def can_read_design_activity(object, ability)
       allow(Ability).to receive(:allowed?)
-        .with(current_user, :read_design_activity, eq(object))
-        .and_return(false)
+        .with(user, :read_design_activity, eq(object))
+        .and_return(ability)
     end
 
     context 'for :designs' do
       let(:key) { :designs }
 
-      context 'there is no relevant instance variable' do
+      context 'without relevant instance variable' do
         it { is_expected.to be(true) }
       end
 
-      context 'a project has been assigned' do
+      context 'with assigned project' do
         before do
           assign(:project, project)
         end
 
-        it { is_expected.to be(true) }
-
-        context 'the current user cannot read design activity' do
+        context 'with permission' do
           before do
-            disable_read_design_activity(project)
+            can_read_design_activity(project, true)
+          end
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'without permission' do
+          before do
+            can_read_design_activity(project, false)
           end
 
           it { is_expected.to be(false) }
         end
       end
 
-      context 'projects have been assigned' do
+      context 'with projects assigned' do
         before do
-          assign(:projects, Project.where(id: project.id))
+          assign(:projects, Project.id_in(project))
         end
 
-        it { is_expected.to be(true) }
+        context 'with permission' do
+          before do
+            can_read_design_activity(project, true)
+          end
 
-        context 'the collection is empty' do
+          it { is_expected.to be(true) }
+        end
+
+        context 'with empty collection' do
           before do
             assign(:projects, Project.none)
           end
@@ -381,36 +399,40 @@ RSpec.describe EventsHelper do
           it { is_expected.to be(false) }
         end
 
-        context 'the current user cannot read design activity' do
+        context 'without permission' do
           before do
-            disable_read_design_activity(project)
+            can_read_design_activity(project, false)
           end
 
           it { is_expected.to be(false) }
         end
       end
 
-      context 'a group has been assigned' do
+      context 'with group assigned' do
         let_it_be(:group) { create(:group) }
 
         before do
           assign(:group, group)
         end
 
-        context 'there are no projects in the group' do
+        context 'without projects in the group' do
           it { is_expected.to be(false) }
         end
 
-        context 'the group has at least one project' do
-          before do
-            create(:project_group_link, project: project, group: group)
+        context 'with at least one project in the project' do
+          let_it_be(:group_link) { create(:project_group_link, group: group) }
+
+          context 'with permission' do
+            before do
+              can_read_design_activity(group, true)
+            end
+
+            it { is_expected.to be(true) }
           end
 
-          it { is_expected.to be(true) }
-
-          context 'the current user cannot read design activity' do
+          context 'without permission' do
             before do
-              disable_read_design_activity(group)
+              can_read_design_activity(group, false)
             end
 
             it { is_expected.to be(false) }
@@ -420,3 +442,4 @@ RSpec.describe EventsHelper do
     end
   end
 end
+# rubocop:enable RSpec/FactoryBot/AvoidCreate

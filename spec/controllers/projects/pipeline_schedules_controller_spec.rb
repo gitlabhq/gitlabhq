@@ -106,8 +106,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
     end
   end
 
-  # Move this from `shared_context` to `describe` when `ci_refactoring_pipeline_schedule_create_service` is removed.
-  shared_context 'POST #create' do # rubocop:disable RSpec/ContextWording
+  describe 'POST #create' do
     describe 'functionality' do
       before do
         project.add_developer(user)
@@ -183,16 +182,6 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
     def go
       post :create, params: { namespace_id: project.namespace.to_param, project_id: project, schedule: schedule }
     end
-  end
-
-  it_behaves_like 'POST #create'
-
-  context 'when the FF ci_refactoring_pipeline_schedule_create_service is disabled' do
-    before do
-      stub_feature_flags(ci_refactoring_pipeline_schedule_create_service: false)
-    end
-
-    it_behaves_like 'POST #create'
   end
 
   describe 'PUT #update' do

@@ -5,13 +5,14 @@ module Gitlab
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Kas-Api-Request'
     VERSION_FILE = 'GITLAB_KAS_VERSION'
     JWT_ISSUER = 'gitlab-kas'
+    JWT_AUDIENCE = 'gitlab'
     K8S_PROXY_PATH = 'k8s-proxy'
 
     include JwtAuthenticatable
 
     class << self
       def verify_api_request(request_headers)
-        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER], issuer: JWT_ISSUER)
+        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER], issuer: JWT_ISSUER, audience: JWT_AUDIENCE)
       rescue JWT::DecodeError
         nil
       end

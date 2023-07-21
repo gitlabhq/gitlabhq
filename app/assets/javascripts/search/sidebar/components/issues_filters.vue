@@ -10,12 +10,12 @@ import {
   TRACKING_CATEGORY,
   TRACKING_LABEL_RESET,
 } from '../constants/index';
-import { confidentialFilterData } from '../constants/confidential_filter_data';
-import { stateFilterData } from '../constants/state_filter_data';
-import ConfidentialityFilter from './confidentiality_filter.vue';
+import { confidentialFilterData } from './confidentiality_filter/data';
+import { statusFilterData } from './status_filter/data';
+import ConfidentialityFilter from './confidentiality_filter/index.vue';
 import { labelFilterData } from './label_filter/data';
 import LabelFilter from './label_filter/index.vue';
-import StatusFilter from './status_filter.vue';
+import StatusFilter from './status_filter/index.vue';
 
 export default {
   name: 'IssuesFilters',
@@ -37,7 +37,7 @@ export default {
       return Object.values(confidentialFilterData.scopes).includes(this.currentScope);
     },
     showStatusFilter() {
-      return Object.values(stateFilterData.scopes).includes(this.currentScope);
+      return Object.values(statusFilterData.scopes).includes(this.currentScope);
     },
     showLabelFilter() {
       return (
@@ -71,7 +71,12 @@ export default {
   <form class="issue-filters gl-px-5 gl-pt-0" @submit.prevent="applyQueryWithTracking">
     <hr v-if="!useNewNavigation" :class="hrClasses" />
     <status-filter v-if="showStatusFilter" class="gl-mb-5" />
+    <hr v-if="!useNewNavigation" :class="hrClasses" />
     <confidentiality-filter v-if="showConfidentialityFilter" class="gl-mb-5" />
+    <hr
+      v-if="!useNewNavigation && showConfidentialityFilter && showLabelFilter"
+      :class="hrClasses"
+    />
     <label-filter v-if="showLabelFilter" />
     <div class="gl-display-flex gl-align-items-center gl-mt-4">
       <gl-button category="primary" variant="confirm" type="submit" :disabled="!sidebarDirty">

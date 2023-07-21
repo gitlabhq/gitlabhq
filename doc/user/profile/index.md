@@ -337,14 +337,24 @@ You can disable searching with Zoekt and use Elasticsearch instead.
 1. Clear the **Enable advanced code search** checkbox.
 1. Select **Save changes**.
 
-## View your activity
+## View a user's activity
 
 GitLab tracks [user contribution activity](contributions_calendar.md).
-To view a summary of your activity, or the activity of other users:
+To view a user's activity:
 
-1. From a user's profile, select **Follow**.
+1. Go to the user's profile.
 1. In the GitLab menu, select **Activity**.
-1. Select the **Followed users** tab.
+
+A list of **Most Recent Activity** contributions is displayed.
+
+## View your activity
+
+To view your activity:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
+1. Select **Activity**.
+1. Optional. To filter your activity by contribution type, in the **Your Activity** tab, select a tab.
 
 ## Session duration
 

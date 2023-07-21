@@ -8,7 +8,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
   skip_before_action :verify_atlassian_jwt!
 
   def show
-    result = {
+    render json: {
       name: Atlassian::JiraConnect.app_name,
       description: 'Integrate commits, branches and merge requests from GitLab into Jira',
       key: Atlassian::JiraConnect.app_key,
@@ -36,15 +36,10 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
         gdpr: true
       }
     }
-
-    result[:links][:feedback] = URI.join(HOME_URL, FEEDBACK_URL) if Feature.enabled?(:jira_for_cloud_app_feedback_link)
-
-    render json: result
   end
 
   private
 
-  FEEDBACK_URL = '/gitlab-org/gitlab/-/issues/413652'
   HOME_URL = 'https://gitlab.com'
   DOC_URL = 'https://docs.gitlab.com/ee/integration/jira/'
 

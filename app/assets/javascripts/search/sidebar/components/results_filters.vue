@@ -2,10 +2,10 @@
 import { GlButton, GlLink } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { HR_DEFAULT_CLASSES } from '../constants/index';
-import { confidentialFilterData } from '../constants/confidential_filter_data';
-import { stateFilterData } from '../constants/state_filter_data';
-import ConfidentialityFilter from './confidentiality_filter.vue';
-import StatusFilter from './status_filter.vue';
+import { confidentialFilterData } from './confidentiality_filter/data';
+import { statusFilterData } from './status_filter/data';
+import ConfidentialityFilter from './confidentiality_filter/index.vue';
+import StatusFilter from './status_filter/index.vue';
 
 export default {
   name: 'ResultsFilters',
@@ -25,7 +25,7 @@ export default {
       return Object.values(confidentialFilterData.scopes).includes(this.currentScope);
     },
     showStatusFilter() {
-      return Object.values(stateFilterData.scopes).includes(this.currentScope);
+      return Object.values(statusFilterData.scopes).includes(this.currentScope);
     },
     hrClasses() {
       return [...HR_DEFAULT_CLASSES, 'gl-display-none', 'gl-md-display-block'];

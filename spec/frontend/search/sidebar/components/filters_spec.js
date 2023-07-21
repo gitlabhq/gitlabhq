@@ -4,8 +4,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import IssuesFilters from '~/search/sidebar/components/issues_filters.vue';
-import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter.vue';
-import StatusFilter from '~/search/sidebar/components/status_filter.vue';
+import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter/index.vue';
+import StatusFilter from '~/search/sidebar/components/status_filter/index.vue';
 
 Vue.use(Vuex);
 

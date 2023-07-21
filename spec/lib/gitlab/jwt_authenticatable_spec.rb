@@ -148,9 +148,9 @@ RSpec.describe Gitlab::JwtAuthenticatable, feature_category: :system_access do
 
       it 'returns decoded payload if issuer is correct' do
         encoded_message = JWT.encode(payload, test_class.secret, 'HS256')
-        payload = test_class.decode_jwt(encoded_message, issuer: 'test_issuer')
+        decoded_payload = test_class.decode_jwt(encoded_message, issuer: 'test_issuer')
 
-        expect(payload[0]).to match a_hash_including('iss' => 'test_issuer')
+        expect(decoded_payload[0]).to match a_hash_including('iss' => 'test_issuer')
       end
 
       it 'raises an error when the issuer is incorrect' do
@@ -158,6 +158,38 @@ RSpec.describe Gitlab::JwtAuthenticatable, feature_category: :system_access do
         encoded_message = JWT.encode(payload, test_class.secret, 'HS256')
 
         expect { test_class.decode_jwt(encoded_message, issuer: 'test_issuer') }.to raise_error(JWT::DecodeError)
+      end
+
+      it 'raises an error when the issuer is nil' do
+        payload['iss'] = nil
+        encoded_message = JWT.encode(payload, test_class.secret, 'HS256')
+
+        expect { test_class.decode_jwt(encoded_message, issuer: 'test_issuer') }.to raise_error(JWT::DecodeError)
+      end
+    end
+
+    context 'audience option' do
+      let(:payload) { { 'aud' => 'test_audience' } }
+
+      it 'returns decoded payload if audience is correct' do
+        encoded_message = JWT.encode(payload, test_class.secret, 'HS256')
+        decoded_payload = test_class.decode_jwt(encoded_message, audience: 'test_audience')
+
+        expect(decoded_payload[0]).to match a_hash_including('aud' => 'test_audience')
+      end
+
+      it 'raises an error when the audience is incorrect' do
+        payload['aud'] = 'somebody else'
+        encoded_message = JWT.encode(payload, test_class.secret, 'HS256')
+
+        expect { test_class.decode_jwt(encoded_message, audience: 'test_audience') }.to raise_error(JWT::DecodeError)
+      end
+
+      it 'raises an error when the audience is nil' do
+        payload['aud'] = nil
+        encoded_message = JWT.encode(payload, test_class.secret, 'HS256')
+
+        expect { test_class.decode_jwt(encoded_message, audience: 'test_audience') }.to raise_error(JWT::DecodeError)
       end
     end
 

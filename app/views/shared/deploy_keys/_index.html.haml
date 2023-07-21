@@ -1,5 +1,5 @@
 - expanded = expanded_by_default?
-%section.rspec-deploy-keys-settings.settings.no-animate#js-deploy-keys-settings{ class: ('expanded' if expanded), data: { qa_selector: 'deploy_keys_settings_content' } }
+%section.rspec-deploy-keys-settings.settings.no-animate#js-deploy-keys-settings{ class: ('expanded' if expanded), data: { testid: 'deploy-keys-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Deploy keys')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
