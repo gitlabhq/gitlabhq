@@ -36,7 +36,7 @@ gRPC would carry messages between modules.
 ## Use Packwerk to enforce module boundaries
 
 Packwerk is a static analyzer that helps defining and enforcing module boundaries
-in Ruby. 
+in Ruby.
 
 [In this PoC merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98801)
 we demonstrate a possible directory structure of the monolith broken down into separate

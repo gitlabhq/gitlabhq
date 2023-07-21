@@ -1,3 +1,4 @@
 .form-group
   = f.label s_('SubgroupCreationLevel|Roles allowed to create subgroups'), class: 'label-bold'
-  = f.select :subgroup_creation_level, options_for_select(::Gitlab::Access.subgroup_creation_options, group.subgroup_creation_level), {}, class: 'form-control'
+  - ::Gitlab::Access.subgroup_creation_options.each do |label, action|
+    = f.gitlab_ui_radio_component :subgroup_creation_level, action, label

@@ -577,7 +577,7 @@ All other attributes are optional.
 
 ##### SAST
 
-The `location` of a SAST vulnerability must have a `file` that gives the path of the affected file and 
+The `location` of a SAST vulnerability must have a `file` that gives the path of the affected file and
 a `start_line` field with the affected line number.
 It may also have an `end_line`, a `class`, and a `method`.
 

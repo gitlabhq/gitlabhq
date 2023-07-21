@@ -354,7 +354,16 @@ To view your activity:
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Your work**.
 1. Select **Activity**.
-1. Optional. To filter your activity by contribution type, in the **Your Activity** tab, select a tab.
+1. Optional. To filter your activity by contribution type, in the **Your Activity** tab, select a tab:
+
+   - **All**: All contributions you made in your groups and projects.
+   - **Push events**: Push events you made in your projects.
+   - **Merge events**: Merge requests you accepted in your projects.
+   - **Issue events**: Issues you opened and closed in your projects.
+   - **Comments**: Comments you posted in your projects.
+   - **Wiki**: Wiki pages you created and updated in your projects.
+   - **Designs**: Designs you added, updated, and removed in your projects.
+   - **Team**: Projects you joined and left.
 
 ## Session duration
 

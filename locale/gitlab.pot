@@ -51441,6 +51441,9 @@ msgstr ""
 msgid "Vulnerability|Try it out"
 msgstr ""
 
+msgid "Vulnerability|URL:"
+msgstr ""
+
 msgid "Vulnerability|Unmodified Response"
 msgstr ""
 

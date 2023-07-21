@@ -367,7 +367,7 @@ This action is not reversible.
 
 Any existing CI template, that you share with other projects via `include:` syntax, can be converted to a CI component.
 
-1. Decide whether you want the component to be part of an existing [components repository](#components-repository), 
+1. Decide whether you want the component to be part of an existing [components repository](#components-repository),
    if you want to logically group components together. Create and setup a [components repository](#components-repository) otherwise.
 1. Create a YAML file in the components repository according to the expected [directory structure](#directory-structure).
 1. Copy the content of the template YAML file into the new component YAML file.

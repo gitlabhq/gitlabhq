@@ -16,8 +16,6 @@ import DynamicContent from './dynamic_content.vue';
 import StatusIcon from './status_icon.vue';
 import ActionButtons from './action_buttons.vue';
 
-const FETCH_TYPE_COLLAPSED = 'collapsed';
-const FETCH_TYPE_EXPANDED = 'expanded';
 const WIDGET_PREFIX = 'Widget';
 const MISSING_RESPONSE_HEADERS =
   'MR Widget: raesponse object should contain status and headers object. Make sure to include that in your `fetchCollapsedData` and `fetchExpandedData` functions.';
@@ -49,15 +47,6 @@ export default {
     SafeHtml,
   },
   props: {
-    /**
-     * @param {value.collapsed} Object
-     * @param {value.expanded} Object
-     */
-    value: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
     loadingText: {
       type: String,
       required: false,
@@ -238,7 +227,7 @@ export default {
 
     try {
       if (this.fetchCollapsedData) {
-        await this.fetch(this.fetchCollapsedData, FETCH_TYPE_COLLAPSED);
+        await this.fetch(this.fetchCollapsedData);
       }
     } catch {
       this.summaryError = this.errorText;
@@ -271,7 +260,7 @@ export default {
       this.contentError = null;
 
       try {
-        await this.fetch(this.fetchExpandedData, FETCH_TYPE_EXPANDED);
+        await this.fetch(this.fetchExpandedData);
       } catch {
         this.contentError = this.errorText;
 
@@ -282,7 +271,7 @@ export default {
 
       this.isLoadingExpandedContent = false;
     },
-    fetch(handler, dataType) {
+    fetch(handler) {
       const requests = this.multiPolling ? handler() : [handler];
 
       const promises = requests.map((request) => {
@@ -319,9 +308,7 @@ export default {
         });
       });
 
-      return Promise.all(promises).then((data) => {
-        this.$emit('input', { ...this.value, [dataType]: this.multiPolling ? data : data[0] });
-      });
+      return Promise.all(promises);
     },
   },
   failedStatusIcon: EXTENSION_ICONS.failed,

@@ -63,6 +63,24 @@ This page shows groups that you are a member of:
 - Through membership of a subgroup's parent group.
 - Through direct or inherited membership of a project in the group or subgroup.
 
+## View group activity
+
+To view the activity of a project:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Activity**.
+1. Optional. To filter activity by contribution type, select a tab:
+
+   - **All**: All contributions by group members in the group and group's projects.
+   - **Push events**: Push events in the group's projects.
+   - **Merge events**: Accepted merge requests in the group's projects.
+   - **Issue events**: Issues opened and closed in the group's projects.
+   - **Epic events**: Epics opened and closed in the group.
+   - **Comments**: Comments posted by group members in the group's projects.
+   - **Wiki**: Updates to wiki pages in the group.
+   - **Designs**: Designs added, updated, and removed in the group's projects.
+   - **Team**: Group members who joined and left the group's projects.
+
 ## Create a group
 
 To create a group:

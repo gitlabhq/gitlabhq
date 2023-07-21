@@ -13,7 +13,7 @@ We extract libraries from our codebase when their functionality
 is highly isolated and we want to use them in other applications
 ourselves or we think it would benefit the wider community.
 
-Extracting code to a gem also ensures that the gem does not contain any hidden 
+Extracting code to a gem also ensures that the gem does not contain any hidden
 dependencies on our application code.
 
 Gems should always be used when implementing functionality that can be considered isolated,
@@ -36,7 +36,7 @@ You can always start by creating a new Gem [in the same repo](#in-the-same-repo)
 to be used by a wider community.
 
 WARNING:
-To prevent malicious actors from name-squatting the extracted Gems, follow the instructions 
+To prevent malicious actors from name-squatting the extracted Gems, follow the instructions
 to [reserve a gem name](#reserve-a-gem-name).
 
 ## Advantages of using Gems
@@ -81,7 +81,7 @@ and prevents complexity (coordinating changes across repos, new permissions, mul
 Gems stored in the same repo should be referenced in `Gemfile` with the `path:` syntax.
 
 WARNING:
-To prevent malicious actors from name-squatting the extracted Gems, follow the instructions 
+To prevent malicious actors from name-squatting the extracted Gems, follow the instructions
 to [reserve a gem name](#reserve-a-gem-name).
 
 ### Create and use a new Gem

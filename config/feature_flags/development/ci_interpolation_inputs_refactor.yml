@@ -1,0 +1,8 @@
+---
+name: ci_interpolation_inputs_refactor
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125632
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/418198
+milestone: '16.3'
+type: development
+group: group::pipeline authoring
+default_enabled: false

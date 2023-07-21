@@ -28,7 +28,7 @@ is recommended when [FIPS mode](../../development/fips_compliance.md) is enabled
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
 
-Download a PyPI package file. The [simple API](#group-level-simple-api-entry-point) 
+Download a PyPI package file. The [simple API](#group-level-simple-api-entry-point)
 usually supplies this URL.
 
 ```plaintext

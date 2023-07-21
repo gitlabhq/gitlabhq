@@ -382,7 +382,7 @@ describe('~/diffs/utils/tree_worker_utils', () => {
         },
         {
           type: 'tree',
-          name: 'ee/lib/…/…/…/longtreenametomakepath',
+          name: 'ee/lib/ee/gitlab/checks/longtreenametomakepath',
           tree: [
             {
               name: 'diff_check.rb',

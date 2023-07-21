@@ -110,7 +110,7 @@ module Projects
 
       update_pending_builds
 
-      post_update_hooks(project)
+      post_update_hooks(project, @old_group)
     rescue Exception # rubocop:disable Lint/RescueException
       rollback_side_effects
       raise
@@ -119,7 +119,7 @@ module Projects
     end
 
     # Overridden in EE
-    def post_update_hooks(project)
+    def post_update_hooks(project, _old_group)
       ensure_personal_project_owner_membership(project)
       invalidate_personal_projects_counts
 

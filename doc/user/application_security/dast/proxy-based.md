@@ -501,7 +501,7 @@ To run an existing on-demand scan:
 1. In the scan's row, select **Run scan**.
 
    If the branch saved in the scan no longer exists, you must:
-   
+
    1. [Edit the scan](#edit-an-on-demand-scan).
    1. Select a new branch.
    1. Save the edited scan.

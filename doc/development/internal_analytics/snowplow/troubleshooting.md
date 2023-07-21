@@ -42,7 +42,7 @@ or even a result of a public holiday in some regions of the world with a larger 
 1. Check (via [Grafana explore tab](https://dashboards.gitlab.net/explore) ) following Prometheus counters `gitlab_snowplow_events_total`, `gitlab_snowplow_failed_events_total` and `gitlab_snowplow_successful_events_total` to see how many events were fired correctly from GitLab.com. Example query to use `sum(rate(gitlab_snowplow_successful_events_total{env="gprd"}[5m])) / sum(rate(gitlab_snowplow_events_total{env="gprd"}[5m]))` would chart rate at which number of good events rose in comparison to events sent in total. If number drops from 1 it means that problem might be in communication between GitLab and AWS collectors fleet.
 1. Check [logs in Kibana](https://log.gprd.gitlab.net/app/discover#) and filter with `{ "query": { "match_phrase": { "json.message": "failed to be reported to collector at" } } }` if there are some failed events logged
 
-We conducted an investigation into an unexpected drop in snowplow events volume. 
+We conducted an investigation into an unexpected drop in snowplow events volume.
 
 GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/335206`
 

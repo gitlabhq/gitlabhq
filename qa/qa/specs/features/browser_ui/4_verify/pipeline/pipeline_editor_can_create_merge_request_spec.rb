@@ -27,13 +27,6 @@ module QA
         Page::Project::PipelineEditor::New.perform(&:create_new_ci)
 
         Page::Project::PipelineEditor::Show.perform do |show|
-          # Editor should display default content when project does not have CI file yet
-          # New MR checkbox should not be rendered when a new target branch is yet to be provided
-          aggregate_failures 'check editor default conditions' do
-            expect(show.editing_content).not_to be_empty
-            expect(show).to have_no_new_mr_checkbox
-          end
-
           # The new MR checkbox is visible after a new branch name is set
           show.set_source_branch(SecureRandom.hex(10))
           expect(show).to have_new_mr_checkbox

@@ -372,6 +372,11 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        test: /gridstack\/.*\.js$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
         test: /_worker\.js$/,
         resourceQuery: /worker/,
         use: [

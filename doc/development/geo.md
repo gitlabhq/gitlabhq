@@ -680,7 +680,7 @@ on, check out our [self-service framework](geo/framework.md).
 
 After triggering a successful [e2e:package-and-test-ee](testing_guide/end_to_end/index.md#using-the-package-and-test-job) pipeline, you can manually trigger a job named `GET:Geo`:
 
-1. In the [GitLab project](https://gitlab.com/gitlab-org/gitlab), select the **Pipelines** tab of a merge request. 
+1. In the [GitLab project](https://gitlab.com/gitlab-org/gitlab), select the **Pipelines** tab of a merge request.
 1. Select the `Stage: qa` stage on the latest pipeline to expand and list all the related jobs.
 1. Select `trigger-omnibus` to view the [Omnibus GitLab Mirror](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror) pipeline corresponding to the merge request.
 1. The `GET:Geo` job can be found and triggered under the `trigger-qa` stage.

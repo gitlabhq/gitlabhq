@@ -11,6 +11,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   let(:default_branch) { 'main' }
   let(:other_branch) { 'test' }
   let(:branch_with_invalid_ci) { 'despair' }
+  let(:branch_without_ci) { 'empty' }
 
   let(:default_content) { 'Default' }
 
@@ -45,6 +46,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     project.repository.create_file(user, project.ci_config_path_or_default, default_content, message: 'Create CI file for main', branch_name: default_branch)
     project.repository.create_file(user, project.ci_config_path_or_default, valid_content, message: 'Create CI file for test', branch_name: other_branch)
     project.repository.create_file(user, project.ci_config_path_or_default, invalid_content, message: 'Create CI file for test', branch_name: branch_with_invalid_ci)
+    project.repository.create_file(user, 'index.js', "file", message: 'New js file', branch_name: branch_without_ci)
 
     visit project_ci_pipeline_editor_path(project)
     wait_for_requests
@@ -59,6 +61,31 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
       expect(page).to have_selector('[data-testid="visualization-tab"]', visible: :hidden)
       expect(page).to have_selector('[data-testid="validate-tab"]', visible: :hidden)
       expect(page).to have_selector('[data-testid="merged-tab"]', visible: :hidden)
+    end
+  end
+
+  describe 'when there are no CI config file' do
+    before do
+      visit project_ci_pipeline_editor_path(project, branch_name: branch_without_ci)
+    end
+
+    it 'renders the empty page', :aggregate_failures do
+      expect(page).to have_content 'Optimize your workflow with CI/CD Pipelines'
+      expect(page).to have_selector '[data-testid="create_new_ci_button"]'
+    end
+
+    context 'when clicking on the create new CI button' do
+      before do
+        click_button 'Configure pipeline'
+      end
+
+      it 'renders the source editor with default content', :aggregate_failures do
+        expect(page).to have_selector('#source-editor-')
+
+        page.within('#source-editor-') do
+          expect(page).to have_content('This file is a template, and might need editing before it works on your project.')
+        end
+      end
     end
   end
 
@@ -149,15 +176,6 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   end
 
   shared_examples 'default branch switcher behavior' do
-    def switch_to_branch(branch)
-      find('[data-testid="branch-selector"]').click
-
-      page.within '[data-testid="branch-selector"]' do
-        click_button branch
-        wait_for_requests
-      end
-    end
-
     it 'displays current branch' do
       page.within('[data-testid="branch-selector"]') do
         expect(page).to have_content(default_branch)
@@ -195,12 +213,20 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   end
 
   describe 'Branch Switcher' do
+    def switch_to_branch(branch)
+      # close button for the popover
+      find('[data-testid="close-button"]').click
+      find('[data-testid="branch-selector"]').click
+
+      page.within '[data-testid="branch-selector"]' do
+        click_button branch
+        wait_for_requests
+      end
+    end
+
     before do
       visit project_ci_pipeline_editor_path(project)
       wait_for_requests
-
-      # close button for the popover
-      find('[data-testid="close-button"]').click
     end
 
     it_behaves_like 'default branch switcher behavior'
@@ -262,6 +288,24 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   end
 
   describe 'Commit Form' do
+    context 'when targetting the main branch' do
+      it 'does not show the option to create a Merge request', :aggregate_failures do
+        expect(page).not_to have_selector('[data-testid="new-mr-checkbox"]')
+        expect(page).not_to have_content('Start a new merge request with these changes')
+      end
+    end
+
+    context 'when targetting any non-main branch' do
+      before do
+        find('#source-branch-field').set('new_branch', clear: :backspace)
+      end
+
+      it 'shows the option to create a Merge request', :aggregate_failures do
+        expect(page).to have_selector('[data-testid="new-mr-checkbox"]')
+        expect(page).to have_content('Start a new merge request with these changes')
+      end
+    end
+
     it 'is preserved when changing tabs' do
       find('#commit-message').set('message', clear: :backspace)
       find('#source-branch-field').set('new_branch', clear: :backspace)

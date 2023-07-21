@@ -121,14 +121,15 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   });
 
   describe('fetch', () => {
-    it('sets the data.collapsed property after a successfull call - multiPolling: false', async () => {
+    it('calls fetchCollapsedData properly when multiPolling is false', async () => {
       const mockData = { headers: {}, status: HTTP_STATUS_OK, data: { vulnerabilities: [] } };
-      createComponent({ propsData: { fetchCollapsedData: () => Promise.resolve(mockData) } });
+      const fetchCollapsedData = jest.fn().mockResolvedValue(mockData);
+      createComponent({ propsData: { fetchCollapsedData } });
       await waitForPromises();
-      expect(wrapper.emitted('input')[0][0]).toEqual({ collapsed: mockData.data, expanded: null });
+      expect(fetchCollapsedData).toHaveBeenCalledTimes(1);
     });
 
-    it('sets the data.collapsed property after a successfull call - multiPolling: true', async () => {
+    it('calls fetchCollapsedData properly when multiPolling is true', async () => {
       const mockData1 = {
         headers: {},
         status: HTTP_STATUS_OK,
@@ -140,22 +141,22 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
         data: { vulnerabilities: [{ vuln: 2 }] },
       };
 
+      const fetchCollapsedData = [
+        jest.fn().mockResolvedValue(mockData1),
+        jest.fn().mockResolvedValue(mockData2),
+      ];
+
       createComponent({
         propsData: {
           multiPolling: true,
-          fetchCollapsedData: () => [
-            () => Promise.resolve(mockData1),
-            () => Promise.resolve(mockData2),
-          ],
+          fetchCollapsedData: () => fetchCollapsedData,
         },
       });
 
       await waitForPromises();
 
-      expect(wrapper.emitted('input')[0][0]).toEqual({
-        collapsed: [mockData1.data, mockData2.data],
-        expanded: null,
-      });
+      expect(fetchCollapsedData[0]).toHaveBeenCalledTimes(1);
+      expect(fetchCollapsedData[1]).toHaveBeenCalledTimes(1);
     });
 
     it('throws an error when the handler does not include headers or status objects', async () => {
@@ -328,11 +329,12 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       };
 
       const fetchExpandedData = jest.fn().mockResolvedValue(mockDataExpanded);
+      const fetchCollapsedData = jest.fn().mockResolvedValue(mockDataCollapsed);
 
       await createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: () => Promise.resolve(mockDataCollapsed),
+          fetchCollapsedData,
           fetchExpandedData,
         },
       });
@@ -340,17 +342,8 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       findToggleButton().vm.$emit('click');
       await waitForPromises();
 
-      // First fetches the collapsed data
-      expect(wrapper.emitted('input')[0][0]).toEqual({
-        collapsed: mockDataCollapsed.data,
-        expanded: null,
-      });
-
-      // Then fetches the expanded data
-      expect(wrapper.emitted('input')[1][0]).toEqual({
-        collapsed: null,
-        expanded: mockDataExpanded.data,
-      });
+      expect(fetchCollapsedData).toHaveBeenCalledTimes(1);
+      expect(fetchExpandedData).toHaveBeenCalledTimes(1);
 
       // Triggering a click does not call the expanded data again
       findToggleButton().vm.$emit('click');
@@ -371,14 +364,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       findToggleButton().vm.$emit('click');
       await waitForPromises();
 
-      // First fetches the collapsed data
-      expect(wrapper.emitted('input')[0][0]).toEqual({
-        collapsed: undefined,
-        expanded: null,
-      });
-
       expect(fetchExpandedData).toHaveBeenCalledTimes(1);
-      expect(wrapper.emitted('input')).toHaveLength(1); // Should not an emit an input call because request failed
 
       findToggleButton().vm.$emit('click');
       await waitForPromises();
