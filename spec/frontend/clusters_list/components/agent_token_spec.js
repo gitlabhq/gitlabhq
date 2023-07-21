@@ -10,7 +10,6 @@ import {
 } from '~/clusters_list/constants';
 import { generateAgentRegistrationCommand } from '~/clusters_list/clusters_util';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 const kasAddress = 'kas.example.com';
 const agentName = 'my-agent';
@@ -23,7 +22,7 @@ describe('InstallAgentModal', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findCodeBlock = () => wrapper.findComponent(CodeBlock);
-  const findCopyButton = () => wrapper.findComponent(ModalCopyButton);
+  const findCopyButton = () => wrapper.findComponentByTestId('agent-registration-command');
   const findInput = () => wrapper.findComponent(GlFormInputGroup);
   const findHelmVersionPolicyLink = () => wrapper.findComponent(GlLink);
   const findHelmExternalLinkIcon = () => wrapper.findComponent(GlIcon);

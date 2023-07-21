@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:user_2) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
 
   let_it_be(:private_project) { create(:project, :private) }
@@ -181,6 +181,24 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
           )
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context "when using a diff with position" do
+        let!(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
+
+        it_behaves_like 'diff draft notes API', 'iid'
+
+        context "when position is for a previous commit on the merge request" do
+          it "returns a 400 bad request error because the line_code is old" do
+            # SHA taken from an earlier commit listed in spec/factories/merge_requests.rb
+            position = draft_note.position.to_h.merge(new_line: 'c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+
+            post api("/projects/#{project.id}/merge_requests/#{merge_request['iid']}/draft_notes", user),
+              params: { body: 'hi!', position: position }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
         end
       end
 

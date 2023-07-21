@@ -1,7 +1,6 @@
-/**
- * MR -> show: Automerge widget
- *
- */
+@import 'mixins_and_variables_and_functions';
+@import 'framework/buttons';
+
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;
 

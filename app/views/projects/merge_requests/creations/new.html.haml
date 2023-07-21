@@ -3,6 +3,7 @@
 - page_title _("New merge request")
 - add_page_specific_style 'page_bundles/pipelines'
 - add_page_specific_style 'page_bundles/ci_status'
+- add_page_specific_style 'page_bundles/merge_request'
 
 - if @merge_request.can_be_created && !params[:change_branches]
   = render 'new_submit'

@@ -89,6 +89,7 @@ export default {
     <p class="gl-display-flex gl-align-items-flex-start">
       <code-block class="gl-w-full" :code="agentRegistrationCommand" />
       <modal-copy-button
+        data-testid="agent-registration-command"
         :title="$options.i18n.copyCommand"
         :text="agentRegistrationCommand"
         :modal-id="modalId"

@@ -6,6 +6,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Api from '~/api';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
+import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
 import updateActiveDiscussion from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 import getDesignQuery from '~/design_management/graphql/queries/get_design.query.graphql';
@@ -24,6 +25,8 @@ import {
 } from '~/design_management/utils/tracking';
 import { createAlert } from '~/alert';
 import * as cacheUpdate from '~/design_management/utils/cache_update';
+import { stubComponent } from 'helpers/stub_component';
+
 import mockAllVersions from '../../mock_data/all_versions';
 import design from '../../mock_data/design';
 import mockProject from '../../mock_data/project';
@@ -106,7 +109,10 @@ describe('Design management design index page', () => {
     wrapper = shallowMount(DesignIndex, {
       propsData: { id: '1' },
       mocks: { $apollo },
-      stubs,
+      stubs: {
+        ...stubs,
+        DesignDestroyer: stubComponent(DesignDestroyer, { template: '<div></div>' }),
+      },
       provide: {
         issueIid: '1',
         projectPath: 'project-path',

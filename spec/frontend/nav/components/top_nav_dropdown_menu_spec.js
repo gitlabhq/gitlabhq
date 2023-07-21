@@ -5,6 +5,7 @@ import TopNavMenuItem from '~/nav/components/top_nav_menu_item.vue';
 import TopNavMenuSections from '~/nav/components/top_nav_menu_sections.vue';
 import KeepAliveSlots from '~/vue_shared/components/keep_alive_slots.vue';
 import { TEST_NAV_DATA } from '../mock_data';
+import { stubComponent } from '../../__helpers__/stub_component';
 
 describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
   let wrapper;
@@ -19,7 +20,7 @@ describe('~/nav/components/top_nav_dropdown_menu.vue', () => {
       },
       stubs: {
         // Stub the keep-alive-slots so we don't render frequent items which uses a store
-        KeepAliveSlots: true,
+        KeepAliveSlots: stubComponent(KeepAliveSlots),
       },
     });
   };

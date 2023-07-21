@@ -15,6 +15,11 @@ of a specific project or group.
 
 Granting access also activates the Dashboard for Kubernetes for a project or group.
 
+For self-managed instances, make sure you either:
+
+- Host your GitLab instance and [KAS](../../../administration/clusters/kas.md) on the same domain.
+- Host KAS on a subdomain of GitLab. For example, GitLab on `gitlab.com` and KAS on `kas.gitlab.com`.
+
 ## Configure Kubernetes access
 
 Configure access when you want to grant users access

@@ -80,6 +80,18 @@ Some GitLab features might work on versions not listed here. [This epic](https:/
 
 Read about how to [migrate to the agent for Kubernetes](../../infrastructure/clusters/migrate_to_gitlab_agent.md) from the certificate-based integration.
 
+## Agent connection
+
+The agent opens a bidirectional channel to KAS for communication.
+This channel is used for all communication between the agent and KAS:
+
+- Each agent can maintain up to 500 logical gRPC streams, including active and idle streams.
+- The number of TCP connections used by the gRPC streams is determined by gRPC itself.
+- Each connection has a maximum lifetime of two hours, with a one-hour grace period.
+  - A proxy in front of KAS might influence the maximum lifetime of connections. On GitLab.com, this is [two hours](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/-/blob/68df3484087f0af368d074215e17056d8ab69f1c/attributes/default.rb#L217). The grace period is 50% of the maximum lifetime.
+
+For detailed information about channel routing, see [Routing KAS requests in the agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kas_request_routing.md).
+
 ## Related topics
 
 - [GitOps workflow](gitops.md)

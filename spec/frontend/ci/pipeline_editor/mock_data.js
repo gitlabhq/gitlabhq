@@ -295,7 +295,7 @@ export const mockEmptyCommitShaResults = {
   },
 };
 
-export const mockProjectBranches = {
+export const generateMockProjectBranches = (prefix = '') => ({
   data: {
     project: {
       id: '1',
@@ -311,14 +311,14 @@ export const mockProjectBranches = {
           'mock-feature',
           'test-merge-request',
           'staging',
-        ],
+        ].map((branch) => `${prefix}${branch}`),
       },
     },
   },
-};
+});
 
-export const mockTotalBranchResults =
-  mockProjectBranches.data.project.repository.branchNames.length;
+export const mockTotalBranchResults = generateMockProjectBranches().data.project.repository
+  .branchNames.length;
 
 export const mockSearchBranches = {
   data: {

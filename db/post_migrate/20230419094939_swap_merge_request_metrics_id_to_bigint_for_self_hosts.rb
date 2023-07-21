@@ -31,8 +31,8 @@ class SwapMergeRequestMetricsIdToBigintForSelfHosts < Gitlab::Database::Migratio
   def swap
     add_concurrent_index TABLE_NAME, :id_convert_to_bigint, unique: true,
       name: 'index_merge_request_metrics_on_id_convert_to_bigint'
-    add_concurrent_index TABLE_NAME, 'target_project_id, merged_at DESC NULLS LAST, id_convert_to_bigint DESC',
-      name: TMP_INDEX_NAME
+    add_concurrent_index TABLE_NAME, [:target_project_id, :merged_at, :id_convert_to_bigint],
+      name: TMP_INDEX_NAME, order: { merged_at: 'DESC NULLS LAST', id_convert_to_bigint: 'DESC' }
 
     with_lock_retries(raise_on_exhaustion: true) do
       execute "LOCK TABLE #{TABLE_NAME} IN ACCESS EXCLUSIVE MODE"

@@ -480,10 +480,10 @@ To prevent users from publishing duplicate Maven packages, you can use the [Grap
 
 In the UI:
 
-1. For your group, go to **Settings > Packages and registries**.
-1. Expand the **Package Registry** section.
-1. Turn on the **Do not allow duplicates** toggle.
-1. Optional. To allow some duplicate packages, in the **Exceptions** box, enter a regex pattern that matches the names and/or versions of packages you want to allow.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Packages and registries**.
+1. In the **Maven** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
+1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 
 Your changes are automatically saved.
 

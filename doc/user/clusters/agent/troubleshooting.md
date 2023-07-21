@@ -239,3 +239,23 @@ Error: parse error at (gitlab-agent/templates/observability-secret.yaml:1): uncl
 ```
 
 This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](index.md#supported-kubernetes-versions-for-gitlab-features).
+
+## `GitLab Agent Server: Unauthorized` error on Dashboard for Kubernetes
+
+An error like `GitLab Agent Server: Unauthorized. Trace ID: <...>`
+on the [Dashboard for Kubernetes](../../../ci/environments/kubernetes_dashboard.md) page
+might be caused by one of the following:
+
+- The `user_access` entry in the agent configuration file doesn't exist or is wrong.
+  To resolve, see [Grant users Kubernetes access](user_access.md).
+- There are multiple [`_gitlab_kas` cookies](../../../administration/clusters/kas.md#kubernetes-api-proxy-cookie)
+  in the browser and sent to KAS. The most likely cause is multiple GitLab instances hosted
+  on the same site.
+  
+  For example, `gitlab.com` set a `_gitlab_kas` cookie targeted for `kas.gitlab.com`,
+  but the cookie is also sent to `kas.staging.gitlab.com`, which causes the error on `staging.gitlab.com`.
+  
+  To temporarily resolve, delete the `_gitlab_kas` cookie for `gitlab.com` from the browser cookie store.
+  [Issue 418998](https://gitlab.com/gitlab-org/gitlab/-/issues/418998) proposes a fix for this known issue.
+- GitLab and KAS run on different sites. For example, GitLab on `gitlab.example.com` and KAS on `kas.example.com`.
+  GitLab does not support this use case. For details, see [issue 416436](https://gitlab.com/gitlab-org/gitlab/-/issues/416436).

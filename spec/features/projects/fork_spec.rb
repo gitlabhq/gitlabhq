@@ -14,22 +14,79 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
   end
 
   shared_examples 'fork button on project page' do
-    it 'allows user to fork project from the project page' do
-      visit project_path(project)
-
-      expect(page).not_to have_css('a.disabled', text: 'Fork')
-    end
-
-    context 'user has exceeded personal project limit' do
+    context 'when the user has access to only one namespace and has already forked the project' do
       before do
-        user.update!(projects_limit: 0)
+        fork_project(project, user, repository: true, namespace: user.namespace)
       end
 
-      it 'disables fork button on project page' do
+      it 'allows user to go to their fork' do
         visit project_path(project)
 
-        expect(page).to have_css('a.disabled', text: 'Fork')
+        path = namespace_project_path(user, user.fork_of(project))
+
+        fork_button = find_link 'Fork'
+        expect(fork_button['href']).to eq(path)
+        expect(fork_button['class']).not_to include('disabled')
       end
+    end
+
+    shared_examples 'fork button creates new fork' do
+      it 'allows user to fork the project from the project page' do
+        visit project_path(project)
+
+        path = new_project_fork_path(project)
+
+        fork_button = find_link 'Fork'
+        expect(fork_button['href']).to eq(path)
+        expect(fork_button['class']).not_to include('disabled')
+      end
+
+      context 'when the user cannot fork the project' do
+        let(:project) do
+          # Disabling the repository makes sure that the user cannot fork the project
+          create(:project, :public, :repository, :repository_disabled, description: 'some description')
+        end
+
+        it 'disables fork button on project page' do
+          visit project_path(project)
+
+          path = new_project_fork_path(project)
+
+          fork_button = find_link 'Fork'
+          expect(fork_button['href']).to eq(path)
+          expect(fork_button['class']).to include('disabled')
+        end
+      end
+
+      context 'user has exceeded personal project limit' do
+        before do
+          user.update!(projects_limit: 0)
+        end
+
+        it 'disables fork button on project page' do
+          visit project_path(project)
+
+          path = new_project_fork_path(project)
+
+          fork_button = find_link 'Fork'
+          expect(fork_button['href']).to eq(path)
+          expect(fork_button['class']).to include('disabled')
+        end
+      end
+    end
+
+    context 'when the user has not already forked the project' do
+      it_behaves_like 'fork button creates new fork'
+    end
+
+    context 'when the user has access to more than one namespace' do
+      let(:group) { create(:group) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it_behaves_like 'fork button creates new fork'
     end
   end
 
@@ -195,7 +252,9 @@ private
 
 def create_fork(group_obj = group)
   visit project_path(project)
-  find('.fork-btn').click
+
+  click_link 'Fork'
+
   submit_form(group_obj)
   wait_for_requests
 end

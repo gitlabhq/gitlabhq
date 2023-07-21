@@ -249,6 +249,15 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION trigger_07bc3c48f407() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_1a857e8db6cd() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -281,6 +290,15 @@ CREATE FUNCTION trigger_b2d852e1e2cb() RETURNS trigger
     AS $$
 BEGIN
   NEW."id_convert_to_bigint" := NEW."id";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_bfad0e2b9c86() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
   RETURN NEW;
 END;
 $$;
@@ -13638,6 +13656,7 @@ CREATE TABLE ci_pipeline_messages (
     severity smallint DEFAULT 0 NOT NULL,
     pipeline_id integer NOT NULL,
     content text NOT NULL,
+    pipeline_id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
     CONSTRAINT check_58ca2981b2 CHECK ((char_length(content) <= 10000))
 );
 
@@ -14104,6 +14123,7 @@ CREATE TABLE ci_stages (
     "position" integer,
     id bigint NOT NULL,
     partition_id bigint NOT NULL,
+    pipeline_id_convert_to_bigint bigint,
     CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 );
 
@@ -35363,6 +35383,8 @@ CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCIN
 
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER trigger_07bc3c48f407 BEFORE INSERT OR UPDATE ON ci_stages FOR EACH ROW EXECUTE FUNCTION trigger_07bc3c48f407();
+
 CREATE TRIGGER trigger_1a857e8db6cd BEFORE INSERT OR UPDATE ON vulnerability_occurrences FOR EACH ROW EXECUTE FUNCTION trigger_1a857e8db6cd();
 
 CREATE TRIGGER trigger_239c8032a8d6 BEFORE INSERT OR UPDATE ON ci_pipeline_chat_data FOR EACH ROW EXECUTE FUNCTION trigger_239c8032a8d6();
@@ -35370,6 +35392,8 @@ CREATE TRIGGER trigger_239c8032a8d6 BEFORE INSERT OR UPDATE ON ci_pipeline_chat_
 CREATE TRIGGER trigger_7f3d66a7d7f5 BEFORE INSERT OR UPDATE ON ci_pipeline_variables FOR EACH ROW EXECUTE FUNCTION trigger_7f3d66a7d7f5();
 
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
+
+CREATE TRIGGER trigger_bfad0e2b9c86 BEFORE INSERT OR UPDATE ON ci_pipeline_messages FOR EACH ROW EXECUTE FUNCTION trigger_bfad0e2b9c86();
 
 CREATE TRIGGER trigger_cd1aeb22b34a BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE FUNCTION trigger_cd1aeb22b34a();
 

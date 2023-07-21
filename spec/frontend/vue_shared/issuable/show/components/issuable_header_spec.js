@@ -9,6 +9,10 @@ import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 describe('IssuableHeader component', () => {
   let wrapper;
 
+  beforeEach(() => {
+    window.gon.gitlab_url = 'http://0.0.0.0';
+  });
+
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findBlockedIcon = () => wrapper.findByTestId('blocked').findComponent(GlIcon);
   const findButton = () => wrapper.findComponent(GlButton);

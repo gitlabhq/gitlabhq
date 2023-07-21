@@ -17,10 +17,10 @@ import getLastCommitBranch from '~/ci/pipeline_editor/graphql/queries/client/las
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 
 import {
+  generateMockProjectBranches,
   mockBranchPaginationLimit,
   mockDefaultBranch,
   mockEmptySearchBranches,
-  mockProjectBranches,
   mockProjectFullPath,
   mockSearchBranches,
   mockTotalBranches,
@@ -155,7 +155,7 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('after querying', () => {
     beforeEach(async () => {
-      setAvailableBranchesMock(mockProjectBranches);
+      setAvailableBranchesMock(generateMockProjectBranches());
       createComponentWithApollo({ mountFn: mount });
       await waitForPromises();
     });
@@ -201,7 +201,7 @@ describe('Pipeline editor branch switcher', () => {
   describe('when switching branches', () => {
     beforeEach(async () => {
       jest.spyOn(window.history, 'pushState').mockImplementation(() => {});
-      setAvailableBranchesMock(mockProjectBranches);
+      setAvailableBranchesMock(generateMockProjectBranches());
       createComponentWithApollo({ mountFn: mount });
       await waitForPromises();
     });
@@ -269,7 +269,7 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('when searching', () => {
     beforeEach(async () => {
-      setAvailableBranchesMock(mockProjectBranches);
+      setAvailableBranchesMock(generateMockProjectBranches());
       createComponentWithApollo({ mountFn: mount });
       await waitForPromises();
     });
@@ -329,7 +329,7 @@ describe('Pipeline editor branch switcher', () => {
         findSearchBox().vm.$emit('input', 'te');
         await waitForPromises();
 
-        mockAvailableBranchQuery.mockResolvedValue(mockProjectBranches);
+        mockAvailableBranchQuery.mockResolvedValue(generateMockProjectBranches());
       });
 
       it('calls query with correct variables', async () => {
@@ -369,7 +369,7 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('when scrolling to the bottom of the list', () => {
     beforeEach(async () => {
-      setAvailableBranchesMock(mockProjectBranches);
+      setAvailableBranchesMock(generateMockProjectBranches());
       createComponentWithApollo();
       await waitForPromises();
     });
@@ -382,6 +382,7 @@ describe('Pipeline editor branch switcher', () => {
       it('fetches more branches', async () => {
         expect(mockAvailableBranchQuery).toHaveBeenCalledTimes(1);
 
+        setAvailableBranchesMock(generateMockProjectBranches('new-'));
         findInfiniteScroll().vm.$emit('bottomReached');
         await waitForPromises();
 
@@ -389,6 +390,7 @@ describe('Pipeline editor branch switcher', () => {
       });
 
       it('calls the query with the correct variables', async () => {
+        setAvailableBranchesMock(generateMockProjectBranches('new-'));
         findInfiniteScroll().vm.$emit('bottomReached');
         await waitForPromises();
 
