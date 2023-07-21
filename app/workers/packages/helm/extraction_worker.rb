@@ -4,6 +4,7 @@ module Packages
   module Helm
     class ExtractionWorker
       include ApplicationWorker
+      include ::Packages::ErrorHandling
 
       data_consistency :always
 
@@ -19,10 +20,11 @@ module Packages
         return unless package_file && !package_file.package.default?
 
         ::Packages::Helm::ProcessFileService.new(channel, package_file).execute
-
-      rescue StandardError => e
-        Gitlab::ErrorTracking.log_exception(e, project_id: package_file.project_id)
-        package_file.package.update_column(:status, :error)
+      rescue StandardError => exception
+        process_package_file_error(
+          package_file: package_file,
+          exception: exception
+        )
       end
     end
   end

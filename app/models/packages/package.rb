@@ -10,6 +10,7 @@ class Packages::Package < ApplicationRecord
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
   INSTALLABLE_STATUSES = [:default, :hidden].freeze
+  STATUS_MESSAGE_MAX_LENGTH = 255
 
   enum package_type: {
     maven: 1,

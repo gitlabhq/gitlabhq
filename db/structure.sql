@@ -19948,7 +19948,8 @@ CREATE TABLE packages_packages (
     package_type smallint NOT NULL,
     creator_id integer,
     status smallint DEFAULT 0 NOT NULL,
-    last_downloaded_at timestamp with time zone
+    last_downloaded_at timestamp with time zone,
+    status_message text
 );
 
 CREATE SEQUENCE packages_packages_id_seq
@@ -27043,6 +27044,9 @@ ALTER TABLE sprints
 
 ALTER TABLE group_import_states
     ADD CONSTRAINT check_cda75c7c3f CHECK ((user_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE packages_packages
+    ADD CONSTRAINT check_d6301aedeb CHECK ((char_length(status_message) <= 255)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;

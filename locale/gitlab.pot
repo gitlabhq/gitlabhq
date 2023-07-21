@@ -24217,9 +24217,6 @@ msgstr ""
 msgid "IncidentManagement|Incidents"
 msgstr ""
 
-msgid "IncidentManagement|Learn more about incident statuses"
-msgstr ""
-
 msgid "IncidentManagement|Low - S4"
 msgstr ""
 
@@ -24253,13 +24250,13 @@ msgstr ""
 msgid "IncidentManagement|Resolved"
 msgstr ""
 
-msgid "IncidentManagement|Setting the status to Acknowledged or Resolved stops paging when escalation policies are selected for the incident."
-msgstr ""
-
 msgid "IncidentManagement|Severity"
 msgstr ""
 
 msgid "IncidentManagement|Status"
+msgstr ""
+
+msgid "IncidentManagement|Stops paging"
 msgstr ""
 
 msgid "IncidentManagement|There are no closed incidents"

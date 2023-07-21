@@ -23,16 +23,22 @@ RSpec.describe Packages::Helm::ExtractionWorker, type: :worker, feature_category
 
     subject { described_class.new.perform(channel, package_file_id) }
 
-    shared_examples 'handling error' do |error_class = Packages::Helm::ExtractFileMetadataService::ExtractionError|
+    shared_examples 'handling error' do |error_message:,
+      error_class: Packages::Helm::ExtractFileMetadataService::ExtractionError|
       it 'mark the package as errored', :aggregate_failures do
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
           instance_of(error_class),
-          project_id: package_file.package.project_id
+          {
+            package_file_id: package_file.id,
+            project_id: package_file.project_id
+          }
         )
         expect { subject }
           .to not_change { Packages::Package.count }
           .and not_change { Packages::PackageFile.count }
           .and change { package.reload.status }.from('processing').to('error')
+
+        expect(package.status_message).to match(error_message)
       end
     end
 
@@ -69,34 +75,46 @@ RSpec.describe Packages::Helm::ExtractionWorker, type: :worker, feature_category
       end
     end
 
-    context 'with an empty package file' do
-      before do
-        expect_next_instance_of(Gem::Package::TarReader) do |tar_reader|
-          expect(tar_reader).to receive(:each).and_return([])
+    context 'with controlled errors' do
+      context 'with an empty package file' do
+        before do
+          expect_next_instance_of(Gem::Package::TarReader) do |tar_reader|
+            expect(tar_reader).to receive(:each).and_return([])
+          end
         end
+
+        it_behaves_like 'handling error', error_message: /Chart.yaml not found/
       end
 
-      it_behaves_like 'handling error'
+      context 'with an invalid YAML' do
+        before do
+          expect_next_instance_of(Gem::Package::TarReader::Entry) do |entry|
+            expect(entry).to receive(:read).and_return('{')
+          end
+        end
+
+        it_behaves_like 'handling error', error_message: /Error while parsing Chart.yaml/
+      end
+
+      context 'with an invalid Chart.yaml' do
+        before do
+          expect_next_instance_of(Gem::Package::TarReader::Entry) do |entry|
+            expect(entry).to receive(:read).and_return('{}')
+          end
+        end
+
+        it_behaves_like 'handling error', error_class: ActiveRecord::RecordInvalid, error_message: /Validation failed/
+      end
     end
 
-    context 'with an invalid YAML' do
+    context 'with uncontrolled errors' do
       before do
-        expect_next_instance_of(Gem::Package::TarReader::Entry) do |entry|
-          expect(entry).to receive(:read).and_return('{')
+        allow_next_instance_of(::Packages::Helm::ProcessFileService) do |instance|
+          allow(instance).to receive(:execute).and_raise(StandardError.new('Boom'))
         end
       end
 
-      it_behaves_like 'handling error'
-    end
-
-    context 'with an invalid Chart.yaml' do
-      before do
-        expect_next_instance_of(Gem::Package::TarReader::Entry) do |entry|
-          expect(entry).to receive(:read).and_return('{}')
-        end
-      end
-
-      it_behaves_like 'handling error', ActiveRecord::RecordInvalid
+      it_behaves_like 'handling error', error_class: StandardError, error_message: 'Unexpected error: StandardError'
     end
   end
 end

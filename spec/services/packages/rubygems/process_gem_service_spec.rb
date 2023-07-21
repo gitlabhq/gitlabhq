@@ -151,5 +151,14 @@ RSpec.describe Packages::Rubygems::ProcessGemService, feature_category: :package
         expect(package_file.reload.file_name).to eq('package.gem')
       end
     end
+
+    context 'with invalid metadata' do
+      include_context 'with invalid Rubygems metadata'
+
+      it 'raises the correct error' do
+        expect { subject }
+          .to raise_error(::Packages::Rubygems::ProcessGemService::InvalidMetadataError, 'Invalid metadata')
+      end
+    end
   end
 end
