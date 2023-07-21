@@ -1,0 +1,8 @@
+---
+name: ci_prevent_file_var_expansion_downstream_pipeline
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124320
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414583
+milestone: '16.3'
+type: development
+group: group::pipeline security
+default_enabled: false

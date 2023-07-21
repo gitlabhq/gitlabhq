@@ -286,7 +286,6 @@ module QA
         end
 
         def merge!
-          close_rich_text_promo_popover_if_present
           try_to_merge!
           finished_loading?
 

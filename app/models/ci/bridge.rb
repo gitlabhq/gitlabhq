@@ -266,6 +266,12 @@ module Ci
       end
     end
 
+    def expand_file_refs?
+      strong_memoize(:expand_file_refs) do
+        !Feature.enabled?(:ci_prevent_file_var_expansion_downstream_pipeline, project)
+      end
+    end
+
     private
 
     def cross_project_params

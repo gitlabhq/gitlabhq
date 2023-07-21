@@ -66,6 +66,12 @@ To avoid external dependencies like Gitpod and a Jira Cloud instance, use the [J
 1. Clone the [**Jira-connect-test-tool**](https://gitlab.com/gitlab-org/manage/integrations/jira-connect-test-tool) `git clone git@gitlab.com:gitlab-org/manage/integrations/jira-connect-test-tool.git`.
 1. Start the app `bundle exec rackup`. (The app requires your GDK GitLab to be available on `http://127.0.0.1:3000`.).
 1. Open `config/gitlab.yml` and uncomment the `jira_connect` config.
+1. If running GDK on a domain other than `localhost`, you must add the domain to `additional_iframe_ancestors`. For example:
+
+   ```yaml
+   additional_iframe_ancestors: ['localhost:*', '127.0.0.1:*', 'gdk.test:*']
+   ```
+
 1. Restart GDK.
 1. Go to `http://127.0.0.1:3000/-/profile/personal_access_tokens`.
 1. Create a new token with the `api` scope and copy the token.
@@ -79,24 +85,23 @@ To avoid external dependencies like Gitpod and a Jira Cloud instance, use the [J
 
 GitLab for Jira users can authenticate with GitLab using GitLab OAuth.
 
-WARNING:
-This feature is not ready for production use. The feature flag should only be enabled in development.
-
 The following steps describe setting up an environment to test the GitLab OAuth flow:
 
 1. Start a Gitpod session.
 1. On your GitLab instance, go to **Admin > Applications**.
 1. Create a new application with the following settings:
-   - Name: `Jira Connect`
+   - Name: `GitLab for Jira`
    - Redirect URI: `YOUR_GITPOD_INSTANCE/-/jira_connect/oauth_callbacks`
-   - Scopes: `api`
    - Trusted: **No**
    - Confidential: **No**
-1. Copy the Application ID.
+   - Scopes: `api`
+1. Copy the **Application ID** value.
 1. Go to **Admin > Settings > General**.
 1. Expand **GitLab for Jira App**.
-1. Go to [gitpod.io/variables](https://gitpod.io/variables).
-1. Paste the Application ID into the **Jira Connect Application ID** field and select **Save changes**.
+1. Paste the **Application ID** value into **Jira Connect Application ID**.
+1. In **Jira Connect Proxy URL**, enter `YOUR_GITPOD_INSTANCE` (for example, `https://xxxx.gitpod.io`).
+1. Select **Enable public key storage**.
+1. Select **Save changes**.
 
 ## Troubleshooting
 
