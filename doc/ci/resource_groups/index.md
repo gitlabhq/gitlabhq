@@ -314,4 +314,4 @@ To get job information from the GraphQL API:
     }
     ```
 
-    If the status is not `running` or `pending`, open a new issue.
+    If the status is not `running` or `pending`, [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and [contact support](https://about.gitlab.com/support/#contact-support) so they can apply the correct labels to the issue.

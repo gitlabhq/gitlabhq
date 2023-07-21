@@ -234,7 +234,7 @@ Non-Users are external to the Organization and can only access the public resour
 
 Organizations will have an Owner role. Compared to Users, they can perform the following actions:
 
-| Action | Owner | User | 
+| Action | Owner | User |
 | ------ | ------ | ----- |
 | View Organization settings | :white_check_mark: | :x: |
 | Edit Organization settings | :white_check_mark: | :x: |
@@ -266,10 +266,11 @@ The following iteration plan outlines how we intend to arrive at the Organizatio
 
 ### Iteration 1: Organization Prototype (FY24Q2)
 
-In iteration 1, we introduce the concept of an Organization as a way to Group top-level Groups together. Support for Organizations does not require any [Cells](../cells/index.md) work, but having them will make all subsequent iterations of Cells simpler. The goal of iteration 1 will be to generate a prototype that can be used by GitLab teams to test moving functionality to the Organization. It contains everything that is necessary to move an Organization to a Cell:
+In iteration 1, we introduce the concept of an Organization as a way to group top-level Groups together. Support for Organizations does not require any [Cells](../cells/index.md) work, but having them will make all subsequent iterations of Cells simpler. The goal of iteration 1 will be to generate a prototype that can be used by GitLab teams to test moving functionality to the Organization. It contains everything that is necessary to move an Organization to a Cell:
 
 - The Organization can be named, has an ID and an avatar.
-- Only a Non-Enterprise User can be part of an Organization.
+- Both Enterprise and Non-Enterprise Users can be part of an Organization.
+- Enterprise Users are still managed by top-level Groups.
 - A User can be part of multiple Organizations.
 - A single Organization Owner can be assigned.
 - Groups can be created in an Organization. Groups are listed in the Groups overview.
@@ -288,7 +289,8 @@ In iteration 2, an Organization MVC Experiment will be released. We will test th
 In iteration 3, the Organization MVC Beta will be released.
 
 - Multiple Organization Owners can be assigned.
-- Organization Owners can change the visibility of an organization between `public` and `private`. A Non-User of a specific Organization will not see private Organizations in the explore section.
+- Organization Owners can create, edit and delete Groups from the Groups overview.
+- Organization Owners can create, edit and delete Projects from the Projects overview.
 
 ### Iteration 4: Organization MVC GA (FY25Q1)
 
@@ -320,7 +322,7 @@ We propose the following steps to successfully roll out Organizations:
 
 - Phase 1: Rollout
   - Organizations will be rolled out using the concept of a `default Organization`. All existing top-level groups on GitLab.com are already part of this `default Organization`. The Organization UI is feature flagged and can be enabled for a specific set of users initially, and the global user pool at the end of this phase. This way, users will already become familiar with the concept of an Organization and the Organization UI. No features would be impacted by enabling the `default Organization`. See issue [#418225](https://gitlab.com/gitlab-org/gitlab/-/issues/418225) for more details.
-- Phase 2: Migrations 
+- Phase 2: Migrations
   - GitLab, the organization, will be the first one to bud off into a separate Organization. We move all top-level groups that belong to GitLab into the new GitLab Organization, including the `gitLab-org` and `gitLab-com` top-level Groups. See issue [#418228](https://gitlab.com/gitlab-org/gitlab/-/issues/418228) for more details.
   - Existing customers can create their own Organization. Creation of an Organization remains optional.
 - Phase 3: Onboarding changes

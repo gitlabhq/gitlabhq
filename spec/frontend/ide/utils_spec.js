@@ -8,7 +8,6 @@ import {
   trimTrailingWhitespace,
   getPathParents,
   getPathParent,
-  readFileAsDataURL,
   addNumericSuffix,
 } from '~/ide/utils';
 
@@ -264,16 +263,6 @@ describe('WebIDE utils', () => {
       ${'path with/spaces to/something.md'} | ${'path with/spaces to'}
     `('gets the immediate parent for path: $path', ({ path, parents }) => {
       expect(getPathParent(path)).toEqual(parents);
-    });
-  });
-
-  describe('readFileAsDataURL', () => {
-    it('reads a file and returns its output as a data url', () => {
-      const file = new File(['foo'], 'foo.png', { type: 'image/png' });
-
-      return readFileAsDataURL(file).then((contents) => {
-        expect(contents).toBe('data:image/png;base64,Zm9v');
-      });
     });
   });
 

@@ -103,16 +103,16 @@ to apply to every repository's [default branch](#default-branch)
 at the [instance level](#instance-level-default-branch-protection) and
 [group level](#group-level-default-branch-protection) with one of the following options:
 
-- **Not protected** - Both developers and maintainers can push new commits
-   and force push.
+- **Fully protected** - Default value. Developers cannot push new commits, but maintainers can.
+   No one can force push.
+- **Fully protected after initial push** - Developers can push the initial commit
+  to a repository, but none afterward. Maintainers can always push. No one can force push.
 - **Protected against pushes** - Developers cannot push new commits, but are
    allowed to accept merge requests to the branch. Maintainers can push to the branch.
 - **Partially protected** - Both developers and maintainers can push new commits,
    but cannot force push.
-- **Fully protected** - Developers cannot push new commits, but maintainers can.
-   No one can force push.
-- **Fully protected after initial push** - Developers can push the initial commit
-  to a repository, but none afterward. Maintainers can always push. No one can force push.
+- **Not protected** - Both developers and maintainers can push new commits
+   and force push.
 
 ### Instance-level default branch protection **(FREE SELF)**
 

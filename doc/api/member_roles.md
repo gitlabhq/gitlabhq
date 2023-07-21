@@ -29,6 +29,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 | `[].group_id`            | integer | The ID of the group that the member role belongs to. |
 | `[].base_access_level`   | integer | Base access level for member role. |
 | `[].read_code`           | boolean | Permission to read code. |
+| `[].read_dependency`     | boolean | Permission to read project dependencies. |
 
 Example request:
 
@@ -70,6 +71,7 @@ To add a member role to a group, the group must be at root-level (have no parent
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `base_access_level` | integer | yes   | Base access level for configured role. |
 | `read_code` | boolean | no | Permission to read code.  |
+| `read_dependency` | boolean | no | Permission to read project dependencies.  |
 
 If successful, returns [`201`](rest/index.md#status-codes) and the following attributes:
 
@@ -79,6 +81,7 @@ If successful, returns [`201`](rest/index.md#status-codes) and the following att
 | `group_id`               | integer | The ID of the group that the member role belongs to. |
 | `base_access_level`      | integer | Base access level for member role. |
 | `read_code`              | boolean | Permission to read code. |
+| `read_dependency`        | boolean | Permission to read project dependencies. |
 
 Example request:
 
@@ -93,7 +96,8 @@ Example response:
   "id": 3,
   "group_id": 84,
   "base_access_level": 10,
-  "read_code": true
+  "read_code": true,
+  "read_dependency": false
 }
 ```
 

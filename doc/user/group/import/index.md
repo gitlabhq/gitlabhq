@@ -64,6 +64,53 @@ groups are in the same GitLab instance. Transferring groups is a faster and more
 See [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629) for a list of known issues for migrating by direct
 transfer.
 
+### Estimating migration duration
+
+Estimating the duration of migration by direct transfer is difficult. The following factors affect migration duration:
+
+- Hardware and database resources available on the source and destination GitLab instances. More resources on the source and destination instances can result in
+  shorter migration duration because:
+  - The source instance receives API requests, and extracts and serializes the entities to export.
+  - The destination instance runs the jobs and creates the entities in its database.
+- Complexity and size of data to be exported. For example, imagine you want to migrate two different projects with 1000 merge requests each. The two projects can take
+  very different amounts of time to migrate if one of the projects has a lot more attachments, comments, and other items on the merge requests. Therefore, the number
+  of merge requests on a project is a poor predictor of how long a project will take to migrate.
+
+There’s no exact formula to reliably estimate a migration. However, the average durations of each pipeline worker importing a project relation can help you to get an idea of how long importing your projects might take:
+
+| Project resource type       | Average time (in seconds) to import a record |
+|:----------------------------|:---------------------------------------------|
+| Empty Project               | 2.4                                          |
+| Repository                  | 20                                           |
+| Project Attributes          | 1.5                                          |
+| Members                     | 0.2                                          |
+| Labels                      | 0.1                                          |
+| Milestones                  | 0.07                                         |
+| Badges                      | 0.1                                          |
+| Issues                      | 0.1                                          |
+| Snippets                    | 0.05                                         |
+| Snippet Repositories        | 0.5                                          |
+| Boards                      | 0.1                                          |
+| Merge Requests              | 1                                            |
+| External Pull Requests      | 0.5                                          |
+| Protected Branches          | 0.1                                          |
+| Project Feature             | 0.3                                          |
+| Container Expiration Policy | 0.3                                          |
+| Service Desk Setting        | 0.3                                          |
+| Releases                    | 0.1                                          |
+| CI Pipelines                | 0.2                                          |
+| Commit Notes                | 0.05                                         |
+| Wiki                        | 10                                           |
+| Uploads                     | 0.5                                          |
+| LFS Objects                 | 0.5                                          |
+| Design                      | 0.1                                          |
+| Auto DevOps                 | 0.1                                          |
+| Pipeline Schedules          | 0.5                                          |
+| References                  | 5                                            |
+| Push Rule                   | 0.1                                          |
+
+If you are migrating large projects and encounter problems with timeouts or duration of the migration, see [Reducing migration duration](#reducing-migration-duration).
+
 ### Limits
 
 Hardcoded limits apply on migration by direct transfer.
@@ -427,6 +474,24 @@ You can receive other `404` errors when importing a group, for example:
 
 This error indicates a problem transferring from the _source_ instance. To solve this, check that you have met the [prerequisites](#prerequisites) on the source
 instance.
+
+#### Reducing migration duration
+
+A single direct transfer migration runs 5 entities (groups or projects) per import at a time, independent of the number of workers available on the destination instance.
+That said, having more workers on the destination instance speeds up migration by decreasing the time it takes to import each entity.
+
+Increasing the number of workers on the destination instance helps reduce the migration duration until the source instance hardware resources are saturated. Exporting and importing relations in batches (proposed in [epic 9036](https://gitlab.com/groups/gitlab-org/-/epics/9036)) will make having enough available workers on
+the destination instance even more useful.
+
+The number of workers on the source instance should be enough to export the 5 concurrent entities in parallel (for each running import). Otherwise, there can be
+delays and potential timeouts as the destination is waiting for exported data to become available.
+
+Distributing projects in different groups helps to avoid timeouts. If several large projects are in the same group, you can:
+
+1. Move large projects to different groups or subgroups.
+1. Start separate migrations each group and subgroup.
+
+The GitLab UI can only migrate top-level groups. Using the API, you can also migrate subgroups.
 
 ## Migrate groups by uploading an export file (deprecated)
 

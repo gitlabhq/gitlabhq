@@ -83,9 +83,14 @@
     "related": "ee/app/validators/ee/{}.rb",
     "type": "source"
   },
-  "app/views/*.rb": {
-    "alternate": "spec/app/views/{}_spec.rb",
-    "related": "ee/app/views/ee/{}.rb",
+  "app/views/*.erb": {
+    "alternate": "spec/views/{}.erb_spec.rb",
+    "related": "ee/app/views/ee/{}.erb",
+    "type": "source"
+  },
+  "app/views/*.haml": {
+    "alternate": "spec/views/{}.haml_spec.rb",
+    "related": "ee/app/views/ee/{}.haml",
     "type": "source"
   },
   "app/workers/*.rb": {
@@ -111,6 +116,16 @@
   },
   "spec/requests/api/*_spec.rb": {
     "alternate": "lib/api/{}.rb",
+    "type": "test"
+  },
+  "spec/views/*.erb_spec.rb": {
+    "alternate": "app/views/{}.erb",
+    "related": "ee/app/views/ee/{}.erb",
+    "type": "test"
+  },
+  "spec/views/*.haml_spec.rb": {
+    "alternate": "app/views/{}.haml",
+    "related": "ee/app/views/ee/{}.haml",
     "type": "test"
   },
   "rubocop/cop/*.rb": {
@@ -189,9 +204,14 @@
     "related": "app/validators/{}.rb",
     "type": "source"
   },
-  "ee/app/views/ee/*.rb": {
-    "alternate": "spec/app/views/{}_spec.rb",
-    "related": "app/views/{}.rb",
+  "ee/app/views/ee/*.erb": {
+    "alternate": "ee/spec/views/ee/{}.erb_spec.rb",
+    "related": "app/views/{}.erb",
+    "type": "source"
+  },
+  "ee/app/views/ee/*.haml": {
+    "alternate": "ee/spec/views/ee/{}.haml_spec.rb",
+    "related": "app/views/{}.haml",
     "type": "source"
   },
   "ee/app/workers/ee/*.rb": {
@@ -245,6 +265,16 @@
   },
   "ee/spec/frontend/*_spec.js": {
     "alternate": ["ee/app/assets/javascripts/{}.vue", "ee/app/assets/javascripts/{}.js"],
+    "type": "test"
+  },
+  "ee/spec/views/ee/*.erb_spec.rb": {
+    "alternate": "ee/app/views/ee/{}.erb",
+    "related": "spec/views/{}.erb_spec.rb",
+    "type": "test"
+  },
+  "ee/spec/views/ee/*.haml_spec.rb": {
+    "alternate": "ee/app/views/ee/{}.haml",
+    "related": "spec/views/{}.haml_spec.rb",
     "type": "test"
   },
   "*.rb": { "dispatch": "bundle exec rubocop {file}" },

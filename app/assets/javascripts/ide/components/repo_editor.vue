@@ -28,6 +28,7 @@ import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
+import { readFileAsDataURL } from '~/lib/utils/file_utility';
 
 import {
   leftSidebarViews,
@@ -40,7 +41,7 @@ import { getRulesWithTraversal } from '../lib/editorconfig/parser';
 import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
 import { getFileEditorOrDefault } from '../stores/modules/editor/utils';
 import { extractMarkdownImagesFromEntries } from '../stores/utils';
-import { getPathParent, readFileAsDataURL, registerSchema, isTextFile } from '../utils';
+import { getPathParent, registerSchema, isTextFile } from '../utils';
 import FileAlert from './file_alert.vue';
 import FileTemplatesBar from './file_templates/bar.vue';
 
