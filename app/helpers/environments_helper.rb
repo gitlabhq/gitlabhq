@@ -82,8 +82,7 @@ module EnvironmentsHelper
     {
       'deployments_endpoint' => project_environment_deployments_path(project, environment, format: :json),
       'operations_settings_path' => project_settings_operations_path(project),
-      'can_access_operations_settings' => can?(current_user, :admin_operations, project).to_s,
-      'panel_preview_endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
+      'can_access_operations_settings' => can?(current_user, :admin_operations, project).to_s
     }
   end
 

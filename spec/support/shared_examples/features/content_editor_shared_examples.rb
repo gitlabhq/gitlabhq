@@ -27,6 +27,19 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
     expect(page).to have_text('Typing text in the content editor')
   end
 
+  it 'autofocuses the rich text editor when switching to rich text' do
+    switch_to_content_editor
+
+    expect(page).to have_css("#{content_editor_testid}:focus")
+  end
+
+  it 'autofocuses the plain text editor when switching back to markdown' do
+    switch_to_content_editor
+    switch_to_markdown_editor
+
+    expect(page).to have_css("textarea:focus")
+  end
+
   describe 'creating and editing links' do
     before do
       switch_to_content_editor

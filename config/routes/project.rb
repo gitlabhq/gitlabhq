@@ -30,12 +30,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       scope '-' do
         get 'archive/*id', format: true, constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
-        namespace :metrics, module: :metrics do
-          namespace :dashboards do
-            post :builder, to: 'builder#panel_preview'
-          end
-        end
-
         namespace :security do
           resource :configuration, only: [:show], controller: :configuration do
             resource :sast, only: [:show], controller: :sast_configuration

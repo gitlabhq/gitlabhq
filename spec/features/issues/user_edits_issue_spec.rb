@@ -130,7 +130,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
             click_button("Switch to rich text editing")
           end
 
-          expect(issuable_form).not_to have_selector(content_editor_focused_selector)
+          expect(issuable_form).to have_selector(content_editor_focused_selector)
 
           refresh
 
@@ -142,7 +142,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
             click_button("Switch to plain text editing")
           end
 
-          expect(issuable_form).not_to have_selector(markdown_field_focused_selector)
+          expect(issuable_form).to have_selector(markdown_field_focused_selector)
         end
       end
 

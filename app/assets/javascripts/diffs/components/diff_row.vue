@@ -24,7 +24,8 @@ import * as utils from './diff_row_utils';
 
 export default {
   DiffGutterAvatars,
-  CodeQualityGutterIcon: () => import('ee_component/diffs/components/code_quality_gutter_icon.vue'),
+  InlineFindingsGutterIcon: () =>
+    import('ee_component/diffs/components/inline_findings_gutter_icon.vue'),
 
   // Temporary mixin for migration from Vue.js 2 to @vue/compat
   mixins: [compatFunctionalMixin],
@@ -79,7 +80,7 @@ export default {
       type: Function,
       required: true,
     },
-    codeQualityExpanded: {
+    inlineFindingsExpanded: {
       type: Boolean,
       required: false,
       default: false,
@@ -336,13 +337,13 @@ export default {
           :class="$options.parallelViewLeftLineType(props)"
         >
           <component
-            :is="$options.CodeQualityGutterIcon"
+            :is="$options.InlineFindingsGutterIcon"
             v-if="$options.showCodequalityLeft(props) || $options.showSecurityLeft(props)"
-            :code-quality-expanded="props.codeQualityExpanded"
+            :inline-findings-expanded="props.inlineFindingsExpanded"
             :codequality="props.line.left.codequality"
             :sast="props.line.left.sast"
             :file-path="props.filePath"
-            @showCodeQualityFindings="
+            @showInlineFindings="
               listeners.toggleCodeQualityFindings(
                 props.line.left.codequality[0]
                   ? props.line.left.codequality[0].line
@@ -477,13 +478,13 @@ export default {
           :class="$options.classNameMapCellRight(props)"
         >
           <component
-            :is="$options.CodeQualityGutterIcon"
+            :is="$options.InlineFindingsGutterIcon"
             v-if="$options.showCodequalityRight(props) || $options.showSecurityRight(props)"
             :codequality="props.line.right.codequality"
             :sast="props.line.right.sast"
             :file-path="props.filePath"
-            data-testid="codeQualityIcon"
-            @showCodeQualityFindings="
+            data-testid="inlineFindingsIcon"
+            @showInlineFindings="
               listeners.toggleCodeQualityFindings(
                 props.line.right.codequality[0]
                   ? props.line.right.codequality[0].line
