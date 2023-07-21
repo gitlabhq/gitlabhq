@@ -135,7 +135,6 @@ export default {
           :class="errorPackageStyle"
           class="gl-text-body gl-min-w-0"
           data-testid="details-link"
-          data-qa-selector="package_link"
           :to="{ name: 'details', params: { id: packageId } }"
         >
           <gl-truncate :text="packageEntity.name" />

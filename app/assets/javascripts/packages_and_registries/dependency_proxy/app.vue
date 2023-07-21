@@ -215,7 +215,7 @@ export default {
         </template>
       </gl-form-input-group>
       <template #description>
-        <span data-qa-selector="dependency_proxy_count" data-testid="proxy-count">
+        <span data-testid="proxy-count">
           <gl-sprintf :message="$options.i18n.blobCountAndSize">
             <template #count>{{ group.dependencyProxyBlobCount }}</template>
             <template #size>{{ group.dependencyProxyTotalSize }}</template>

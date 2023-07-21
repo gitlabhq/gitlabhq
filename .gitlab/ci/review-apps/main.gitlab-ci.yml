@@ -30,11 +30,14 @@ dont-interrupt-me:
 
 review-build-cng-env:
   extends:
+    - .review-build-cng-env
     - .default-retry
     - .review:rules:review-build-cng
 
 review-build-cng:
-  extends: .review:rules:review-build-cng
+  extends:
+    - .review-build-cng
+    - .review:rules:review-build-cng
   needs: ["review-build-cng-env"]
 
 .review-workflow-base:

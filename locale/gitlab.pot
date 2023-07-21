@@ -19771,6 +19771,9 @@ msgstr ""
 msgid "For more information, see the File Hooks documentation."
 msgstr ""
 
+msgid "For the GitLab Team to keep your subscription data up to date, this is a reminder to report your license usage on a monthly basis, or at the cadence set in your agreement with GitLab. This allows us to simplify the billing process for overages and renewals. To report your usage data, export your license usage file and email it to %{renewal_service_email}. If you need an updated license, GitLab will send the license to the email address registered in the %{customers_dot}, and you can upload this license to your instance."
+msgstr ""
+
 msgid "For the next few releases, you can go to your avatar at any time to turn the new navigation on and off."
 msgstr ""
 
@@ -33268,9 +33271,6 @@ msgid "People without permission will never get a notification and won't be able
 msgstr ""
 
 msgid "People without permission will never get a notification."
-msgstr ""
-
-msgid "Per your subscription agreement with GitLab, you must report your license usage data on a monthly basis. GitLab uses this data to keep your subscription up to date. To report your license usage data, export your license usage file and email it to %{renewal_service_email}. If you need an updated license, GitLab will send the license to the email address registered in the %{customers_dot}, and you can upload this license to your instance."
 msgstr ""
 
 msgid "Percent rollout must be an integer number between 0 and 100"

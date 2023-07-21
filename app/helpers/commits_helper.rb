@@ -143,6 +143,16 @@ module CommitsHelper
     end
   end
 
+  def local_committed_date(commit, user)
+    server_timezone = Time.zone
+    user_timezone = user.timezone if user
+    user_timezone = ActiveSupport::TimeZone.new(user_timezone) if user_timezone
+
+    timezone = user_timezone || server_timezone
+
+    commit.committed_date.in_time_zone(timezone).to_date
+  end
+
   def cherry_pick_projects_data(project)
     [project, project.forked_from_project].compact.map do |project|
       {

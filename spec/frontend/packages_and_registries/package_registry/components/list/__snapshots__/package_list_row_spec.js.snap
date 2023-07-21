@@ -32,7 +32,6 @@ exports[`packages_list_row renders 1`] = `
             <router-link-stub
               ariacurrentvalue="page"
               class="gl-text-body gl-min-w-0"
-              data-qa-selector="package_link"
               data-testid="details-link"
               event="click"
               tag="a"

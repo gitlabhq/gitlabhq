@@ -231,6 +231,20 @@ the feature flag is set to enabled. If the feature contains any database migrati
 NOTE:
 To create a feature flag that is only used in EE, add the `--ee` flag: `bin/feature-flag --ee`
 
+### Naming new flags
+
+When choosing a name for a new feature flag, consider the following guidelines:
+
+- A long, descriptive name is better than a short but confusing one.
+- Write the name in snake case (`my_cool_feature_flag`).
+- Avoid using `disable` in the name to avoid having to think (or [document](../documentation/feature_flags.md))
+  with double negatives. Consider starting the name with `hide_`, `remove_`, or `disallow_`.
+
+  In software engineering this problem is known as
+  ["negative names for boolean variables"](https://www.serendipidata.com/posts/naming-guidelines-for-boolean-variables).
+  But we can't forbid negative words altogether, to be able to introduce flags as
+  [disabled by default](#feature-flags-in-gitlab-development), use them to remove a feature by moving it behind a flag, or to [selectively disable a flag by actor](controls.md#selectively-disable-by-actor).
+
 ### Risk of a broken master (main) branch
 
 WARNING:

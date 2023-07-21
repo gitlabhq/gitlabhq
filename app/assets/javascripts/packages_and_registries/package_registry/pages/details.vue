@@ -221,7 +221,7 @@ export default {
       attributes: {
         variant: 'danger',
         category: 'primary',
-        'data-qa-selector': 'delete_modal_button',
+        'data-testid': 'delete-modal-button',
       },
     },
     fileDeletePrimaryAction: {
@@ -254,7 +254,6 @@ export default {
           v-gl-modal="'delete-modal'"
           variant="danger"
           category="primary"
-          data-qa-selector="delete_button"
           data-testid="delete-package"
         >
           {{ __('Delete') }}
@@ -264,7 +263,7 @@ export default {
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">
-        <div data-qa-selector="package_information_content">
+        <div data-testid="package-information-content">
           <package-history :package-entity="packageEntity" :project-name="projectName" />
 
           <installation-commands :package-entity="packageEntity" />

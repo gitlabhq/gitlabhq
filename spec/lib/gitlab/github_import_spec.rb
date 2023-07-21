@@ -61,7 +61,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
 
         expect(described_class::ClientPool)
           .to receive(:new)
-          .with(token_pool: %w[foo bar], host: nil, parallel: true, per_page: 100)
+          .with(token_pool: %w[foo bar 123], host: nil, parallel: true, per_page: 100)
 
         described_class.new_client_for(project)
       end

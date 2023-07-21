@@ -357,4 +357,46 @@ RSpec.describe CommitsHelper do
 
     it { is_expected.to eq(expected_path) }
   end
+
+  describe '#local_committed_date' do
+    let(:commit) { build(:commit, committed_date: time) }
+    let(:user) { build(:user) }
+    let(:time) { Time.find_zone('UTC').parse('2023-01-01') }
+
+    subject { helper.local_committed_date(commit, user).to_s }
+
+    it { is_expected.to eq('2023-01-01') }
+
+    context 'when user has a custom timezone' do
+      let(:user) { build(:user, timezone: 'America/Mexico_City') }
+
+      it 'selects timezone of the user' do
+        is_expected.to eq('2022-12-31')
+      end
+    end
+
+    context "when user doesn't have a preferred timezone" do
+      let(:user) { build(:user, timezone: nil) }
+
+      it 'uses system timezone' do
+        is_expected.to eq('2023-01-01')
+      end
+    end
+
+    context 'when user timezone is not supported' do
+      let(:user) { build(:user, timezone: 'unknown') }
+
+      it 'uses system timezone' do
+        is_expected.to eq('2023-01-01')
+      end
+    end
+
+    context 'when user is missing' do
+      let(:user) { nil }
+
+      it 'uses system timezone' do
+        is_expected.to eq('2023-01-01')
+      end
+    end
+  end
 end
