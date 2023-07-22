@@ -25,6 +25,7 @@ To set up Pages with a custom domain name, read the requirements and steps below
 
 ### Prerequisites
 
+- An administrator has configured the server for [GitLab Pages custom domains](../../../../administration/pages/index.md#advanced-configuration)
 - A GitLab Pages website up and running, served under the default Pages domain
   (`*.gitlab.io`, for GitLab.com).
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
@@ -32,17 +33,6 @@ To set up Pages with a custom domain name, read the requirements and steps below
   - A DNS record (`A`, `ALIAS`, or `CNAME`) pointing your domain to the GitLab Pages server. If
     there are multiple DNS records on that name, you must use an `ALIAS` record.
   - A DNS `TXT` record to verify your domain's ownership.
-- Set either `external_http` or `external_https` in `/etc/gitlab/gitlab.rb` to the IP and port of
-  your [Pages daemon](../../../../administration/pages/index.md#the-gitlab-pages-daemon).
-  If you don't have IPv6, you can omit the IPv6 address.
-
-  Example:
-
-  ```ruby
-  # Redirect pages from HTTP to HTTPS
-  gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
-  gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001:db8::2]:443'] # The secondary IPs for the GitLab Pages daemon
-  ```
 
 ### Steps
 

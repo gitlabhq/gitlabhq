@@ -702,6 +702,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'returns false for allowing rollback' do
         expect(subject).to be_falsey
       end
+
+      context 'when forward_deployment_rollback_allowed option is disabled' do
+        before do
+          project.ci_cd_settings.update!(forward_deployment_rollback_allowed: false)
+        end
+
+        it 'returns true for disallowing rollback' do
+          expect(subject).to eq(true)
+        end
+      end
     end
   end
 

@@ -151,15 +151,11 @@ Only the last 50 messages in the chat history are retained. The chat history exp
 
 ### Summarize merge request changes **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10400) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
-You can generate a merge request summary in a merge request comment.
-
-- In a comment, type `/summarize_diff`.
-
-This action posts a comment from a GitLab bot. The comment provides a summary of the changes and the related SHA for when that summary was generated.
+These summaries are automatically generated. They are available on the merge request page in the **Merge request summaries** dialog, the To-Do list, and in email notifications.
 
 Provide feedback on this experimental feature in [issue 408726](https://gitlab.com/gitlab-org/gitlab/-/issues/408726).
 

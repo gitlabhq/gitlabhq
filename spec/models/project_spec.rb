@@ -1091,6 +1091,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'group_runners_enabled' => '',
           'default_git_depth' => 'ci_',
           'forward_deployment_enabled' => 'ci_',
+          'forward_deployment_rollback_allowed' => 'ci_',
           'keep_latest_artifact' => '',
           'restrict_user_defined_variables' => '',
           'runner_token_expiration_interval' => '',
@@ -1114,6 +1115,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#ci_forward_deployment_enabled?' do
       it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
         let(:delegated_method) { :forward_deployment_enabled? }
+      end
+    end
+
+    describe '#ci_forward_deployment_rollback_allowed?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :forward_deployment_rollback_allowed? }
       end
     end
 

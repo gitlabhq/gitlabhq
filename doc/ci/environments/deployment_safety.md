@@ -93,15 +93,17 @@ When an older deployment job is manual, the play button is disabled with a messa
 Job age is determined by the job start time, not the commit time, so a newer commit
 can be prevented in some circumstances.
 
-### How to rollback to an outdated deployment
+### Job retries for rollback deployments
 
-> In GitLab 15.6, [rollback via job retry was introduced back](https://gitlab.com/gitlab-org/gitlab/-/issues/378359).
+> - Rollback via job retry [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378359) in GitLab 15.6.
+> - Job retries for rollback deployments checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410427) in GitLab 16.3.
 
-In some cases, you need to rollback to an outdated deployment.
-This feature explicitly allows rollback via [Environment Rollback](index.md#environment-rollback),
-so that you can quickly rollback in an urgent case.
+You might need to quickly roll back to a stable, outdated deployment.
+By default, pipeline job retries for [deployment rollback](index.md#environment-rollback) are enabled.
 
-Alternatively, you can run a new pipeline with a previous commit. It contains newer deployment jobs than the latest deployment.
+To disable pipeline retries, clear the **Allow job retries for rollback deployments** checkbox. You should disable pipeline retries in sensitive projects.
+
+When a rollback is required, you must run a new pipeline with a previous commit.
 
 ### Example
 

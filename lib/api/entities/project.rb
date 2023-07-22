@@ -110,6 +110,7 @@ module API
         # CI/CD Settings
         expose :ci_default_git_depth, documentation: { type: 'integer', example: 20 }
         expose :ci_forward_deployment_enabled, documentation: { type: 'boolean' }
+        expose :ci_forward_deployment_rollback_allowed, documentation: { type: 'boolean' }
         expose(:ci_job_token_scope_enabled, documentation: { type: 'boolean' }) { |p, _| p.ci_outbound_job_token_scope_enabled? }
         expose :ci_separated_caches, documentation: { type: 'boolean' }
         expose :ci_allow_fork_pipelines_to_run_in_parent_project, documentation: { type: 'boolean' }

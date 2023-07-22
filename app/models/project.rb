@@ -508,6 +508,7 @@ class Project < ApplicationRecord
     with_options prefix: :ci do
       delegate :default_git_depth, :default_git_depth=
       delegate :forward_deployment_enabled, :forward_deployment_enabled=
+      delegate :forward_deployment_rollback_allowed, :forward_deployment_rollback_allowed=
       delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=
       delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=
       delegate :separated_caches, :separated_caches=
@@ -3046,6 +3047,12 @@ class Project < ApplicationRecord
     return false unless ci_cd_settings
 
     ci_cd_settings.forward_deployment_enabled?
+  end
+
+  def ci_forward_deployment_rollback_allowed?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.forward_deployment_rollback_allowed?
   end
 
   def ci_allow_fork_pipelines_to_run_in_parent_project?

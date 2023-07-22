@@ -350,7 +350,7 @@ world. Custom domains are supported, but no TLS.
 **Requirements:**
 
 - [Wildcard DNS setup](#dns-configuration)
-- Wildcard TLS certificate
+- TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates).
 - Secondary IP
 
 ---

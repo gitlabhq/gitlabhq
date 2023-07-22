@@ -98,6 +98,7 @@ To avoid this scenario:
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Select the **Prevent outdated deployment jobs** checkbox.
+1. Optional. Clear the **Allow job retries for rollback deployments** checkbox.
 1. Select **Save changes**.
 
 For more information, see [Deployment safety](../environments/deployment_safety.md#prevent-outdated-deployment-jobs).

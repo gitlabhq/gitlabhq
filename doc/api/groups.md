@@ -470,6 +470,7 @@ Example response:
       "open_issues_count":10,
       "ci_default_git_depth":50,
       "ci_forward_deployment_enabled":true,
+      "ci_forward_deployment_rollback_allowed": true,
       "ci_allow_fork_pipelines_to_run_in_parent_project":true,
       "public_jobs":true,
       "build_timeout":3600,

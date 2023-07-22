@@ -2738,6 +2738,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['ci_default_git_depth']).to eq(project.ci_default_git_depth)
         expect(json_response['ci_forward_deployment_enabled']).to eq(project.ci_forward_deployment_enabled)
+        expect(json_response['ci_forward_deployment_rollback_allowed']).to eq(project.ci_forward_deployment_rollback_allowed)
         expect(json_response['ci_allow_fork_pipelines_to_run_in_parent_project']).to eq(project.ci_allow_fork_pipelines_to_run_in_parent_project)
         expect(json_response['ci_separated_caches']).to eq(project.ci_separated_caches)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
@@ -3081,6 +3082,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response).not_to include(
           'ci_default_git_depth',
           'ci_forward_deployment_enabled',
+          'ci_forward_deployment_rollback_allowed',
           'ci_job_token_scope_enabled',
           'ci_separated_caches',
           'ci_allow_fork_pipelines_to_run_in_parent_project',
@@ -4166,6 +4168,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
                           merge_method: 'ff',
                           ci_default_git_depth: 20,
                           ci_forward_deployment_enabled: false,
+                          ci_forward_deployment_rollback_allowed: false,
                           ci_allow_fork_pipelines_to_run_in_parent_project: false,
                           ci_separated_caches: false,
                           description: 'new description' }

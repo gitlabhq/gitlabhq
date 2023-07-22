@@ -431,8 +431,8 @@ module Ci
     def outdated_deployment?
       strong_memoize(:outdated_deployment) do
         deployment_job? &&
-          incomplete? &&
           project.ci_forward_deployment_enabled? &&
+          (!project.ci_forward_deployment_rollback_allowed? || incomplete?) &&
           deployment&.older_than_last_successful_deployment?
       end
     end

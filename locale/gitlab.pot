@@ -4703,6 +4703,12 @@ msgstr ""
 msgid "Allow group owners to manage LDAP-related settings"
 msgstr ""
 
+msgid "Allow job retries even if the deployment job is outdated."
+msgstr ""
+
+msgid "Allow job retries for rollback deployments"
+msgstr ""
+
 msgid "Allow new users to create top-level groups"
 msgstr ""
 
@@ -21359,9 +21365,6 @@ msgid "Go to definition"
 msgstr ""
 
 msgid "Go to environments"
-msgstr ""
-
-msgid "Go to environments page to approve or reject"
 msgstr ""
 
 msgid "Go to epic"
@@ -47429,7 +47432,7 @@ msgstr ""
 msgid "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
 msgstr ""
 
-msgid "This job deploys to the protected environment \"%{environment}\" which requires approvals."
+msgid "This job deploys to the protected environment \"%{environment}\", which requires approvals. You can approve or reject the deployment on the environment details page."
 msgstr ""
 
 msgid "This job does not have a trace."
@@ -50807,6 +50810,9 @@ msgstr ""
 msgid "View documentation"
 msgstr ""
 
+msgid "View environment details page"
+msgstr ""
+
 msgid "View exposed artifact"
 msgid_plural "View %d exposed artifacts"
 msgstr[0] ""
@@ -51468,7 +51474,7 @@ msgstr ""
 msgid "Wait for the file to load to copy its contents"
 msgstr ""
 
-msgid "Waiting for approval"
+msgid "Waiting for approvals"
 msgstr ""
 
 msgid "Waiting for merge (open and assigned)"

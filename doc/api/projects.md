@@ -233,6 +233,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "open_issues_count": 0,
     "ci_default_git_depth": 20,
     "ci_forward_deployment_enabled": true,
+    "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_job_token_scope_enabled": false,
     "ci_separated_caches": true,
@@ -406,6 +407,7 @@ GET /users/:user_id/projects
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 50,
     "ci_forward_deployment_enabled": true,
+    "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "public_jobs": true,
@@ -524,6 +526,7 @@ GET /users/:user_id/projects
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 0,
     "ci_forward_deployment_enabled": true,
+    "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "public_jobs": true,
@@ -1193,6 +1196,7 @@ GET /projects/:id
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "public_jobs": true,
@@ -1689,6 +1693,7 @@ Supported attributes:
 | `ci_config_path`                                            | string         | **{dotted-circle}** No | The path to CI configuration file. |
 | `ci_default_git_depth`                                      | integer        | **{dotted-circle}** No | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone). |
 | `ci_forward_deployment_enabled`                             | boolean        | **{dotted-circle}** No | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
+| `ci_forward_deployment_rollback_allowed`                    | boolean        | **{dotted-circle}** No | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project`          | boolean        | **{dotted-circle}** No | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
 | `ci_separated_caches`                                       | boolean        | **{dotted-circle}** No | Set whether or not caches should be [separated](../ci/caching/index.md#cache-key-names) by branch protection status. |
 | `container_expiration_policy_attributes`                    | hash           | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
@@ -2290,6 +2295,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "public_jobs": true,
@@ -2421,6 +2427,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "public_jobs": true,

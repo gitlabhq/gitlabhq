@@ -355,7 +355,7 @@ To retry or rollback a deployment:
 NOTE:
 If you have [prevented outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) in your project,
 the rollback buttons might be hidden or disabled.
-In this case, see [how to rollback to an outdated deployment](deployment_safety.md#how-to-rollback-to-an-outdated-deployment).
+In this case, see [job retries for rollback deployments](deployment_safety.md#job-retries-for-rollback-deployments).
 
 ### Environment URL
 

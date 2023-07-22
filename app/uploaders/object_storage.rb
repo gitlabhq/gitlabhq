@@ -31,7 +31,8 @@ module ObjectStorage
       # The direct_upload_final_path is defined which means
       # file was uploaded to its final location so no need to move it.
       # Now we delete the pending upload entry as the upload is considered complete.
-      ObjectStorage::PendingDirectUpload.complete(@uploader.class.storage_location_identifier, file.path)
+      pending_upload_path = @uploader.class.without_bucket_prefix(file.path)
+      ObjectStorage::PendingDirectUpload.complete(@uploader.class.storage_location_identifier, pending_upload_path)
 
       file
     end
@@ -194,6 +195,10 @@ module ObjectStorage
 
       def with_bucket_prefix(path)
         File.join([object_store_options.bucket_prefix, path].compact)
+      end
+
+      def without_bucket_prefix(path)
+        Pathname.new(path).relative_path_from(object_store_options.bucket_prefix.to_s).to_s
       end
 
       def object_store_config
