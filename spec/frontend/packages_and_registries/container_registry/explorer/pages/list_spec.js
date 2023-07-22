@@ -15,6 +15,7 @@ import RegistryHeader from '~/packages_and_registries/container_registry/explore
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,
+  GRAPHQL_PAGE_SIZE,
   SORT_FIELDS,
   SETTINGS_TEXT,
 } from '~/packages_and_registries/container_registry/explorer/constants';
@@ -474,10 +475,18 @@ describe('List Page', () => {
         await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith(
-          expect.objectContaining({ before: pageInfo.startCursor }),
+          expect.objectContaining({
+            before: pageInfo.startCursor,
+            first: null,
+            last: GRAPHQL_PAGE_SIZE,
+          }),
         );
         expect(detailsResolver).toHaveBeenCalledWith(
-          expect.objectContaining({ before: pageInfo.startCursor }),
+          expect.objectContaining({
+            before: pageInfo.startCursor,
+            first: null,
+            last: GRAPHQL_PAGE_SIZE,
+          }),
         );
       });
 
@@ -494,10 +503,16 @@ describe('List Page', () => {
         await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith(
-          expect.objectContaining({ after: pageInfo.endCursor }),
+          expect.objectContaining({
+            after: pageInfo.endCursor,
+            first: GRAPHQL_PAGE_SIZE,
+          }),
         );
         expect(detailsResolver).toHaveBeenCalledWith(
-          expect.objectContaining({ after: pageInfo.endCursor }),
+          expect.objectContaining({
+            after: pageInfo.endCursor,
+            first: GRAPHQL_PAGE_SIZE,
+          }),
         );
       });
     });

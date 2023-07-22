@@ -12,6 +12,7 @@ import { get } from 'lodash';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
 import { createAlert } from '~/alert';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { fetchPolicies } from '~/lib/graphql';
 import Tracking from '~/tracking';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -87,6 +88,7 @@ export default {
         return !this.fetchBaseQuery;
       },
       query: getContainerRepositoriesQuery,
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         return this.queryVariables;
       },
@@ -109,6 +111,7 @@ export default {
         return !this.fetchAdditionalDetails;
       },
       query: getContainerRepositoriesDetails,
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         return this.queryVariables;
       },
@@ -133,6 +136,7 @@ export default {
       mutationLoading: false,
       fetchBaseQuery: false,
       fetchAdditionalDetails: false,
+      pageParams: {},
     };
   },
   computed: {
@@ -158,6 +162,7 @@ export default {
         fullPath: this.config.isGroupPage ? this.config.groupPath : this.config.projectPath,
         isGroupPage: this.config.isGroupPage,
         first: GRAPHQL_PAGE_SIZE,
+        ...this.pageParams,
       };
     },
     tracking() {
@@ -193,54 +198,25 @@ export default {
       this.deleteAlertType = null;
       this.itemToDelete = {};
     },
-    updateQuery(_, { fetchMoreResult }) {
-      return fetchMoreResult;
-    },
     async fetchNextPage() {
-      if (this.pageInfo?.hasNextPage) {
-        const variables = {
-          after: this.pageInfo?.endCursor,
-          first: GRAPHQL_PAGE_SIZE,
-        };
-
-        this.$apollo.queries.baseImages.fetchMore({
-          variables,
-          updateQuery: this.updateQuery,
-        });
-
-        await this.$nextTick();
-
-        this.$apollo.queries.additionalDetails.fetchMore({
-          variables,
-          updateQuery: this.updateQuery,
-        });
-      }
+      this.pageParams = {
+        after: this.pageInfo?.endCursor,
+        first: GRAPHQL_PAGE_SIZE,
+      };
     },
     async fetchPreviousPage() {
-      if (this.pageInfo?.hasPreviousPage) {
-        const variables = {
-          first: null,
-          before: this.pageInfo?.startCursor,
-          last: GRAPHQL_PAGE_SIZE,
-        };
-        this.$apollo.queries.baseImages.fetchMore({
-          variables,
-          updateQuery: this.updateQuery,
-        });
-
-        await this.$nextTick();
-
-        this.$apollo.queries.additionalDetails.fetchMore({
-          variables,
-          updateQuery: this.updateQuery,
-        });
-      }
+      this.pageParams = {
+        first: null,
+        before: this.pageInfo?.startCursor,
+        last: GRAPHQL_PAGE_SIZE,
+      };
     },
     startDelete() {
       this.track('confirm_delete');
       this.mutationLoading = true;
     },
     handleSearchUpdate({ sort, filters }) {
+      this.pageParams = {};
       this.sorting = sort;
 
       const search = filters.find((i) => i.type === FILTERED_SEARCH_TERM);

@@ -126,15 +126,11 @@
 }
 
 @mixin btn-with-margin {
-  margin-left: $btn-side-margin;
+  @include gl-ml-3;
   float: left;
 
   &.inline {
     float: none;
-  }
-
-  &.btn-sm {
-    margin-left: $btn-sm-side-margin;
   }
 }
 
