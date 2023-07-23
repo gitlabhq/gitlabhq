@@ -209,4 +209,5 @@ If it isn't working correctly, a red `error` tag appears, and shows the error me
 
 ## Related topics
 
+- [Troubleshooting](troubleshooting.md) for repository mirroring.
 - [Remote mirrors API](../../../../api/remote_mirrors.md)

@@ -145,5 +145,6 @@ end
 
 ## Related topics
 
+- [Troubleshooting](troubleshooting.md) for repository mirroring.
 - [Pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval)
 - [Pull mirroring API](../../../../api/projects.md#configure-pull-mirroring-for-a-project)

@@ -167,4 +167,5 @@ Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/manual
 
 ## Related topics
 
+- [Troubleshooting](troubleshooting.md) for repository mirroring.
 - [Configure server hooks](../../../../administration/server_hooks.md)

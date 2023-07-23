@@ -106,5 +106,5 @@ requests and not on branches you can add `except: [branches]` to the job specs.
 
 ## Troubleshooting
 
-- [Pull mirroring is not triggering pipelines](../../user/project/repository/mirror/index.md#pull-mirroring-is-not-triggering-pipelines).
+- [Pull mirroring is not triggering pipelines](../../user/project/repository/mirror/troubleshooting.md#pull-mirroring-is-not-triggering-pipelines).
 - [Fix hard failures when mirroring](../../user/project/repository/mirror/pull.md#fix-hard-failures-when-mirroring).
