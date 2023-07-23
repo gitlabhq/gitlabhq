@@ -140,6 +140,27 @@ end
 If classes that are defined into a namespace have a lot in common with classes in other namespaces,
 chances are that these two namespaces are part of the same bounded context.
 
+## Distinguish domain code from generic code
+
+The [guidelines above](#use-namespaces-to-define-bounded-contexts) refer primarily to the domain code.
+For domain code we should put Ruby classes under a namespace that represents a given bounded context
+(a cohesive set of features and capabilities).
+
+The domain code is unique to GitLab product. It describes the business logic, policies and data.
+This code should live in the GitLab repository. The domain code is split between `app/` and `lib/`
+primarily.
+
+In an application codebase there is also generic code that allows to perform more infrastructure level
+actions. This can be loggers, instrumentation, clients for datastores like Redis, database utilities, etc.
+
+Although vital for an application to run, generic code doesn't describe any business logic that is
+unique to GitLab product. It could be rewritten or replaced by off-the-shelf solutions without impacting
+the business logic.
+This means that generic code should be separate from the domain code.
+
+Today a lot of the generic code lives in `lib/` but it's mixed with domain code.
+We should extract gems into `gems/` directory instead, as described in our [Gems development guidelines](gems.md).
+
 ## Taming Omniscient classes
 
 We must consider not adding new data and behavior to [omniscient classes](https://en.wikipedia.org/wiki/God_object) (also known as god objects).
