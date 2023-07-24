@@ -97,7 +97,7 @@ GET /users?external=true
 ```
 
 GitLab supports bot users such as the [alert bot](../operations/incident_management/integrations.md)
-or the [support bot](../user/project/service_desk.md#support-bot-user).
+or the [support bot](../user/project/service_desk/index.md#support-bot-user).
 You can exclude the following types of [internal users](../development/internal_users.md#internal-users)
 from the users' list with the `exclude_internal=true` parameter
 ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241144) in GitLab 13.4):

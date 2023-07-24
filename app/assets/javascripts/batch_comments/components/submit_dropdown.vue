@@ -169,7 +169,11 @@ export default {
         />
       </div>
       <template v-if="getNoteableData.current_user.can_approve">
-        <gl-form-checkbox v-model="noteData.approve" data-testid="approve_merge_request">
+        <gl-form-checkbox
+          v-model="noteData.approve"
+          data-testid="approve_merge_request"
+          class="gl-mt-4"
+        >
           {{ __('Approve merge request') }}
         </gl-form-checkbox>
         <approval-password
@@ -180,7 +184,7 @@ export default {
           data-testid="approve_password"
         />
       </template>
-      <div class="gl-display-flex gl-justify-content-start gl-mt-5">
+      <div class="gl-display-flex gl-justify-content-start gl-mt-4">
         <gl-button
           :loading="isSubmitting"
           variant="confirm"

@@ -584,6 +584,7 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetProgress',
               type: 'PROGRESS',
               progress: 0,
+              updatedAt: new Date(),
             }
           : { type: 'MOCK TYPE' },
         milestoneWidgetPresent
@@ -1145,6 +1146,7 @@ export const workItemObjectiveMetadataWidgets = {
     type: 'PROGRESS',
     __typename: 'WorkItemWidgetProgress',
     progress: 10,
+    updatedAt: new Date(),
   },
 };
 
@@ -1213,6 +1215,7 @@ export const workItemObjectiveNoMetadata = {
       __typename: 'WorkItemWidgetProgress',
       type: 'PROGRESS',
       progress: null,
+      updatedAt: null,
     },
     {
       __typename: 'WorkItemWidgetMilestone',

@@ -16,7 +16,7 @@ GitLab has several features based on receiving incoming email messages:
 - [New merge request by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email):
   allow GitLab users to create a new merge request by sending an email to a
   user-specific email address.
-- [Service Desk](../user/project/service_desk.md): provide email support to
+- [Service Desk](../user/project/service_desk/index.md): provide email support to
   your customers through GitLab.
 
 ## Requirements
@@ -80,7 +80,7 @@ Email is processed correctly when a configured email address is present in one o
 
 The `References` header is also accepted, however it is used specifically to relate email responses to existing discussion threads. It is not used for creating issues by email.
 
-In GitLab 14.6 and later, [Service Desk](../user/project/service_desk.md)
+In GitLab 14.6 and later, [Service Desk](../user/project/service_desk/index.md)
 also checks accepted headers.
 
 Usually, the "To" field contains the email address of the primary receiver.
@@ -529,7 +529,7 @@ incoming_email:
 
 NOTE:
 Supports [Reply by Email](reply_by_email.md) only.
-Cannot support [Service Desk](../user/project/service_desk.md).
+Cannot support [Service Desk](../user/project/service_desk/index.md).
 
 Assumes the dedicated email address `incoming@exchange.example.com`.
 
@@ -741,7 +741,7 @@ incoming_email:
 
 NOTE:
 Supports [Reply by Email](reply_by_email.md) only.
-Cannot support [Service Desk](../user/project/service_desk.md).
+Cannot support [Service Desk](../user/project/service_desk/index.md).
 
 This example for Linux package installations assumes the dedicated email address `incoming@office365.example.com`:
 

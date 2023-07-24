@@ -35,12 +35,22 @@ export default {
       return sprintf(s__('CiCdAnalytics|Date range: %{range}'), { range: this.chart.range });
     },
   },
+  methods: {
+    onInput(selectedChart) {
+      this.selectedChart = selectedChart;
+      this.$emit('select-chart', selectedChart);
+    },
+  },
 };
 </script>
 <template>
   <div>
     <div class="gl-display-flex gl-flex-wrap gl-gap-5">
-      <segmented-control-button-group v-model="selectedChart" :options="chartRanges" />
+      <segmented-control-button-group
+        :options="chartRanges"
+        :value="selectedChart"
+        @input="onInput"
+      />
       <slot name="extend-button-group"></slot>
     </div>
     <ci-cd-analytics-area-chart

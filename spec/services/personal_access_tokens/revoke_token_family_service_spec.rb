@@ -14,5 +14,12 @@ RSpec.describe PersonalAccessTokens::RevokeTokenFamilyService, feature_category:
       expect(response).to be_success
       expect(token_1.reload).to be_revoked
     end
+
+    it 'does not revoke any active token not in the pat family' do
+      unrelated_token = create(:personal_access_token)
+
+      expect(response).to be_success
+      expect(unrelated_token.reload).to be_active
+    end
   end
 end

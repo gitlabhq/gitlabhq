@@ -2825,9 +2825,6 @@ msgstr ""
 msgid "Add deploy keys to grant read/write access to this repository. %{link_start}What are deploy keys?%{link_end}"
 msgstr ""
 
-msgid "Add email address"
-msgstr ""
-
 msgid "Add email participant(s)"
 msgstr ""
 
@@ -4632,9 +4629,6 @@ msgid "All changes are committed"
 msgstr ""
 
 msgid "All eligible users"
-msgstr ""
-
-msgid "All email addresses will be used to identify your commits."
 msgstr ""
 
 msgid "All environments"
@@ -11246,15 +11240,6 @@ msgstr ""
 msgid "CodeOwner|Pattern"
 msgstr ""
 
-msgid "CodeSuggestionsAlert|Code faster and more efficiently with AI-powered code suggestions in VS Code. 13 languages are supported, including JavaScript, Python, Go, Java, and Kotlin. Enable Code Suggestions in your %{preference_link_start}user profile preferences%{link_end} or %{docs_link_start}see the documentation%{link_end} to learn more."
-msgstr ""
-
-msgid "CodeSuggestionsAlert|Enable Code Suggestions"
-msgstr ""
-
-msgid "CodeSuggestionsAlert|Get started with Code Suggestions, available for free during the beta period."
-msgstr ""
-
 msgid "CodeSuggestionsSM|By enabling this feature, you agree to the %{terms_link_start}GitLab Testing Agreement%{link_end} and acknowledge that GitLab will send data from the instance, including personal data, to our %{ai_docs_link_start}AI providers%{link_end} to provide this feature."
 msgstr ""
 
@@ -12784,9 +12769,6 @@ msgstr ""
 msgid "Contributor statistics"
 msgstr ""
 
-msgid "Control emails linked to your account"
-msgstr ""
-
 msgid "Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects."
 msgstr ""
 
@@ -13535,6 +13517,9 @@ msgid "Created %{timeAgo}"
 msgstr ""
 
 msgid "Created %{timeAgo} by %{author}"
+msgstr ""
+
+msgid "Created %{time_ago}"
 msgstr ""
 
 msgid "Created %{timestamp}"
@@ -15446,7 +15431,7 @@ msgstr ""
 msgid "DependencyProxy|Enable Dependency Proxy"
 msgstr ""
 
-msgid "DependencyProxy|Enable the Dependency Proxy and settings for clearing the cache."
+msgid "DependencyProxy|Enable the Dependency Proxy to cache container images from Docker Hub and automatically clear the cache."
 msgstr ""
 
 msgid "DependencyProxy|Image list"
@@ -27629,9 +27614,6 @@ msgstr ""
 msgid "Link to your Grafana instance."
 msgstr ""
 
-msgid "Linked emails (%{email_count})"
-msgstr ""
-
 msgid "Linked epics"
 msgstr ""
 
@@ -35382,7 +35364,13 @@ msgstr ""
 msgid "Profiles|Active"
 msgstr ""
 
+msgid "Profiles|Add email address"
+msgstr ""
+
 msgid "Profiles|Add key"
+msgstr ""
+
+msgid "Profiles|Add new email"
 msgstr ""
 
 msgid "Profiles|An error occurred while updating your username, please try again."
@@ -35427,7 +35415,7 @@ msgstr ""
 msgid "Profiles|Connected Accounts"
 msgstr ""
 
-msgid "Profiles|Created %{time_ago}"
+msgid "Profiles|Control emails linked to your account"
 msgstr ""
 
 msgid "Profiles|Created%{time_ago}"
@@ -35470,6 +35458,12 @@ msgid "Profiles|Don't display activity-related personal information on your prof
 msgstr ""
 
 msgid "Profiles|Edit Profile"
+msgstr ""
+
+msgid "Profiles|Email"
+msgstr ""
+
+msgid "Profiles|Email addresses"
 msgstr ""
 
 msgid "Profiles|Ensure you have two-factor authentication recovery codes stored in a safe place."
@@ -35541,6 +35535,9 @@ msgstr ""
 msgid "Profiles|Last used:"
 msgstr ""
 
+msgid "Profiles|Linked emails"
+msgstr ""
+
 msgid "Profiles|Location"
 msgstr ""
 
@@ -35554,9 +35551,6 @@ msgid "Profiles|Manage two-factor authentication"
 msgstr ""
 
 msgid "Profiles|No file chosen."
-msgstr ""
-
-msgid "Profiles|Notification email"
 msgstr ""
 
 msgid "Profiles|Optional but recommended. If set, key becomes invalid on the specified date."
@@ -35598,7 +35592,13 @@ msgstr ""
 msgid "Profiles|Remove avatar"
 msgstr ""
 
+msgid "Profiles|Resend confirmation email"
+msgstr ""
+
 msgid "Profiles|Select a service to sign in with."
+msgstr ""
+
+msgid "Profiles|Send confirmation email"
 msgstr ""
 
 msgid "Profiles|Service sign-in"
@@ -42601,9 +42601,6 @@ msgstr ""
 msgid "Send a single email notification to Owners and Maintainers for new alerts."
 msgstr ""
 
-msgid "Send confirmation email"
-msgstr ""
-
 msgid "Send email"
 msgstr ""
 
@@ -44777,7 +44774,7 @@ msgstr ""
 msgid "Subject Key Identifier:"
 msgstr ""
 
-msgid "Subkeys"
+msgid "Subkeys:"
 msgstr ""
 
 msgid "Submit"
@@ -49997,6 +49994,15 @@ msgstr ""
 msgid "Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises."
 msgstr ""
 
+msgid "Used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."
+msgstr ""
+
+msgid "Used for avatar detection. You can change it in your %{openingTag}profile settings%{closingTag}."
+msgstr ""
+
+msgid "Used for web based operations, such as edits and merges."
+msgstr ""
+
 msgid "Used programming language"
 msgstr ""
 
@@ -53543,7 +53549,7 @@ msgstr ""
 msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. You should reduce the number of users or upgrade to a paid tier %{strong_start}before%{strong_end} you manage your storage usage. Otherwise, your Free top-level group will become read-only immediately because the 5-user limit applies. For more information, see our %{faq_link_start}FAQ%{link_end}."
 msgstr ""
 
-msgid "Your GPG keys (%{count})"
+msgid "Your GPG keys"
 msgstr ""
 
 msgid "Your GitLab Ultimate free trial lasts for 30 days. After this period, you can maintain a GitLab Free account forever or upgrade to a paid plan."
@@ -53681,9 +53687,6 @@ msgstr ""
 msgid "Your comment will be discarded."
 msgstr ""
 
-msgid "Your commit email is used for web based operations, such as edits and merges."
-msgstr ""
-
 msgid "Your current password is required to register a new device."
 msgstr ""
 
@@ -53694,9 +53697,6 @@ msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here
 msgstr ""
 
 msgid "Your dashboard has been updated. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."
-msgstr ""
-
-msgid "Your default notification email is used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."
 msgstr ""
 
 msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."
@@ -53771,9 +53771,6 @@ msgid "Your personal access tokens have expired"
 msgstr ""
 
 msgid "Your personal access tokens will expire in %{days_to_expire} days or less"
-msgstr ""
-
-msgid "Your primary email is used for avatar detection. You can change it in your %{openingTag}profile settings%{closingTag}."
 msgstr ""
 
 msgid "Your profile"

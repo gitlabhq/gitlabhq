@@ -9,10 +9,8 @@ RSpec.shared_examples 'known sign in' do
     user.update!(current_sign_in_ip: ip)
   end
 
-  def stub_cookie(value = user.id)
-    cookies.encrypted[KnownSignIn::KNOWN_SIGN_IN_COOKIE] = {
-      value: value, expires: KnownSignIn::KNOWN_SIGN_IN_COOKIE_EXPIRY
-    }
+  def stub_cookie(value = user.id, expires = KnownSignIn::KNOWN_SIGN_IN_COOKIE_EXPIRY)
+    cookies.encrypted[KnownSignIn::KNOWN_SIGN_IN_COOKIE] = { value: value, expires: expires }
   end
 
   context 'when the remote IP and the last sign in IP match' do
@@ -57,15 +55,13 @@ RSpec.shared_examples 'known sign in' do
     end
 
     it 'notifies the user when the cookie is expired' do
-      stub_cookie
+      stub_cookie(user.id, 1.day.ago)
 
-      travel_to((KnownSignIn::KNOWN_SIGN_IN_COOKIE_EXPIRY + 1.day).from_now) do
-        expect_next_instance_of(NotificationService) do |instance|
-          expect(instance).to receive(:unknown_sign_in)
-        end
-
-        post_action
+      expect_next_instance_of(NotificationService) do |instance|
+        expect(instance).to receive(:unknown_sign_in)
       end
+
+      post_action
     end
 
     context 'when notify_on_unknown_sign_in global setting is false' do

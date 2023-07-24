@@ -51,28 +51,15 @@ RSpec.describe SessionsHelper do
     end
   end
 
-  describe '#send_rate_limited?' do
+  describe '#verification_data' do
     let(:user) { build_stubbed(:user) }
 
-    subject { helper.send_rate_limited?(user) }
-
-    before do
-      allow(::Gitlab::ApplicationRateLimiter)
-        .to receive(:peek)
-        .with(:email_verification_code_send, scope: user)
-        .and_return(rate_limited)
-    end
-
-    context 'when rate limited' do
-      let(:rate_limited) { true }
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when not rate limited' do
-      let(:rate_limited) { false }
-
-      it { is_expected.to eq(false) }
+    it 'returns the expected data' do
+      expect(helper.verification_data(user)).to eq({
+        obfuscated_email: obfuscated_email(user.email),
+        verify_path: helper.session_path(:user),
+        resend_path: users_resend_verification_code_path
+      })
     end
   end
 

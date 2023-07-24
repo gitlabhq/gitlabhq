@@ -147,12 +147,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
           post(user_session_path(user: { verification_token: 'token' }))
         end
 
-        it_behaves_like 'prompt for email verification'
-
         it 'adds a verification error message' do
-          expect(response.body)
-            .to include("You&#39;ve reached the maximum amount of tries. "\
-                        'Wait 10 minutes or send a new code and try again.')
+          expect(json_response)
+            .to include('message' => "You've reached the maximum amount of tries. "\
+                                     'Wait 10 minutes or send a new code and try again.')
         end
       end
 
@@ -161,11 +159,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
           post(user_session_path(user: { verification_token: 'invalid_token' }))
         end
 
-        it_behaves_like 'prompt for email verification'
-
         it 'adds a verification error message' do
-          expect(response.body)
-            .to include((s_('IdentityVerification|The code is incorrect. Enter it again, or send a new code.')))
+          expect(json_response)
+            .to include('message' => (s_('IdentityVerification|The code is incorrect. '\
+                                         'Enter it again, or send a new code.')))
         end
       end
 
@@ -175,27 +172,26 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
           post(user_session_path(user: { verification_token: 'token' }))
         end
 
-        it_behaves_like 'prompt for email verification'
-
         it 'adds a verification error message' do
-          expect(response.body)
-            .to include((s_('IdentityVerification|The code has expired. Send a new code and try again.')))
+          expect(json_response)
+            .to include('message' => (s_('IdentityVerification|The code has expired. Send a new code and try again.')))
         end
       end
 
       context 'when a valid verification_token param exists' do
-        before do
-          post(user_session_path(user: { verification_token: 'token' }))
+        subject(:submit_token) { post(user_session_path(user: { verification_token: 'token' })) }
+
+        it 'unlocks the user, create logs and records the activity', :freeze_time do
+          expect { submit_token }.to change { user.reload.unlock_token }.to(nil)
+            .and change { user.locked_at }.to(nil)
+            .and change { AuditEvent.count }.by(1)
+            .and change { AuthenticationEvent.count }.by(1)
+            .and change { user.last_activity_on }.to(Date.today)
         end
 
-        it 'unlocks the user' do
-          user.reload
-          expect(user.unlock_token).to be_nil
-          expect(user.locked_at).to be_nil
-        end
-
-        it 'redirects to the successful verification path' do
-          expect(response).to redirect_to(users_successful_verification_path)
+        it 'returns the success status and a redirect path' do
+          submit_token
+          expect(json_response).to eq('status' => 'success', 'redirect_path' => users_successful_verification_path)
         end
       end
 
@@ -206,8 +202,8 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
           post user_session_path, params: { user: { login: another_user.username, password: another_user.password } }
         end
 
-        it 'does not redirect to the successful verification path' do
-          expect(response).not_to redirect_to(users_successful_verification_path)
+        it 'redirects to the root path' do
+          expect(response).to redirect_to(root_path)
         end
       end
     end
@@ -277,7 +273,6 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
       end
 
       it_behaves_like 'send verification instructions'
-      it_behaves_like 'prompt for email verification'
     end
 
     context 'when exceeding the rate limit' do
@@ -301,8 +296,6 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
         mail = find_email_for(user)
         expect(mail).to be_nil
       end
-
-      it_behaves_like 'prompt for email verification'
     end
   end
 

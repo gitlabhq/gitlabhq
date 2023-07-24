@@ -1,5 +1,11 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlIcon,
+  GlLoadingIcon,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -20,8 +26,8 @@ import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlIcon,
     GlLoadingIcon,
     WidgetWrapper,
@@ -211,26 +217,30 @@ export default {
       </span>
     </template>
     <template #header-right>
-      <gl-dropdown
+      <gl-disclosure-dropdown
         v-if="canUpdate && canAddTask"
-        right
+        placement="right"
         size="small"
-        :text="$options.i18n.addChildButtonLabel"
+        :toggle-text="$options.i18n.addChildButtonLabel"
         data-testid="toggle-form"
       >
-        <gl-dropdown-item
+        <gl-disclosure-dropdown-item
           data-testid="toggle-create-form"
-          @click="showAddForm($options.FORM_TYPES.create)"
+          @action="showAddForm($options.FORM_TYPES.create)"
         >
-          {{ $options.i18n.createChildOptionLabel }}
-        </gl-dropdown-item>
-        <gl-dropdown-item
+          <template #list-item>
+            {{ $options.i18n.createChildOptionLabel }}
+          </template>
+        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
           data-testid="toggle-add-form"
-          @click="showAddForm($options.FORM_TYPES.add)"
+          @action="showAddForm($options.FORM_TYPES.add)"
         >
-          {{ $options.i18n.addChildOptionLabel }}
-        </gl-dropdown-item>
-      </gl-dropdown>
+          <template #list-item>
+            {{ $options.i18n.addChildOptionLabel }}
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown>
     </template>
     <template #body>
       <div class="gl-new-card-content">

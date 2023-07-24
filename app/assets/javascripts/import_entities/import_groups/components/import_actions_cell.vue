@@ -1,11 +1,20 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlIcon, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlIcon,
+  GlButtonGroup,
+  GlButton,
+  GlTooltipDirective as GlTooltip,
+} from '@gitlab/ui';
 
 export default {
   components: {
     GlIcon,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
+    GlButtonGroup,
+    GlButton,
   },
   directives: {
     GlTooltip,
@@ -34,20 +43,31 @@ export default {
 
 <template>
   <span class="gl-white-space-nowrap gl-inline-flex gl-align-items-center">
-    <gl-dropdown
-      v-if="isAvailableForImport || isFinished"
-      :text="isFinished ? __('Re-import with projects') : __('Import with projects')"
-      :disabled="isInvalid"
-      variant="confirm"
-      category="secondary"
-      data-qa-selector="import_group_button"
-      split
-      @click="importGroup({ migrateProjects: true })"
-    >
-      <gl-dropdown-item @click="importGroup({ migrateProjects: false })">{{
-        isFinished ? __('Re-import without projects') : __('Import without projects')
-      }}</gl-dropdown-item>
-    </gl-dropdown>
+    <gl-button-group v-if="isAvailableForImport || isFinished">
+      <gl-button
+        variant="confirm"
+        category="secondary"
+        @click="importGroup({ migrateProjects: true })"
+        >{{ isFinished ? __('Re-import with projects') : __('Import with projects') }}</gl-button
+      >
+      <gl-disclosure-dropdown
+        toggle-text="Import options"
+        text-sr-only
+        :disabled="isInvalid"
+        icon="chevron-down"
+        no-caret
+        variant="confirm"
+        category="secondary"
+        data-qa-selector="import_group_button"
+      >
+        <gl-disclosure-dropdown-item @action="importGroup({ migrateProjects: false })">
+          <template #list-item>
+            {{ isFinished ? __('Re-import without projects') : __('Import without projects') }}
+          </template></gl-disclosure-dropdown-item
+        >
+      </gl-disclosure-dropdown>
+    </gl-button-group>
+
     <gl-icon
       v-if="isFinished"
       v-gl-tooltip

@@ -46,7 +46,7 @@ export default class ArchivedProjectsService {
           number_users_with_delimiter: 0,
           star_count: project.star_count,
           updated_at: project.updated_at,
-          marked_for_deletion: project.marked_for_deletion_at !== null,
+          marked_for_deletion: Boolean(project.marked_for_deletion_at),
           last_activity_at: project.last_activity_at,
         };
       }),

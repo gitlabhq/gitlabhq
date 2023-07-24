@@ -175,7 +175,7 @@ Configure your project's merge request settings:
 
 ## Service Desk
 
-Enable [Service Desk](../service_desk.md) for your project to offer customer support.
+Enable [Service Desk](../service_desk/index.md) for your project to offer customer support.
 
 ## Export project
 

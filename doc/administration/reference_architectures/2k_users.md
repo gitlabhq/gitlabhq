@@ -253,7 +253,7 @@ A reputable provider or solution should be used for this. [Google Cloud SQL](htt
 
 If you use a third party external service:
 
-1. Note that the HA Omnibus PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
+1. Note that the HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
 1. Set up PostgreSQL according to the
    [database requirements document](../../install/requirements.md#database).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
@@ -261,10 +261,10 @@ If you use a third party external service:
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).
 
-### Standalone PostgreSQL using Omnibus GitLab
+### Standalone PostgreSQL using the Linux package
 
 1. SSH in to the PostgreSQL server.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Generate a password hash for PostgreSQL. This assumes you will use the default
@@ -308,8 +308,8 @@ If you use a third party external service:
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Note the PostgreSQL node's IP address or hostname, port, and
@@ -336,14 +336,14 @@ You can optionally use a third party external service for Redis as long as it me
 
 A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS Elasticache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work. However, note that the Redis Cluster mode specifically isn't supported by GitLab. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 
-### Standalone Redis using Omnibus GitLab
+### Standalone Redis using the Linux package
 
-The Omnibus GitLab package can be used to configure a standalone Redis server.
+The Linux package can be used to configure a standalone Redis server.
 The steps below are the minimum necessary to configure a Redis server with
-Omnibus:
+the Linux package:
 
 1. SSH in to the Redis server.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
@@ -367,8 +367,8 @@ Omnibus:
    }
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -432,7 +432,7 @@ installation has two repository storages: `default` and `storage1`.
 
 To configure the Gitaly server, on the server node you want to use for Gitaly:
 
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux package
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page, and _do not_ provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
@@ -517,8 +517,8 @@ Updates to example must be made at:
    }
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -603,7 +603,7 @@ but this is dependent on workload.
 
 On each node perform the following:
 
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration.
@@ -717,8 +717,8 @@ On each node perform the following:
       sudo cp cert.pem /etc/gitlab/trusted-certs/
       ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
 
@@ -768,12 +768,12 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 
 ## Configure Prometheus
 
-The Omnibus GitLab package can be used to configure a standalone Monitoring node
+The Linux package can be used to configure a standalone Monitoring node
 running [Prometheus](../monitoring/prometheus/index.md) and
 [Grafana](../monitoring/performance/grafana_configuration.md):
 
 1. SSH in to the Monitoring node.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
@@ -908,7 +908,7 @@ in the future.
 
 ### Enable incremental logging
 
-GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
+GitLab Runner returns job logs in chunks which the Linux package caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
 While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
@@ -940,7 +940,7 @@ Prometheus, and Grafana.
 Hybrid installations leverage the benefits of both cloud native and traditional
 compute deployments. With this, _stateless_ components can benefit from cloud native
 workload management benefits while _stateful_ components are deployed in compute VMs
-with Omnibus to benefit from increased permanence.
+with Linux package installations to benefit from increased permanence.
 
 Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts/advanced/)
 documentation for setup instructions including guidance on what GitLab secrets to sync
@@ -979,7 +979,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 - Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
   - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
 
-Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
+Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
 
 | Service                    | Nodes | Configuration          | GCP             | AWS         |

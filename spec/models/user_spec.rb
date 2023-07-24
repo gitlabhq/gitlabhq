@@ -7028,31 +7028,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#dismissed_callout_before?' do
-    let_it_be(:user, refind: true) { create(:user) }
-    let_it_be(:feature_name) { Users::Callout.feature_names.each_key.first }
-
-    context 'when no callout dismissal record exists' do
-      it 'returns false' do
-        expect(user.dismissed_callout_before?(feature_name, 1.day.ago)).to eq false
-      end
-    end
-
-    context 'when dismissed callout exists' do
-      before_all do
-        create(:callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
-      end
-
-      it 'returns false when dismissed_before is earlier than dismissed_at' do
-        expect(user.dismissed_callout_before?(feature_name, 6.months.ago)).to eq false
-      end
-
-      it 'returns true when dismissed_before is later than dismissed_at' do
-        expect(user.dismissed_callout_before?(feature_name, 3.months.ago)).to eq true
-      end
-    end
-  end
-
   describe '#find_or_initialize_callout' do
     let_it_be(:user, refind: true) { create(:user) }
     let_it_be(:feature_name) { Users::Callout.feature_names.each_key.first }

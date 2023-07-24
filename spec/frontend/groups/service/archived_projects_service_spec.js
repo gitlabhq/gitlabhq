@@ -18,11 +18,9 @@ describe('ArchivedProjectsService', () => {
     const query = 'git';
     const sort = 'created_asc';
 
-    beforeEach(() => {
-      Api.groupProjects.mockResolvedValueOnce({ data: projects, headers });
-    });
-
     it('returns promise the resolves with formatted project', async () => {
+      Api.groupProjects.mockResolvedValueOnce({ data: projects, headers });
+
       await expect(service.getGroups(undefined, page, query, sort)).resolves.toEqual({
         data: projects.map((project) => {
           return {
@@ -47,7 +45,7 @@ describe('ArchivedProjectsService', () => {
             number_users_with_delimiter: 0,
             star_count: project.star_count,
             updated_at: project.updated_at,
-            marked_for_deletion: project.marked_for_deletion_at !== null,
+            marked_for_deletion: false,
             last_activity_at: project.last_activity_at,
           };
         }),
@@ -63,6 +61,35 @@ describe('ArchivedProjectsService', () => {
     });
 
     describe.each`
+      markedForDeletionAt | expected
+      ${null}             | ${false}
+      ${undefined}        | ${false}
+      ${'2023-07-21'}     | ${true}
+    `(
+      'when `marked_for_deletion_at` is $markedForDeletionAt',
+      ({ markedForDeletionAt, expected }) => {
+        it(`sets marked_for_deletion to ${expected}`, async () => {
+          Api.groupProjects.mockResolvedValueOnce({
+            data: projects.map((project) => ({
+              ...project,
+              marked_for_deletion_at: markedForDeletionAt,
+            })),
+            headers,
+          });
+
+          await expect(service.getGroups(undefined, page, query, sort)).resolves.toMatchObject({
+            data: projects.map(() => {
+              return {
+                marked_for_deletion: expected,
+              };
+            }),
+            headers,
+          });
+        });
+      },
+    );
+
+    describe.each`
       sortArgument              | expectedOrderByParameter | expectedSortParameter
       ${'name_asc'}             | ${'name'}                | ${'asc'}
       ${'name_desc'}            | ${'name'}                | ${'desc'}
@@ -75,6 +102,8 @@ describe('ArchivedProjectsService', () => {
       'when the sort argument is $sortArgument',
       ({ sortArgument, expectedSortParameter, expectedOrderByParameter }) => {
         it(`calls the API with sort parameter set to ${expectedSortParameter} and order_by parameter set to ${expectedOrderByParameter}`, () => {
+          Api.groupProjects.mockResolvedValueOnce({ data: projects, headers });
+
           service.getGroups(undefined, page, query, sortArgument);
 
           expect(Api.groupProjects).toHaveBeenCalledWith(groupId, query, {

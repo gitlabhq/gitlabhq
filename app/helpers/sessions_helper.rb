@@ -40,10 +40,6 @@ module SessionsHelper
     request.env['rack.session.options'][:expire_after] = expiry_s
   end
 
-  def send_rate_limited?(user)
-    Gitlab::ApplicationRateLimiter.peek(:email_verification_code_send, scope: user)
-  end
-
   def obfuscated_email(email)
     # Moved to Gitlab::Utils::Email in 15.9
     Gitlab::Utils::Email.obfuscated_email(email)
@@ -51,5 +47,13 @@ module SessionsHelper
 
   def remember_me_enabled?
     Gitlab::CurrentSettings.remember_me_enabled?
+  end
+
+  def verification_data(user)
+    {
+      obfuscated_email: obfuscated_email(user.email),
+      verify_path: session_path(:user),
+      resend_path: users_resend_verification_code_path
+    }
   end
 end

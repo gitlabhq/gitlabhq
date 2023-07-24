@@ -176,7 +176,7 @@ e2e-test-pipeline-generate:
 trigger-omnibus-env:
   stage: prepare
   extends:
-    - .qa:rules:package-and-test-ee
+    - .qa:rules:trigger-omnibus-env
   needs:
     # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream omnibus-gitlab pipeline.
     - compile-production-assets

@@ -166,6 +166,7 @@ InitializerConnections.raise_if_new_database_connection do
         draw :country
         draw :country_state
         draw :subscription
+        draw :phone_verification
 
         scope '/push_from_secondary/:geo_node_id' do
           draw :git_http

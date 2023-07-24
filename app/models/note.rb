@@ -498,7 +498,7 @@ class Note < ApplicationRecord
   end
 
   def can_be_discussion_note?
-    self.noteable.supports_discussions? && !part_of_discussion?
+    self.noteable.supports_discussions? && !part_of_discussion? && !system?
   end
 
   def can_create_todo?

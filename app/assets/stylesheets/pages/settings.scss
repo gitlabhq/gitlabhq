@@ -124,21 +124,25 @@ $sticky-header-z-index: 98;
     display: block;
     height: $gl-padding-8;
     position: sticky;
-    top: calc(#{$calc-application-header-height}  + 40px);
-    box-shadow: 0 1px 1px $gray-200;
+    top: calc(#{$calc-application-header-height} + 36px);
+    box-shadow: 0 1px 0 $gray-100;
   }
 }
 
 .settings-sticky-header-inner {
   position: sticky;
-  padding: $gl-padding $gl-padding $gl-padding-12;
+  padding: $gl-padding-12 $gl-padding $gl-padding-8;
   margin: #{-$gl-padding} #{-$gl-padding} 0;
   background: $body-bg;
 }
 
 .settings-sticky-footer {
   bottom: 0;
-  padding-top: $gl-padding-8;
-  padding-bottom: $gl-padding-8;
-  box-shadow: 0 #{-$gl-padding-4} $gl-padding-12 $gl-padding-4 $body-bg;
+  padding: $gl-padding-8 0;
+  box-shadow: 0 -1px 0 $gray-100;
+}
+
+// Header shouldn't be sticky if only one section on page
+.settings-sticky-header:first-of-type:last-of-type {
+  position: static;
 }

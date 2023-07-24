@@ -63,7 +63,7 @@ This section documents the current behavior of GitLab when Silent Mode is enable
 
 ### Service Desk
 
-Incoming emails still raise issues, but the users who sent the emails to [Service Desk](../../user/project/service_desk.md) are not notified of issue creation or comments on their issues.
+Incoming emails still raise issues, but the users who sent the emails to [Service Desk](../../user/project/service_desk/index.md) are not notified of issue creation or comments on their issues.
 
 ### Webhooks
 

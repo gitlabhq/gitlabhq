@@ -268,7 +268,7 @@ Through testing and real life usage, the Reference Architectures are validated a
 </thead>
 <tbody>
   <tr>
-    <td>Omnibus</td>
+    <td>Linux package</td>
     <td>🟢</td>
     <td>🟢</td>
     <td>🟡<sup>1</sup></td>

@@ -92,7 +92,7 @@ cluster alongside your instance, read how to
 
 Cloud Native Hybrid Reference Architecture is an alternative approach where select _stateless_
 components are deployed in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/),
-and _stateful_ components are deployed in compute VMs with Omnibus.
+and _stateful_ components are deployed in compute VMs with the Linux package.
 
 The [2k GitLab Cloud Native Hybrid](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (non HA) and [3k GitLab Cloud Native Hybrid](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (HA) reference architectures are the smallest we recommend in Kubernetes.
 For environments that serve fewer users, you can lower the node specs. Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).

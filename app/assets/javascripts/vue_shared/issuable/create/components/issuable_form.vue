@@ -1,8 +1,9 @@
 <script>
 import { GlForm, GlFormInput, GlFormGroup } from '@gitlab/ui';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_vue/labels_select_root.vue';
 import { VARIANT_EMBEDDED } from '~/sidebar/components/labels/labels_select_widget/constants';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import { __ } from '~/locale';
 
 export default {
   VARIANT_EMBEDDED,
@@ -10,7 +11,7 @@ export default {
     GlForm,
     GlFormInput,
     GlFormGroup,
-    MarkdownField,
+    MarkdownEditor,
     LabelsSelect,
   },
   props: {
@@ -30,6 +31,14 @@ export default {
       type: String,
       required: true,
     },
+  },
+  descriptionFormFieldProps: {
+    ariaLabel: __('Description'),
+    class: 'rspec-issuable-form-description',
+    placeholder: __('Write a comment or drag your files here…'),
+    dataQaSelector: 'issuable_form_description_field',
+    id: 'issuable-description',
+    name: 'issuable-description',
   },
   data() {
     return {
@@ -68,26 +77,12 @@ export default {
     <div data-testid="issuable-description" class="form-group row">
       <label for="issuable-description" class="col-12">{{ __('Description') }}</label>
       <div class="col-12">
-        <markdown-field
-          :markdown-preview-path="descriptionPreviewPath"
+        <markdown-editor
+          v-model="issuableDescription"
+          :render-markdown-path="descriptionPreviewPath"
           :markdown-docs-path="descriptionHelpPath"
-          :add-spacing-classes="false"
-          :show-suggest-popover="true"
-          :textarea-value="issuableDescription"
-        >
-          <template #textarea>
-            <textarea
-              id="issuable-description"
-              ref="textarea"
-              v-model="issuableDescription"
-              dir="auto"
-              class="note-textarea rspec-issuable-form-description js-gfm-input js-autosize markdown-area"
-              data-qa-selector="issuable_form_description_field"
-              :aria-label="__('Description')"
-              :placeholder="__('Write a comment or drag your files here…')"
-            ></textarea>
-          </template>
-        </markdown-field>
+          :form-field-props="$options.descriptionFormFieldProps"
+        />
       </div>
     </div>
     <div data-testid="issuable-labels" class="form-group row">

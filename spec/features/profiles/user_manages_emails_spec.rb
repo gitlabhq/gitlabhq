@@ -22,7 +22,7 @@ RSpec.describe 'User manages emails', feature_category: :user_profile do
 
   it 'adds an email', :aggregate_failures do
     fill_in('email_email', with: 'my@email.com')
-    click_button('Add')
+    click_button('Add email address')
 
     email = user.emails.find_by(email: 'my@email.com')
 
@@ -37,7 +37,7 @@ RSpec.describe 'User manages emails', feature_category: :user_profile do
 
   it 'does not add an email that is the primary email of another user', :aggregate_failures do
     fill_in('email_email', with: other_user.email)
-    click_button('Add')
+    click_button('Add email address')
 
     email = user.emails.find_by(email: other_user.email)
 
@@ -51,7 +51,7 @@ RSpec.describe 'User manages emails', feature_category: :user_profile do
 
   it 'removes an email', :aggregate_failures do
     fill_in('email_email', with: 'my@email.com')
-    click_button('Add')
+    click_button('Add email address')
 
     email = user.emails.find_by(email: 'my@email.com')
 

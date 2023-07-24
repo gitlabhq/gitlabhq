@@ -67,6 +67,9 @@ the next scheduled time:
 
 You can manually run scheduled pipelines once per minute.
 
+When you run a scheduled pipeline manually, the pipeline runs with the
+permissions of the user who triggered it, not the permissions of the schedule owner.
+
 ## Take ownership
 
 Scheduled pipelines execute with the permissions of the user

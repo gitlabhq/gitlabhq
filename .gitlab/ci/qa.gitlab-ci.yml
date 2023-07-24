@@ -105,6 +105,12 @@ trigger-omnibus:
     branch: $TRIGGER_BRANCH
     strategy: depend
 
+# Same as trigger-omnibus but is manual and runs follow-up-e2e:package-and-test-ee automatically right after
+trigger-omnibus-and-follow-up-e2e:
+  extends:
+    - trigger-omnibus
+    - .qa:rules:manual-omnibus-and-follow-up-e2e
+
 trigger-omnibus as-if-foss:
   extends:
     - trigger-omnibus
@@ -123,6 +129,20 @@ e2e:package-and-test-ee:
   needs:
     - build-qa-image
     - trigger-omnibus
+    - e2e-test-pipeline-generate
+  variables:
+    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
+    QA_RUN_TYPE: e2e-package-and-test
+    PIPELINE_NAME: E2E Omnibus GitLab EE
+
+# Same as e2e:package-and-test-ee but runs automatically after trigger-omnibus-and-follow-up-e2e
+follow-up-e2e:package-and-test-ee:
+  extends:
+    - .e2e-trigger-base
+    - .qa:rules:follow-up-e2e
+  needs:
+    - build-qa-image
+    - trigger-omnibus-and-follow-up-e2e
     - e2e-test-pipeline-generate
   variables:
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
@@ -187,4 +207,3 @@ e2e:test-on-gdk:
     DYNAMIC_PIPELINE_YML: test-on-gdk-pipeline.yml
     SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
-  allow_failure: true

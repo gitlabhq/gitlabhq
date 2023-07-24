@@ -12,7 +12,8 @@ module Gitlab
         # Error information from the previous try is in the payload for
         # displaying in the Sidekiq UI, but is very confusing in logs!
         job = job.except(
-          'exception.backtrace', 'exception.class', 'exception.message', 'exception.sql'
+          'exception.backtrace', 'exception.class', 'exception.message', 'exception.sql',
+          'error_message', 'error_class', 'error_backtrace', 'failed_at'
         )
 
         job['class'] = job.delete('wrapped') if job['wrapped'].present?
