@@ -63,36 +63,29 @@ export default {
 };
 </script>
 <template>
-  <section class="gl-lg-display-flex">
-    <div class="gl-flex-basis-third gl-mr-4">
-      <h4 class="gl-mt-0">
-        {{ section.title
-        }}<gl-badge
-          v-if="section.plan"
-          :href="propsSource.aboutPricingUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          variant="tier"
-          icon="license"
-          class="gl-ml-3"
-        >
-          {{ $options.billingPlanNames[section.plan] }}
-        </gl-badge>
-      </h4>
-      <p v-safe-html="section.description"></p>
-    </div>
+  <section>
+    <h4 class="gl-mt-0">
+      {{ section.title
+      }}<gl-badge
+        v-if="section.plan"
+        :href="propsSource.aboutPricingUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        variant="tier"
+        icon="license"
+        class="gl-ml-3"
+      >
+        {{ $options.billingPlanNames[section.plan] }}
+      </gl-badge>
+    </h4>
+    <p v-safe-html="section.description"></p>
 
-    <div
-      v-if="$options.integrationFormSectionComponents[section.type]"
-      class="gl-flex-basis-two-thirds"
-    >
-      <component
-        :is="$options.integrationFormSectionComponents[section.type]"
-        :fields="fieldsForSection(section)"
-        :is-validated="isValidated"
-        @toggle-integration-active="$emit('toggle-integration-active', $event)"
-        @request-jira-issue-types="$emit('request-jira-issue-types', $event)"
-      />
-    </div>
+    <component
+      :is="$options.integrationFormSectionComponents[section.type]"
+      :fields="fieldsForSection(section)"
+      :is-validated="isValidated"
+      @toggle-integration-active="$emit('toggle-integration-active', $event)"
+      @request-jira-issue-types="$emit('request-jira-issue-types', $event)"
+    />
   </section>
 </template>

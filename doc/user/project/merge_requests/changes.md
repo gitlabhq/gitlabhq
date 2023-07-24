@@ -23,9 +23,9 @@ To view the diff of changes included in a merge request:
 1. Go to your merge request.
 1. Below the merge request title, select **Changes**.
 1. If the merge request changes many files, you can jump directly to a specific file:
-   1. Select **Show file browser** (**{file-tree}**) to display the file tree.
+   1. Select **Show file browser** (**{file-tree}**) or press <kbd>F</kbd> to display the file tree.
    1. Select the file you want to view.
-   1. To hide the file browser, select **Show file browser** again.
+   1. To hide the file browser, select **Show file browser** or press <kbd>F</kbd> again.
 
 Files with many changes are collapsed to improve performance. GitLab displays the message:
 **Some changes are not shown**. To view the changes for that file, select **Expand file**.

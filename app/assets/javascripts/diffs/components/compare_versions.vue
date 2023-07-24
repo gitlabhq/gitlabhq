@@ -46,7 +46,9 @@ export default {
       'removedLines',
     ]),
     toggleFileBrowserTitle() {
-      return this.showTreeList ? __('Hide file browser') : __('Show file browser');
+      return this.showTreeList
+        ? __('Hide file browser (or press F)')
+        : __('Show file browser (or press F)');
     },
     hasChanges() {
       return this.diffFiles.length > 0;

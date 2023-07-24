@@ -56,6 +56,11 @@ export default {
       required: false,
       default: false,
     },
+    isFlyout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     pillData() {
@@ -104,6 +109,7 @@ export default {
       return {
         'gl-px-2 gl-mx-2 gl-line-height-normal': this.isSubitem,
         'gl-px-3': !this.isSubitem,
+        'gl-pl-5!': this.isFlyout,
         [this.item.link_classes]: this.item.link_classes,
         ...this.linkClasses,
       };
@@ -133,7 +139,7 @@ export default {
         style="width: 3px; border-radius: 3px; margin-right: 1px"
         data-testid="active-indicator"
       ></div>
-      <div class="gl-flex-shrink-0 gl-w-6 gl-display-flex">
+      <div v-if="!isFlyout" class="gl-flex-shrink-0 gl-w-6 gl-display-flex">
         <slot name="icon">
           <gl-icon v-if="item.icon" :name="item.icon" class="gl-m-auto item-icon" />
           <gl-icon

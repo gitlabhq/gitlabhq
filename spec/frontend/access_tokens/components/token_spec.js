@@ -50,6 +50,7 @@ describe('Token', () => {
       formInputGroupProps: {
         id: defaultPropsData.inputId,
       },
+      readonly: true,
       value: defaultPropsData.token,
       copyButtonTitle: defaultPropsData.copyButtonTitle,
     });

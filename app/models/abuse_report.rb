@@ -214,6 +214,24 @@ class AbuseReport < ApplicationRecord
         extension_list: valid_image_extensions.to_sentence(last_word_connector: ' or '))
     )
   end
+
+  def self.aggregated_by_user_and_category(sort_by_count = false)
+    sub_query = self
+      .select('user_id, category, COUNT(id) as count', 'MIN(id) as min')
+      .group(:user_id, :category)
+
+    reports = AbuseReport.with_users
+      .open
+      .select('aggregated.*, status, id, reporter_id, created_at, updated_at')
+      .from(sub_query, :aggregated)
+      .joins('INNER JOIN abuse_reports on aggregated.min = abuse_reports.id')
+
+    if sort_by_count
+      reports.order(count: :desc, created_at: :desc)
+    else
+      reports
+    end
+  end
 end
 
 AbuseReport.prepend_mod

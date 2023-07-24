@@ -47,6 +47,10 @@ describe('OAuthSecret', () => {
     it('shows the renew secret button', () => {
       expect(findRenewSecretButton().exists()).toBe(true);
     });
+
+    it('renders secret in readonly input', () => {
+      expect(findInputCopyToggleVisibility().props('readonly')).toBe(true);
+    });
   });
 
   describe('when secret is not provided', () => {

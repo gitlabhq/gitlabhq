@@ -164,6 +164,34 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
         expect(described_class.by_category('phishing')).to match_array([report2])
       end
     end
+
+    describe '.aggregated_by_user_and_category' do
+      let_it_be(:report3) { create(:abuse_report, category: report1.category, user: report1.user) }
+      let_it_be(:report4) { create(:abuse_report, category: 'phishing', user: report1.user) }
+      let_it_be(:report5) { create(:abuse_report, category: report1.category, user: build(:user)) }
+
+      let_it_be(:sort_by_count) { true }
+
+      subject(:aggregated) { described_class.aggregated_by_user_and_category(sort_by_count) }
+
+      context 'when sort_by_count = true' do
+        it 'sorts by aggregated_count in descending order and created_at in descending order' do
+          expect(aggregated).to eq([report1, report5, report4, report])
+        end
+
+        it 'returns count with aggregated reports' do
+          expect(aggregated[0].count).to eq(2)
+        end
+      end
+
+      context 'when sort_by_count = false' do
+        let_it_be(:sort_by_count) { false }
+
+        it 'does not sort using a specific order' do
+          expect(aggregated).to match_array([report, report1, report4, report5])
+        end
+      end
+    end
   end
 
   describe 'before_validation' do

@@ -81,6 +81,7 @@ export default {
       v-if="secret"
       :copy-button-title="$options.COPY_SECRET"
       :value="secret"
+      readonly
       class="gl-mt-n3 gl-mb-0"
     >
       <template #description>

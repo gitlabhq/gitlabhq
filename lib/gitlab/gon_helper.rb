@@ -76,6 +76,7 @@ module Gitlab
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:gitlab_duo, current_user)
       push_frontend_feature_flag(:custom_emoji)
+      push_frontend_feature_flag(:super_sidebar_flyout_menus, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

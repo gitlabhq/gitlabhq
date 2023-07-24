@@ -168,9 +168,8 @@ describe('RegistrationDropdown', () => {
       expect(findTokenDropdownItem().exists()).toBe(true);
     });
 
-    it('Displays masked value by default', () => {
+    it('Displays masked value as password input by default', () => {
       const mockToken = '0123456789';
-      const maskToken = '**********';
 
       createComponent(
         {
@@ -179,7 +178,7 @@ describe('RegistrationDropdown', () => {
         mountExtended,
       );
 
-      expect(findRegistrationTokenInput().element.value).toBe(maskToken);
+      expect(findRegistrationTokenInput().element.type).toBe('password');
     });
   });
 

@@ -2207,6 +2207,9 @@ msgstr ""
 msgid "AbuseReportEvent|Successfully scheduled the user for deletion and closed the report"
 msgstr ""
 
+msgid "AbuseReports|%{reportedUser} reported for %{category} by %{count} users"
+msgstr ""
+
 msgid "AbuseReports|%{reportedUser} reported for %{category} by %{reporter}"
 msgstr ""
 
@@ -2865,6 +2868,9 @@ msgid "Add new comment template"
 msgstr ""
 
 msgid "Add new directory"
+msgstr ""
+
+msgid "Add new emoji"
 msgstr ""
 
 msgid "Add new webhook"
@@ -13759,6 +13765,12 @@ msgstr ""
 msgid "Custom analyzers: language support"
 msgstr ""
 
+msgid "Custom emoji"
+msgstr ""
+
+msgid "Custom emoji will be available to use in every project in group."
+msgstr ""
+
 msgid "Custom hostname (for private commit emails)"
 msgstr ""
 
@@ -18733,9 +18745,6 @@ msgstr ""
 msgid "Expires %{preposition} %{expires_at}"
 msgstr ""
 
-msgid "Expires:"
-msgstr ""
-
 msgid "Explain why you're reporting the user."
 msgstr ""
 
@@ -22811,7 +22820,7 @@ msgstr ""
 msgid "Hide details"
 msgstr ""
 
-msgid "Hide file browser"
+msgid "Hide file browser (or press F)"
 msgstr ""
 
 msgid "Hide file contents"
@@ -26744,6 +26753,9 @@ msgstr ""
 msgid "Key (PEM)"
 msgstr ""
 
+msgid "Key details"
+msgstr ""
+
 msgid "Key result"
 msgstr ""
 
@@ -27046,9 +27058,6 @@ msgid "Last used"
 msgstr ""
 
 msgid "Last used %{last_used_at} ago"
-msgstr ""
-
-msgid "Last used on:"
 msgstr ""
 
 msgid "Last week"
@@ -31653,6 +31662,9 @@ msgstr ""
 msgid "Number of LOCs per commit"
 msgstr ""
 
+msgid "Number of Reports"
+msgstr ""
+
 msgid "Number of commits"
 msgstr ""
 
@@ -35418,6 +35430,12 @@ msgstr ""
 msgid "Profiles|Control emails linked to your account"
 msgstr ""
 
+msgid "Profiles|Copy SSH key"
+msgstr ""
+
+msgid "Profiles|Created"
+msgstr ""
+
 msgid "Profiles|Created%{time_ago}"
 msgstr ""
 
@@ -35487,7 +35505,13 @@ msgstr ""
 msgid "Profiles|Expiration date"
 msgstr ""
 
+msgid "Profiles|Expired"
+msgstr ""
+
 msgid "Profiles|Expired:"
+msgstr ""
+
+msgid "Profiles|Expires"
 msgstr ""
 
 msgid "Profiles|Expires:"
@@ -35530,6 +35554,9 @@ msgid "Profiles|Key becomes invalid on this date. Maximum lifetime for SSH keys 
 msgstr ""
 
 msgid "Profiles|Key titles are publicly visible."
+msgstr ""
+
+msgid "Profiles|Last used"
 msgstr ""
 
 msgid "Profiles|Last used:"
@@ -35593,6 +35620,9 @@ msgid "Profiles|Remove avatar"
 msgstr ""
 
 msgid "Profiles|Resend confirmation email"
+msgstr ""
+
+msgid "Profiles|SSH Key: %{title}"
 msgstr ""
 
 msgid "Profiles|Select a service to sign in with."
@@ -43176,7 +43206,7 @@ msgstr ""
 msgid "Show failed jobs (%{count})"
 msgstr ""
 
-msgid "Show file browser"
+msgid "Show file browser (or press F)"
 msgstr ""
 
 msgid "Show file contents"
@@ -48507,6 +48537,9 @@ msgid "Toggle details"
 msgstr ""
 
 msgid "Toggle emoji award"
+msgstr ""
+
+msgid "Toggle file browser"
 msgstr ""
 
 msgid "Toggle focus mode"

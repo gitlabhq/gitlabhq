@@ -8,4 +8,8 @@ module SlackMarkdownSanitizer
   def self.sanitize(string)
     string&.delete(UNSAFE_MARKUP_CHARACTERS)
   end
+
+  def self.sanitize_slack_link(string)
+    string.gsub(Gitlab::Regex.slack_link_regex) { |m| m.gsub("<", "&lt;").gsub(">", "&gt;") }
+  end
 end

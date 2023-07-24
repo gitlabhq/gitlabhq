@@ -696,6 +696,10 @@ export const setShowTreeList = ({ commit }, { showTreeList, saving = true }) => 
   }
 };
 
+export const toggleTreeList = ({ state, commit }) => {
+  commit(types.SET_SHOW_TREE_LIST, !state.showTreeList);
+};
+
 export const openDiffFileCommentForm = ({ commit, getters }, formData) => {
   const form = getters.getCommentFormForDiffFile(formData.fileHash);
 

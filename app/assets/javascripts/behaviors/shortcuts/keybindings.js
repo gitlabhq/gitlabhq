@@ -430,6 +430,13 @@ export const MR_GO_TO_FILE = {
   customizable: false,
 };
 
+export const MR_TOGGLE_FILE_BROWSER = {
+  id: 'mergeRequests.toggleFileBrowser',
+  description: __('Toggle file browser'),
+  defaultKeys: ['f'],
+  customizable: false,
+};
+
 export const MR_NEXT_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.nextUnresolvedDiscussion',
   description: __('Next unresolved discussion'),

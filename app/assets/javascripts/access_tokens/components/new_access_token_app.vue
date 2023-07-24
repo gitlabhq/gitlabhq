@@ -112,6 +112,7 @@ export default {
           :label-for="$options.tokenInputId"
           :value="newToken"
           :form-input-group-props="formInputGroupProps"
+          readonly
         >
           <template #description>
             {{ $options.i18n.description }}

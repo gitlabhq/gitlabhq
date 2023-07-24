@@ -27,7 +27,7 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
       fill_in('Title', with: attrs[:title])
       click_button('Add key')
 
-      expect(page).to have_content("Title: #{attrs[:title]}")
+      expect(page).to have_content(format(s_('Profiles|SSH Key: %{title}'), title: attrs[:title]))
       expect(page).to have_content(attrs[:key])
       expect(find('[data-testid="breadcrumb-current-link"]')).to have_link(attrs[:title])
     end

@@ -11,43 +11,45 @@ module QA
         end
       end
 
-      let(:registry_repository) do
-        Resource::RegistryRepository.fabricate! do |repository|
-          repository.name = project.path_with_namespace.to_s
-          repository.project = project
-        end
-      end
-
       let!(:gitlab_ci_yaml) do
         <<~YAML
-          build:
-            image: docker:24.0.1
-            stage: build
-            services:
-              - docker:24.0.1-dind
-            variables:
-              IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-              DOCKER_HOST: tcp://docker:2376
-              DOCKER_TLS_CERTDIR: "/certs"
-              DOCKER_TLS_VERIFY: 1
-              DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
-            before_script:
-              - |
-                echo "Waiting for docker to start..."
-                for i in $(seq 1 30)
-                do
-                    docker info && break
-                    sleep 1s
-                done
-            script:
-              - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-              - docker build -t $IMAGE_TAG .
-              - docker push $IMAGE_TAG
-        YAML
-      end
+        stages:
+        - test
+        - build
 
-      after do
-        registry_repository&.remove_via_api!
+        test:
+          image: registry.gitlab.com/gitlab-ci-utils/curl-jq:latest
+          stage: test
+          script:
+            - 'status_code=$(curl --header "Authorization: Bearer $CI_JOB_TOKEN" "https://${CI_SERVER_HOST}/gitlab/v1")'
+            - |
+              if [ "$status_code" -eq 404 ]; then
+                echo "The registry implements this API specification, but it is unavailable because the metadata database is disabled."
+                exit 1
+              fi
+        build:
+          image: docker:24.0.1
+          stage: build
+          services:
+            - docker:24.0.1-dind
+          variables:
+            IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+            DOCKER_HOST: tcp://docker:2376
+            DOCKER_TLS_CERTDIR: "/certs"
+            DOCKER_TLS_VERIFY: 1
+            DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+          before_script:
+            - |
+              echo "Waiting for docker to start..."
+              for i in $(seq 1 30); do
+                docker info && break
+                sleep 1s
+              done
+          script:
+            - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+            - docker build -t $IMAGE_TAG .
+            - docker push $IMAGE_TAG
+        YAML
       end
 
       it 'pushes project image to the container registry and deletes tag',
@@ -69,11 +71,20 @@ module QA
         Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |pipeline|
+          pipeline.click_job('test')
+        end
+        Page::Project::Job::Show.perform do |job|
+          expect(job).to be_successful(timeout: 200)
+
+          job.click_element(:pipeline_path)
+        end
+
+        Page::Project::Pipeline::Show.perform do |pipeline|
           pipeline.click_job('build')
         end
 
         Page::Project::Job::Show.perform do |job|
-          expect(job).to be_successful(timeout: 800)
+          expect(job).to be_successful(timeout: 500)
         end
 
         Page::Project::Menu.perform(&:go_to_container_registry)

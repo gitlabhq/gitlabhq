@@ -91,4 +91,47 @@
     @include gl-border-gray-100;
     @include gl-rounded-base;
   }
+
+  // Table adjustments
+  @mixin new-card-table-adjustments {
+    tbody > tr {
+      > td[data-label] {
+        @include gl-border-left-0;
+        @include gl-border-l-none;
+        @include gl-border-right-0;
+        @include gl-border-r-none;
+      }
+
+      > th {
+        @include gl-border-t-1;
+        @include gl-border-b-0;
+      }
+
+      &::after {
+        @include gl-bg-white;
+      }
+
+      &:last-child::after {
+        @include gl-display-none;
+      }
+    }
+  }
+
+  table.b-table-stacked-sm,
+  table.b-table-stacked-md {
+    @include gl-mt-n1;
+    @include gl-mb-n2;
+  }
+
+  table.gl-table.b-table.b-table-stacked-sm {
+    @include gl-media-breakpoint-down(sm) {
+      @include new-card-table-adjustments;
+    }
+  }
+
+  table.gl-table.b-table.b-table-stacked-md {
+    @include gl-media-breakpoint-down(md) {
+      @include new-card-table-adjustments;
+    }
+  }
 }

@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlButton, GlAlert, GlCard } from '@gitlab/ui';
-import { Mousetrap } from '~/lib/mousetrap';
+import { Mousetrap, MOUSETRAP_COPY_KEYBOARD_SHORTCUT } from '~/lib/mousetrap';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -10,7 +10,6 @@ import {
   PRINT_BUTTON_ACTION,
   TRACKING_LABEL_PREFIX,
   RECOVERY_CODE_DOWNLOAD_FILENAME,
-  COPY_KEYBOARD_SHORTCUT,
 } from '../constants';
 
 export const i18n = {
@@ -62,14 +61,14 @@ export default {
   created() {
     this.$options.mousetrap = new Mousetrap();
 
-    this.$options.mousetrap.bind(COPY_KEYBOARD_SHORTCUT, this.handleKeyboardCopy);
+    this.$options.mousetrap.bind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT, this.handleKeyboardCopy);
   },
   beforeDestroy() {
     if (!this.$options.mousetrap) {
       return;
     }
 
-    this.$options.mousetrap.unbind(COPY_KEYBOARD_SHORTCUT);
+    this.$options.mousetrap.unbind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT);
   },
   methods: {
     handleButtonClick(action) {

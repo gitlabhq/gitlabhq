@@ -217,29 +217,24 @@ export default {
       @change="setOverride"
     />
 
-    <section v-if="showHelpHtml" class="gl-lg-display-flex gl-justify-content-end gl-mb-6">
+    <!-- helpHtml is trusted input -->
+    <section v-if="showHelpHtml" class="gl-mb-6">
       <!-- helpHtml is trusted input -->
-      <div
-        v-safe-html:[$options.helpHtmlConfig]="helpHtml"
-        data-testid="help-html"
-        class="gl-flex-basis-two-thirds"
-      ></div>
+      <div v-safe-html:[$options.helpHtmlConfig]="helpHtml" data-testid="help-html"></div>
     </section>
 
-    <section v-if="!hasSections" class="gl-lg-display-flex gl-justify-content-end">
-      <div class="gl-flex-basis-two-thirds">
-        <active-checkbox
-          v-if="propsSource.showActive"
-          :key="`${currentKey}-active-checkbox`"
-          @toggle-integration-active="onToggleIntegrationState"
-        />
-        <trigger-fields
-          v-if="propsSource.triggerEvents.length"
-          :key="`${currentKey}-trigger-fields`"
-          :events="propsSource.triggerEvents"
-          :type="propsSource.type"
-        />
-      </div>
+    <section v-if="!hasSections">
+      <active-checkbox
+        v-if="propsSource.showActive"
+        :key="`${currentKey}-active-checkbox`"
+        @toggle-integration-active="onToggleIntegrationState"
+      />
+      <trigger-fields
+        v-if="propsSource.triggerEvents.length"
+        :key="`${currentKey}-trigger-fields`"
+        :events="propsSource.triggerEvents"
+        :type="propsSource.type"
+      />
     </section>
 
     <template v-if="hasSections">
@@ -254,22 +249,19 @@ export default {
       />
     </template>
 
-    <section v-if="hasFieldsWithoutSection" class="gl-lg-display-flex gl-justify-content-end">
-      <div class="gl-flex-basis-two-thirds">
-        <dynamic-field
-          v-for="field in fieldsWithoutSection"
-          :key="`${currentKey}-${field.name}`"
-          v-bind="field"
-          :is-validated="isValidated"
-          :data-qa-selector="`${field.name}_div`"
-        />
-      </div>
+    <section v-if="hasFieldsWithoutSection">
+      <dynamic-field
+        v-for="field in fieldsWithoutSection"
+        :key="`${currentKey}-${field.name}`"
+        v-bind="field"
+        :is-validated="isValidated"
+        :data-qa-selector="`${field.name}_div`"
+      />
     </section>
 
     <integration-form-actions
       v-if="isEditable"
       :has-sections="hasSections"
-      :class="{ 'gl-lg-display-flex gl-justify-content-end': !hasSections }"
       :is-saving="isSaving"
       :is-testing="isTesting"
       :is-resetting="isResetting"

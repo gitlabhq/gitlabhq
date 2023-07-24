@@ -853,7 +853,9 @@ class Note < ApplicationRecord
         user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count
     else
       refs = all_references(user)
-      refs.all.any? && refs.all_visible?
+      refs.all
+
+      refs.all_visible?
     end
   end
 

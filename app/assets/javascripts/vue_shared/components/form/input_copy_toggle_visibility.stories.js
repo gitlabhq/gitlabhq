@@ -8,16 +8,21 @@ export default {
 const defaultProps = {
   value: 'hR8x1fuJbzwu5uFKLf9e',
   formInputGroupProps: { class: 'gl-form-input-xl' },
+  readonly: false,
 };
 
 const Template = (args, { argTypes }) => ({
   components: { InputCopyToggleVisibility },
+  data() {
+    return { value: args.value };
+  },
   props: Object.keys(argTypes),
   template: `<input-copy-toggle-visibility
-      :value="value" 
+      v-model="value"
       :initial-visibility="initialVisibility"
       :show-toggle-visibility-button="showToggleVisibilityButton"
       :show-copy-button="showCopyButton"
+      :readonly="readonly"
       :form-input-group-props="formInputGroupProps"
       :copy-button-title="copyButtonTitle"
     />`,

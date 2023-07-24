@@ -1,5 +1,4 @@
 - category = local_assigns[:category] || :primary
 
-.gl-p-2
-  = render Pajamas::ButtonComponent.new(variant: :danger, category: category, button_options: { class: 'js-confirm-modal-button', data: button_data }) do
-    = _('Delete')
+= render Pajamas::ButtonComponent.new(variant: :danger, category: category, button_options: { class: 'js-confirm-modal-button', data: button_data }) do
+  = _('Delete')

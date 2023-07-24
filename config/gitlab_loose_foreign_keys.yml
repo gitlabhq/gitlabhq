@@ -207,12 +207,18 @@ dast_scanner_profiles_builds:
   - table: ci_builds
     column: ci_build_id
     on_delete: async_delete
+  - table: p_ci_builds
+    column: ci_build_id
+    on_delete: async_delete
 dast_scanner_profiles_tags:
   - table: tags
     column: tag_id
     on_delete: async_delete
 dast_site_profiles_builds:
   - table: ci_builds
+    column: ci_build_id
+    on_delete: async_delete
+  - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
 dast_site_profiles_pipelines:
@@ -247,6 +253,9 @@ ml_candidates:
   - table: ci_builds
     column: ci_build_id
     on_delete: async_nullify
+  - table: p_ci_builds
+    column: ci_build_id
+    on_delete: async_nullify
 namespaces:
   - table: organizations
     column: organization_id
@@ -271,8 +280,14 @@ pages_deployments:
   - table: ci_builds
     column: ci_build_id
     on_delete: async_nullify
+  - table: p_ci_builds
+    column: ci_build_id
+    on_delete: async_nullify
 requirements_management_test_reports:
   - table: ci_builds
+    column: build_id
+    on_delete: async_nullify
+  - table: p_ci_builds
     column: build_id
     on_delete: async_nullify
 sbom_occurrences:
@@ -283,8 +298,14 @@ security_scans:
   - table: ci_builds
     column: build_id
     on_delete: async_delete
+  - table: p_ci_builds
+    column: build_id
+    on_delete: async_delete
 terraform_state_versions:
   - table: ci_builds
+    column: ci_build_id
+    on_delete: async_nullify
+  - table: p_ci_builds
     column: ci_build_id
     on_delete: async_nullify
 vulnerability_feedback:

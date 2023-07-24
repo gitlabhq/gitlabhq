@@ -315,8 +315,8 @@ Supported attributes:
 | `protected_branch_ids`              | Array             | **{dotted-circle}** No | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches).                                                                                           |
 | `report_type`                       | string            | **{dotted-circle}** No | The report type required when the rule type is `report_approver`. The supported report types are `license_scanning` [(Deprecated in GitLab 15.9)](../update/deprecations.md#license-check-and-the-policies-tab-on-the-license-compliance-page) and `code_coverage`.                                                                                        |
 | `rule_type`                         | string            | **{dotted-circle}** No | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` and `report_approver`.                                                                                                  |
-| `user_ids`                          | Array             | **{dotted-circle}** No | The IDs of users as approvers.                                                                                                                                                                                                  |
-| `usernames`                         | string array      | **{dotted-circle}** No | The usernames for this rule.                                                                                                                                                                                                    |
+| `user_ids`                          | Array             | **{dotted-circle}** No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
+| `usernames`                         | string array      | **{dotted-circle}** No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
 
 ```json
 {
@@ -444,8 +444,8 @@ Supported attributes:
 | `group_ids`                         | Array             | **{dotted-circle}** No | The IDs of groups as approvers.                                                                                                                                                                                                 |
 | `protected_branch_ids`              | Array             | **{dotted-circle}** No | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches).                                                                                           |
 | `remove_hidden_groups`              | boolean           | **{dotted-circle}** No | Whether hidden groups should be removed.                                                                                                                                                                                        |
-| `user_ids`                          | Array             | **{dotted-circle}** No | The IDs of users as approvers.                                                                                                                                                                                                  |
-| `usernames`                         | string array      | **{dotted-circle}** No | The usernames for this rule.                                                                                                                                                                                                    |
+| `user_ids`                          | Array             | **{dotted-circle}** No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
+| `usernames`                         | string array      | **{dotted-circle}** No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added.|
 
 ```json
 {
@@ -859,8 +859,8 @@ Supported attributes:
 | `name`                     | string            | **{check-circle}** Yes | The name of the approval rule.                                               |
 | `approval_project_rule_id` | integer           | **{dotted-circle}** No | The ID of a project-level approval rule.                                     |
 | `group_ids`                | Array             | **{dotted-circle}** No | The IDs of groups as approvers.                                              |
-| `user_ids`                 | Array             | **{dotted-circle}** No | The IDs of users as approvers.                                               |
-| `usernames`                | string array      | **{dotted-circle}** No | The usernames for this rule.                                                 |
+| `user_ids`                 | Array             | **{dotted-circle}** No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added.
+| `usernames`                | string array      | **{dotted-circle}** No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
 
 **Important:** When `approval_project_rule_id` is set, the `name`, `users` and
 `groups` of project-level rule are copied. The `approvals_required` specified
@@ -950,8 +950,8 @@ Supported attributes:
 | `group_ids`            | Array             | **{dotted-circle}** No | The IDs of groups as approvers.                                               |
 | `name`                 | string            | **{check-circle}**  No | The name of the approval rule.                                                |
 | `remove_hidden_groups` | boolean           | **{dotted-circle}** No | Whether hidden groups should be removed.                                      |
-| `user_ids`             | Array             | **{dotted-circle}** No | The IDs of users as approvers.                                                |
-| `usernames`            | string array      | **{dotted-circle}** No | The usernames for this rule.                                                  |
+| `user_ids`             | Array             | **{dotted-circle}** No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
+| `usernames`            | string array      | **{dotted-circle}** No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
 
 ```json
 {

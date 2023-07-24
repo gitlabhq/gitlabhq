@@ -354,6 +354,22 @@ Use `containerRegistrySizeIsEstimated` introduced in GitLab 16.2 instead.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GraphQL field `totalWeight` is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416219).
+</div>
+
+You can use GraphQL to query the total weight of issues in an issue board. However, the `totalWeight` field is limited to the maximum size 2147483647. As a result, `totalWeight` is deprecated and will be removed in GitLab 17.0.
+
+Use `totalIssueWeight` instead, introduced in GitLab 16.2.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GraphQL type, `RunnerMembershipFilter` renamed to `CiRunnerMembershipFilter`
 
 <div class="deprecation-notes">

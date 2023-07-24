@@ -53,6 +53,7 @@
     "@babel/preset-env": "^7.18.2",
     "@cubejs-client/core": "^0.33.12",
     "@cubejs-client/vue": "^0.33.12",
+    "@floating-ui/dom": "^1.2.9",
     "@gitlab/at.js": "1.5.7",
     "@gitlab/cluster-client": "^1.2.0",
     "@gitlab/favicon-overlay": "2.0.0",

@@ -74,6 +74,18 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to eq("can contain only letters, digits, emoji, '_', '.', dash, space, parenthesis. It must start with letter, digit, emoji or '_'.") }
   end
 
+  describe '.slack_link_regex' do
+    subject { described_class.slack_link_regex }
+
+    it { is_expected.not_to match('http://custom-url.com|click here') }
+    it { is_expected.not_to match('custom-url.com|any-Charact3r$') }
+    it { is_expected.not_to match("&lt;custom-url.com|any-Charact3r$&gt;") }
+
+    it { is_expected.to match('<http://custom-url.com|click here>') }
+    it { is_expected.to match('<custom-url.com|any-Charact3r$>') }
+    it { is_expected.to match('<any-Charact3r$|any-Charact3r$>') }
+  end
+
   describe '.bulk_import_destination_namespace_path_regex_message' do
     subject { described_class.bulk_import_destination_namespace_path_regex_message }
 

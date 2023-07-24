@@ -1,8 +1,0 @@
----
-name: track_work_items_activity
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80532
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352903
-milestone: '14.9'
-type: development
-group: group::project management
-default_enabled: true

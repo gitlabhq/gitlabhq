@@ -259,6 +259,10 @@ module Gitlab
         @sha256_regex ||= /\A[0-9a-f]{64}\z/i.freeze
       end
 
+      def slack_link_regex
+        @slack_link_regex ||= /<(.*[|].*)>/i.freeze
+      end
+
       private
 
       def conan_name_regex

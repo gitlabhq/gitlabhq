@@ -35,6 +35,9 @@ module QA
             config.issue_tag = :issue
             config.link_issue_pattern = '{}'
 
+            # custom grouping of failures, https://docs.qameta.io/allure-report/#_categories_2
+            config.categories = File.new(File.join(Runtime::Path.qa_root, "allure", "categories.json"))
+
             if Env.running_in_ci?
               config.environment_properties = environment_info
               # Set custom environment name to separate same specs executed in different jobs

@@ -39,6 +39,7 @@ export default {
       :form-input-group-props="formInputGroupProps"
       :value="token"
       :copy-button-title="copyButtonTitle"
+      readonly
     >
       <template #description>
         <slot name="input-description"></slot>

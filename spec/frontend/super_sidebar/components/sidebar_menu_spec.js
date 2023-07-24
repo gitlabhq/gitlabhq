@@ -1,3 +1,4 @@
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
@@ -15,9 +16,13 @@ const menuItems = [
 
 describe('Sidebar Menu', () => {
   let wrapper;
+  let flyoutFlag = false;
 
   const createWrapper = (extraProps = {}) => {
     wrapper = shallowMountExtended(SidebarMenu, {
+      provide: {
+        glFeatures: { superSidebarFlyoutMenus: flyoutFlag },
+      },
       propsData: {
         items: sidebarData.current_menu_items,
         pinnedItemIds: sidebarData.pinned_items,
@@ -115,6 +120,65 @@ describe('Sidebar Menu', () => {
         expect(findNonStaticSectionItems().length + findNonStaticItems().length).toBe(
           menuItems.length,
         );
+      });
+    });
+
+    describe('flyout menus', () => {
+      describe('when feature is disabled', () => {
+        beforeEach(() => {
+          createWrapper({
+            items: menuItems,
+          });
+        });
+
+        it('does not add flyout menus to sections', () => {
+          expect(findNonStaticSectionItems().wrappers.map((w) => w.props('hasFlyout'))).toEqual([
+            false,
+            false,
+          ]);
+        });
+      });
+
+      describe('when feature is enabled', () => {
+        beforeEach(() => {
+          flyoutFlag = true;
+        });
+
+        describe('when screen width is smaller than "md" breakpoint', () => {
+          beforeEach(() => {
+            jest.spyOn(GlBreakpointInstance, 'windowWidth').mockImplementation(() => {
+              return 767;
+            });
+            createWrapper({
+              items: menuItems,
+            });
+          });
+
+          it('does not add flyout menus to sections', () => {
+            expect(findNonStaticSectionItems().wrappers.map((w) => w.props('hasFlyout'))).toEqual([
+              false,
+              false,
+            ]);
+          });
+        });
+
+        describe('when screen width is equal or larger than "md" breakpoint', () => {
+          beforeEach(() => {
+            jest.spyOn(GlBreakpointInstance, 'windowWidth').mockImplementation(() => {
+              return 768;
+            });
+            createWrapper({
+              items: menuItems,
+            });
+          });
+
+          it('adds flyout menus to sections', () => {
+            expect(findNonStaticSectionItems().wrappers.map((w) => w.props('hasFlyout'))).toEqual([
+              true,
+              true,
+            ]);
+          });
+        });
       });
     });
   });

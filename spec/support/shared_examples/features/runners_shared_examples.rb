@@ -57,7 +57,7 @@ RSpec.shared_examples 'shows and resets runner registration token' do
       click_on dropdown_text
       click_on 'Click to reveal'
 
-      expect(old_registration_token).not_to eq registration_token
+      expect(find_field('token-value').value).not_to eq old_registration_token
     end
   end
 end

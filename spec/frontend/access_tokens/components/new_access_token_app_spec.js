@@ -69,6 +69,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
 
       const InputCopyToggleVisibilityComponent = wrapper.findComponent(InputCopyToggleVisibility);
       expect(InputCopyToggleVisibilityComponent.props('value')).toBe(newToken);
+      expect(InputCopyToggleVisibilityComponent.props('readonly')).toBe(true);
       expect(InputCopyToggleVisibilityComponent.props('copyButtonTitle')).toBe(
         sprintf(__('Copy %{accessTokenType}'), { accessTokenType }),
       );

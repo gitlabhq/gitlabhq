@@ -1,0 +1,11 @@
+- title: "GraphQL field `totalWeight` is deprecated"
+  announcement_milestone: "16.3"
+  removal_milestone: "17.0"
+  breaking_change: true
+  reporter: tmike
+  stage: Plan
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416219
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    You can use GraphQL to query the total weight of issues in an issue board. However, the `totalWeight` field is limited to the maximum size 2147483647. As a result, `totalWeight` is deprecated and will be removed in GitLab 17.0.
+
+    Use `totalIssueWeight` instead, introduced in GitLab 16.2.

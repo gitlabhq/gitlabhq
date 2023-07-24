@@ -8,8 +8,10 @@ import {
   FILTERED_SEARCH_TOKEN_REPORTER,
   FILTERED_SEARCH_TOKEN_STATUS,
   FILTERED_SEARCH_TOKEN_CATEGORY,
-  DEFAULT_SORT,
-  SORT_OPTIONS,
+  DEFAULT_SORT_STATUS_OPEN,
+  DEFAULT_SORT_STATUS_CLOSED,
+  SORT_OPTIONS_STATUS_OPEN,
+  SORT_OPTIONS_STATUS_CLOSED,
 } from '~/admin/abuse_reports/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -53,8 +55,8 @@ describe('AbuseReportsFilteredSearchBar', () => {
       recentSearchesStorageKey: 'abuse_reports',
       searchInputPlaceholder: 'Filter reports',
       tokens: [...FILTERED_SEARCH_TOKENS, categoryToken],
-      initialSortBy: DEFAULT_SORT,
-      sortOptions: SORT_OPTIONS,
+      initialSortBy: DEFAULT_SORT_STATUS_OPEN,
+      sortOptions: SORT_OPTIONS_STATUS_OPEN,
     });
   });
 
@@ -88,6 +90,10 @@ describe('AbuseReportsFilteredSearchBar', () => {
 
     expect(findFilteredSearchBar().props('initialFilterValue')).toMatchObject([
       {
+        type: FILTERED_SEARCH_TOKEN_STATUS.type,
+        value: { data: 'closed', operator: '=' },
+      },
+      {
         type: FILTERED_SEARCH_TOKEN_USER.type,
         value: { data: 'mr_abuser', operator: '=' },
       },
@@ -95,16 +101,12 @@ describe('AbuseReportsFilteredSearchBar', () => {
         type: FILTERED_SEARCH_TOKEN_REPORTER.type,
         value: { data: 'ms_nitch', operator: '=' },
       },
-      {
-        type: FILTERED_SEARCH_TOKEN_STATUS.type,
-        value: { data: 'closed', operator: '=' },
-      },
     ]);
   });
 
   describe('initial sort', () => {
     it.each(
-      SORT_OPTIONS.flatMap(({ sortDirection: { descending, ascending } }) => [
+      SORT_OPTIONS_STATUS_OPEN.flatMap(({ sortDirection: { descending, ascending } }) => [
         descending,
         ascending,
       ]),
@@ -115,16 +117,20 @@ describe('AbuseReportsFilteredSearchBar', () => {
 
         createComponent();
 
-        expect(findFilteredSearchBar().props('initialSortBy')).toEqual(sortBy);
+        if (sortBy) {
+          expect(findFilteredSearchBar().props('initialSortBy')).toEqual(sortBy);
+        } else {
+          expect(findFilteredSearchBar().props('initialSortBy')).toEqual(DEFAULT_SORT_STATUS_OPEN);
+        }
       },
     );
 
-    it(`uses ${DEFAULT_SORT} as initialSortBy when sort query param is invalid`, () => {
+    it(`uses ${DEFAULT_SORT_STATUS_OPEN} as initialSortBy when sort query param is invalid`, () => {
       setWindowLocation(`?sort=unknown`);
 
       createComponent();
 
-      expect(findFilteredSearchBar().props('initialSortBy')).toEqual(DEFAULT_SORT);
+      expect(findFilteredSearchBar().props('initialSortBy')).toEqual(DEFAULT_SORT_STATUS_OPEN);
     });
   });
 
@@ -161,26 +167,39 @@ describe('AbuseReportsFilteredSearchBar', () => {
       (filterToken) => {
         createComponentAndFilter([filterToken]);
         const { type, value } = filterToken;
-        expect(redirectTo).toHaveBeenCalledWith(`https://localhost/?${type}=${value.data}`); // eslint-disable-line import/no-deprecated
+
+        // eslint-disable-next-line import/no-deprecated
+        expect(redirectTo).toHaveBeenCalledWith(
+          `https://localhost/?${type}=${value.data}&sort=${DEFAULT_SORT_STATUS_OPEN}`,
+        );
       },
     );
 
     it('ignores search query param', () => {
       const searchFilterToken = { type: FILTERED_SEARCH_TERM, value: { data: 'ignored' } };
       createComponentAndFilter([USER_FILTER_TOKEN, searchFilterToken]);
-      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?user=mr_abuser'); // eslint-disable-line import/no-deprecated
+
+      // eslint-disable-next-line import/no-deprecated
+      expect(redirectTo).toHaveBeenCalledWith(
+        `https://localhost/?user=mr_abuser&sort=${DEFAULT_SORT_STATUS_OPEN}`,
+      );
     });
 
     it('redirects without page query param', () => {
       createComponentAndFilter([USER_FILTER_TOKEN], '?page=2');
-      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?user=mr_abuser'); // eslint-disable-line import/no-deprecated
+
+      // eslint-disable-next-line import/no-deprecated
+      expect(redirectTo).toHaveBeenCalledWith(
+        `https://localhost/?user=mr_abuser&sort=${DEFAULT_SORT_STATUS_OPEN}`,
+      );
     });
 
     it('redirects with existing sort query param', () => {
-      createComponentAndFilter([USER_FILTER_TOKEN], `?sort=${DEFAULT_SORT}`);
+      createComponentAndFilter([USER_FILTER_TOKEN], `?sort=${DEFAULT_SORT_STATUS_OPEN}`);
+
       // eslint-disable-next-line import/no-deprecated
       expect(redirectTo).toHaveBeenCalledWith(
-        `https://localhost/?user=mr_abuser&sort=${DEFAULT_SORT}`,
+        `https://localhost/?user=mr_abuser&sort=${DEFAULT_SORT_STATUS_OPEN}`,
       );
     });
   });
@@ -220,6 +239,44 @@ describe('AbuseReportsFilteredSearchBar', () => {
       expect(redirectTo).toHaveBeenCalledWith(
         `https://localhost/?${EXISTING_QUERY}&sort=${SORT_VALUE}`,
       );
+    });
+  });
+
+  describe('sortOptions', () => {
+    describe('when status is closed', () => {
+      beforeEach(() => {
+        setWindowLocation('?status=closed');
+
+        createComponent();
+      });
+
+      it('only shows created_at & updated_at as sorting options', () => {
+        expect(findFilteredSearchBar().props('sortOptions')).toMatchObject(
+          SORT_OPTIONS_STATUS_CLOSED,
+        );
+      });
+
+      it('initially sorts by created_at_desc', () => {
+        expect(findFilteredSearchBar().props('initialSortBy')).toEqual(DEFAULT_SORT_STATUS_CLOSED);
+      });
+    });
+
+    describe('when status is open', () => {
+      beforeEach(() => {
+        setWindowLocation('?status=open');
+
+        createComponent();
+      });
+
+      it('shows number of reports as an additional sorting option', () => {
+        expect(findFilteredSearchBar().props('sortOptions')).toMatchObject(
+          SORT_OPTIONS_STATUS_OPEN,
+        );
+      });
+
+      it('initially sorts by number_of_reports_desc', () => {
+        expect(findFilteredSearchBar().props('initialSortBy')).toEqual(DEFAULT_SORT_STATUS_OPEN);
+      });
     });
   });
 });

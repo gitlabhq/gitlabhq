@@ -2,6 +2,7 @@ import { GlCollapse } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
+import FlyoutMenu from '~/super_sidebar/components/flyout_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
 
 describe('MenuSection component', () => {
@@ -9,6 +10,7 @@ describe('MenuSection component', () => {
 
   const findButton = () => wrapper.find('button');
   const findCollapse = () => wrapper.getComponent(GlCollapse);
+  const findFlyout = () => wrapper.findComponent(FlyoutMenu);
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const createWrapper = (item, otherProps) => {
     wrapper = shallowMountExtended(MenuSection, {
@@ -64,6 +66,40 @@ describe('MenuSection component', () => {
         createWrapper({ title: 'Asdf' });
         expect(findButton().attributes('aria-expanded')).toBe('false');
         expect(findCollapse().props('visible')).toBe(false);
+      });
+    });
+  });
+
+  describe('flyout behavior', () => {
+    describe('when hasFlyout is false', () => {
+      it('is not rendered', () => {
+        createWrapper({ title: 'Asdf' }, { 'has-flyout': false });
+        expect(findFlyout().exists()).toBe(false);
+      });
+    });
+
+    describe('when hasFlyout is true', () => {
+      it('is rendered', () => {
+        createWrapper({ title: 'Asdf' }, { 'has-flyout': true });
+        expect(findFlyout().exists()).toBe(true);
+      });
+
+      describe('on mouse hover', () => {
+        describe('when section is expanded', () => {
+          it('is not shown', async () => {
+            createWrapper({ title: 'Asdf' }, { 'has-flyout': true, expanded: true });
+            await findButton().trigger('pointerover', { pointerType: 'mouse' });
+            expect(findFlyout().isVisible()).toBe(false);
+          });
+        });
+
+        describe('when section is not expanded', () => {
+          it('is shown', async () => {
+            createWrapper({ title: 'Asdf' }, { 'has-flyout': true, expanded: false });
+            await findButton().trigger('pointerover', { pointerType: 'mouse' });
+            expect(findFlyout().isVisible()).toBe(true);
+          });
+        });
       });
     });
   });
