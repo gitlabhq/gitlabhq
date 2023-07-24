@@ -6,6 +6,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:base_project) { create(:project) }
+  let_it_be(:model) { create(:ml_models, project: base_project) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -15,7 +16,6 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
 
   describe 'validation' do
     let_it_be(:valid_version) { 'valid_version' }
-    let_it_be(:model) { create(:ml_models, project: base_project) }
     let_it_be(:valid_package) do
       build_stubbed(:ml_model_package, project: base_project, version: valid_version, name: model.name)
     end
@@ -84,6 +84,36 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
         end
 
         it { expect(errors[:package]).to include('package must be ml_model') }
+      end
+    end
+  end
+
+  describe '.find_or_create' do
+    let_it_be(:existing_model_version) { create(:ml_model_versions, model: model, version: 'abc') }
+
+    let(:version) { existing_model_version.version }
+    let(:package) { nil }
+
+    subject(:find_or_create) { described_class.find_or_create(model, version, package) }
+
+    context 'if model version exists' do
+      it 'returns the model version', :aggregate_failures do
+        expect { find_or_create }.not_to change { Ml::ModelVersion.count }
+        is_expected.to eq(existing_model_version)
+      end
+    end
+
+    context 'if model version does not exist' do
+      let(:version) { 'new_version' }
+      let(:package) { create(:ml_model_package, project: model.project, name: model.name, version: version) }
+
+      it 'creates another model version', :aggregate_failures do
+        expect { find_or_create }.to change { Ml::ModelVersion.count }.by(1)
+        model_version = find_or_create
+
+        expect(model_version.version).to eq(version)
+        expect(model_version.model).to eq(model)
+        expect(model_version.package).to eq(package)
       end
     end
   end

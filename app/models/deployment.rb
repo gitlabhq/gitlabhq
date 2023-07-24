@@ -67,7 +67,7 @@ class Deployment < ApplicationRecord
 
   state_machine :status, initial: :created do
     event :run do
-      transition created: :running
+      transition [:created, :blocked] => :running
     end
 
     event :block do
@@ -79,6 +79,7 @@ class Deployment < ApplicationRecord
       transition skipped: :created
     end
 
+    # Deprecated. To be removed when we remove `track_manual_deployments` feature flag.
     event :unblock do
       transition blocked: :created
     end
@@ -403,10 +404,16 @@ class Deployment < ApplicationRecord
   end
 
   def sync_status_with(build)
-    return false unless ::Deployment.statuses.include?(build.status)
-    return false if build.status == self.status
+    build_status = build.status
 
-    update_status!(build.status)
+    if ::Feature.enabled?(:track_manual_deployments, build.project)
+      build_status = 'blocked' if build_status == 'manual' # rubocop:disable Style/SoleNestedConditional
+    end
+
+    return false unless ::Deployment.statuses.include?(build_status)
+    return false if build_status == self.status
+
+    update_status!(build_status)
   rescue StandardError => e
     Gitlab::ErrorTracking.track_exception(
       StatusSyncError.new(e.message), deployment_id: self.id, build_id: build.id)

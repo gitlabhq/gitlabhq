@@ -3,6 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Ml::Model, feature_category: :mlops do
+  let_it_be(:base_project) { create(:project) }
+  let_it_be(:existing_model) { create(:ml_models, name: 'an_existing_model', project: base_project) }
+  let_it_be(:valid_name) { 'a_valid_name' }
+  let_it_be(:default_experiment) { create(:ml_experiments, name: valid_name, project: base_project) }
+
+  let(:project) { base_project }
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:default_experiment) }
@@ -11,11 +18,6 @@ RSpec.describe Ml::Model, feature_category: :mlops do
 
   describe '#valid?' do
     using RSpec::Parameterized::TableSyntax
-
-    let_it_be(:project) { create(:project) }
-    let_it_be(:existing_model) { create(:ml_models, name: 'an_existing_model', project: project) }
-    let_it_be(:valid_name) { 'a_valid_name' }
-    let_it_be(:default_experiment) { create(:ml_experiments, name: valid_name, project: project) }
 
     let(:name) { valid_name }
 
@@ -56,6 +58,48 @@ RSpec.describe Ml::Model, feature_category: :mlops do
         end
 
         it { expect(errors).to include(:default_experiment) }
+      end
+    end
+  end
+
+  describe '.find_or_create' do
+    subject(:find_or_create) { described_class.find_or_create(project, name, experiment) }
+
+    let(:name) { existing_model.name }
+    let(:project) { existing_model.project }
+    let(:experiment) { default_experiment }
+
+    context 'when model name does not exist in the project' do
+      let(:name) { 'new_model' }
+      let(:experiment) { build(:ml_experiments, name: name, project: project) }
+
+      it 'creates a model', :aggregate_failures do
+        expect { find_or_create }.to change { Ml::Model.count }.by(1)
+
+        expect(find_or_create.name).to eq(name)
+        expect(find_or_create.project).to eq(project)
+        expect(find_or_create.default_experiment).to eq(experiment)
+      end
+    end
+
+    context 'when model name exists but project is different' do
+      let(:project) { create(:project) }
+      let(:experiment) { build(:ml_experiments, name: name, project: project) }
+
+      it 'creates a model', :aggregate_failures do
+        expect { find_or_create }.to change { Ml::Model.count }.by(1)
+
+        expect(find_or_create.name).to eq(name)
+        expect(find_or_create.project).to eq(project)
+        expect(find_or_create.default_experiment).to eq(experiment)
+      end
+    end
+
+    context 'when model exists' do
+      it 'fetches existing model', :aggregate_failures do
+        expect { find_or_create }.not_to change { Ml::Model.count }
+
+        expect(find_or_create).to eq(existing_model)
       end
     end
   end

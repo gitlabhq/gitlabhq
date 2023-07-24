@@ -182,8 +182,7 @@ To enable advanced search:
    [license](../../administration/license.md).
 
 1. Configure the [advanced search settings](#advanced-search-configuration) for
-   your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**
-   yet.
+   your Elasticsearch cluster. Do not select the **Search with Elasticsearch enabled** checkbox yet.
 1. Index all data with a Rake task. The task creates an empty index if one does not already exist and
    enables Elasticsearch indexing if the indexing is not already enabled:
 
@@ -202,7 +201,7 @@ To enable advanced search:
    1. On the Sidekiq dashboard, select **Queues** and wait for the `elastic_commit_indexer`
       and `elastic_wiki_indexer` queues to drop to `0`.
       These queues contain jobs to index code and wiki data for groups and projects.
-1. After indexing completes, enable **Search with Elasticsearch enabled** and select **Save changes**.
+1. After the indexing is complete, select the **Search with Elasticsearch enabled** checkbox, then select **Save changes**.
 
 NOTE:
 When your Elasticsearch cluster is down while Elasticsearch is enabled,
@@ -221,7 +220,7 @@ To enable advanced search with **Index all projects**:
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Advanced Search**.
-1. Enable **Elasticsearch indexing** and select **Save changes**.
+1. Select the **Elasticsearch indexing** checkbox, then select **Save changes**.
 1. Select **Index all projects**.
 1. Optional. Select **Check progress** to see the status of background jobs.
 
@@ -382,13 +381,11 @@ The index pattern `*` requires a few permissions for advanced search to work.
 
 ### Limit the number of namespaces and projects that can be indexed
 
-If you check checkbox `Limit the number of namespaces and projects that can be indexed`
-under **Elasticsearch indexing restrictions** more options become available.
+When you select the **Limit the number of namespaces and projects that can be indexed**
+checkbox, you can specify namespaces and projects to index. If the namespace is a group,
+any subgroups and projects belonging to those subgroups are also indexed.
 
 ![limit namespaces and projects options](img/limit_namespaces_projects_options.png)
-
-You can select namespaces and projects to index exclusively. If the namespace is a group, it includes
-any subgroups and projects belonging to those subgroups to be indexed as well.
 
 Advanced search only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search does not provide a code or commit scope. This is possible only in the scope of an indexed namespace. There is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
 
@@ -792,7 +789,7 @@ Make sure to prepare for this task by having a
    bundle exec rake gitlab:elastic:clear_index_status RAILS_ENV=production
    ```
 
-1. [Enable **Elasticsearch indexing**](#enable-advanced-search).
+1. [Select the **Elasticsearch indexing** checkbox](#enable-advanced-search).
 1. Indexing large Git repositories can take a while. To speed up the process, you can [tune for indexing speed](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html#tune-for-indexing-speed):
 
    - You can temporarily disable [`refresh`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html), the operation responsible for making changes to an index available to search.
@@ -915,7 +912,7 @@ Make sure to prepare for this task by having a
           } }'
    ```
 
-1. After the indexing has completed, enable [**Search with Elasticsearch enabled**](#enable-advanced-search).
+1. After the indexing is complete, [select the **Search with Elasticsearch enabled** checkbox](#enable-advanced-search).
 
 ### Deleted documents
 

@@ -21,5 +21,10 @@ module Ml
       errors.add(:default_experiment) unless default_experiment.name == name
       errors.add(:default_experiment) unless default_experiment.project_id == project_id
     end
+
+    def self.find_or_create(project, name, experiment)
+      create_with(default_experiment: experiment)
+        .find_or_create_by(project: project, name: name)
+    end
   end
 end

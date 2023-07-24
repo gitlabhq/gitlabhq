@@ -150,9 +150,11 @@ RSpec.describe DeviseMailer do
   end
 
   describe '#email_changed' do
-    subject { described_class.email_changed(user, {}) }
-
+    let(:content_saas) { 'If you did not initiate this change, please contact your group owner immediately. If you have a Premium or Ultimate tier subscription, you can also contact GitLab support.' }
+    let(:content_self_managed) { 'If you did not initiate this change, please contact your administrator immediately.' }
     let_it_be(:user) { create(:user) }
+
+    subject { described_class.email_changed(user, {}) }
 
     it_behaves_like 'an email sent from GitLab'
 
@@ -166,6 +168,18 @@ RSpec.describe DeviseMailer do
 
     it 'greets the user' do
       is_expected.to have_body_text /Hello, #{user.name}!/
+    end
+
+    context 'when self-managed' do
+      it 'has the expected content of self managed instance' do
+        is_expected.to have_body_text content_self_managed
+      end
+    end
+
+    context 'when saas', :saas do
+      it 'has the expected content of saas instance' do
+        is_expected.to have_body_text content_saas
+      end
     end
 
     context "email contains updated id" do

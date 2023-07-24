@@ -723,9 +723,12 @@ class NotificationService
   # Notify users on new review in system
   def new_review(review)
     recipients = NotificationRecipients::BuildService.build_new_review_recipients(review)
+    deliver_options = new_review_deliver_options(review)
 
     recipients.each do |recipient|
-      mailer.new_review_email(recipient.user.id, review.id).deliver_later
+      mailer
+        .new_review_email(recipient.user.id, review.id)
+        .deliver_later(deliver_options)
     end
   end
 
@@ -945,6 +948,11 @@ class NotificationService
 
   def warn_skipping_notifications(user, object)
     Gitlab::AppLogger.warn(message: "Skipping sending notifications", user: user.id, klass: object.class.to_s, object_id: object.id)
+  end
+
+  def new_review_deliver_options(review)
+    # Overridden in EE
+    {}
   end
 end
 

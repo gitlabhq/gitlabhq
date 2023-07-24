@@ -174,6 +174,21 @@ The message field was removed from security reports schema in GitLab 16.0 and is
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Deprecate field `hasSolutions` from GraphQL VulnerabilityType
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414895).
+</div>
+
+The GraphQL field `Vulnerability.hasSolutions` is deprecated and will be removed in GitLab 17.0.
+Use `Vulnerability.hasRemediations` instead.
+
+</div>
+
 <div class="deprecation " data-milestone="17.0">
 
 ### Deprecate legacy shell escaping and quoting runner shell executor

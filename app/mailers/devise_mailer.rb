@@ -22,6 +22,14 @@ class DeviseMailer < Devise::Mailer
     super
   end
 
+  def email_changed(record, opts = {})
+    if Gitlab.com?
+      devise_mail(record, :email_changed_gitlab_com, opts)
+    else
+      devise_mail(record, :email_changed, opts)
+    end
+  end
+
   protected
 
   def subject_for(key)

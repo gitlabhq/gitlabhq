@@ -1,5 +1,4 @@
 @import 'mixins_and_variables_and_functions';
-@import 'framework/buttons';
 
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;
@@ -30,27 +29,6 @@ $comparison-empty-state-height: 62px;
     @include media-breakpoint-up(lg) {
       align-self: center;
       flex: 1;
-    }
-  }
-}
-
-.mr-state-widget {
-  .accept-merge-holder {
-    .accept-action {
-      .accept-merge-request {
-        &.ci-preparing,
-        &.ci-pending,
-        &.ci-running {
-          @include btn-blue;
-        }
-
-        &.ci-skipped,
-        &.ci-failed,
-        &.ci-canceled,
-        &.ci-error {
-          @include btn-red;
-        }
-      }
     }
   }
 }
@@ -201,8 +179,8 @@ $comparison-empty-state-height: 62px;
 .table-holder {
   .ci-table {
     th {
-      background-color: $white;
-      color: $gl-text-color-secondary;
+      background-color: var(--white, $white);
+      color: var(--gl-gray-700, $gl-text-color-secondary);
     }
   }
 }
@@ -210,8 +188,8 @@ $comparison-empty-state-height: 62px;
 .merge-request-tabs-holder {
   top: $calc-application-header-height;
   z-index: $tabs-holder-z-index;
-  background-color: $body-bg;
-  border-bottom: 1px solid $border-color;
+  background-color: var(--gray-10, $body-bg);
+  border-bottom: 1px solid var(--border-color, $border-color);
 
   @include media-breakpoint-up(md) {
     position: sticky;
@@ -238,7 +216,7 @@ $comparison-empty-state-height: 62px;
     margin-right: auto;
 
     .inner-page-scroll-tabs {
-      background-color: $white;
+      background-color: var(--white, $white);
       margin-left: -$gl-padding;
       padding-left: $gl-padding;
     }
@@ -307,7 +285,7 @@ $comparison-empty-state-height: 62px;
     opacity: 0.65;
 
     &:hover {
-      color: $gray-500;
+      color: var(--gray-500, $gray-500);
       text-decoration: none;
     }
   }

@@ -13,6 +13,7 @@ RSpec.describe 'Mailer previews' do
   let_it_be(:issue) { create(:issue, project: project, milestone: milestone) }
   let_it_be(:remote_mirror) { create(:remote_mirror, project: project) }
   let_it_be(:member) { create(:project_member, :maintainer, project: project, created_by: user) }
+  let_it_be(:review) { create(:review, project: project, merge_request: merge_request, author: user) }
 
   Gitlab.ee do
     let_it_be(:epic) { create(:epic, group: group) }

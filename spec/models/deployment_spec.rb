@@ -1215,12 +1215,14 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     let(:ci_build) { create(:ci_build, project: project, status: build_status) }
 
     shared_examples_for 'synchronizing deployment' do
+      let(:expected_deployment_status) { build_status.to_s }
+
       it 'changes deployment status' do
         expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
         is_expected.to eq(true)
 
-        expect(deployment.status).to eq(build_status.to_s)
+        expect(deployment.status).to eq(expected_deployment_status)
         expect(deployment.errors).to be_empty
       end
     end
@@ -1259,6 +1261,22 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         it_behaves_like 'ignoring build'
       end
 
+      context 'with manual build' do
+        let(:build_status) { :manual }
+
+        it_behaves_like 'synchronizing deployment' do
+          let(:expected_deployment_status) { 'blocked' }
+        end
+
+        context 'when track_manual_deployments feature flag is disabled' do
+          before do
+            stub_feature_flags(track_manual_deployments: false)
+          end
+
+          it_behaves_like 'ignoring build'
+        end
+      end
+
       context 'with running build' do
         let(:build_status) { :running }
 
@@ -1289,6 +1307,22 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         end
       end
 
+      context 'with manual build' do
+        let(:build_status) { :manual }
+
+        it_behaves_like 'gracefully handling error' do
+          let(:error_message) { %{Status cannot transition via \"block\"} }
+        end
+
+        context 'when track_manual_deployments feature flag is disabled' do
+          before do
+            stub_feature_flags(track_manual_deployments: false)
+          end
+
+          it_behaves_like 'ignoring build'
+        end
+      end
+
       context 'with running build' do
         let(:build_status) { :running }
 
@@ -1316,6 +1350,22 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
         it_behaves_like 'gracefully handling error' do
           let(:error_message) { %{Status cannot transition via \"create\"} }
+        end
+      end
+
+      context 'with manual build' do
+        let(:build_status) { :manual }
+
+        it_behaves_like 'gracefully handling error' do
+          let(:error_message) { %{Status cannot transition via \"block\"} }
+        end
+
+        context 'when track_manual_deployments feature flag is disabled' do
+          before do
+            stub_feature_flags(track_manual_deployments: false)
+          end
+
+          it_behaves_like 'ignoring build'
         end
       end
 

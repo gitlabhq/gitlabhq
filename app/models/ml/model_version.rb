@@ -18,6 +18,12 @@ module Ml
 
     delegate :name, to: :model
 
+    class << self
+      def find_or_create(model, version, package)
+        create_with(package: package).find_or_create_by(project: model.project, model: model, version: version)
+      end
+    end
+
     private
 
     def valid_model?

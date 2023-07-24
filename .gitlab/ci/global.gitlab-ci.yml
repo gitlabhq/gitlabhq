@@ -497,5 +497,5 @@
 
 .use-kube-context:
   before_script:
-    - export KUBE_CONTEXT="gitlab-org/gitlab:review-apps"
+    - export KUBE_CONTEXT="${CI_PROJECT_NAMESPACE}/gitlab:review-apps"
     - kubectl config use-context ${KUBE_CONTEXT}

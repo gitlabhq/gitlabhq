@@ -281,12 +281,12 @@ queue, or the index is somehow in a state where migrations just cannot
 proceed. It is always best to try to troubleshoot the root cause of the problem
 by [viewing the logs](#view-logs).
 
-If there are no other options, then you always have the option of recreating the
-entire index from scratch. If you have a small GitLab installation, this can
-sometimes be a quick way to resolve a problem, but if you have a large GitLab
-installation, then this might take a very long time to complete. Until the
-index is fully recreated, your index does not serve correct search results,
-so you may want to disable **Search with Elasticsearch** while it is running.
+As a last resort, you can recreate the index from scratch. For small GitLab installations,
+recreating the index can be a quick way to resolve some issues. For large GitLab
+installations, however, this method might take a very long time. Your index
+does not show correct search results until the indexing is complete. You might
+want to clear the **Search with Elasticsearch enabled** checkbox
+while the indexing is running.
 
 If you are sure you've read the above caveats and want to proceed, then you
 should run the following Rake task to recreate the entire index from scratch:

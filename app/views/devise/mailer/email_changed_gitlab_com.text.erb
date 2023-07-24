@@ -1,0 +1,9 @@
+Hello, <%= @resource.name %>!
+
+<% if @resource.try(:unconfirmed_email?) %>
+We're contacting you to notify you that your email is being changed to <%= @resource.reset.unconfirmed_email %>.
+<% else %>
+We're contacting you to notify you that your email has been changed to <%= @resource.email %>.
+<% end %>
+
+If you did not initiate this change, please contact your group owner immediately. If you have a Premium or Ultimate tier subscription, you can also contact GitLab support.
