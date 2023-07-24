@@ -2,6 +2,7 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { n__ } from '~/locale';
+import { fetchPolicies } from '~/lib/graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
@@ -69,6 +70,7 @@ export default {
   apollo: {
     containerRepository: {
       query: getContainerRepositoryTagsQuery,
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       skip() {
         return !this.sort;
       },
@@ -87,6 +89,7 @@ export default {
       itemsToBeDeleted: [],
       mutationLoading: false,
       sort: null,
+      pageParams: {},
     };
   },
   computed: {
@@ -108,6 +111,7 @@ export default {
         first: GRAPHQL_PAGE_SIZE,
         name: this.filters?.name,
         sort: this.sort,
+        ...this.pageParams,
       };
     },
     hasNoTags() {
@@ -180,23 +184,20 @@ export default {
       }
     },
     fetchNextPage() {
-      this.$apollo.queries.containerRepository.fetchMore({
-        variables: {
-          after: this.tagsPageInfo?.endCursor,
-          first: GRAPHQL_PAGE_SIZE,
-        },
-      });
+      this.pageParams = {
+        after: this.tagsPageInfo?.endCursor,
+        first: GRAPHQL_PAGE_SIZE,
+      };
     },
     fetchPreviousPage() {
-      this.$apollo.queries.containerRepository.fetchMore({
-        variables: {
-          first: null,
-          before: this.tagsPageInfo?.startCursor,
-          last: GRAPHQL_PAGE_SIZE,
-        },
-      });
+      this.pageParams = {
+        first: null,
+        before: this.tagsPageInfo?.startCursor,
+        last: GRAPHQL_PAGE_SIZE,
+      };
     },
     handleSearchUpdate({ sort, filters }) {
+      this.pageParams = {};
       this.sort = sort;
 
       const parsed = {

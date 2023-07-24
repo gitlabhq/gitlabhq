@@ -43,19 +43,6 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
           expect(json_response.first.keys).to contain_exactly(*%w[id iid project_id sha ref status web_url created_at updated_at source name])
         end
-
-        context 'when pipeline_name_in_api feature flag is off' do
-          before do
-            stub_feature_flags(pipeline_name_in_api: false)
-          end
-
-          it 'does not include pipeline name in response and ignores name parameter' do
-            get api("/projects/#{project.id}/pipelines", user), params: { name: 'Chatops pipeline' }
-
-            expect(json_response.length).to eq(1)
-            expect(json_response.first.keys).not_to include('name')
-          end
-        end
       end
 
       it 'avoids N+1 queries' do
@@ -894,19 +881,6 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           expect(json_response["coverage"]).to eq('30.00')
         end
       end
-
-      context 'with pipeline_name_in_api disabled' do
-        before do
-          stub_feature_flags(pipeline_name_in_api: false)
-        end
-
-        it 'does not return name', :aggregate_failures do
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.keys).not_to include('name')
-        end
-      end
     end
 
     context 'unauthorized user' do
@@ -969,19 +943,6 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           expect(response).to match_response_schema('public_api/v4/pipeline/detail')
           expect(json_response['ref']).to eq(second_branch.name)
           expect(json_response['sha']).to eq(second_branch.target)
-        end
-      end
-
-      context 'with pipeline_name_in_api disabled' do
-        before do
-          stub_feature_flags(pipeline_name_in_api: false)
-        end
-
-        it 'does not return name', :aggregate_failures do
-          get api("/projects/#{project.id}/pipelines/latest", user)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.keys).not_to include('name')
         end
       end
     end

@@ -1,11 +1,10 @@
 <script>
-import { GlResizeObserverDirective, GlEmptyState } from '@gitlab/ui';
+import { GlResizeObserverDirective, GlEmptyState, GlSkeletonLoader } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
-import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import DeleteImage from '../components/delete_image.vue';
 import DeleteAlert from '../components/details_page/delete_alert.vue';
 import DeleteModal from '../components/delete_modal.vue';
@@ -28,12 +27,12 @@ export default {
   name: 'RegistryDetailsPage',
   components: {
     GlEmptyState,
+    GlSkeletonLoader,
     DeleteAlert,
     PartialCleanupAlert,
     DetailsHeader,
     DeleteModal,
     TagsList,
-    TagsLoader,
     StatusAlert,
     DeleteImage,
   },
@@ -151,16 +150,17 @@ export default {
 
       <status-alert v-if="containerRepository.status" :status="containerRepository.status" />
 
+      <div v-if="isLoading" class="gl-my-6">
+        <gl-skeleton-loader />
+      </div>
       <details-header
-        v-if="!isLoading"
+        v-else
         :image="containerRepository"
         :disabled="pageActionsAreDisabled"
         @delete="deleteImage"
       />
 
-      <tags-loader v-if="isLoading" />
       <tags-list
-        v-else
         :id="$route.params.id"
         :is-image-loading="isLoading"
         :is-mobile="isMobile"

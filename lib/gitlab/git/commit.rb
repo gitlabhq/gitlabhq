@@ -226,6 +226,12 @@ module Gitlab
         id.to_s[0..length]
       end
 
+      def tree_id
+        return unless raw_commit
+
+        raw_commit.tree_id
+      end
+
       def safe_message
         @safe_message ||= message
       end

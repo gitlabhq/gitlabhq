@@ -28,11 +28,6 @@ export default {
       required: false,
     },
   },
-  computed: {
-    showPagination() {
-      return this.pageInfo.hasPreviousPage || this.pageInfo.hasNextPage;
-    },
-  },
 };
 </script>
 
@@ -48,9 +43,7 @@ export default {
     />
     <div class="gl-display-flex gl-justify-content-center">
       <gl-keyset-pagination
-        v-if="showPagination"
-        :has-next-page="pageInfo.hasNextPage"
-        :has-previous-page="pageInfo.hasPreviousPage"
+        v-bind="pageInfo"
         class="gl-mt-3"
         @prev="$emit('prev-page')"
         @next="$emit('next-page')"

@@ -5,8 +5,7 @@ module API
     module Ci
       class PipelineBasicWithMetadata < PipelineBasic
         expose :name,
-          documentation: { type: 'string', example: 'Build pipeline' },
-          if: ->(pipeline, _) { ::Feature.enabled?(:pipeline_name_in_api, pipeline.project) }
+          documentation: { type: 'string', example: 'Build pipeline' }
       end
     end
   end

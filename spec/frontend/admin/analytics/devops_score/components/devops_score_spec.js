@@ -52,7 +52,7 @@ describe('DevopsScore', () => {
       it('contains a link to the feature documentation', () => {
         expect(findDocsLink().exists()).toBe(true);
         expect(findDocsLink().attributes('href')).toBe(
-          '/help/user/admin_area/analytics/dev_ops_reports',
+          '/help/administration/analytics/dev_ops_reports',
         );
       });
     });

@@ -17,6 +17,7 @@ export default class ArchivedProjectsService {
 
     const { data: projects, headers } = await Api.groupProjects(this.groupId, query, {
       archived: true,
+      include_subgroups: true,
       page,
       order_by: supportedOrderBy[orderBy],
       sort,

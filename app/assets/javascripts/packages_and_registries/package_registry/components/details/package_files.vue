@@ -178,10 +178,6 @@ export default {
         first: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
       };
     },
-    showPagination() {
-      const { hasPreviousPage, hasNextPage } = this.pageInfo;
-      return hasPreviousPage || hasNextPage;
-    },
     tracking() {
       return {
         category: packageTypeToTrackCategory(this.packageType),
@@ -490,7 +486,6 @@ export default {
       </gl-table>
       <div class="gl-display-flex gl-justify-content-center">
         <gl-keyset-pagination
-          v-if="showPagination"
           :disabled="isLoading"
           v-bind="pageInfo"
           :prev-text="$options.i18n.prev"

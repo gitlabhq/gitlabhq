@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # When adding new user-configurable throttles, remember to update the documentation
-# in doc/user/admin_area/settings/user_and_ip_rate_limits.md
+# in doc/administration/settings/user_and_ip_rate_limits.md
 #
 # Integration specs for throttling can be found in:
 # spec/requests/rack_attack_global_spec.rb

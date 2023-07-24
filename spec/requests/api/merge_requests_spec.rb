@@ -2,15 +2,14 @@
 
 require "spec_helper"
 
-RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :source_code_management,
-  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/418757' do
+RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :source_code_management do
   include ProjectForksHelper
 
   let_it_be(:base_time) { Time.now }
   let_it_be(:user)  { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
-  let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
+  let_it_be_with_refind(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
 
   let(:milestone1) { create(:milestone, title: '0.9', project: project) }
   let(:milestone) { create(:milestone, title: '1.0.0', project: project) }

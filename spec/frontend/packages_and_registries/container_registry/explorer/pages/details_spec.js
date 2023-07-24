@@ -1,4 +1,4 @@
-import { GlKeysetPagination, GlEmptyState } from '@gitlab/ui';
+import { GlKeysetPagination, GlEmptyState, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -12,7 +12,6 @@ import DetailsHeader from '~/packages_and_registries/container_registry/explorer
 import PartialCleanupAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/partial_cleanup_alert.vue';
 import StatusAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/status_alert.vue';
 import TagsList from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
-import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 
 import {
   UNFINISHED_STATUS,
@@ -40,7 +39,7 @@ describe('Details Page', () => {
 
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
-  const findTagsLoader = () => wrapper.findComponent(TagsLoader);
+  const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTagsList = () => wrapper.findComponent(TagsList);
   const findDeleteAlert = () => wrapper.findComponent(DeleteAlert);
   const findDetailsHeader = () => wrapper.findComponent(DetailsHeader);
@@ -109,13 +108,13 @@ describe('Details Page', () => {
     it('shows the loader', () => {
       mountComponent();
 
-      expect(findTagsLoader().exists()).toBe(true);
+      expect(findLoader().exists()).toBe(true);
     });
 
-    it('does not show the list', () => {
+    it('sets loading prop on tags list component', () => {
       mountComponent();
 
-      expect(findTagsList().exists()).toBe(false);
+      expect(findTagsList().props('isImageLoading')).toBe(true);
     });
   });
 
@@ -125,7 +124,7 @@ describe('Details Page', () => {
 
       await waitForApolloRequestRender();
 
-      expect(findTagsLoader().exists()).toBe(false);
+      expect(findLoader().exists()).toBe(false);
       expect(findDetailsHeader().exists()).toBe(false);
       expect(findTagsList().exists()).toBe(false);
       expect(findPagination().exists()).toBe(false);
@@ -424,13 +423,15 @@ describe('Details Page', () => {
 
       await waitForPromises();
 
-      expect(findTagsLoader().exists()).toBe(true);
+      expect(findLoader().exists()).toBe(true);
+      expect(findTagsList().props('isImageLoading')).toBe(true);
 
       findDeleteImage().vm.$emit('end');
 
       await nextTick();
 
-      expect(findTagsLoader().exists()).toBe(false);
+      expect(findLoader().exists()).toBe(false);
+      expect(findTagsList().props('isImageLoading')).toBe(false);
     });
 
     it('binds correctly to delete-image error event', async () => {

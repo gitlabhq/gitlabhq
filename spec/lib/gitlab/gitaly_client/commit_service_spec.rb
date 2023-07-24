@@ -192,7 +192,9 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       Gitaly::FindChangedPathsRequest.new(repository: repository_message, requests: requests, merge_commit_diff_mode: merge_commit_diff_mode)
     end
 
-    subject { described_class.new(repository).find_changed_paths(commits, merge_commit_diff_mode: merge_commit_diff_mode).as_json }
+    let(:treeish_objects) { repository.commits_by(oids: commits) }
+
+    subject { described_class.new(repository).find_changed_paths(treeish_objects, merge_commit_diff_mode: merge_commit_diff_mode).as_json }
 
     before do
       allow(Gitaly::FindChangedPathsRequest).to receive(:new).and_call_original
@@ -332,6 +334,40 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         include_examples 'includes paths different in any parent'
 
         include_examples 'uses requests format'
+      end
+    end
+
+    context 'when all requested objects are invalid' do
+      it 'does not send RPC request' do
+        expect_any_instance_of(Gitaly::DiffService::Stub).not_to receive(:find_changed_paths)
+
+        returned_value = described_class.new(repository).find_changed_paths(%w[wrong values])
+
+        expect(returned_value).to eq([])
+      end
+    end
+
+    context 'when commit has an empty SHA' do
+      let(:empty_commit) { build(:commit, project: project, sha: '0000000000000000000000000000000000000000') }
+
+      it 'does not send RPC request' do
+        expect_any_instance_of(Gitaly::DiffService::Stub).not_to receive(:find_changed_paths)
+
+        returned_value = described_class.new(repository).find_changed_paths([empty_commit])
+
+        expect(returned_value).to eq([])
+      end
+    end
+
+    context 'when commit sha is not set' do
+      let(:empty_commit) { build(:commit, project: project, sha: nil) }
+
+      it 'does not send RPC request' do
+        expect_any_instance_of(Gitaly::DiffService::Stub).not_to receive(:find_changed_paths)
+
+        returned_value = described_class.new(repository).find_changed_paths([empty_commit])
+
+        expect(returned_value).to eq([])
       end
     end
   end

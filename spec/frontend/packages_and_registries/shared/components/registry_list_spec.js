@@ -185,31 +185,13 @@ describe('Registry List', () => {
       pagination = { hasPreviousPage: false, hasNextPage: true };
     });
 
-    it('has a pagination', () => {
+    it('has pagination', () => {
       mountComponent({
         propsData: { ...defaultPropsData, pagination },
       });
 
       expect(findPagination().props()).toMatchObject(pagination);
     });
-
-    it.each`
-      hasPreviousPage | hasNextPage | visible
-      ${true}         | ${true}     | ${true}
-      ${true}         | ${false}    | ${true}
-      ${false}        | ${true}     | ${true}
-      ${false}        | ${false}    | ${false}
-    `(
-      'when hasPreviousPage is $hasPreviousPage and hasNextPage is $hasNextPage is $visible that the pagination is shown',
-      ({ hasPreviousPage, hasNextPage, visible }) => {
-        pagination = { hasPreviousPage, hasNextPage };
-        mountComponent({
-          propsData: { ...defaultPropsData, pagination },
-        });
-
-        expect(findPagination().exists()).toBe(visible);
-      },
-    );
 
     it('pagination emits the correct events', () => {
       mountComponent({

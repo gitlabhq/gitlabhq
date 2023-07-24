@@ -3,15 +3,16 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
-  let(:repository) { create(:project, :repository).repository.raw }
+  let_it_be(:repository) { create(:project, :repository).repository.raw }
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
 
   describe "Commit info from gitaly commit" do
     let(:subject) { (+"My commit").force_encoding('ASCII-8BIT') }
     let(:body) { subject + (+"My body").force_encoding('ASCII-8BIT') }
     let(:body_size) { body.length }
-    let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body, body_size: body_size) }
+    let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body, body_size: body_size, tree_id: tree_id) }
     let(:id) { gitaly_commit.id }
+    let(:tree_id) { 'd7f32d821c9cc7b1a9166ca7c4ba95b5c2d0d000' }
     let(:committer) { gitaly_commit.committer }
     let(:author) { gitaly_commit.author }
     let(:commit) { described_class.new(repository, gitaly_commit) }
@@ -26,6 +27,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
     it { expect(commit.committer_name).to eq(committer.name) }
     it { expect(commit.committer_email).to eq(committer.email) }
     it { expect(commit.parent_ids).to eq(gitaly_commit.parent_ids) }
+    it { expect(commit.tree_id).to eq(tree_id) }
 
     context 'non-UTC dates' do
       let(:seconds) { Time.now.to_i }
@@ -576,6 +578,14 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       subject { super().message }
 
       it { is_expected.to eq(sample_commit_hash[:message]) }
+    end
+
+    describe '#tree_id' do
+      subject { super().tree_id }
+
+      it "doesn't return tree id for non-Gitaly commits" do
+        is_expected.to be_nil
+      end
     end
   end
 

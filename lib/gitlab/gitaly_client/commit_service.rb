@@ -274,8 +274,10 @@ module Gitlab
       # else # defaults to :include_merges behavior
       #   ['foo_bar.rb', 'bar_baz.rb'],
       #
-      def find_changed_paths(commits, merge_commit_diff_mode: nil)
-        request = find_changed_paths_request(commits, merge_commit_diff_mode)
+      def find_changed_paths(objects, merge_commit_diff_mode: nil)
+        request = find_changed_paths_request(objects, merge_commit_diff_mode)
+
+        return [] if request.nil?
 
         response = gitaly_client_call(@repository.storage, :diff_service, :find_changed_paths, request, timeout: GitalyClient.medium_timeout)
         response.flat_map do |msg|
@@ -646,16 +648,27 @@ module Gitlab
         response.commit
       end
 
-      def find_changed_paths_request(commits, merge_commit_diff_mode)
+      def find_changed_paths_request(objects, merge_commit_diff_mode)
         diff_mode = MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode] if Feature.enabled?(:merge_commit_diff_modes)
 
-        commit_requests = commits.map do |commit|
-          Gitaly::FindChangedPathsRequest::Request.new(
-            commit_request: Gitaly::FindChangedPathsRequest::Request::CommitRequest.new(commit_revision: commit)
-          )
+        requests = objects.filter_map do |object|
+          case object
+          when Gitlab::Git::DiffTree
+            Gitaly::FindChangedPathsRequest::Request.new(
+              tree_request: Gitaly::FindChangedPathsRequest::Request::TreeRequest.new(left_tree_revision: object.left_tree_id, right_tree_revision: object.right_tree_id)
+            )
+          when Commit, Gitlab::Git::Commit
+            next if object.sha.blank? || Gitlab::Git.blank_ref?(object.sha)
+
+            Gitaly::FindChangedPathsRequest::Request.new(
+              commit_request: Gitaly::FindChangedPathsRequest::Request::CommitRequest.new(commit_revision: object.sha)
+            )
+          end
         end
 
-        Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, requests: commit_requests, merge_commit_diff_mode: diff_mode)
+        return if requests.blank?
+
+        Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, requests: requests, merge_commit_diff_mode: diff_mode)
       end
 
       def path_error_message(path_error)

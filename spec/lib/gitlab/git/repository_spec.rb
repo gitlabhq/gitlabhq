@@ -1705,9 +1705,13 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#find_changed_paths' do
-    let(:commit_1) { TestEnv::BRANCH_SHA['with-executables'] }
-    let(:commit_2) { TestEnv::BRANCH_SHA['master'] }
-    let(:commit_3) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+    let_it_be(:commit_1) { repository.commit(TestEnv::BRANCH_SHA['with-executables']) }
+    let_it_be(:commit_2) { repository.commit(TestEnv::BRANCH_SHA['master']) }
+    let_it_be(:commit_3) { repository.commit('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+
+    let_it_be(:initial_commit) { repository.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
+    let_it_be(:diff_tree) { Gitlab::Git::DiffTree.from_commit(initial_commit) }
+
     let(:commit_1_files) do
       [Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/executables/ls")]
     end
@@ -1723,18 +1727,26 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       ]
     end
 
-    it 'returns a list of paths' do
-      collection = repository.find_changed_paths([commit_1, commit_2, commit_3])
-
-      expect(collection).to be_a(Enumerable)
-      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files).as_json)
+    let(:diff_tree_files) do
+      [
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: ".gitignore"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "LICENSE"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "README.md")
+      ]
     end
 
-    it 'returns no paths when SHAs are invalid' do
+    it 'returns a list of paths' do
+      collection = repository.find_changed_paths([commit_1, commit_2, commit_3, diff_tree])
+
+      expect(collection).to be_a(Enumerable)
+      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files + diff_tree_files).as_json)
+    end
+
+    it 'returns only paths with valid SHAs' do
       collection = repository.find_changed_paths(['invalid', commit_1])
 
       expect(collection).to be_a(Enumerable)
-      expect(collection.to_a).to be_empty
+      expect(collection.as_json).to eq(commit_1_files.as_json)
     end
 
     it 'returns a list of paths even when containing a blank ref' do

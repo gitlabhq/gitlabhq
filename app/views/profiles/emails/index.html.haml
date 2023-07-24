@@ -24,7 +24,7 @@
             = sprite_icon('mail', css_class: 'gl-mr-2')
             = @emails.load.size
         .gl-new-card-actions
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content" }) do
+          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content", data: { testid: 'toggle_email_address_field' } }) do
             = s_('Profiles|Add new email')
       - c.with_body do
         .gl-new-card-add-form.gl-m-3.gl-mb-4.gl-display-none.js-toggle-content

@@ -271,6 +271,15 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 16.2.0
+
+- Legacy LDAP configuration settings may cause
+  [`NoMethodError: undefined method 'devise' for User:Class` errors](https://gitlab.com/gitlab-org/gitlab/-/issues/419485).
+  This error occurs if you have TLS options (such as `ca_file`) not specified
+  in the `tls_options` hash, or use the legacy `gitlab_rails['ldap_host']` option.
+  See the [configuration workarounds](https://gitlab.com/gitlab-org/gitlab/-/issues/419485#workarounds)
+  for more details.
+
 ### 16.1.0
 
 - A `MigrateHumanUserType` background migration will be finalized with
