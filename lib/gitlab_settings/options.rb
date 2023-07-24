@@ -123,7 +123,7 @@ module GitlabSettings
     def stringify_keys!
       error_msg = "Warning: Do not mutate #{self.class} objects: `#{__method__}`"
 
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(RuntimeError.new(error_msg), method: __method__)
+      log_and_raise_dev_exception(error_msg, method: __method__)
 
       to_hash.deep_stringify_keys
     end
@@ -133,7 +133,7 @@ module GitlabSettings
     def symbolize_keys!
       error_msg = "Warning: Do not mutate #{self.class} objects: `#{__method__}`"
 
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(RuntimeError.new(error_msg), method: __method__)
+      log_and_raise_dev_exception(error_msg, method: __method__)
 
       to_hash.deep_symbolize_keys
     end
@@ -151,7 +151,7 @@ module GitlabSettings
       if @options.respond_to?(name)
         error_msg = "Calling a hash method on #{self.class}: `#{name}`"
 
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(RuntimeError.new(error_msg), method: name)
+        log_and_raise_dev_exception(error_msg, method: name)
 
         return @options.public_send(name, *args, &block) # rubocop: disable GitlabSecurity/PublicSend
       end
@@ -163,6 +163,21 @@ module GitlabSettings
       return true if key?(name)
 
       @options.respond_to?(name, include_all)
+    end
+
+    private
+
+    # We can't call Gitlab::ErrorTracking.track_and_raise_for_dev_exception
+    # because that method will attempt to load ApplicationContext and
+    # fail to load User since the Devise is not yet set up in
+    # `config/initialiers/8_devise.rb`.
+    def log_and_raise_dev_exception(message, extra = {})
+      raise message unless Rails.env.production?
+
+      # Gitlab::BacktraceCleaner drops config/initializers, so we just limit the
+      # backtrace to the first 10 lines.
+      payload = extra.merge(message: message, caller: caller[0..10])
+      Gitlab::AppJsonLogger.warn(payload)
     end
   end
 end
