@@ -114,6 +114,9 @@ at the [instance level](#instance-level-default-branch-protection) and
 - **Not protected** - Both developers and maintainers can push new commits
    and force push.
 
+WARNING:
+Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables. 
+
 ### Instance-level default branch protection **(FREE SELF)**
 
 This setting applies only to each repository's default branch. To protect other branches,

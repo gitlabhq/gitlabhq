@@ -184,20 +184,24 @@ To enable advanced search:
 1. Configure the [advanced search settings](#advanced-search-configuration) for
    your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**
    yet.
-1. Enable **Elasticsearch indexing** and select **Save changes**. This creates
-   an empty index if one does not already exist.
-1. Select **Index all projects**.
-1. Optional. Select **Check progress** to see the status of background jobs.
-1. Personal snippets must be indexed using another Rake task:
+1. Index all data with a Rake task. The task creates an empty index if one does not already exist and
+   enables Elasticsearch indexing if the indexing is not already enabled:
 
    ```shell
+   # WARNING: THIS WILL DELETE ALL EXISTING INDICES
    # Omnibus installations
-   sudo gitlab-rake gitlab:elastic:index_snippets
+   sudo gitlab-rake gitlab:elastic:index
 
+   # WARNING: THIS WILL DELETE ALL EXISTING INDICES
    # Installations from source
-   bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production
+   bundle exec rake gitlab:elastic:index RAILS_ENV=production
    ```
 
+1. Optional. Monitor the status of background jobs.
+   1. On the left sidebar, select **Monitoring > Background Jobs**.
+   1. On the Sidekiq dashboard, select **Queues** and wait for the `elastic_commit_indexer`
+      and `elastic_wiki_indexer` queues to drop to `0`.
+      These queues contain jobs to index code and wiki data for groups and projects.
 1. After indexing completes, enable **Search with Elasticsearch enabled** and select **Save changes**.
 
 NOTE:
@@ -207,6 +211,35 @@ instance queues a job to index the change, but cannot find a valid
 Elasticsearch cluster.
 
 For GitLab instances with more than 50 GB of repository data, see [How to index large instances efficiently](#how-to-index-large-instances-efficiently).
+
+### Enable with the **Index all projects** setting
+
+You can only use the **Index all projects** setting to perform
+initial indexing, not to re-create an index from scratch.
+To enable advanced search with **Index all projects**:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Settings > Advanced Search**.
+1. Enable **Elasticsearch indexing** and select **Save changes**.
+1. Select **Index all projects**.
+1. Optional. Select **Check progress** to see the status of background jobs.
+
+To index epics, group wikis, personal snippets, and users, you must use Rake tasks:
+
+```shell
+# Omnibus installations
+sudo gitlab-rake gitlab:elastic:index_epics
+sudo gitlab-rake gitlab:elastic:index_group_wikis
+sudo gitlab-rake gitlab:elastic:index_snippets
+sudo gitlab-rake gitlab:elastic:index_users
+
+# Installations from source
+bundle exec rake gitlab:elastic:index_epics RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_group_wikis RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_users RAILS_ENV=production
+```
 
 ### Advanced search configuration
 
@@ -686,7 +719,7 @@ I, [2019-03-04T21:27:05.215266 #3384]  INFO -- : Indexing GitLab User / test (ID
 When performing a search, the GitLab index uses the following scopes:
 
 | Scope Name       | What it searches       |
-| ---------------- | ---------------------- |
+|------------------|------------------------|
 | `commits`        | Commit data            |
 | `projects`       | Project data (default) |
 | `blobs`          | Code                   |
@@ -697,6 +730,7 @@ When performing a search, the GitLab index uses the following scopes:
 | `snippets`       | Snippet data           |
 | `wiki_blobs`     | Wiki contents          |
 | `users`          | Users                  |
+| `epics`          | Epic data              |
 
 ## Tuning
 
@@ -826,14 +860,20 @@ Make sure to prepare for this task by having a
    indexer to "forget" all progress, so it retries the indexing process from the
    start.
 
-1. Personal snippets are not associated with a project and need to be indexed separately:
+1. Epics, group wikis, personal snippets, and users are not associated with a project and must be indexed separately:
 
    ```shell
    # Omnibus installations
+   sudo gitlab-rake gitlab:elastic:index_epics
+   sudo gitlab-rake gitlab:elastic:index_group_wikis
    sudo gitlab-rake gitlab:elastic:index_snippets
+   sudo gitlab-rake gitlab:elastic:index_users
 
    # Installations from source
+   bundle exec rake gitlab:elastic:index_epics RAILS_ENV=production
+   bundle exec rake gitlab:elastic:index_group_wikis RAILS_ENV=production
    bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production
+   bundle exec rake gitlab:elastic:index_users RAILS_ENV=production
    ```
 
 1. Enable replication and refreshing again after indexing (only if you previously disabled it):

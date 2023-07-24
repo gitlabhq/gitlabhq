@@ -24,7 +24,7 @@ Streaming audit events can be sent when authenticated users push, pull, or clone
 
 Audit events are not captured for users that are not signed in. For example, when downloading a public project.
 
-To configure streaming audit events for Git operations, see [Add a new streaming destination](index.md#add-a-new-streaming-destination).
+To configure streaming audit events for Git operations, see [Add a new HTTP destination](index.md#add-a-new-http-destination).
 
 ### Headers
 

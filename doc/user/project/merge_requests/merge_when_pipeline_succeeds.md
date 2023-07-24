@@ -41,6 +41,7 @@ To do this from the GitLab user interface:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Code > Merge requests**.
+1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
 1. Optional. Select your desired merge options, such as **Delete source branch**,
    **Squash commits**, or **Edit commit message**.
@@ -64,6 +65,7 @@ To do this:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Code > Merge requests**.
+1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
 1. Select **Cancel auto-merge**.
 

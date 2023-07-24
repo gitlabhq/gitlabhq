@@ -7,7 +7,8 @@
 %hr
 
 - if @hook_log.oversize?
-  = button_tag _("Resend Request"), class: "btn gl-button btn-default float-right gl-ml-3 has-tooltip", disabled: true, title: _("Request data is too large")
+  = render Pajamas::ButtonComponent.new(button_options: { class: "float-right gl-ml-3 has-tooltip", disabled: true, title: _("Request data is too large") }) do
+    = _("Resend Request")
 - else
   = link_button_to _("Resend Request"), @hook_log.present.retry_path, method: :post, class: 'float-right gl-ml-3'
 

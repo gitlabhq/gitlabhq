@@ -13,9 +13,9 @@
       = messages.dig(:writable, :body)
     = create_link
     - if show_enable_confluence_integration?(@wiki.container)
-      = link_to s_('WikiEmpty|Enable the Confluence Wiki integration'),
+      = link_button_to s_('WikiEmpty|Enable the Confluence Wiki integration'),
           edit_project_settings_integration_path(@project, :confluence),
-          class: 'btn gl-button', title: s_('WikiEmpty|Enable the Confluence Wiki integration')
+          title: s_('WikiEmpty|Enable the Confluence Wiki integration')
 
 - elsif @project && can?(current_user, :read_issue, @project)
   - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
