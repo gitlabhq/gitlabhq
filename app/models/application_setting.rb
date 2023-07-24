@@ -499,6 +499,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     end
   end
 
+  validates :default_project_visibility, :default_group_visibility,
+    exclusion: { in: :restricted_visibility_levels, message: "cannot be set to a restricted visibility level" },
+    if: :should_prevent_visibility_restriction?
+
   validates_each :import_sources do |record, attr, value|
     value&.each do |source|
       unless Gitlab::ImportSources.options.value?(source)
@@ -951,6 +955,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   def reset_deletion_warning_redis_key
     Gitlab::InactiveProjectsDeletionWarningTracker.reset_all
+  end
+
+  def should_prevent_visibility_restriction?
+    Feature.enabled?(:prevent_visibility_restriction) &&
+      (default_project_visibility_changed? ||
+        default_group_visibility_changed? ||
+        restricted_visibility_levels_changed?)
   end
 end
 

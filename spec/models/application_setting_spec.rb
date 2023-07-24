@@ -1272,6 +1272,37 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value({ name: value }).for(:default_branch_protection_defaults) }
       end
     end
+
+    context 'default_project_visibility, default_group_visibility and restricted_visibility_levels validations' do
+      before do
+        subject.restricted_visibility_levels = [10]
+      end
+
+      it { is_expected.not_to allow_value(10).for(:default_group_visibility) }
+      it { is_expected.not_to allow_value(10).for(:default_project_visibility) }
+      it { is_expected.to allow_value(20).for(:default_group_visibility) }
+      it { is_expected.to allow_value(20).for(:default_project_visibility) }
+
+      it 'sets error messages when default visibility settings are not valid' do
+        subject.default_group_visibility = 10
+        subject.default_project_visibility = 10
+
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:default_group_visibility].first).to eq("cannot be set to a restricted visibility level")
+        expect(subject.errors.messages[:default_project_visibility].first).to eq("cannot be set to a restricted visibility level")
+      end
+
+      context 'when prevent_visibility_restriction FF is disabled' do
+        before do
+          stub_feature_flags(prevent_visibility_restriction: false)
+        end
+
+        it { is_expected.to allow_value(10).for(:default_group_visibility) }
+        it { is_expected.to allow_value(10).for(:default_project_visibility) }
+        it { is_expected.to allow_value(20).for(:default_group_visibility) }
+        it { is_expected.to allow_value(20).for(:default_project_visibility) }
+      end
+    end
   end
 
   context 'restrict creating duplicates' do
