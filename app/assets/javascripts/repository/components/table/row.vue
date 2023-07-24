@@ -12,7 +12,7 @@ import {
 import { escapeRegExp } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
-import { escapeFileUrl } from '~/lib/utils/url_utility';
+import { buildURLwithRefType, joinPaths } from '~/lib/utils/url_utility';
 import { TREE_PAGE_SIZE, ROW_APPEAR_DELAY } from '~/repository/constants';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -37,6 +37,7 @@ export default {
     SafeHtml,
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
+  inject: ['refType'],
   props: {
     commitInfo: {
       type: Object,
@@ -117,14 +118,18 @@ export default {
       return this.commitInfo;
     },
     routerLinkTo() {
-      const blobRouteConfig = { path: `/-/blob/${this.escapedRef}/${escapeFileUrl(this.path)}` };
-      const treeRouteConfig = { path: `/-/tree/${this.escapedRef}/${escapeFileUrl(this.path)}` };
-
       if (this.isBlob) {
-        return blobRouteConfig;
+        return buildURLwithRefType({
+          path: joinPaths('/-/blob', this.escapedRef, this.path),
+          refType: this.refType,
+        });
+      } else if (this.isFolder) {
+        return buildURLwithRefType({
+          path: joinPaths('/-/tree', this.escapedRef, this.path),
+          refType: this.refType,
+        });
       }
-
-      return this.isFolder ? treeRouteConfig : null;
+      return null;
     },
     isBlob() {
       return this.type === 'blob';
@@ -159,6 +164,7 @@ export default {
       this.apolloQuery(paginatedTreeQuery, {
         projectPath: this.projectPath,
         ref: this.ref,
+        refType: this.refType?.toUpperCase() || null,
         path: this.path,
         nextPageCursor: '',
         pageSize: TREE_PAGE_SIZE,
@@ -169,6 +175,7 @@ export default {
         projectPath: this.projectPath,
         filePath: this.path,
         ref: this.ref,
+        refType: this.refType?.toUpperCase() || null,
         shouldFetchRawText: Boolean(this.glFeatures.highlightJs),
       });
     },

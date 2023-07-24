@@ -113,7 +113,9 @@ module Gitlab
 
         def load_events(wildcard)
           if Feature.enabled?(:use_metric_definitions_for_events_list)
-            events = Gitlab::Usage::MetricDefinition.not_removed.values.map do |d|
+            events = Gitlab::Usage::MetricDefinition.all.map do |d|
+              next unless d.available?
+
               d.attributes[:options] && d.attributes[:options][:events]
             end.flatten.compact.uniq
 

@@ -30,7 +30,15 @@ FactoryBot.define do
       key { SSHData::PrivateKey::RSA.generate(3072, unsafe_allow_small_key: true).public_key.openssh }
     end
 
-    factory :deploy_key, class: 'DeployKey'
+    factory :deploy_key, class: 'DeployKey' do
+      trait :private do
+        public { false }
+      end
+
+      trait :public do
+        public { true }
+      end
+    end
 
     factory :group_deploy_key, class: 'GroupDeployKey' do
       user

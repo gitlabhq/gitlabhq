@@ -8,6 +8,7 @@ import {
   EVENT_TYPE_PUSHED,
   EVENT_TYPE_PRIVATE,
   EVENT_TYPE_MERGED,
+  EVENT_TYPE_CREATED,
 } from '../constants';
 import ContributionEventApproved from './contribution_event/contribution_event_approved.vue';
 import ContributionEventExpired from './contribution_event/contribution_event_expired.vue';
@@ -16,6 +17,7 @@ import ContributionEventLeft from './contribution_event/contribution_event_left.
 import ContributionEventPushed from './contribution_event/contribution_event_pushed.vue';
 import ContributionEventPrivate from './contribution_event/contribution_event_private.vue';
 import ContributionEventMerged from './contribution_event/contribution_event_merged.vue';
+import ContributionEventCreated from './contribution_event/contribution_event_created.vue';
 
 export default {
   props: {
@@ -130,6 +132,9 @@ export default {
 
         case EVENT_TYPE_MERGED:
           return ContributionEventMerged;
+
+        case EVENT_TYPE_CREATED:
+          return ContributionEventCreated;
 
         default:
           return EmptyComponent;

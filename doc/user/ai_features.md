@@ -193,6 +193,8 @@ This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.
 
 In a merge request, you can get a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
 
+View a [click-through demo](https://go.gitlab.com/Xfp0l4). 
+
 To generate a test suggestion:
 
 1. In a merge request, select the **Changes** tab.

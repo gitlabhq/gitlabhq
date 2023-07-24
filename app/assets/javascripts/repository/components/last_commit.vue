@@ -43,6 +43,7 @@ export default {
         return {
           projectPath: this.projectPath,
           ref: this.ref,
+          refType: this.refType?.toUpperCase(),
           path: this.currentPath.replace(/^\//, ''),
         };
       },
@@ -68,6 +69,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    refType: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {

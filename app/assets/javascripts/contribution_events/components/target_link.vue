@@ -14,7 +14,7 @@ export default {
       return this.event.target;
     },
     targetLinkText() {
-      return this.target.reference_link_text;
+      return this.target.reference_link_text || this.target.title;
     },
     targetLinkAttributes() {
       return {

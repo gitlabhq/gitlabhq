@@ -64,7 +64,7 @@ const mockRouter = {
   push: mockRouterPush,
 };
 
-const legacyViewerUrl = 'some_file.js?format=json&viewer=simple';
+const legacyViewerUrl = '/some_file.js?format=json&viewer=simple';
 
 const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute = {}) => {
   Vue.use(VueApollo);
@@ -255,7 +255,7 @@ describe('Blob content viewer component', () => {
         'loads the legacy viewer when a file type is identified as legacy',
         async (type) => {
           await createComponent({ blob: { ...simpleViewerMock, fileType: type, webPath: type } });
-          expect(mockAxios.history.get[0].url).toBe(`${type}?format=json&viewer=simple`);
+          expect(mockAxios.history.get[0].url).toBe(`/${type}?format=json&viewer=simple`);
         },
       );
 
@@ -348,7 +348,7 @@ describe('Blob content viewer component', () => {
       await createComponent({ blob: { ...richViewerMock, fileType: 'unknown' } });
 
       expect(mockAxios.history.get).toHaveLength(1);
-      expect(mockAxios.history.get[0].url).toEqual('some_file.js?format=json&viewer=rich');
+      expect(mockAxios.history.get[0].url).toEqual('/some_file.js?format=json&viewer=rich');
     });
   });
 
@@ -371,7 +371,7 @@ describe('Blob content viewer component', () => {
     });
 
     it('does not load a CodeIntelligence component when no viewers are loaded', async () => {
-      const url = 'some_file.js?format=json&viewer=rich';
+      const url = '/some_file.js?format=json&viewer=rich';
       mockAxios.onGet(url).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       await createComponent({ blob: { ...richViewerMock, fileType: 'unknown' } });
 

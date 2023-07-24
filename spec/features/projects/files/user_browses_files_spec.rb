@@ -155,7 +155,7 @@ RSpec.describe "User browses files", :js, feature_category: :groups_and_projects
           click_link("d")
         end
 
-        expect(page).to have_link("..", href: project_tree_path(project, "markdown/"))
+        expect(page).to have_link("..", href: project_tree_path(project, "markdown"))
 
         page.within(".tree-table") do
           click_link("README.md")

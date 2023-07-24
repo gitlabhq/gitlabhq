@@ -24,7 +24,7 @@
   - if !expanded
     -# Data info will be removed once we migrate this to use GraphQL
     -# Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/330406
-    #js-view-blob-app{ data: vue_blob_app_data(project, blob, ref) }
+    #js-view-blob-app{ data: vue_blob_app_data(project, blob, ref).merge(ref_type: @ref_type.to_s) }
       = gl_loading_icon(size: 'md')
   - else
     %article.file-holder

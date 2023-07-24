@@ -13,15 +13,19 @@ export default function createRouter(base, baseRef) {
     component: TreePage,
     props: (route) => ({
       path: route.params.path?.replace(/^\//, '') || '/',
+      refType: route.query.ref_type || null,
     }),
   };
 
   const blobPathRoute = {
     component: BlobPage,
-    props: (route) => ({
-      path: route.params.path,
-      projectPath: base,
-    }),
+    props: (route) => {
+      return {
+        path: route.params.path,
+        projectPath: base,
+        refType: route.query.ref_type || null,
+      };
+    },
   };
 
   const router = new VueRouter({
@@ -56,6 +60,9 @@ export default function createRouter(base, baseRef) {
         path: '/',
         name: 'projectRoot',
         component: IndexPage,
+        props: {
+          refType: 'HEADS',
+        },
       },
     ],
   });

@@ -76,12 +76,15 @@ export default {
     project: {
       query: blobInfoQuery,
       variables() {
-        return {
+        const queryVariables = {
           projectPath: this.projectPath,
           filePath: this.path,
           ref: this.originalBranch || this.ref,
           shouldFetchRawText: Boolean(this.glFeatures.highlightJs),
+          refType: this.refType?.toUpperCase() || null,
         };
+
+        return queryVariables;
       },
       result({ data }) {
         const blob = data.project?.repository?.blobs?.nodes[0] || {};
@@ -129,6 +132,11 @@ export default {
     projectPath: {
       type: String,
       required: true,
+    },
+    refType: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -259,8 +267,12 @@ export default {
       const type = this.activeViewerType;
 
       this.isLoadingLegacyViewer = true;
+
+      const newUrl = new URL(this.blobInfo.webPath, window.location.origin);
+      newUrl.searchParams.set('format', 'json');
+      newUrl.searchParams.set('viewer', type);
       axios
-        .get(`${this.blobInfo.webPath}?format=json&viewer=${type}`)
+        .get(newUrl.pathname + newUrl.search)
         .then(async ({ data: { html, binary } }) => {
           this.isRenderingLegacyTextViewer = true;
 

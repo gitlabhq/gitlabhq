@@ -117,8 +117,8 @@ does not block triggered pipelines.
 
 ### Git Flow with merge request pipelines
 
-You can use `workflow: rules` as part of [Git Flow or similar strategies](../../topics/gitlab_flow.md)
-with merge request pipelines. With these rules, you can use [merge request pipeline features](../pipelines/merge_request_pipelines.md)
+You can use `workflow: rules` with merge request pipelines. With these rules,
+you can use [merge request pipeline features](../pipelines/merge_request_pipelines.md)
 with feature branches, while keeping long-lived branches to support multiple versions
 of your software.
 

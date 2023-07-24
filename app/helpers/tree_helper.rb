@@ -153,7 +153,8 @@ module TreeHelper
       project_short_path: project.path,
       ref: ref,
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
-      full_name: project.name_with_namespace
+      full_name: project.name_with_namespace,
+      ref_type: @ref_type
     }
   end
 

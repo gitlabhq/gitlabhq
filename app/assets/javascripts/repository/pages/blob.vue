@@ -31,11 +31,15 @@ export default {
       type: String,
       required: true,
     },
+    refType: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   limitedContainerElements: document.querySelectorAll(`.${LIMITED_CONTAINER_WIDTH_CLASS}`),
 };
 </script>
-
 <template>
-  <blob-content-viewer :path="path" :project-path="projectPath" />
+  <blob-content-viewer :path="path" :project-path="projectPath" :ref-type="refType" />
 </template>

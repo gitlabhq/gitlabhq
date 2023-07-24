@@ -50,7 +50,7 @@ To protect an environment:
      - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
    - You can select groups that are already associated with the project only.
    - Users must have at least the Developer role to appear in
-     the **Allowed to deploy** list.
+     the **Approvers** list.
 
 1. In the **Approval rules** section:
 

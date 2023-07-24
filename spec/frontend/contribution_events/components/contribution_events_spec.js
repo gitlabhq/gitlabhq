@@ -7,6 +7,7 @@ import ContributionEventLeft from '~/contribution_events/components/contribution
 import ContributionEventPushed from '~/contribution_events/components/contribution_event/contribution_event_pushed.vue';
 import ContributionEventPrivate from '~/contribution_events/components/contribution_event/contribution_event_private.vue';
 import ContributionEventMerged from '~/contribution_events/components/contribution_event/contribution_event_merged.vue';
+import ContributionEventCreated from '~/contribution_events/components/contribution_event/contribution_event_created.vue';
 import {
   eventApproved,
   eventExpired,
@@ -15,6 +16,7 @@ import {
   eventPushedBranch,
   eventPrivate,
   eventMerged,
+  eventCreated,
 } from '../utils';
 
 describe('ContributionEvents', () => {
@@ -31,6 +33,7 @@ describe('ContributionEvents', () => {
           eventPushedBranch(),
           eventPrivate(),
           eventMerged(),
+          eventCreated(),
         ],
       },
     });
@@ -45,6 +48,7 @@ describe('ContributionEvents', () => {
     ${ContributionEventPushed}   | ${eventPushedBranch()}
     ${ContributionEventPrivate}  | ${eventPrivate()}
     ${ContributionEventMerged}   | ${eventMerged()}
+    ${ContributionEventCreated}  | ${eventCreated()}
   `(
     'renders `$expectedComponent.name` component and passes expected event',
     ({ expectedComponent, expectedEvent }) => {

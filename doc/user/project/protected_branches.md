@@ -200,8 +200,7 @@ To create a new branch through the user interface:
 ## Require everyone to submit merge requests for a protected branch
 
 You can force everyone to submit a merge request, rather than allowing them to
-check in directly to a protected branch. This setting is compatible with workflows
-like the [GitLab workflow](../../topics/gitlab_flow.md).
+check in directly to a protected branch:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.

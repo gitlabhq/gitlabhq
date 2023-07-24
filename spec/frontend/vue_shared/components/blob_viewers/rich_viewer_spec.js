@@ -3,8 +3,10 @@ import { shallowMount } from '@vue/test-utils';
 import { handleBlobRichViewer } from '~/blob/viewer';
 import RichViewer from '~/vue_shared/components/blob_viewers/rich_viewer.vue';
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
+import { handleLocationHash } from '~/lib/utils/common_utils';
 
 jest.mock('~/blob/viewer');
+jest.mock('~/lib/utils/common_utils');
 
 describe('Blob Rich Viewer component', () => {
   let wrapper;
@@ -49,5 +51,9 @@ describe('Blob Rich Viewer component', () => {
 
   it('is using Markdown View Field', () => {
     expect(wrapper.findComponent(MarkdownFieldView).exists()).toBe(true);
+  });
+
+  it('scrolls to the hash location', () => {
+    expect(handleLocationHash).toHaveBeenCalled();
   });
 });

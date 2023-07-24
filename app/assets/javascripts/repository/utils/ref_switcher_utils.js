@@ -28,7 +28,7 @@ export function generateRefDestinationPath(projectRootPath, ref, selectedRef) {
     [, refType, actualRef] = matches;
   }
   if (refType) {
-    url.searchParams.set('ref_type', refType);
+    url.searchParams.set('ref_type', refType.toLowerCase());
   } else {
     url.searchParams.delete('ref_type');
   }

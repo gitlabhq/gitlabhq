@@ -338,13 +338,24 @@ module Gitlab
       # Return repo size in megabytes
       def size
         if Feature.enabled?(:use_repository_info_for_repository_size)
-          bytes = gitaly_repository_client.repository_info.size
-
-          (bytes.to_f / 1024 / 1024).round(2)
+          repository_info_size_megabytes
         else
           kilobytes = gitaly_repository_client.repository_size
+          repository_size_megabytes = (kilobytes.to_f / 1024).round(2)
 
-          (kilobytes.to_f / 1024).round(2)
+          if Feature.enabled?(:log_discrepancies_repository_info_for_repository_size)
+            repository_info_megabytes = repository_info_size_megabytes
+            if repository_info_megabytes != repository_size_megabytes
+              Gitlab::AppJsonLogger.info(
+                message: "Discrepancy between RepositorySize and RepositoryInfo",
+                repository_size_megabytes: repository_size_megabytes,
+                repository_info_megabytes: repository_info_megabytes,
+                project_id: container.id
+              )
+            end
+          end
+
+          repository_size_megabytes
         end
       end
 
@@ -1165,6 +1176,12 @@ module Gitlab
       end
 
       private
+
+      def repository_info_size_megabytes
+        bytes = gitaly_repository_client.repository_info.size
+
+        Gitlab::Utils.bytes_to_megabytes(bytes).round(2)
+      end
 
       def empty_diff_stats
         Gitlab::Git::DiffStatsCollection.new([])

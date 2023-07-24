@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Project forking workflow **(FREE)**
 
 Whenever possible, it's recommended to work in a common Git repository and use
-[branching strategies](../../../topics/gitlab_flow.md) to manage your work. However,
+branching strategies to manage your work. However,
 if you do not have write access for the repository you want to contribute to, you
 can create a fork.
 

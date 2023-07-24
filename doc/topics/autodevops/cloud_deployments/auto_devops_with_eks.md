@@ -230,8 +230,7 @@ in **Settings > CI/CD > Variables**.
 
 ### Work with branches
 
-Following the [GitLab flow](../../gitlab_flow.md#working-with-feature-branches),
-you should next create a feature branch to add content to your application:
+Next, create a feature branch to add content to your application:
 
 1. In your project's repository, go to the following file: `app/views/welcome/index.html.erb`.
    This file should only contain a paragraph: `<p>You're on Rails!</p>`.

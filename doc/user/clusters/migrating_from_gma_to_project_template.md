@@ -39,16 +39,16 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
    Either way, [run a pipeline manually](../../ci/pipelines/index.md#run-a-pipeline-manually) and read the logs of the
    `detect-helm2-releases` job to know if you have any Helm v2 releases and which are they.
 
-1. If you have no Helm v2 releases, skip this step. Otherwise, follow the official Helm docs on
+1. If you have no Helm v2 releases, skip this step. Otherwise, follow the official Helm documentation on
    [how to migrate from Helm v2 to Helm v3](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/),
    and clean up the Helm v2 releases after you are confident that they have been successfully migrated.
 
 1. In this step you should already have only Helm v3 releases.
    Uncomment from the main [`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file) the paths for the
    applications that you would like to manage with this project. Although you could uncomment all the ones you want to
-   managed at once, we recommend you repeat the following steps separately for each app, so you do not get lost during
+   managed at once, you should repeat the following steps separately for each app, so you do not get lost during
    the process.
-1. Edit the associated `applications/{app}/helmfiles.yaml` to match the chart version currently deployed
+1. Edit the associated `applications/{app}/helmfiles.yaml` to match the chart version deployed
    for your app. Take a GitLab Runner Helm v3 release as an example:
 
    The following command lists the releases and their versions:
@@ -62,11 +62,11 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
 
    Take the version from the `CHART` column which is in the format `{release}-v{chart_version}`,
    then edit the `version:` attribute in the `./applications/gitlab-runner/helmfile.yaml`, so that it matches the version
-   you have currently deployed. This is a safe step to avoid upgrading versions during this migration.
+   you have deployed. This is a safe step to avoid upgrading versions during this migration.
    Make sure you replace `gitlab-managed-apps` from the above command if you have your apps deployed to a different
    namespace.
 
-1. Edit the `applications/{app}/values.yaml` associated with your app to match the currently
+1. Edit the `applications/{app}/values.yaml` associated with your app to match the
    deployed values. For example, for GitLab Runner:
 
    1. Copy the output of the following command (it might be big):
@@ -77,7 +77,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
 
    1. Overwrite `applications/gitlab-runner/values.yaml` with the output of the previous command.
 
-   This safe step guarantees that no unexpected default values overwrite your currently deployed values.
+   This safe step guarantees that no unexpected default values overwrite your deployed values.
    For instance, your GitLab Runner could have its `gitlabUrl` or `runnerRegistrationToken` overwritten by mistake.
 
 1. Some apps require special attention:

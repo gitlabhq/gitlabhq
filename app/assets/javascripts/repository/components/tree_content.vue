@@ -27,6 +27,7 @@ export default {
       query: projectPathQuery,
     },
   },
+  inject: ['refType'],
   props: {
     path: {
       type: String,
@@ -99,6 +100,7 @@ export default {
           variables: {
             projectPath: this.projectPath,
             ref: this.ref,
+            refType: this.refType?.toUpperCase(),
             path: originalPath,
             nextPageCursor: this.nextPageCursor,
             pageSize: TREE_PAGE_SIZE,
@@ -171,7 +173,7 @@ export default {
       }
     },
     loadCommitData(rowNumber) {
-      loadCommits(this.projectPath, this.path, this.ref, rowNumber)
+      loadCommits(this.projectPath, this.path, this.ref, rowNumber, this.refType)
         .then(this.setCommitData)
         .catch(() => {});
     },

@@ -713,3 +713,16 @@ export function visitUrl(url, external = false) {
 export function refreshCurrentPage() {
   visitUrl(window.location.href);
 }
+
+// Adds a ref_type param to the path if refType is available
+export function buildURLwithRefType({ base = window.location.origin, path, refType = null }) {
+  const url = new URL('', base);
+  url.pathname = path; // This assignment does proper _escapes_
+
+  if (refType) {
+    url.searchParams.set('ref_type', refType.toLowerCase());
+  } else {
+    url.searchParams.delete('ref_type');
+  }
+  return url.pathname + url.search;
+}

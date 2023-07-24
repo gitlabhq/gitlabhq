@@ -71,6 +71,7 @@ if (viewBlobEl) {
     resourceId,
     userId,
     explainCodeAvailable,
+    refType,
     ...dataset
   } = viewBlobEl.dataset;
 
@@ -94,6 +95,7 @@ if (viewBlobEl) {
         props: {
           path: blobPath,
           projectPath,
+          refType,
         },
       });
     },

@@ -44,6 +44,9 @@ function factory({ mockData = { ref: 'main', escapedRef: 'main' }, propsData = {
       type: 'tree',
       ...propsData,
     },
+    provide: {
+      refType: 'heads',
+    },
     directives: {
       GlHoverLoad: createMockDirective('gl-hover-load'),
     },
@@ -157,9 +160,9 @@ describe('Repository table row component', () => {
       },
     });
 
-    expect(wrapper.findComponent({ ref: 'link' }).props('to')).toEqual({
-      path: `/-/tree/main/${encodeURIComponent(path)}`,
-    });
+    expect(wrapper.findComponent({ ref: 'link' }).props('to')).toBe(
+      `/-/tree/main/${encodeURIComponent(path)}?ref_type=heads`,
+    );
   });
 
   it('renders link for directory with hash', () => {
@@ -173,7 +176,7 @@ describe('Repository table row component', () => {
       },
     });
 
-    expect(wrapper.find('.tree-item-link').props('to')).toEqual({ path: '/-/tree/main/test%23' });
+    expect(wrapper.find('.tree-item-link').props('to')).toBe(`/-/tree/main/test%23?ref_type=heads`);
   });
 
   it('renders commit ID for submodule', () => {

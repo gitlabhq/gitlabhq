@@ -8,11 +8,21 @@ export default {
     TreeContent,
   },
   mixins: [preloadMixin],
+  provide() {
+    return {
+      refType: this.refType,
+    };
+  },
   props: {
     path: {
       type: String,
       required: false,
       default: '/',
+    },
+    refType: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {

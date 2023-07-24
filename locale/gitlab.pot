@@ -97,16 +97,6 @@ msgid_plural "%d Approvals"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d Issue"
-msgid_plural "%d Issues"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d Merge Request"
-msgid_plural "%d Merge Requests"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d Module"
 msgid_plural "%d Modules"
 msgstr[0] ""
@@ -1151,9 +1141,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{strongStart}Tip:%{strongEnd} You can also %{linkStart}check out with merge request ID%{linkEnd}."
-msgstr ""
-
-msgid "%{strong_open}%{group_name}%{strong_close} projects:"
 msgstr ""
 
 msgid "%{strong_start}%{branch_count}%{strong_end} Branch"
@@ -7253,6 +7240,30 @@ msgstr ""
 msgid "Beta"
 msgstr ""
 
+msgid "BetaBadge|A Beta feature is not production-ready, but is unlikely to change drastically before it's released. We encourage users to try Beta features and provide feedback."
+msgstr ""
+
+msgid "BetaBadge|A Beta feature:"
+msgstr ""
+
+msgid "BetaBadge|Beta"
+msgstr ""
+
+msgid "BetaBadge|Is complete or near completion."
+msgstr ""
+
+msgid "BetaBadge|Is supported by a commercially reasonable effort."
+msgstr ""
+
+msgid "BetaBadge|May have performance or stability issues."
+msgstr ""
+
+msgid "BetaBadge|Should not cause data loss."
+msgstr ""
+
+msgid "BetaBadge|What's Beta?"
+msgstr ""
+
 msgid "Bi-weekly code coverage"
 msgstr ""
 
@@ -12730,7 +12741,19 @@ msgstr ""
 msgid "ContributionEvent|Accepted merge request %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
+msgid "ContributionEvent|Added design %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
 msgid "ContributionEvent|Approved merge request %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Created project %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Created resource."
+msgstr ""
+
+msgid "ContributionEvent|Created wiki page %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
 msgid "ContributionEvent|Deleted branch %{refLink} in %{resourceParentLink}."
@@ -12746,6 +12769,36 @@ msgid "ContributionEvent|Left project %{resourceParentLink}."
 msgstr ""
 
 msgid "ContributionEvent|Made a private contribution."
+msgstr ""
+
+msgid "ContributionEvent|Opened Epic %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Opened incident %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Opened issue %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Opened key result %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Opened merge request %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Opened milestone %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Opened objective %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Opened requirement %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Opened task %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Opened test case %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
 msgid "ContributionEvent|Pushed a new branch %{refLink} in %{resourceParentLink}."
@@ -50924,6 +50977,9 @@ msgid "View labels"
 msgstr ""
 
 msgid "View log"
+msgstr ""
+
+msgid "View members"
 msgstr ""
 
 msgid "View milestones"

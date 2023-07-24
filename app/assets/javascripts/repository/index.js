@@ -121,6 +121,7 @@ export default function setupVueRepositoryList() {
         return h(LastCommit, {
           props: {
             currentPath: this.$route.params.path,
+            refType: this.$route.query.ref_type,
           },
         });
       },
@@ -207,6 +208,7 @@ export default function setupVueRepositoryList() {
         return h(Breadcrumbs, {
           props: {
             currentPath: this.$route.params.path,
+            refType: this.$route.query.ref_type,
             canCollaborate: parseBoolean(canCollaborate),
             canEditTree: parseBoolean(canEditTree),
             canPushCode: parseBoolean(canPushCode),

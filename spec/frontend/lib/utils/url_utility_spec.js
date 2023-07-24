@@ -1136,4 +1136,18 @@ describe('URL utility', () => {
       expect(urlUtils.removeLastSlashInUrlPath(input)).toBe(output);
     });
   });
+
+  describe('buildURLwithRefType', () => {
+    const base = 'http://gitlab.com/';
+
+    it.each`
+      path           | refType    | output
+      ${'foo/bar'}   | ${'heads'} | ${'/foo/bar?ref_type=heads'}
+      ${'/foo/bar/'} | ${'HEADS'} | ${'/foo/bar/?ref_type=heads'}
+      ${'/foo/bar/'} | ${''}      | ${'/foo/bar/'}
+      ${'/'}         | ${''}      | ${'/'}
+    `('path $path with ref $refType becomes $output', ({ path, refType, output }) => {
+      expect(urlUtils.buildURLwithRefType({ base, path, refType })).toBe(output);
+    });
+  });
 });

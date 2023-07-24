@@ -1,8 +1,9 @@
+- ref_type_enum_value = @ref_type&.upcase
 - add_page_specific_style 'page_bundles/tree'
 - current_route_path = request.fullpath.match(%r{-/tree/[^/]+/(.+$)}).to_a[1]
-- add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
+- add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "", refType: ref_type_enum_value})
 - add_page_startup_graphql_call('repository/permissions', { projectPath: @project.full_path })
-- add_page_startup_graphql_call('repository/files', { nextPageCursor: "", pageSize: 100, projectPath: @project.full_path, ref: current_ref, path: current_route_path || "/"})
+- add_page_startup_graphql_call('repository/files', { nextPageCursor: "", pageSize: 100, projectPath: @project.full_path, ref: current_ref, path: current_route_path || "/", refType: ref_type_enum_value})
 - breadcrumb_title _("Repository")
 
 - page_title @path.presence || _("Files"), @ref

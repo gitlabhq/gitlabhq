@@ -16,6 +16,9 @@ function factory(path, loadingPath) {
       path,
       loadingPath,
     },
+    provide: {
+      refType: 'heads',
+    },
     stubs: {
       RouterLink: RouterLinkStub,
     },
@@ -28,16 +31,14 @@ function factory(path, loadingPath) {
 describe('Repository parent row component', () => {
   it.each`
     path                        | to
-    ${'app'}                    | ${'/-/tree/main/'}
+    ${'app'}                    | ${'/-/tree/main'}
     ${'app/assets'}             | ${'/-/tree/main/app'}
     ${'app/assets#/test'}       | ${'/-/tree/main/app/assets%23'}
     ${'app/assets#/test/world'} | ${'/-/tree/main/app/assets%23/test'}
   `('renders link in $path to $to', ({ path, to }) => {
     factory(path);
 
-    expect(vm.findComponent(RouterLinkStub).props().to).toEqual({
-      path: to,
-    });
+    expect(vm.findComponent(RouterLinkStub).props().to).toBe(`${to}?ref_type=heads`);
   });
 
   it('pushes new router when clicking row', () => {
@@ -45,9 +46,7 @@ describe('Repository parent row component', () => {
 
     vm.find('td').trigger('click');
 
-    expect($router.push).toHaveBeenCalledWith({
-      path: '/-/tree/main/app',
-    });
+    expect($router.push).toHaveBeenCalledWith('/-/tree/main/app?ref_type=heads');
   });
 
   // We test that it does not get called when clicking any internal
@@ -57,9 +56,7 @@ describe('Repository parent row component', () => {
 
     vm.find('a').trigger('click');
 
-    expect($router.push).not.toHaveBeenCalledWith({
-      path: '/-/tree/main/app',
-    });
+    expect($router.push).not.toHaveBeenCalled();
   });
 
   it('renders loading icon when loading parent', () => {

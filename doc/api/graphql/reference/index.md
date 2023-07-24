@@ -12125,6 +12125,19 @@ Represents the access level of a relationship between a User and object that it 
 | <a id="accesslevelintegervalue"></a>`integerValue` | [`Int`](#int) | Integer representation of access level. |
 | <a id="accesslevelstringvalue"></a>`stringValue` | [`AccessLevelEnum`](#accesslevelenum) | String representation of access level. |
 
+### `AccessLevelDeployKey`
+
+Representation of a GitLab deploy key.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="accessleveldeploykeyexpiresat"></a>`expiresAt` | [`Date`](#date) | Expiration date of the deploy key. |
+| <a id="accessleveldeploykeyid"></a>`id` | [`ID!`](#id) | ID of the deploy key. |
+| <a id="accessleveldeploykeytitle"></a>`title` | [`String!`](#string) | Title of the deploy key. |
+| <a id="accessleveldeploykeyuser"></a>`user` | [`AccessLevelUser!`](#accessleveluser) | User assigned to the deploy key. |
+
 ### `AccessLevelGroup`
 
 Representation of a GitLab group.
@@ -12151,7 +12164,7 @@ Representation of a GitLab user.
 | <a id="accessleveluserid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="accesslevelusername"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="accessleveluserpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
-| <a id="accessleveluserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
+| <a id="accessleveluserusername"></a>`username` | [`String!`](#string) | Username of the user. |
 | <a id="accessleveluserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
 | <a id="accessleveluserweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
 
@@ -22359,6 +22372,7 @@ Defines which user roles, users, or groups can push to a protected branch.
 | ---- | ---- | ----------- |
 | <a id="pushaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
 | <a id="pushaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
+| <a id="pushaccessleveldeploykey"></a>`deployKey` | [`AccessLevelDeployKey`](#accessleveldeploykey) | Deploy key assigned to the access level. |
 | <a id="pushaccesslevelgroup"></a>`group` | [`AccessLevelGroup`](#accesslevelgroup) | Group associated with this access level. |
 | <a id="pushaccessleveluser"></a>`user` | [`AccessLevelUser`](#accessleveluser) | User associated with this access level. |
 
@@ -22594,6 +22608,7 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="repositoryvalidatecodeownerfilepath"></a>`path` | [`String`](#string) | Path of a file called CODEOWNERS that should be validated. Default to file in use. |
 | <a id="repositoryvalidatecodeownerfileref"></a>`ref` | [`String`](#string) | Ref where code owners file needs to be checked. Defaults to the repository's default branch. |
 
 ### `RepositoryBlob`

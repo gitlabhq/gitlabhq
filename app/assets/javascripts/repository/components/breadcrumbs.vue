@@ -1,7 +1,7 @@
 <script>
 import { GlDisclosureDropdown, GlModalDirective } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/repository/permissions.query.graphql';
-import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
+import { joinPaths, escapeFileUrl, buildURLwithRefType } from '~/lib/utils/url_utility';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { __ } from '~/locale';
 import getRefMixin from '../mixins/get_ref';
@@ -48,6 +48,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    refType: {
+      type: String,
+      required: false,
+      default: null,
     },
     canCollaborate: {
       type: Boolean,
@@ -141,14 +146,17 @@ export default {
             return acc.concat({
               name,
               path,
-              to,
+              to: buildURLwithRefType({ path: to, refType: this.refType }),
             });
           },
           [
             {
               name: this.projectShortPath,
               path: '/',
-              to: `/-/tree/${this.escapedRef}/`,
+              to: buildURLwithRefType({
+                path: joinPaths('/-/tree', this.escapedRef),
+                refType: this.refType,
+              }),
             },
           ],
         );

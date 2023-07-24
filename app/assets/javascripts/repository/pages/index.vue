@@ -6,6 +6,13 @@ export default {
   components: {
     TreePage,
   },
+  props: {
+    refType: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
   mounted() {
     this.updateProjectElements(true);
   },
@@ -21,5 +28,5 @@ export default {
 </script>
 
 <template>
-  <tree-page path="/" />
+  <tree-page path="/" :ref-type="refType" />
 </template>
