@@ -4,7 +4,7 @@ module Types
   class SavedReplyType < BaseObject
     graphql_name 'SavedReply'
 
-    connection_type_class(Types::CountableConnectionType)
+    connection_type_class Types::CountableConnectionType
 
     authorize :read_saved_replies
 

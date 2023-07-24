@@ -9,7 +9,7 @@ module Types
 
       present_using ::Ci::BuildPresenter
 
-      connection_type_class(Types::LimitedCountableConnectionType)
+      connection_type_class Types::LimitedCountableConnectionType
 
       expose_permissions Types::PermissionTypes::Ci::Job
 

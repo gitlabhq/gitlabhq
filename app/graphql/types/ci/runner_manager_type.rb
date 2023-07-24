@@ -5,7 +5,7 @@ module Types
     class RunnerManagerType < BaseObject
       graphql_name 'CiRunnerManager'
 
-      connection_type_class(::Types::CountableConnectionType)
+      connection_type_class ::Types::CountableConnectionType
 
       authorize :read_runner_manager
 

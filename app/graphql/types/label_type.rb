@@ -4,7 +4,7 @@ module Types
   class LabelType < BaseObject
     graphql_name 'Label'
 
-    connection_type_class(Types::CountableConnectionType)
+    connection_type_class Types::CountableConnectionType
 
     authorize :read_label
 

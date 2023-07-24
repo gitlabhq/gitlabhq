@@ -7,7 +7,7 @@ module Types
       graphql_name 'TestSuiteSummary'
       description 'Test suite summary in a pipeline test report.'
 
-      connection_type_class(Types::CountableConnectionType)
+      connection_type_class Types::CountableConnectionType
 
       field :name, GraphQL::Types::String, null: true,
                                            description: 'Name of the test suite.'

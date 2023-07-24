@@ -7,7 +7,7 @@ module Types
 
       authorize :read_terraform_state
 
-      connection_type_class(Types::CountableConnectionType)
+      connection_type_class Types::CountableConnectionType
 
       field :id, GraphQL::Types::ID,
             null: false,

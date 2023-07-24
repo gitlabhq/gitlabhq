@@ -9886,6 +9886,9 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "CiVariables|Add Variable"
+msgstr ""
+
 msgid "CiVariables|Attributes"
 msgstr ""
 
@@ -9898,7 +9901,13 @@ msgstr ""
 msgid "CiVariables|Environments"
 msgstr ""
 
+msgid "CiVariables|Expand variable reference"
+msgstr ""
+
 msgid "CiVariables|Expanded"
+msgstr ""
+
+msgid "CiVariables|Export variable to pipelines running on protected branches and tags only."
 msgstr ""
 
 msgid "CiVariables|File"
@@ -9916,6 +9925,9 @@ msgstr ""
 msgid "CiVariables|Key"
 msgstr ""
 
+msgid "CiVariables|Mask variable"
+msgstr ""
+
 msgid "CiVariables|Masked"
 msgstr ""
 
@@ -9923,6 +9935,9 @@ msgid "CiVariables|Maximum number of Inherited Group CI variables loaded (2000)"
 msgstr ""
 
 msgid "CiVariables|Maximum number of variables reached."
+msgstr ""
+
+msgid "CiVariables|Protect variable"
 msgstr ""
 
 msgid "CiVariables|Protected"
@@ -9962,6 +9977,9 @@ msgid "CiVariables|Type"
 msgstr ""
 
 msgid "CiVariables|Value"
+msgstr ""
+
+msgid "CiVariables|Variable will be masked in job logs. Requires values to meet regular expression requirements."
 msgstr ""
 
 msgid "CiVariables|Variables"
@@ -45544,7 +45562,7 @@ msgstr ""
 msgid "Tags:"
 msgstr ""
 
-msgid "TagsPage|After you confirm and select %{strongStart}%{buttonText},%{strongEnd} you cannot recover this tag."
+msgid "TagsPage|Are you sure you want to delete this tag?"
 msgstr ""
 
 msgid "TagsPage|Browse commits"
@@ -45571,16 +45589,13 @@ msgstr ""
 msgid "TagsPage|Delete protected tag"
 msgstr ""
 
-msgid "TagsPage|Delete protected tag. Are you ABSOLUTELY SURE?"
-msgstr ""
-
 msgid "TagsPage|Delete tag"
 msgstr ""
 
-msgid "TagsPage|Delete tag. Are you ABSOLUTELY SURE?"
+msgid "TagsPage|Deleting the %{strongStart}%{tagName}%{strongEnd} protected tag cannot be undone."
 msgstr ""
 
-msgid "TagsPage|Deleting the %{strongStart}%{tagName}%{strongEnd} tag cannot be undone. Are you sure?"
+msgid "TagsPage|Deleting the %{strongStart}%{tagName}%{strongEnd} tag cannot be undone."
 msgstr ""
 
 msgid "TagsPage|Do you want to create a release with the new tag? You can do that in the %{link_start}New release page%{link_end}."
@@ -45610,6 +45625,12 @@ msgstr ""
 msgid "TagsPage|Optionally, add a message to the tag. Leaving this blank creates a %{link_start}lightweight tag.%{link_end}"
 msgstr ""
 
+msgid "TagsPage|Permanently delete protected tag?"
+msgstr ""
+
+msgid "TagsPage|Permanently delete tag?"
+msgstr ""
+
 msgid "TagsPage|Please type the following to confirm:"
 msgstr ""
 
@@ -45635,12 +45656,6 @@ msgid "TagsPage|Yes, delete protected tag"
 msgstr ""
 
 msgid "TagsPage|Yes, delete tag"
-msgstr ""
-
-msgid "TagsPage|You're about to permanently delete the protected tag %{strongStart}%{tagName}.%{strongEnd}"
-msgstr ""
-
-msgid "TagsPage|You're about to permanently delete the tag %{strongStart}%{tagName}.%{strongEnd}"
 msgstr ""
 
 msgid "TagsPage|protected"
@@ -50658,6 +50673,9 @@ msgid "ValueStreamEvent|Stop"
 msgstr ""
 
 msgid "Variable"
+msgstr ""
+
+msgid "Variable (default)"
 msgstr ""
 
 msgid "Variable name '%{variable}' must not start with '%{prefix}'"

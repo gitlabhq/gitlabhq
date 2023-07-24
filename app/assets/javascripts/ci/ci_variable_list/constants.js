@@ -7,14 +7,6 @@ export const SORT_DIRECTIONS = {
   ASC: 'KEY_ASC',
   DESC: 'KEY_DESC',
 };
-
-// This const will be deprecated once we remove VueX from the section
-export const displayText = {
-  variableText: __('Variable'),
-  fileText: __('File'),
-  allEnvironmentsText: __('All (default)'),
-};
-
 export const variableTypes = {
   envType: 'ENV_VAR',
   fileType: 'FILE',
@@ -26,8 +18,8 @@ export const allEnvironments = {
 };
 
 export const variableOptions = [
-  { value: variableTypes.envType, text: variableTypes.envType },
-  { value: variableTypes.fileType, text: variableTypes.fileType },
+  { value: variableTypes.envType, text: __('Variable (default)') },
+  { value: variableTypes.fileType, text: __('File') },
 ];
 
 export const defaultVariableState = {

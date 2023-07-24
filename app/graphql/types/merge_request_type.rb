@@ -4,7 +4,7 @@ module Types
   class MergeRequestType < BaseObject
     graphql_name 'MergeRequest'
 
-    connection_type_class(Types::MergeRequestConnectionType)
+    connection_type_class Types::MergeRequestConnectionType
 
     implements(Types::Notes::NoteableInterface)
     implements(Types::CurrentUserTodos)

@@ -7,7 +7,7 @@ module Types
       graphql_name 'CiGroupVariable'
       description 'CI/CD variables for a group.'
 
-      connection_type_class(Types::Ci::GroupVariableConnectionType)
+      connection_type_class Types::Ci::GroupVariableConnectionType
       implements(VariableInterface)
 
       field :environment_scope, GraphQL::Types::String,

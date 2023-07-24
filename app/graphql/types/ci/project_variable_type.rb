@@ -7,7 +7,7 @@ module Types
       graphql_name 'CiProjectVariable'
       description 'CI/CD variables for a project.'
 
-      connection_type_class(Types::Ci::ProjectVariableConnectionType)
+      connection_type_class Types::Ci::ProjectVariableConnectionType
       implements(VariableInterface)
 
       field :environment_scope, GraphQL::Types::String,

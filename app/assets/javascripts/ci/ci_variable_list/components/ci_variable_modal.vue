@@ -241,7 +241,7 @@ export default {
       this.resetVariableData();
       this.resetValidationErrorEvents();
 
-      this.$emit('hideModal');
+      this.$emit('close-form');
     },
     resetVariableData() {
       this.variable = { ...defaultVariableState };

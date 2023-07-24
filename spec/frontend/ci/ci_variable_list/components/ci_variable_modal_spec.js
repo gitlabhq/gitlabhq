@@ -122,9 +122,9 @@ describe('Ci variable modal', () => {
         expect(wrapper.emitted('add-variable')).toEqual([[currentVariable]]);
       });
 
-      it('Dispatches the `hideModal` event when dismissing', () => {
+      it('Dispatches the `close-form` event when dismissing', () => {
         findModal().vm.$emit('hidden');
-        expect(wrapper.emitted('hideModal')).toEqual([[]]);
+        expect(wrapper.emitted('close-form')).toEqual([[]]);
       });
     });
   });
@@ -313,9 +313,9 @@ describe('Ci variable modal', () => {
       expect(wrapper.emitted('update-variable')).toEqual([[variable]]);
     });
 
-    it('Propagates the `hideModal` event', () => {
+    it('Propagates the `close-form` event', () => {
       findModal().vm.$emit('hidden');
-      expect(wrapper.emitted('hideModal')).toEqual([[]]);
+      expect(wrapper.emitted('close-form')).toEqual([[]]);
     });
 
     it('dispatches `delete-variable` with correct variable to delete', () => {

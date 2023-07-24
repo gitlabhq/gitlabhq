@@ -7,7 +7,7 @@ module Types
       graphql_name 'TestCase'
       description 'Test case in pipeline test report.'
 
-      connection_type_class(Types::CountableConnectionType)
+      connection_type_class Types::CountableConnectionType
 
       field :status,
             Types::Ci::TestCaseStatusEnum,

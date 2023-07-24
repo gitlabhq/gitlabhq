@@ -12,6 +12,8 @@ RSpec.describe 'Project variables', :js, feature_category: :secrets_management d
     sign_in(user)
     project.add_maintainer(user)
     project.variables << variable
+
+    stub_feature_flags(ci_variable_drawer: false)
     visit page_path
     wait_for_requests
   end
@@ -48,5 +50,15 @@ RSpec.describe 'Project variables', :js, feature_category: :secrets_management d
     page.within('[data-testid="ci-variable-table"]') do
       expect(find('.js-ci-variable-row:first-child [data-label="Environments"]').text).to eq('review/*')
     end
+  end
+
+  context 'when ci_variable_drawer FF is enabled' do
+    before do
+      stub_feature_flags(ci_variable_drawer: true)
+      visit page_path
+      wait_for_requests
+    end
+
+    it_behaves_like 'variable list drawer'
   end
 end

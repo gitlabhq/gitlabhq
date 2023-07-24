@@ -5,7 +5,7 @@ module Types
     class PipelineType < BaseObject
       graphql_name 'Pipeline'
 
-      connection_type_class(Types::CountableConnectionType)
+      connection_type_class Types::CountableConnectionType
 
       authorize :read_pipeline
       present_using ::Ci::PipelinePresenter
