@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Note, ResolvableNote do
+RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -55,11 +55,13 @@ RSpec.describe Note, ResolvableNote do
       unresolved_note.reload
     end
 
-    it 'resolves only the resolvable, not yet resolved notes' do
+    it 'resolves only the resolvable, not yet resolved notes', :freeze_time do
       expect(commit_note.resolved_at).to be_nil
       expect(resolved_note.resolved_by).not_to eq(current_user)
+
       expect(unresolved_note.resolved_at).not_to be_nil
       expect(unresolved_note.resolved_by).to eq(current_user)
+      expect(unresolved_note.updated_at).to be_like_time(Time.current)
     end
   end
 
@@ -72,9 +74,10 @@ RSpec.describe Note, ResolvableNote do
       resolved_note.reload
     end
 
-    it 'unresolves the resolved notes' do
+    it 'unresolves the resolved notes', :freeze_time do
       expect(resolved_note.resolved_by).to be_nil
       expect(resolved_note.resolved_at).to be_nil
+      expect(resolved_note.updated_at).to be_like_time(Time.current)
     end
   end
 
@@ -272,6 +275,12 @@ RSpec.describe Note, ResolvableNote do
 
           expect(subject.resolved?).to be true
         end
+
+        it "updates the updated_at timestamp", :freeze_time do
+          subject.resolve!(current_user)
+
+          expect(subject.updated_at).to be_like_time(Time.current)
+        end
       end
     end
   end
@@ -319,6 +328,12 @@ RSpec.describe Note, ResolvableNote do
           subject.unresolve!
 
           expect(subject.resolved?).to be false
+        end
+
+        it "updates the updated_at timestamp", :freeze_time do
+          subject.unresolve!
+
+          expect(subject.updated_at).to be_like_time(Time.current)
         end
       end
 

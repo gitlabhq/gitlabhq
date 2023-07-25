@@ -33728,7 +33728,7 @@ msgstr ""
 msgid "PipelineGraph|What is a downstream pipeline?"
 msgstr ""
 
-msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more.%{linkEnd})"
+msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more%{linkEnd}.)"
 msgstr ""
 
 msgid "PipelineSchedules|A scheduled pipeline starts automatically at regular intervals, like daily or weekly. The pipeline: "

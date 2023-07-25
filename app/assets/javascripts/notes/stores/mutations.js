@@ -238,25 +238,35 @@ export default {
   },
 
   [types.UPDATE_NOTE](state, note) {
-    const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
+    const discussion = utils.findNoteObjectById(state.discussions, note.discussion_id);
 
     // Disable eslint here so we can delete the property that we no longer need
     // in the note object
     // eslint-disable-next-line no-param-reassign
     delete note.base_discussion;
 
-    if (noteObj.individual_note) {
+    if (discussion.individual_note) {
       if (note.type === constants.DISCUSSION_NOTE) {
-        noteObj.individual_note = false;
+        discussion.individual_note = false;
       }
 
-      noteObj.notes.splice(0, 1, note);
+      discussion.notes.splice(0, 1, note);
     } else {
-      const comment = utils.findNoteObjectById(noteObj.notes, note.id);
+      const comment = utils.findNoteObjectById(discussion.notes, note.id);
 
       if (!isEqual(comment, note)) {
-        noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
+        discussion.notes.splice(discussion.notes.indexOf(comment), 1, note);
       }
+    }
+
+    if (note.resolvable && note.id === discussion.notes[0].id) {
+      Object.assign(discussion, {
+        resolvable: note.resolvable,
+        resolved: note.resolved,
+        resolved_at: note.resolved_at,
+        resolved_by: note.resolved_by,
+        resolved_by_push: note.resolved_by_push,
+      });
     }
   },
 

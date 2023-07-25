@@ -452,11 +452,36 @@ describe('Notes Store mutations', () => {
         discussions: [individualNote],
       };
 
-      const transformedNote = { ...individualNote.notes[0], type: DISCUSSION_NOTE };
+      const transformedNote = {
+        ...individualNote.notes[0],
+        type: DISCUSSION_NOTE,
+        resolvable: true,
+      };
 
       mutations.UPDATE_NOTE(state, transformedNote);
 
       expect(state.discussions[0].individual_note).toEqual(false);
+      expect(state.discussions[0].resolvable).toEqual(true);
+    });
+
+    it('copies resolve state to discussion', () => {
+      const state = { discussions: [{ ...discussionMock }] };
+
+      const resolvedNote = {
+        ...discussionMock.notes[0],
+        resolvable: true,
+        resolved: true,
+        resolved_at: '2017-08-02T10:51:58.559Z',
+        resolved_by: discussionMock.notes[0].author,
+        resolved_by_push: false,
+      };
+
+      mutations.UPDATE_NOTE(state, resolvedNote);
+
+      expect(state.discussions[0].resolved).toEqual(resolvedNote.resolved);
+      expect(state.discussions[0].resolved_at).toEqual(resolvedNote.resolved_at);
+      expect(state.discussions[0].resolved_by).toEqual(resolvedNote.resolved_by);
+      expect(state.discussions[0].resolved_by_push).toEqual(resolvedNote.resolved_by_push);
     });
   });
 

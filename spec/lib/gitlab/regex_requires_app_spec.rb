@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # Only specs that *cannot* be run with fast_spec_helper only
 # See regex_spec for tests that do not require the full spec_helper
-RSpec.describe Gitlab::Regex do
+RSpec.describe Gitlab::Regex, feature_category: :tooling do
   describe '.debian_architecture_regex' do
     subject { described_class.debian_architecture_regex }
 

@@ -50,6 +50,10 @@ RSpec.describe 'admin issues labels', feature_category: :team_planning do
       expect(page).to have_content("Define your default set of project labels")
       expect(page).not_to have_content('bug')
       expect(page).not_to have_content('feature_label')
+
+      page.within '.js-admin-labels-count' do
+        expect(page).to have_content('0')
+      end
     end
   end
 

@@ -48,6 +48,7 @@ class NoteEntity < API::Entities::Note
   expose :resolvable?, as: :resolvable
 
   expose :resolved_by, using: NoteUserEntity
+  expose :resolved_by_push?, as: :resolved_by_push
 
   expose :system_note_icon_name, if: -> (note, _) { note.system? } do |note|
     SystemNoteHelper.system_note_icon_name(note)

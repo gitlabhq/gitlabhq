@@ -5,8 +5,18 @@ RSpec.shared_examples 'a working graphql query' do
 
   it 'returns a successful response', :aggregate_failures do
     expect(response).to have_gitlab_http_status(:success)
-    expect(graphql_errors).to be_nil
+    expect_graphql_errors_to_be_empty
     expect(json_response.keys).to include('data')
+  end
+end
+
+RSpec.shared_examples 'a working graphql query that returns data' do
+  include GraphqlHelpers
+
+  it_behaves_like 'a working graphql query'
+
+  it 'contains data' do
+    expect(graphql_data.compact).not_to be_empty
   end
 end
 
@@ -20,11 +30,7 @@ RSpec.shared_examples 'a working GraphQL mutation' do
   shared_examples 'allows access to the mutation' do
     let(:scopes) { ['api'] }
 
-    it_behaves_like 'a working graphql query' do
-      it 'returns data' do
-        expect(graphql_data.compact).not_to be_empty
-      end
-    end
+    it_behaves_like 'a working graphql query that returns data'
   end
 
   shared_examples 'prevents access to the mutation' do

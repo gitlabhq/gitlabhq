@@ -15,7 +15,6 @@ class BaseDiscussionEntity < Grape::Entity
   expose :for_commit?, as: :for_commit
   expose :individual_note?, as: :individual_note
   expose :resolvable?, as: :resolvable
-  expose :resolved_by_push?, as: :resolved_by_push
 
   expose :truncated_diff_lines, using: DiffLineEntity, if: -> (d, _) { d.diff_discussion? && d.on_text? && (d.expanded? || render_truncated_diff_lines?) }
 
@@ -34,7 +33,12 @@ class BaseDiscussionEntity < Grape::Entity
     discussion_path(discussion)
   end
 
-  with_options if: -> (d, _) { d.resolvable? } do
+  with_options if: -> (d, _) { d.noteable.supports_resolvable_notes? } do
+    expose :resolved?, as: :resolved
+    expose :resolved_by_push?, as: :resolved_by_push
+    expose :resolved_by, using: NoteUserEntity
+    expose :resolved_at
+
     expose :resolve_path do |discussion|
       resolve_project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion.id)
     end

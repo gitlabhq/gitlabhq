@@ -126,6 +126,9 @@ export function initAdminLabels() {
       'ul.manage-labels-list li.label-list-item:not(.gl-display-none\\!)',
     ).length;
 
+    // update labels count in UI
+    document.querySelector('.js-admin-labels-count').innerText = labelsCount;
+
     // display the empty state if there are no more labels
     if (labelsCount < 1 && !pagination && emptyState) {
       emptyState.classList.remove('gl-display-none');

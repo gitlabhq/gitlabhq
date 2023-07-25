@@ -30,6 +30,10 @@ RSpec.describe BaseDiscussionEntity do
       :id,
       :individual_note,
       :resolvable,
+      :resolved,
+      :resolved_by_push,
+      :resolved_by,
+      :resolved_at,
       :resolve_path,
       :resolve_with_issue_path
     )
