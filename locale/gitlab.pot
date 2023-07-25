@@ -1214,6 +1214,9 @@ msgstr ""
 msgid "%{text} is available"
 msgstr ""
 
+msgid "%{time_ago}"
+msgstr ""
+
 msgid "%{timebox_type} does not support burnup charts"
 msgstr ""
 
@@ -2858,6 +2861,9 @@ msgid "Add new directory"
 msgstr ""
 
 msgid "Add new emoji"
+msgstr ""
+
+msgid "Add new key"
 msgstr ""
 
 msgid "Add new webhook"
@@ -35483,9 +35489,6 @@ msgstr ""
 msgid "Profiles|Created"
 msgstr ""
 
-msgid "Profiles|Created%{time_ago}"
-msgstr ""
-
 msgid "Profiles|Current path: %{path}"
 msgstr ""
 
@@ -35555,13 +35558,7 @@ msgstr ""
 msgid "Profiles|Expired"
 msgstr ""
 
-msgid "Profiles|Expired:"
-msgstr ""
-
 msgid "Profiles|Expires"
-msgstr ""
-
-msgid "Profiles|Expires:"
 msgstr ""
 
 msgid "Profiles|Feed token was successfully reset"
@@ -35604,9 +35601,6 @@ msgid "Profiles|Key titles are publicly visible."
 msgstr ""
 
 msgid "Profiles|Last used"
-msgstr ""
-
-msgid "Profiles|Last used:"
 msgstr ""
 
 msgid "Profiles|Linked emails"
@@ -35736,9 +35730,6 @@ msgid "Profiles|Upload new avatar"
 msgstr ""
 
 msgid "Profiles|Usage type"
-msgstr ""
-
-msgid "Profiles|Usage type:"
 msgstr ""
 
 msgid "Profiles|Use a private email - %{email}"
@@ -53704,7 +53695,7 @@ msgstr ""
 msgid "Your SSH key was deleted"
 msgstr ""
 
-msgid "Your SSH keys (%{count})"
+msgid "Your SSH keys"
 msgstr ""
 
 msgid "Your Time-based OTP device was registered!"

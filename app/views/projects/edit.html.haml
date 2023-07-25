@@ -77,10 +77,9 @@
       %p
         = _('Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.')
         = link_to _('Learn more.'), help_page_path('administration/housekeeping'), target: '_blank', rel: 'noopener noreferrer'
-      = render Pajamas::ButtonComponent.new(method: :post, href: housekeeping_project_path(@project)) do
-        = _('Run housekeeping')
-
-      .gl-display-inline-flex
+      .gl-display-flex.gl-flex-wrap.gl-gap-3
+        = render Pajamas::ButtonComponent.new(method: :post, href: housekeeping_project_path(@project)) do
+          = _('Run housekeeping')
         #js-project-prune-unreachable-objects-button{ data: { prune_objects_path: housekeeping_project_path(@project, prune: true), prune_objects_doc_path: help_page_path('administration/housekeeping', anchor: 'prune-unreachable-objects') } }
 
     = render 'export', project: @project

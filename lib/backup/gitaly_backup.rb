@@ -107,7 +107,11 @@ module Backup
         'SSL_CERT_FILE' => Gitlab::X509::Certificate.default_cert_file,
         'SSL_CERT_DIR' => Gitlab::X509::Certificate.default_cert_dir,
         'GITALY_SERVERS' => gitaly_servers_encoded
-      }.merge(ENV)
+      }.merge(current_env)
+    end
+
+    def current_env
+      ENV
     end
 
     def started?

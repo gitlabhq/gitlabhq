@@ -132,11 +132,8 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         )
       end
 
-      before do
-        stub_const('ENV', ssl_env)
-      end
-
       it 'passes through SSL envs' do
+        expect(subject).to receive(:current_env).and_return(ssl_env)
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
 
         subject.start(:create, destination, backup_id: backup_id)

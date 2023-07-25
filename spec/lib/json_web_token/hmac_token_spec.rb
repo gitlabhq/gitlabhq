@@ -25,7 +25,7 @@ RSpec.describe JSONWebToken::HMACToken do
   end
 
   describe '.decode' do
-    let(:leeway) { described_class::IAT_LEEWAY }
+    let(:leeway) { described_class::LEEWAY }
     let(:decoded_token) { described_class.decode(encoded_token, secret, leeway: leeway) }
 
     context 'with an invalid token' do

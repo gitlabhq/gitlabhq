@@ -87,6 +87,7 @@ module Types
           Types::Ci::GroupEnvironmentScopeType.connection_type,
           description: 'Environment scopes of the group.',
           null: true,
+          authorize: :admin_group,
           resolver: Resolvers::GroupEnvironmentScopesResolver
 
     field :milestones,

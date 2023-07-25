@@ -18244,6 +18244,7 @@ CREATE TABLE merge_request_diffs (
     files_count smallint,
     sorted boolean DEFAULT false NOT NULL,
     diff_type smallint DEFAULT 1 NOT NULL,
+    patch_id_sha bytea,
     CONSTRAINT check_93ee616ac9 CHECK ((external_diff_store IS NOT NULL))
 );
 

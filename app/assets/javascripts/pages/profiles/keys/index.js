@@ -12,6 +12,7 @@ function initSshKeyValidation() {
   const warning = document.querySelector('.js-add-ssh-key-validation-warning');
   const originalSubmit = input.form.querySelector('.js-add-ssh-key-validation-original-submit');
   const confirmSubmit = warning.querySelector('.js-add-ssh-key-validation-confirm-submit');
+  const cancelButton = input.form.querySelector('.js-add-ssh-key-validation-cancel');
 
   const addSshKeyValidation = new AddSshKeyValidation(
     supportedAlgorithms,
@@ -19,6 +20,7 @@ function initSshKeyValidation() {
     warning,
     originalSubmit,
     confirmSubmit,
+    cancelButton,
   );
   addSshKeyValidation.register();
 }

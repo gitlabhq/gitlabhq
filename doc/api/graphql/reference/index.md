@@ -13902,6 +13902,7 @@ Code Quality report for a pipeline.
 | <a id="commitauthoreddate"></a>`authoredDate` | [`Time`](#time) | Timestamp of when the commit was authored. |
 | <a id="commitdescription"></a>`description` | [`String`](#string) | Description of the commit message. |
 | <a id="commitdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="commitdiffs"></a>`diffs` | [`[Diff!]`](#diff) | Diffs contained within the commit. This field can only be resolved for 10 diffs in any single request. |
 | <a id="commitfulltitle"></a>`fullTitle` | [`String`](#string) | Full title of the commit message. |
 | <a id="commitfulltitlehtml"></a>`fullTitleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `full_title`. |
 | <a id="commitid"></a>`id` | [`ID!`](#id) | ID (global ID) of the commit. |
@@ -15088,6 +15089,21 @@ Snapshot.
 | <a id="devopsadoptionsnapshotstarttime"></a>`startTime` | [`Time!`](#time) | Start time for the snapshot where the data points were collected. |
 | <a id="devopsadoptionsnapshottotalprojectscount"></a>`totalProjectsCount` | [`Int`](#int) | Total number of projects. |
 | <a id="devopsadoptionsnapshotvulnerabilitymanagementusedcount"></a>`vulnerabilityManagementUsedCount` | [`Int`](#int) | Total number of projects with vulnerability management used at least once. |
+
+### `Diff`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="diffamode"></a>`aMode` | [`String`](#string) | Old file mode of the file. |
+| <a id="diffbmode"></a>`bMode` | [`String`](#string) | New file mode of the file. |
+| <a id="diffdeletedfile"></a>`deletedFile` | [`String`](#string) | Indicates if the file has been removed. |
+| <a id="diffdiff"></a>`diff` | [`String`](#string) | Diff representation of the changes made to the file. |
+| <a id="diffnewfile"></a>`newFile` | [`String`](#string) | Indicates if the file has just been added. |
+| <a id="diffnewpath"></a>`newPath` | [`String`](#string) | New path of the file. |
+| <a id="diffoldpath"></a>`oldPath` | [`String`](#string) | Old path of the file. |
+| <a id="diffrenamedfile"></a>`renamedFile` | [`String`](#string) | Indicates if the file has been renamed. |
 
 ### `DiffPosition`
 

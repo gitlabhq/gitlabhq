@@ -29,7 +29,7 @@ module QA
             ssh_keys.remove_key(key.title)
           end
 
-          expect(page).not_to have_content("Title: #{key.title}")
+          expect(page).not_to have_content(key.title)
           expect(page).not_to have_content(key.sha256_fingerprint)
         end
       end

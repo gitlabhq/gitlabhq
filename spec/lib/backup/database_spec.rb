@@ -272,14 +272,13 @@ RSpec.describe Backup::Database, feature_category: :backup_restore do
     end
 
     context 'with PostgreSQL settings defined in the environment' do
-      let(:cmd) { %W[#{Gem.ruby} -e] + ["$stderr.puts ENV.to_h.select { |k, _| k.start_with?('PG') }"] }
       let(:config) { YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))['test'] }
 
       before do
-        stub_const 'ENV', ENV.to_h.merge({
+        stub_env(ENV.to_h.merge({
           'GITLAB_BACKUP_PGHOST' => 'test.example.com',
           'PGPASSWORD' => 'donotchange'
-        })
+        }))
       end
 
       it 'overrides default config values' do
@@ -289,12 +288,13 @@ RSpec.describe Backup::Database, feature_category: :backup_restore do
           expect(Rake::Task['gitlab:db:drop_tables:main']).to receive(:invoke)
         end
 
+        expect(ENV).to receive(:[]=).with('PGHOST', 'test.example.com')
+        expect(ENV).not_to receive(:[]=).with('PGPASSWORD', anything)
+
         subject.restore(backup_dir)
 
-        expect(output).to include(%("PGHOST"=>"test.example.com"))
-        expect(output).to include(%("PGPASSWORD"=>"donotchange"))
-        expect(output).to include(%("PGPORT"=>"#{config['port']}")) if config['port']
-        expect(output).to include(%("PGUSER"=>"#{config['username']}")) if config['username']
+        expect(ENV['PGPORT']).to eq(config['port']) if config['port']
+        expect(ENV['PGUSER']).to eq(config['username']) if config['username']
       end
     end
 

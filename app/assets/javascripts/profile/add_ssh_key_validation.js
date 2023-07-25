@@ -5,6 +5,7 @@ export default class AddSshKeyValidation {
     warningElement,
     originalSubmitElement,
     confirmSubmitElement,
+    cancelButtonElement,
   ) {
     this.inputElement = inputElement;
     this.form = inputElement.form;
@@ -16,6 +17,7 @@ export default class AddSshKeyValidation {
 
     this.originalSubmitElement = originalSubmitElement;
     this.confirmSubmitElement = confirmSubmitElement;
+    this.cancelButtonElement = cancelButtonElement;
 
     this.isValid = false;
   }
@@ -44,6 +46,7 @@ export default class AddSshKeyValidation {
   toggleWarning(isVisible) {
     this.warningElement.classList.toggle('hide', !isVisible);
     this.originalSubmitElement.classList.toggle('hide', isVisible);
+    this.cancelButtonElement?.classList.toggle('hide', isVisible);
   }
 
   isPublicKey(value) {

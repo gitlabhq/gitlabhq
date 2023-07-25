@@ -59,6 +59,14 @@ module Types
     field :author, type: Types::UserType, null: true,
                    description: 'Author of the commit.'
 
+    field :diffs, [Types::DiffType], null: true, calls_gitaly: true,
+    description: 'Diffs contained within the commit. ' \
+                 'This field can only be resolved for 10 diffs in any single request.' do
+      # Limited to 10 calls per GraphQL request as calling `diffs` multiple times will
+      # lead to N+1 queries to Gitaly.
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 10
+    end
+
     field :pipelines,
           null: true,
           description: 'Pipelines of the commit ordered latest first.',
@@ -67,6 +75,10 @@ module Types
     markdown_field :title_html, null: true
     markdown_field :full_title_html, null: true
     markdown_field :description_html, null: true
+
+    def diffs
+      object.diffs.diffs
+    end
 
     def author_gravatar
       GravatarService.new.execute(object.author_email, 40)

@@ -11,6 +11,10 @@ This page contains information about the settings that are used on GitLab.com, a
 
 See some of these settings on the [instance configuration page](https://gitlab.com/help/instance_configuration) of GitLab.com.
 
+## Unconfirmed user deletion
+
+GitLab.com has the [`unconfirmed_users_delete_after_days`](../../administration/moderate_users.md#automatically-delete-unconfirmed-users) setting set to seven days.
+
 ## Password requirements
 
 GitLab.com has the following requirements for passwords on new accounts and password changes:
