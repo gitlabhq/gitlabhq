@@ -202,7 +202,7 @@ to share objects with another repository:
 ### Error: `An error occurred while forking the project. Please try again`
 
 This error can be due to a mismatch in shared runner settings between the forked project
-and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#forks)
+and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#using-shared-runners-in-forked-projects)
 in the Runner documentation for more information.
 
 ### Removing fork relationship fails

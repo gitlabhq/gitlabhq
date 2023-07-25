@@ -40827,10 +40827,22 @@ msgstr ""
 msgid "ScanExecutionPolicy|Conditions"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Create new scan profile"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Create new site profile"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Customized CI variables:"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Customized variables will overwrite ones defined in the project CI/CD file and settings"
+msgstr ""
+
+msgid "ScanExecutionPolicy|DAST scan profiles"
+msgstr ""
+
+msgid "ScanExecutionPolicy|DAST site profiles"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Key"
@@ -40848,9 +40860,6 @@ msgstr ""
 msgid "ScanExecutionPolicy|Only one variable can be added at a time."
 msgstr ""
 
-msgid "ScanExecutionPolicy|Run a %{scan} scan with %{dastProfiles} with the following options:"
-msgstr ""
-
 msgid "ScanExecutionPolicy|Run a %{scan} scan with the following options:"
 msgstr ""
 
@@ -40858,9 +40867,6 @@ msgid "ScanExecutionPolicy|Runner tags"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Runner tags:"
-msgstr ""
-
-msgid "ScanExecutionPolicy|Scanner profile"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Schedule rule component"
@@ -40893,9 +40899,6 @@ msgstr ""
 msgid "ScanExecutionPolicy|Select timezone"
 msgstr ""
 
-msgid "ScanExecutionPolicy|Site profile"
-msgstr ""
-
 msgid "ScanExecutionPolicy|Tags"
 msgstr ""
 
@@ -40924,9 +40927,6 @@ msgid "ScanExecutionPolicy|on %{hostname}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|on the Kubernetes agent pod"
-msgstr ""
-
-msgid "ScanExecutionPolicy|scanner profile %{scannerProfile} and site profile %{siteProfile}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|selected automatically"

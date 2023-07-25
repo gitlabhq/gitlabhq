@@ -1,12 +1,13 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarDetailRow from '~/jobs/components/job/sidebar/sidebar_detail_row.vue';
+import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 describe('Sidebar detail row', () => {
   let wrapper;
 
   const title = 'this is the title';
   const value = 'this is the value';
-  const helpUrl = 'https://docs.gitlab.com/runner/register/index.html';
+  const helpUrl = `${DOCS_URL}/runner/register/index.html`;
   const path = 'path/to/value';
 
   const findHelpLink = () => wrapper.findByTestId('job-sidebar-help-link');

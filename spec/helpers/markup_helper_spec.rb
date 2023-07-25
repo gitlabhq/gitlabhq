@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MarkupHelper do
+RSpec.describe MarkupHelper, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) do
     user = create(:user, username: 'gfm')
@@ -461,7 +461,7 @@ RSpec.describe MarkupHelper do
 
       it 'displays the first line of a code block' do
         object = create_object("```\nCode block\nwith two lines\n```")
-        expected = %r{<pre.+><code><span class="line">Code block\.\.\.</span>\n</code></pre>}
+        expected = %r{<pre.+><code><span class="line">Code block\.\.\.</span></code></pre>}
 
         expect(helper.first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)).to match(expected)
       end
@@ -477,7 +477,7 @@ RSpec.describe MarkupHelper do
       it 'preserves code color scheme' do
         object = create_object("```ruby\ndef test\n  'hello world'\nend\n```")
         expected = "\n<pre class=\"code highlight js-syntax-highlight language-ruby\">" \
-          "<code><span class=\"line\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>\n" \
+          "<code><span class=\"line\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>" \
           "</code></pre>\n"
 
         expect(helper.first_line_in_markdown(object, attribute, 150, is_todo: true, project: project)).to eq(expected)

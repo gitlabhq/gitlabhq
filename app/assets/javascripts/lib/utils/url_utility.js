@@ -20,6 +20,7 @@ export const PROMO_HOST = `about.${DOMAIN}`; // about.gitlab.com
 // About Gitlab default url
 export const PROMO_URL = `https://${PROMO_HOST}`;
 
+// eslint-disable-next-line no-restricted-syntax
 export const DOCS_URL_IN_EE_DIR = `${DOCS_URL}/ee`;
 
 // Reset the cursor in a Regex so that multiple uses before a recompile don't fail

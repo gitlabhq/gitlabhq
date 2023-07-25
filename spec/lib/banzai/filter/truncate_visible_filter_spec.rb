@@ -44,7 +44,7 @@ RSpec.describe Banzai::Filter::TruncateVisibleFilter, feature_category: :team_pl
 
   describe 'truncates the first line of a code block' do
     let(:markdown) { "```\nCode block\nwith two lines\n```" }
-    let(:expected) { "Code block...</span>\n</code>" }
+    let(:expected) { "Code block...</span></code>" }
 
     it_behaves_like 'truncates text'
   end

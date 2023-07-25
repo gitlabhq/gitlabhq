@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Feature from '~/whats_new/components/feature.vue';
+import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 
 describe("What's new single feature", () => {
   /** @type {import("@vue/test-utils").Wrapper} */
@@ -13,8 +14,7 @@ describe("What's new single feature", () => {
     'self-managed': true,
     'gitlab-com': true,
     available_in: ['Ultimate'],
-    documentation_link:
-      'https://docs.gitlab.com/ee/user/project/settings/#compliance-pipeline-configuration',
+    documentation_link: `${DOCS_URL_IN_EE_DIR}/user/project/settings/#compliance-pipeline-configuration`,
     image_url: 'https://img.youtube.com/vi/upLJ_equomw/hqdefault.jpg',
     published_at: '2021-04-22T00:00:00.000Z',
     release: '13.11',

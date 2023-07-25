@@ -1107,6 +1107,7 @@ describe('URL utility', () => {
 
   describe('defaultPromoUrl', () => {
     it('Gitlab about page url', () => {
+      // eslint-disable-next-line no-restricted-syntax
       const url = 'https://about.gitlab.com';
 
       expect(urlUtils.PROMO_URL).toBe(url);

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'SaaS Container Registry', only: { subdomain: %i[staging] }, product_group: :container_registry do
+    describe 'SaaS Container Registry', :smoke, only: { subdomain: %i[staging] }, product_group: :container_registry do
       let(:project) do
         Resource::Project.init do |project|
           project.path_with_namespace = 'gitlab-qa/container-registry-sanity'

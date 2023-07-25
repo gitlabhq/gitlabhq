@@ -3,6 +3,7 @@ import Toolbar from '~/vue_shared/components/markdown/toolbar.vue';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 import { updateText } from '~/lib/utils/text_markdown';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/text_markdown');
 
@@ -98,7 +99,7 @@ describe('toolbar', () => {
         expect.objectContaining({
           tag: `### Rich text editor
 
-Try out **styling** _your_ content right here or read the [direction](https://about.gitlab.com/direction/plan/knowledge/content_editor/).`,
+Try out **styling** _your_ content right here or read the [direction](${PROMO_URL}/direction/plan/knowledge/content_editor/).`,
           textArea: document.querySelector('textarea'),
           cursorOffset: 0,
           wrap: false,
