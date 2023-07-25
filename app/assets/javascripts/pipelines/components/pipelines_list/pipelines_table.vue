@@ -5,7 +5,7 @@ import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
 import eventHub from '../../event_hub';
 import { TRACKING_CATEGORIES } from '../../constants';
@@ -22,8 +22,8 @@ const DEFAULT_TH_CLASSES =
 export default {
   components: {
     GlTableLite,
+    LegacyPipelineMiniGraph,
     PipelineFailedJobsWidget,
-    PipelineMiniGraph,
     PipelineOperations,
     PipelinesStatusBadge,
     PipelineStopModal,
@@ -208,7 +208,7 @@ export default {
       </template>
 
       <template #cell(stages)="{ item }">
-        <pipeline-mini-graph
+        <legacy-pipeline-mini-graph
           :downstream-pipelines="getDownstreamPipelines(item)"
           :pipeline-path="item.path"
           :stages="item.details.stages"

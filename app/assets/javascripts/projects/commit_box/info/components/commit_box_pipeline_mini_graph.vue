@@ -7,8 +7,8 @@ import {
   toggleQueryPollingByVisibility,
 } from '~/pipelines/components/graph/utils';
 import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
-import GraphqlPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/graphql_pipeline_mini_graph.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getLinkedPipelinesQuery from '~/pipelines/graphql/queries/get_linked_pipelines.query.graphql';
 import getPipelineStagesQuery from '~/pipelines/graphql/queries/get_pipeline_stages.query.graphql';
@@ -23,7 +23,7 @@ export default {
   },
   components: {
     GlLoadingIcon,
-    GraphqlPipelineMiniGraph,
+    LegacyPipelineMiniGraph,
     PipelineMiniGraph,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -139,14 +139,14 @@ export default {
   <div>
     <gl-loading-icon v-if="$apollo.queries.pipeline.loading" />
     <template v-else>
-      <graphql-pipeline-mini-graph
+      <pipeline-mini-graph
         v-if="isUsingPipelineMiniGraphQueries"
         data-testid="commit-box-pipeline-mini-graph"
         :pipeline-etag="graphqlResourceEtag"
         :full-path="fullPath"
         :iid="iid"
       />
-      <pipeline-mini-graph
+      <legacy-pipeline-mini-graph
         v-else
         data-testid="commit-box-pipeline-mini-graph"
         :downstream-pipelines="downstreamPipelines"

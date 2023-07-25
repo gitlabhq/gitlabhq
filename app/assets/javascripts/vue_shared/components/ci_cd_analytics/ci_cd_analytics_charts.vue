@@ -59,6 +59,7 @@ export default {
       :chart-data="chart.data"
       :area-chart-options="chartOptions"
     >
+      <slot name="alerts"></slot>
       <p>{{ dateRange }}</p>
       <slot name="metrics" :selected-chart="selectedChart"></slot>
       <template #tooltip-title>

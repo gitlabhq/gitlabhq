@@ -1,7 +1,7 @@
 <script>
 import { __ } from '~/locale';
 import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import getLinkedPipelinesQuery from '~/pipelines/graphql/queries/get_linked_pipelines.query.graphql';
 import { PIPELINE_FAILURE } from '../../constants';
 
@@ -10,7 +10,7 @@ export default {
     linkedPipelinesFetchError: __('Unable to fetch upstream and downstream pipelines.'),
   },
   components: {
-    PipelineMiniGraph,
+    LegacyPipelineMiniGraph,
   },
   inject: ['projectFullPath'],
   props: {
@@ -84,7 +84,7 @@ export default {
 </script>
 
 <template>
-  <pipeline-mini-graph
+  <legacy-pipeline-mini-graph
     v-if="hasPipelineStages"
     :downstream-pipelines="downstreamPipelines"
     :pipeline-path="pipelinePath"

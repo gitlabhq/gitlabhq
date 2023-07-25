@@ -55,10 +55,11 @@ module API
       issuable_key             = "#{issuable_name}_iid".to_sym
 
       desc "Set a time estimate for a #{issuable_name}" do
-        detail " Sets an estimated time of work for this #{issuable_name}."
+        detail "Sets an estimated time of work for this #{issuable_name}."
         success Entities::IssuableTimeStats
         failure [
           { code: 401, message: 'Unauthorized' },
+          { code: 400, message: 'Bad request' },
           { code: 404, message: 'Not found' }
         ]
         tags [issuable_collection_name]
@@ -70,8 +71,14 @@ module API
       post ":id/#{issuable_collection_name}/:#{issuable_key}/time_estimate" do
         authorize! admin_issuable_key, load_issuable
 
-        status :ok
-        update_issuable(time_estimate: Gitlab::TimeTrackingFormatter.parse(params.delete(:duration)))
+        time_estimate = Gitlab::TimeTrackingFormatter.parse(params.delete(:duration), keep_zero: true)
+
+        if time_estimate && time_estimate >= 0
+          status :ok
+          update_issuable(time_estimate: time_estimate)
+        else
+          bad_request!(reason: 'Time estimate must have a valid format and be greater than or equal to zero.')
+        end
       end
 
       desc "Reset the time estimate for a project #{issuable_name}" do

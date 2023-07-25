@@ -13,7 +13,7 @@ import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { MT_MERGE_STRATEGY } from '../constants';
@@ -27,8 +27,8 @@ export default {
     GlIcon,
     GlSprintf,
     GlTooltip,
+    LegacyPipelineMiniGraph,
     PipelineArtifacts,
-    PipelineMiniGraph,
     TimeAgoTooltip,
     TooltipOnTruncate,
   },
@@ -221,7 +221,7 @@ export default {
               <div
                 class="gl-align-items-center gl-display-inline-flex gl-flex-grow-1 gl-justify-content-space-between"
               >
-                <pipeline-mini-graph
+                <legacy-pipeline-mini-graph
                   v-if="pipeline.details.stages"
                   :downstream-pipelines="downstreamPipelines"
                   :is-merge-train="isMergeTrain"

@@ -4368,7 +4368,6 @@
 - './spec/finders/merge_requests_finder_spec.rb'
 - './spec/finders/merge_requests/oldest_per_commit_finder_spec.rb'
 - './spec/finders/merge_request_target_project_finder_spec.rb'
-- './spec/finders/metrics/dashboards/annotations_finder_spec.rb'
 - './spec/finders/metrics/users_starred_dashboards_finder_spec.rb'
 - './spec/finders/milestones_finder_spec.rb'
 - './spec/finders/namespaces/projects_finder_spec.rb'

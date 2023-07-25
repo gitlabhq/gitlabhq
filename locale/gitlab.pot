@@ -5863,6 +5863,9 @@ msgstr ""
 msgid "ApprovalRule|Examples: QA, Security."
 msgstr ""
 
+msgid "ApprovalRule|Greater than"
+msgstr ""
+
 msgid "ApprovalRule|Improve your organization's code review with required approvals."
 msgstr ""
 
@@ -5870,6 +5873,9 @@ msgid "ApprovalRule|Increase quality and maintain standards."
 msgstr ""
 
 msgid "ApprovalRule|Learn more about merge request approval rules."
+msgstr ""
+
+msgid "ApprovalRule|Less than"
 msgstr ""
 
 msgid "ApprovalRule|More than"
@@ -5917,7 +5923,19 @@ msgstr ""
 msgid "ApprovalRule|all groups"
 msgstr ""
 
+msgid "ApprovalRule|day(s)"
+msgstr ""
+
+msgid "ApprovalRule|month(s)"
+msgstr ""
+
 msgid "ApprovalRule|project groups"
+msgstr ""
+
+msgid "ApprovalRule|week(s)"
+msgstr ""
+
+msgid "ApprovalRule||year(s)"
 msgstr ""
 
 msgid "ApprovalSettings|Keep approvals"
@@ -14329,6 +14347,9 @@ msgid "DORA4Metrics|Time to restore service"
 msgstr ""
 
 msgid "DORA4Metrics|Time to restore service (median days)"
+msgstr ""
+
+msgid "DORA4Metrics|To help us improve the Show forecast feature, please share feedback about your experience in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
 msgid "DORA4Metrics|Took 1 day or less to restore service when a service incident or a defect that impacts users occurs."
@@ -40926,6 +40947,12 @@ msgstr ""
 msgid "ScanResultPolicy|Add new criteria"
 msgstr ""
 
+msgid "ScanResultPolicy|Age criteria can only be added for pre-existing vulnerabilities"
+msgstr ""
+
+msgid "ScanResultPolicy|Age is:"
+msgstr ""
+
 msgid "ScanResultPolicy|Choose an option"
 msgstr ""
 
@@ -40950,10 +40977,7 @@ msgstr ""
 msgid "ScanResultPolicy|Matching"
 msgstr ""
 
-msgid "ScanResultPolicy|Maximum number of severity-criteria is one"
-msgstr ""
-
-msgid "ScanResultPolicy|Maximum number of status-criteria is two"
+msgid "ScanResultPolicy|New age"
 msgstr ""
 
 msgid "ScanResultPolicy|New severity"
@@ -40963,6 +40987,15 @@ msgid "ScanResultPolicy|New status"
 msgstr ""
 
 msgid "ScanResultPolicy|Newly Detected"
+msgstr ""
+
+msgid "ScanResultPolicy|Only 1 age criteria is allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Only 1 severity is allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Only 2 status criteria are allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Pre-existing"
@@ -47212,9 +47245,6 @@ msgstr ""
 msgid "This PDF is too large to display. Please download to view."
 msgstr ""
 
-msgid "This Project is currently archived and read-only. Please unarchive the project first if you want to resume Pull mirroring"
-msgstr ""
-
 msgid "This URL already exists."
 msgstr ""
 
@@ -47717,6 +47747,9 @@ msgid "This project is %{strongStart}NOT%{strongEnd} a fork. This process delete
 msgstr ""
 
 msgid "This project is archived and cannot be commented on."
+msgstr ""
+
+msgid "This project is archived and read-only. To resume pull mirroring, unarchive the project."
 msgstr ""
 
 msgid "This project is licensed under the %{strong_start}%{license_name}%{strong_end}."

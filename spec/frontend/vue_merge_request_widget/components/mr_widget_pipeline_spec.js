@@ -6,7 +6,7 @@ import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
 import mockData from '../mock_data';
 
@@ -37,7 +37,7 @@ describe('MRWidgetPipeline', () => {
     wrapper.findByTestId('pipeline-coverage-tooltip').text();
   const findPipelineCoverageDeltaTooltipText = () =>
     wrapper.findByTestId('pipeline-coverage-delta-tooltip').text();
-  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
+  const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
@@ -101,8 +101,8 @@ describe('MRWidgetPipeline', () => {
     it('should render pipeline graph', () => {
       const stagesCount = mockData.pipeline.details.stages.length;
 
-      expect(findPipelineMiniGraph().exists()).toBe(true);
-      expect(findPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(true);
+      expect(findLegacyPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
     });
 
     it('should render the latest downstream pipelines only', () => {
@@ -110,7 +110,7 @@ describe('MRWidgetPipeline', () => {
       // because we retried the trigger job, so the mini pipeline graph will only
       // render the newly created downstream pipeline instead
       expect(mockData.pipeline.triggered).toHaveLength(2);
-      expect(findPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
+      expect(findLegacyPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
     });
 
     describe('should render pipeline coverage information', () => {
@@ -182,8 +182,8 @@ describe('MRWidgetPipeline', () => {
     it('should render pipeline graph', () => {
       const stagesCount = mockData.pipeline.details.stages.length;
 
-      expect(findPipelineMiniGraph().exists()).toBe(true);
-      expect(findPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(true);
+      expect(findLegacyPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
     });
 
     it('should render coverage information', () => {
@@ -215,7 +215,7 @@ describe('MRWidgetPipeline', () => {
     });
 
     it('should not render a pipeline graph', () => {
-      expect(findPipelineMiniGraph().exists()).toBe(false);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(false);
     });
   });
 
