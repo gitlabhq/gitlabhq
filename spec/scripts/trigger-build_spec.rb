@@ -237,7 +237,13 @@ RSpec.describe Trigger, feature_category: :tooling do
       describe "TRIGGER_BRANCH" do
         context 'when CNG_BRANCH is not set' do
           it 'sets TRIGGER_BRANCH to master' do
+            stub_env('CI_PROJECT_NAMESPACE', 'gitlab-org')
             expect(subject.variables['TRIGGER_BRANCH']).to eq('master')
+          end
+
+          it 'sets TRIGGER_BRANCH to main-jh on JH side' do
+            stub_env('CI_PROJECT_NAMESPACE', 'gitlab-cn')
+            expect(subject.variables['TRIGGER_BRANCH']).to eq('main-jh')
           end
         end
 
@@ -261,6 +267,20 @@ RSpec.describe Trigger, feature_category: :tooling do
           end
 
           it 'sets TRIGGER_BRANCH to the corresponding stable branch' do
+            stub_env('CI_PROJECT_NAMESPACE', 'gitlab-org')
+            expect(subject.variables['TRIGGER_BRANCH']).to eq(ref)
+          end
+        end
+
+        context 'when CI_COMMIT_REF_NAME is a stable branch on JH side' do
+          let(:ref) { '14-10-stable' }
+
+          before do
+            stub_env('CI_COMMIT_REF_NAME', "#{ref}-jh")
+          end
+
+          it 'sets TRIGGER_BRANCH to the corresponding stable branch' do
+            stub_env('CI_PROJECT_NAMESPACE', 'gitlab-cn')
             expect(subject.variables['TRIGGER_BRANCH']).to eq(ref)
           end
         end

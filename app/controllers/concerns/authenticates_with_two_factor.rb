@@ -52,6 +52,14 @@ module AuthenticatesWithTwoFactor
     elsif user && user.valid_password?(user_params[:password])
       prompt_for_two_factor(user)
     end
+  rescue ActiveRecord::RecordInvalid => e
+    # We expect User to always be valid.
+    # Otherwise, raise internal server error instead of unprocessable entity to improve observability/alerting
+    if e.record.is_a?(User)
+      raise e.message
+    else
+      raise e
+    end
   end
 
   private

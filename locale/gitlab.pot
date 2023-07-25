@@ -11712,31 +11712,28 @@ msgstr ""
 msgid "Completed in %{duration_seconds} seconds (%{relative_time})"
 msgstr ""
 
-msgid "Compliance Report|Export frameworks as CSV. You will be emailed after the export is processed."
+msgid "Compliance Center|Export frameworks as CSV. You will be emailed after the export is processed."
 msgstr ""
 
-msgid "Compliance Report|Export full report as CSV"
+msgid "Compliance Center|Export full report as CSV"
 msgstr ""
 
-msgid "Compliance Report|Export merge request violations as CSV. You will be emailed after the export is processed."
+msgid "Compliance Center|Export merge request violations as CSV. You will be emailed after the export is processed."
 msgstr ""
 
-msgid "Compliance Report|Frameworks"
+msgid "Compliance Center|Frameworks"
 msgstr ""
 
-msgid "Compliance Report|Standards Adherence"
+msgid "Compliance Center|Standards Adherence"
 msgstr ""
 
-msgid "Compliance Report|Violations"
+msgid "Compliance Center|Violations"
+msgstr ""
+
+msgid "Compliance center"
 msgstr ""
 
 msgid "Compliance framework"
-msgstr ""
-
-msgid "Compliance report"
-msgstr ""
-
-msgid "Compliance violations and compliance frameworks for the group."
 msgstr ""
 
 msgid "ComplianceFrameworks|Add framework"
@@ -38894,6 +38891,9 @@ msgid "Report abuse"
 msgstr ""
 
 msgid "Report abuse to administrator"
+msgstr ""
+
+msgid "Report and manage standards adherence, violations, and compliance frameworks for the group."
 msgstr ""
 
 msgid "Report couldn't be prepared."

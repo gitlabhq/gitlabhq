@@ -460,6 +460,96 @@ Both methods use subtransactions internally if executed within the context of
 an existing transaction. This can significantly impact overall performance,
 especially if more than 64 live subtransactions are being used inside a single transaction.
 
+### Can I use `.safe_find_or_create_by`?
+
+If your code is generally isolated (for example it's executed in a worker only) and not wrapped with another transaction, then you can use `.safe_find_or_create_by`. However, there is no tooling to catch cases when someone else calls your code within a transaction. Using `.safe_find_or_create_by` will definitely carry some risks that cannot be eliminated completely at the moment.
+
+Additionally, we have a RuboCop rule `Performance/ActiveRecordSubtransactionMethods` that prevents the usage of `.safe_find_or_create_by`. This rule can be disabled on a case by case basis via `# rubocop:disable Performance/ActiveRecordSubtransactionMethods`.
+
+## Alternative 1: `UPSERT`
+
+The [`.upsert`](https://api.rubyonrails.org/v7.0.5/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-upsert) method can be an alternative solution when the table is backed by a unique index.
+
+Simple usage of the `.upsert` method:
+
+```ruby
+BuildTrace.upsert(
+  {
+    build_id: build_id,
+    title: title 
+  }, 
+  unique_by: :build_id
+)
+```
+
+A few things to be careful about:
+
+- The sequence for the primary key will be incremented, even if the record was only updated.
+- The created record is not returned. The `returning` option only returns data when an `INSERT` happens (new record).
+- `ActiveRecord` validations are not executed.
+
+An example of the `.upsert` method with validations and record loading:
+
+```ruby
+params = {
+  build_id: build_id,
+  title: title
+}
+
+build_trace = BuildTrace.new(params)
+
+unless build_trace.valid?
+  raise 'notify the user here'
+end
+
+BuildTrace.upsert(params, unique_by: :build_id)
+
+build_trace = BuildTrace.find_by!(build_id: build_id)
+
+# do something with build_trace here
+```
+
+The code snippet above will not work well if there is a model-level uniqueness validation on the `build_id` column because we invoke the validation before calling `.upsert`.
+
+To work around this, we have two options:
+
+- Remove the unqueness validation from the `ActiveRecord` model.
+- Use the [`on` keyword](https://guides.rubyonrails.org/active_record_validations.html#on) and implement context-specific validation.
+
+### Alternative 2: Check existence and rescue
+
+When the chance of concurrently creating the same record is very low, we can use a simpler approach:
+
+```ruby
+def my_create_method
+  params = {
+    build_id: build_id,
+    title: title
+  }
+
+  build_trace = BuildTrace
+    .where(build_id: params[:build_id])
+    .first
+
+  build_trace = BuildTrace.new(params) if build_trace.blank?
+
+  build_trace.update!(params)
+
+rescue ActiveRecord::RecordInvalid => invalid
+  retry if invalid.record&.errors&.of_kind?(:build_id, :taken)
+end
+```
+
+The method does the following:
+
+1. Look up the model by the unique column.
+1. If no record found, build a new one.
+1. Persist the record.
+
+There is a short race condition between the lookup query and the persist query where another process could insert the record and cause an `ActiveRecord::RecordInvalid` exception.
+
+The code rescues this particular exception and retries the operation. For the second run, the record would be successfully located. For example check [this block of code](https://gitlab.com/gitlab-org/gitlab/-/blob/0b51d7fbb97d4becf5fd40bc3b92f732bece85bd/ee/app/services/compliance_management/standards/gitlab/prevent_approval_by_author_service.rb#L20-30) in `PreventApprovalByAuthorService`.
+
 ## Monitor SQL queries in production
 
 GitLab team members can monitor slow or canceled queries on GitLab.com

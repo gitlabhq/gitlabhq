@@ -172,5 +172,5 @@ that inherited them.
 ## Related topics
 
 - [Instance-level merge request approval settings](../../../admin_area/merge_requests_approvals.md)
-- [Compliance report](../../../compliance/compliance_report/index.md)
+- [Compliance center](../../../compliance/compliance_center/index.md)
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)

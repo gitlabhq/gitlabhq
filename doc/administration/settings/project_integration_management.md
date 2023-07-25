@@ -48,6 +48,10 @@ When you make further changes to the instance defaults:
 - Groups and projects with custom settings selected for the integration are not immediately affected and may
   choose to use the latest defaults at any time.
 
+If [group-level settings](#manage-group-level-default-settings-for-a-project-integration) have also
+been configured for the same integration, projects in that group inherit the group-level settings
+instead of the instance-level settings.
+
 Only the complete settings for an integration can be inherited. Per-field inheritance
 is [planned](https://gitlab.com/groups/gitlab-org/-/epics/2137). This would allow
 administrators to update settings inherited by groups and projects without enabling the
@@ -102,9 +106,11 @@ When you make further changes to the group defaults:
 - They are immediately applied to newer subgroups and projects, even those created after you last saved defaults for the
   integration. If your group-level default setting has the **Enable integration** toggle turned on,
   the integration is automatically enabled for all such subgroups and projects.
-
 - Subgroups and projects with custom settings selected for the integration are not immediately affected and
   may choose to use the latest defaults at any time.
+
+If [instance-level settings](#manage-instance-level-default-settings-for-a-project-integration)
+have also been configured for the same integration, projects in the group inherit settings from the group.
 
 Only the complete settings for an integration can be inherited. Per-field inheritance
 is [planned](https://gitlab.com/groups/gitlab-org/-/epics/2137). This would allow

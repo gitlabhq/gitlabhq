@@ -27,7 +27,7 @@ organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitla
 A single top-level group provides insights in your entire organization via a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
-[Compliance Report](../compliance/compliance_report/index.md), and
+[Compliance center](../compliance/compliance_center/index.md), and
 [Value stream analytics](../group/value_stream_analytics/index.md).
 
 ## Group visibility

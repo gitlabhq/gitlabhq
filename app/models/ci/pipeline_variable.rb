@@ -9,7 +9,6 @@ module Ci
     include SafelyChangeColumnDefault
 
     columns_changing_default :partition_id
-    ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
     ignore_column :pipeline_id_convert_to_bigint, remove_with: '16.5', remove_after: '2023-10-22'
 
     belongs_to :pipeline

@@ -12,10 +12,10 @@ For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) inst
 
 You can use [slash commands](gitlab_slack_application.md#slash-commands) to run common GitLab operations,
 like creating an issue, from a [Slack](https://slack.com/) chat environment.
-To use slash commands in Slack, you must configure both Slack and GitLab.
+To run slash commands in Slack, you must configure both Slack and GitLab.
 
-GitLab can also send events (such as `issue created`) to Slack as part of the
-separately configured [Slack notifications](slack.md).
+GitLab can also send events (such as `issue created`) to Slack as part of
+[Slack notifications](gitlab_slack_application.md#slack-notifications).
 
 For a list of available slash commands, see [Slash commands](gitlab_slack_application.md#slash-commands).
 
@@ -25,15 +25,15 @@ Slack slash commands are scoped to a project. To configure Slack slash commands:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
-1. Select **Slack slash commands**. Leave this browser tab open.
-1. Open a new browser tab, sign in to your Slack team, and [start a new Slash Commands integration](https://my.slack.com/services/new/slash-commands).
-1. Enter a trigger command. We suggest you use the project name.
-   Select **Add Slash Command Integration**.
-1. Complete the rest of the fields in the Slack configuration page using information from the GitLab browser tab.
-   In particular, make sure you copy and paste the **URL**.
+1. Select **Slack slash commands** and leave this browser tab open.
+1. In a new browser tab, sign in to Slack and [add a new slash command](https://my.slack.com/services/new/slash-commands).
+1. Enter a slash command trigger name. You could use the project name.
+1. Select **Add Slash Command Integration**.
+1. In the Slack browser tab:
+   1. Complete the fields with information from the GitLab browser tab.
+   1. Select **Save Integration** and copy the **Token** value.
+1. In the GitLab browser tab:
+   1. Paste the token and ensure the **Active** checkbox is selected.
+   1. Select **Save changes**.
 
-   ![Slack setup instructions](img/slack_setup.png)
-
-1. On the Slack configuration page, select **Save Integration** and copy the **Token**.
-1. Go back to the GitLab configuration page and paste in the **Token**.
-1. Ensure the **Active** checkbox is selected and select **Save changes**.
+You can now run slash commands in Slack.

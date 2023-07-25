@@ -82,7 +82,7 @@ describe('Image List Row', () => {
 
       const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
       const mockFocusFn = jest.fn();
-      wrapper.vm.$refs.imageName.$el.focus = mockFocusFn;
+      wrapper.findComponent(RouterLink).element.focus = mockFocusFn;
 
       await findShowFullPathButton().trigger('click');
 

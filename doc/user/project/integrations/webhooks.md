@@ -28,7 +28,7 @@ listens for specific [events](#events) and GitLab sends a POST request with data
 
 Usually, you set up your own [webhook receiver](#create-an-example-webhook-receiver)
 to receive information from GitLab and send it to another app, according to your requirements.
-We have a [built-in receiver](slack.md)
+We have a [built-in receiver](gitlab_slack_application.md#slack-notifications)
 for sending [Slack](https://api.slack.com/incoming-webhooks) notifications per project.
 
 GitLab.com enforces [webhook limits](../../../user/gitlab_com/index.md#webhooks),

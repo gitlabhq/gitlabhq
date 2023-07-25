@@ -148,6 +148,11 @@ FactoryBot.define do
       end
     end
 
+    trait :invalid do
+      first_name { 'A' * 130 } # Exceed `first_name` character limit in model to make it invalid
+      to_create { |user| user.save!(validate: false) }
+    end
+
     transient do
       developer_projects { [] }
       maintainer_projects { [] }

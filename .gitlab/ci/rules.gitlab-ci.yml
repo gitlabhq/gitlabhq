@@ -1167,6 +1167,8 @@
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
       changes: *feature-flag-development-config-patterns
+    - <<: *if-merge-request
+      changes: *dependency-patterns
     - <<: *if-force-ci
 
 .frontend:rules:compile-production-assets-as-if-foss:

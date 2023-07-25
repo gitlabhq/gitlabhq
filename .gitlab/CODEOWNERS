@@ -874,6 +874,7 @@ lib/gitlab/checks/**
 /doc/user/award_emojis.md @msedlakjakubowski
 /doc/user/clusters/ @phillipwells
 /doc/user/compliance/ @rdickenson
+/doc/user/compliance/compliance_center/ @eread
 /doc/user/compliance/compliance_report/ @eread
 /doc/user/compliance/index.md @eread
 /doc/user/crm/ @msedlakjakubowski

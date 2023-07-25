@@ -56,6 +56,6 @@ include:
     GITALY_SERVER_VERSION: "${GITALY_SERVER_VERSION}"
     RUBY_VERSION: "${FULL_RUBY_VERSION}"
   trigger:
-    project: gitlab-org/build/CNG-mirror
+    project: ${CI_PROJECT_NAMESPACE}/build/CNG-mirror
     branch: $TRIGGER_BRANCH
     strategy: depend

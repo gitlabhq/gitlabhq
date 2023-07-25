@@ -22,7 +22,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/compliance/compliance_report/#compliance-frameworks-report'
+  documentation_link: 'https://docs.gitlab.com/ee/user/compliance/compliance_center/#compliance-frameworks-report'
   image_url: 'https://about.gitlab.com/images/15_11/govern-compliance-frameworks-report-management.png'
   published_at: 2023-04-22
   release: 15.11
