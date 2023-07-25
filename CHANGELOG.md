@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.2.1 (2023-07-25)
+
+### Fixed (1 change)
+
+- [Fix crash when LDAP CA file set outside tls_options](gitlab-org/gitlab@a10e127dda8b2f228639164d1b5055b007546166) ([merge request](gitlab-org/gitlab!127313))
+
 ## 16.2.0 (2023-07-21)
 
 ### Added (176 changes)
