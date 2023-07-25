@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Issues::Update do
+RSpec.describe Mutations::Issues::Update, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project_label) { create(:label, project: project) }
@@ -174,6 +174,17 @@ RSpec.describe Mutations::Issues::Update do
             expect { mutation.ready?(time_estimate: time_estimate) }
               .to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'timeEstimate must be formatted correctly, for example `1h 30m`')
             expect { subject }.not_to change { issue.reload.time_estimate }
+          end
+        end
+
+        context 'when timeEstimate is negative' do
+          let(:time_estimate) { '-1h' }
+
+          it 'raises an argument error and changes are not applied' do
+            expect { mutation.ready?(time_estimate: time_estimate) }
+              .to raise_error(Gitlab::Graphql::Errors::ArgumentError,
+                'timeEstimate must be greater than or equal to zero. Remember that every new timeEstimate overwrites the previous value.')
+            expect { subject }.not_to change { issue.time_estimate }
           end
         end
 

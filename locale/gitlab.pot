@@ -39797,6 +39797,15 @@ msgid_plural "Runners|%{strongStart}%{count}%{strongEnd} runners will be permane
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runners|75th percentile"
+msgstr ""
+
+msgid "Runners|90th percentile"
+msgstr ""
+
+msgid "Runners|99th percentile"
+msgstr ""
+
 msgid "Runners|A capacity of 1 enables warm HA through Auto Scaling group re-spawn. A capacity of 2 enables hot HA because the service is available even when a node is lost. A capacity of 3 or more enables hot HA and manual scaling of runner fleet."
 msgstr ""
 
@@ -40097,6 +40106,9 @@ msgid "Runners|Maximum amount of time the runner can run before it terminates. I
 msgstr ""
 
 msgid "Runners|Maximum job timeout"
+msgstr ""
+
+msgid "Runners|Median"
 msgstr ""
 
 msgid "Runners|Members of the %{type} can register runners"
@@ -40465,6 +40477,9 @@ msgid_plural "Runners|%d runners will be permanently deleted and no longer avail
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runners|The time it takes for an instance runner to pick up a job. Jobs waiting for runners are in the pending state. %{linkStart}How is this calculated?%{linkEnd}"
+msgstr ""
+
 msgid "Runners|The unique ID for each runner that uses this configuration."
 msgstr ""
 
@@ -40570,6 +40585,9 @@ msgid "Runners|View installation instructions"
 msgstr ""
 
 msgid "Runners|View metrics"
+msgstr ""
+
+msgid "Runners|Wait time to pick a job"
 msgstr ""
 
 msgid "Runners|We've been making improvements to how you register runners so that it's more secure and efficient. Tell us how we're doing."
@@ -49305,6 +49323,9 @@ msgid "Units|ms"
 msgstr ""
 
 msgid "Units|s"
+msgstr ""
+
+msgid "Units|sec"
 msgstr ""
 
 msgid "Unknown"

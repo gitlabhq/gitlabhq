@@ -41,13 +41,13 @@ and GitLab Runners cannot log in.
 
 Restore:
 
-- `/etc/gitlab/gitlab-secrets.json` (Linux package)
+- `/etc/gitlab/gitlab-secrets.json` (Linux package installations)
 - `/home/git/gitlab/.secret` (self-compiled installations)
 - Rails secret (cloud-native GitLab)
   - [This can be converted to the Linux package format](https://docs.gitlab.com/charts/installation/migration/helm_to_package.html), if required.
 
-You may also want to restore your previous `/etc/gitlab/gitlab.rb` (for Omnibus packages)
-or `/home/git/gitlab/config/gitlab.yml` (for installations from source) and
+You may also want to restore your previous `/etc/gitlab/gitlab.rb` (for Linux package installations)
+or `/home/git/gitlab/config/gitlab.yml` (for self-compiled installations) and
 any TLS keys, certificates (`/etc/gitlab/ssl`, `/etc/gitlab/trusted-certs`), or
 [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 

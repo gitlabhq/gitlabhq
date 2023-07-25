@@ -7,7 +7,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
     <div class=\\"gl-display-flex\\">
       <div class=\\"gl-mb-2\\"><strong class=\\"gl-display-block\\">This is a header</strong><span class=\\"gl-display-block\\">This is a subheader</span></div>
       <div class=\\"gl-ml-auto gl-display-flex gl-align-items-baseline\\">
-        <help-popover-stub options=\\"[object Object]\\" icon=\\"information-o\\" class=\\"\\">
+        <help-popover-stub options=\\"[object Object]\\" icon=\\"information-o\\" triggerclass=\\"\\" class=\\"\\">
           <p class=\\"gl-mb-0\\">Widget help popover content</p>
           <!---->
         </help-popover-stub>

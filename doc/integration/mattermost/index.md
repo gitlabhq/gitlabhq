@@ -10,7 +10,7 @@ NOTE:
 This document applies to GitLab 11.0 and later.
 
 You can run a [GitLab Mattermost](https://gitlab.com/gitlab-org/gitlab-mattermost)
-service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Linux package allows you to easily install it. But it is a separate application from a separate company.
+service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Linux package allows you to install it. **However, Mattermost is a separate application from a separate company.** GitLab Support cannot help you with Mattermost-specific questions beyond the integration with GitLab. If you need help with Mattermost itself, see the [community support resources](#community-support-resources).
 
 ## Prerequisites
 
@@ -375,10 +375,6 @@ If this is not the case, there are two options:
    from the Linux package.
 
 For a complete list of upgrade notices and special considerations for older versions, see the [Mattermost documentation](https://docs.mattermost.com/administration/important-upgrade-notes.html).
-
-## Upgrading GitLab Mattermost to 15.10
-
-GitLab 15.10 ships with Mattermost 7.8. Before upgrading, [connect to the bundled PostgreSQL database](#connecting-to-the-bundled-postgresql-database) to perform the PostgreSQL maintenance described in the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) provided by Mattermost.
 
 ## Upgrading GitLab Mattermost to 14.6
 

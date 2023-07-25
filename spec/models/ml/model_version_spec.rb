@@ -88,13 +88,13 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     end
   end
 
-  describe '.find_or_create' do
+  describe '#find_or_create!' do
     let_it_be(:existing_model_version) { create(:ml_model_versions, model: model, version: 'abc') }
 
     let(:version) { existing_model_version.version }
     let(:package) { nil }
 
-    subject(:find_or_create) { described_class.find_or_create(model, version, package) }
+    subject(:find_or_create) { described_class.find_or_create!(model, version, package) }
 
     context 'if model version exists' do
       it 'returns the model version', :aggregate_failures do

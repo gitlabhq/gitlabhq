@@ -1035,7 +1035,7 @@ Example response:
 
 > Ability to create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
 
-Creates a service account user with an auto-generated email address and username.
+Creates a service account user with an auto-generated email address and username. Available only for administrators.
 
 ```plaintext
 POST /service_accounts

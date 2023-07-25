@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::MergeRequests::Update do
+RSpec.describe Mutations::MergeRequests::Update, feature_category: :team_planning do
   let(:merge_request) { create(:merge_request) }
   let(:user) { create(:user) }
 
@@ -56,6 +56,18 @@ RSpec.describe Mutations::MergeRequests::Update do
                 Gitlab::Graphql::Errors::ArgumentError,
                 'timeEstimate must be formatted correctly, for example `1h 30m`')
             expect(mutated_merge_request.time_estimate).to eq(3600)
+          end
+        end
+
+        context 'when timeEstimate is negative' do
+          let(:time_estimate) { '-1h' }
+
+          it 'raises an argument error and changes are not applied' do
+            expect { mutation.ready?(time_estimate: time_estimate) }
+            .to raise_error(Gitlab::Graphql::Errors::ArgumentError,
+              'timeEstimate must be greater than or equal to zero. ' \
+              'Remember that every new timeEstimate overwrites the previous value.')
+            expect { subject }.not_to change { merge_request.time_estimate }
           end
         end
 
