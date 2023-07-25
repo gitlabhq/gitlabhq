@@ -29,6 +29,8 @@ A database review is required for:
   These metrics could have complex queries over large tables.
   See the [Analytics Instrumentation Guide](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/)
   for implementation details.
+- Changes that use [`update`, `delete`, `update_all`, `delete_all` or `destroy_all`](#preparation-when-using-update-delete-update_all-delete_all-or-destroy_all)
+  methods on an ActiveRecord object.
 
 A database reviewer is expected to look out for overly complex
 queries in the change and review those closer. If the author does not
@@ -215,6 +217,15 @@ Include in the MR description:
   - Exceptions include removing indexes and foreign keys for small tables.
 - If you're adding a composite index, another index might become redundant, so remove that in the same migration.
   For example adding `index(column_A, column_B, column_C)` makes the indexes `index(column_A, column_B)` and `index(column_A)` redundant.
+
+#### Preparation when using `update`, `delete`, `update_all`, `delete_all` or `destroy_all`
+
+Using these ActiveRecord methods requires extra care because they modify data and can perform poorly, or they
+can destroy data if improperly scoped. These methods are also incompatible with Common Table Expression (CTE)
+statements. Danger will comment on a Merge Request Diff when these methods are used.
+
+Follow documentation for [preparation when adding or modifying queries](#preparation-when-adding-or-modifying-queries)
+to add the raw SQL query and query plan to the Merge Request description, and request a database review.
 
 ### How to review for database
 

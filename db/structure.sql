@@ -19080,7 +19080,8 @@ CREATE TABLE notes (
     confidential boolean,
     last_edited_at timestamp with time zone,
     internal boolean DEFAULT false NOT NULL,
-    id bigint NOT NULL
+    id bigint NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE notes_id_seq
@@ -32727,6 +32728,8 @@ CREATE INDEX index_projects_on_name_and_id ON projects USING btree (name, id);
 CREATE INDEX index_projects_on_name_trigram ON projects USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_projects_on_namespace_id_and_id ON projects USING btree (namespace_id, id);
+
+CREATE INDEX index_projects_on_namespace_id_and_repository_size_limit ON projects USING btree (namespace_id, repository_size_limit);
 
 CREATE INDEX index_projects_on_path_and_id ON projects USING btree (path, id);
 

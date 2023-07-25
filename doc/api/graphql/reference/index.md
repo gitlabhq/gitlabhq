@@ -6865,6 +6865,29 @@ Input type: `UserAchievementsDeleteInput`
 | <a id="mutationuserachievementsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationuserachievementsdeleteuserachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Deleted user achievement. |
 
+### `Mutation.userAddOnAssignmentCreate`
+
+WARNING:
+**Introduced** in 16.3.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `UserAddOnAssignmentCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentcreateaddonpurchaseid"></a>`addOnPurchaseId` | [`GitlabSubscriptionsAddOnPurchaseID!`](#gitlabsubscriptionsaddonpurchaseid) | Global ID of AddOnPurchase to be assinged to. |
+| <a id="mutationuseraddonassignmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuseraddonassignmentcreateuserid"></a>`userId` | [`UserID!`](#userid) | Global ID of user to be assigned. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuseraddonassignmentcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.userCalloutCreate`
 
 Input type: `UserCalloutCreateInput`

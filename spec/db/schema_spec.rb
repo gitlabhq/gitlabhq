@@ -14,7 +14,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
-    namespaces: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    namespaces: %w[organization_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    notes: %w[namespace_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -82,7 +83,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     merge_requests_compliance_violations: %w[target_project_id],
     merge_request_diff_commits: %w[commit_author_id committer_id],
     namespaces: %w[owner_id parent_id],
-    notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id],
+    notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id namespace_id],
     notification_settings: %w[source_id],
     oauth_access_grants: %w[resource_owner_id application_id],
     oauth_access_tokens: %w[resource_owner_id application_id],

@@ -10,13 +10,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Released in GitLab 15.11 as an Open [Beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 
-You can leave feedback on dashboard bugs or functionality in [issue 381787](https://gitlab.com/gitlab-org/gitlab/-/issues/381787).
+You can leave feedback on dashboard bugs or functionality in [issue 419488](https://gitlab.com/gitlab-org/gitlab/-/issues/419488).
 For more information, see also the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
 The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
-
-With the Value Streams Dashboard, you can compare software delivery metrics.
-This comparison can help you understand whether projects and groups are improving.
+The centralized UI in Value Streams Dashboard acts as the single source of truth (SSOT), where all stakeholders can access and view the same set of metrics that are relevant to the organization.
 
 The Value Streams Dashboard includes the following metrics:
 
@@ -24,14 +22,16 @@ The Value Streams Dashboard includes the following metrics:
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
 - [Vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) metrics.
 
-The Value Streams Dashboard allows you to:
+With the Value Streams Dashboard, you can:
 
-- Aggregate data records from different APIs.
-- Track software performance (DORA) and flow of value (VSA) across the organization.
+- Track and compare the above metrics over a period of time.
+- Identify downward trends early on.
+- Understand security exposure.
+- Drill down into individual projects or metrics to take actions for improvement.
 
-## DevOps metrics comparison panel
+## DevSecOps metrics comparison panel
 
-The DevOps metrics comparison displays DORA4 and flow metrics for a group or project in the
+The DevSecOps metrics comparison displays DORA4, vulnerability, and flow metrics for a group or project in the
 month-to-date, last month, the month before, and the past 180 days.
 
 This visualization helps you get a high-level custom view over multiple DevOps metrics and
@@ -60,15 +60,21 @@ For example, if a project has a high score for Deployment Frequency (Velocity), 
 
 Prerequisite:
 
-- To view the value streams dashboard for a group, you must have at least the Reporter role for the group.
+- You must have at least the Reporter role for the group.
 
 To view the value streams dashboard:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
-1. Select **Analyze > Value stream analytics**.
-1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
-1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
-(for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
+- From Analytics Dashboards:
+
+   1. On the group left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+   1. Select **Analyze > Analytics Dashboards**.
+
+- From Value Stream Analytics:
+
+   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+   1. Select **Analyze > Value stream analytics**.
+   1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
+   1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 
 ## Customize the dashboard panels
 

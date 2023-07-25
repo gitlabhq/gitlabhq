@@ -10,7 +10,6 @@ module Metrics
       DASHBOARD_NAME = nil
 
       SEQUENCE = [
-        STAGES::MetricEndpointInserter,
         STAGES::VariableEndpointInserter,
         STAGES::PanelIdsInserter
       ].freeze

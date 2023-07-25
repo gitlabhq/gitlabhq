@@ -40,7 +40,7 @@ Instead, you can create a custom dashboard with a similar style.
 
 ### Value Stream Management
 
-- **Value Streams Dashboard** displays metrics related to [DevOps performance, security exposure, and workstream optimization](../analytics/value_streams_dashboard.md#devops-metrics-comparison-panel).
+- **Value Streams Dashboard** displays metrics related to [DevOps performance, security exposure, and workstream optimization](../analytics/value_streams_dashboard.md#devsecops-metrics-comparison-panel).
 
 ## Custom dashboards
 

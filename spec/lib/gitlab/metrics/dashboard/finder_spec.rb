@@ -31,13 +31,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
       it_behaves_like 'misconfigured dashboard service response', :unprocessable_entity
     end
 
-    context 'when the dashboard contains a metric without a query' do
-      let(:dashboard) { { 'panel_groups' => [{ 'panels' => [{ 'metrics' => [{ 'id' => 'mock' }] }] }] } }
-      let(:project) { project_with_dashboard(dashboard_path, dashboard.to_yaml) }
-
-      it_behaves_like 'misconfigured dashboard service response', :unprocessable_entity
-    end
-
     context 'when the system dashboard is specified' do
       let(:dashboard_path) { system_dashboard_path }
 

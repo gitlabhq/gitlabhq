@@ -12,7 +12,6 @@ module Metrics
       include Gitlab::Utils::StrongMemoize
 
       SEQUENCE = [
-        STAGES::MetricEndpointInserter,
         STAGES::PanelIdsInserter
       ].freeze
 

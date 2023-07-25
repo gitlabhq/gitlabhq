@@ -47,6 +47,7 @@ export default {
       <gl-button
         variant="confirm"
         category="secondary"
+        data-testid="import-group-button"
         @click="importGroup({ migrateProjects: true })"
         >{{ isFinished ? __('Re-import with projects') : __('Import with projects') }}</gl-button
       >
@@ -58,7 +59,6 @@ export default {
         no-caret
         variant="confirm"
         category="secondary"
-        data-qa-selector="import_group_button"
       >
         <gl-disclosure-dropdown-item @action="importGroup({ migrateProjects: false })">
           <template #list-item>

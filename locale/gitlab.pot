@@ -14911,9 +14911,6 @@ msgstr ""
 msgid "Date range too large"
 msgstr ""
 
-msgid "Date to enact enforcement on newly created namespaces"
-msgstr ""
-
 msgid "DateRange|%{start_date}–%{end_date}"
 msgstr ""
 

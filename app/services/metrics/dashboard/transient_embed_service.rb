@@ -28,11 +28,6 @@ module Metrics
         invalid_embed_json!(e.message)
       end
 
-      override :sequence
-      def sequence
-        [STAGES::MetricEndpointInserter]
-      end
-
       override :identifiers
       def identifiers
         Digest::SHA256.hexdigest(params[:embed_json])

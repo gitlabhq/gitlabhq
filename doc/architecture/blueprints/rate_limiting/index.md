@@ -186,6 +186,24 @@ Things we want to build and support by default:
 1. Logging that will expose limits applied in Kibana.
 1. An automatically generated documentation page describing all the limits.
 
+### Support rate limits based on resources used
+
+One of the problems of our rate limiting system is that values are static
+(e.g. 100 requests per minutes) and irrespective of the complexity or resources
+used by the operation. For example:
+
+- Firing 100 requests per minute to fetch a simple resource can have very different
+  implications than creating a CI pipeline.
+- Each pipeline creation action can perform very differently depending on the
+  pipeline being created (small MR pipeline VS large scheduled pipeline).
+- Paginating resources after an offset of 1000 starts to become expensive on the database.
+
+We should allow some rate limits to be defiened as `computing score / period` where for
+computing score we calculate the milliseconds accumulated (for all requests executed
+and inflight) within a given period (for example: 1 minute).
+
+This way if a user is sending expensive requests they are likely to hit the rate limit earlier.
+
 ### API to expose limits and policies
 
 Once we have an established a consistent way to define application limits we

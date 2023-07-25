@@ -15,7 +15,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
         Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
         Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
         Gitlab::Metrics::Dashboard::Stages::CustomMetricsDetailsInserter,
-        Gitlab::Metrics::Dashboard::Stages::MetricEndpointInserter,
         Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter,
         Gitlab::Metrics::Dashboard::Stages::UrlValidator
       ]
@@ -91,8 +90,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
       context 'when the dashboard should not include project metrics' do
         let(:sequence) do
           [
-            Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-            Gitlab::Metrics::Dashboard::Stages::MetricEndpointInserter
+            Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter
           ]
         end
 
@@ -103,16 +101,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
 
           expect(metrics.length).to be(3)
           expect(metrics).to eq %w(metric_b metric_a2 metric_a1)
-        end
-      end
-
-      context 'when sample_metrics are requested' do
-        let(:process_params) { [project, dashboard_yml, sequence, { environment: environment, sample_metrics: true }] }
-
-        it 'includes a sample metrics path for the prometheus endpoint with each metric' do
-          expect(all_metrics).to satisfy_all do |metric|
-            metric[:prometheus_endpoint_path] == sample_metrics_path(metric[:id])
-          end
         end
       end
     end
@@ -153,12 +141,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
 
       it_behaves_like 'errors with message', 'Each "panel" must define an array :metrics'
     end
-
-    context 'when the dashboard contains a metric which is missing a query' do
-      let(:dashboard_yml) { { panel_groups: [{ panels: [{ metrics: [{}] }] }] } }
-
-      it_behaves_like 'errors with message', 'Each "metric" must define one of :query or :query_range'
-    end
   end
 
   private
@@ -177,7 +159,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
       unit: metric.unit,
       label: metric.legend,
       metric_id: metric.id,
-      prometheus_endpoint_path: prometheus_path(metric.query),
       edit_path: edit_metric_path(metric)
     }
   end
