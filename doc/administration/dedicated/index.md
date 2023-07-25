@@ -59,7 +59,7 @@ If you want your GitLab data to be encrypted at rest, the KMS keys used must be 
 
 If you use a key per service, all services must be encrypted at rest. Selective enablement of this feature is not supported.
 
-The keys provided have to reside in the same primary and secondary region specified during [onboarding](#onboarding).
+The keys provided have to reside in the same primary, secondary and backup region specified during [onboarding](#onboarding).
 
 For instructions on how to create and manage KMS keys, visit [Managing keys](https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html) in the AWS KMS documentation.
 
@@ -155,6 +155,8 @@ The last page asks you to confirm the KMS key policy. It should look similar to 
     ]
 }
 ```
+
+Make sure the AWS KMS keys are replicated to your desired primary, secondary and backup region specified during [onboarding](#onboarding).
 
 ### Inbound Private Link
 

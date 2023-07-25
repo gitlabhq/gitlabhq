@@ -194,7 +194,7 @@ export default {
       </p>
     </template>
     <template v-else-if="hasPipeline">
-      <a :href="status.details_path" class="gl-align-self-center gl-mr-3">
+      <a :href="status.details_path" class="gl-align-self-start gl-mt-2 gl-mr-3">
         <ci-icon :status="status" :size="24" class="gl-display-flex" />
       </a>
       <div class="ci-widget-container d-flex">
@@ -203,16 +203,41 @@ export default {
             <div
               data-testid="pipeline-info-container"
               data-qa-selector="merge_request_pipeline_info_content"
+              class="gl-display-flex gl-flex-wrap gl-align-items-center gl-justify-content-space-between"
             >
-              {{ pipeline.details.event_type_name }}
-              <gl-link
-                :href="pipeline.path"
-                class="pipeline-id"
-                data-testid="pipeline-id"
-                data-qa-selector="pipeline_link"
-                >#{{ pipeline.id }}</gl-link
+              <p
+                class="mr-pipeline-title gl-m-0! gl-mr-3! gl-font-weight-bold gl-line-height-32 gl-text-gray-900"
               >
-              {{ pipeline.details.status.label }}
+                {{ pipeline.details.event_type_name }}
+                <gl-link
+                  :href="pipeline.path"
+                  class="pipeline-id"
+                  data-testid="pipeline-id"
+                  data-qa-selector="pipeline_link"
+                  >#{{ pipeline.id }}</gl-link
+                >
+                {{ pipeline.details.status.label }}
+              </p>
+              <div
+                class="gl-align-items-center gl-display-inline-flex gl-flex-grow-1 gl-justify-content-space-between"
+              >
+                <pipeline-mini-graph
+                  v-if="pipeline.details.stages"
+                  :downstream-pipelines="downstreamPipelines"
+                  :is-merge-train="isMergeTrain"
+                  :pipeline-path="pipeline.path"
+                  :stages="pipeline.details.stages"
+                  :upstream-pipeline="pipeline.triggered_by"
+                />
+                <pipeline-artifacts
+                  :pipeline-id="pipeline.id"
+                  :artifacts="artifacts"
+                  class="gl-ml-3"
+                />
+              </div>
+            </div>
+            <p data-testid="pipeline-details-container" class="gl-font-sm gl-text-gray-500 gl-m-0">
+              {{ pipeline.details.event_type_name }} {{ pipeline.details.status.label }}
               <template v-if="hasCommitInfo">
                 {{ s__('Pipeline|for') }}
                 <gl-link
@@ -228,7 +253,7 @@ export default {
                   v-safe-html="sourceBranchLink"
                   :title="sourceBranch"
                   truncate-target="child"
-                  class="label-branch label-truncate gl-font-weight-normal"
+                  class="label-branch label-truncate gl-font-weight-normal gl-vertical-align-text-bottom"
                 />
               </template>
               <template v-if="finishedAt">
@@ -238,8 +263,8 @@ export default {
                   data-testid="finished-at"
                 />
               </template>
-            </div>
-            <div v-if="pipeline.coverage" class="coverage" data-testid="pipeline-coverage">
+            </p>
+            <div v-if="pipeline.coverage" class="coverage gl-mt-1" data-testid="pipeline-coverage">
               {{ s__('Pipeline|Test coverage') }} {{ pipeline.coverage }}%
               <span
                 v-if="pipelineCoverageDelta"
@@ -274,19 +299,6 @@ export default {
               </gl-tooltip>
             </div>
           </div>
-        </div>
-        <div>
-          <span class="gl-align-items-center gl-display-inline-flex">
-            <pipeline-mini-graph
-              v-if="pipeline.details.stages"
-              :downstream-pipelines="downstreamPipelines"
-              :is-merge-train="isMergeTrain"
-              :pipeline-path="pipeline.path"
-              :stages="pipeline.details.stages"
-              :upstream-pipeline="pipeline.triggered_by"
-            />
-            <pipeline-artifacts :pipeline-id="pipeline.id" :artifacts="artifacts" class="gl-ml-3" />
-          </span>
         </div>
       </div>
     </template>

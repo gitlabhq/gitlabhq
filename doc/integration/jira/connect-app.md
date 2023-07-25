@@ -16,7 +16,7 @@ You can use the GitLab for Jira Cloud app to link top-level groups or subgroups.
   - [Connect the GitLab for Jira Cloud app for self-managed instances](#connect-the-gitlab-for-jira-cloud-app-for-self-managed-instances) (GitLab 15.7 and later).
   - [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
-If you use Jira Data Center or Jira Server, use the [Jira DVCS connector](dvcs/index.md) instead.
+If you use Jira Data Center or Jira Server, use the [Jira DVCS connector](dvcs/index.md) developed and maintained by Atlassian.
 
 ## Install the GitLab for Jira Cloud app **(FREE SAAS)**
 

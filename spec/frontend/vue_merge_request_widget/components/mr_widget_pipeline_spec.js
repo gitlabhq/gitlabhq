@@ -28,6 +28,7 @@ describe('MRWidgetPipeline', () => {
   const findCIErrorMessage = () => wrapper.findByTestId('ci-error-message');
   const findPipelineID = () => wrapper.findByTestId('pipeline-id');
   const findPipelineInfoContainer = () => wrapper.findByTestId('pipeline-info-container');
+  const findPipelineDetailsContainer = () => wrapper.findByTestId('pipeline-details-container');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
   const findPipelineFinishedAt = () => wrapper.findByTestId('finished-at');
   const findPipelineCoverage = () => wrapper.findByTestId('pipeline-coverage');
@@ -238,40 +239,74 @@ describe('MRWidgetPipeline', () => {
     };
 
     describe('for a branch pipeline', () => {
-      it('renders a pipeline widget that reads "Pipeline <ID> <status> for <SHA> on <branch>"', () => {
+      it('renders a pipeline widget that reads "Pipeline <ID> <status>"', () => {
         pipeline.ref.branch = true;
 
         factory();
 
-        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id} on ${mockData.source_branch_link}`;
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label}`;
         const actual = trimText(findPipelineInfoContainer().text());
+
+        expect(actual).toBe(expected);
+      });
+
+      it('renders a pipeline widget that reads "Pipeline <status> for <SHA> on <branch>"', () => {
+        pipeline.ref.branch = true;
+
+        factory();
+
+        const expected = `Pipeline ${pipeline.details.status.label} for ${pipeline.commit.short_id} on ${mockData.source_branch_link}`;
+        const actual = trimText(findPipelineDetailsContainer().text());
 
         expect(actual).toBe(expected);
       });
     });
 
     describe('for a tag pipeline', () => {
-      it('renders a pipeline widget that reads "Pipeline <ID> <status> for <SHA> on <branch>"', () => {
+      it('renders a pipeline widget that reads "Pipeline <ID> <status>"', () => {
         pipeline.ref.tag = true;
 
         factory();
 
-        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label}`;
         const actual = trimText(findPipelineInfoContainer().text());
+
+        expect(actual).toBe(expected);
+      });
+
+      it('renders a pipeline widget that reads "Pipeline <status> for <SHA> on <branch>"', () => {
+        pipeline.ref.tag = true;
+
+        factory();
+
+        const expected = `Pipeline ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
+        const actual = trimText(findPipelineDetailsContainer().text());
 
         expect(actual).toBe(expected);
       });
     });
 
     describe('for a detached merge request pipeline', () => {
-      it('renders a pipeline widget that reads "Merge request pipeline <ID> <status> for <SHA>"', () => {
+      it('renders a pipeline widget that reads "Merge request pipeline <ID> <status>"', () => {
         pipeline.details.event_type_name = 'Merge request pipeline';
         pipeline.merge_request_event_type = 'detached';
 
         factory();
 
-        const expected = `Merge request pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
+        const expected = `Merge request pipeline #${pipeline.id} ${pipeline.details.status.label}`;
         const actual = trimText(findPipelineInfoContainer().text());
+
+        expect(actual).toBe(expected);
+      });
+
+      it('renders a pipeline widget that reads "Merge request pipeline <status> for <SHA>"', () => {
+        pipeline.details.event_type_name = 'Merge request pipeline';
+        pipeline.merge_request_event_type = 'detached';
+
+        factory();
+
+        const expected = `Merge request pipeline ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
+        const actual = trimText(findPipelineDetailsContainer().text());
 
         expect(actual).toBe(expected);
       });

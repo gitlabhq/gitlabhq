@@ -576,6 +576,7 @@ export default {
               :award-emoji="workItemAwardEmoji.awardEmoji"
               :work-item-iid="workItemIid"
               @error="updateError = $event"
+              @emoji-updated="$emit('work-item-emoji-updated', $event)"
             />
             <work-item-tree
               v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"

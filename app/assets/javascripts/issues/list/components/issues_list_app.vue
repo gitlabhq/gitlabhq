@@ -106,6 +106,7 @@ import {
   getSortOptions,
   isSortKey,
   mapWorkItemWidgetsToIssueFields,
+  updateUpvotesCount,
 } from '../utils';
 import { hasNewIssueDropdown } from '../has_new_issue_dropdown_mixin';
 import EmptyStateWithAnyIssues from './empty_state_with_any_issues.vue';
@@ -885,6 +886,17 @@ export default {
           Sentry.captureException(error);
         });
     },
+    updateIssuableEmojis(workItem) {
+      const client = this.$apollo.provider.clients.defaultClient;
+      const issuesList = client.readQuery({
+        query: getIssuesQuery,
+        variables: this.queryVariables,
+      });
+
+      const data = updateUpvotesCount(issuesList, workItem);
+
+      client.writeQuery({ query: getIssuesQuery, variables: this.queryVariables, data });
+    },
   },
 };
 </script>
@@ -908,6 +920,7 @@ export default {
           :key="activeIssuable.iid"
           :work-item-iid="activeIssuable.iid"
           @work-item-updated="updateIssuablesCache"
+          @work-item-emoji-updated="updateIssuableEmojis"
           @addChild="refetchIssuables"
           @deleteWorkItem="deleteIssuable"
           @promotedToObjective="promoteToObjective"

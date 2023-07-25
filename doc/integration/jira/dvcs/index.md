@@ -13,6 +13,8 @@ The Jira DVCS connector was also deprecated and removed for Jira 8.13 and earlie
 
 Use the Jira DVCS (distributed version control system) connector if you self-host
 your Jira instance with Jira Data Center or Jira Server and want to use the [Jira development panel](../development_panel.md).
+The Jira DVCS connector is developed and maintained by Atlassian. For more information, see the
+[Atlassian documentation](https://confluence.atlassian.com/adminjiraserver/integrating-with-development-tools-using-dvcs-1047552689.html).
 
 If you're on Jira Cloud, migrate to the GitLab for Jira Cloud app. For more information, see [Install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app).
 

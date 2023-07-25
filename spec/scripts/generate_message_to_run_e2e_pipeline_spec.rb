@@ -223,10 +223,13 @@ RSpec.describe GenerateMessageToRunE2ePipeline, feature_category: :tooling do
       <<~MARKDOWN
       <!-- Run e2e warning begin -->
       :warning: @#{author_username} Some end-to-end (E2E) tests have been selected based on the stage label on this MR.
-      If not run already, please run the `e2e:package-and-test-ee` job in the `qa` stage
-      and review the results **before merging this MR**. (E2E tests are not run automatically on some MRs due to [runner resource constraints](https://gitlab.com/gitlab-org/gitlab-qa/-/issues/261).)
 
-      If you would like to run all e2e tests, please apply the ~"pipeline:run-all-e2e" label and restart the pipeline.
+      Please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure the tests in `follow-up-e2e:package-and-test-ee` pipeline
+      are passing **before this MR is merged**.
+
+      If you would like to run all e2e tests, please apply the ~"pipeline:run-all-e2e" label and trigger a new pipeline. This will run all tests in `e2e:package-and-test` pipeline.
+
+      For the list of known failures please refer to [the latest pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
 
       Once done, please apply the ✅ emoji on this comment.
 

@@ -91,11 +91,14 @@ export default {
       skip() {
         return !this.workItemIid;
       },
-      result() {
+      result({ data }) {
         if (this.hasNextPage) {
           this.fetchAwardEmojis();
         } else {
           this.isLoading = false;
+        }
+        if (data) {
+          this.$emit('emoji-updated', data.workspace?.workItems?.nodes[0]);
         }
       },
       error() {

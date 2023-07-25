@@ -74,6 +74,9 @@ import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import {
   workItemResponseFactory,
+  workItemByIidResponseFactory,
+  mockAwardEmojiThumbsUp,
+  mockAwardsWidget,
   mockAssignees,
   mockLabels,
   mockMilestone,
@@ -1135,6 +1138,22 @@ describe('CE IssuesListApp component', () => {
               textColor: undefined,
             })),
           );
+        });
+
+        it('updates the upvotes count of active issuable', async () => {
+          const workItem = workItemByIidResponseFactory({
+            iid: '789',
+            awardEmoji: {
+              ...mockAwardsWidget,
+              nodes: [mockAwardEmojiThumbsUp],
+            },
+          }).data.workspace.workItems.nodes[0];
+
+          findDrawerWorkItem().vm.$emit('work-item-emoji-updated', workItem);
+
+          await waitForPromises();
+
+          expect(findIssuableList().props('issuables')[0].upvotes).toBe(1);
         });
 
         it('updates the milestone field of active issuable', async () => {

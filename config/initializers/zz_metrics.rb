@@ -23,6 +23,9 @@ if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
     config.middleware.insert_before Gitlab::Database::LoadBalancing::RackMiddleware,
                                    Gitlab::Middleware::RailsQueueDuration
 
+    config.middleware.move_after Gitlab::Metrics::RackMiddleware,
+      Gitlab::EtagCaching::Middleware
+
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
   end
 

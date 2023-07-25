@@ -2986,7 +2986,7 @@ msgstr ""
 msgid "Added in this version"
 msgstr ""
 
-msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
+msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission."
 msgstr ""
 
 msgid "Additional compute minutes:"
@@ -6814,7 +6814,7 @@ msgstr ""
 msgid "Authorized At"
 msgstr ""
 
-msgid "Authorized applications (%{size})"
+msgid "Authorized applications"
 msgstr ""
 
 msgid "AuthorizedApplication|Application secret was successfully renewed."
@@ -53271,10 +53271,10 @@ msgstr ""
 msgid "You don't have any active chat names."
 msgstr ""
 
-msgid "You don't have any applications"
+msgid "You don't have any applications."
 msgstr ""
 
-msgid "You don't have any authorized applications"
+msgid "You don't have any authorized applications."
 msgstr ""
 
 msgid "You don't have any deployments right now."
@@ -53761,7 +53761,7 @@ msgstr ""
 msgid "Your activity"
 msgstr ""
 
-msgid "Your applications (%{size})"
+msgid "Your applications"
 msgstr ""
 
 msgid "Your authorized applications"

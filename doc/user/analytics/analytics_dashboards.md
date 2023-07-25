@@ -24,16 +24,23 @@ filters and visualizations to query and retrieve results.
 The following data sources are configured for analytics dashboards:
 
 - [Product analytics](../product_analytics/index.md)
+- [Value Stream Management](../analytics/value_streams_dashboard.md)
 
 ## Built-in dashboards
 
-To help you get started with analytics, GitLab provides two built-in dashboards with predefined visualizations:
+To help you get started with analytics, GitLab provides built-in dashboards with predefined visualizations.
 
-- **Audience**, which displays metrics related to traffic, such as number of users and sessions.
-- **Behavior**, which displays metrics related to user activity, such as number of page views and events.
+### Product analytics
+
+- **Audience** displays metrics related to traffic, such as the number of users and sessions.
+- **Behavior** displays metrics related to user activity, such as the number of page views and events.
 
 These dashboards are labeled **By GitLab**, and you cannot edit them.
 Instead, you can create a custom dashboard with a similar style.
+
+### Value Stream Management
+
+- **Value Streams Dashboard** displays metrics related to [DevOps performance, security exposure, and workstream optimization](../analytics/value_streams_dashboard.md#devops-metrics-comparison-panel).
 
 ## Custom dashboards
 

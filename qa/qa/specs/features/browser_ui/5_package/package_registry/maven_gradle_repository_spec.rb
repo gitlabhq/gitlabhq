@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Package', :object_storage,
     quarantine: {
-      only: { job: 'relative_url', condition: -> { QA::Support::FIPS.enabled? } },
+      only: { condition: -> { QA::Support::FIPS.enabled? } },
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417600',
       type: :investigating
     }, product_group: :package_registry do

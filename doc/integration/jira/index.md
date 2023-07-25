@@ -28,8 +28,8 @@ You can use the [Jira issue integration](configure.md) developed by GitLab with 
 You can use the [Jira development panel](development_panel.md) to [view GitLab activity for an issue](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
 including related branches, commits, and merge requests. To configure the Jira development panel:
 
-- **For Jira Cloud**, use the [GitLab for Jira Cloud app](connect-app.md) developed by GitLab.
-- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/index.md) developed by Atlassian.
+- **For Jira Cloud**, use the [GitLab for Jira Cloud app](connect-app.md) developed and maintained by GitLab.
+- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/index.md) developed and maintained by Atlassian.
 
 ## Jira integration capabilities
 

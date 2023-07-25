@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
-    describe 'Generic Repository' do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+    describe 'Generic Repository', except: { job: 'airgapped' } do
       include Runtime::Fixtures
 
       let(:project) do

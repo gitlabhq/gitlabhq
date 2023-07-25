@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' },
+  RSpec.describe 'Package', :object_storage,
     feature_flag: { name: 'rubygem_packages', scope: :project } do
     describe 'RubyGems Repository', product_group: :package_registry do
       include Runtime::Fixtures

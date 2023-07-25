@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
-    only: { job: %w[object_storage relative_url airgapped], condition: -> { QA::Support::FIPS.enabled? } },
+    only: { job: %w[object_storage airgapped], condition: -> { QA::Support::FIPS.enabled? } },
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417584',
     type: :bug
   } do

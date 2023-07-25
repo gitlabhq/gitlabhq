@@ -364,23 +364,31 @@ export function mapWorkItemWidgetsToIssueFields(issuesList, workItem) {
         activeItem[property] = { __persist: true, ...currentWidget[property] };
         return;
       }
-
-      // handling emojis
-      if (property === WORK_ITEM_TO_ISSUE_MAP[WIDGET_TYPE_AWARD_EMOJI]) {
-        const upvotesCount =
-          currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBSUP)?.length ??
-          0;
-        const downvotesCount =
-          currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBSDOWN)
-            ?.length ?? 0;
-        activeItem.upvotes = upvotesCount;
-        activeItem.downvotes = downvotesCount;
-        return;
-      }
       activeItem[property] = currentWidget[property];
     });
 
     activeItem.title = workItem.title;
     activeItem.confidential = workItem.confidential;
+  });
+}
+
+export function updateUpvotesCount(issuesList, workItem) {
+  const type = WIDGET_TYPE_AWARD_EMOJI;
+  const property = WORK_ITEM_TO_ISSUE_MAP[type];
+
+  return produce(issuesList, (draftData) => {
+    const activeItem = draftData.project.issues.nodes.find((issue) => issue.iid === workItem.iid);
+
+    const currentWidget = findWidget(type, workItem);
+    if (!currentWidget) {
+      return;
+    }
+
+    const upvotesCount =
+      currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBSUP)?.length ?? 0;
+    const downvotesCount =
+      currentWidget[property].nodes.filter((emoji) => emoji.name === EMOJI_THUMBSDOWN)?.length ?? 0;
+    activeItem.upvotes = upvotesCount;
+    activeItem.downvotes = downvotesCount;
   });
 }

@@ -36,7 +36,7 @@ export default {
 </script>
 
 <template>
-  <div class="deploy-heading">
+  <div class="deploy-heading gl-px-5">
     <div class="ci-widget media">
       <div class="media-body">
         <div class="deploy-body">

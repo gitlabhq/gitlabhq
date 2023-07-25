@@ -197,7 +197,8 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
     it 'shows head pipeline information' do
       within '.ci-widget-content' do
-        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+        expect(page).to have_content("Pipeline ##{pipeline.id} pending")
+        expect(page).to have_content("Pipeline pending " \
                                      "for #{pipeline.short_sha} " \
                                      "on #{pipeline.ref}")
       end
@@ -227,7 +228,8 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     shared_examples 'pipeline widget' do
       it 'shows head pipeline information', :sidekiq_might_not_need_inline do
         within '.ci-widget-content' do
-          expect(page).to have_content("Merge request pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
+          expect(page).to have_content("Merge request pipeline ##{pipeline.id} pending")
+          expect(page).to have_content("Merge request pipeline pending for #{pipeline.short_sha}")
         end
       end
     end
@@ -266,7 +268,8 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     shared_examples 'pipeline widget' do
       it 'shows head pipeline information', :sidekiq_might_not_need_inline do
         within '.ci-widget-content' do
-          expect(page).to have_content("Merged result pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
+          expect(page).to have_content("Merged result pipeline ##{pipeline.id} pending")
+          expect(page).to have_content("Merged result pipeline pending for #{pipeline.short_sha}")
         end
       end
     end

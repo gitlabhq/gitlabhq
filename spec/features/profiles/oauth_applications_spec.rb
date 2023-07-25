@@ -25,15 +25,21 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
       visit oauth_applications_path
 
       page.within('.oauth-applications') do
-        expect(page).to have_content('Your applications (1)')
+        page.within('.gl-new-card-count') do
+          expect(page).to have_content('1')
+        end
         click_button 'Destroy'
       end
 
       accept_gl_confirm(button_text: 'Destroy')
 
       expect(page).to have_content('The application was deleted successfully')
-      expect(page).to have_content('Your applications (0)')
-      expect(page).to have_content('Authorized applications (0)')
+      page.within('.oauth-applications .gl-new-card-count') do
+        expect(page).to have_content('0')
+      end
+      page.within('.oauth-authorized-applications .gl-new-card-count') do
+        expect(page).to have_content('0')
+      end
     end
   end
 
@@ -57,7 +63,9 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
       it 'displays the correct authorized applications' do
         visit oauth_applications_path
 
-        expect(page).to have_content('Authorized applications (2)')
+        page.within('.oauth-authorized-applications .gl-new-card-count') do
+          expect(page).to have_content('2')
+        end
 
         page.within('div.oauth-authorized-applications') do
           # Ensure the correct user's token details are displayed
@@ -85,7 +93,9 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
       accept_gl_confirm(button_text: 'Revoke application')
 
       expect(page).to have_content('The application was revoked access.')
-      expect(page).to have_content('Authorized applications (0)')
+      page.within('.oauth-authorized-applications .gl-new-card-count') do
+        expect(page).to have_content('0')
+      end
     end
 
     it 'deletes an anonymous authorized application' do
@@ -93,14 +103,18 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
       visit oauth_applications_path
 
       page.within('.oauth-authorized-applications') do
-        expect(page).to have_content('Authorized applications (1)')
+        page.within('.oauth-authorized-applications .gl-new-card-count') do
+          expect(page).to have_content('1')
+        end
         click_button 'Revoke'
       end
 
       accept_gl_confirm(button_text: 'Revoke application')
 
       expect(page).to have_content('The application was revoked access.')
-      expect(page).to have_content('Authorized applications (0)')
+      page.within('.oauth-authorized-applications .gl-new-card-count') do
+        expect(page).to have_content('0')
+      end
     end
   end
 end

@@ -39,7 +39,7 @@ You can use GitLab to review analytics at the project level. Some of these featu
 - [CI/CD & DORA](ci_cd_analytics.md)
 - [Code Review](code_review_analytics.md)
 - [Insights](../project/insights/index.md)
-- [Issue](../group/issues_analytics/index.md)
+- [Issue](../../user/analytics/issue_analytics.md)
 - [Merge Request](merge_request_analytics.md), enabled with the `project_merge_request_analytics`
   [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development)
 - [Repository](repository_analytics.md)

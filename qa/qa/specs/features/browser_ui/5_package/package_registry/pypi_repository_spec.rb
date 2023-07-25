@@ -2,12 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry do
-    describe 'PyPI Repository',
-      quarantine: {
-        only: { job: %w[relative_url airgapped] },
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417592',
-        type: :investigating
-      } do
+    describe 'PyPI Repository', except: { job: 'airgapped' } do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 

@@ -10,6 +10,8 @@ RSpec.shared_examples 'manage applications' do
 
     expect(page).to have_content 'Add new application'
 
+    click_button 'Add new application' if page.has_css?('.gl-new-card-header')
+
     fill_in :doorkeeper_application_name, with: application_name
     fill_in :doorkeeper_application_redirect_uri, with: application_redirect_uri
     check :doorkeeper_application_scopes_read_user

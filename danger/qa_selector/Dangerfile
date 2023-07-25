@@ -38,7 +38,8 @@ if lines_with_qa_selectors.any?
 
     * #{lines_with_qa_selectors.join("\n* ")}
 
-    Please ensure `e2e:package-and-test` job is run and the tests are passing.
+    If the `e2e:package-and-test` job in the `qa` stage has run automatically, please ensure the tests are passing.
+    If the job has not run, please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure the tests in `follow-up-e2e:package-and-test-ee` pipeline are passing.
 
     For the list of known failures please refer to [the latest pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
 
