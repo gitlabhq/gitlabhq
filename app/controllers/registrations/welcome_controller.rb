@@ -53,11 +53,6 @@ module Registrations
       stored_location_for(user) || last_member_activity_path
     end
 
-    # overridden in EE
-    def complete_signup_onboarding?
-      onboarding_status.continue_full_onboarding?
-    end
-
     def last_member_activity_path
       return dashboard_projects_path unless onboarding_status.last_invited_member_source.present?
 
@@ -67,7 +62,7 @@ module Registrations
     def update_success_path
       if onboarding_status.invite_with_tasks_to_be_done?
         issues_dashboard_path(assignee_username: current_user.username)
-      elsif complete_signup_onboarding? # trials/regular registration on .com
+      elsif onboarding_status.continue_full_onboarding? # trials/regular registration on .com
         signup_onboarding_path
       elsif onboarding_status.single_invite? # invites w/o tasks due to order
         flash[:notice] = helpers.invite_accepted_notice(onboarding_status.last_invited_member)
@@ -94,7 +89,7 @@ module Registrations
     end
 
     def onboarding_status
-      Onboarding::Status.new(current_user)
+      Onboarding::Status.new(params.to_unsafe_h.deep_symbolize_keys, session, current_user)
     end
     strong_memoize_attr :onboarding_status
   end

@@ -131,7 +131,7 @@ To improve this metric, you should consider:
 
 The DORA metrics are displayed on the following charts:
 
-- [Value Streams Dashboard](value_streams_dashboard.md), which helps you identify trends, patterns, and opportunities for improvement.
+- [Value Streams Dashboard](value_streams_dashboard.md), which helps you identify trends, patterns, and opportunities for improvement. DORA metrics are displayed in the [metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panel) and the [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel). 
 - [CI/CD analytics charts](ci_cd_analytics.md), which show pipeline success rates and duration, and the history of DORA metrics over time.
 - Insights reports for [groups](../group/insights/index.md) and [projects](value_stream_analytics.md), where you can also use [DORA query parameters](../../user/project/insights/index.md#dora-query-parameters) to create custom charts.
 

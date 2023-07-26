@@ -2,10 +2,13 @@
 
 module Onboarding
   class Status
-    def initialize(user)
+    def initialize(params, session, user)
+      @params = params
+      @session = session
       @user = user
     end
 
+    # overridden in EE
     def continue_full_onboarding?
       false
     end
@@ -39,3 +42,5 @@ module Onboarding
     end
   end
 end
+
+Onboarding::Status.prepend_mod_with('Onboarding::Status')

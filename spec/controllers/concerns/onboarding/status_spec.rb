@@ -9,13 +9,13 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
   let_it_be(:source) { member.group }
 
   describe '#continue_full_onboarding?' do
-    subject { described_class.new(nil).continue_full_onboarding? }
+    subject { described_class.new(nil, {}, user).continue_full_onboarding? }
 
     it { is_expected.to eq(false) }
   end
 
   describe '#single_invite?' do
-    subject { described_class.new(user).single_invite? }
+    subject { described_class.new(nil, nil, user).single_invite? }
 
     context 'when there is only one member for the user' do
       context 'when the member source exists' do
@@ -39,7 +39,7 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
   end
 
   describe '#last_invited_member' do
-    subject { described_class.new(user).last_invited_member }
+    subject { described_class.new(nil, nil, user).last_invited_member }
 
     it { is_expected.to eq(member) }
 
@@ -57,7 +57,7 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
   end
 
   describe '#last_invited_member_source' do
-    subject { described_class.new(user).last_invited_member_source }
+    subject { described_class.new(nil, nil, user).last_invited_member_source }
 
     context 'when a member exists' do
       it { is_expected.to eq(source) }
@@ -77,7 +77,7 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
   end
 
   describe '#invite_with_tasks_to_be_done?' do
-    subject { described_class.new(user).invite_with_tasks_to_be_done? }
+    subject { described_class.new(nil, nil, user).invite_with_tasks_to_be_done? }
 
     context 'when there are tasks_to_be_done with one member' do
       let_it_be(:member) { create(:group_member, user: user, tasks_to_be_done: tasks_to_be_done) }

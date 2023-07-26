@@ -98,6 +98,11 @@ pre-push:
       tags: backend bundler
       glob: 'Gemfile.lock'
       run: bundle exec bundler-checksum lint
+    audit_event_types_docs:
+      tags: documentation
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{config/audit_events/types/*.yml,ee/config/audit_events/types/*yml}'
+      run: bundle exec rake gitlab:audit_event_types:check_docs
 
   scripts:
     "merge_conflicts":

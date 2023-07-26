@@ -46,15 +46,27 @@ When you hover over a metric, a tooltip displays an explanation of the metric an
 
 ## DORA Performers score panel
 
-The DORA Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. Disabled by default.
+
+FLAG:
+By default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_performers_score_panel`.
+
+The [DORA metrics](dora_metrics.md) Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
 
 The chart is a breakdown of your project's DORA scores, categorized as high, medium, or low.
-Each bar on the chart displays the sum of total projects per score category, calculated monthly.
+Each bar on the chart displays the sum of total projects per score category, calculated monthly. To exclude data from the chart (for example, "Not Included"), in the legend select the series you want to exclude.
 Hovering over each bar reveals a dialog that explains the score's definition.
 
 For example, if a project has a high score for Deployment Frequency (Velocity), it means that the project has one or more deploys to production per day.
 
-![DORA performers score](img/dora_performers_score_panel_v16_3.png)
+| Metric | Description | High | Medium | Low |
+|--------|-------------|------|--------|-----|
+| Deployment frequency  | The number of deploys to production per day | ≥30 | 1-29 | \<1 |
+| Lead time for changes | The number of days to go from code committed to code successfully running in production| ≤7 | 8-29 | ≥30 |
+| Time to restore service | The number of days to restore service when a service incident or a defect that impacts users occurs | ≤1 | 2-6 | ≥7 |
+| Change failure rate  | The percentage of changes to production resulted in degraded service | ≤15% | 16%-44% | ≥45% |
+
+These scoring are based on Google's classifications in the [DORA 2022 Accelerate State of DevOps Report](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out).
 
 ## View the value streams dashboard
 

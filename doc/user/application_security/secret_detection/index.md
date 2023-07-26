@@ -350,6 +350,7 @@ The following customization options can be used separately, or in combination:
 - [Disable predefined rules](#disable-predefined-analyzer-rules).
 - [Override predefined rules](#override-predefined-analyzer-rules).
 - [Synthesize a custom configuration](#synthesize-a-custom-configuration).
+- [Specify a remote configuration file](#specify-a-remote-configuration-file).
 
 ### Disable predefined analyzer rules
 

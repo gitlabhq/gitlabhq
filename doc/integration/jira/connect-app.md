@@ -20,7 +20,7 @@ If you use Jira Data Center or Jira Server, use the [Jira DVCS connector](dvcs/i
 
 ## Install the GitLab for Jira Cloud app **(FREE SAAS)**
 
-> Link groups feature [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) from Add namespace in GitLab 16.1.
+> **Add namespace** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) to **Link groups** in GitLab 16.1.
 
 Prerequisites:
 

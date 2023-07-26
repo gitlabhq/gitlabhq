@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Static Application Security Testing (SAST) **(FREE)**
 
-> All open source (OSS) analyzers were moved from GitLab Ultimate to GitLab Free in GitLab 13.3.
-
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
 explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
@@ -27,30 +25,10 @@ For more details, see the [Summary of features per tier](#summary-of-features-pe
 
 ![SAST results shown in the MR widget](img/sast_results_in_mr_v14_0.png)
 
-The results are sorted by the priority of the vulnerability:
-
-<!-- vale gitlab.SubstitutionWarning = NO -->
-
-1. Critical
-1. High
-1. Medium
-1. Low
-1. Info
-1. Unknown
-
-<!-- vale gitlab.SubstitutionWarning = YES -->
-
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
 for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
 job finishes but the DAST job fails, the security dashboard does not show SAST results. On failure,
 the analyzer outputs an [exit code](../../../development/integrations/secure.md#exit-code).
-
-## Use cases
-
-- Your code has a potentially dangerous attribute in a class, or unsafe code
-  that can lead to unintended code execution.
-- Your application is vulnerable to cross-site scripting (XSS) attacks that can
-  be leveraged to unauthorized access to session data.
 
 ## Requirements
 

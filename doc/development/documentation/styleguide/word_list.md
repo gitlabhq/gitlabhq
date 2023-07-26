@@ -188,6 +188,10 @@ Instead of:
 
 - As none of the endpoints return an ID...
 
+## as well as
+
+Instead of **as well as**, use **and**.
+
 ## associate
 
 Do not use **associate** when describing adding issues to epics, or users to issues, merge requests,
