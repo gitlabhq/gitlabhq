@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+model_validations.add_comment_for_added_validations

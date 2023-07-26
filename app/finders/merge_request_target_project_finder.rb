@@ -39,3 +39,5 @@ class MergeRequestTargetProjectFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
+
+MergeRequestTargetProjectFinder.prepend_mod_with("MergeRequestTargetProjectFinder")

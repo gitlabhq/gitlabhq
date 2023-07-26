@@ -496,7 +496,7 @@ path = "/gitleaks.toml"
   ]
 ```
 
-## Specify a remote configuration file
+### Specify a remote configuration file
 
 Projects can be configured with a [CI/CD variable](../../../ci/variables/index.md) in order
 to specify a ruleset configuration outside of the current repository.

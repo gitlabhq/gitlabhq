@@ -6,7 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting repository mirroring **(FREE)**
 
-Should an error occur during a push, GitLab displays an **Error** highlight for that repository. Details on the error can then be seen by hovering over the highlight text.
+When mirroring fails, project maintainers can see a link similar to **{warning-solid}** **Pull mirroring failed 1 hour ago.**
+on the project details page. Select this link to go directly to the mirroring settings,
+where GitLab displays an **Error** badge for the mirrored repository. You can hover your mouse cursor
+over the badge to display the text of the error:
+
+![Error message shown on hover](img/mirror_error_v16_3.png)
 
 ## Received RST_STREAM with error code 2 with GitHub
 

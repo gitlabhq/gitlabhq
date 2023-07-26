@@ -6,7 +6,7 @@ module Types
       graphql_name 'AlertManagementHttpIntegration'
       description 'An endpoint and credentials used to accept alerts for a project'
 
-      implements(Types::AlertManagement::IntegrationType)
+      implements Types::AlertManagement::IntegrationType
 
       authorize :admin_operations
 

@@ -22,7 +22,7 @@ For details on the mapping between GitLab OIDC claims and Fulcio certificate ext
 - You must be using GitLab.com.
 - Your project's CI/CD configuration must be located in the project.
 
-## Cosign
+## Sign or verify container images and build artifacts by using Cosign
 
 You can use Cosign to sign and verify container images and build artifacts.
 

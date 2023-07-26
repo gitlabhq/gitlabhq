@@ -60,15 +60,12 @@ export default ({ blobPath = '', summaryEndpoint = '', suiteEndpoint = '' }) => 
 
 The easiest type of values to migrate are static values, either:
 
-- Client-side constants
-- Rails-injected dataset
-
 - Client-side constants: If the static value is a client-side constant, it may have been implemented
   in the store for easy access by other state properties or methods. However, it is generally
   a better practice to add such values to a `constants.js` file and import it when needed.
 - Rails-injected dataset: These are values that we may need to provide to our Vue apps.
   They are static, so adding them to the VueX store is not necessary and it could instead
-  be done easily through the `provide/inject` Vue API, which would be equivalent but without the VueX overhead.
+  be done easily through the `provide/inject` Vue API, which would be equivalent but without the VueX overhead. This should **only** be injected inside the top-most JS file that mounts our component.
 
 If we take a look at our example above, we can already see that two properties contain `Endpoint` in their name, which probably means that these come from our Rails dataset. To confirm this, we would search the codebase for these properties and see where they are defined, which is the case in our example. Additionally, `blobPath` is also a static property, and a little less obvious here is that `pageInfo` is actually a constant! It is never modified and is only used as a default value that we use inside our getter:
 

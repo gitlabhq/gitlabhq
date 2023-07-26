@@ -6,9 +6,9 @@ module Types
 
     connection_type_class Types::MergeRequestConnectionType
 
-    implements(Types::Notes::NoteableInterface)
-    implements(Types::CurrentUserTodos)
-    implements(Types::TodoableInterface)
+    implements Types::Notes::NoteableInterface
+    implements Types::CurrentUserTodos
+    implements Types::TodoableInterface
 
     authorize :read_merge_request
 

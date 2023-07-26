@@ -4,7 +4,7 @@ module Types
   class WorkItemType < BaseObject
     graphql_name 'WorkItem'
 
-    implements(Types::TodoableInterface)
+    implements Types::TodoableInterface
 
     authorize :read_work_item
 

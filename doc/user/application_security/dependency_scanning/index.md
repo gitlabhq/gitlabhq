@@ -314,9 +314,13 @@ are analyzed. There is no limit to the depth of nested or transitive dependencie
 
 Dependency Scanning supports the following official analyzers:
 
+- `gemnasium`
+- `gemnasium-maven`
+- `gemnasium-python`
+
+Each of these supported Gemnasium-based Dependency Scanning analyzers exist in the following project:
+
 - [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
-- [`gemnasium-maven`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven)
-- [`gemnasium-python`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python)
 
 The analyzers are published as Docker images, which Dependency Scanning uses
 to launch dedicated containers for each analysis. You can also integrate a custom

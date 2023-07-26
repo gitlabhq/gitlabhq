@@ -1,8 +1,0 @@
----
-name: complete_p_ci_builds_partitioning
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126701
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414396
-milestone: '16.2'
-type: development
-group: group::pipeline execution
-default_enabled: false

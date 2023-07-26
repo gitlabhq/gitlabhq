@@ -8,7 +8,7 @@ module Types
       description 'CI/CD variables for a project.'
 
       connection_type_class Types::Ci::ProjectVariableConnectionType
-      implements(VariableInterface)
+      implements VariableInterface
 
       field :environment_scope, GraphQL::Types::String,
             null: true,

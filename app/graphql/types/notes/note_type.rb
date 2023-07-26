@@ -9,7 +9,7 @@ module Types
 
       expose_permissions Types::PermissionTypes::Note
 
-      implements(Types::ResolvableInterface)
+      implements Types::ResolvableInterface
 
       field :max_access_level_of_author, GraphQL::Types::String,
         null: true,

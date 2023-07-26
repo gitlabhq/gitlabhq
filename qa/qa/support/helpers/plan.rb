@@ -57,10 +57,11 @@ module QA
         }.freeze
 
         CODE_SUGGESTIONS = {
+          # Annual plan, rate and price
           plan_id: '8a8aa0ac8874ddc4018878da1f736782',
           rate_charge_id: '8a8aa0ac8874ddc4018878da1f9a6784',
           name: 'code suggestions',
-          price: 9
+          price: 108
         }.freeze
 
         LICENSE_TYPE = {

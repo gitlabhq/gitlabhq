@@ -8,7 +8,7 @@ module Types
       description 'CI/CD variables for a group.'
 
       connection_type_class Types::Ci::GroupVariableConnectionType
-      implements(VariableInterface)
+      implements VariableInterface
 
       field :environment_scope, GraphQL::Types::String,
             null: true,

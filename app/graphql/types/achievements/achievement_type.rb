@@ -5,7 +5,7 @@ module Types
     class AchievementType < BaseObject
       graphql_name 'Achievement'
 
-      connection_type_class(Types::CountableConnectionType)
+      connection_type_class Types::CountableConnectionType
 
       authorize :read_achievement
 

@@ -8,8 +8,8 @@ module Types
 
       present_using ::AlertManagement::AlertPresenter
 
-      implements(Types::Notes::NoteableInterface)
-      implements(Types::TodoableInterface)
+      implements Types::Notes::NoteableInterface
+      implements Types::TodoableInterface
 
       authorize :read_alert_management_alert
 
