@@ -334,6 +334,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
+    params[:issue][:issue_type] ||= params[:issue_type] if params[:issue_type].present?
     all_params = params.require(:issue).permit(
       *issue_params_attributes,
       sentry_issue_attributes: [:sentry_issue_identifier]

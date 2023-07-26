@@ -7,11 +7,18 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
 
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
-  let_it_be(:incident) { create(:incident, project: project, author: developer, description: 'description') }
-  let_it_be(:issue) { create(:issue, project: project, author: developer, description: 'Issue description') }
-  let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: incident) }
   let_it_be(:confidential_incident) do
     create(:incident, confidential: true, project: project, author: developer, description: 'Confidential')
+  end
+
+  let_it_be_with_reload(:incident) do
+    create(:incident, project: project, author: developer, description: 'description')
+  end
+
+  let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: incident) }
+
+  let_it_be_with_reload(:issue) do
+    create(:issue, project: project, author: developer, description: 'Issue description')
   end
 
   before_all do
@@ -105,12 +112,15 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     page.within('[data-testid="issuable-form"]') do
       click_button 'Issue'
       find('[data-testid="issue-type-list-item"]', text: 'Incident').click
+
       click_button 'Save changes'
-
-      wait_for_requests
-
-      expect(page).to have_current_path("#{project_path}/-/issues/incident/#{issue.iid}")
     end
+
+    wait_for_requests
+
+    expect(issue.reload.issue_type).to eq('incident')
+    expect(page).to have_current_path("#{project_path}/-/issues/incident/#{issue.iid}")
+    expect(page).to have_content(issue.title)
   end
 
   it 'routes the user to the issue details page when the `issue_type` is set to issue' do
@@ -126,11 +136,13 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
       click_button 'Incident'
       find('[data-testid="issue-type-list-item"]', text: 'Issue').click
       click_button 'Save changes'
-
-      wait_for_requests
-
-      expect(page).to have_current_path("#{project_path}/-/issues/#{incident.iid}")
     end
+
+    wait_for_requests
+
+    expect(incident.reload.issue_type).to eq('issue')
+    expect(page).to have_current_path("#{project_path}/-/issues/#{incident.iid}")
+    expect(page).to have_content(incident.title)
   end
 
   it 'displays the confidential badge on the sticky header when the incident is confidential' do
