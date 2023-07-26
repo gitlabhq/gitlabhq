@@ -171,14 +171,12 @@ class Packages::Package < ApplicationRecord
   scope :preload_pipelines, -> { preload(pipelines: :user) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
   scope :select_distinct_name, -> { select(:name).distinct }
-  scope :select_only_first_by_name, -> { select('DISTINCT ON (name) *') }
 
   # Sorting
   scope :order_created, -> { reorder(created_at: :asc) }
   scope :order_created_desc, -> { reorder(created_at: :desc) }
   scope :order_name, -> { reorder(name: :asc) }
   scope :order_name_desc, -> { reorder(name: :desc) }
-  scope :order_name_desc_version_desc, -> { reorder(name: :desc, version: :desc) }
   scope :order_version, -> { reorder(version: :asc) }
   scope :order_version_desc, -> { reorder(version: :desc) }
   scope :order_type, -> { reorder(package_type: :asc) }

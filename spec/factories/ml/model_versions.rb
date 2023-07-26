@@ -9,7 +9,7 @@ FactoryBot.define do
 
     trait :with_package do
       package do
-        association :ml_model_package, name: model.name, version: version, project_id: project.id
+        association :ml_model_package, name: model.name, version: version, project: project
       end
     end
   end

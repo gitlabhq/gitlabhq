@@ -57,6 +57,7 @@ proper-names:
     "Git",
     "Gitaly",
     "GitHub",
+    "gitlab.vim",
     "GitLab Geo",
     "GitLab Monitor",
     "GitLab Operator",

@@ -13,6 +13,14 @@ module Projects
     include Gitlab::ShellAdapter
     TransferError = Class.new(StandardError)
 
+    def log_project_transfer_success(project, new_namespace)
+      log_transfer(project, new_namespace, nil)
+    end
+
+    def log_project_transfer_error(project, new_namespace, error_message)
+      log_transfer(project, new_namespace, error_message)
+    end
+
     def execute(new_namespace)
       @new_namespace = new_namespace
 
@@ -36,16 +44,42 @@ module Projects
 
       transfer(project)
 
+      log_project_transfer_success(project, @new_namespace)
+
       true
     rescue Projects::TransferService::TransferError => ex
       project.reset
       project.errors.add(:new_namespace, ex.message)
+
+      log_project_transfer_error(project, @new_namespace, ex.message)
+
       false
     end
 
     private
 
     attr_reader :old_path, :new_path, :new_namespace, :old_namespace
+
+    def log_transfer(project, new_namespace, error_message = nil)
+      action = error_message.nil? ? "was" : "was not"
+
+      log_payload = {
+        message: "Project #{action} transferred to a new namespace",
+        project_id: project.id,
+        project_path: project.full_path,
+        project_namespace: project.namespace.full_path,
+        namespace_id: project.namespace_id,
+        new_namespace_id: new_namespace&.id,
+        new_project_namespace: new_namespace&.full_path,
+        error_message: error_message
+      }
+
+      if error_message.nil?
+        ::Gitlab::AppLogger.info(log_payload)
+      else
+        ::Gitlab::AppLogger.error(log_payload)
+      end
+    end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def transfer(project)

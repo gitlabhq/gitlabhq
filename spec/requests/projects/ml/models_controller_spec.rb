@@ -5,9 +5,8 @@ require 'spec_helper'
 RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.first_owner }
-  let_it_be(:model1_a) { create(:ml_model_package, project: project) }
-  let_it_be(:model1_b) { create(:ml_model_package, project: project, name: model1_a.name) }
-  let_it_be(:model2) { create(:ml_model_package, project: project) }
+  let_it_be(:model1) { create(:ml_models, :with_versions, project: project) }
+  let_it_be(:model2) { create(:ml_models, project: project) }
 
   let(:model_registry_enabled) { true }
 
@@ -45,7 +44,8 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
     it 'does not perform N+1 sql queries' do
       control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_models }
 
-      create_list(:ml_model_package, 4, project: project)
+      create_list(:ml_model_versions, 2, model: model1)
+      create_list(:ml_model_versions, 2, model: model2)
 
       expect { list_models }.not_to exceed_all_query_limit(control_count)
     end

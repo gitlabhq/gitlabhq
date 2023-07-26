@@ -13742,7 +13742,12 @@ Represents the Geo replication and verification state of a ci_secure_file.
 | <a id="cisecurefileregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the CiSecureFileRegistry is resynced. |
 | <a id="cisecurefileregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the CiSecureFileRegistry is reverified. |
+| <a id="cisecurefileregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of CiSecureFileRegistry. |
+| <a id="cisecurefileregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the CiSecureFileRegistry. |
 
 ### `CiStage`
@@ -14243,7 +14248,12 @@ Represents the Geo replication and verification state of an Container Repository
 | <a id="containerrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the ContainerRepositoryRegistry is resynced. |
 | <a id="containerrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the ContainerRepositoryRegistry is reverified. |
+| <a id="containerrepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ContainerRepositoryRegistry. |
 
 ### `ContainerRepositoryTag`
@@ -14591,7 +14601,12 @@ Represents the Geo replication and verification state of a dependency_proxy_blob
 | <a id="dependencyproxyblobregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyBlobRegistry is resynced. |
 | <a id="dependencyproxyblobregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyBlobRegistry is reverified. |
+| <a id="dependencyproxyblobregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DependencyProxyBlobRegistry. |
 
 ### `DependencyProxyImageTtlGroupPolicy`
@@ -14640,7 +14655,12 @@ Represents the Geo replication and verification state of a dependency_proxy_mani
 | <a id="dependencyproxymanifestregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyManifestRegistry is resynced. |
 | <a id="dependencyproxymanifestregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyManifestRegistry is reverified. |
+| <a id="dependencyproxymanifestregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DependencyProxyManifestRegistry. |
 
 ### `DependencyProxySetting`
@@ -14966,7 +14986,12 @@ Represents the Geo replication and verification state of a Design Management Rep
 | <a id="designmanagementrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the DesignManagementRepositoryRegistry is resynced. |
 | <a id="designmanagementrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the DesignManagementRepositoryRegistry is reverified. |
+| <a id="designmanagementrepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DesignManagementRepositoryRegistry. |
 
 ### `DesignVersion`
@@ -17431,7 +17456,12 @@ Represents the Geo sync and verification state of a group wiki repository.
 | <a id="groupwikirepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the GroupWikiRepositoryRegistry is resynced. |
 | <a id="groupwikirepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the GroupWikiRepositoryRegistry. |
+| <a id="groupwikirepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the GroupWikiRepositoryRegistry. |
+| <a id="groupwikirepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the GroupWikiRepositoryRegistry is reverified. |
+| <a id="groupwikirepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the GroupWikiRepositoryRegistry. |
+| <a id="groupwikirepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of GroupWikiRepositoryRegistry. |
+| <a id="groupwikirepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the GroupWikiRepositoryRegistry. |
 
 ### `HelmFileMetadata`
@@ -17965,7 +17995,12 @@ Represents the Geo replication and verification state of a job_artifact.
 | <a id="jobartifactregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the JobArtifactRegistry is resynced. |
 | <a id="jobartifactregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the JobArtifactRegistry. |
 | <a id="jobartifactregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the JobArtifactRegistry. |
+| <a id="jobartifactregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the JobArtifactRegistry. |
+| <a id="jobartifactregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the JobArtifactRegistry. |
 | <a id="jobartifactregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the JobArtifactRegistry is reverified. |
+| <a id="jobartifactregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the JobArtifactRegistry. |
+| <a id="jobartifactregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of JobArtifactRegistry. |
+| <a id="jobartifactregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the JobArtifactRegistry. |
 | <a id="jobartifactregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the JobArtifactRegistry. |
 
 ### `JobPermissions`
@@ -18033,7 +18068,12 @@ Represents the Geo sync and verification state of an LFS object.
 | <a id="lfsobjectregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the LfsObjectRegistry is resynced. |
 | <a id="lfsobjectregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the LfsObjectRegistry. |
+| <a id="lfsobjectregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the LfsObjectRegistry. |
+| <a id="lfsobjectregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the LfsObjectRegistry. |
 | <a id="lfsobjectregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the LfsObjectRegistry is reverified. |
+| <a id="lfsobjectregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the LfsObjectRegistry. |
+| <a id="lfsobjectregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of LfsObjectRegistry. |
+| <a id="lfsobjectregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the LfsObjectRegistry. |
 | <a id="lfsobjectregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the LfsObjectRegistry. |
 
 ### `LicenseHistoryEntry`
@@ -18894,7 +18934,12 @@ Represents the Geo sync and verification state of a Merge Request diff.
 | <a id="mergerequestdiffregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry is resynced. |
 | <a id="mergerequestdiffregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the MergeRequestDiffRegistry. |
+| <a id="mergerequestdiffregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the MergeRequestDiffRegistry. |
+| <a id="mergerequestdiffregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry is reverified. |
+| <a id="mergerequestdiffregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the MergeRequestDiffRegistry. |
+| <a id="mergerequestdiffregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of MergeRequestDiffRegistry. |
+| <a id="mergerequestdiffregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the MergeRequestDiffRegistry. |
 
 ### `MergeRequestParticipant`
@@ -20036,7 +20081,12 @@ Represents the Geo sync and verification state of a package file.
 | <a id="packagefileregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry is resynced. |
 | <a id="packagefileregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PackageFileRegistry. |
 | <a id="packagefileregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PackageFileRegistry. |
+| <a id="packagefileregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the PackageFileRegistry. |
+| <a id="packagefileregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the PackageFileRegistry. |
 | <a id="packagefileregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry is reverified. |
+| <a id="packagefileregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the PackageFileRegistry. |
+| <a id="packagefileregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of PackageFileRegistry. |
+| <a id="packagefileregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the PackageFileRegistry. |
 | <a id="packagefileregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PackageFileRegistry. |
 
 ### `PackageHelmDependencyType`
@@ -20179,7 +20229,12 @@ Represents the Geo replication and verification state of a pages_deployment.
 | <a id="pagesdeploymentregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PagesDeploymentRegistry is resynced. |
 | <a id="pagesdeploymentregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PagesDeploymentRegistry is reverified. |
+| <a id="pagesdeploymentregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PagesDeploymentRegistry. |
 
 ### `PathLock`
@@ -20365,7 +20420,12 @@ Represents the Geo sync and verification state of a pipeline artifact.
 | <a id="pipelineartifactregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PipelineArtifactRegistry is resynced. |
 | <a id="pipelineartifactregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PipelineArtifactRegistry. |
+| <a id="pipelineartifactregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the PipelineArtifactRegistry. |
+| <a id="pipelineartifactregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PipelineArtifactRegistry is reverified. |
+| <a id="pipelineartifactregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the PipelineArtifactRegistry. |
+| <a id="pipelineartifactregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of PipelineArtifactRegistry. |
+| <a id="pipelineartifactregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PipelineArtifactRegistry. |
 
 ### `PipelineCounts`
@@ -22168,7 +22228,12 @@ Represents the Geo replication and verification state of a project repository.
 | <a id="projectrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the ProjectRepositoryRegistry is resynced. |
 | <a id="projectrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the ProjectRepositoryRegistry is reverified. |
+| <a id="projectrepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ProjectRepositoryRegistry. |
 
 ### `ProjectSecurityPolicySource`
@@ -22330,7 +22395,12 @@ Represents the Geo replication and verification state of a project_wiki_reposito
 | <a id="projectwikirepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the ProjectWikiRepositoryRegistry is resynced. |
 | <a id="projectwikirepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the ProjectWikiRepositoryRegistry is reverified. |
+| <a id="projectwikirepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ProjectWikiRepositoryRegistry. |
 
 ### `PrometheusAlert`
@@ -23329,7 +23399,12 @@ Represents the Geo sync and verification state of a snippet repository.
 | <a id="snippetrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrysnippetrepositoryid"></a>`snippetRepositoryId` | [`ID!`](#id) | ID of the Snippet Repository. |
 | <a id="snippetrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the SnippetRepositoryRegistry. |
+| <a id="snippetrepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the SnippetRepositoryRegistry. |
+| <a id="snippetrepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the SnippetRepositoryRegistry is reverified. |
+| <a id="snippetrepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the SnippetRepositoryRegistry. |
+| <a id="snippetrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of SnippetRepositoryRegistry. |
+| <a id="snippetrepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the SnippetRepositoryRegistry. |
 
 ### `SshSignature`
@@ -23471,7 +23546,12 @@ Represents the Geo sync and verification state of a terraform state version.
 | <a id="terraformstateversionregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistryterraformstateversionid"></a>`terraformStateVersionId` | [`ID!`](#id) | ID of the terraform state version. |
+| <a id="terraformstateversionregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the TerraformStateVersionRegistry. |
+| <a id="terraformstateversionregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the TerraformStateVersionRegistry is reverified. |
+| <a id="terraformstateversionregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the TerraformStateVersionRegistry. |
+| <a id="terraformstateversionregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of TerraformStateVersionRegistry. |
+| <a id="terraformstateversionregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the TerraformStateVersionRegistry. |
 
 ### `TestCase`
@@ -23778,7 +23858,12 @@ Represents the Geo replication and verification state of an upload.
 | <a id="uploadregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the UploadRegistry is resynced. |
 | <a id="uploadregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the UploadRegistry. |
 | <a id="uploadregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the UploadRegistry. |
+| <a id="uploadregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the UploadRegistry. |
+| <a id="uploadregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the UploadRegistry. |
 | <a id="uploadregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the UploadRegistry is reverified. |
+| <a id="uploadregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the UploadRegistry. |
+| <a id="uploadregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of UploadRegistry. |
+| <a id="uploadregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the UploadRegistry. |
 | <a id="uploadregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the UploadRegistry. |
 
 ### `UsageTrendsMeasurement`

@@ -18,7 +18,9 @@ As a rough guideline, if you are using a [1k reference architecture](../referenc
 
 ## Scaling backups
 
-As the volume of GitLab data grows, the [backup command](#backup-command) takes longer to execute. At some point, the execution time becomes impractical. For example, it can take 24 hours or more.
+As the volume of GitLab data grows, the [backup command](#backup-command) takes longer to execute. [Backup options](#backup-options) such as [back up Git repositories concurrently](#back-up-git-repositories-concurrently) and [incremental repository backups](#incremental-repository-backups) can help to reduce execution time. At some point, the backup command becomes impractical by itself. For example, it can take 24 hours or more.
+
+In some cases, architecture changes may be warranted to allow backups to scale. If you are using a GitLab reference architecture, see [Back up and restore large reference architectures](backup_large_reference_architectures.md).
 
 For more information, see [alternative backup strategies](#alternative-backup-strategies).
 
@@ -27,6 +29,7 @@ For more information, see [alternative backup strategies](#alternative-backup-st
 - [PostgreSQL databases](#postgresql-databases)
 - [Git repositories](#git-repositories)
 - [Blobs](#blobs)
+- [Container Registry](#container-registry)
 - [Configuration files](#storing-configuration-files)
 - [Other data](#other-data)
 
@@ -79,6 +82,25 @@ GitLab stores blobs (or files) such as issue attachments or LFS objects into eit
   - Cloud based like Amazon S3 and Google Cloud Storage.
   - Hosted by you (like MinIO).
   - A Storage Appliance that exposes an Object Storage-compatible API.
+
+#### Object storage
+
+The [backup command](#backup-command) doesn't back up blobs that aren't stored on the file system. If you're using [object storage](../object_storage.md), be sure to enable backups with your object storage provider. For example, see:
+
+- [Amazon S3 backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/s3-backups.html)
+- [Google Cloud Storage Transfer Service](https://cloud.google.com/storage-transfer-service) and [Google Cloud Storage Object Versioning](https://cloud.google.com/storage/docs/object-versioning)
+
+### Container Registry
+
+[GitLab Container Registry](../packages/container_registry.md) storage can be configured in either:
+
+- The file system in a specific location.
+- An [Object Storage](../object_storage.md) solution. Object Storage solutions can be:
+  - Cloud based like Amazon S3 and Google Cloud Storage.
+  - Hosted by you (like MinIO).
+  - A Storage Appliance that exposes an Object Storage-compatible API.
+
+The backup command backs up registry data when they are stored in the default location on the file system.
 
 #### Object storage
 

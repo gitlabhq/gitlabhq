@@ -8,12 +8,9 @@ module Projects
       end
 
       def execute
-        @project
-          .packages
-          .installable
-          .ml_model
-          .order_name_desc_version_desc
-          .select_only_first_by_name
+        ::Ml::Model
+          .by_project(@project)
+          .including_latest_version
           .limit(100) # This is a temporary limit before we add pagination
       end
     end

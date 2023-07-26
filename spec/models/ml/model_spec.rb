@@ -3,17 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Ml::Model, feature_category: :mlops do
-  let_it_be(:base_project) { create(:project) }
-  let_it_be(:existing_model) { create(:ml_models, name: 'an_existing_model', project: base_project) }
+  let_it_be(:project1) { create(:project) }
+  let_it_be(:project2) { create(:project) }
+  let_it_be(:existing_model) { create(:ml_models, name: 'an_existing_model', project: project1) }
+  let_it_be(:another_existing_model) { create(:ml_models, name: 'an_existing_model', project: project2) }
   let_it_be(:valid_name) { 'a_valid_name' }
-  let_it_be(:default_experiment) { create(:ml_experiments, name: valid_name, project: base_project) }
-
-  let(:project) { base_project }
+  let_it_be(:default_experiment) { create(:ml_experiments, name: valid_name, project: project1) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:default_experiment) }
     it { is_expected.to have_many(:versions) }
+    it { is_expected.to have_one(:latest_version).class_name('Ml::ModelVersion').inverse_of(:model) }
   end
 
   describe '#valid?' do
@@ -22,7 +23,7 @@ RSpec.describe Ml::Model, feature_category: :mlops do
     let(:name) { valid_name }
 
     subject(:errors) do
-      m = described_class.new(name: name, project: project, default_experiment: default_experiment)
+      m = described_class.new(name: name, project: project1, default_experiment: default_experiment)
       m.validate
       m.errors
     end
@@ -54,10 +55,24 @@ RSpec.describe Ml::Model, feature_category: :mlops do
 
       context 'when model version project is different than model project' do
         before do
-          allow(default_experiment).to receive(:project_id).and_return(project.id + 1)
+          allow(default_experiment).to receive(:project_id).and_return(project1.id + 1)
         end
 
         it { expect(errors).to include(:default_experiment) }
+      end
+    end
+
+    describe '.by_project' do
+      subject { described_class.by_project(project1) }
+
+      it { is_expected.to match_array([existing_model]) }
+    end
+
+    describe '.including_latest_version' do
+      subject { described_class.including_latest_version }
+
+      it 'loads latest version' do
+        expect(subject.first.association_cached?(:latest_version)).to be(true)
       end
     end
   end

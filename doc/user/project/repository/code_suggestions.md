@@ -26,8 +26,8 @@ Write code more efficiently by using generative AI to suggest code while you're 
 Code Suggestions are available:
 
 - To users of GitLab SaaS (by default) and self-managed GitLab Enterprise Edition (when requested). Code Suggestions are not available for GitLab Community Edition.
-- In VS Code and Microsoft Visual Studio when you have the corresponding GitLab extension installed.
-- In the GitLab WebIDE
+- In VS Code, Microsoft Visual Studio, JetBrains IDEs, and Neovim. You must have the corresponding GitLab extension installed.
+- In the GitLab WebIDE.
 
 <div class="video-fallback">
   <a href="https://www.youtube.com/watch?v=WnxBYxN2-p4">View an end-to-end demo of Code Suggestions in VS Code</a>.
@@ -164,6 +164,8 @@ Prerequisites:
 - For GitLab SaaS, Code Suggestions must be enabled [for the top-level group](../../group/manage.md#enable-code-suggestions) and [for your user account](#enable-code-suggestions-for-an-individual-user).
 - To use VS Code, ensure you have installed [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
 - To use Microsoft Visual Studio, ensure you have installed [the Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
+- To use JetBrains IDEs, ensure you have installed [the GitLab plugin](https://plugins.jetbrains.com/plugin/22325-gitlab).
+- To use Neovim, ensure you have set up the GitLab plugin for Neovim ([`gitlab.vim`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim)).
 
 To use Code Suggestions:
 

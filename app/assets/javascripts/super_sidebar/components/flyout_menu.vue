@@ -1,5 +1,5 @@
 <script>
-import { computePosition, autoUpdate, flip } from '@floating-ui/dom';
+import { computePosition, autoUpdate, flip, shift } from '@floating-ui/dom';
 import NavItem from './nav_item.vue';
 
 export default {
@@ -22,7 +22,7 @@ export default {
 
     function updatePosition() {
       return computePosition(target, flyout, {
-        middleware: [flip()],
+        middleware: [flip(), shift()],
         placement: 'right-start',
         strategy: 'fixed',
       }).then(({ x, y }) => {
@@ -44,7 +44,7 @@ export default {
 <template>
   <div
     :id="`${targetId}-flyout`"
-    class="gl-fixed gl-pl-3 gl-z-index-9999"
+    class="gl-fixed gl-pl-3 gl-z-index-9999 gl-max-h-full gl-overflow-y-auto"
     @mouseover="$emit('mouseover')"
     @mouseleave="$emit('mouseleave')"
   >
