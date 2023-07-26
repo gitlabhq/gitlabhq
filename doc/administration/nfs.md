@@ -60,10 +60,10 @@ options:
   a good security measure when NFS shares are accessed by many different
   users. However, in this case only GitLab uses the NFS share so it
   is safe. GitLab recommends the `no_root_squash` setting because we need to
-  manage file permissions automatically. Without the setting you may receive
-  errors when the Omnibus package tries to alter permissions. GitLab
+  manage file permissions automatically. Without the setting, you may receive
+  errors when the Linux package tries to alter permissions. GitLab
   and other bundled components do **not** run as `root` but as non-privileged
-  users. The recommendation for `no_root_squash` is to allow the Omnibus package
+  users. The recommendation for `no_root_squash` is to allow the Linux package
   to set ownership and permissions on files, as needed. In some cases where the
   `no_root_squash` option is not available, the `root` flag can achieve the same
   result.
@@ -71,7 +71,7 @@ options:
   circumstances it could lead to data loss if a failure occurs before data has
   synced.
 
-Due to the complexities of running Omnibus with LDAP and the complexities of
+Due to the complexities of running the Linux package with LDAP and the complexities of
 maintaining ID mapping without LDAP, in most cases you should enable numeric UIDs
 and GIDs (which is off by default in some cases) for simplified permission
 management between systems:
@@ -210,10 +210,10 @@ mountpoint
     └── uploads
 ```
 
-To do so, configure Omnibus with the paths to each directory nested
+To do so, configure the Linux package with the paths to each directory nested
 in the mount point as follows:
 
-Mount `/gitlab-nfs` then use the following Omnibus
+Mount `/gitlab-nfs` then use the following Linux package
 configuration to move each data location to a subdirectory:
 
 ```ruby
@@ -229,7 +229,7 @@ these new locations, and then restart GitLab.
 
 ### Bind mounts
 
-Alternatively to changing the configuration in Omnibus, bind mounts can be used
+Instead of changing the configuration in the Linux package, bind mounts can be used
 to store the data on an NFS mount.
 
 Bind mounts provide a way to specify just one NFS mount and then
@@ -252,7 +252,7 @@ are empty before attempting a restore. Read more about the
 
 ### Multiple NFS mounts
 
-When using default Omnibus configuration you need to share 4 data locations
+When using default Linux package configuration, you need to share 4 data locations
 between all GitLab cluster nodes. No other locations should be shared. The
 following are the 4 locations need to be shared:
 
@@ -265,8 +265,8 @@ following are the 4 locations need to be shared:
 
 Other GitLab directories should not be shared between nodes. They contain
 node-specific files and GitLab code that does not need to be shared. To ship
-logs to a central location consider using remote syslog. Omnibus GitLab packages
-provide configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
+logs to a central location consider using remote syslog. The Linux package
+provides configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
 
 Having multiple NFS mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the

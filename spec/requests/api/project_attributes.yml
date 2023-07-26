@@ -60,6 +60,7 @@ itself: # project
     - container_registry_image_prefix
     - default_branch
     - empty_repo
+    - emails_disabled
     - forks_count
     - http_url_to_repo
     - import_status
@@ -164,7 +165,6 @@ project_setting:
     - jitsu_key
     - mirror_branch_regex
     - allow_pipeline_trigger_approve_deployment
-    - emails_enabled
     - pages_unique_domain_enabled
     - pages_unique_domain
     - runner_registration_enabled

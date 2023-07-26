@@ -8,16 +8,16 @@ RSpec.shared_examples 'project emails are disabled' do |check_delivery_jobs_queu
 
   before do
     reset_delivered_emails!
-    target_project.clear_memoization(:emails_disabled)
+    target_project.project_setting.clear_memoization(:emails_enabled?)
   end
 
   it 'sends no emails with project emails disabled' do
-    target_project.update_attribute(:emails_disabled, true)
+    target_project.project_setting.update_attribute(:emails_enabled, false)
 
     notification_trigger
 
     if check_delivery_jobs_queue
-      # Only check enqueud jobs, not delivered emails
+      # Only check enqueued jobs, not delivered emails
       expect_no_delivery_jobs
     else
       # Deprecated: Check actual delivered emails
@@ -26,12 +26,12 @@ RSpec.shared_examples 'project emails are disabled' do |check_delivery_jobs_queu
   end
 
   it 'sends emails to someone' do
-    target_project.update_attribute(:emails_disabled, false)
+    target_project.project_setting.update_attribute(:emails_enabled, true)
 
     notification_trigger
 
     if check_delivery_jobs_queue
-      # Only check enqueud jobs, not delivered emails
+      # Only check enqueued jobs, not delivered emails
       expect_any_delivery_jobs
     else
       # Deprecated: Check actual delivered emails

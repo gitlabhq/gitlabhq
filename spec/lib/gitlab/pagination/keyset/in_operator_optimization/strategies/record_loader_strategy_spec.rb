@@ -32,6 +32,12 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::R
     end
   end
 
+  let_it_be(:model_without_ignored_columns) do
+    Class.new(ApplicationRecord) do
+      self.table_name = 'projects'
+    end
+  end
+
   subject(:strategy) { described_class.new(finder_query, model, order_by_columns) }
 
   describe '#initializer_columns' do
@@ -70,6 +76,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::R
 
   describe '#final_projections' do
     context 'when model does not have ignored columns' do
+      let(:model) { model_without_ignored_columns }
+
       it 'does not specify the selected column names' do
         expect(strategy.final_projections).to contain_exactly("(#{described_class::RECORDS_COLUMN}).*")
       end

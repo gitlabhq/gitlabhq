@@ -3959,51 +3959,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#emails_disabled?' do
-    let_it_be(:namespace) { create(:namespace) }
+    let(:project) { build(:project, emails_enabled: true) }
 
-    let(:project) { build(:project, namespace: namespace, emails_disabled: false) }
-
-    context 'emails disabled in group' do
-      it 'returns true' do
-        allow(project.namespace).to receive(:emails_disabled?) { true }
-
-        expect(project.emails_disabled?).to be_truthy
-      end
-    end
-
-    context 'emails enabled in group' do
-      before do
-        allow(project.namespace).to receive(:emails_disabled?) { false }
-      end
-
-      it 'returns false' do
-        expect(project.emails_disabled?).to be_falsey
-      end
-
-      it 'returns true' do
-        project.update_attribute(:emails_disabled, true)
-
-        expect(project.emails_disabled?).to be_truthy
-      end
-    end
-  end
-
-  describe '#emails_enabled?' do
-    context 'without a persisted project_setting object' do
-      let(:project) { build(:project, emails_disabled: false) }
-
-      it "is the opposite of emails_disabled" do
-        expect(project.emails_enabled?).to be_truthy
-      end
-    end
-
-    context 'with a persisted project_setting object' do
-      let(:project_settings) { create(:project_setting, emails_enabled: true) }
-      let(:project) { build(:project, emails_disabled: false, project_setting: project_settings) }
-
-      it "is the opposite of emails_disabled" do
-        expect(project.emails_enabled?).to be_truthy
-      end
+    it "is the opposite of emails_disabled" do
+      expect(project.emails_disabled?).to be_falsey
     end
   end
 

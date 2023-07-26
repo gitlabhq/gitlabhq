@@ -40,7 +40,8 @@ module API
         optional :infrastructure_access_level, type: String, values: %w(disabled private enabled), desc: 'Infrastructure access level. One of `disabled`, `private` or `enabled`'
         optional :monitor_access_level, type: String, values: %w(disabled private enabled), desc: 'Monitor access level. One of `disabled`, `private` or `enabled`'
 
-        optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
+        optional :emails_disabled, type: Boolean, desc: 'Deprecated: Use emails_enabled instead.'
+        optional :emails_enabled, type: Boolean, desc: 'Enable email notifications'
         optional :show_default_award_emojis, type: Boolean, desc: 'Show default award emojis'
         optional :show_diff_preview_in_email, type: Boolean, desc: 'Include the code diff preview in merge request notification emails'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about Potentially Unwanted Characters'
@@ -146,7 +147,7 @@ module API
           :container_expiration_policy_attributes,
           :default_branch,
           :description,
-          :emails_disabled,
+          :emails_enabled,
           :forking_access_level,
           :issues_access_level,
           :lfs_enabled,

@@ -504,19 +504,19 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
     end
 
-    context 'when updating #emails_disabled' do
+    context 'when updating #emails_enabled' do
       it 'updates the attribute for the project owner' do
-        expect { update_project(project, user, emails_disabled: true) }
-          .to change { project.emails_disabled }
-          .to(true)
+        expect { update_project(project, user, emails_enabled: false) }
+          .to change { project.emails_enabled }
+          .to(false)
       end
 
       it 'does not update when not project owner' do
         maintainer = create(:user)
         project.add_member(maintainer, :maintainer)
 
-        expect { update_project(project, maintainer, emails_disabled: true) }
-          .not_to change { project.emails_disabled }
+        expect { update_project(project, maintainer, emails_enabled: false) }
+          .not_to change { project.emails_enabled }
       end
     end
 

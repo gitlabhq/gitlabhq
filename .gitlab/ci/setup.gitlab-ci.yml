@@ -167,9 +167,6 @@ e2e-test-pipeline-generate:
   script:
     - bundle exec rake "ci:detect_changes[$ENV_FILE]"
     - cd $CI_PROJECT_DIR && scripts/generate-e2e-pipeline
-    - source scripts/utils.sh
-    - install_gitlab_gem
-    - scripts/generate-message-to-run-e2e-pipeline.rb
   artifacts:
     expire_in: 1 day
     paths:

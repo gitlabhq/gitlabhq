@@ -70,12 +70,12 @@ Read more about [configuring NFS mounts](../nfs.md)
 Restoring a backup from an instance using local storage restores to local storage even if the target instance uses object storage.
 Migrations to object storage must be done before or after restoration.
 
-## Restore for Omnibus GitLab installations
+## Restore for Linux package installations
 
 This procedure assumes that:
 
 - You have installed the **exact same version and type (CE/EE)** of GitLab
-  Omnibus with which the backup was created.
+  with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
 - GitLab is running. If not, start it using `sudo gitlab-ctl start`.
 
@@ -293,17 +293,17 @@ During a restore from backup, the restore script may ask for confirmation before
 proceeding. If you wish to disable these prompts, you can set the `GITLAB_ASSUME_YES`
 environment variable to `1`.
 
-For Omnibus GitLab packages:
+- Linux package installations:
 
-```shell
-sudo GITLAB_ASSUME_YES=1 gitlab-backup restore
-```
+  ```shell
+  sudo GITLAB_ASSUME_YES=1 gitlab-backup restore
+  ```
 
-For installations from source:
+- Self-compiled installations:
 
-```shell
-sudo -u git -H GITLAB_ASSUME_YES=1 bundle exec rake gitlab:backup:restore RAILS_ENV=production
-```
+  ```shell
+  sudo -u git -H GITLAB_ASSUME_YES=1 bundle exec rake gitlab:backup:restore RAILS_ENV=production
+  ```
 
 ### Excluding tasks on restore
 
@@ -322,17 +322,19 @@ You can exclude specific tasks on restore by adding the environment variable `SK
 - `repositories` (Git repositories data)
 - `packages` (Packages)
 
-For Omnibus GitLab packages:
+To exclude specific tasks:
 
-```shell
-sudo gitlab-backup restore BACKUP=timestamp_of_backup SKIP=db,uploads
-```
+- Linux package installations:
 
-For installations from source:
+  ```shell
+  sudo gitlab-backup restore BACKUP=timestamp_of_backup SKIP=db,uploads
+  ```
 
-```shell
-sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup SKIP=db,uploads RAILS_ENV=production
-```
+- Self-compiled installations:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup SKIP=db,uploads RAILS_ENV=production
+  ```
 
 ### Restore specific repository storages
 
@@ -343,17 +345,19 @@ repositories from specific repository storages can be restored separately
 using the `REPOSITORIES_STORAGES` option. The option accepts a comma-separated list of
 storage names.
 
-For example, for Omnibus GitLab installations:
+For example:
 
-```shell
-sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
-```
+- Linux package installations:
 
-For example, for installations from source:
+  ```shell
+  sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
+  ```
 
-```shell
-sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
-```
+- Self-compiled installations:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
+  ```
 
 ### Restore specific repositories
 
@@ -367,13 +371,13 @@ descendent groups are included or skipped, depending on which option you used. T
 For example, to restore all repositories for all projects in **Group A** (`group-a`), the repository for **Project C** in **Group B** (`group-b/project-c`),
 and skip the **Project D** in **Group A** (`group-a/project-d`):
 
-- Omnibus GitLab installations:
+- Linux package installations:
 
   ```shell
   sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
-- Installations from source:
+- Self-compiled installations:
 
   ```shell
   sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
@@ -384,24 +388,26 @@ and skip the **Project D** in **Group A** (`group-a/project-d`):
 If an [untarred backup](backup_gitlab.md#skipping-tar-creation) (made with `SKIP=tar`) is found,
 and no backup is chosen with `BACKUP=<timestamp>`, the untarred backup is used.
 
-For example, for Omnibus GitLab installations:
+For example:
 
-```shell
-sudo gitlab-backup restore
-```
+- Linux package installations:
 
-For example, for installations from source:
+  ```shell
+  sudo gitlab-backup restore
+  ```
 
-```shell
-sudo -u git -H bundle exec rake gitlab:backup:restore
-```
+- Self-compiled installations:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:backup:restore
+  ```
 
 ## Troubleshooting
 
 The following are possible problems you might encounter, along with potential
 solutions.
 
-### Restoring database backup using Omnibus packages outputs warnings
+### Restoring database backup using output warnings from a Linux package installation
 
 If you're using backup restore procedures, you may encounter the following
 warning messages:

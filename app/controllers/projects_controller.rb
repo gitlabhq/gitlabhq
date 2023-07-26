@@ -471,6 +471,7 @@ class ProjectsController < Projects::ApplicationController
       mr_default_target_self
       warn_about_potentially_unwanted_characters
       enforce_auth_checks_on_uploads
+      emails_enabled
     ]
   end
 
@@ -483,7 +484,6 @@ class ProjectsController < Projects::ApplicationController
       :resolve_outdated_diff_discussions,
       :container_registry_enabled,
       :description,
-      :emails_disabled,
       :external_authorization_classification_label,
       :import_url,
       :issues_tracker,

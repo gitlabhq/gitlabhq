@@ -180,7 +180,9 @@ This section describes the earlier configuration format.
 
 See [the available connection settings for different providers](object_storage.md#configure-the-connection-settings).
 
-**In Omnibus installations:**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines; replacing with
    the values you want:
@@ -210,7 +212,7 @@ See [the available connection settings for different providers](object_storage.m
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
 
-**In installations from source:**
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
@@ -230,3 +232,5 @@ See [the available connection settings for different providers](object_storage.m
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
+
+::EndTabs

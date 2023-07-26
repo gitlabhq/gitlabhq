@@ -119,7 +119,7 @@ module Projects
     end
 
     def remove_unallowed_params
-      params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, project)
+      params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, project)
 
       params.delete(:runner_registration_enabled) if Gitlab::CurrentSettings.valid_runner_registrars.exclude?('project')
     end

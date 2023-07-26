@@ -277,7 +277,7 @@ export default {
       requestAccessEnabled: true,
       enforceAuthChecksOnUploads: true,
       highlightChangesClass: false,
-      emailsDisabled: false,
+      emailsEnabled: true,
       cveIdRequestEnabled: true,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
@@ -1001,14 +1001,19 @@ export default {
       :full-path="confirmationPhrase"
     />
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
-      <label class="js-emails-disabled">
-        <input :value="emailsDisabled" type="hidden" name="project[emails_disabled]" />
-        <input v-model="emailsDisabled" type="checkbox" />
-        {{ s__('ProjectSettings|Disable email notifications') }}
+      <label class="js-emails-enabled">
+        <input
+          :value="emailsEnabled"
+          type="hidden"
+          name="project[project_setting_attributes][emails_enabled]"
+        />
+        <gl-form-checkbox v-model="emailsEnabled">
+          {{ s__('ProjectSettings|Enable email notifications') }}
+          <template #help>{{
+            s__('ProjectSettings|Enable sending email notifications for this project')
+          }}</template>
+        </gl-form-checkbox>
       </label>
-      <span class="form-text text-muted">{{
-        s__('ProjectSettings|Override user notification preferences for all project members.')
-      }}</span>
     </project-setting-row>
     <project-setting-row class="mb-3">
       <input

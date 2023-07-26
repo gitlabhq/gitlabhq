@@ -951,7 +951,7 @@ For example:
 
 ## `geo.log` **(PREMIUM SELF)**
 
-Geo stores structured log messages in a `geo.log` file. For Omnibus GitLab
+Geo stores structured log messages in a `geo.log` file. For Linux package
 installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
 This file contains information about when Geo attempts to sync repositories
@@ -1127,7 +1127,7 @@ GitLab also tracks [Prometheus metrics for Praefect](../gitaly/monitoring.md#mon
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63832) in GitLab 14.1.
 
-For Omnibus installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
+For Linux package installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
 
 This log is populated when a [GitLab backup is created](../../administration/backup_restore/index.md). You can use this log to understand how the backup process performed.
 

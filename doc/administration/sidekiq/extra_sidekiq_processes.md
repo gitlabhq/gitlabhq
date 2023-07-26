@@ -11,7 +11,7 @@ at a higher rate on a single instance. By default, Sidekiq starts one worker
 process and only uses a single core.
 
 NOTE:
-The information in this page applies only to Omnibus GitLab.
+The information in this page applies only to Linux package installations.
 
 ## Start multiple processes
 

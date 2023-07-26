@@ -82,7 +82,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
    telnet <GitLab host> 6379 # Redis
    ```
 
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab package
+1. [Download and install](https://about.gitlab.com/install/) the Linux package
    using steps 1 and 2. **Do not complete any other steps.**
 
 1. Copy the `/etc/gitlab/gitlab.rb` file from the GitLab instance and add the following settings. Make sure

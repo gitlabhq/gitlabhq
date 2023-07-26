@@ -57,7 +57,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set sign-in restrictions for all users.')
-      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/sign_in_restrictions.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'signin'
 
@@ -69,7 +69,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Add a Terms of Service agreement and Privacy Policy for users of this GitLab instance.')
-      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/terms.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/terms.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'terms'
 

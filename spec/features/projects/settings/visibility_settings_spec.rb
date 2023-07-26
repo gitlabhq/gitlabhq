@@ -30,11 +30,11 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js, feature_categor
 
     context 'disable email notifications' do
       it 'is visible' do
-        expect(page).to have_selector('.js-emails-disabled', visible: true)
+        expect(page).to have_selector('.js-emails-enabled', visible: true)
       end
 
       it 'accepts the changed state' do
-        find('.js-emails-disabled input[type="checkbox"]').click
+        find('.js-emails-enabled input[type="checkbox"]').click
 
         expect { save_permissions_group }.to change { updated_emails_disabled? }.to(true)
       end
@@ -59,7 +59,7 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js, feature_categor
 
     context 'disable email notifications' do
       it 'is not available' do
-        expect(page).not_to have_selector('.js-emails-disabled', visible: true)
+        expect(page).not_to have_selector('.js-emails-enabled', visible: true)
       end
     end
   end

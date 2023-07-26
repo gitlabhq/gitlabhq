@@ -15610,7 +15610,8 @@ Relationship between an epic and an issue.
 | <a id="epicissuediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="epicissuedownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the issue has received. |
 | <a id="epicissueduedate"></a>`dueDate` | [`Time`](#time) | Due date of the issue. |
-| <a id="epicissueemailsdisabled"></a>`emailsDisabled` | [`Boolean!`](#boolean) | Indicates if a project has email notifications disabled: `true` if email notifications are disabled. |
+| <a id="epicissueemailsdisabled"></a>`emailsDisabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.3. Use `emails_enabled`. |
+| <a id="epicissueemailsenabled"></a>`emailsEnabled` | [`Boolean!`](#boolean) | Indicates if a project has email notifications disabled: `false` if email notifications are disabled. |
 | <a id="epicissueepic"></a>`epic` | [`Epic`](#epic) | Epic to which this issue belongs. |
 | <a id="epicissueepicissueid"></a>`epicIssueId` | [`ID!`](#id) | ID of the epic-issue relation. |
 | <a id="epicissueescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy associated with the issue. Available for issues which support escalation. |
@@ -17714,7 +17715,8 @@ Describes an issuable resource link for incident issues.
 | <a id="issuediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="issuedownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the issue has received. |
 | <a id="issueduedate"></a>`dueDate` | [`Time`](#time) | Due date of the issue. |
-| <a id="issueemailsdisabled"></a>`emailsDisabled` | [`Boolean!`](#boolean) | Indicates if a project has email notifications disabled: `true` if email notifications are disabled. |
+| <a id="issueemailsdisabled"></a>`emailsDisabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.3. Use `emails_enabled`. |
+| <a id="issueemailsenabled"></a>`emailsEnabled` | [`Boolean!`](#boolean) | Indicates if a project has email notifications disabled: `false` if email notifications are disabled. |
 | <a id="issueepic"></a>`epic` | [`Epic`](#epic) | Epic to which this issue belongs. |
 | <a id="issueescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy associated with the issue. Available for issues which support escalation. |
 | <a id="issueescalationstatus"></a>`escalationStatus` | [`IssueEscalationStatus`](#issueescalationstatus) | Escalation status of the issue. |

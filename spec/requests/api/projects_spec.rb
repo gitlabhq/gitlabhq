@@ -2583,7 +2583,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         link = create(:project_group_link, project: project, group: group)
 
         get api(path, admin, admin_mode: true)
-
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq(project.id)
         expect(json_response['description']).to eq(project.description)
@@ -2634,6 +2633,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['feature_flags_access_level']).to be_present
         expect(json_response['infrastructure_access_level']).to be_present
         expect(json_response['monitor_access_level']).to be_present
+        expect(json_response).to have_key('emails_disabled')
+        expect(json_response).to have_key('emails_enabled')
       end
 
       it 'exposes all necessary attributes' do
@@ -2707,7 +2708,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['feature_flags_access_level']).to be_present
         expect(json_response['infrastructure_access_level']).to be_present
         expect(json_response['monitor_access_level']).to be_present
-        expect(json_response).to have_key('emails_disabled')
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['remove_source_branch_after_merge']).to be_truthy
         expect(json_response['container_registry_enabled']).to be_present
@@ -3940,13 +3940,23 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       it 'updates emails_disabled' do
-        project_param = { emails_disabled: true }
+        project_param = { emails_enabled: false }
 
         put api("/projects/#{project3.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['emails_disabled']).to eq(true)
+      end
+
+      it 'updates emails_enabled?' do
+        project_param = { emails_enabled: false }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['emails_enabled']).to eq(false)
       end
 
       it 'updates build_git_strategy' do

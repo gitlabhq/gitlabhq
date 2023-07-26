@@ -719,7 +719,7 @@ module ProjectsHelper
       analyticsAccessLevel: feature.analytics_access_level,
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
-      emailsDisabled: project.emails_disabled?,
+      emailsEnabled: project.emails_enabled?,
       monitorAccessLevel: feature.monitor_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,

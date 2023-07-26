@@ -100,7 +100,7 @@ RSpec.shared_examples 'issue boards sidebar' do
 
     context 'when notifications have been disabled' do
       before do
-        project.update_attribute(:emails_disabled, true)
+        project.update_attribute(:emails_enabled, false)
 
         refresh_and_click_first_card
       end

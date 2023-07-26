@@ -43,6 +43,9 @@ class Project < ApplicationRecord
   include Subquery
   include IssueParent
   include UpdatedAtFilterable
+  include IgnorableColumns
+
+  ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -125,7 +128,6 @@ class Project < ApplicationRecord
   before_validation :remove_leading_spaces_on_name
   after_validation :check_pending_delete
   before_save :ensure_runners_token
-  before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
 
   after_create -> { create_or_load_association(:project_feature) }
   after_create -> { create_or_load_association(:ci_cd_settings) }
@@ -521,6 +523,7 @@ class Project < ApplicationRecord
     delegate :has_shimo?
     delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?
     delegate :runner_registration_enabled, :runner_registration_enabled=, :runner_registration_enabled?
+    delegate :emails_enabled, :emails_enabled=, :emails_enabled?
     delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?
     delegate :mr_default_target_self, :mr_default_target_self=
     delegate :previous_default_branch, :previous_default_branch=
@@ -1211,14 +1214,8 @@ class Project < ApplicationRecord
   end
 
   def emails_disabled?
-    strong_memoize(:emails_disabled) do
-      # disabling in the namespace overrides the project setting
-      super || namespace.emails_disabled?
-    end
-  end
-
-  def emails_enabled?
-    !emails_disabled?
+    # disabling in the namespace overrides the project setting
+    !emails_enabled?
   end
 
   override :lfs_enabled?
@@ -3507,17 +3504,6 @@ class Project < ApplicationRecord
       ProjectFeature::ENABLED
     else
       ProjectFeature::PRIVATE
-    end
-  end
-
-  def update_new_emails_created_column
-    return if project_setting.nil?
-    return if project_setting.emails_enabled == !emails_disabled
-
-    if project_setting.persisted?
-      project_setting.update!(emails_enabled: !emails_disabled)
-    elsif project_setting
-      project_setting.emails_enabled = !emails_disabled
     end
   end
 

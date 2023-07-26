@@ -1,1 +1,2 @@
 <%= sanitize_name(@updated_by.name) %> requested a new review on <%= merge_request_reference_link(@merge_request) %>.
+<%= render_if_exists 'notify/diff_summary' -%>

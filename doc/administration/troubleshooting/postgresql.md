@@ -26,7 +26,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - [Connect to the PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database).
 
-- [Omnibus database procedures](https://docs.gitlab.com/omnibus/settings/database.html) including:
+- [Database procedures for Linux package installations](https://docs.gitlab.com/omnibus/settings/database.html) including:
   - SSL: enabling, disabling, and verifying.
   - Enabling Write Ahead Log (WAL) archiving.
   - Using an external (non-Omnibus) PostgreSQL installation; and backing it up.
@@ -44,7 +44,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - Consuming PostgreSQL from [within CI runners](../../ci/services/postgres.md).
 
-- Managing Omnibus PostgreSQL versions [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html).
+- Managing PostgreSQL versions on Linux package installations [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html).
 
 - [PostgreSQL scaling](../postgresql/replication_and_failover.md)
   - Including [troubleshooting](../postgresql/replication_and_failover.md#troubleshooting)
@@ -107,7 +107,7 @@ PostgreSQL defaults:
 
 Comments in issue [#30528](https://gitlab.com/gitlab-org/gitlab/-/issues/30528)
 indicate that these should both be set to at least a number of minutes for all
-Omnibus GitLab installations (so they don't hang indefinitely). However, 15 s
+Linux package installations (so they don't hang indefinitely). However, 15 s
 for `statement_timeout` is very short, and is only effective if the
 underlying infrastructure is very performant.
 
@@ -138,7 +138,8 @@ postgresql['idle_in_transaction_session_timeout'] = '60s'
 Once saved, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 NOTE:
-These are Omnibus GitLab settings. If an external database, such as a customer's PostgreSQL installation or Amazon RDS is being used, these values don't get set, and would have to be set externally.
+These are Linux package settings. If an external database, such as a customer's PostgreSQL installation
+or Amazon RDS is being used, these values don't get set, and would have to be set externally.
 
 ### Temporarily changing the statement timeout
 

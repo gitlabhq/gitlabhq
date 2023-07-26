@@ -38,6 +38,7 @@ You can use GitLab to review analytics at the project level. Some of these featu
 - [Application Security](../application_security/security_dashboard/index.md)
 - [CI/CD & DORA](ci_cd_analytics.md)
 - [Code Review](code_review_analytics.md)
+- [Contributor statistics](../../user/analytics/contributor_statistics.md)
 - [Insights](../project/insights/index.md)
 - [Issue](../../user/analytics/issue_analytics.md)
 - [Merge Request](merge_request_analytics.md), enabled with the `project_merge_request_analytics`

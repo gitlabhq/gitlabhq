@@ -63,7 +63,7 @@ and delays before CI pipelines start running.
 
 Potential causes include:
 
-- The GitLab instance may need more Sidekiq workers. By default, a single-node Omnibus GitLab
+- The GitLab instance may need more Sidekiq workers. By default, a single-node Linux package installation
   runs one worker, restricting the execution of Sidekiq jobs to a maximum of one CPU core.
   [Read more about running multiple Sidekiq workers](extra_sidekiq_processes.md).
 
@@ -555,9 +555,9 @@ but if you want to clear the idempotency key immediately, follow the following s
   dj.delete!
   ```
 
-## Omnibus GitLab 14.0 and later: remove the `sidekiq-cluster` service
+## GitLab 14.0 and later: remove the `sidekiq-cluster` service (Linux package installations)
 
-Omnibus GitLab instances that were configured to run `sidekiq-cluster` prior to GitLab 14.0
+Linux package instances that were configured to run `sidekiq-cluster` prior to GitLab 14.0
 might still have this service running along side `sidekiq` in later releases.
 
 The code to manage `sidekiq-cluster` was removed in GitLab 14.0.

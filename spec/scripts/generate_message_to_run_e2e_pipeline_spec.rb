@@ -226,10 +226,11 @@ RSpec.describe GenerateMessageToRunE2ePipeline, feature_category: :tooling do
 
       Please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure the tests in `follow-up-e2e:package-and-test-ee` pipeline
       are passing **before this MR is merged**.
+      (The E2E test pipeline is computationally intensive and we cannot afford running it automatically for all pushes/rebases. Therefore, this job must be triggered manually after significant changes at least once.)
 
-      If you would like to run all e2e tests, please apply the ~"pipeline:run-all-e2e" label and trigger a new pipeline. This will run all tests in `e2e:package-and-test` pipeline.
+      If you would like to run all E2E tests, please apply the ~"pipeline:run-all-e2e" label and trigger a new pipeline. This will run all tests in `e2e:package-and-test` pipeline.
 
-      For the list of known failures please refer to [the latest pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
+      The E2E test jobs are allowed to fail due to [flakiness](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-metrics-dashboards/#package-and-test). For the list of known failures please refer to [the latest pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
 
       Once done, please apply the ✅ emoji on this comment.
 

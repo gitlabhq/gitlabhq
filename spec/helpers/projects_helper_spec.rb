@@ -1006,7 +1006,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         analyticsAccessLevel: project.project_feature.analytics_access_level,
         containerRegistryEnabled: !!project.container_registry_enabled,
         lfsEnabled: !!project.lfs_enabled,
-        emailsDisabled: project.emails_disabled?,
+        emailsEnabled: project.emails_enabled?,
         showDefaultAwardEmojis: project.show_default_award_emojis?,
         securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
         containerRegistryAccessLevel: project.project_feature.container_registry_access_level,

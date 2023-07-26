@@ -7648,6 +7648,9 @@ msgstr ""
 msgid "Billing|Cannot remove user"
 msgstr ""
 
+msgid "Billing|Code Suggestions add-on assigned"
+msgstr ""
+
 msgid "Billing|Direct memberships"
 msgstr ""
 
@@ -17554,7 +17557,7 @@ msgstr ""
 msgid "Enhance security by storing service account keys in secret managers - learn more about %{docLinkStart}secret management with GitLab%{docLinkEnd}"
 msgstr ""
 
-msgid "Enhance your coding experience with intelligent recommendations. %{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing. Not available for Guest roles."
+msgid "Enhance your coding experience with intelligent recommendations. %{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing. Not available for users with the Guest role."
 msgstr ""
 
 msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd} of your CI pipeline to track deployments to your cluster."
@@ -36422,19 +36425,22 @@ msgstr ""
 msgid "ProjectSettings|Determine what happens to the commit history when you merge a merge request."
 msgstr ""
 
-msgid "ProjectSettings|Disable email notifications"
-msgstr ""
-
 msgid "ProjectSettings|Do not allow"
 msgstr ""
 
 msgid "ProjectSettings|Enable \"Delete source branch\" option by default"
 msgstr ""
 
+msgid "ProjectSettings|Enable email notifications"
+msgstr ""
+
 msgid "ProjectSettings|Enable merge trains"
 msgstr ""
 
 msgid "ProjectSettings|Enable merged results pipelines"
+msgstr ""
+
+msgid "ProjectSettings|Enable sending email notifications for this project"
 msgstr ""
 
 msgid "ProjectSettings|Enable suggested reviewers"
@@ -36588,9 +36594,6 @@ msgid "ProjectSettings|Only signed commits can be pushed to this repository."
 msgstr ""
 
 msgid "ProjectSettings|Override instance analytics configuration for this project"
-msgstr ""
-
-msgid "ProjectSettings|Override user notification preferences for all project members."
 msgstr ""
 
 msgid "ProjectSettings|Package registry"

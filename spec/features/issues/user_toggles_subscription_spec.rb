@@ -42,7 +42,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
     end
 
     context 'when project emails are disabled' do
-      let(:project) { create(:project_empty_repo, :public, emails_disabled: true) }
+      let_it_be(:project) { create(:project_empty_repo, :public, emails_enabled: false) }
 
       it 'is disabled' do
         expect(page).to have_content('Disabled by project owner')

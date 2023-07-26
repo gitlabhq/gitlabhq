@@ -147,7 +147,6 @@ description: 'Custom description'
 #       * issues
 #       * issues_completed
 #       * merge_request_throughput
-#     (This option is dependant on the `vsd_graphql_dora_and_flow_metrics` feature.)
 panels:
   - title: 'My Custom Project'
     data:

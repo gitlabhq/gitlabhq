@@ -345,8 +345,12 @@ class NotificationService
   def review_requested_of_merge_request(merge_request, current_user, reviewer)
     recipients = NotificationRecipients::BuildService.build_requested_review_recipients(merge_request, current_user, reviewer)
 
+    deliver_option = review_request_deliver_options(merge_request.project, reviewer)
+
     recipients.each do |recipient|
-      mailer.request_review_merge_request_email(recipient.user.id, merge_request.id, current_user.id, recipient.reason).deliver_later
+      mailer
+        .request_review_merge_request_email(recipient.user.id, merge_request.id, current_user.id, recipient.reason)
+        .deliver_later(deliver_option)
     end
   end
 
@@ -957,6 +961,11 @@ class NotificationService
   end
 
   def new_review_deliver_options(review)
+    # Overridden in EE
+    {}
+  end
+
+  def review_request_deliver_options(project, user)
     # Overridden in EE
     {}
   end

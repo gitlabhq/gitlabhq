@@ -16,6 +16,10 @@ class IssuePresenter < Gitlab::View::Presenter::Delegated
     issue.project.emails_disabled?
   end
 
+  def project_emails_enabled?
+    issue.project.emails_enabled?
+  end
+
   delegator_override :service_desk_reply_to
   def service_desk_reply_to
     return unless super.present?

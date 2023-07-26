@@ -149,6 +149,28 @@ follow-up-e2e:package-and-test-ee:
     QA_RUN_TYPE: e2e-package-and-test
     PIPELINE_NAME: E2E Omnibus GitLab EE
 
+e2e:post-run-e2e-message:
+  extends:
+    - .predictive-job
+    - .qa:rules:determine-e2e-tests
+  stage: qa
+  variables:
+    ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - scripts/generate-message-to-run-e2e-pipeline.rb
+  needs:
+    - e2e-test-pipeline-generate
+    - trigger-omnibus-env
+    - build-assets-image
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - "${CI_PROJECT_DIR}/qa_tests_vars.env"
+
 e2e:package-and-test-ce:
   extends:
     - e2e:package-and-test-ee

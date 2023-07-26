@@ -237,11 +237,7 @@ Administrators can set a [repository size limit](../../admin_area/settings/accou
 
 ## Repository contributor statistics
 
-All code contributors are displayed under your project's **Analyze > Contributor statistics**.
-
-The graph shows the contributor with the most commits to the fewest.
-
-![contributors to code](img/contributors_graph.png)
+You can view a list and charts of commits made by project members in [Contributor statistics](../../analytics/contributor_statistics.md).
 
 ## Repository history graph
 

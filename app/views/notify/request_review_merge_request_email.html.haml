@@ -1,2 +1,3 @@
 %p
   = html_escape(s_('Notify|%{name} requested a new review on %{mr_link}.')) % {name: sanitize_name(@updated_by.name), mr_link: merge_request_reference_link(@merge_request).html_safe}
+  = render_if_exists 'notify/diff_summary'

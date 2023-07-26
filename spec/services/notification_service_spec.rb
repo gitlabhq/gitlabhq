@@ -2895,6 +2895,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
     describe '#review_requested_of_merge_request' do
       let(:merge_request) { create(:merge_request, author: author, source_project: project, reviewers: [reviewer]) }
+      let(:mailer) { double }
 
       let_it_be(:current_user) { create(:user) }
       let_it_be(:reviewer) { create(:user) }
@@ -2917,8 +2918,16 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         should_not_email(@u_lazy_participant)
       end
 
+      it 'deliver email immediately' do
+        allow(Notify).to receive(:request_review_merge_request_email)
+                           .with(Integer, Integer, Integer, String).and_return(mailer)
+        expect(mailer).to receive(:deliver_later).with({})
+
+        notification.review_requested_of_merge_request(merge_request, current_user, reviewer)
+      end
+
       it 'adds "review requested" reason for new reviewer' do
-        notification.review_requested_of_merge_request(merge_request, current_user, [reviewer])
+        notification.review_requested_of_merge_request(merge_request, current_user, reviewer)
 
         merge_request.reviewers.each do |reviewer|
           email = find_email_for(reviewer)
