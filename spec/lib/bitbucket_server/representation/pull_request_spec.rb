@@ -46,6 +46,10 @@ RSpec.describe BitbucketServer::Representation::PullRequest, feature_category: :
     it { expect(subject.description).to eq('Test') }
   end
 
+  describe '#reviewers' do
+    it { expect(subject.reviewers.count).to eq(2) }
+  end
+
   describe '#iid' do
     it { expect(subject.iid).to eq(7) }
   end
@@ -114,6 +118,10 @@ RSpec.describe BitbucketServer::Representation::PullRequest, feature_category: :
           author_username: "username",
           author: "root",
           description: "Test",
+          reviewers: contain_exactly(
+            hash_including('user' => hash_including('emailAddress' => 'jane@doe.com', 'slug' => 'jane_doe')),
+            hash_including('user' => hash_including('emailAddress' => 'john@smith.com', 'slug' => 'john_smith'))
+          ),
           source_branch_name: "refs/heads/root/CODE_OF_CONDUCTmd-1530600625006",
           source_branch_sha: "074e2b4dddc5b99df1bf9d4a3f66cfc15481fdc8",
           target_branch_name: "refs/heads/master",

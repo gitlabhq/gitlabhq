@@ -2,14 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Import::MergeRequestCreator do
+RSpec.describe Gitlab::Import::MergeRequestCreator, feature_category: :importers do
   let(:project) { create(:project, :repository) }
+  let_it_be(:reviewer_user) { create(:user) }
 
   subject { described_class.new(project) }
 
   describe '#execute' do
     let(:attributes) do
-      HashWithIndifferentAccess.new(merge_request.attributes.except('merge_params', 'suggested_reviewers'))
+      HashWithIndifferentAccess.new(
+        merge_request.attributes.except('merge_params', 'suggested_reviewers').merge(reviewer_ids: [reviewer_user.id])
+      )
     end
 
     context 'merge request already exists' do
@@ -26,6 +29,7 @@ RSpec.describe Gitlab::Import::MergeRequestCreator do
 
         merge_request.reload
 
+        expect(merge_request.reviewer_ids).to contain_exactly(reviewer_user.id)
         expect(merge_request.merge_request_diffs.count).to eq(1)
         expect(merge_request.merge_request_diffs.first.commits.count).to eq(commits_count)
         expect(merge_request.latest_merge_request_diff_id).to eq(merge_request.merge_request_diffs.first.id)

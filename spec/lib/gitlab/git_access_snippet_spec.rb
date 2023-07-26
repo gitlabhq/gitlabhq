@@ -346,7 +346,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
         expect(snippet.repository_size_checker).to receive(:above_size_limit?).and_return(false)
         expect(snippet.repository_size_checker)
           .to receive(:changes_will_exceed_size_limit?)
-            .with(change_size)
+            .with(change_size, nil)
             .and_return(false)
 
         expect { push_access_check }.not_to raise_error
@@ -360,7 +360,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
         expect(snippet.repository_size_checker).to receive(:above_size_limit?).and_return(false)
         expect(snippet.repository_size_checker)
           .to receive(:changes_will_exceed_size_limit?)
-            .with(change_size)
+            .with(change_size, nil)
             .and_return(true)
 
         expect do

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Mobile DevOps (Experimental)
+# Mobile DevOps (Experiment)
 
 Use GitLab Mobile DevOps to quickly build, sign, and release native and cross-platform mobile apps
 for Android and iOS using GitLab CI/CD. Mobile DevOps is an experimental feature developed by
@@ -41,7 +41,7 @@ test:
 
 ### iOS build environments
 
-[GitLab SaaS runners on macOS](../ci/runners/saas/macos_saas_runner.md) are currently available in beta.
+[GitLab SaaS runners on macOS](../ci/runners/saas/macos_saas_runner.md) are in Beta.
 
 After you are granted access to the beta macOS runners, [choose an image](../ci/runners/saas/macos_saas_runner.md#supported-macos-images)
 and add it to your `.gitlab-ci.yml` file.
@@ -89,7 +89,7 @@ For an overview, see [How to build and release an Android app to Google Play wit
 Run the following command to generate a keystore file if you don't already have one:
 
 ```shell
-keytool -genkey -v -keystore release-keystore.jks -storepass password -alias release -keypass password -keyalg RSA -keysize 2048 -validity 10000 
+keytool -genkey -v -keystore release-keystore.jks -storepass password -alias release -keypass password -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 Next, put the keystore configuration in a file called `release-keystore.properties`,
@@ -122,7 +122,7 @@ The next step is to configure Gradle to use the newly created keystore. In the a
    }
    ```
 
-1. Anywhere within the `android` block, add:
+1. Anywhere in the `android` block, add:
 
    ```gradle
    signingConfigs {
@@ -243,7 +243,7 @@ For example:
 
   ```ruby
   default_platform(:ios)
-  
+
   platform :ios do
     desc "Build and sign the application for development"
     lane :build do
