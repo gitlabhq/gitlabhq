@@ -185,7 +185,7 @@ $solarized-dark-il: #2aa198;
 
     .diff-td.diff-line-num.hll,
     .diff-td.line-coverage.hll,
-    .diff-td.line-codequality.hll,
+    .diff-td.line-inline-findings.hll,
     .diff-td.line_content.hll,
     td.diff-line-num.hll,
     td.line-coverage.hll,
@@ -208,11 +208,11 @@ $solarized-dark-il: #2aa198;
 
     .diff-line-num.new,
     .line-coverage.new,
-    .line-codequality.new,
+    .line-inline-findings.new,
     .line_content.new,
     .diff-line-num.new-nomappinginraw,
     .line-coverage.new-nomappinginraw,
-    .line-codequality.new-nomappinginraw,
+    .line-inline-findings.new-nomappinginraw,
     .line_content.new-nomappinginraw {
       @include diff-background($solarized-dark-new-bg, $solarized-dark-new-idiff, $solarized-dark-border);
 
@@ -224,11 +224,11 @@ $solarized-dark-il: #2aa198;
 
     .diff-line-num.old,
     .line-coverage.old,
-    .line-codequality.old,
+    .line-inline-findings.old,
     .line_content.old,
     .diff-line-num.old-nomappinginraw,
     .line-coverage.old-nomappinginraw,
-    .line-codequality.old-nomappinginraw,
+    .line-inline-findings.old-nomappinginraw,
     .line_content.old-nomappinginraw {
       @include diff-background($solarized-dark-old-bg, $solarized-dark-old-idiff, $solarized-dark-border);
 

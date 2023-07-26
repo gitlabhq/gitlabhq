@@ -5,6 +5,7 @@ import { __, s__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { BRIDGE_KIND } from '~/pipelines/components/graph/constants';
 import RetryMrFailedJobMutation from '../../../graphql/mutations/retry_mr_failed_job.mutation.graphql';
 
 export default {
@@ -37,7 +38,10 @@ export default {
       return this.job.userPermissions.readBuild;
     },
     canRetryJob() {
-      return this.job.retryable && this.job.userPermissions.updateBuild;
+      return this.job.retryable && this.job.userPermissions.updateBuild && !this.isBridgeJob;
+    },
+    isBridgeJob() {
+      return this.job.kind === BRIDGE_KIND;
     },
     isVisibleId() {
       return `log-${this.isJobLogVisible ? 'is-visible' : 'is-hidden'}`;
@@ -54,6 +58,11 @@ export default {
     },
     parsedJobId() {
       return getIdFromGraphQLId(this.job.id);
+    },
+    tooltipErrorText() {
+      return this.isBridgeJob
+        ? this.$options.i18n.cannotRetryTrigger
+        : this.$options.i18n.cannotRetry;
     },
     tooltipText() {
       return sprintf(this.$options.i18n.jobActionTooltipText, { jobName: this.job.name });
@@ -99,8 +108,9 @@ export default {
     },
   },
   i18n: {
-    cannotReadBuild: s__("Job|You do not have permission to read this job's log"),
-    cannotRetry: s__('Job|You do not have permission to retry this job'),
+    cannotReadBuild: s__("Job|You do not have permission to read this job's log."),
+    cannotRetry: s__('Job|You do not have permission to run this job again.'),
+    cannotRetryTrigger: s__('Job|You cannot rerun trigger jobs from this list.'),
     jobActionTooltipText: s__('Pipelines|Retry %{jobName} Job'),
     noTraceText: s__('Job|No job log'),
     retry: __('Retry'),
@@ -129,10 +139,10 @@ export default {
       </div>
       <div class="col-2 gl-text-left">{{ job.stage.name }}</div>
       <div class="col-2 gl-text-left">
-        <gl-link :href="job.webPath">#{{ parsedJobId }}</gl-link>
+        <gl-link :href="job.detailedStatus.detailsPath">#{{ parsedJobId }}</gl-link>
       </div>
       <gl-tooltip v-if="!canRetryJob" :target="() => $refs.retryBtn" placement="top">
-        {{ $options.i18n.cannotRetry }}
+        {{ tooltipErrorText }}
       </gl-tooltip>
       <div class="col-2 gl-text-right">
         <span ref="retryBtn">

@@ -1005,6 +1005,8 @@ Search/NamespacedClass:
     - 'app/experiments/**/*_experiment.rb'
     - 'ee/app/experiments/**/*_experiment.rb'
     - 'lib/gitlab/instrumentation/**/*.rb'
+    - 'lib/gitlab/usage/metrics/instrumentations/**/*.rb'
+    - 'ee/lib/gitlab/usage/metrics/instrumentations/**/*.rb'
 
 SidekiqLoadBalancing/WorkerDataConsistency:
   Enabled: true

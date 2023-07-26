@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Network::Graph do
+RSpec.describe Network::Graph, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let!(:note_on_commit) { create(:note_on_commit, project: project) }
 
@@ -34,6 +34,12 @@ RSpec.describe Network::Graph do
 
       expect(commits).not_to be_empty
       expect(commits).to all(be_kind_of(Network::Commit))
+    end
+
+    it 'only fetches the commits once', :request_store do
+      expect(Gitlab::Git::Commit).to receive(:find_all).once.and_call_original
+
+      graph
     end
 
     it 'sorts commits by commit date (descending)' do

@@ -34,6 +34,7 @@ workhorse:test go:
     - make -C workhorse test-coverage
   coverage: '/\d+.\d+%/'
   artifacts:
+    expire_in: 30 days
     paths:
       - workhorse/coverage.html
 

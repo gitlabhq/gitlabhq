@@ -81,7 +81,7 @@
     }
 
     .line-coverage:not(.hll),
-    .line-codequality:not(.hll) {
+    .line-inline-findings:not(.hll) {
       &.old,
       &.new,
       &.new-nomappinginraw,

@@ -253,7 +253,7 @@ pre.code,
   }
 
   .line-coverage,
-  .line-codequality {
+  .line-inline-findings {
     &.old,
     &.old-nomappinginraw {
       background-color: $line-removed;

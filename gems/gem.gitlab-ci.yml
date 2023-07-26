@@ -13,7 +13,10 @@ spec:
 workflow:
   name: '$PIPELINE_NAME'
   rules:
-    - if: $CI_MERGE_REQUEST_ID
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+      variables:
+        PIPELINE_NAME: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION $SCHEDULE_TYPE $CI_PIPELINE_SOURCE pipeline'
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       variables:
         PIPELINE_NAME: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
 

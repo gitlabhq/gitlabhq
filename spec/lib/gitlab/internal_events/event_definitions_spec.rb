@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :product_analytics do
   after(:all) do
-    described_class.clear_events
+    described_class.instance_variable_set(:@events, nil)
   end
 
   context 'when using actual metric definitions' do

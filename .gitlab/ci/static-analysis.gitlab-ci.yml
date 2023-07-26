@@ -64,6 +64,7 @@ generate-apollo-graphql-schema:
   script:
     - apollo client:download-schema --config=config/apollo.config.js ${GRAPHQL_SCHEMA_APOLLO_FILE}
   artifacts:
+    expire_in: 30 days
     name: graphql-schema-apollo
     paths:
       - "${GRAPHQL_SCHEMA_APOLLO_FILE}"
@@ -201,6 +202,7 @@ semgrep-appsec-custom-rules:
   variables:
     CUSTOM_RULES_URL: https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/raw/main/gitlab-sast-rules/rules.yml
   artifacts:
+    expire_in: 30 days
     paths:
       - gl-sast-report.json
 

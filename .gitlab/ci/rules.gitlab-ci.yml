@@ -1131,6 +1131,16 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
 
+############################
+# Audit event types rules  #
+############################
+.audit-event-types:rules:audit-event-types-verify:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+
 ##################
 # Frontend rules #
 ##################

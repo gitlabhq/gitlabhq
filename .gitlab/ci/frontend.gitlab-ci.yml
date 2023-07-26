@@ -121,6 +121,7 @@ retrieve-frontend-fixtures:
         run_timed_command "download_and_extract_fixtures"
       fi
   artifacts:
+    expire_in: 30 days
     paths:
       - tmp/tests/frontend/
 
@@ -216,6 +217,7 @@ graphql-schema-dump:
   script:
     - bundle exec rake gitlab:graphql:schema:dump
   artifacts:
+    expire_in: 30 days
     name: graphql-schema
     paths:
       - tmp/tests/graphql/gitlab_schema.graphql

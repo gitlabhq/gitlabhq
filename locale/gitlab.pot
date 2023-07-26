@@ -6649,6 +6649,9 @@ msgstr ""
 msgid "AuditStreams|Deleting the streaming destination %{destination} will stop audit events being streamed"
 msgstr ""
 
+msgid "AuditStreams|Destination Name"
+msgstr ""
+
 msgid "AuditStreams|Destination URL"
 msgstr ""
 
@@ -26761,10 +26764,13 @@ msgstr ""
 msgid "Job|We could not find this element"
 msgstr ""
 
-msgid "Job|You do not have permission to read this job's log"
+msgid "Job|You cannot rerun trigger jobs from this list."
 msgstr ""
 
-msgid "Job|You do not have permission to retry this job"
+msgid "Job|You do not have permission to read this job's log."
+msgstr ""
+
+msgid "Job|You do not have permission to run this job again."
 msgstr ""
 
 msgid "Job|allowed to fail"

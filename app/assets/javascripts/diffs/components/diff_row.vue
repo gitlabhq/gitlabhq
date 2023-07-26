@@ -333,7 +333,7 @@ export default {
           class="diff-td line-coverage left-side has-tooltip"
         ></div>
         <div
-          class="diff-td line-codequality left-side"
+          class="diff-td line-inline-findings left-side"
           :class="$options.parallelViewLeftLineType(props)"
         >
           <component
@@ -382,7 +382,7 @@ export default {
           :class="$options.classNameMapCellLeft(props)"
         ></div>
         <div
-          class="diff-td line-codequality left-side empty-cell"
+          class="diff-td line-inline-findings left-side empty-cell"
           :class="$options.classNameMapCellLeft(props)"
         ></div>
         <div
@@ -474,7 +474,7 @@ export default {
           class="diff-td line-coverage right-side has-tooltip"
         ></div>
         <div
-          class="diff-td line-codequality right-side"
+          class="diff-td line-inline-findings right-side"
           :class="$options.classNameMapCellRight(props)"
         >
           <component
@@ -519,7 +519,7 @@ export default {
           :class="$options.classNameMapCellRight(props)"
         ></div>
         <div
-          class="diff-td line-codequality right-side empty-cell"
+          class="diff-td line-inline-findings right-side empty-cell"
           :class="$options.classNameMapCellRight(props)"
         ></div>
         <div

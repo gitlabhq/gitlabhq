@@ -86,6 +86,7 @@ module Network
       skip = 0
       while offset == -1
         tmp_commits = find_commits(skip)
+
         if tmp_commits.present?
           index = tmp_commits.index do |c|
             c.id == @commit.id
@@ -112,15 +113,17 @@ module Network
     end
 
     def find_commits(skip = 0)
-      opts = {
-        max_count: self.class.max_count,
-        skip: skip,
-        order: :date
-      }
+      Gitlab::SafeRequestStore.fetch([@project, :network_graph_commits, skip]) do
+        opts = {
+          max_count: self.class.max_count,
+          skip: skip,
+          order: :date
+        }
 
-      opts[:ref] = @commit.id if @filter_ref
+        opts[:ref] = @commit.id if @filter_ref
 
-      Gitlab::Git::Commit.find_all(@repo.raw_repository, opts)
+        Gitlab::Git::Commit.find_all(@repo.raw_repository, opts)
+      end
     end
 
     def commits_sort_by_ref

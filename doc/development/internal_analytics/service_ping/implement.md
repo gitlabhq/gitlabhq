@@ -21,7 +21,6 @@ To implement a new metric in Service Ping, follow these steps:
 1. [Generate the SQL query](#generate-the-sql-query)
 1. [Optimize queries with Database Lab](#optimize-queries-with-database-lab)
 1. [Add the metric definition to the Metrics Dictionary](#add-the-metric-definition)
-1. [Add the metric to the Versions Application](#add-the-metric-to-the-versions-application)
 1. [Create a merge request](#create-a-merge-request)
 1. [Verify your metric](#verify-your-metric)
 1. [Set up and test Service Ping locally](#set-up-and-test-service-ping-locally)
@@ -677,10 +676,6 @@ For more details, see the [database review guide](../../database_review.md#prepa
 ## Add the metric definition
 
 See the [Metrics Dictionary guide](metrics_dictionary.md) for more information.
-
-## Add the metric to the Versions Application
-
-Check if the new metric must be added to the Versions Application. See the `usage_data` [schema](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/db/schema.rb#L152) and Service Data [parameters accepted](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `stats` column.
 
 ## Create a merge request
 

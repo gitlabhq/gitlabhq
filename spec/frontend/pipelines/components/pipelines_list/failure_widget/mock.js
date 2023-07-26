@@ -3,17 +3,19 @@ export const job = {
   allowFailure: false,
   detailedStatus: {
     id: 'status',
+    detailsPath: '/jobs/5241',
     action: {
       id: 'action',
       path: '/retry',
       icon: 'retry',
     },
     group: 'running',
-    icon: 'running-icon',
+    icon: 'status_running_icon',
   },
   name: 'job-name',
   retried: false,
   retryable: true,
+  kind: 'BUILD',
   stage: {
     id: '1',
     name: 'build',
@@ -25,7 +27,6 @@ export const job = {
     readBuild: true,
     updateBuild: true,
   },
-  webPath: '/',
 };
 
 export const allowedToFailJob = {

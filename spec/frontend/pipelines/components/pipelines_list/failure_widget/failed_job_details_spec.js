@@ -8,6 +8,7 @@ import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FailedJobDetails from '~/pipelines/components/pipelines_list/failure_widget/failed_job_details.vue';
 import RetryMrFailedJobMutation from '~/pipelines/graphql/mutations/retry_mr_failed_job.mutation.graphql';
+import { BRIDGE_KIND } from '~/pipelines/components/graph/constants';
 import { job } from './mock';
 
 Vue.use(VueApollo);
@@ -87,6 +88,16 @@ describe('FailedJobDetails component', () => {
     describe('when the job is not retryable', () => {
       beforeEach(() => {
         createComponent({ props: { job: { ...job, retryable: false } } });
+      });
+
+      it('disables the retry button', () => {
+        expect(findRetryButton().props().disabled).toBe(true);
+      });
+    });
+
+    describe('when the job is a bridge', () => {
+      beforeEach(() => {
+        createComponent({ props: { job: { ...job, kind: BRIDGE_KIND } } });
       });
 
       it('disables the retry button', () => {
@@ -183,7 +194,7 @@ describe('FailedJobDetails component', () => {
 
       it('shows a permission error message', () => {
         expect(findVisibleJobLog().text()).toBe(
-          "You do not have permission to read this job's log",
+          "You do not have permission to read this job's log.",
         );
       });
     });

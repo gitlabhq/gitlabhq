@@ -98,7 +98,7 @@ categories = roulette.prepare_categories(changes.keys - [:unknown])
 categories.subtract([:database, :ux, :analytics_instrumentation]) if stable_branch.valid_stable_branch?
 
 if changes.any?
-  random_roulette_spins = roulette.spin(nil, categories, timezone_experiment: false)
+  random_roulette_spins = roulette.spin(nil, categories)
 
   if categories.include?(:ux) # rubocop:disable Style/IfUnlessModifier
     roulette.assign_pedroms_for_ux_wider_community_contribution(random_roulette_spins)
