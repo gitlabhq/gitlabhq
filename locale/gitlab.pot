@@ -6982,7 +6982,7 @@ msgstr ""
 msgid "Available group runners: %{runners}"
 msgstr ""
 
-msgid "Available on-demand"
+msgid "Available on demand"
 msgstr ""
 
 msgid "Avatar for %{assigneeName}"
@@ -16586,6 +16586,9 @@ msgstr ""
 msgid "DiscordService|Discord Notifications"
 msgstr ""
 
+msgid "DiscordService|Override the default webhook (e.g. https://discord.com/api/webhooks/…)"
+msgstr ""
+
 msgid "DiscordService|Send notifications about project events to a Discord channel."
 msgstr ""
 
@@ -19827,7 +19830,13 @@ msgstr ""
 msgid "For a faster browsing experience, some files are collapsed by default."
 msgstr ""
 
+msgid "For additional information, review your %{link_to} or contact your %{project_or_group} owner."
+msgstr ""
+
 msgid "For additional information, review your %{link_to} or contact your group owner."
+msgstr ""
+
+msgid "For additional information, review your %{project_or_group} membership: %{url} or contact your %{project_or_group} owner."
 msgstr ""
 
 msgid "For additional information, review your group membership: %{link_to} or contact your group owner."
@@ -42120,6 +42129,9 @@ msgstr ""
 msgid "SecurityReports|%{firstProject}, %{secondProject}, and %{rest}"
 msgstr ""
 
+msgid "SecurityReports|A comment is required when dismissing."
+msgstr ""
+
 msgid "SecurityReports|Activity"
 msgstr ""
 
@@ -42442,6 +42454,9 @@ msgid "SecurityReports|There was an error while generating the report."
 msgstr ""
 
 msgid "SecurityReports|These vulnerabilities were detected in external sources. They are not necessarily tied to your GitLab project. For example, running containers, URLs, and so on."
+msgstr ""
+
+msgid "SecurityReports|This selection is required."
 msgstr ""
 
 msgid "SecurityReports|To widen your search, change or remove filters above"
@@ -53878,6 +53893,15 @@ msgid "Your license is valid from"
 msgstr ""
 
 msgid "Your membership in %{group} no longer expires."
+msgstr ""
+
+msgid "Your membership in %{link_to} %{project_or_group_name} will expire in %{days_formatted}."
+msgstr ""
+
+msgid "Your membership in %{project_or_group} %{project_or_group_name} will expire in %{days_formatted}."
+msgstr ""
+
+msgid "Your membership will expire in %{days_to_expire} days"
 msgstr ""
 
 msgid "Your name"

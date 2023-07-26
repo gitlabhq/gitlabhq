@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :ml_model_versions, class: '::Ml::ModelVersion' do
-    sequence(:version) { |n| "version#{n}" }
+    sequence(:version) { |n| "1.0.#{n}-alpha+test" }
 
     model { association :ml_models }
     project { model.project }

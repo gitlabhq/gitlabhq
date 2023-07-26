@@ -222,6 +222,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
       .discussion-reply-holder {
         border: 1px solid $border-color;
+        background-color: $white;
       }
     }
 

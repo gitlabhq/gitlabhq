@@ -2,6 +2,7 @@
 
 module EmailsHelper
   include AppearancesHelper
+  include SafeFormatHelper
 
   # Google Actions
   # https://developers.google.com/gmail/markup/reference/go-to-action
@@ -233,6 +234,44 @@ module EmailsHelper
       _('An administrator changed the password for your GitLab account on %{link_to}.').html_safe % { link_to: link_to }
     else
       _('An administrator changed the password for your GitLab account on %{link_to}.') % { link_to: url }
+    end
+  end
+
+  def member_about_to_expire_text(member_source, days_to_expire, format: nil)
+    days_formatted = pluralize(days_to_expire, 'day')
+
+    case member_source
+    when Project
+      url = project_url(member_source)
+    when Group
+      url = group_url(member_source)
+    end
+
+    case format
+    when :html
+      link_to = generate_link(member_source.human_name, url).html_safe
+      safe_format(_("Your membership in %{link_to} %{project_or_group_name} will expire in %{days_formatted}."), link_to: link_to, project_or_group_name: member_source.model_name.singular, days_formatted: days_formatted)
+    else
+      _("Your membership in %{project_or_group} %{project_or_group_name} will expire in %{days_formatted}.") % { project_or_group: member_source.human_name, project_or_group_name: member_source.model_name.singular, days_formatted: days_formatted }
+    end
+  end
+
+  def member_about_to_expire_link(member, member_source, format: nil)
+    project_or_group = member_source.human_name
+
+    case member_source
+    when Project
+      url = project_project_members_url(member_source, search: member.user.username)
+    when Group
+      url = group_group_members_url(member_source, search: member.user.username)
+    end
+
+    case format
+    when :html
+      link_to = generate_link("#{member_source.class.name.downcase} membership", url).html_safe
+      safe_format(_('For additional information, review your %{link_to} or contact your %{project_or_group} owner.'), link_to: link_to, project_or_group: project_or_group)
+    else
+      _('For additional information, review your %{project_or_group} membership: %{url} or contact your %{project_or_group} owner.') % { project_or_group: project_or_group, url: url }
     end
   end
 

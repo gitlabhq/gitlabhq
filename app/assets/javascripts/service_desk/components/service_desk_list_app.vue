@@ -16,8 +16,8 @@ import { TYPENAME_USER } from '~/graphql_shared/constants';
 import searchUsersQuery from '~/issues/list/queries/search_users.query.graphql';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import searchMilestonesQuery from '~/issues/list/queries/search_milestones.query.graphql';
-import getServiceDeskIssuesQuery from '../queries/get_service_desk_issues.query.graphql';
-import getServiceDeskIssuesCounts from '../queries/get_service_desk_issues_counts.query.graphql';
+import getServiceDeskIssuesQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues.query.graphql';
+import getServiceDeskIssuesCounts from 'ee_else_ce/service_desk/queries/get_service_desk_issues_counts.query.graphql';
 import {
   errorFetchingCounts,
   errorFetchingIssues,
@@ -59,6 +59,8 @@ export default {
     'releasesPath',
     'autocompleteAwardEmojisPath',
     'hasIterationsFeature',
+    'hasIssueWeightsFeature',
+    'hasIssuableHealthStatusFeature',
     'groupPath',
     'emptyStateSvgPath',
     'isProject',
@@ -67,6 +69,13 @@ export default {
     'isServiceDeskSupported',
     'hasAnyIssues',
   ],
+  props: {
+    eeSearchTokens: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   data() {
     return {
       serviceDeskIssues: [],
@@ -199,6 +208,10 @@ export default {
         tokens.push({
           ...confidentialityTokenBase,
         });
+      }
+
+      if (this.eeSearchTokens.length) {
+        tokens.push(...this.eeSearchTokens);
       }
 
       tokens.sort((a, b) => a.title.localeCompare(b.title));

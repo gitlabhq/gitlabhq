@@ -187,6 +187,7 @@ Style/RedundantFreeze:
     - 'lib/gitlab/rack_attack/request.rb'
     - 'lib/gitlab/redis/hll.rb'
     - 'lib/gitlab/regex.rb'
+    - 'lib/gitlab/regex/packages.rb'
     - 'lib/gitlab/robots_txt/parser.rb'
     - 'lib/gitlab/saas.rb'
     - 'lib/gitlab/sanitizers/exception_message.rb'

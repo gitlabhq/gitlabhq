@@ -453,7 +453,8 @@ module API
               desc: 'Branches for which notifications are to be sent'
             },
             chat_notification_flags,
-            chat_notification_events
+            chat_notification_events,
+            chat_notification_channels
           ].flatten,
           'drone-ci' => [
             {

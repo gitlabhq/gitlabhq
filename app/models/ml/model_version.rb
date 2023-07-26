@@ -5,7 +5,7 @@ module Ml
     validates :project, :model, presence: true
 
     validates :version,
-      format: Gitlab::Regex.ml_model_version_regex,
+      format: Gitlab::Regex.semver_regex,
       uniqueness: { scope: [:project, :model_id] },
       presence: true,
       length: { maximum: 255 }

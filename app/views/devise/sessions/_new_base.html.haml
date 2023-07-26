@@ -21,7 +21,8 @@
       = recaptcha_tags nonce: content_security_policy_nonce
 
   - if remember_me_enabled?
-    = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { autocomplete: 'off' }
+    .form-group
+      = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { autocomplete: 'off' }
 
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: "js-sign-in-button #{'js-no-auto-disable' if Feature.enabled?(:arkose_labs_login_challenge)}", data: { qa_selector: 'sign_in_button', testid: 'sign-in-button' } }) do
     = _('Sign in')

@@ -33,7 +33,7 @@ RSpec.describe ::Ml::FindOrCreateModelVersionService, feature_category: :mlops d
     context 'when model version does not exist' do
       let(:project) { existing_version.project }
       let(:name) { 'a_new_model' }
-      let(:version) { 'a_new_version' }
+      let(:version) { '2.0.0' }
 
       let(:package) { create(:ml_model_package, project: project, name: name, version: version) }
 

@@ -1412,3 +1412,64 @@ If circumstances dictate that local storage is the only option, a couple of prec
 
 - Local storage should only be used for the minimal amount of data possible. Consider alternative storage formats.
 - If you have to store sensitive data using local storage, do so for the minimum time possible, calling `localStorage.removeItem` on the item as soon as we're done with it. Another alternative is to call `localStorage.clear()`.
+
+## Logging
+
+Logging is the tracking of events that happen in the system for the purposes of future investigation or processing.
+
+### Purpose of logging
+
+Logging helps track events for debugging. Logging also allows the application to generate an audit trail that you can use for security incident identification and analysis.
+
+### What type of events should be logged
+
+- Failures
+  - Login failures
+  - Input/output validation failures
+  - Authentication failures
+  - Authorization failures
+  - Session management failures
+  - Timeout errors
+- Account lockouts
+- Use of invalid access tokens
+- Authentication and authorization events
+  - Access token creation/revocation/expiry
+  - Configuration changes by administrators
+  - User creation or modification
+    - Password change
+    - User creation
+    - Email change
+- Sensitive operations
+  - Any operation on sensitive files or resources
+  - New runner registration
+
+### What should be captured in the logs
+
+- The application logs must record attributes of the event, which helps auditors identify the time/date, IP, user ID, and event details.
+- To avoid resource depletion, make sure the proper level for logging is used (for example, `information`, `error`, or `fatal`).
+
+### What should not be captured in the logs
+
+- Personal user information.
+- Credentials like access tokens or passwords. If credentials must be captured for debugging purposes, log the internal ID of the credential (if available) instead. Never log credentials under any circumstances.
+  - When [debug logging](../ci/variables/index.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Consider using [protected variables](../ci/variables/index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
+- Any data supplied by the user without proper validation.
+- Any information that might be considered sensitive (for example, credentials, passwords, tokens, keys, or secrets). Here is an [example](https://gitlab.com/gitlab-org/gitlab/-/issues/383142) of sensitive information being leaked through logs.
+
+### Protecting log files
+
+- Access to the log files should be restricted so that only the intended party can modify the logs.
+- External user input should not be directly captured in the logs without any validation. This could lead to unintended modification of logs through log injection attacks.
+- An audit trail for log edits must be available.
+- To avoid data loss, logs must be saved on different storage.
+
+### Who to contact if you have questions
+
+For general guidance, contact the [Application Security](https://about.gitlab.com/handbook/security/security-engineering/application-security/) team.
+
+### Related topics
+
+- [Log system in GitLab](../administration/logs/index.md)
+- [Audit event development guidelines](../development/audit_event_guide/index.md))
+- [Security logging overview](https://about.gitlab.com/handbook/security/security-engineering/security-logging/)
+- [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)

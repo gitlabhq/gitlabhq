@@ -552,6 +552,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:members_expiring
+  :worker_name: Members::ExpiringWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
   :feature_category: :metrics
@@ -2954,6 +2963,15 @@
   :resource_boundary:
   :weight: 2
   :idempotent:
+  :tags: []
+- :name: members_expiring_email_notification
+  :worker_name: Members::ExpiringEmailNotificationWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: merge
   :worker_name: MergeWorker

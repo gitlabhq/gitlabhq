@@ -87,7 +87,7 @@
 }
 
 .settings-section,
-.settings-section-no-bottom + .settings-section {
+.settings-section-no-bottom ~ .settings-section {
   @include gl-pt-0;
 }
 
@@ -95,7 +95,7 @@
   @include gl-pt-6;
 }
 
-.settings-section:not(.settings-section-no-bottom) + .settings-section {
+.settings-section:not(.settings-section-no-bottom) ~ .settings-section {
   @include gl-border-t;
 }
 

@@ -70,6 +70,7 @@ Style/RedundantRegexpEscape:
     - 'lib/gitlab/quick_actions/extractor.rb'
     - 'lib/gitlab/quick_actions/timeline_text_and_date_time_separator.rb'
     - 'lib/gitlab/regex.rb'
+    - 'lib/gitlab/regex/packages.rb'
     - 'lib/gitlab/search/abuse_detection.rb'
     - 'lib/gitlab/task_helpers.rb'
     - 'lib/gitlab/url_sanitizer.rb'

@@ -21,7 +21,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
   end
 
   describe 'validation' do
-    let_it_be(:valid_version) { 'valid_version' }
+    let_it_be(:valid_version) { '1.0.0' }
     let_it_be(:valid_package) do
       build_stubbed(:ml_model_package, project: base_project, version: valid_version, name: model1.name)
     end
@@ -95,7 +95,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
   end
 
   describe '#find_or_create!' do
-    let_it_be(:existing_model_version) { create(:ml_model_versions, model: model1, version: 'abc') }
+    let_it_be(:existing_model_version) { create(:ml_model_versions, model: model1, version: '1.0.0') }
 
     let(:version) { existing_model_version.version }
     let(:package) { nil }
@@ -110,7 +110,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     end
 
     context 'if model version does not exist' do
-      let(:version) { 'new_version' }
+      let(:version) { '2.0.0' }
       let(:package) { create(:ml_model_package, project: model1.project, name: model1.name, version: version) }
 
       it 'creates another model version', :aggregate_failures do

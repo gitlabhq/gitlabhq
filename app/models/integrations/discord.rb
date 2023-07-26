@@ -10,7 +10,7 @@ module Integrations
 
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
-      help: 'e.g. https://discordapp.com/api/webhooks/…',
+      help: 'e.g. https://discord.com/api/webhooks/…',
       required: true
 
     field :notify_only_broken_pipelines,
@@ -45,7 +45,7 @@ module Integrations
     end
 
     def default_channel_placeholder
-      # No-op.
+      s_('DiscordService|Override the default webhook (e.g. https://discord.com/api/webhooks/…)')
     end
 
     def self.supported_events
@@ -72,10 +72,23 @@ module Integrations
       ]
     end
 
+    def configurable_channels?
+      true
+    end
+
+    def channel_limit_per_event
+      1
+    end
+
+    def mask_configurable_channels?
+      true
+    end
+
     private
 
     def notify(message, opts)
-      client = Discordrb::Webhooks::Client.new(url: webhook)
+      webhook_url = opts[:channel]&.first || webhook
+      client = Discordrb::Webhooks::Client.new(url: webhook_url)
 
       client.execute do |builder|
         builder.add_embed do |embed|

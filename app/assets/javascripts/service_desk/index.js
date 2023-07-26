@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import ServiceDeskListApp from 'ee_else_ce/service_desk/components/service_desk_list_app.vue';
 import { gqlClient } from './graphql';
-import ServiceDeskListApp from './components/service_desk_list_app.vue';
 
 export async function mountServiceDeskListApp() {
   const el = document.querySelector('.js-service-desk-list');

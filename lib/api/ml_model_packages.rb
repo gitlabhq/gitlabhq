@@ -50,7 +50,7 @@ module API
           requires :model_name, type: String, desc: 'Model name', regexp: Gitlab::Regex.ml_model_name_regex,
             file_path: true
           requires :model_version, type: String, desc: 'Model version',
-            regexp: Gitlab::Regex.ml_model_version_regex
+            regexp: Gitlab::Regex.semver_regex
           requires :file_name, type: String, desc: 'Package file name',
             regexp: Gitlab::Regex.ml_model_file_name_regex, file_path: true
           optional :status, type: String, values: ALLOWED_STATUSES, desc: 'Package status'

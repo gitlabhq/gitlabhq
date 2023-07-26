@@ -272,7 +272,7 @@ There are 4 users on local instance
 ### Use `mmctl` through a remote connection
 
 For remote connections or local connections where the socket cannot be used,
-create a non SSO user and give that user administrator privileges. Those credentials
+create a non-SSO user and give that user administrator privileges. Those credentials
 can then be used to authenticate `mmctl`:
 
 ```shell
@@ -311,46 +311,41 @@ This setting can also be configured in `/var/opt/gitlab/mattermost/config.json`.
 
 ## Upgrading GitLab Mattermost
 
-Below is a list of Mattermost versions for GitLab 11.10 and later:
+Below is a list of Mattermost versions for GitLab 14.0 and later:
 
-| GitLab Version  | Mattermost Version |
-| :------------ |:----------------|
-| 11.11 | 5.10 |
-| 12.0 | 5.11 |
-| 12.1 | 5.12 |
-| 12.2 | 5.13 |
-| 12.3 | 5.14 |
-| 12.4 | 5.15 |
-| 12.5 | 5.16 |
-| 12.6 | 5.17 |
-| 12.7 | 5.17 |
-| 12.8 | 5.19 |
-| 12.9 | 5.20 |
-| 12.10 | 5.21 |
-| 13.0 | 5.22 |
-| 13.1 | 5.23 |
-| 13.2 | 5.24 |
-| 13.3 | 5.25 |
-| 13.4 | 5.26 |
-| 13.5 | 5.27 |
-| 13.6 | 5.28 |
-| 13.7 | 5.29 |
-| 13.8 | 5.30 |
-| 13.9 | 5.31 |
-| 13.10 | 5.32 |
-| 13.11 | 5.33 |
-| 13.12 | 5.34 |
-| 14.0 | 5.35 |
-| 14.1 | 5.36 |
-| 14.2 | 5.37 |
-| 14.3 | 5.38 |
-| 14.4 | 5.39 |
-| 14.5 | 5.39 |
-| 14.6 | 6.1 |
-| 14.7 | 6.2 |
+| GitLab version | Mattermost version |
+|:---------------|:-------------------|
+| 14.0           | 5.35               |
+| 14.1           | 5.36               |
+| 14.2           | 5.37               |
+| 14.3           | 5.38               |
+| 14.4           | 5.39               |
+| 14.5           | 5.39               |
+| 14.6           | 6.1                |
+| 14.7           | 6.2                |
+| 14.8           | 6.3                |
+| 14.9           | 6.4                |
+| 14.10          | 6.5                |
+| 15.0           | 6.6                |
+| 15.1           | 6.7                |
+| 15.2           | 7.0                |
+| 15.3           | 7.1                |
+| 15.4           | 7.2                |
+| 15.5           | 7.3                |
+| 15.6           | 7.4                |
+| 15.7           | 7.5                |
+| 15.8           | 7.5                |
+| 15.9           | 7.7                |
+| 15.10          | 7.8                |
+| 15.11          | 7.9                |
+| 16.0           | 7.10               |
+| 16.1           | 7.10               |
+| 16.2           | 7.10               |
 
-- GitLab 14.5 remained on Mattermost 5.39
-- GitLab 14.6 updates to Mattermost 6.1 instead of 6.0
+- GitLab 14.5 remained on Mattermost 5.39.
+- GitLab 14.6 updates to Mattermost 6.1 instead of 6.0.
+- GitLab 15.8 remained on Mattermost 7.5.
+- GitLab 16.1 and 16.2 remained on Mattermost 7.10.
 
 NOTE:
 When upgrading the Mattermost version, it is essential to check the

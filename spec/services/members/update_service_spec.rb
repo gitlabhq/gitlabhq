@@ -219,6 +219,25 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
         end
       end
     end
+
+    context 'when project members expiration date is updated with expiry_notified_at' do
+      let_it_be(:params) { { expires_at: 20.days.from_now } }
+
+      before do
+        group_project.group.add_owner(current_user)
+        members.each do |member|
+          member.update!(expiry_notified_at: Date.today)
+        end
+      end
+
+      it "clear expiry_notified_at" do
+        subject
+
+        members.each do |member|
+          expect(member.reload.expiry_notified_at).to be_nil
+        end
+      end
+    end
   end
 
   shared_examples 'updating a group' do
@@ -248,6 +267,24 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
         end
 
         subject
+      end
+    end
+
+    context 'when group members expiration date is updated with expiry_notified_at' do
+      let_it_be(:params) { { expires_at: 20.days.from_now } }
+
+      before do
+        members.each do |member|
+          member.update!(expiry_notified_at: Date.today)
+        end
+      end
+
+      it "clear expiry_notified_at" do
+        subject
+
+        members.each do |member|
+          expect(member.reload.expiry_notified_at).to be_nil
+        end
       end
     end
   end

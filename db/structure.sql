@@ -18018,6 +18018,7 @@ CREATE TABLE members (
     invite_email_success boolean DEFAULT true NOT NULL,
     member_namespace_id bigint,
     member_role_id bigint,
+    expiry_notified_at timestamp with time zone,
     CONSTRAINT check_508774aac0 CHECK ((member_namespace_id IS NOT NULL))
 );
 
@@ -31871,6 +31872,8 @@ CREATE INDEX index_member_tasks_on_project_id ON member_tasks USING btree (proje
 CREATE INDEX index_members_on_access_level ON members USING btree (access_level);
 
 CREATE INDEX index_members_on_expires_at ON members USING btree (expires_at);
+
+CREATE INDEX index_members_on_expiring_at_access_level_id ON members USING btree (expires_at, access_level, id) WHERE ((requested_at IS NULL) AND (expiry_notified_at IS NULL));
 
 CREATE INDEX index_members_on_invite_email ON members USING btree (invite_email);
 

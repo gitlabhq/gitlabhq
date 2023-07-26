@@ -23,7 +23,10 @@ module Integrations
         integration.event_channel_name(event)
       end
       expose :value do |event|
-        integration.event_channel_value(event)
+        value = integration.event_channel_value(event)
+        next BaseChatNotification::SECRET_MASK if value.present? && integration.mask_configurable_channels?
+
+        value
       end
       expose :placeholder do |_event|
         integration.default_channel_placeholder

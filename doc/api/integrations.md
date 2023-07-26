@@ -637,6 +637,8 @@ Send notifications about project events to a Discord channel.
 
 ### Create/Edit Discord integration
 
+> `_channel` parameters [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125621) in GitLab 16.3.
+
 Set Discord integration for a project.
 
 ```plaintext
@@ -650,15 +652,24 @@ Parameters:
 | `webhook` | string | true | Discord webhook. For example, `https://discord.com/api/webhooks/…` |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is "default" |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `confidential_issue_channel` | string | false | The webhook override to receive confidential issues events notifications |
 | `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
+| `confidential_note_channel` | string | false | The webhook override to receive confidential note events notifications |
 | `issues_events` | boolean | false | Enable notifications for issue events |
+| `issue_channel` | string | false | The webhook override to receive issues events notifications |
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `merge_request_channel` | string | false | The webhook override to receive merge request events notifications |
 | `note_events` | boolean | false | Enable notifications for note events |
+| `note_channel` | string | false | The webhook override to receive note events notifications |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `pipeline_channel` | string | false | The webhook override to receive pipeline events notifications |
 | `push_events` | boolean | false | Enable notifications for push events |
+| `push_channel` | string | false | The webhook override to receive push events notifications |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `tag_push_channel` | string | false | The webhook override to receive tag push events notifications |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+| `wiki_page_channel` | string | false | The webhook override to receive wiki page events notifications |
 
 ### Disable Discord integration
 

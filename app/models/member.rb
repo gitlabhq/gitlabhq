@@ -153,6 +153,7 @@ class Member < ApplicationRecord
   scope :not_accepted_invitations, -> { invite.where(invite_accepted_at: nil) }
   scope :not_accepted_invitations_by_user, -> (user) { not_accepted_invitations.where(created_by: user) }
   scope :not_expired, -> (today = Date.current) { where(arel_table[:expires_at].gt(today).or(arel_table[:expires_at].eq(nil))) }
+  scope :expiring_and_not_notified, ->(date) { where("expiry_notified_at is null AND expires_at >= ? AND expires_at <= ?", Date.current, date) }
 
   scope :created_today, -> do
     now = Date.current

@@ -5,13 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Authenticating and reading secrets with HashiCorp Vault (Deprecated) **(PREMIUM)**
+# Authenticating and reading secrets with HashiCorp Vault **(PREMIUM)**
 
 WARNING:
-Authenticating with HashiCorp Vault by using `CI_JOB_JWT` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and the token is scheduled to be removed in GitLab 16.5. This change is a breaking change.
-Use [ID tokens to authenticate with HashiCorp Vault](../../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
-instead.
+Authenticating with `CI_JOB_JWT` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+and the token is scheduled to be removed in GitLab 16.5. Use
+[ID tokens to authenticate with HashiCorp Vault](../../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
+instead, as demonstrated on this page.
 
 This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 
@@ -249,7 +249,7 @@ Now, configure the JWT Authentication method:
 ```shell
 $ vault write auth/jwt/config \
     jwks_url="https://gitlab.example.com/-/jwks" \
-    bound_issuer="gitlab.example.com"
+    bound_issuer="https://gitlab.example.com"
 ```
 
 [`bound_issuer`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_issuer) specifies that only a JWT with the issuer (that is, the `iss` claim) set to `gitlab.example.com` can use this method to authenticate, and that the JWKS endpoint (`https://gitlab.example.com/-/jwks`) should be used to validate the token.

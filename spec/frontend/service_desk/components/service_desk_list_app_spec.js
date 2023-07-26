@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { cloneDeep } from 'lodash';
 import * as Sentry from '@sentry/browser';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,8 +10,8 @@ import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/service_desk/constants';
-import getServiceDeskIssuesQuery from '~/service_desk/queries/get_service_desk_issues.query.graphql';
-import getServiceDeskIssuesCountsQuery from '~/service_desk/queries/get_service_desk_issues_counts.query.graphql';
+import getServiceDeskIssuesQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues.query.graphql';
+import getServiceDeskIssuesCountsQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues_counts.query.graphql';
 import ServiceDeskListApp from '~/service_desk/components/service_desk_list_app.vue';
 import InfoBanner from '~/service_desk/components/info_banner.vue';
 import {
@@ -39,6 +40,8 @@ describe('ServiceDeskListApp', () => {
     releasesPath: 'releases/path',
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
     hasIterationsFeature: true,
+    hasIssueWeightsFeature: true,
+    hasIssuableHealthStatusFeature: true,
     groupPath: 'group/path',
     emptyStateSvgPath: 'empty-state.svg',
     isProject: true,
@@ -48,7 +51,12 @@ describe('ServiceDeskListApp', () => {
     hasAnyIssues: true,
   };
 
-  const defaultQueryResponse = getServiceDeskIssuesQueryResponse;
+  let defaultQueryResponse = getServiceDeskIssuesQueryResponse;
+  if (IS_EE) {
+    defaultQueryResponse = cloneDeep(getServiceDeskIssuesQueryResponse);
+    defaultQueryResponse.data.project.issues.nodes[0].healthStatus = null;
+    defaultQueryResponse.data.project.issues.nodes[0].weight = 5;
+  }
 
   const mockServiceDeskIssuesQueryResponseHandler = jest
     .fn()

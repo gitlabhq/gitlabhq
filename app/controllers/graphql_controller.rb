@@ -60,7 +60,7 @@ class GraphqlController < ApplicationController
   urgency :low, [:execute]
 
   def execute
-    result = if Feature.enabled?(:cache_introspection_query) && introspection_query?
+    result = if introspection_query?
                execute_introspection_query
              else
                multiplex? ? execute_multiplex : execute_query

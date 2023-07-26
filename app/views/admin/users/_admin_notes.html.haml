@@ -1,9 +1,9 @@
-.gl-mb-3
-  .row
-    .col-lg-4
-      %h4.gl-mt-0
+.settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
         = _('Admin notes')
-    .col-lg-8
-      .form-group.gl-form-group{ role: 'group' }
-        = f.label :note, s_('Admin|Note')
-        = f.text_area :note, class: 'form-control gl-form-input gl-form-textarea'
+
+  .form-group.gl-form-group{ role: 'group' }
+    = f.label :note, s_('Admin|Note')
+    = f.text_area :note, class: 'form-control gl-form-input gl-form-textarea'

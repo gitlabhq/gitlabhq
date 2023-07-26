@@ -290,10 +290,10 @@ export default {
     <form
       role="search"
       :aria-label="searchPlaceholder"
-      class="gl-relative gl-rounded-base gl-w-full"
+      class="gl-relative gl-rounded-base gl-w-full gl-pb-0"
       data-testid="global-search-form"
     >
-      <div class="gl-p-1 gl-relative">
+      <div class="gl-relative gl-bg-white gl-border-b gl-mb-n1 gl-p-3">
         <gl-search-box-by-type
           id="search"
           ref="searchInput"
@@ -347,7 +347,7 @@ export default {
       <div
         ref="resultsList"
         data-testid="global-search-results"
-        class="global-search-results gl-overflow-y-auto gl-w-full gl-pb-2"
+        class="global-search-results gl-overflow-y-auto gl-w-full gl-pb-3"
         @keydown="onKeydown"
       >
         <command-palette-items

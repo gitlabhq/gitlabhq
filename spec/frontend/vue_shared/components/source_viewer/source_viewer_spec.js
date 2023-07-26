@@ -1,6 +1,8 @@
 import hljs from 'highlight.js/lib/core';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
 import { registerPlugins } from '~/vue_shared/components/source_viewer/plugins/index';
@@ -16,6 +18,7 @@ import {
   CODEOWNERS_LANGUAGE,
   SVELTE_LANGUAGE,
 } from '~/vue_shared/components/source_viewer/constants';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import LineHighlighter from '~/blob/line_highlighter';
 import eventHub from '~/notes/event_hub';
@@ -26,6 +29,7 @@ jest.mock('highlight.js/lib/core');
 jest.mock('~/vue_shared/components/source_viewer/plugins/index');
 Vue.use(VueRouter);
 const router = new VueRouter();
+const mockAxios = new MockAdapter(axios);
 
 const generateContent = (content, totalLines = 1, delimiter = '\n') => {
   let generatedContent = '';
@@ -70,6 +74,42 @@ describe('Source Viewer component', () => {
     jest.spyOn(Tracking, 'event');
 
     return createComponent();
+  });
+
+  describe('Displaying LFS blob', () => {
+    const rawPath = '/org/project/-/raw/file.xml';
+    const externalStorageUrl = 'http://127.0.0.1:9000/lfs-objects/91/12/1341234';
+    const rawTextBlob = 'This is the external content';
+    const blob = {
+      storedExternally: true,
+      externalStorage: 'lfs',
+      simpleViewer: { fileType: 'text' },
+      rawPath,
+    };
+
+    afterEach(() => {
+      mockAxios.reset();
+    });
+
+    it('Uses externalStorageUrl to fetch content if present', async () => {
+      mockAxios.onGet(externalStorageUrl).replyOnce(HTTP_STATUS_OK, rawTextBlob);
+
+      await createComponent({ ...blob, externalStorageUrl });
+
+      expect(mockAxios.history.get).toHaveLength(1);
+      expect(mockAxios.history.get[0].url).toBe(externalStorageUrl);
+      expect(wrapper.vm.$data.content).toBe(rawTextBlob);
+    });
+
+    it('Falls back to rawPath to fetch content', async () => {
+      mockAxios.onGet(rawPath).replyOnce(HTTP_STATUS_OK, rawTextBlob);
+
+      await createComponent(blob);
+
+      expect(mockAxios.history.get).toHaveLength(1);
+      expect(mockAxios.history.get[0].url).toBe(rawPath);
+      expect(wrapper.vm.$data.content).toBe(rawTextBlob);
+    });
   });
 
   describe('event tracking', () => {

@@ -23,7 +23,6 @@ module Integrations
     ].freeze
 
     SECRET_MASK = '************'
-    CHANNEL_LIMIT_PER_EVENT = 10
 
     attribute :category, default: 'chat'
 
@@ -186,6 +185,14 @@ module Integrations
       true
     end
 
+    def channel_limit_per_event
+      10
+    end
+
+    def mask_configurable_channels?
+      false
+    end
+
     private
 
     def should_execute?(object_kind)
@@ -314,13 +321,13 @@ module Integrations
     def validate_channel_limit
       supported_events.each do |event|
         count = channels_for_event(event).count
-        next unless count > CHANNEL_LIMIT_PER_EVENT
+        next unless count > channel_limit_per_event
 
         errors.add(
           event_channel_name(event).to_sym,
           format(
             s_('SlackIntegration|cannot have more than %{limit} channels'),
-            limit: CHANNEL_LIMIT_PER_EVENT
+            limit: channel_limit_per_event
           )
         )
       end

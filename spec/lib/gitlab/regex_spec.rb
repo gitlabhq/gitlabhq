@@ -832,6 +832,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('1.2.3') }
     it { is_expected.to match('1.2.3-beta') }
     it { is_expected.to match('1.2.3-alpha.3') }
+    it { is_expected.to match('1.2.3-alpha.3+abcd') }
     it { is_expected.not_to match('1') }
     it { is_expected.not_to match('1.2') }
     it { is_expected.not_to match('1./2.3') }

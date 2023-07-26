@@ -568,6 +568,19 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/routes/directs/*.rb'
     - 'ee/spec/lib/sidebars/**/*.rb'
 
+RSpec/BeforeAll:
+  Enabled: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+  # Conflict with RSpec/AvoidTestProf
+  Exclude:
+    - 'spec/migrations/**/*.rb'
+    - 'ee/spec/migrations/**/*.rb'
+    - 'spec/lib/gitlab/background_migration/**/*.rb'
+    - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
+    - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
+
 RSpec/FactoryBot/StrategyInCallback:
   Enabled: true
   Include:

@@ -5,6 +5,7 @@ import eventHub from '~/notes/event_hub';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import Tracking from '~/tracking';
+import axios from '~/lib/utils/axios_utils';
 import {
   EVENT_ACTION,
   EVENT_LABEL_VIEWER,
@@ -53,6 +54,11 @@ export default {
     };
   },
   computed: {
+    isLfsBlob() {
+      const { storedExternally, externalStorage, simpleViewer } = this.blob;
+
+      return storedExternally && externalStorage === 'lfs' && simpleViewer?.fileType === 'text';
+    },
     splitContent() {
       return this.content.split(/\r?\n/);
     },
@@ -83,6 +89,15 @@ export default {
     },
   },
   async created() {
+    if (this.isLfsBlob) {
+      await axios
+        .get(this.blob.externalStorageUrl || this.blob.rawPath)
+        .then((result) => {
+          this.content = result.data;
+        })
+        .catch(() => this.$emit('error'));
+    }
+
     addBlobLinksTracking();
     this.trackEvent(EVENT_LABEL_VIEWER);
 

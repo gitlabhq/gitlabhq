@@ -166,6 +166,13 @@ class NotifyPreview < ActionMailer::Preview
     Notify.member_invited_email('project', member.id, '1234').message
   end
 
+  def member_about_to_expire_email
+    cleanup do
+      member = project.add_member(user, Gitlab::Access::GUEST, expires_at: 7.days.from_now.to_date)
+      Notify.member_about_to_expire_email('project', member.id).message
+    end
+  end
+
   def pages_domain_enabled_email
     cleanup do
       pages_domain = PagesDomain.new(domain: 'my.example.com', project: project, verified_at: Time.now, enabled_until: 1.week.from_now)

@@ -238,7 +238,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       ]
     end
 
-    before(:all) do
+    before_all do
       project.update!(group: group)
     end
 

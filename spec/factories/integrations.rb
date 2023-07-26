@@ -254,6 +254,13 @@ FactoryBot.define do
     active { false }
   end
 
+  factory :discord_integration, class: 'Integrations::Discord' do
+    chat_notification
+    project
+    active { true }
+    type { 'Integrations::Discord' }
+  end
+
   factory :mattermost_integration, class: 'Integrations::Mattermost' do
     chat_notification
     project

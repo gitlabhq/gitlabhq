@@ -84,7 +84,7 @@ and scopes given to GitLab when you created the application.
 Run the following command in the terminal:
 
 ```shell
-vault write auth/oidc/role/demo -<<EOF
+vault write auth/oidc/role/demo - <<EOF
 {
    "user_claim": "sub",
    "allowed_redirect_uris": "<your_vault_instance_redirect_uris>",

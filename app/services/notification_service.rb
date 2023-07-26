@@ -529,6 +529,12 @@ class NotificationService
     mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
+  def member_about_to_expire(member)
+    return true unless member.notifiable?(:mention)
+
+    mailer.member_about_to_expire_email(member.real_source_type, member.id).deliver_later
+  end
+
   # Group invite
   def invite_group_member(group_member, token)
     mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later

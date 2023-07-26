@@ -2821,6 +2821,8 @@ Layout/LineLength:
     - 'lib/gitlab/quick_actions/merge_request_actions.rb'
     - 'lib/gitlab/rack_attack.rb'
     - 'lib/gitlab/regex.rb'
+    - 'lib/gitlab/regex/bulk_imports.rb'
+    - 'lib/gitlab/regex/packages.rb'
     - 'lib/gitlab/relative_positioning/item_context.rb'
     - 'lib/gitlab/repository_size_error_message.rb'
     - 'lib/gitlab/sample_data_template.rb'
