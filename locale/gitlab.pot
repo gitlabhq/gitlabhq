@@ -8406,6 +8406,9 @@ msgstr ""
 msgid "BroadcastMessages|Add broadcast message"
 msgstr ""
 
+msgid "BroadcastMessages|Add new message"
+msgstr ""
+
 msgid "BroadcastMessages|Allow users to dismiss the broadcast message"
 msgstr ""
 
@@ -8418,7 +8421,16 @@ msgstr ""
 msgid "BroadcastMessages|Dark"
 msgstr ""
 
+msgid "BroadcastMessages|Delete broadcast message"
+msgstr ""
+
+msgid "BroadcastMessages|Delete message"
+msgstr ""
+
 msgid "BroadcastMessages|Dismissable"
+msgstr ""
+
+msgid "BroadcastMessages|Do you really want to delete this broadcast message?"
 msgstr ""
 
 msgid "BroadcastMessages|Ends at"
@@ -8449,6 +8461,12 @@ msgid "BroadcastMessages|Light Red"
 msgstr ""
 
 msgid "BroadcastMessages|Message"
+msgstr ""
+
+msgid "BroadcastMessages|Messages"
+msgstr ""
+
+msgid "BroadcastMessages|No broadcast messages defined yet."
 msgstr ""
 
 msgid "BroadcastMessages|Notification"

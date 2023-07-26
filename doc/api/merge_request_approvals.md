@@ -430,7 +430,12 @@ You can update project approval rules using the following endpoint:
 PUT /projects/:id/approval_rules/:approval_rule_id
 ```
 
-**Important:** Approvers and groups not in the `users`/`groups` parameters are **removed**
+NOTE:
+Approvers and groups (except hidden groups not in the `users` or `groups`
+parameters) are **removed**. Hidden groups are private groups the user doesn't
+have permission to view. Hidden groups are not removed by default unless the
+`remove_hidden_groups` parameter is `true`. This ensures hidden groups are
+not removed unintentionally when a user updates an approval rule.
 
 Supported attributes:
 
@@ -443,7 +448,7 @@ Supported attributes:
 | `applies_to_all_protected_branches` | boolean           | **{dotted-circle}** No | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 | `group_ids`                         | Array             | **{dotted-circle}** No | The IDs of groups as approvers.                                                                                                                                                                                                 |
 | `protected_branch_ids`              | Array             | **{dotted-circle}** No | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches).                                                                                           |
-| `remove_hidden_groups`              | boolean           | **{dotted-circle}** No | Whether hidden groups should be removed.                                                                                                                                                                                        |
+| `remove_hidden_groups`              | boolean           | **{dotted-circle}** No | Whether hidden groups should be removed from approval rule. |
 | `user_ids`                          | Array             | **{dotted-circle}** No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
 | `usernames`                         | string array      | **{dotted-circle}** No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added.|
 

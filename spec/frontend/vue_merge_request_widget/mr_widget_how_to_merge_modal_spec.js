@@ -41,9 +41,23 @@ describe('MRWidgetHowToMerge', () => {
     expect(findTipLink().exists()).toBe(false);
   });
 
-  it('should render different instructions based on if the user can merge', () => {
-    mountComponent({ props: { canMerge: true } });
-    expect(findInstructionsFields().at(1).text()).toContain('git push origin');
+  it('should render instructions to push', () => {
+    mountComponent({ props: { sourceBranch: 'branch-of-user' } });
+    expect(findInstructionsFields().at(1).text()).toContain("git push origin 'branch-of-user'");
+  });
+
+  it('should render instructions to push to fork', () => {
+    mountComponent({
+      props: {
+        sourceProjectDefaultUrl: 'git@gitlab.com:contributor/Underscore.git',
+        sourceProjectPath: 'Underscore',
+        sourceBranch: 'branch-of-user',
+        isFork: true,
+      },
+    });
+    expect(findInstructionsFields().at(1).text()).toContain(
+      'git push "git@gitlab.com:contributor/Underscore.git" \'Underscore-branch-of-user:branch-of-user\'',
+    );
   });
 
   it('escapes the source branch name shell-secure', () => {

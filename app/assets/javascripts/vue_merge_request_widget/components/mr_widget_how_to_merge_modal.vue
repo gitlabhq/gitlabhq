@@ -90,10 +90,17 @@ export default {
         : `git fetch origin\ngit checkout -b ${this.escapedSourceBranch} ${escapedOriginBranch}`; // eslint-disable-line @gitlab/require-i18n-strings
     },
     mergeInfo2() {
-      return `git push origin ${this.escapedSourceBranch}`; // eslint-disable-line @gitlab/require-i18n-strings
+      return this.isFork
+        ? `git push "${this.sourceProjectDefaultUrl}" ${this.escapedForkPushBranch}` // eslint-disable-line @gitlab/require-i18n-strings
+        : `git push origin ${this.escapedSourceBranch}`; // eslint-disable-line @gitlab/require-i18n-strings
     },
     escapedForkBranch() {
       return escapeShellString(`${this.sourceProjectPath}-${this.sourceBranch}`);
+    },
+    escapedForkPushBranch() {
+      return escapeShellString(
+        `${this.sourceProjectPath}-${this.sourceBranch}:${this.sourceBranch}`,
+      );
     },
     escapedSourceBranch() {
       return escapeShellString(this.sourceBranch);

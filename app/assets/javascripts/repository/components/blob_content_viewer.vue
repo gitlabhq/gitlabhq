@@ -80,8 +80,8 @@ export default {
           projectPath: this.projectPath,
           filePath: this.path,
           ref: this.originalBranch || this.ref,
-          shouldFetchRawText: Boolean(this.glFeatures.highlightJs),
           refType: this.refType?.toUpperCase() || null,
+          shouldFetchRawText: true,
         };
 
         return queryVariables;
@@ -193,8 +193,7 @@ export default {
           );
     },
     shouldLoadLegacyViewer() {
-      const isTextFile = this.viewer.fileType === TEXT_FILE_TYPE && !this.glFeatures.highlightJs;
-      return isTextFile || LEGACY_FILE_TYPES.includes(this.blobInfo.fileType) || this.useFallback;
+      return LEGACY_FILE_TYPES.includes(this.blobInfo.fileType) || this.useFallback;
     },
     legacyViewerLoaded() {
       return (
@@ -355,7 +354,7 @@ export default {
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
         :show-path="false"
-        :override-copy="glFeatures.highlightJs"
+        :override-copy="true"
         @viewer-changed="handleViewerChanged"
         @copy="onCopy"
       >
@@ -428,7 +427,7 @@ export default {
         :code-navigation-path="blobInfo.codeNavigationPath"
         :blob-path="blobInfo.path"
         :path-prefix="blobInfo.projectBlobPathRoot"
-        :wrap-text-nodes="glFeatures.highlightJs"
+        :wrap-text-nodes="true"
       />
     </div>
     <ai-genie

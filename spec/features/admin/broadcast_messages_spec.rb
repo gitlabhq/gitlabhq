@@ -12,6 +12,12 @@ RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :onboarding do
       # create
       visit admin_broadcast_messages_path
 
+      click_button('Add new message')
+
+      page.within(preview_container) do
+        expect(page).to have_content('Your message here')
+      end
+
       fill_in 'Message', with: 'test message'
 
       wait_for_requests
@@ -23,10 +29,6 @@ RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :onboarding do
       click_button 'Add broadcast message'
 
       wait_for_requests
-
-      page.within(preview_container) do
-        expect(page).to have_content('Your message here')
-      end
 
       page.within(first_message_container) do
         expect(page).to have_content('test message')
@@ -52,10 +54,6 @@ RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :onboarding do
       click_button 'Update broadcast message'
 
       wait_for_requests
-
-      page.within(preview_container) do
-        expect(page).to have_content('Your message here')
-      end
 
       page.within(first_message_container) do
         expect(page).to have_content('changed test message')

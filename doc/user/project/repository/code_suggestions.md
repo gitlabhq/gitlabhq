@@ -58,7 +58,9 @@ The best results from Code Suggestions are expected [for languages the Google Ve
 - Swift
 - TypeScript
 
- Supported [code infrastructure interfaces](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_code_infrastructure_interfaces) include:
+## Supported code infrastructure interfaces
+
+Code Suggestions includes [Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_code_infrastructure_interfaces) support for the following infrastructure as code interfaces:
 
 - Google Cloud CLI
 - Kubernetes Resource Model (KRM)

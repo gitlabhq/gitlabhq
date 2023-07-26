@@ -16,7 +16,6 @@ import { buildURLwithRefType, joinPaths } from '~/lib/utils/url_utility';
 import { TREE_PAGE_SIZE, ROW_APPEAR_DELAY } from '~/repository/constants';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import getRefMixin from '../../mixins/get_ref';
 
@@ -36,7 +35,7 @@ export default {
     GlHoverLoad: GlHoverLoadDirective,
     SafeHtml,
   },
-  mixins: [getRefMixin, glFeatureFlagMixin()],
+  mixins: [getRefMixin],
   inject: ['refType'],
   props: {
     commitInfo: {
@@ -176,7 +175,7 @@ export default {
         filePath: this.path,
         ref: this.ref,
         refType: this.refType?.toUpperCase() || null,
-        shouldFetchRawText: Boolean(this.glFeatures.highlightJs),
+        shouldFetchRawText: true,
       });
     },
     apolloQuery(query, variables) {

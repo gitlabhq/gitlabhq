@@ -172,6 +172,9 @@ export default {
     this.targetSelected = this.initialTarget();
   },
   methods: {
+    closeForm() {
+      this.$emit('close-add-form');
+    },
     async onSubmit() {
       this.loading = true;
 
@@ -182,7 +185,6 @@ export default {
         this.loading = false;
       }
     },
-
     async submitForm() {
       const requestMethod = this.isAddForm ? 'post' : 'patch';
 
@@ -197,7 +199,6 @@ export default {
       }
       return true;
     },
-
     async renderPreview() {
       try {
         const res = await axios.post(this.previewPath, this.formPayload, FORM_HEADERS);
@@ -206,7 +207,6 @@ export default {
         this.renderedMessage = '';
       }
     },
-
     initialTarget() {
       if (this.targetAccessLevels.length > 0) {
         return TARGET_ROLES;
@@ -238,6 +238,7 @@ export default {
         id="message-textarea"
         v-model="message"
         size="sm"
+        autofocus
         :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
         :placeholder="$options.i18n.messagePlaceholder"
         data-testid="message-input"
@@ -329,7 +330,10 @@ export default {
       >
         {{ isAddForm ? $options.i18n.add : $options.i18n.update }}
       </gl-button>
-      <gl-button v-if="!isAddForm" :href="messagesPath" data-testid="cancel-button">
+      <gl-button v-if="isAddForm" @click="closeForm">
+        {{ $options.i18n.cancel }}
+      </gl-button>
+      <gl-button v-else :href="messagesPath" data-testid="cancel-button">
         {{ $options.i18n.cancel }}
       </gl-button>
     </div>
