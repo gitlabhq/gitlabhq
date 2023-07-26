@@ -14,7 +14,7 @@ review-build-cng:
 review-deploy-env:
   allow_failure: true
   stage: deploy
-  needs: ["release-environments-build-cng"]
+  needs: ["review-build-cng"]
   variables:
     DEPLOY_ENV: deploy.env
   script:
