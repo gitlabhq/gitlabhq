@@ -691,6 +691,100 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
     end
   end
 
+  describe 'SHA patterns' do
+    shared_examples 'a SHA-matching pattern' do
+      let(:expected_match) { sha }
+
+      shared_examples 'a match' do
+        it 'matches the pattern' do
+          expect(value).to match(pattern)
+          expect(pattern.match(value).to_a).to eq([expected_match])
+        end
+      end
+
+      shared_examples 'no match' do
+        it 'does not match the pattern' do
+          expect(value).not_to match(pattern)
+        end
+      end
+
+      shared_examples 'a SHA pattern' do
+        context "with too short value" do
+          let(:value) { sha[0, described_class::MIN_SHA_LENGTH - 1] }
+
+          it_behaves_like 'no match'
+        end
+
+        context "with full length" do
+          let(:value) { sha }
+
+          it_behaves_like 'a match'
+        end
+
+        context "with exceeeding length" do
+          let(:value) { sha + sha }
+
+          # This case is not exactly pretty for SHA1 as we would still match the full SHA256 length. It's arguable what
+          # the correct behaviour would be, but without starting to distinguish SHA1 and SHA256 hashes this is the best
+          # we can do.
+          let(:expected_match) { (sha + sha)[0, described_class::MAX_SHA_LENGTH] }
+
+          it_behaves_like 'a match'
+        end
+
+        context "with embedded SHA" do
+          let(:value) { "xxx#{sha}xxx" }
+
+          it_behaves_like 'a match'
+        end
+      end
+
+      context 'abbreviated SHA pattern' do
+        let(:pattern) { described_class::SHA_PATTERN }
+
+        context "with minimum length" do
+          let(:value) { sha[0, described_class::MIN_SHA_LENGTH] }
+          let(:expected_match) { value }
+
+          it_behaves_like 'a match'
+        end
+
+        context "with medium length" do
+          let(:value) { sha[0, described_class::MIN_SHA_LENGTH + 20] }
+          let(:expected_match) { value }
+
+          it_behaves_like 'a match'
+        end
+
+        it_behaves_like 'a SHA pattern'
+      end
+
+      context 'full SHA pattern' do
+        let(:pattern) { described_class::FULL_SHA_PATTERN }
+
+        context 'with abbreviated length' do
+          let(:value) { sha[0, described_class::SHA1_LENGTH - 1] }
+
+          it_behaves_like 'no match'
+        end
+
+        it_behaves_like 'a SHA pattern'
+      end
+    end
+
+    context 'SHA1' do
+      let(:sha) { "5716ca5987cbf97d6bb54920bea6adde242d87e6" }
+
+      it_behaves_like 'a SHA-matching pattern'
+    end
+
+    context 'SHA256' do
+      let(:sha) { "a52e146ac2ab2d0efbb768ab8ebd1e98a6055764c81fe424fbae4522f5b4cb92" }
+
+      it_behaves_like 'a SHA-matching pattern'
+    end
+  end
+
   def sample_commit_hash
     {
       author_email: "dmitriy.zaporozhets@gmail.com",

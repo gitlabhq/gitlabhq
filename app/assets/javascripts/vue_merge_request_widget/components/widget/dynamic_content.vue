@@ -73,10 +73,16 @@ export default {
     <template #body>
       <div class="gl-w-full gl-display-flex" :class="{ 'gl-flex-direction-column': level === 1 }">
         <div class="gl-display-flex gl-flex-grow-1">
-          <div class="gl-display-flex gl-flex-grow-1 gl-flex-direction-column">
-            <p v-safe-html="generatedText" class="gl-mb-0 gl-mr-1"></p>
-            <gl-link v-if="data.link" :href="data.link.href">{{ data.link.text }}</gl-link>
-            <p v-if="data.supportingText" v-safe-html="generatedSupportingText" class="gl-mb-0"></p>
+          <div class="gl-display-flex gl-flex-grow-1 gl-align-items-baseline">
+            <div>
+              <p v-safe-html="generatedText" class="gl-mb-0 gl-mr-1"></p>
+              <gl-link v-if="data.link" :href="data.link.href">{{ data.link.text }}</gl-link>
+              <p
+                v-if="data.supportingText"
+                v-safe-html="generatedSupportingText"
+                class="gl-mb-0"
+              ></p>
+            </div>
             <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
               {{ data.badge.text }}
             </gl-badge>

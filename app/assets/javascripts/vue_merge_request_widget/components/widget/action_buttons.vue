@@ -74,9 +74,8 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-flex-start">
+  <div v-if="tertiaryButtons.length" class="gl-display-flex gl-align-items-flex-start">
     <gl-dropdown
-      v-if="tertiaryButtons.length"
       v-gl-tooltip
       :title="__('Options')"
       :text="dropdownLabel"
@@ -102,33 +101,31 @@ export default {
         {{ btn.text }}
       </gl-dropdown-item>
     </gl-dropdown>
-    <template v-if="tertiaryButtons.length">
-      <gl-button
-        v-for="(btn, index) in tertiaryButtons"
-        :id="btn.id"
-        :key="index"
-        v-gl-tooltip.hover
-        :title="setTooltip(btn)"
-        :href="btn.href"
-        :target="btn.target"
-        :class="[{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }, btn.class]"
-        :data-clipboard-text="btn.dataClipboardText"
-        :data-qa-selector="actionButtonQaSelector(btn)"
-        :data-method="btn.dataMethod"
-        :icon="btn.icon"
-        :data-testid="btn.testId || 'extension-actions-button'"
-        :variant="btn.variant || 'confirm'"
-        :loading="btn.loading"
-        :disabled="btn.loading"
-        category="tertiary"
-        size="small"
-        class="gl-display-none gl-md-display-block gl-float-left"
-        @click="onClickAction(btn)"
-      >
-        <template v-if="btn.text">
-          {{ btn.text }}
-        </template>
-      </gl-button>
-    </template>
+    <gl-button
+      v-for="(btn, index) in tertiaryButtons"
+      :id="btn.id"
+      :key="index"
+      v-gl-tooltip.hover
+      :title="setTooltip(btn)"
+      :href="btn.href"
+      :target="btn.target"
+      :class="[{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }, btn.class]"
+      :data-clipboard-text="btn.dataClipboardText"
+      :data-qa-selector="actionButtonQaSelector(btn)"
+      :data-method="btn.dataMethod"
+      :icon="btn.icon"
+      :data-testid="btn.testId || 'extension-actions-button'"
+      :variant="btn.variant || 'confirm'"
+      :loading="btn.loading"
+      :disabled="btn.loading"
+      category="tertiary"
+      size="small"
+      class="gl-display-none gl-md-display-block gl-float-left"
+      @click="onClickAction(btn)"
+    >
+      <template v-if="btn.text">
+        {{ btn.text }}
+      </template>
+    </gl-button>
   </div>
 </template>

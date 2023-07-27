@@ -29,7 +29,8 @@ class Commit
   delegate :project, to: :repository, allow_nil: true
 
   MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
-  COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
+  MAX_SHA_LENGTH = Gitlab::Git::Commit::MAX_SHA_LENGTH
+  COMMIT_SHA_PATTERN = Gitlab::Git::Commit::SHA_PATTERN.freeze
   EXACT_COMMIT_SHA_PATTERN = /\A#{COMMIT_SHA_PATTERN}\z/.freeze
   # Used by GFM to match and present link extensions on node texts and hrefs.
   LINK_EXTENSION_PATTERN = /(patch)/.freeze

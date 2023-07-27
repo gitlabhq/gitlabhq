@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe BlobPresenter do
-  let_it_be(:project) { create(:project, :repository) }
+RSpec.describe BlobPresenter, feature_category: :source_code_management do
+  let_it_be(:project) { create(:project, :repository, lfs: true) }
   let_it_be(:user) { project.first_owner }
 
   let(:repository) { project.repository }
@@ -226,6 +226,83 @@ RSpec.describe BlobPresenter do
 
   describe '#code_owners' do
     it { expect(presenter.code_owners).to match_array([]) }
+  end
+
+  describe '#external_storage_url' do
+    let(:static_objects_external_storage_url) { nil }
+    let(:raw_path) { Rails.application.routes.url_helpers.project_raw_path(project, File.join(ref, path)) }
+    let(:token) { '' }
+    let(:cdn_fronted_url) do
+      "#{static_objects_external_storage_url}#{raw_path}#{token}"
+    end
+
+    subject { presenter.external_storage_url }
+
+    before do
+      stub_application_setting(static_objects_external_storage_url: static_objects_external_storage_url)
+    end
+
+    context 'when blob is an lfs pointer' do
+      let_it_be(:blob) { project.repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
+      let_it_be(:lfs_object) { project.lfs_objects.find_by_oid(blob.lfs_oid) }
+
+      let(:lfs_object_url) { lfs_object.file.url(content_type: "application/octet-stream") }
+      let(:lfs_object_proxy_url) { "#{project.http_url_to_repo}/gitlab-lfs/objects/#{lfs_object.oid}" }
+      let(:proxy_download) { true }
+      let(:lfs_config) do
+        Gitlab.config.lfs.deep_merge(
+          'enabled' => true,
+          'object_store' => {
+            'remote_directory' => 'lfs-objects',
+            'enabled' => true,
+            'proxy_download' => proxy_download,
+            'connection' => {
+              'endpoint' => 'http:127.0.0.1:9000',
+              'path_style' => true
+            }
+          }
+        )
+      end
+
+      before do
+        stub_lfs_setting(lfs_config)
+        stub_lfs_object_storage(proxy_download: proxy_download)
+      end
+
+      context 'when direct download is enabled' do
+        let(:proxy_download) { false }
+
+        it { is_expected.to eq(lfs_object_url) }
+      end
+
+      context 'when proxy download is enabled' do
+        it { is_expected.to eq(lfs_object_proxy_url) }
+      end
+    end
+
+    context 'when static_objects_external_storage_enabled?' do
+      let(:static_objects_external_storage_url) { 'https://cdn.gitlab.com' }
+
+      context 'and project is private' do
+        let(:token) { "?token=#{user.static_object_token}" }
+
+        it { is_expected.to eq(cdn_fronted_url) }
+      end
+
+      context 'and project is public' do
+        let(:token) { '' }
+
+        before do
+          allow(project).to receive(:public?).and_return(true)
+        end
+
+        it { is_expected.to eq(cdn_fronted_url) }
+      end
+    end
+
+    context 'when not static_objects_external_storage_enabled?' do
+      it { is_expected.to be_nil }
+    end
   end
 
   describe '#ide_edit_path' do

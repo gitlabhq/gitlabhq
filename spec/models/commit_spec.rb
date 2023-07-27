@@ -831,7 +831,8 @@ eos
       expect(described_class.valid_hash?('a' * 6)).to be false
       expect(described_class.valid_hash?('a' * 7)).to be true
       expect(described_class.valid_hash?('a' * 40)).to be true
-      expect(described_class.valid_hash?('a' * 41)).to be false
+      expect(described_class.valid_hash?('a' * 64)).to be true
+      expect(described_class.valid_hash?('a' * 65)).to be false
     end
   end
 

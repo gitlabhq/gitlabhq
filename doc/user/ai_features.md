@@ -230,6 +230,25 @@ Provide feedback on this experimental feature in [issue 407779](https://gitlab.c
 **Data usage**: When you use this feature, the text of public comments on the issue are sent to the large
 language model referenced above.
 
+### Show deployment frequency forecast **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com.
+
+In CI/CD Analytics, you can view a forecast of deployment frequency:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > CI/CD analytics**.
+1. Select the **Deployment frequency** tab.
+1. Turn on the **Show forecast** toggle.
+1. On the confirmation dialog, select **Accept testing terms**.
+
+The forecast is displayed as a dotted line on the chart. Data is forecasted for a duration that is half of the selected date range.
+For example, if you select a 30-day range, a forecast for the following 15 days is displayed.
+
+Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
+
 ## Data Usage
 
 GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function.

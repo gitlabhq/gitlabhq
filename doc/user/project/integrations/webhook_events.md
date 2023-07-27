@@ -611,6 +611,7 @@ Payload example:
       }
     },
     "work_in_progress": false,
+    "draft": false,
     "assignee": {
       "name": "User1",
       "username": "user1",
@@ -898,6 +899,7 @@ Payload example:
     "state": "opened",
     "blocking_discussions_resolved": true,
     "work_in_progress": false,
+    "draft": false,
     "first_contribution": true,
     "merge_status": "unchecked",
     "target_project_id": 14,
@@ -983,6 +985,10 @@ Payload example:
       "previous": null,
       "current": 1
     },
+    "draft": {
+      "previous": true,
+      "current": false
+    }
     "updated_at": {
       "previous": "2017-09-15 16:50:55 UTC",
       "current":"2017-09-15 16:52:00 UTC"

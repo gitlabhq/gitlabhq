@@ -8751,6 +8751,7 @@ The connection type for [`CustomEmoji`](#customemoji).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="customemojiconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="customemojiconnectionedges"></a>`edges` | [`[CustomEmojiEdge]`](#customemojiedge) | A list of edges. |
 | <a id="customemojiconnectionnodes"></a>`nodes` | [`[CustomEmoji]`](#customemoji) | A list of nodes. |
 | <a id="customemojiconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -14336,10 +14337,22 @@ A custom emoji uploaded by user.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="customemojicreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the custom emoji was created. |
 | <a id="customemojiexternal"></a>`external` | [`Boolean!`](#boolean) | Whether the emoji is an external link. |
 | <a id="customemojiid"></a>`id` | [`CustomEmojiID!`](#customemojiid) | ID of the emoji. |
 | <a id="customemojiname"></a>`name` | [`String!`](#string) | Name of the emoji. |
 | <a id="customemojiurl"></a>`url` | [`String!`](#string) | Link to file of the emoji. |
+| <a id="customemojiuserpermissions"></a>`userPermissions` | [`CustomEmojiPermissions!`](#customemojipermissions) | Permissions for the current user on the resource. |
+
+### `CustomEmojiPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customemojipermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `create_custom_emoji` on this resource. |
+| <a id="customemojipermissionsdeletecustomemoji"></a>`deleteCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_custom_emoji` on this resource. |
+| <a id="customemojipermissionsreadcustomemoji"></a>`readCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `read_custom_emoji` on this resource. |
 
 ### `CustomerRelationsContact`
 
@@ -17314,6 +17327,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | Indicates the user can perform `create_custom_emoji` on this resource. |
 | <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | Indicates the user can perform `create_projects` on this resource. |
 | <a id="grouppermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | Indicates the user can perform `read_group` on this resource. |
 

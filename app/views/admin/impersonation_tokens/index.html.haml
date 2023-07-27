@@ -6,11 +6,24 @@
 
 = render 'admin/users/head'
 
-.row.gl-mt-3
-  .col-lg-12
-    #js-new-access-token-app{ data: { access_token_type: type } }
+#js-new-access-token-app{ data: { access_token_type: type } }
 
-    = render 'shared/access_tokens/form',
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-border-b-0 gl-rounded-bottom-left-none gl-rounded-bottom-right-none js-toggle-container js-token-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body' }) do |c|
+  - c.with_header do
+    .gl-new-card-title-wrapper.gl-flex-direction-column
+      %h3.gl-new-card-title
+        = _('Impersonation tokens')
+        .gl-new-card-count
+          = sprite_icon('token', css_class: 'gl-mr-2')
+          %span.js-token-count= @active_impersonation_tokens.size
+      .gl-new-card-description
+        = _("To see all the user's personal access tokens you must impersonate them first.")
+    .gl-new-card-actions
+      = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content' }) do
+        = _('Add new token')
+  - c.with_body do
+    .gl-new-card-add-form.gl-mt-3.gl-display-none.js-toggle-content.js-add-new-token-form
+      = render 'shared/access_tokens/form',
         ajax: true,
         type: type,
         title: _('Add an impersonation token'),
@@ -20,4 +33,4 @@
         scopes: @scopes,
         help_path: help_page_path('api/rest/index', anchor: 'impersonation-tokens')
 
-    #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_impersonation_tokens.to_json, information: _("To see all the user's personal access tokens you must impersonate them first.") } }
+#js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_impersonation_tokens.to_json } }

@@ -7,6 +7,10 @@ module Types
 
     authorize :read_custom_emoji
 
+    connection_type_class(Types::CountableConnectionType)
+
+    expose_permissions Types::PermissionTypes::CustomEmoji
+
     field :id, ::Types::GlobalIDType[::CustomEmoji],
           null: false,
           description: 'ID of the emoji.'
@@ -23,5 +27,9 @@ module Types
     field :external, GraphQL::Types::Boolean,
           null: false,
           description: 'Whether the emoji is an external link.'
+
+    field :created_at, Types::TimeType,
+          null: false,
+          description: 'Timestamp of when the custom emoji was created.'
   end
 end

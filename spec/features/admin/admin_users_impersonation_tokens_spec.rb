@@ -19,6 +19,7 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
       name = 'Hello World'
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
+      click_button 'Add new token'
       fill_in "Token name", with: name
 
       # Set date to 1st of next month

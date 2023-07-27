@@ -683,7 +683,7 @@ scope path: '(/-/jira)', constraints: ::Constraints::JiraEncodedUrlConstrainer.n
       )
     }
 
-    get 'commit/:id', constraints: { id: /\h{7,40}/ }, to: redirect { |params, req|
+    get 'commit/:id', constraints: { id: Gitlab::Git::Commit::SHA_PATTERN }, to: redirect { |params, req|
       project_full_path = ::Gitlab::Jira::Dvcs.restore_full_path(
         namespace: params[:namespace_id],
         project: params[:project_id]

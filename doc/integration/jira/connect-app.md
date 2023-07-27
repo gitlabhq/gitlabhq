@@ -20,8 +20,6 @@ If you use Jira Data Center or Jira Server, use the [Jira DVCS connector](dvcs/i
 
 ## Install the GitLab for Jira Cloud app **(FREE SAAS)**
 
-> **Add namespace** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) to **Link groups** in GitLab 16.1.
-
 Prerequisites:
 
 - You must have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access to the Jira instance.
@@ -42,13 +40,14 @@ For an overview, see
 
 ## Configure the GitLab for Jira Cloud app **(FREE SAAS)**
 
+> **Add namespace** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) to **Link groups** in GitLab 16.1.
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the GitLab group.
 - You must have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access to the Jira instance.
 
 You can sync data from GitLab to Jira by linking the GitLab for Jira Cloud app to one or more GitLab groups.
-
 To configure the GitLab for Jira Cloud app:
 
 1. In Jira, on the top bar, select **Apps > Manage your apps**.

@@ -25,18 +25,31 @@
 
   #js-new-access-token-app{ data: { access_token_type: type } }
 
-  - if current_user.can?(:create_resource_access_tokens, @group)
-    = render 'shared/access_tokens/form',
-        ajax: true,
-        type: type,
-        path: group_settings_access_tokens_path(@group),
-        resource: @group,
-        token: @resource_access_token,
-        scopes: @scopes,
-        access_levels: GroupMember.access_level_roles,
-        default_access_level: Gitlab::Access::GUEST,
-        prefix: :resource_access_token,
-        help_path: help_page_path('user/group/settings/group_access_tokens', anchor: 'scopes-for-a-group-access-token')
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-border-b-0 gl-rounded-bottom-left-none gl-rounded-bottom-right-none js-toggle-container js-token-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body' }) do |c|
+    - c.with_header do
+      .gl-new-card-title-wrapper
+        %h3.gl-new-card-title
+          = _('Active group access tokens')
+        .gl-new-card-count
+          = sprite_icon('token', css_class: 'gl-mr-2')
+          %span.js-token-count= @active_access_tokens.size
+      - if current_user.can?(:create_resource_access_tokens, @group)
+        .gl-new-card-actions
+          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content' }) do
+            = _('Add new token')
+    - c.with_body do
+      - if current_user.can?(:create_resource_access_tokens, @group)
+        .gl-new-card-add-form.gl-mt-3.gl-display-none.js-toggle-content.js-add-new-token-form
+          = render 'shared/access_tokens/form',
+              ajax: true,
+              type: type,
+              path: group_settings_access_tokens_path(@group),
+              resource: @group,
+              token: @resource_access_token,
+              scopes: @scopes,
+              access_levels: GroupMember.access_level_roles,
+              default_access_level: Gitlab::Access::GUEST,
+              prefix: :resource_access_token,
+              help_path: help_page_path('user/group/settings/group_access_tokens', anchor: 'scopes-for-a-group-access-token')
 
-  #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true
- } }
+  #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true } }

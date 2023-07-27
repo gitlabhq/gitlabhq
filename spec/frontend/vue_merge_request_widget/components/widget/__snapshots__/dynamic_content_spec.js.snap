@@ -18,10 +18,12 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
       <status-icon-stub level=\\"2\\" name=\\"MyWidget\\" iconname=\\"success\\"></status-icon-stub>
       <div class=\\"gl-w-full gl-display-flex\\">
         <div class=\\"gl-display-flex gl-flex-grow-1\\">
-          <div class=\\"gl-display-flex gl-flex-grow-1 gl-flex-direction-column\\">
-            <p class=\\"gl-mb-0 gl-mr-1\\">Main text for the row</p>
-            <gl-link-stub href=\\"https://gitlab.com\\">Optional link to display after text</gl-link-stub>
-            <!---->
+          <div class=\\"gl-display-flex gl-flex-grow-1 gl-align-items-baseline\\">
+            <div>
+              <p class=\\"gl-mb-0 gl-mr-1\\">Main text for the row</p>
+              <gl-link-stub href=\\"https://gitlab.com\\">Optional link to display after text</gl-link-stub>
+              <!---->
+            </div>
             <gl-badge-stub size=\\"md\\" variant=\\"info\\" iconsize=\\"md\\">
               Badge is optional. Text to be displayed inside badge
             </gl-badge-stub>
@@ -44,10 +46,12 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
                   <!---->
                   <div class=\\"gl-w-full gl-display-flex\\">
                     <div class=\\"gl-display-flex gl-flex-grow-1\\">
-                      <div class=\\"gl-display-flex gl-flex-grow-1 gl-flex-direction-column\\">
-                        <p class=\\"gl-mb-0 gl-mr-1\\">This is recursive. It will be listed in level 3.</p>
-                        <!---->
-                        <!---->
+                      <div class=\\"gl-display-flex gl-flex-grow-1 gl-align-items-baseline\\">
+                        <div>
+                          <p class=\\"gl-mb-0 gl-mr-1\\">This is recursive. It will be listed in level 3.</p>
+                          <!---->
+                          <!---->
+                        </div>
                         <!---->
                       </div>
                       <actions-stub widget=\\"MyWidget\\" tertiarybuttons=\\"\\" class=\\"gl-ml-auto gl-pl-3\\"></actions-stub>

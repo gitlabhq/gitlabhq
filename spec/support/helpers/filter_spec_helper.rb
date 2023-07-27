@@ -94,9 +94,9 @@ module FilterSpecHelper
     when /\A(.+)?[^\d]\d+\z/
       # Integer-based reference with optional project prefix
       reference.gsub(/\d+\z/) { |i| i.to_i + 10_000 }
-    when /\A(.+@)?(\h{7,40}\z)/
+    when /\A(.+@)?(#{Gitlab::Git::Commit::RAW_SHA_PATTERN}\z)/o
       # SHA-based reference with optional prefix
-      reference.gsub(/\h{7,40}\z/) { |v| v.reverse }
+      reference.gsub(/#{Gitlab::Git::Commit::RAW_SHA_PATTERN}\z/o) { |v| v.reverse }
     else
       reference.gsub(/\w+\z/) { |v| v.reverse }
     end

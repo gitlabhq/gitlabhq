@@ -12,7 +12,20 @@ module Gitlab
       attr_accessor :raw_commit, :head
 
       MAX_COMMIT_MESSAGE_DISPLAY_SIZE = 10.megabytes
+
+      SHA1_LENGTH = 40
+      SHA256_LENGTH = 64
+
       MIN_SHA_LENGTH = 7
+      MAX_SHA_LENGTH = SHA256_LENGTH
+
+      RAW_SHA_PATTERN = "\\h{#{MIN_SHA_LENGTH},#{MAX_SHA_LENGTH}}".freeze
+      SHA_PATTERN = /#{RAW_SHA_PATTERN}/
+      # Match a full SHA. Note that because this expression is not anchored it will match any SHA that is at
+      # least SHA1_LENGTH long.
+      RAW_FULL_SHA_PATTERN = "\\h{#{SHA1_LENGTH}}(?:\\h{#{SHA256_LENGTH - SHA1_LENGTH}})?".freeze
+      FULL_SHA_PATTERN = /#{RAW_FULL_SHA_PATTERN}/
+
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,
         :authored_date, :author_name, :author_email,
