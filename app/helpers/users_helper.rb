@@ -104,6 +104,24 @@ module UsersHelper
     Gitlab.config.gitlab.impersonation_enabled
   end
 
+  def can_impersonate_user(user, impersonation_in_progress)
+    can?(user, :log_in) && !user.password_expired? && !impersonation_in_progress
+  end
+
+  def impersonation_error_text(user, impersonation_in_progress)
+    if impersonation_in_progress
+      _("You are already impersonating another user")
+    elsif user.blocked?
+      _("You cannot impersonate a blocked user")
+    elsif user.password_expired?
+      _("You cannot impersonate a user with an expired password")
+    elsif user.internal?
+      _("You cannot impersonate an internal user")
+    else
+      _("You cannot impersonate a user who cannot log in")
+    end
+  end
+
   def user_badges_in_admin_section(user)
     [].tap do |badges|
       badges << blocked_user_badge(user) if user.blocked?

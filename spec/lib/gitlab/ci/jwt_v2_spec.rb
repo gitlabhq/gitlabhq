@@ -201,6 +201,26 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
           end
         end
       end
+
+      describe 'project_visibility' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:visibility_level, :visibility_level_string) do
+          Project::PUBLIC   | 'public'
+          Project::INTERNAL | 'internal'
+          Project::PRIVATE  | 'private'
+        end
+
+        with_them do
+          before do
+            project.visibility_level = visibility_level
+          end
+
+          it 'is a string representation of the project visibility_level' do
+            expect(payload[:project_visibility]).to eq(visibility_level_string)
+          end
+        end
+      end
     end
   end
 end

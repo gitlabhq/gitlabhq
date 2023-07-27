@@ -150,6 +150,76 @@ RSpec.describe UsersHelper do
     end
   end
 
+  describe '#can_impersonate_user' do
+    let(:user) { create(:user) }
+    let(:impersonation_in_progress) { false }
+
+    subject { helper.can_impersonate_user(user, impersonation_in_progress) }
+
+    context 'when password is expired' do
+      let(:user) { create(:user, password_expires_at: 1.minute.ago) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when impersonation is in progress' do
+      let(:impersonation_in_progress) { true }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user is blocked' do
+      let(:user) { create(:user, :blocked) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user is internal' do
+      let(:user) { create(:user, :bot) }
+
+      it { is_expected.to be false }
+    end
+
+    it { is_expected.to be true }
+  end
+
+  describe '#impersonation_error_text' do
+    let(:user) { create(:user) }
+    let(:impersonation_in_progress) { false }
+
+    subject { helper.impersonation_error_text(user, impersonation_in_progress) }
+
+    context 'when password is expired' do
+      let(:user) { create(:user, password_expires_at: 1.minute.ago) }
+
+      it { is_expected.to eq(_("You cannot impersonate a user with an expired password")) }
+    end
+
+    context 'when impersonation is in progress' do
+      let(:impersonation_in_progress) { true }
+
+      it { is_expected.to eq(_("You are already impersonating another user")) }
+    end
+
+    context 'when user is blocked' do
+      let(:user) { create(:user, :blocked) }
+
+      it { is_expected.to eq(_("You cannot impersonate a blocked user")) }
+    end
+
+    context 'when user is internal' do
+      let(:user) { create(:user, :bot) }
+
+      it { is_expected.to eq(_("You cannot impersonate an internal user")) }
+    end
+
+    context 'when user is inactive' do
+      let(:user) { create(:user, :deactivated) }
+
+      it { is_expected.to eq(_("You cannot impersonate a user who cannot log in")) }
+    end
+  end
+
   describe '#user_badges_in_admin_section' do
     before do
       allow(helper).to receive(:current_user).and_return(user)

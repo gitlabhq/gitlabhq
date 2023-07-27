@@ -465,6 +465,7 @@ export default {
             :work-item-reference="workItem.reference"
             :work-item-create-note-email="workItem.createNoteEmail"
             :is-modal="isModal"
+            :work-item-iid="workItemIid"
             @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
             @toggleWorkItemConfidentiality="toggleConfidentiality"
             @error="updateError = $event"
@@ -539,6 +540,7 @@ export default {
                   :work-item-reference="workItem.reference"
                   :work-item-create-note-email="workItem.createNoteEmail"
                   :is-modal="isModal"
+                  :work-item-iid="workItemIid"
                   @deleteWorkItem="
                     $emit('deleteWorkItem', { workItemType, workItemId: workItem.id })
                   "

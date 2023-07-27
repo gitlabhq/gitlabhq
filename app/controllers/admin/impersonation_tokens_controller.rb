@@ -8,6 +8,8 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
 
   def index
     set_index_vars
+    @can_impersonate = helpers.can_impersonate_user(user, impersonation_in_progress?)
+    @impersonation_error_text = @can_impersonate ? nil : helpers.impersonation_error_text(user, impersonation_in_progress?)
   end
 
   def create

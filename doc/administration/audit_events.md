@@ -252,10 +252,10 @@ The following actions on projects generate project audit events:
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
 - Project was scheduled for deletion due to inactivity.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0.
-- Project deploy token was successfully created, revoked or deleted.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9.
-- Failed attempt to create a project deploy token.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9.
+- Project deploy token was successfully created, revoked, or deleted. Introduced in GitLab 14.9.
+  GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/353451`.
+- Failed attempt to create a project deploy token. Introduced in GitLab 14.9.
+  GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/353451`.
 - When [strategies for feature flags](../operations/feature_flags.md#feature-flag-strategies) are changed.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68408) in GitLab 14.3.
 

@@ -74,6 +74,8 @@ if helper.mr_labels.include?('database') || database.changes.any?
   markdown(DB_MESSAGE)
   markdown(DB_MIGRATION_TESTING_REQUIRED_MESSAGE) if non_geo_migration_created
 
+  db_paths_to_review = database.changed_database_paths
+
   if db_paths_to_review.any?
     markdown(DB_FILES_MESSAGE + helper.markdown_list(db_paths_to_review.to_set))
   else

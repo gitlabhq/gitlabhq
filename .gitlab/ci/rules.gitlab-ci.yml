@@ -1613,6 +1613,7 @@
 # 1) .qa:rules:manual-omnibus-and-follow-up-e2e
 # 2) .qa:rules:follow-up-e2e
 # 3) .qa:rules:trigger-omnibus-env
+# 4) .qa:rules:post-run-e2e-message
 .qa:rules:package-and-test-ee:
   rules:
     - !reference [".qa:rules:package-and-test-common", rules]
@@ -1770,6 +1771,51 @@
     - <<: *if-force-ci
       allow_failure: true
 
+# These are based on `qa:rules:package-and-test-ee` but with when:never in all except for code-patterns in merge requests
+.qa:rules:post-run-e2e-message:
+  rules:
+    # From .qa:rules:package-and-test-common
+    - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *setup-test-env-patterns
+      when: never
+    - <<: *if-ruby3_1-branch
+      when: never
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+      when: never
+    - <<: *if-merge-request-labels-run-all-e2e
+      when: never
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
+      changes: *feature-flag-development-config-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *feature-flag-development-config-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *initializers-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *nodejs-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-qa-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *qa-patterns
+      when: never
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
+      changes: *code-patterns
+      when: never
+    - <<: *if-force-ci
+      when: never
+    # From .qa:rules:package-and-test-schedule
+    - <<: *if-dot-com-gitlab-org-schedule
+      when: never
+    # From .qa:rules:code-merge-request-manual
+    - <<: *if-merge-request
+      changes: *code-patterns
+      allow_failure: true
 
 ###############
 # Rails rules #

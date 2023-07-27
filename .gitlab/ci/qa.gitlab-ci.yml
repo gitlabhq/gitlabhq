@@ -152,7 +152,7 @@ follow-up-e2e:package-and-test-ee:
 e2e:post-run-e2e-message:
   extends:
     - .predictive-job
-    - .qa:rules:determine-e2e-tests
+    - .qa:rules:post-run-e2e-message
   stage: qa
   variables:
     ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env

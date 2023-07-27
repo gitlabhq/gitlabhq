@@ -47,7 +47,8 @@ module Gitlab
         additional_claims = {
           runner_id: runner&.id,
           runner_environment: runner_environment,
-          sha: pipeline.sha
+          sha: pipeline.sha,
+          project_visibility: Gitlab::VisibilityLevel.string_level(project.visibility_level)
         }
 
         if project_config&.source == :repository_source
