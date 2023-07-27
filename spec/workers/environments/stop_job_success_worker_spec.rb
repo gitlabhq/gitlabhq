@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe BuildSuccessWorker, feature_category: :continuous_integration do
+RSpec.describe Environments::StopJobSuccessWorker, feature_category: :continuous_delivery do
   describe '#perform' do
     subject { described_class.new.perform(build.id) }
 
     context 'when build exists' do
       context 'when the build will stop an environment' do
-        let!(:build) { create(:ci_build, :stop_review_app, environment: environment.name, project: environment.project, status: :success) }
+        let!(:build) { create(:ci_build, :stop_review_app, environment: environment.name, project: environment.project, status: :success) } # rubocop:disable Layout/LineLength
         let(:environment) { create(:environment, state: :available) }
 
         it 'stops the environment' do

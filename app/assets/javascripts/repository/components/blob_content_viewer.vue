@@ -21,7 +21,13 @@ import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
 import userInfoQuery from '../queries/user_info.query.graphql';
 import applicationInfoQuery from '../queries/application_info.query.graphql';
-import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE, LEGACY_FILE_TYPES } from '../constants';
+import {
+  DEFAULT_BLOB_INFO,
+  TEXT_FILE_TYPE,
+  LFS_STORAGE,
+  LEGACY_FILE_TYPES,
+  CODEOWNERS_FILE_NAME,
+} from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
@@ -32,6 +38,7 @@ export default {
     BlobButtonGroup,
     BlobContent,
     GlLoadingIcon,
+    CodeownersValidation: () => import('ee_component/blob/components/codeowners_validation.vue'),
     GlButton,
     ForkSuggestion,
     WebIdeLink,
@@ -79,7 +86,7 @@ export default {
         const queryVariables = {
           projectPath: this.projectPath,
           filePath: this.path,
-          ref: this.originalBranch || this.ref,
+          ref: this.currentRef,
           refType: this.refType?.toUpperCase() || null,
           shouldFetchRawText: true,
         };
@@ -170,6 +177,12 @@ export default {
       const nodes = this.project?.repository?.blobs?.nodes || [];
 
       return nodes[0] || {};
+    },
+    currentRef() {
+      return this.originalBranch || this.ref;
+    },
+    isCodeownersFile() {
+      return this.path.includes(CODEOWNERS_FILE_NAME);
     },
     viewer() {
       const { richViewer, simpleViewer } = this.blobInfo;
@@ -401,6 +414,12 @@ export default {
         v-if="forkTarget && showForkSuggestion"
         :fork-path="forkPath"
         @cancel="setForkTarget(null)"
+      />
+      <codeowners-validation
+        v-if="isCodeownersFile"
+        :current-ref="currentRef"
+        :project-path="projectPath"
+        :file-path="path"
       />
       <blob-content
         v-if="!blobViewer"

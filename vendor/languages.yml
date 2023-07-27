@@ -6098,6 +6098,7 @@ XML:
   - wsdl
   extensions:
   - ".xml"
+  - ".arxml"
   - ".adml"
   - ".admx"
   - ".ant"

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Deprecated and will be removed in 17.0.
+# Use `Environments::StopJobSuccessWorker` instead.
 class BuildSuccessWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 

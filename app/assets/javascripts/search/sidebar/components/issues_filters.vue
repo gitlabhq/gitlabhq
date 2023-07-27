@@ -28,7 +28,7 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
-    ...mapState(['urlQuery', 'sidebarDirty', 'useNewNavigation']),
+    ...mapState(['urlQuery', 'sidebarDirty', 'useSidebarNavigation']),
     ...mapGetters(['currentScope']),
     showReset() {
       return this.urlQuery.state || this.urlQuery.confidential || this.urlQuery.labels;
@@ -69,12 +69,12 @@ export default {
 
 <template>
   <form class="issue-filters gl-px-5 gl-pt-0" @submit.prevent="applyQueryWithTracking">
-    <hr v-if="!useNewNavigation" :class="hrClasses" />
+    <hr v-if="!useSidebarNavigation" :class="hrClasses" />
     <status-filter v-if="showStatusFilter" class="gl-mb-5" />
-    <hr v-if="!useNewNavigation" :class="hrClasses" />
+    <hr v-if="!useSidebarNavigation" :class="hrClasses" />
     <confidentiality-filter v-if="showConfidentialityFilter" class="gl-mb-5" />
     <hr
-      v-if="!useNewNavigation && showConfidentialityFilter && showLabelFilter"
+      v-if="!useSidebarNavigation && showConfidentialityFilter && showLabelFilter"
       :class="hrClasses"
     />
     <label-filter v-if="showLabelFilter" />

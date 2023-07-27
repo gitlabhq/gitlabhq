@@ -1,7 +1,8 @@
 import { GlButton } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mount, createWrapper as makeWrapper } from '@vue/test-utils';
 import { nextTick } from 'vue';
 
+import { BV_HIDE_TOOLTIP, BV_SHOW_TOOLTIP } from '~/lib/utils/constants';
 import initCopyToClipboard, {
   CLIPBOARD_SUCCESS_EVENT,
   CLIPBOARD_ERROR_EVENT,
@@ -31,7 +32,7 @@ describe('clipboard button', () => {
       title,
     });
 
-    wrapper.vm.$root.$emit = jest.fn();
+    const rootWrapper = makeWrapper(wrapper.vm.$root);
 
     const button = findButton();
 
@@ -42,7 +43,7 @@ describe('clipboard button', () => {
 
     await button.trigger(event);
 
-    expect(wrapper.vm.$root.$emit).toHaveBeenCalledWith('bv::show::tooltip', 'clipboard-button-1');
+    expect(rootWrapper.emitted(BV_SHOW_TOOLTIP)[0]).toContain('clipboard-button-1');
 
     expect(button.attributes()).toMatchObject({
       title: message,
@@ -56,7 +57,7 @@ describe('clipboard button', () => {
       title,
       'aria-label': title,
     });
-    expect(wrapper.vm.$root.$emit).toHaveBeenCalledWith('bv::hide::tooltip', 'clipboard-button-1');
+    expect(rootWrapper.emitted(BV_HIDE_TOOLTIP)[0]).toContain('clipboard-button-1');
   };
 
   describe('without gfm', () => {

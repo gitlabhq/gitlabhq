@@ -15,6 +15,7 @@ export const DATETIME_RANGE_TYPES = {
 export const BV_SHOW_MODAL = 'bv::show::modal';
 export const BV_HIDE_MODAL = 'bv::hide::modal';
 export const BV_HIDE_TOOLTIP = 'bv::hide::tooltip';
+export const BV_SHOW_TOOLTIP = 'bv::show::tooltip';
 export const BV_DROPDOWN_SHOW = 'bv::dropdown::show';
 export const BV_DROPDOWN_HIDE = 'bv::dropdown::hide';
 

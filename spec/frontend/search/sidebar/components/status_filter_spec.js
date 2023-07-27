@@ -23,7 +23,7 @@ describe('StatusFilter', () => {
 
   describe('old sidebar', () => {
     beforeEach(() => {
-      createComponent({ useNewNavigation: false });
+      createComponent({ useSidebarNavigation: false });
     });
 
     it('renders the component', () => {
@@ -33,7 +33,7 @@ describe('StatusFilter', () => {
 
   describe('new sidebar', () => {
     beforeEach(() => {
-      createComponent({ useNewNavigation: true });
+      createComponent({ useSidebarNavigation: true });
     });
 
     it('renders the component', () => {

@@ -63,6 +63,8 @@ The keys provided have to reside in the same primary, secondary and backup regio
 
 For instructions on how to create and manage KMS keys, visit [Managing keys](https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html) in the AWS KMS documentation.
 
+GitLab Dedicated supports only AWS managed KMS keys with KMS [as key material](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin).
+
 To create a KMS key using the AWS Console:
 
 1. In `Configure key`, select:

@@ -302,6 +302,19 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
     end
   end
 
+  describe "#remove_item" do
+    let(:item) { Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: {}, item_id: :foo1) }
+
+    before do
+      menu.add_item(item)
+    end
+
+    it 'removes the item from the menu' do
+      menu.remove_item(item)
+      expect(menu.has_items?).to be false
+    end
+  end
+
   describe '#container_html_options' do
     before do
       allow(menu).to receive(:title).and_return('Foo Menu')

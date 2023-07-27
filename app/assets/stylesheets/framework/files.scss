@@ -263,6 +263,11 @@ span.idiff {
   }
 }
 
+.file-validation {
+  // we use $gray-light variable instead of utility class, because it's value is dynamic per color theme
+  background-color: $gray-light;
+}
+
 .blob-content-holder .file-actions {
   @include media-breakpoint-down(sm) {
     .btn {

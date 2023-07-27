@@ -10,7 +10,7 @@ export default {
     RadioFilter,
   },
   computed: {
-    ...mapState(['useNewNavigation']),
+    ...mapState(['useSidebarNavigation']),
   },
   statusFilterData,
   HR_DEFAULT_CLASSES,

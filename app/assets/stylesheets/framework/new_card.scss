@@ -95,6 +95,10 @@
   // Table adjustments
   @mixin new-card-table-adjustments {
     tbody > tr {
+      &:first-of-type > td[data-label] {
+        @include gl-border-t-0;
+      }
+
       > td[data-label] {
         @include gl-border-left-0;
         @include gl-border-l-none;
@@ -119,8 +123,15 @@
 
   table.b-table-stacked-sm,
   table.b-table-stacked-md {
-    @include gl-mt-n1;
-    @include gl-mb-n2;
+    @include gl-mb-0;
+
+    tr:first-of-type th {
+      @include gl-border-t-0;
+    }
+
+    tr:last-of-type td {
+      @include gl-border-b-0;
+    }
   }
 
   table.gl-table.b-table.b-table-stacked-sm {

@@ -41,11 +41,6 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{js,vue,graphql}'
       run: yarn run prettier --check {files}
-    rubocop:
-      tags: backend style
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '*.{rb,rake}'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
     sidekiq-queues:
       tags: backend
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -115,6 +110,11 @@ pre-push:
 pre-commit:
   parallel: true
   commands:
+    rubocop:
+      tags: backend style
+      files: git diff --name-only --diff-filter=d --staged
+      glob: '*.{rb,rake}'
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
     secrets-detection:
       tags: secrets
       files: git diff --name-only --diff-filter=d --staged

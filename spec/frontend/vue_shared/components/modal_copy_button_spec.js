@@ -27,16 +27,19 @@ describe('modal copy button', () => {
       wrapper.trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted().success).not.toBeEmpty();
+      expect(wrapper.emitted('error')).toBeUndefined();
+      expect(wrapper.emitted('success')).toHaveLength(1);
       expect(document.execCommand).toHaveBeenCalledWith('copy');
       expect(root.emitted(BV_HIDE_TOOLTIP)).toEqual([['test-id']]);
     });
+
     it("should propagate the clipboard error event if execCommand doesn't work", async () => {
       document.execCommand = jest.fn(() => false);
       wrapper.trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted().error).not.toBeEmpty();
+      expect(wrapper.emitted('success')).toBeUndefined();
+      expect(wrapper.emitted('error')).toHaveLength(1);
       expect(document.execCommand).toHaveBeenCalledWith('copy');
     });
   });

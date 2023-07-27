@@ -27,7 +27,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['query', 'useNewNavigation']),
+    ...mapState(['query', 'useSidebarNavigation']),
     ...mapGetters(['queryLanguageFilters']),
     dataFilters() {
       return Object.values(this.filtersData?.filters || []);

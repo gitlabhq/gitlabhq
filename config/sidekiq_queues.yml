@@ -227,6 +227,8 @@
   - 1
 - - environments_canary_ingress_update
   - 1
+- - environments_stop_job_success
+  - 1
 - - epics
   - 2
 - - epics_new_epic_issue

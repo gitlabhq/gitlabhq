@@ -2712,6 +2712,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: environments_stop_job_success
+  :worker_name: Environments::StopJobSuccessWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: error_tracking_issue_link
   :worker_name: ErrorTrackingIssueLinkWorker
   :feature_category: :error_tracking

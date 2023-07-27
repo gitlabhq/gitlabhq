@@ -259,6 +259,10 @@ Use **cannot** instead of **can not**.
 
 See also [contractions](index.md#contractions).
 
+## Chat, GitLab Duo Chat
+
+Use **Chat** with a capital `c` for **Chat** or **GitLab Duo Chat**.
+
 ## checkbox
 
 Use one word for **checkbox**. Do not use **check box**.
@@ -620,6 +624,10 @@ Use title case for **Geo**.
 ## GitLab
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
+
+## GitLab Duo
+
+Do not use **Duo** by itself. Always use **GitLab Duo**.
 
 ## GitLab Flavored Markdown
 

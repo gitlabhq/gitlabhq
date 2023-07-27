@@ -1,78 +1,177 @@
 ---
 stage: Deploy
 group: Environments
-info: An example of how to structure a repository for GitOps deployments
+info: A tutorial for structuring a repository for GitOps deployments
 ---
 
-# Example GitOps repository structure **(FREE)**
+# Tutorial: Structure your repository for GitOps deployments **(FREE)**
 
-This page describes an example structure for a project that builds and deploys an application
-to a Kubernetes cluster with [GitOps](https://about.gitlab.com/topics/gitops) and the
-[GitLab agent for Kubernetes](../../agent/gitops.md).
+In this tutorial, you'll create a GitLab project that builds and deploys an application
+to a Kubernetes cluster using Flux. You'll set up a sample manifest project, configure it to
+push manifests to a deployment branch, and configure Flux to sync the deployment branch.
 
-You can find an example project that uses this structure
-[in this GitLab repository](https://gitlab.com/tigerwnz/minimal-gitops-app). You can use the example project
-as a starting point to create your own deployment project.
+This tutorial deploys an application from a public project. If you want to add a non-public project, you should create a [project deploy token](../../../project/deploy_tokens/index.md).
 
-## Deployment workflow
+To set up a repository for GitOps deployments:
 
-The default branch is the single source of truth for your application and the
-Kubernetes manifests that deploy it. To be reflected in a Kubernetes cluster,
-a code or configuration change must exist in the default branch.
+1. [Create the Kubernetes manifest repository](#create-the-kubernetes-manifest-repository)
+1. [Create a deployment branch](#create-a-deployment-branch)
+1. [Configure GitLab CI/CD to push to your branch](#configure-gitlab-cicd-to-push-to-your-branch)
+1. [Configure Flux to sync your manifests](#configure-flux-to-sync-your-manifests)
+1. [Verify your configuration](#verify-your-configuration)
 
-A GitLab agent for Kubernetes is installed in every Kubernetes cluster. The agent
-is configured to sync manifests from a corresponding branch in the repository.
-These branches represent the state of each cluster, and contain only commits that
-exist in the default branch.
+Prerequisites:
 
-Changes are deployed by merging the default branch into the branch of a cluster.
-The agent that watches the branch picks up the change and syncs it to the cluster.
+- You have a Flux repository connected to a Kubernetes cluster.
+  If you're starting from scratch, see [Set up Flux for GitOps](flux_tutorial.md).
 
-For the actual deployment, the example project uses the GitLab agent for Kubernetes,
-but you can also use other GitOps tools.
+## Create the Kubernetes manifest repository
 
-### Review apps
+First, create a repository for your Kubernetes manifests:
 
-Ephemeral environments such as [review apps](../../../../ci/review_apps/index.md)
-are deployed differently. Their configuration does not exist on the default branch,
-and the changes are not meant to be deployed to a permanent environment. Review app
-manifests are generated and deployed in a merge request feature branch, which is removed
-when the MR is merged.
+1. In GitLab, create a new repository called `web-app-manifests`.
+1. In `web-app-manifests`, add a file named `src/nginx-deployment.yaml` with the following contents:
 
-## Example deployment
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: nginx
+   spec:
+     replicas: 1
+     template:
+       spec:
+         containers:
+         - name: nginx
+           image: nginx:1.14.2
+           ports:
+           - containerPort: 80
+   ```
 
-The example project deploys to two permanent environments, staging and production,
-which each have a dedicated Kubernetes cluster. A third cluster is used for ephemeral
-review apps.
+1. In `web-app-manifests`, add a file named `src/kustomization.yaml` with the following contents:
 
-Each cluster has a corresponding branch that represents the current state of the cluster:
-`_gitlab/agents/staging`, `_gitlab/agents/production` and `_gitlab/agents/review`. Each branch is
-[protected](../../../../user/project/protected_branches.md) and
-a [project access token](../../../../user/project/settings/project_access_tokens.md)
-is created for each branch with a configuration that allows only the corresponding token to push to the branch.
-This ensures that environment branches are updated only through the configured process.
+   ```yaml
+   apiVersion: kustomize.config.k8s.io/v1beta1
+   kind: Kustomization
+   resources:
+     - nginx-deployment.yaml
+   commonLabels:
+     app: flux-branches-tutorial
+   ```
 
-Deployment branches are updated by CI/CD jobs. The access token that allows pushing to each
-branch is configured as a [CI/CD variable](../../../../ci/variables/index.md). These variables
-are protected, and only available to pipelines running on a protected branch.
-The CI/CD job merges the default branch `main` into the deployment branch, and pushes
-the deployment branch back to the repository using the provided token. To preserve the
-commit history between both branches, the CI/CD job uses a fast-forward merge.
+## Create a deployment branch
 
-Each cluster has an agent for Kubernetes, and each agent is configured to
-sync manifests from the branch corresponding to its cluster.
-In your own project, you can different GitOps tool like Flux, or use the same configuration to deploy
-to virtual machines with GitLab CI/CD.
+Next, create a branch to reflect the current state of your cluster.
 
-### Application changes
+In this workflow, the default branch is the single source of truth for your application.
+To be reflected in a Kubernetes cluster, a code or configuration change must exist in the default branch.
+In a later step, you'll configure CI/CD to merge changes from the default branch into the deployment branch.
 
-The example project follows this process to deploy an application change:
+To create a deployment branch:
 
-1. A new feature branch is created with the desired changes. The pipeline builds an image,
-   runs the test suite, and deploy the changes to a review app in the `review` cluster.
-1. The feature branch is merged to `main` and the review app is removed.
-1. Manifests are updated on `main` (either directly or via merge request) to point to an updated
-   version of the deployed image. The pipeline automatically merges `main` into the `_gitlab/agents/staging`
-   branch, which updates the `staging` cluster.
-1. The `production` job is triggered manually, and merges `main` into the `_gitlab/agents/production` branch,
-   deploying to the `production` cluster.
+1. In `web-app-manifests`, create a branch named `_gitlab/deploy/example` from the default branch. The branch name in this example is chosen to
+   differentiate the deployment branch from feature branches, but this is not required. You can name the deployment branch whatever you like.
+1. Create a [project](../../../../user/project/settings/project_access_tokens.md),
+   [group](../../../../user/group/settings/group_access_tokens.md) or
+   [personal access token](../../../../user/profile/personal_access_tokens.md) with the `write_repository` scope.
+1. Create a [CI/CD variable](../../../../ci/variables/index.md) with a token value named `DEPLOYMENT_TOKEN`.
+   Remember to [mask](../../../../ci/variables/index.md#mask-a-cicd-variable) the value so that it won't show in
+   job logs.
+1. Add a rule to [protect](../../../../user/project/protected_branches.md)
+   your deployment branch with the following values:
+
+   - Allowed to merge: No one.
+   - Allowed to push and merge: Select the token you created in the previous step, or your user if you created
+     a personal access token.
+   - Allowed to force push: Turn off the toggle.
+   - Require approval from code owners: Turn off the toggle.
+
+This configuration ensures that only the corresponding token can push to the branch.
+
+You've successfully created a repository with a protected deployment branch!
+
+## Configure GitLab CI/CD to push to your branch
+
+Next, you'll configure CI/CD to merge changes from the default branch to your deployment branch.
+
+In the root of `web-app-manifests`, create and push a [`.gitlab-ci.yml`](../../../../ci/yaml/gitlab_ci_yaml.md) file with the following contents:
+
+   ```yaml
+   deploy:
+     stage: deploy
+     environment: production
+     variables:
+       DEPLOYMENT_BRANCH: _gitlab/deploy/example
+     script:
+       - |
+         git config user.name "Deploy Example Bot"
+         git config user.email "test@example.com"
+         git fetch origin $DEPLOYMENT_BRANCH
+         git checkout $DEPLOYMENT_BRANCH
+         git merge $CI_COMMIT_SHA --ff-only
+         git push https://deploy:$DEPLOYMENT_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git HEAD:$DEPLOYMENT_BRANCH
+     resource_group: $CI_ENVIRONMENT_SLUG
+   ```
+
+This creates a CI/CD pipeline with a single `deploy` job that:
+
+1. Checks out your deployment branch.
+1. Merges new changes from the default branch into the deployment branch.
+1. Pushes the changes to your repository with the configured token.
+
+## Configure Flux to sync your manifests
+
+Next, configure your Flux repository to sync the deployment branch in by the `web-app-manifests` repository.
+
+To configure, create a [`GitRepository`](https://fluxcd.io/flux/components/source/gitrepositories/) resource:
+
+1. In your local clone of your Flux repository, add a file named `clusters/my-cluster/web-app-manifests-source.yaml`
+   with the following contents:
+
+   ```yaml
+   apiVersion: source.toolkit.fluxcd.io/v1
+   kind: GitRepository
+   metadata:
+     name: web-app-manifests
+     namespace: flux-system
+   spec:
+     interval: 5m0s
+     url: https://gitlab.com/gitlab-org/configure/examples/flux/web-app-manifests-branches
+     ref:
+       branch: _gitlab/deploy/example
+   ```
+
+   You will need to substitute the `url` with the URL of your `web-app-manifests` project.
+
+1. In your local clone of your Flux repository, add a file named `clusters/my-cluster/web-app-manifests-kustomization.yaml`
+   with the following contents:
+
+   ```yaml
+   apiVersion: kustomize.toolkit.fluxcd.io/v1
+   kind: Kustomization
+   metadata:
+     name: nginx-source-kustomization
+     namespace: flux-system
+   spec:
+     interval: 1m0s
+     path: ./src
+     prune: true
+     sourceRef:
+       kind: GitRepository
+       name: web-app-manifests
+     targetNamespace: default
+   ```
+
+   This file adds a [Kustomization](https://fluxcd.io/flux/components/kustomize/kustomization/) resource that tells Flux to sync the manifests in the artifact fetched from the registry.
+
+1. Commit the new files and push.
+
+## Verify your configuration
+
+After the pipeline completes, you should see a newly created `nginx` pod in your cluster.
+
+If you want to see the deployment sync again, try updating the number of replicas in the
+`src/nginx-deployment.yaml` file and push to the default branch. If all is working well, the change
+will sync to the cluster when the pipeline has finished.
+
+Congratulations! You successfully configured a project to deploy an application and synchronize your changes!

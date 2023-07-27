@@ -8,7 +8,7 @@ export default {
   },
   data() {
     return {
-      url: this.blob.rawPath,
+      url: this.blob.externalStorageUrl || this.blob.rawPath,
       alt: this.blob.name,
     };
   },

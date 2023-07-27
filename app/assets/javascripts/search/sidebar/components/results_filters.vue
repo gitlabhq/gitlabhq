@@ -16,7 +16,7 @@ export default {
     ConfidentialityFilter,
   },
   computed: {
-    ...mapState(['urlQuery', 'sidebarDirty', 'useNewNavigation']),
+    ...mapState(['urlQuery', 'sidebarDirty', 'useSidebarNavigation']),
     ...mapGetters(['currentScope']),
     showReset() {
       return this.urlQuery.state || this.urlQuery.confidential;
@@ -39,7 +39,7 @@ export default {
 
 <template>
   <form class="gl-pt-5 gl-md-pt-0" @submit.prevent="applyQuery">
-    <hr v-if="!useNewNavigation" :class="hrClasses" />
+    <hr v-if="!useSidebarNavigation" :class="hrClasses" />
     <status-filter v-if="showStatusFilter" />
     <confidentiality-filter v-if="showConfidentialityFilter" />
     <div class="gl-display-flex gl-align-items-center gl-mt-4 gl-px-5">

@@ -3163,6 +3163,9 @@ msgstr ""
 msgid "AdminArea|Manage applications for your instance that can use GitLab as an %{docs_link_start}OAuth provider%{docs_link_end}."
 msgstr ""
 
+msgid "AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider, start by creating a new one above."
+msgstr ""
+
 msgid "AdminArea|Minimal access"
 msgstr ""
 
@@ -11351,6 +11354,47 @@ msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
 msgstr ""
 
 msgid "CodeSuggestions|Subject to the %{terms_link_start}Testing Terms of Use%{link_end}. Code Suggestions currently uses third-party AI services unless those are %{third_party_features_link_start}disabled%{link_end}."
+msgstr ""
+
+msgid "CodeownersValidation|An error occurred while loading the validation errors. Please try again later."
+msgstr ""
+
+msgid "CodeownersValidation|Contains %d syntax error."
+msgid_plural "CodeownersValidation|Contains %d syntax errors."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "CodeownersValidation|Entries with spaces"
+msgstr ""
+
+msgid "CodeownersValidation|Hide errors"
+msgstr ""
+
+msgid "CodeownersValidation|How are errors handled?"
+msgstr ""
+
+msgid "CodeownersValidation|Inaccessible owners"
+msgstr ""
+
+msgid "CodeownersValidation|Less than 1 required approvals"
+msgstr ""
+
+msgid "CodeownersValidation|Line"
+msgstr ""
+
+msgid "CodeownersValidation|Missing section name"
+msgstr ""
+
+msgid "CodeownersValidation|Show errors"
+msgstr ""
+
+msgid "CodeownersValidation|Syntax is valid."
+msgstr ""
+
+msgid "CodeownersValidation|Unparsable sections"
+msgstr ""
+
+msgid "CodeownersValidation|Zero owners"
 msgstr ""
 
 msgid "Cohorts|Inactive users"
