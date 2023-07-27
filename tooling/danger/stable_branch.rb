@@ -74,7 +74,7 @@ module Tooling
         if status.nil? || FAILING_PACKAGE_AND_TEST_STATUSES.include?(status) # rubocop:disable Style/GuardClause
           fail NEEDS_PACKAGE_AND_TEST_MESSAGE
         else
-          warn WARN_PACKAGE_AND_TEST_MESSAGE unless status == 'success'
+          warn WARN_PACKAGE_AND_TEST_MESSAGE
         end
       end
       # rubocop:enable Style/SignalException
@@ -110,7 +110,7 @@ module Tooling
         gitlab
           .api
           .pipeline_bridges(helper.mr_target_project_id, mr_head_pipeline_id)
-          &.find { |bridge| bridge['name'].include?('package-and-test') }
+          &.find { |bridge| bridge['name'].include?('package-and-test-ee') }
       end
 
       def stable_target_branch
