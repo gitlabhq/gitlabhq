@@ -47,6 +47,17 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      it 'authenticates using a jwt token with an IAT from 10 seconds in the future' do
+        headers =
+          travel_to(Time.now + 10.seconds) do
+            gitlab_shell_internal_api_request_header
+          end
+
+        perform_request(headers: headers)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
       it 'returns 401 when jwt token is expired' do
         headers = gitlab_shell_internal_api_request_header
 

@@ -4,7 +4,7 @@ require 'jwt'
 
 module JSONWebToken
   class HMACToken < Token
-    IAT_LEEWAY = 60
+    LEEWAY = 60
     JWT_ALGORITHM = 'HS256'
 
     def initialize(secret)
@@ -13,7 +13,7 @@ module JSONWebToken
       @secret = secret
     end
 
-    def self.decode(token, secret, leeway: IAT_LEEWAY, verify_iat: true)
+    def self.decode(token, secret, leeway: LEEWAY, verify_iat: false)
       JWT.decode(token, secret, true, leeway: leeway, verify_iat: verify_iat, algorithm: JWT_ALGORITHM)
     end
 
