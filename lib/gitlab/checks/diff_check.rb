@@ -46,7 +46,7 @@ module Gitlab
         init_commit = objects.last
 
         diff_tree = Gitlab::Git::DiffTree.from_commit(init_commit)
-        objects.prepend(diff_tree) if diff_tree
+        return [diff_tree] + objects if diff_tree
 
         objects
       end

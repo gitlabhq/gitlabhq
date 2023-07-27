@@ -1,7 +1,12 @@
 import * as Sentry from '@sentry/browser';
 import { pickBy } from 'lodash';
 import { parseUrlPathname } from '~/lib/utils/url_utility';
-import { NEEDS_PROPERTY, SUPPORTED_FILTER_PARAMETERS, validPipelineTabNames } from './constants';
+import {
+  NEEDS_PROPERTY,
+  SUPPORTED_FILTER_PARAMETERS,
+  validPipelineTabNames,
+  pipelineTabName,
+} from './constants';
 /*
     The following functions are the main engine in transforming the data as
     received from the endpoint into the format the d3 graph expects.
@@ -144,9 +149,8 @@ export const getPipelineDefaultTab = (url) => {
   const regexp = /\w*$/;
   const [tabName] = strippedUrl.match(regexp);
 
-  if (tabName && validPipelineTabNames.includes(tabName)) {
-    return tabName;
-  }
+  if (tabName && validPipelineTabNames.includes(tabName)) return tabName;
+  if (tabName === '') return pipelineTabName;
 
   return null;
 };

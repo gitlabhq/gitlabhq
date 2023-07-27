@@ -115,6 +115,23 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       expect(project.reload.delete_error).to be_present
       expect(project.delete_error).to match(error_message)
     end
+
+    context 'when parent group visibility was made more restrictive while project was marked "pending deletion"' do
+      let!(:group) { create(:group, :public) }
+      let!(:project) { create(:project, :repository, :public, namespace: group) }
+
+      it 'sets the project visibility level to that of the parent group' do
+        group.add_owner(user)
+        project.group.update_attribute(:visibility_level, Gitlab::VisibilityLevel::INTERNAL)
+
+        expect(project.reload.visibility_level).to be(Gitlab::VisibilityLevel::PUBLIC)
+        expect(project.group.visibility_level).to be(Gitlab::VisibilityLevel::INTERNAL)
+
+        destroy_project(project, user, {})
+
+        expect(project.reload.visibility_level).to be(Gitlab::VisibilityLevel::INTERNAL)
+      end
+    end
   end
 
   context "deleting a project with merge requests" do

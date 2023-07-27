@@ -52,6 +52,8 @@ export default {
       return tabName === this.activeTab;
     },
     navigateTo(tabName) {
+      if (this.isActive(tabName)) return;
+
       this.$router.push({ name: tabName });
     },
   },

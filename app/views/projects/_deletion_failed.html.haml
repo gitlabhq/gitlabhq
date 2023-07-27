@@ -5,5 +5,7 @@
   dismissible: false,
   alert_options: { class: 'project-deletion-failed-message' }) do |c|
   - c.with_body do
-    This project was scheduled for deletion, but failed with the following message:
+    = _('This project was scheduled for deletion, but failed with the following message:')
     = project.delete_error
+    %br
+    = _('The project visibility may have been made more restrictive if the parent group\'s visibility changed while the deletion was scheduled.')

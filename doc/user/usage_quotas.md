@@ -161,7 +161,7 @@ example, no additional storage has yet been purchased.
 To remove the read-only state from the Red and Green projects, 50 GB additional storage is purchased.
 
 Assuming the Green and Red projects' repositories and LFS grow past the 10 GB quota, the purchased storage
-available decreases. All projects remain read-only because 40 GB purchased storage is available:
+available decreases. All projects no longer have the read-only status because 40 GB purchased storage is available:
 50 GB (purchased storage) - 10 GB (total excess storage used).
 
 | Repository | Storage used | Excess storage | Quota   | Status            |

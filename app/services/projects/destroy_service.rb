@@ -114,7 +114,11 @@ module Projects
       # It's possible that the project was destroyed, but some after_commit
       # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
       # which cannot be altered.
-      project.update(delete_error: message, pending_delete: false) unless project.destroyed?
+      unless project.destroyed?
+        # Restrict project visibility if the parent group visibility was made more restrictive while the project was scheduled for deletion.
+        visibility_level = project.visibility_level_allowed_by_group? ? project.visibility_level : project.group.visibility_level
+        project.update(delete_error: message, pending_delete: false, visibility_level: visibility_level)
+      end
 
       log_error("Deletion failed on #{project.full_path} with the following message: #{message}")
     end

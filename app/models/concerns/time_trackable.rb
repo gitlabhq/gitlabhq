@@ -17,8 +17,8 @@ module TimeTrackable
 
     attribute :time_estimate, default: 0
 
-    validates :time_estimate, numericality: { message: 'has an invalid format' }, allow_nil: false
-    validate  :check_negative_time_spent
+    validate :check_time_estimate
+    validate :check_negative_time_spent
 
     has_many :timelogs, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
     after_initialize :set_time_estimate_default_value
@@ -105,5 +105,12 @@ module TimeTrackable
   # doesn't give a false error
   def original_total_time_spent
     @original_total_time_spent ||= total_time_spent
+  end
+
+  def check_time_estimate
+    return unless new_record? || time_estimate_changed?
+    return if time_estimate.is_a?(Numeric) && time_estimate >= 0
+
+    errors.add(:time_estimate, _('must have a valid format and be greater than or equal to zero.'))
   end
 end

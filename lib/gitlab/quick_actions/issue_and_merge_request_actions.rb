@@ -159,12 +159,10 @@ module Gitlab
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end
         parse_params do |raw_duration|
-          Gitlab::TimeTrackingFormatter.parse(raw_duration)
+          Gitlab::TimeTrackingFormatter.parse(raw_duration, keep_zero: true)
         end
         command :estimate, :estimate_time do |time_estimate|
-          if time_estimate
-            @updates[:time_estimate] = time_estimate
-          end
+          @updates[:time_estimate] = time_estimate
         end
 
         desc { _('Add or subtract spent time') }

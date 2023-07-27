@@ -12,10 +12,11 @@ General development guidelines and tips for the [Import/Export feature](../user/
 
 ## Security
 
-The Import/Export feature is constantly updated (adding new things to export), however
-the code hasn't been refactored in a long time. We should perform a code audit (see
-[confidential issue](../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab/-/issues/20720`).
+The Import/Export feature is constantly updated (adding new things to export). However,
+the code hasn't been refactored in a long time. We should perform a code audit
 to make sure its dynamic nature does not increase the number of security concerns.
+GitLab team members can view more information in this confidential issue:
+`https://gitlab.com/gitlab-org/gitlab/-/issues/20720`.
 
 ### Security in the code
 

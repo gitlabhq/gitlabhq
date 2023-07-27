@@ -8,6 +8,7 @@
 #
 ---
 - advisory_database
+- ai_abstraction_layer
 - api
 - api_security
 - application_instrumentation
@@ -67,6 +68,7 @@
 - gitaly
 - gitlab_cli
 - gitlab_docs
+- gitlab_duo_chat
 - global_search
 - groups_and_projects
 - helm_chart_registry
@@ -96,7 +98,8 @@
 - pages
 - pipeline_composition
 - portfolio_management
-- product_analytics
+- product_analytics_data_management
+- product_analytics_visualization
 - pubsec_services
 - purchase
 - quality_management

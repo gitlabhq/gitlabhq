@@ -3,7 +3,7 @@
 require "spec_helper"
 require_migration!
 
-RSpec.describe BackfillProductAnalyticsDataCollectorHost, feature_category: :product_analytics do
+RSpec.describe BackfillProductAnalyticsDataCollectorHost, feature_category: :product_analytics_data_management do
   let!(:application_settings) { table(:application_settings) }
 
   describe '#up' do

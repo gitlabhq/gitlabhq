@@ -1454,9 +1454,21 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'failed command' do
+    context 'when provided an invalid estimate' do
       let(:content) { '/estimate abc' }
       let(:issuable) { issue }
+
+      it 'populates {} if content contains an unsupported command' do
+        _, updates, _ = service.execute(content, issuable)
+
+        expect(updates[:time_estimate]).to be_nil
+      end
+
+      it "returns empty message" do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to be_empty
+      end
     end
 
     it_behaves_like 'spend command' do

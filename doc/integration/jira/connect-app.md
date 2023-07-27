@@ -32,7 +32,7 @@ To install the GitLab for Jira Cloud app:
 1. In Jira, on the top bar, select **Apps > Explore more apps** and search for `GitLab for Jira Cloud`.
 1. Select **GitLab for Jira Cloud**, then select **Get it now**.
 
-   Alternatively, [get the app directly from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
+Alternatively, [get the app directly from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
 
 You can now [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-jira-cloud-app).
 
@@ -75,6 +75,7 @@ The following data is synced:
 
 Most updates to the app are automatic. For more information, see the
 [Atlassian documentation](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/).
+
 If the app requires additional permissions, [you must manually approve the update in Jira](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/#changes-that-require-manual-customer-approval).
 
 ## Set up OAuth authentication for self-managed instances **(FREE SELF)**
@@ -382,6 +383,6 @@ Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remot
 A `403` status code is returned if:
 
 - The user information cannot be fetched from Jira.
-- The authenticated Jira user does not have administrator access.
+- The authenticated Jira user does not have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access.
 
 To resolve this issue, ensure the authenticated user is a Jira site administrator and try again.

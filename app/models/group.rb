@@ -397,7 +397,7 @@ class Group < Namespace
   end
 
   def visibility_level_allowed_by_projects?(level = self.visibility_level)
-    !projects.where('visibility_level > ?', level).exists?
+    !projects.without_deleted.where('visibility_level > ?', level).exists?
   end
 
   def visibility_level_allowed_by_sub_groups?(level = self.visibility_level)

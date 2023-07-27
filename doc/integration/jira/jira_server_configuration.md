@@ -17,7 +17,7 @@ To create Jira credentials, here's what we're going to do:
 
 Prerequisite:
 
-- You must have administrator access to the Jira instance.
+- You must have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access to the Jira instance.
 
 ## Create a Jira user
 
