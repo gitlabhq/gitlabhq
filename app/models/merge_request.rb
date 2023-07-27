@@ -1537,20 +1537,29 @@ class MergeRequest < ApplicationRecord
   end
 
   def schedule_cleanup_refs(only: :all)
-    if Feature.enabled?(:merge_request_cleanup_ref_worker_async, target_project)
+    if Feature.enabled?(:merge_request_delete_gitaly_refs_in_batches, target_project)
+      async_cleanup_refs(only: only)
+    elsif Feature.enabled?(:merge_request_cleanup_ref_worker_async, target_project)
       MergeRequests::CleanupRefWorker.perform_async(id, only.to_s)
     else
       cleanup_refs(only: only)
     end
   end
 
-  def cleanup_refs(only: :all)
+  def refs_to_cleanup(only: :all)
     target_refs = []
     target_refs << ref_path       if %i[all head].include?(only)
     target_refs << merge_ref_path if %i[all merge].include?(only)
     target_refs << train_ref_path if %i[all train].include?(only)
+    target_refs
+  end
 
-    project.repository.delete_refs(*target_refs)
+  def cleanup_refs(only: :all)
+    project.repository.delete_refs(*refs_to_cleanup(only: only))
+  end
+
+  def async_cleanup_refs(only: :all)
+    project.repository.async_delete_refs(*refs_to_cleanup(only: only))
   end
 
   def self.merge_request_ref?(ref)

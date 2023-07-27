@@ -7,7 +7,8 @@ Gitlab::Database::Partitioning.register_models(
     LooseForeignKeys::DeletedRecord,
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     Ci::RunnerManagerBuild,
-    Ci::JobAnnotation
+    Ci::JobAnnotation,
+    BatchedGitRefUpdates::Deletion
   ])
 
 if Gitlab.ee?

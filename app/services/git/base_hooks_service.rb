@@ -83,7 +83,6 @@ module Git
 
     def enqueue_notify_kas
       return unless Gitlab::Kas.enabled?
-      return unless Feature.enabled?(:notify_kas_on_git_push, project)
 
       Clusters::Agents::NotifyGitPushWorker.perform_async(project.id)
     end

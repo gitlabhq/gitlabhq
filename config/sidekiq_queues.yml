@@ -77,6 +77,8 @@
   - 1
 - - batched_background_migrations
   - 1
+- - batched_git_ref_updates_project_cleanup
+  - 1
 - - bitbucket_server_import_advance_stage
   - 1
 - - bitbucket_server_import_import_lfs_object

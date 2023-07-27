@@ -219,6 +219,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:batched_git_ref_updates_cleanup_scheduler
+  :worker_name: BatchedGitRefUpdates::CleanupSchedulerWorker
+  :feature_category: :gitaly
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:bulk_imports_stuck_import
   :worker_name: BulkImports::StuckImportWorker
   :feature_category: :importers
@@ -2306,6 +2315,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: batched_git_ref_updates_project_cleanup
+  :worker_name: BatchedGitRefUpdates::ProjectCleanupWorker
+  :feature_category: :gitaly
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: bitbucket_server_import_advance_stage
   :worker_name: Gitlab::BitbucketServerImport::AdvanceStageWorker

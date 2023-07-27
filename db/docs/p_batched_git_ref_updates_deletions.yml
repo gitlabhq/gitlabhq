@@ -1,0 +1,11 @@
+---
+table_name: p_batched_git_ref_updates_deletions
+classes:
+- BatchedGitRefUpdates::Deletion
+feature_categories:
+- gitaly
+description: Acts as a queue for refs that need to be deleted in Gitaly. This allows
+  us to batch deletes rather than sending them one at a time.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125333
+milestone: '16.3'
+gitlab_schema: gitlab_main

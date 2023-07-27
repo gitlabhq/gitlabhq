@@ -18,6 +18,7 @@ RSpec.describe MergeRequests::CleanupRefsService, feature_category: :code_review
 
   describe '#execute' do
     before do
+      stub_feature_flags(merge_request_delete_gitaly_refs_in_batches: false)
       stub_feature_flags(merge_request_cleanup_ref_worker_async: false)
 
       # Need to re-enable this as it's being stubbed in spec_helper for

@@ -750,6 +750,16 @@ module Gitlab
         raise DeleteBranchError, e
       end
 
+      def async_delete_refs(*refs)
+        raise "async_delete_refs only supports project repositories" unless container.is_a?(Project)
+
+        records = refs.map do |ref|
+          BatchedGitRefUpdates::Deletion.new(project_id: container.id, ref: ref, created_at: Time.current, updated_at: Time.current)
+        end
+
+        BatchedGitRefUpdates::Deletion.bulk_insert!(records)
+      end
+
       def delete_refs(...)
         wrapped_gitaly_errors do
           gitaly_delete_refs(...)

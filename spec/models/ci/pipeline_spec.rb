@@ -1328,32 +1328,46 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     %w[succeed! drop! cancel! skip! block! delay!].each do |action|
       context "when the pipeline received #{action} event" do
-        it 'deletes a persistent ref asynchronously', :sidekiq_inline do
-          expect(pipeline.persistent_ref).not_to receive(:delete_refs)
-
-          expect(Ci::PipelineCleanupRefWorker).to receive(:perform_async)
-            .with(pipeline.id).and_call_original
-
-          expect_next_instance_of(Ci::PersistentRef) do |persistent_ref|
-            expect(persistent_ref).to receive(:delete_refs)
-              .with("refs/#{Repository::REF_PIPELINES}/#{pipeline.id}").once
-          end
+        it 'deletes a persistent ref asynchronously' do
+          expect(pipeline.persistent_ref).to receive(:async_delete)
+          expect(pipeline.persistent_ref).not_to receive(:delete)
 
           pipeline.public_send(action)
         end
 
-        context 'when pipeline_cleanup_ref_worker_async is disabled' do
+        context 'when pipeline_delete_gitaly_refs_in_batches is disabled' do
           before do
-            stub_feature_flags(pipeline_cleanup_ref_worker_async: false)
+            stub_feature_flags(pipeline_delete_gitaly_refs_in_batches: false)
           end
 
-          it 'deletes a persistent ref synchronously' do
-            expect(Ci::PipelineCleanupRefWorker).not_to receive(:perform_async).with(pipeline.id)
+          it 'deletes a persistent ref asynchronously via ::Ci::PipelineCleanupRefWorker', :sidekiq_inline do
+            expect(pipeline.persistent_ref).not_to receive(:delete_refs)
 
-            expect(pipeline.persistent_ref).to receive(:delete_refs).once
-              .with("refs/#{Repository::REF_PIPELINES}/#{pipeline.id}")
+            expect(Ci::PipelineCleanupRefWorker).to receive(:perform_async)
+              .with(pipeline.id).and_call_original
+
+            expect_next_instance_of(Ci::PersistentRef) do |persistent_ref|
+              expect(persistent_ref).to receive(:delete_refs)
+                .with("refs/#{Repository::REF_PIPELINES}/#{pipeline.id}").once
+            end
 
             pipeline.public_send(action)
+          end
+
+          context 'when pipeline_cleanup_ref_worker_async is disabled' do
+            before do
+              stub_feature_flags(pipeline_delete_gitaly_refs_in_batches: false)
+              stub_feature_flags(pipeline_cleanup_ref_worker_async: false)
+            end
+
+            it 'deletes a persistent ref synchronously' do
+              expect(Ci::PipelineCleanupRefWorker).not_to receive(:perform_async).with(pipeline.id)
+
+              expect(pipeline.persistent_ref).to receive(:delete_refs).once
+                .with("refs/#{Repository::REF_PIPELINES}/#{pipeline.id}")
+
+              pipeline.public_send(action)
+            end
           end
         end
       end
