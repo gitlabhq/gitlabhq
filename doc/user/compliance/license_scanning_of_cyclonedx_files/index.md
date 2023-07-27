@@ -142,3 +142,22 @@ $ docker run -it --rm -v "$PWD:/my-cyclonedx-sboms" -w /my-cyclonedx-sboms cyclo
 Validating JSON BOM...
 BOM validated successfully.
 ```
+
+If the JSON BOM fails validation, for example, because there are duplicate components:
+
+```shell
+Validation failed: Found duplicates at the following index pairs: "(A, B), (C, D)"
+#/properties/components/uniqueItems
+```
+
+This issue can be fixed by updating the CI template to use [jq](https://jqlang.github.io/jq/) to remove the duplicate components from the `gl-sbom-*.cdx.json` report by overriding the job definition that produces the duplicate components. For example, the following removes duplicate components from the `gl-sbom-gem-bundler.cdx.json` report file produced by the `gemnasium-dependency_scanning` job:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+gemnasium-dependency_scanning:
+  after_script:
+    - apk update && apk add jq
+    - jq '.components |= unique' gl-sbom-gem-bundler.cdx.json > tmp.json && mv tmp.json gl-sbom-gem-bundler.cdx.json
+```

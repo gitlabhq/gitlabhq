@@ -49022,6 +49022,9 @@ msgstr ""
 msgid "Trusted applications are automatically authorized on GitLab OAuth flow. It's highly recommended for the security of users that trusted applications have the confidential setting set to true."
 msgstr ""
 
+msgid "Try adjusting the filters, or creating an issue or merge request to collect more data"
+msgstr ""
+
 msgid "Try again"
 msgstr ""
 

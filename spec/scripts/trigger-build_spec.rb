@@ -25,7 +25,7 @@ RSpec.describe Trigger, feature_category: :tooling do
     }
   end
 
-  let(:com_api_endpoint) { 'https://gitlab.com/api/v4' }
+  let(:com_api_endpoint) { Trigger::Base.new.send(:endpoint) }
   let(:com_api_token) { env['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE'] }
   let(:com_gitlab_client) { double('com_gitlab_client') }
 

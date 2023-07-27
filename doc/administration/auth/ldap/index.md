@@ -90,7 +90,7 @@ Here's an example of setting up LDAP with only the required options.
        'port' => 636,
        'uid' => 'sAMAccountName',
        'encryption' => 'simple_tls',
-       'base' => 'dc=example,dc=com',
+       'base' => 'dc=example,dc=com'
      }
    }
    ```
@@ -155,7 +155,7 @@ For more information, see
                'port' => 636,
                'uid' => 'sAMAccountName',
                'encryption' => 'simple_tls',
-               'base' => 'dc=example,dc=com',
+               'base' => 'dc=example,dc=com'
              }
            }
    ```
@@ -237,7 +237,8 @@ These configuration settings are available:
 
 ### SSL configuration settings
 
-These SSL configuration settings are available:
+SSL configuration settings can be configured under `tls_options` name/value
+pairs. The following SSL configuration settings are available:
 
 | Setting       | Description | Required | Examples |
 |---------------|-------------|----------|----------|
@@ -246,6 +247,143 @@ These SSL configuration settings are available:
 | `ciphers`     | Specific SSL ciphers to use in communication with LDAP servers. | **{dotted-circle}** No | `'ALL:!EXPORT:!LOW:!aNULL:!eNULL:!SSLv2'` |
 | `cert`        | Client certificate. | **{dotted-circle}** No | `'-----BEGIN CERTIFICATE----- <REDACTED> -----END CERTIFICATE -----'` |
 | `key`         | Client private key. | **{dotted-circle}** No | `'-----BEGIN PRIVATE KEY----- <REDACTED> -----END PRIVATE KEY -----'` |
+
+The examples below illustrate how to set `ca_file` and `ssl_version` in `tls_options`:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['ldap_enabled'] = true
+   gitlab_rails['ldap_servers'] = {
+     'main' => {
+       'label' => 'LDAP',
+       'host' =>  'ldap.mydomain.com',
+       'port' => 636,
+       'uid' => 'sAMAccountName',
+       'encryption' => 'simple_tls',
+       'base' => 'dc=example,dc=com'
+       'tls_options' => {
+         'ca_file' => '/path/to/ca_file.pem',
+         'ssl_version' => 'TLSv1_2'
+       }
+     }
+   }
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       ldap:
+         servers:
+           main:
+             label: 'LDAP'
+             host: 'ldap.mydomain.com'
+             port: 636
+             uid: 'sAMAccountName'
+             base: 'dc=example,dc=com'
+             encryption: 'simple_tls'
+             tls_options:
+               ca_file: '/path/to/ca_file.pem'
+               ssl_version: 'TLSv1_2'
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+For more information, see
+[how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals.html#ldap).
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       image: 'gitlab/gitlab-ee:latest'
+       restart: always
+       hostname: 'gitlab.example.com'
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['ldap_enabled'] = true
+           gitlab_rails['ldap_servers'] = {
+             'main' => {
+               'label' => 'LDAP',
+               'host' =>  'ldap.mydomain.com',
+               'port' => 636,
+               'uid' => 'sAMAccountName',
+               'encryption' => 'simple_tls',
+               'base' => 'dc=example,dc=com',
+               'tls_options' => {
+                 'ca_file' => '/path/to/ca_file.pem',
+                 'ssl_version' => 'TLSv1_2'
+               }
+             }
+           }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     ldap:
+       enabled: true
+       servers:
+         main:
+           label: 'LDAP'
+           host: 'ldap.mydomain.com'
+           port: 636
+           uid: 'sAMAccountName'
+           encryption: 'simple_tls'
+           base: 'dc=example,dc=com'
+           tls_options:
+             ca_file: '/path/to/ca_file.pem'
+             ssl_version: 'TLSv1_2'
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 ### Attribute configuration settings
 

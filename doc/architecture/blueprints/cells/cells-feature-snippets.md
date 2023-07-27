@@ -21,8 +21,10 @@ Snippets will be scoped to an Organization. Initially it will not be possible to
 
 Two different types of snippets exist:
 
-- [Project snippets](../../../api/project_snippets.md)
-- [Personal snippets](../../../user/snippets.md)
+- [Project snippets](../../../api/project_snippets.md). These snippets have URLs
+  like `/<group>/<project>/-/snippets/123`
+- [Personal snippets](../../../user/snippets.md). These snippets have URLS like
+  `/-/snippets/123`
 
 Snippets are backed by a Git repository.
 
@@ -30,14 +32,25 @@ Snippets are backed by a Git repository.
 
 ## 3. Proposal
 
-- Both project and personal snippets will be scoped to an Organization.
-- Creation of snippets will also be scoped to a User's current Organization.
-- A User can create many independent snippet collections across multiple Organizations.
-- Snippets are limited to a Cell because Gitaly is confined to a Cell.
+### 3.1. Scoped to an organization
+
+Both project and personal snippets will be scoped to an Organization.
+
+- Project snippets URLs will remain unchanged, as the URLs are routable.
+- Personal snippets URLs will need to change to be `/-/organizations/<organization>/snippets/123`,
+  so that the URL is routeable
+
+Creation of snippets will also be scoped to a User's current Organization.
+
+A User can create many independent snippet collections across multiple Organizations.
 
 ## 4. Evaluation
 
+Snippets are scoped to a Organization because Gitaly is confined to a Cell.
+
 ## 4.1. Pros
+
+No need to have clusterwide Gitaly
 
 ## 4.2. Cons
 
