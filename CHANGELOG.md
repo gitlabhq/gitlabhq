@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.13 (2023-07-27)
+
+### Fixed (1 change)
+
+- [Disable IAT verification by default](gitlab-org/gitlab@a294195e5b2a9580d0c2c1dc4069cff2856e84bb) ([merge request](gitlab-org/gitlab!127520))
+
 ## 15.11.12 (2023-07-14)
 
 No changes.
