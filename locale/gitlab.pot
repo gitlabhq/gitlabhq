@@ -15660,7 +15660,7 @@ msgstr ""
 msgid "Deploy keys"
 msgstr ""
 
-msgid "Deploy keys grant read/write access to all repositories in your instance"
+msgid "Deploy keys grant read/write access to all repositories in your instance, start by creating a new one above."
 msgstr ""
 
 msgid "Deploy progress not found. To see pods, ensure your environment matches %{linkStart}deploy board criteria%{linkEnd}."
@@ -48900,6 +48900,9 @@ msgid "TotalMilestonesIndicator|1000+"
 msgstr ""
 
 msgid "TotalRefCountIndicator|1000+"
+msgstr ""
+
+msgid "Trace Details"
 msgstr ""
 
 msgid "Traces"

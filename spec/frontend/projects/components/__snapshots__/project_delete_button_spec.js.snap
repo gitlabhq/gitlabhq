@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Project remove modal initialized matches the snapshot 1`] = `
-<form
+<gl-form-stub
   action="some/path"
   method="post"
 >
@@ -16,100 +16,23 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
     type="hidden"
   />
    
+  <delete-modal-stub
+    confirmphrase="foo"
+    forkscount="3"
+    issuescount="1"
+    mergerequestscount="2"
+    starscount="4"
+  />
+   
   <gl-button-stub
     buttontextclasses=""
     category="primary"
     data-qa-selector="delete_button"
     icon=""
-    role="button"
     size="medium"
-    tabindex="0"
     variant="danger"
   >
     Delete project
   </gl-button-stub>
-   
-  <gl-modal-stub
-    actioncancel="[object Object]"
-    actionprimary="[object Object]"
-    arialabel=""
-    dismisslabel="Close"
-    footer-class="gl-bg-gray-10 gl-p-5"
-    modalclass=""
-    modalid="fakeUniqueId"
-    ok-variant="danger"
-    size="md"
-    title-class="gl-text-red-500"
-    titletag="h4"
-  >
-     
-    <div>
-      <gl-alert-stub
-        class="gl-mb-5"
-        dismisslabel="Dismiss"
-        primarybuttonlink=""
-        primarybuttontext=""
-        secondarybuttonlink=""
-        secondarybuttontext=""
-        showicon="true"
-        title=""
-        variant="danger"
-      >
-        <h4
-          class="gl-alert-title"
-          data-testid="delete-alert-title"
-        >
-          
-          You are about to delete this project containing:
-        
-        </h4>
-         
-        <ul>
-          <li>
-            1 issue
-          </li>
-           
-          <li>
-            2 merge requests
-          </li>
-           
-          <li>
-            3 forks
-          </li>
-           
-          <li>
-            4 stars
-          </li>
-        </ul>
-         This project is 
-        <strong>
-          NOT
-        </strong>
-         a fork. This process deletes the project repository and all related resources.
-      </gl-alert-stub>
-       
-      <p
-        class="gl-mb-1"
-      >
-        Enter the following to confirm:
-      </p>
-       
-      <p>
-        <code
-          class="gl-white-space-pre-wrap"
-        >
-          foo
-        </code>
-      </p>
-       
-      <gl-form-input-stub
-        data-qa-selector="confirm_name_field"
-        id="confirm_name_input"
-        name="confirm_name_input"
-        type="text"
-      />
-       
-    </div>
-  </gl-modal-stub>
-</form>
+</gl-form-stub>
 `;

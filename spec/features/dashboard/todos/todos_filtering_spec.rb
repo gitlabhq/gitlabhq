@@ -130,7 +130,7 @@ RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :team_pl
     before do
       create(:todo, :build_failed, user: user_1, author: user_2, project: project_1, target: merge_request)
       create(:todo, :marked, user: user_1, author: user_2, project: project_1, target: issue1)
-      create(:todo, :review_requested, user: user_1, author: user_2, project: project_1, target: issue1)
+      create(:todo, :review_requested, user: user_1, author: user_2, project: project_1, target: merge_request)
     end
 
     it 'filters by Assigned' do

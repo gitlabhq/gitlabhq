@@ -393,7 +393,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :tracing, only: [:index], controller: :tracing
+        resources :tracing, only: [:index, :show], controller: :tracing
 
         namespace :design_management do
           namespace :designs, path: 'designs/:design_id(/:sha)', constraints: -> (params) { params[:sha].nil? || Gitlab::Git.commit_id?(params[:sha]) } do

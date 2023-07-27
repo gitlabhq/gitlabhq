@@ -407,6 +407,16 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
       end
 
       include_examples 'N+1 query check', skip_cached: false
+
+      context 'when each merge request diff has no head_commit_sha' do
+        before do
+          [merge_request_a, merge_request_b, merge_request_c].each do |mr|
+            mr.merge_request_diffs.update!(head_commit_sha: nil)
+          end
+        end
+
+        include_examples 'N+1 query check', skip_cached: false
+      end
     end
   end
 

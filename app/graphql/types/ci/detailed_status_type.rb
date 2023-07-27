@@ -39,17 +39,15 @@ module Types
       end
 
       def action
-        if object.has_action?
-          {
-            button_title: object.action_button_title,
-            icon: object.action_icon,
-            method: object.action_method,
-            path: object.action_path,
-            title: object.action_title
-          }
-        else
-          nil
-        end
+        return unless object.has_action?
+
+        {
+          button_title: object.action_button_title,
+          icon: object.action_icon,
+          method: object.action_method,
+          path: object.action_path,
+          title: object.action_title
+        }
       end
     end
     # rubocop: enable Graphql/AuthorizeTypes

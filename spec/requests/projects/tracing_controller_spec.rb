@@ -14,14 +14,12 @@ RSpec.describe Projects::TracingController, feature_category: :tracing do
     response
   end
 
-  describe 'GET #index' do
-    before do
-      stub_feature_flags(observability_tracing: observability_tracing_ff)
-      sign_in(user)
-    end
+  before do
+    stub_feature_flags(observability_tracing: observability_tracing_ff)
+    sign_in(user)
+  end
 
-    let(:path) { project_tracing_index_path(project) }
-
+  shared_examples 'tracing route request' do
     it_behaves_like 'observability csp policy' do
       before_all do
         project.add_developer(user)
@@ -45,6 +43,26 @@ RSpec.describe Projects::TracingController, feature_category: :tracing do
         expect(subject).to have_gitlab_http_status(:ok)
       end
 
+      context 'when feature is disabled' do
+        let(:observability_tracing_ff) { false }
+
+        it 'returns 404' do
+          expect(subject).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
+  describe 'GET #index' do
+    let(:path) { project_tracing_index_path(project) }
+
+    it_behaves_like 'tracing route request'
+
+    describe 'html response' do
+      before_all do
+        project.add_developer(user)
+      end
+
       it 'renders the js-tracing element correctly' do
         element = Nokogiri::HTML.parse(subject.body).at_css('#js-tracing')
 
@@ -55,13 +73,31 @@ RSpec.describe Projects::TracingController, feature_category: :tracing do
         }.to_json
         expect(element.attributes['data-view-model'].value).to eq(expected_view_model)
       end
+    end
+  end
 
-      context 'when feature is disabled' do
-        let(:observability_tracing_ff) { false }
+  describe 'GET #show' do
+    let(:path) { project_tracing_path(project, id: "test-trace-id") }
 
-        it 'returns 404' do
-          expect(subject).to have_gitlab_http_status(:not_found)
-        end
+    it_behaves_like 'tracing route request'
+
+    describe 'html response' do
+      before_all do
+        project.add_developer(user)
+      end
+
+      it 'renders the js-tracing element correctly' do
+        element = Nokogiri::HTML.parse(subject.body).at_css('#js-tracing-details')
+
+        expected_view_model = {
+          tracingIndexUrl: project_tracing_index_path(project),
+          traceId: 'test-trace-id',
+          tracingUrl: Gitlab::Observability.tracing_url(project),
+          provisioningUrl: Gitlab::Observability.provisioning_url(project),
+          oauthUrl: Gitlab::Observability.oauth_url
+        }.to_json
+
+        expect(element.attributes['data-view-model'].value).to eq(expected_view_model)
       end
     end
   end

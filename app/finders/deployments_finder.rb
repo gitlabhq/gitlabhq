@@ -25,7 +25,7 @@ class DeploymentsFinder
   # performant with the other filtering/sorting parameters.
   # The composed query could be significantly slower when the filtering and sorting columns are different.
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/325627 for example.
-  ALLOWED_SORT_VALUES = %w[id iid created_at updated_at ref finished_at].freeze
+  ALLOWED_SORT_VALUES = %w[id iid created_at updated_at finished_at].freeze
   DEFAULT_SORT_VALUE = 'id'
 
   ALLOWED_SORT_DIRECTIONS = %w[asc desc].freeze
@@ -128,7 +128,6 @@ class DeploymentsFinder
 
   def build_sort_params
     order_by = ALLOWED_SORT_VALUES.include?(params[:order_by]) ? params[:order_by] : DEFAULT_SORT_VALUE
-    order_by = DEFAULT_SORT_VALUE if order_by == 'ref' && Feature.enabled?(:remove_deployments_api_ref_sort)
     order_direction = ALLOWED_SORT_DIRECTIONS.include?(params[:sort]) ? params[:sort] : DEFAULT_SORT_DIRECTION
 
     { order_by => order_direction }

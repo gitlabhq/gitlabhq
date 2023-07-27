@@ -99,12 +99,15 @@ RSpec.describe Ci::BuildPolicy do
 
       context 'when maintainer is allowed to push to pipeline branch' do
         let(:project) { create(:project, :public) }
-        let(:owner) { user }
+
+        before do
+          project.add_maintainer(user)
+
+          allow(project).to receive(:empty_repo?).and_return(false)
+          allow(project).to receive(:branch_allows_collaboration?).and_return(true)
+        end
 
         it 'enables update_build if user is maintainer' do
-          allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
-          allow_any_instance_of(Project).to receive(:branch_allows_collaboration?).and_return(true)
-
           expect(policy).to be_allowed :update_build
           expect(policy).to be_allowed :update_commit_status
         end
@@ -126,6 +129,16 @@ RSpec.describe Ci::BuildPolicy do
 
         it 'does not include ability to update build' do
           expect(policy).to be_disallowed :update_build
+        end
+
+        context 'when the user is admin', :enable_admin_mode do
+          before do
+            user.update!(admin: true)
+          end
+
+          it 'does not include ability to update build' do
+            expect(policy).to be_disallowed :update_build
+          end
         end
       end
 
@@ -252,7 +265,7 @@ RSpec.describe Ci::BuildPolicy do
             create(:protected_branch, :developers_can_push, name: build.ref, project: project)
           end
 
-          it { expect(policy).to be_allowed :erase_build }
+          it { expect(policy).to be_disallowed :erase_build }
         end
 
         context 'when the build was created for a protected tag' do
@@ -262,7 +275,7 @@ RSpec.describe Ci::BuildPolicy do
             build.update!(tag: true)
           end
 
-          it { expect(policy).to be_allowed :erase_build }
+          it { expect(policy).to be_disallowed :erase_build }
         end
 
         context 'when the build was created for an unprotected ref' do

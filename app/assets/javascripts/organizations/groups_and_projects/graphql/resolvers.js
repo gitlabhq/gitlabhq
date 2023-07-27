@@ -1,4 +1,4 @@
-import { organizationProjects } from 'jest/organizations/groups_and_projects/components/mock_data';
+import { organizationProjects } from 'jest/organizations/groups_and_projects/mock_data';
 
 export default {
   Query: {

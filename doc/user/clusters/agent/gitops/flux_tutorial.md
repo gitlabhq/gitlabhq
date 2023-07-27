@@ -83,8 +83,19 @@ You must register `agentk` before you install it in your cluster.
 
 To register `agentk`:
 
-- Complete the steps in [Register the agent with GitLab](../install/index.md#register-the-agent-with-gitlab).
-  Be sure to save the agent registration token and `kas` address.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+   If you have an [agent configuration file](../install/index.md#create-an-agent-configuration-file),
+   it must be in this project. Your cluster manifest files should also be in this project.
+1. Select **Operate > Kubernetes clusters**.
+1. Select **Connect a cluster (agent)**.
+   - If you want to create a configuration with CI/CD defaults, type a name.
+   - If you already have an agent configuration file, select it from the list.
+1. Select **Register an agent**.
+1. Securely store the agent access token and `kasAddress` for later.
+
+The agent is registered for your project. You don't need to run any commands yet.
+
+In the next step, you'll use Flux to install `agentk` in your cluster.
 
 ## Install `agentk`
 
@@ -103,10 +114,24 @@ To install `agentk`:
      name: gitlab
    ```
 
-1. Apply the agent registration token as a secret in the cluster:
+1. Create a file called `secret.yaml` that contains your agent access token as a secret:
+
+   ```yaml
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: gitlab-agent-token
+   type: Opaque
+   stringData:
+     values.yaml: |-
+       config:
+         token: "<your-token-here>"
+   ```
+
+1. Apply `secret.yaml` to your cluster:
 
    ```shell
-   kubectl create secret generic gitlab-agent-token -n gitlab --from-literal=token=YOUR-TOKEN-HERE
+   kubectl apply -f secret.yaml -n gitlab
    ```
 
    Although this step does not follow GitOps principles, it simplifies configuration for new Flux users.
@@ -147,8 +172,11 @@ To install `agentk`:
      interval: 1h0m0s
      values:
        config:
-         kasAddress: "wss://kas.gitlab.example.com"
-         secretName: "gitlab-agent-token"
+         kasAddress: "wss://kas.gitlab.com"  
+     valuesFrom:
+       - kind: Secret
+         name: gitlab-agent-token
+         valuesKey: values.yaml
    ```
 
 1. To verify that `agentk` is installed and running in the cluster, run the following command:
