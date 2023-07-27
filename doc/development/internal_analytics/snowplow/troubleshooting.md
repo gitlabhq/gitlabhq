@@ -21,8 +21,8 @@ You will be alarmed via a [Sisense alert](https://app.periscopedata.com/app/gitl
 ### Locating the problem
 
 First you need to identify at which stage in Snowplow the data pipeline the drop is occurring.
-Start at [Snowplow dashboard](https://console.aws.amazon.com/systems-manager/resource-groups/cloudwatch?dashboard=SnowPlow&region=us-east-1#) on CloudWatch,
-if you do not have access to CloudWatch you need to create an [access request issue](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/9730) first.
+Start at [Snowplow dashboard](https://console.aws.amazon.com/systems-manager/resource-groups/cloudwatch?dashboard=SnowPlow&region=us-east-1#) on CloudWatch.
+If you do not have access to CloudWatch, GitLab team members can create an access request issue, similar to this one: `https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/9730`.
 While on CloudWatch dashboard set time range to last 4 weeks, to get better picture of system characteristics over time. Than visit following charts:
 
 1. `ELB New Flow Count` and `Collector Auto Scaling Group Network In/Out` - they show in order: number of connections to collectors via load balancers and data volume (in bytes) processed by collectors. If there is drop visible there, it means less events were fired from the GitLab application. Proceed to [application layer guide](#troubleshooting-gitlab-application-layer) for more details

@@ -134,8 +134,8 @@ can make API calls from running pipelines by using the CI/CD job token.
 
 Prerequisite:
 
-- You must have at least the Maintainer role in the current project and at least
-  the Guest role in the allowed project.
+- You must have at least the Maintainer role in the current project. If the allowed project
+  is internal or private, you must have at least the Guest role in that project.
 - You must not have more than 100 projects added to the allowlist.
 
 To add a project:

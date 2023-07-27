@@ -72,7 +72,7 @@ export default {
     // whenever a item in the autocomplete dropdown is clicked
     const originalClickOutHandler = this.$refs.submitDropdown.$refs.dropdown.clickOutHandler;
     this.$refs.submitDropdown.$refs.dropdown.clickOutHandler = (e) => {
-      if (!e.composedPath().includes(this.$el)) {
+      if (!e.target.closest('.atwho-container')) {
         originalClickOutHandler(e);
       }
     };

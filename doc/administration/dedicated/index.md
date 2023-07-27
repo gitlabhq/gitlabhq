@@ -37,9 +37,10 @@ To request the creation of a new GitLab Dedicated environment for your organizat
 
 When onboarding, you must also specify your preference for the weekly four-hour time slot that GitLab uses to perform maintenance and upgrade operations on the tenant instance.
 
-- APAC (outside working hours): Wednesday 1pm-5pm UTC
-- EU (outside working hours): Tuesday 1am-5am UTC
-- AMER (outside working hours): Tuesday 7am-11am UTC
+- APAC (outside working hours): Wednesday 1 AM - 5 PM UTC
+- EU (outside working hours): Tuesday 1 AM - 5 AM UTC
+- AMER Option 1 (outside working hours): Tuesday 7 AM - 11 AM UTC
+- AMER Option 2 (outside working hours): Sunday 9 PM - Monday 1 AM UTC
 
 NOTE:
 Some downtime may be incurred during this window. This downtime is not counting towards [the system SLA](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/).

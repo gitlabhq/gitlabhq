@@ -2541,6 +2541,12 @@ entry.
 - [Add index to group_group_links table](gitlab-org/gitlab@9a3f2c1a90b54074e61d0abf07101ce664198e81) ([merge request](gitlab-org/gitlab!117386))
 - [Validate the projects.creator_id foregin key synchronously](gitlab-org/gitlab@ed9351984a16f20506babf6eab6706b917904ed1) ([merge request](gitlab-org/gitlab!117147))
 
+## 15.11.13 (2023-07-27)
+
+### Fixed (1 change)
+
+- [Disable IAT verification by default](gitlab-org/gitlab@a294195e5b2a9580d0c2c1dc4069cff2856e84bb) ([merge request](gitlab-org/gitlab!127520))
+
 ## 15.11.12 (2023-07-14)
 
 No changes.

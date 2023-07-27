@@ -2,6 +2,8 @@
 
 module Ml
   class Model < ApplicationRecord
+    include Presentable
+
     validates :project, :default_experiment, presence: true
     validates :name,
       format: Gitlab::Regex.ml_model_name_regex,

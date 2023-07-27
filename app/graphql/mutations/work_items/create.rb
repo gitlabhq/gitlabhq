@@ -14,6 +14,7 @@ module Mutations
       authorize :create_work_item
 
       MUTUALLY_EXCLUSIVE_ARGUMENTS_ERROR = 'Please provide either projectPath or namespacePath argument, but not both.'
+      DISABLED_FF_ERROR = 'namespace_level_work_items feature flag is disabled. Only project paths allowed.'
 
       argument :confidential, GraphQL::Types::Boolean,
                required: false,
@@ -59,6 +60,7 @@ module Mutations
       def resolve(project_path: nil, namespace_path: nil, **attributes)
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)
+        check_feature_available!(container)
 
         params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
         type = ::WorkItems::Type.find(attributes[:work_item_type_id])
@@ -80,6 +82,12 @@ module Mutations
       end
 
       private
+
+      def check_feature_available!(container)
+        return unless container.is_a?(::Group) && Feature.disabled?(:namespace_level_work_items, container)
+
+        raise Gitlab::Graphql::Errors::ArgumentError, DISABLED_FF_ERROR
+      end
 
       def global_id_compatibility_params(params)
         params[:work_item_type_id] = params[:work_item_type_id]&.model_id

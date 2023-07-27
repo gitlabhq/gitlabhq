@@ -589,6 +589,60 @@ In this example:
 - `user` is optional. If not defined, the value is `test-user`.
 - `flags` is optional. If not defined, it has no value.
 
+### Specify functions to manipulate input values
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+
+You can specify predefined functions in the interpolation block to manipulate the input value.
+The format supported is the following:
+
+```yaml
+$[[ input.input-id | <function1> | <function2> | ... <functionN> ]]
+```
+
+Details:
+
+- Only [predefined interpolation functions](#predefined-interpolation-functions) are permitted.
+- A maximum of 3 functions may be specified in a single interpolation block.
+- The functions are executed in the sequence they are specified.
+
+```yaml
+spec:
+  inputs:
+    test:
+      default: '0123456789'
+---
+
+test-job:
+  script: echo $[[ inputs.test | truncate(1,3) ]]
+```
+
+In this example:
+
+- The function [`truncate`](#truncate) applies to the value of `inputs.test`.
+- Assuming the value of `inputs.test` is `0123456789`, then the output of `script` would be `echo 123`.
+
+### Predefined interpolation functions
+
+#### Truncate
+
+Use `truncate` to shorten the interpolated value. For example:
+
+- `truncate(<offset>,<length>)`
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `offset` | Integer | Number of characters to offset by. |
+| `length` | Integer | Number of characters to return after the offset. |
+
+Example:
+
+```yaml
+$[[ inputs.test | truncate(3,5) ]]
+```
+
+Assuming the value of `inputs.test` is `0123456789`, then the output would be `34567`.
+
 ### Set input parameter values with `include:inputs`
 
 > `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.

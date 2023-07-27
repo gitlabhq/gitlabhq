@@ -56,7 +56,11 @@ echo "***Saving generated qa pipeline files***"
 for key in "${!qa_pipelines[@]}"; do
   echo "Generating $key"
 
-  cp ".gitlab/ci/${qa_pipelines[$key]}" "$key"
+  if [ "${CI_PROJECT_NAMESPACE}" = "gitlab-cn" ]; then
+    cp "jh/.gitlab/ci/${qa_pipelines[$key]}" "$key"
+  else
+    cp ".gitlab/ci/${qa_pipelines[$key]}" "$key"
+  fi
 
   echo >>"$key" # add empty line so it's easier to read if debugging
   echo "$variables" >>"$key"

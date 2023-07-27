@@ -138,7 +138,7 @@ We cannot guarantee that the large language model produces results that are corr
 
 This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
-Getting help has never been easier. If you have a question about how the GitLab product works, you can ask product how-to questions and get AI generated support from GitLab Duo Chat.
+Getting help has never been easier. If you have a question about how the GitLab product works, you can get AI generated support from GitLab Duo Chat.
 
 1. In the lower-left corner, select the Help icon.
 1. Select **Ask in GitLab Duo Chat**. A drawer opens on the right side of your screen.
@@ -159,8 +159,7 @@ These summaries are automatically generated. They are available on the merge req
 
 Provide feedback on this experimental feature in [issue 408726](https://gitlab.com/gitlab-org/gitlab/-/issues/408726).
 
-**Data usage**: When you use this quick action, the diff of changes between the head of the source branch
-and the target branch is sent to the large language model referenced above.
+**Data usage**: When using this quick action, the diff of changes between the source branch's head and the target branch is sent to the large language model.
 
 ### Summarize my merge request review **(ULTIMATE SAAS)**
 
@@ -193,7 +192,7 @@ This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.
 
 In a merge request, you can get a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
 
-View a [click-through demo](https://go.gitlab.com/Xfp0l4). 
+View a [click-through demo](https://go.gitlab.com/Xfp0l4).
 
 To generate a test suggestion:
 
@@ -208,7 +207,7 @@ Feedback on this experimental feature can be provided in [issue 408995](https://
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 
 - Contents of the file
-- The file name
+- The filename
 
 ### Summarize issue discussions **(ULTIMATE SAAS)**
 
@@ -255,7 +254,7 @@ GitLab AI features leverage generative AI to help increase velocity and aim to h
 
 ### Progressive enhancement
 
-These features are designed as a progressive enhancement to existing GitLab features across our DevSecOps platform. They are designed to fail gracefully and should not prevent the core functionality of the underlying feature. Please note each feature is subject to its expected functionality as defined by the relevant [feature support policy](../policy/experiment-beta-support.md).
+These features are designed as a progressive enhancement to existing GitLab features across our DevSecOps platform. They are designed to fail gracefully and should not prevent the core functionality of the underlying feature. You should note each feature is subject to its expected functionality as defined by the relevant [feature support policy](../policy/experiment-beta-support.md).
 
 ### Stability and performance
 
@@ -265,7 +264,7 @@ These features are in a variety of [feature support levels](../policy/experiment
 
 ### Data privacy
 
-Some AI features require the use of third-party AI services models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use in order to provide these features.
+Some AI features require the use of third-party AI services models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use to provide these features.
 
 Group owners can control which top-level groups have access to third-party AI features by using the [group level third-party AI features setting](group/manage.md#enable-third-party-ai-features).
 
@@ -280,4 +279,4 @@ Generative AI may produce unexpected results that may be:
 - Insecure code
 - Offensive or insensitive
 
-GitLab is actively iterating on all our AI-assisted capabilities to improve the quality of the generated content. We will continue improving the quality through prompt engineering, evaluating new AI/ML models to power these features, and through novel heuristics built into these features directly.
+GitLab is actively iterating on all our AI-assisted capabilities to improve the quality of the generated content. We improve the quality through prompt engineering, evaluating new AI/ML models to power these features, and through novel heuristics built into these features directly.

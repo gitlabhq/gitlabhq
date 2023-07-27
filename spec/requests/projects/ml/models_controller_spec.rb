@@ -7,6 +7,7 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
   let_it_be(:user) { project.first_owner }
   let_it_be(:model1) { create(:ml_models, :with_versions, project: project) }
   let_it_be(:model2) { create(:ml_models, project: project) }
+  let_it_be(:model_in_different_project) { create(:ml_models) }
 
   let(:model_registry_enabled) { true }
 
@@ -35,10 +36,10 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
       index_request
     end
 
-    it 'prepares model view using the presenter' do
-      expect(::Ml::ModelsIndexPresenter).to receive(:new).and_call_original
-
+    it 'fetches the correct models' do
       index_request
+
+      expect(assigns(:models)).to match_array([model1, model2])
     end
 
     it 'does not perform N+1 sql queries' do

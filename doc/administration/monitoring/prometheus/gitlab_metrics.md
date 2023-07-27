@@ -296,12 +296,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_snippet_repositories_synced`              | Gauge   | 13.4  | Number of syncable snippets synced on secondary | `url` |
 | `geo_snippet_repositories_failed`              | Gauge   | 13.4  | Number of syncable snippets failed on secondary | `url` |
 | `geo_snippet_repositories_registry`            | Gauge   | 13.4  | Number of syncable snippets in the registry | `url` |
-| `geo_group_wiki_repositories`                  | Gauge   | 13.10 | Number of group wikis on primary | `url` |
-| `geo_group_wiki_repositories_checksummed`      | Gauge   | 13.10 | Number of group wikis checksummed on primary | `url` |
-| `geo_group_wiki_repositories_checksum_failed`  | Gauge   | 13.10 | Number of group wikis failed to calculate the checksum on primary | `url` |
-| `geo_group_wiki_repositories_synced`           | Gauge   | 13.10 | Number of syncable group wikis synced on secondary | `url` |
-| `geo_group_wiki_repositories_failed`           | Gauge   | 13.10 | Number of syncable group wikis failed on secondary | `url` |
-| `geo_group_wiki_repositories_registry`         | Gauge   | 13.10 | Number of syncable group wikis in the registry | `url` |
+| `geo_group_wiki_repositories`                     | Gauge   | 13.10 | Number of group wikis on primary | `url` |
+| `geo_group_wiki_repositories_checksum_total`      | Gauge   | 16.3  | Number of group wikis to checksum on primary | `url` |
+| `geo_group_wiki_repositories_checksummed`         | Gauge   | 13.10 | Number of group wikis that successfully calculated the checksum on primary | `url` |
+| `geo_group_wiki_repositories_checksum_failed`     | Gauge   | 13.10 | Number of group wikis that failed to calculate the checksum on primary | `url` |
+| `geo_group_wiki_repositories_synced`              | Gauge   | 13.10 | Number of syncable group wikis synced on secondary | `url` |
+| `geo_group_wiki_repositories_failed`              | Gauge   | 13.10 | Number of syncable group wikis failed to sync on secondary | `url` |
+| `geo_group_wiki_repositories_registry`            | Gauge   | 13.10 | Number of group wikis in the registry | `url` |
+| `geo_group_wiki_repositories_verification_total`  | Gauge   | 16.3 | Number of group wikis to attempt to verify on secondary | `url` |
+| `geo_group_wiki_repositories_verified`            | Gauge   | 16.3 | Number of group wikis successfully verified on secondary | `url` |
+| `geo_group_wiki_repositories_verification_failed` | Gauge   | 16.3 | Number of group wikis that failed verification on secondary | `url` |
 | `geo_pages_deployments`                        | Gauge   | 14.3  | Number of pages deployments on primary | `url` |
 | `geo_pages_deployments_checksum_total`         | Gauge   | 14.6  | Number of pages deployments to checksum on primary | `url` |
 | `geo_pages_deployments_checksummed`            | Gauge   | 14.6  | Number of pages deployments that successfully calculated the checksum on primary | `url` |

@@ -49807,9 +49807,6 @@ msgstr ""
 msgid "UsageQuotas|Namespace transfer data used"
 msgstr ""
 
-msgid "UsageQuotas|The project-level storage statistics for the Container Registry are directional only and do not include savings for instance-wide deduplication."
-msgstr ""
-
 msgid "UsageQuota|%{linkStart}Shared runners%{linkEnd} are disabled, so there are no limits set on pipeline usage"
 msgstr ""
 
@@ -49889,6 +49886,9 @@ msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker image
 msgstr ""
 
 msgid "UsageQuota|Month"
+msgstr ""
+
+msgid "UsageQuota|Namespace entities"
 msgstr ""
 
 msgid "UsageQuota|Namespace overview"

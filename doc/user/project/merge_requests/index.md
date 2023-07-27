@@ -18,10 +18,6 @@ Merge requests include:
 - A comment section for discussion threads.
 - The list of commits.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a quick overview of merge requests,
-view [this GitLab Flow video](https://www.youtube.com/watch?v=InKNIvky2KE).
-
 ## Create a merge request
 
 Learn the various ways to [create a merge request](creating_merge_requests.md).

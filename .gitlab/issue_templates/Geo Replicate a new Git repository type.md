@@ -2,19 +2,22 @@
 
 This template is based on a model named `CoolWidget`.
 
-To adapt this template, find and replace the following tokens:
+To adapt this template, find and replace the following:
 
-- `CoolWidget`
-- `Cool Widget`
-- `cool_widget`
-- `coolWidget`
+Template placeholders
 
-If your Model's pluralized form is non-standard, i.e. it doesn't just end in `s`, then find and replace the following tokens *first*:
-
-- `CoolWidgets`
-- `Cool Widgets`
-- `cool_widgets`
-- `coolWidgets`
+- name: Cool Widgets
+  description: the human-readable name of the model (plural)
+- name: Cool Widget
+  description: the human-readable name of the model (singular)
+- name: cool_widgets
+  description: the snake-cased name of the model (plural)
+- name: cool_widget
+  description: the snake-cased name of the model (singular)
+- name: CoolWidget
+  description: the ActiveRecord class name of the model
+- name: coolWidget
+  description: the camel-cased name of the model
 
 -->
 
@@ -188,7 +191,7 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
   ```yaml
   ---
   table_name: cool_widget_states
-  description: Separate table for cool widget verification states
+  description: Separate table for Cool Widget verification states
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXXXX
   milestone: 'XX.Y'
   feature_categories:

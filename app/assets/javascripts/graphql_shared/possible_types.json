@@ -99,6 +99,7 @@
     "DependencyProxyBlobRegistry",
     "DependencyProxyManifestRegistry",
     "DesignManagementRepositoryRegistry",
+    "GroupWikiRepositoryRegistry",
     "JobArtifactRegistry",
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
