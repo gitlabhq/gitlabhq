@@ -31,20 +31,20 @@ and upgrade processes for self-managed installations that lump together any of t
 
 The first step is to ignore the column in the application code. This step is
 necessary because Rails caches the columns and re-uses this cache in various
-places. This can be done by defining the columns to ignore. For example, to ignore
+places. This can be done by defining the columns to ignore. For example, in release `12.5`, to ignore
 `updated_at` in the User model you'd use the following:
 
 ```ruby
 class User < ApplicationRecord
   include IgnorableColumns
-  ignore_column :updated_at, remove_with: '12.7', remove_after: '2020-01-22'
+  ignore_column :updated_at, remove_with: '12.7', remove_after: '2019-12-22'
 end
 ```
 
 Multiple columns can be ignored, too:
 
 ```ruby
-ignore_columns %i[updated_at created_at], remove_with: '12.7', remove_after: '2020-01-22'
+ignore_columns %i[updated_at created_at], remove_with: '12.7', remove_after: '2019-12-22'
 ```
 
 If the model exists in CE and EE, the column has to be ignored in the CE model. If the
@@ -52,21 +52,21 @@ model only exists in EE, then it has to be added there.
 
 We require indication of when it is safe to remove the column ignore rule with:
 
-- `remove_with`: set to a GitLab release typically two releases (M+2) after adding the
+- `remove_with`: set to a GitLab release typically two releases (M+2) (`12.7` in our example) after adding the
   column ignore.
 - `remove_after`: set to a date after which we consider it safe to remove the column
-  ignore, typically after the M+1 release date, during the M+2 development cycle.
+  ignore, typically after the M+1 release date, during the M+2 development cycle. For example, since the development cycle of `12.7` is between `2019-12-18` and `2020-01-17`, and `12.6` is the release to [drop the column](#dropping-the-column-release-m1), it's safe to set the date to the release date of `12.6` as `2019-12-22`.
 
 This information allows us to reason better about column ignores and makes sure we
 don't remove column ignores too early for both regular releases and deployments to GitLab.com. For
 example, this avoids a situation where we deploy a bulk of changes that include both changes
 to ignore the column and subsequently remove the column ignore (which would result in a downtime).
 
-In this example, the change to ignore the column went into release 12.5.
+In this example, the change to ignore the column went into release `12.5`.
 
 ### Dropping the column (release M+1)
 
-Continuing our example, dropping the column goes into a _post-deployment_ migration in release 12.6:
+Continuing our example, dropping the column goes into a _post-deployment_ migration in release `12.6`:
 
 Start by creating the **post-deployment migration**:
 
@@ -135,7 +135,7 @@ for more information about database migrations.
 
 ### Removing the ignore rule (release M+2)
 
-With the next release, in this example 12.7, we set up another merge request to remove the ignore rule.
+With the next release, in this example `12.7`, we set up another merge request to remove the ignore rule.
 This removes the `ignore_column` line and - if not needed anymore - also the inclusion of `IgnoreableColumns`.
 
 This should only get merged with the release indicated with `remove_with` and once
@@ -195,7 +195,7 @@ This step is similar to [the first step when column is dropped](#ignoring-the-co
 ```ruby
 class User < ApplicationRecord
   include IgnorableColumns
-  ignore_column :updated_at, remove_with: '12.7', remove_after: '2020-01-22'
+  ignore_column :updated_at, remove_with: '12.7', remove_after: '2019-12-22'
 end
 ```
 

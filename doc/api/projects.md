@@ -222,6 +222,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "container_registry_access_level": "enabled",
     "security_and_compliance_access_level": "private",
     "emails_disabled": null,
+    "emails_enabled": null,
     "shared_runners_enabled": true,
     "group_runners_enabled": true,
     "lfs_enabled": true,
@@ -1511,7 +1512,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
-| `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
+| `emails_disabled`                                           | boolean | **{dotted-circle}** No | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead|
+| `emails_enabled`                                            | boolean | **{dotted-circle}** No | Enable email notifications. |
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `group_with_project_templates_id` **(PREMIUM)**             | integer | **{dotted-circle}** No | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
@@ -1596,7 +1598,8 @@ POST /projects/user/:user_id
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
-| `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
+| `emails_disabled`                                           | boolean | **{dotted-circle}** No | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead|
+| `emails_enabled`                                            | boolean | **{dotted-circle}** No | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                            | boolean | **{dotted-circle}** No | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1701,7 +1704,8 @@ Supported attributes:
 | `container_registry_enabled`                                | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                            | string         | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                               | string         | **{dotted-circle}** No | Short project description. |
-| `emails_disabled`                                           | boolean        | **{dotted-circle}** No | Disable email notifications. |
+| `emails_disabled`                                           | boolean        | **{dotted-circle}** No | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead|
+| `emails_enabled`                                            | boolean        | **{dotted-circle}** No | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                            | boolean | **{dotted-circle}** No | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label` **(PREMIUM)** | string         | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -3110,6 +3114,7 @@ Example response:
   "pages_access_level": "enabled",
   "security_and_compliance_access_level": "enabled",
   "emails_disabled": null,
+  "emails_enabled": null,
   "shared_runners_enabled": true,
   "group_runners_enabled": true,
   "lfs_enabled": true,

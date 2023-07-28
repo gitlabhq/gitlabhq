@@ -12,20 +12,16 @@ RSpec.describe 'Projects > Files > User wants to add a Dockerfile file', :js, fe
   end
 
   it 'user can pick a Dockerfile file from the dropdown' do
-    expect(page).to have_css('.dockerfile-selector')
+    click_button 'Apply a template'
 
-    find('.js-dockerfile-selector').click
-
-    wait_for_requests
-
-    within '.dockerfile-selector' do
-      find('.dropdown-input-field').set('HTTPd')
-      find('.dropdown-content li', text: 'HTTPd').click
+    within '.gl-new-dropdown-panel' do
+      find('.gl-listbox-search-input').set('HTTPd')
+      find('.gl-new-dropdown-contents li', text: 'HTTPd').click
     end
 
     wait_for_requests
 
-    expect(page).to have_css('.dockerfile-selector .dropdown-toggle-text', text: 'Apply a template')
+    expect(page).to have_css('.gl-new-dropdown-button-text', text: 'HTTPd')
     expect(find('.monaco-editor')).to have_content('COPY ./ /usr/local/apache2/htdocs/')
   end
 end

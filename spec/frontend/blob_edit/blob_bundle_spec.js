@@ -96,9 +96,10 @@ describe('BlobBundle', () => {
       $('#commit-changes').click();
 
       expect(trackingSpy).toHaveBeenCalledTimes(1);
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, undefined, {
-        label: 'suggest_gitlab_ci_yml',
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_button', {
+        label: 'suggest_gitlab_ci_yml_commit_changes',
         property: 'owner',
+        value: '20',
       });
     });
   });

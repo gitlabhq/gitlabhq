@@ -38,7 +38,8 @@
           = hidden_field_tag :nonce, @pre_auth.nonce
           = hidden_field_tag :code_challenge, @pre_auth.code_challenge
           = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
-          = submit_tag _("Deny"), class: "btn btn-default gl-button"
+          = render Pajamas::ButtonComponent.new(type: :submit) do
+            = _("Deny")
         = form_tag oauth_authorization_path, method: :post, class: 'inline' do
           = hidden_field_tag :client_id, @pre_auth.client.uid
           = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
@@ -48,4 +49,7 @@
           = hidden_field_tag :nonce, @pre_auth.nonce
           = hidden_field_tag :code_challenge, @pre_auth.code_challenge
           = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
-          = submit_tag _("Authorize"), class: "btn btn-danger gl-button gl-ml-3", data: { qa_selector: 'authorization_button' }
+          = render Pajamas::ButtonComponent.new(type: :submit,
+            variant: :danger,
+            button_options: { id: 'commit-changes', class: 'gl-ml-3', qa_selector: 'authorization_button'}) do
+            = _("Authorize")

@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 module DropdownsHelper
+  def dropdown_data_attr(options: {})
+    output = content_tag(:div, "", id: "js-template-selectors-menu", data: options[:data])
+    output.html_safe
+  end
+
   # rubocop:disable Metrics/CyclomaticComplexity
   def dropdown_tag(toggle_text, options: {}, &block)
     content_tag :div, class: "dropdown #{options[:wrapper_class] if options.key?(:wrapper_class)}" do

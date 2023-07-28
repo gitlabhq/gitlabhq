@@ -2,7 +2,7 @@ import $ from 'jquery';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 
-export default class TemplateSelector {
+export default class LegacyTemplateSelector {
   constructor({ dropdown, data, pattern, wrapper, editor, $input } = {}) {
     this.pattern = pattern;
     this.editor = editor;

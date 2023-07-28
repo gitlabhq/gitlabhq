@@ -347,6 +347,11 @@ msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d month"
+msgid_plural "%d months"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d more comment"
 msgid_plural "%d more comments"
 msgstr[0] ""
@@ -472,8 +477,18 @@ msgid_plural "%d warnings found:"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d week"
+msgid_plural "%d weeks"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d work item"
 msgid_plural "%d work items"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d year"
+msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1206,6 +1221,9 @@ msgid "%{tags} tags per image name"
 msgstr ""
 
 msgid "%{tag}-%{evidence}-%{filename}"
+msgstr ""
+
+msgid "%{templateType} template applied"
 msgstr ""
 
 msgid "%{template_project_id} is unknown or invalid"
@@ -5012,6 +5030,9 @@ msgid "An error occurred while fetching the pipelines jobs."
 msgstr ""
 
 msgid "An error occurred while fetching the releases. Please try again."
+msgstr ""
+
+msgid "An error occurred while fetching the template: %{err}"
 msgstr ""
 
 msgid "An error occurred while fetching this tab."
@@ -42072,6 +42093,12 @@ msgid "SecurityOrchestration|View policy project"
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerabilities are %{vulnerabilityStates}."
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerability age is greater than %{vulnerabilityAge}."
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerability age is less than %{vulnerabilityAge}."
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability age requires previously existing vulnerability states (detected, confirmed, resolved, or dismissed)"

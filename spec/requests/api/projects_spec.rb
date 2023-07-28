@@ -3940,7 +3940,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       it 'updates emails_disabled' do
-        project_param = { emails_enabled: false }
+        project_param = { emails_disabled: true }
 
         put api("/projects/#{project3.id}", user), params: project_param
 

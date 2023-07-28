@@ -20,8 +20,6 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js, f
 
     fill_in :file_name, with: 'LICENSE'
 
-    expect(page).to have_selector('.license-selector')
-
     select_template('MIT License')
 
     file_content = first('.file-editor')
@@ -44,7 +42,6 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js, f
     expect(page).to have_current_path(
       project_new_blob_path(project, 'master'), ignore_query: true)
     expect(find('#file_name').value).to eq('LICENSE')
-    expect(page).to have_selector('.license-selector')
 
     select_template('MIT License')
 
@@ -62,9 +59,9 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js, f
   end
 
   def select_template(template)
-    page.within('.js-license-selector-wrap') do
+    page.within('.gl-new-dropdown') do
       click_button 'Apply a template'
-      click_link template
+      find('.gl-new-dropdown-contents li', text: template).click
       wait_for_requests
     end
   end

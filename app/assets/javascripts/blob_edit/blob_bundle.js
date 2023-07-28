@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import initPopover from '~/blob/suggest_gitlab_ci_yml';
 import { createAlert } from '~/alert';
 import { setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
@@ -10,9 +9,6 @@ const initPopovers = () => {
 
   if (suggestEl) {
     const commitButton = document.querySelector('#commit-changes');
-
-    initPopover(suggestEl);
-
     if (commitButton) {
       const { dismissKey, humanAccess } = suggestEl.dataset;
       const urlParams = new URLSearchParams(window.location.search);

@@ -220,6 +220,8 @@ module API
 
       def translate_params_for_compatibility(params)
         params[:builds_enabled] = params.delete(:jobs_enabled) if params.key?(:jobs_enabled)
+        params[:emails_enabled] = !params.delete(:emails_disabled) if params.key?(:emails_disabled)
+
         params
       end
 

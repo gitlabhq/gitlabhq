@@ -147,6 +147,7 @@ module API
           :container_expiration_policy_attributes,
           :default_branch,
           :description,
+          :emails_disabled, # deprecated
           :emails_enabled,
           :forking_access_level,
           :issues_access_level,

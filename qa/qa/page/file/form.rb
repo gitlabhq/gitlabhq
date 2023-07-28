@@ -4,7 +4,7 @@ module QA
   module Page
     module File
       class Form < Page::Base
-        include Page::Component::DropdownFilter
+        include Page::Component::ListboxFilter
         include Page::Component::BlobContent
         include Shared::CommitMessage
         include Shared::CommitButton
@@ -14,11 +14,8 @@ module QA
           element :file_name_field
         end
 
-        view 'app/views/projects/blob/_template_selectors.html.haml' do
-          element :gitignore_dropdown
-          element :gitlab_ci_yml_dropdown
-          element :dockerfile_dropdown
-          element :license_dropdown
+        view 'app/assets/javascripts/blob/filepath_form/components/template_selector.vue' do
+          element :template_selector
         end
 
         def add_name(name)
@@ -37,14 +34,8 @@ module QA
 
         def select_template(template_type, template)
           case template_type
-          when '.gitignore'
-            click_element :gitignore_dropdown
-          when '.gitlab-ci.yml'
-            click_element :gitlab_ci_yml_dropdown
-          when 'Dockerfile'
-            click_element :dockerfile_dropdown
-          when 'LICENSE'
-            click_element :license_dropdown
+          when '.gitignore', '.gitlab-ci.yml', 'Dockerfile', 'LICENSE'
+            click_element :template_selector
           else
             raise %(Unsupported template_type "#{template_type}". Please confirm that it is a valid option.)
           end

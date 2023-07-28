@@ -13,7 +13,7 @@ RSpec.describe 'Projects > Files > Template Undo Button', :js, feature_category:
   context 'editing a matching file and applying a template' do
     before do
       visit project_edit_blob_path(project, File.join(project.default_branch, "LICENSE"))
-      select_file_template('.js-license-selector', 'Apache License 2.0')
+      select_file_template('Apache License 2.0')
     end
 
     it 'reverts template application' do
@@ -42,8 +42,8 @@ def check_content_reverted(template_content)
   expect(page).not_to have_content(template_content)
 end
 
-def select_file_template(template_selector_selector, template_name)
-  find(template_selector_selector).click
-  find('.dropdown-content li', text: template_name).click
+def select_file_template(template_name)
+  click_button 'Apply a template'
+  find('.gl-new-dropdown-contents li', text: template_name).click
   wait_for_requests
 end
