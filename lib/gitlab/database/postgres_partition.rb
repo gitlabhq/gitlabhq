@@ -10,7 +10,7 @@ module Gitlab
       # identifier includes the partition schema.
       # For example 'gitlab_partitions_static.events_03', or 'gitlab_partitions_dynamic.logs_03'
       scope :for_identifier, ->(identifier) do
-        unless identifier =~ Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER
+        unless Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER.match?(identifier)
           raise ArgumentError, "Partition name is not fully qualified with a schema: #{identifier}"
         end
 
@@ -22,7 +22,7 @@ module Gitlab
       end
 
       scope :for_parent_table, ->(parent_table) do
-        if parent_table =~ Database::FULLY_QUALIFIED_IDENTIFIER
+        if Database::FULLY_QUALIFIED_IDENTIFIER.match?(parent_table)
           where(parent_identifier: parent_table).order(:name)
         else
           where("parent_identifier = concat(current_schema(), '.', ?)", parent_table).order(:name)

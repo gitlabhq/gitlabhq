@@ -27,6 +27,28 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
     )
   end
 
+  describe '#name' do
+    subject { component.name }
+
+    it { is_expected.to eq(name) }
+
+    context 'with namespace' do
+      let(:purl) do
+        'pkg:maven/org.NameSpace/Name@v0.0.1'
+      end
+
+      it { is_expected.to eq('org.NameSpace/Name') }
+
+      context 'when needing normalization' do
+        let(:purl) do
+          'pkg:pypi/org.NameSpace/Name@v0.0.1'
+        end
+
+        it { is_expected.to eq('org.namespace/name') }
+      end
+    end
+  end
+
   describe '#<=>' do
     where do
       {
@@ -47,7 +69,7 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           a_type: 'library',
           b_type: 'library',
           a_purl: 'pkg:npm/component-a@1.0.0',
-          b_purl: 'pkg:npm/component-a@1.0.0',
+          b_purl: 'pkg:npm/component-b@1.0.0',
           a_version: '1.0.0',
           b_version: '1.0.0',
           expected: -1
@@ -57,7 +79,7 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           b_name: 'component-a',
           a_type: 'library',
           b_type: 'library',
-          a_purl: 'pkg:npm/component-a@1.0.0',
+          a_purl: 'pkg:npm/component-b@1.0.0',
           b_purl: 'pkg:npm/component-a@1.0.0',
           a_version: '1.0.0',
           b_version: '1.0.0',

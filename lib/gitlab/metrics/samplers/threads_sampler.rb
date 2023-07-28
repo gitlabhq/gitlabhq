@@ -54,7 +54,7 @@ module Gitlab
 
           if thread_name.presence.nil?
             'unnamed'
-          elsif thread_name =~ /puma threadpool \d+/
+          elsif /puma threadpool \d+/.match?(thread_name)
             # These are the puma workers processing requests
             'puma threadpool'
           elsif use_thread_name?(thread_name)

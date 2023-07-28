@@ -153,7 +153,7 @@ module Gitlab
     end
 
     def command(id)
-      unless /\A[a-z0-9-]+\z/ =~ id
+      unless /\A[a-z0-9-]+\z/.match?(id)
         raise KeyError, "Invalid ID: #{id.inspect}"
       end
 

@@ -343,7 +343,7 @@ the job's `script`.
 
 If there is a problem with a deployment, you can retry it or roll it back.
 
-To retry or rollback a deployment:
+To retry or roll back a deployment:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Operate > Environments**.

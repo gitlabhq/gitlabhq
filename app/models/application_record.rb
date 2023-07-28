@@ -95,7 +95,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.underscore
-    Gitlab::SafeRequestStore.fetch("model:#{self}:underscore") { to_s.underscore }
+    @underscore ||= to_s.underscore
   end
 
   def self.where_exists(query)

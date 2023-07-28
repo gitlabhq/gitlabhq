@@ -92,11 +92,7 @@ export default {
 
     <!--TODO: Replace button-group workaround once `split` option for new dropdowns is implemented.-->
     <!-- See issue at https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2263-->
-    <gl-button-group
-      ref="actions"
-      data-qa-selector="clusters_actions_button"
-      class="gl-w-full gl-mb-3 gl-md-w-auto gl-md-mb-0"
-    >
+    <gl-button-group ref="actions" class="gl-w-full gl-mb-3 gl-md-w-auto gl-md-mb-0">
       <gl-button
         v-gl-modal-directive="shouldTriggerModal && $options.INSTALL_AGENT_MODAL_ID"
         :href="defaultActionUrl"

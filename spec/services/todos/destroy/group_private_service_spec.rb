@@ -14,7 +14,7 @@ RSpec.describe Todos::Destroy::GroupPrivateService, feature_category: :team_plan
   let!(:todo_group_member)       { create(:todo, user: group_member, group: group) }
   let!(:todo_project_member)     { create(:todo, user: project_member, group: group) }
 
-  describe '#execute' do
+  describe '#execute', :aggregate_failures do
     before do
       group.add_developer(group_member)
       project.add_developer(project_member)
@@ -57,7 +57,37 @@ RSpec.describe Todos::Destroy::GroupPrivateService, feature_category: :team_plan
         end
 
         it 'removes todos only for users who are not group users' do
-          expect { subject }.to change { Todo.count }.from(7).to(5)
+          expect { subject }.to change { Todo.count }.from(7).to(4)
+
+          expect(parent_member.todos).to contain_exactly(todo_parent_member)
+          expect(subgroup_member.todos).to be_empty
+          expect(subgproject_member.todos).to contain_exactly(todo_subproject_member)
+        end
+      end
+
+      context 'with member via group share' do
+        let(:invited_group) { create(:group) }
+        let(:invited_group_member) { create(:user).tap { |u| invited_group.add_guest(u) } }
+
+        let!(:todo_invited_group_member) { create(:todo, user: invited_group_member, group: group) }
+
+        it 'does not remove todos for users invited to the group' do
+          create(:group_group_link, shared_group: group, shared_with_group: invited_group)
+
+          expect { subject }.to change { Todo.count }.from(5).to(3)
+
+          expect(invited_group_member.todos).to contain_exactly(todo_invited_group_member)
+        end
+
+        it 'does not remove todos for users invited to an ancestor group' do
+          parent_group = create(:group)
+          group.update!(parent: parent_group)
+
+          create(:group_group_link, shared_group: parent_group, shared_with_group: invited_group)
+
+          expect { subject }.to change { Todo.count }.from(5).to(3)
+
+          expect(invited_group_member.todos).to contain_exactly(todo_invited_group_member)
         end
       end
     end

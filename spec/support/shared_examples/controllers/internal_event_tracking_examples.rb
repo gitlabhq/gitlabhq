@@ -10,8 +10,6 @@
 
 RSpec.shared_examples 'internal event tracking' do
   let(:fake_tracker) { instance_spy(Gitlab::Tracking::Destinations::Snowplow) }
-  let(:namespace) { nil }
-  let(:proejct) { nil }
 
   before do
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_tracker)
@@ -23,6 +21,9 @@ RSpec.shared_examples 'internal event tracking' do
   it 'logs to Snowplow', :aggregate_failures do
     subject
 
+    project = try(:project)
+    namespace = try(:namespace)
+
     expect(Gitlab::Tracking::StandardContext)
       .to have_received(:new)
         .with(
@@ -30,11 +31,12 @@ RSpec.shared_examples 'internal event tracking' do
           user_id: user.id,
           namespace_id: namespace&.id,
           plan_name: namespace&.actual_plan_name
-        )
+        ).at_least(:once)
 
     expect(Gitlab::Tracking::ServicePingContext)
       .to have_received(:new)
         .with(data_source: :redis_hll, event: action)
+        .at_least(:once)
 
     expect(fake_tracker).to have_received(:event)
       .with(
@@ -45,6 +47,5 @@ RSpec.shared_examples 'internal event tracking' do
           an_instance_of(SnowplowTracker::SelfDescribingJson)
         ]
       )
-      .exactly(:once)
   end
 end

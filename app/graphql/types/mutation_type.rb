@@ -183,6 +183,7 @@ module Types
     mount_mutation Mutations::SavedReplies::Destroy
     mount_mutation Mutations::Uploads::Delete
     mount_mutation Mutations::Users::SetNamespaceCommitEmail
+    mount_mutation Mutations::WorkItems::Subscribe, alpha: { milestone: '16.3' }
   end
 end
 

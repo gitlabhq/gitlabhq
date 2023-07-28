@@ -2,46 +2,22 @@
 
 module Ci
   module PipelineSchedules
-    class CreateService
+    class CreateService < BaseSaveService
+      AUTHORIZE = :create_pipeline_schedule
+
       def initialize(project, user, params)
-        @project = project
-        @user = user
-        @params = params
-
         @schedule = project.pipeline_schedules.new
-      end
-
-      def execute
-        return forbidden unless allowed?
-
-        schedule.assign_attributes(params.merge(owner: user))
-
-        if schedule.save
-          ServiceResponse.success(payload: schedule)
-        else
-          ServiceResponse.error(payload: schedule, message: schedule.errors.full_messages)
-        end
+        @user = user
+        @project = project
+        @params = params.merge(owner: user)
       end
 
       private
 
-      attr_reader :project, :user, :params, :schedule
-
-      def allowed?
-        user.can?(:create_pipeline_schedule, schedule)
-      end
-
-      def forbidden
-        # We add the error to the base object too
-        # because model errors are used in the API responses and the `form_errors` helper.
-        schedule.errors.add(:base, forbidden_message)
-
-        ServiceResponse.error(payload: schedule, message: [forbidden_message], reason: :forbidden)
-      end
-
-      def forbidden_message
+      def authorize_message
         _('The current user is not authorized to create the pipeline schedule')
       end
+      strong_memoize_attr :authorize_message
     end
   end
 end

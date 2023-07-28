@@ -50,7 +50,7 @@ module Gitlab
         @content.split("\n").each_with_object(iterator) do |text, iterator|
           text.chomp!
 
-          next if text =~ /^\s*#/
+          next if /^\s*#/.match?(text)
 
           if text =~ /\A\[submodule "(?<name>[^"]+)"\]\z/
             iterator.start_section($~[:name])

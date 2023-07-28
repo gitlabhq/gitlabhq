@@ -54,7 +54,7 @@ module Gitlab
         return "" unless decoded
 
         # Certain trigger phrases that means we didn't parse correctly
-        if decoded =~ %r{(Content\-Type\:|multipart/alternative|text/plain)}
+        if %r{(Content\-Type\:|multipart/alternative|text/plain)}.match?(decoded)
           return ""
         end
 

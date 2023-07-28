@@ -5,6 +5,8 @@ import TracingEmptyState from '~/tracing/components/tracing_empty_state.vue';
 import TracingTableList from '~/tracing/components/tracing_table_list.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import * as urlUtility from '~/lib/utils/url_utility';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 jest.mock('~/alert');
 
@@ -68,6 +70,16 @@ describe('TracingList', () => {
       findTableList().vm.$emit('reload');
 
       expect(observabilityClientMock.fetchTraces).toHaveBeenCalledTimes(1);
+    });
+
+    it('on trace selection it redirects to the details url', () => {
+      setWindowLocation('base_path');
+      const visitUrlMock = jest.spyOn(urlUtility, 'visitUrl').mockReturnValue({});
+
+      findTableList().vm.$emit('trace-selected', { trace_id: 'test-trace-id' });
+
+      expect(visitUrlMock).toHaveBeenCalledTimes(1);
+      expect(visitUrlMock).toHaveBeenCalledWith('/base_path/test-trace-id');
     });
   });
 

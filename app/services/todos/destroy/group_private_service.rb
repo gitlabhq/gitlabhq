@@ -24,7 +24,10 @@ module Todos
 
       override :authorized_users
       def authorized_users
-        group.direct_and_indirect_users.select(:id)
+        User.from_union([
+          group.project_users_with_descendants.select(:id),
+          group.members_with_parents.select(:user_id)
+        ], remove_duplicates: false)
       end
 
       override :todos_to_remove?

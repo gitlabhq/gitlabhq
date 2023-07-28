@@ -1,7 +1,8 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import TracingEmptyState from './tracing_empty_state.vue';
 import TracingTableList from './tracing_table_list.vue';
 
@@ -28,7 +29,7 @@ export default {
       traces: [],
     };
   },
-  async created() {
+  created() {
     this.checkEnabled();
   },
   methods: {
@@ -41,7 +42,7 @@ export default {
         }
       } catch (e) {
         createAlert({
-          message: __('Failed to load page.'),
+          message: s__('Tracing|Failed to load page.'),
         });
       } finally {
         this.loading = false;
@@ -55,7 +56,7 @@ export default {
         await this.fetchTraces();
       } catch (e) {
         createAlert({
-          message: __('Failed to enable tracing.'),
+          message: s__('Tracing|Failed to enable tracing.'),
         });
       } finally {
         this.loading = false;
@@ -68,11 +69,14 @@ export default {
         this.traces = traces;
       } catch (e) {
         createAlert({
-          message: __('Failed to load traces.'),
+          message: s__('Tracing|Failed to load traces.'),
         });
       } finally {
         this.loading = false;
       }
+    },
+    selectTrace(trace) {
+      visitUrl(joinPaths(window.location.pathname, trace.trace_id));
     },
   },
 };
@@ -87,7 +91,12 @@ export default {
     <template v-else-if="tracingEnabled !== null">
       <tracing-empty-state v-if="tracingEnabled === false" :enable-tracing="enableTracing" />
 
-      <tracing-table-list v-else :traces="traces" @reload="fetchTraces" />
+      <tracing-table-list
+        v-else
+        :traces="traces"
+        @reload="fetchTraces"
+        @trace-selected="selectTrace"
+      />
     </template>
   </div>
 </template>

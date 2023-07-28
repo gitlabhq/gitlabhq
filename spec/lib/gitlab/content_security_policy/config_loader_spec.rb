@@ -4,6 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :shared do
   let(:policy) { ActionDispatch::ContentSecurityPolicy.new }
+  let(:lfs_enabled) { false }
+  let(:proxy_download) { false }
+
   let(:csp_config) do
     {
       enabled: true,
@@ -18,6 +21,32 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
         report_uri: "http://example.com"
       }
     }
+  end
+
+  let(:lfs_config) do
+    {
+      enabled: lfs_enabled,
+      remote_directory: 'lfs-objects',
+      connection: object_store_connection_config,
+      direct_upload: false,
+      proxy_download: proxy_download,
+      storage_options: {}
+    }
+  end
+
+  let(:object_store_connection_config) do
+    {
+      provider: 'AWS',
+      aws_access_key_id: 'AWS_ACCESS_KEY_ID',
+      aws_secret_access_key: 'AWS_SECRET_ACCESS_KEY'
+    }
+  end
+
+  before do
+    stub_lfs_setting(enabled: lfs_enabled)
+    allow(LfsObjectUploader)
+      .to receive(:object_store_options)
+      .and_return(GitlabSettings::Options.build(lfs_config))
   end
 
   describe '.default_enabled' do
@@ -167,6 +196,70 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
           stub_config_setting(host: 'example.com', https: true, port: port)
           expect(connect_src).to eq("'self' wss://example.com")
         end
+      end
+    end
+
+    describe 'LFS connect-src headers' do
+      let(:url_for_provider) { described_class.send(:build_lfs_url) }
+
+      context 'when LFS is enabled' do
+        let(:lfs_enabled) { true }
+
+        context 'and direct downloads are enabled' do
+          let(:provider) { LfsObjectUploader.object_store_options.connection.provider }
+
+          context 'when provider is AWS' do
+            it { expect(provider).to eq('AWS') }
+
+            it { expect(url_for_provider).to be_present }
+
+            it { expect(directives['connect_src']).to include(url_for_provider) }
+          end
+
+          context 'when provider is AzureRM' do
+            let(:object_store_connection_config) do
+              {
+                provider: 'AzureRM',
+                azure_storage_account_name: 'azuretest',
+                azure_storage_access_key: 'ABCD1234'
+              }
+            end
+
+            it { expect(provider).to eq('AzureRM') }
+
+            it { expect(url_for_provider).to be_present }
+
+            it { expect(directives['connect_src']).to include(url_for_provider) }
+          end
+
+          context 'when provider is Google' do
+            let(:object_store_connection_config) do
+              {
+                provider: 'Google',
+                google_project: 'GOOGLE_PROJECT',
+                google_application_default: true
+              }
+            end
+
+            it { expect(provider).to eq('Google') }
+
+            it { expect(url_for_provider).to be_present }
+
+            it { expect(directives['connect_src']).to include(url_for_provider) }
+          end
+        end
+
+        context 'but direct downloads are disabled' do
+          let(:proxy_download) { true }
+
+          it { expect(directives['connect_src']).not_to include(url_for_provider) }
+        end
+      end
+
+      context 'when LFS is disabled' do
+        let(:proxy_download) { true }
+
+        it { expect(directives['connect_src']).not_to include(url_for_provider) }
       end
     end
 

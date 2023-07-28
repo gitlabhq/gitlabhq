@@ -17968,7 +17968,11 @@ CREATE TABLE member_roles (
     read_code boolean DEFAULT false,
     read_vulnerability boolean DEFAULT false NOT NULL,
     admin_vulnerability boolean DEFAULT false NOT NULL,
-    read_dependency boolean DEFAULT false NOT NULL
+    read_dependency boolean DEFAULT false NOT NULL,
+    name text DEFAULT 'Custom'::text NOT NULL,
+    description text,
+    CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
 );
 
 CREATE SEQUENCE member_roles_id_seq

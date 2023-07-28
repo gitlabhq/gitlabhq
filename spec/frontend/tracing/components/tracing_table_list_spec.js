@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TracingTableList from '~/tracing/components/tracing_table_list.vue';
 
@@ -27,11 +28,16 @@ describe('TracingTableList', () => {
   };
 
   const getRows = () => wrapper.findComponent({ name: 'GlTable' }).find('tbody').findAll('tr');
-
+  const getRow = (idx) => getRows().at(idx);
   const getCells = (trIdx) => getRows().at(trIdx).findAll('td');
 
   const getCell = (trIdx, tdIdx) => {
     return getCells(trIdx).at(tdIdx);
+  };
+
+  const selectRow = async (idx) => {
+    getRow(idx).trigger('click');
+    await nextTick();
   };
 
   it('renders traces as table', () => {
@@ -48,6 +54,14 @@ describe('TracingTableList', () => {
       expect(getCell(i, 2).text()).toBe(trace.operation);
       expect(getCell(i, 3).text()).toBe(`${trace.duration} ms`);
     });
+  });
+
+  it('emits trace-selected on row selection', async () => {
+    mountComponent();
+
+    await selectRow(0);
+    expect(wrapper.emitted('trace-selected')).toHaveLength(1);
+    expect(wrapper.emitted('trace-selected')[0][0]).toBe(mockTraces[0]);
   });
 
   it('renders the empty state when no traces are provided', () => {

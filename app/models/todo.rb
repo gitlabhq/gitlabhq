@@ -225,6 +225,10 @@ class Todo < ApplicationRecord
     action == MEMBER_ACCESS_REQUESTED
   end
 
+  def review_submitted?
+    action == REVIEW_SUBMITTED
+  end
+
   def member_access_type
     target.class.name.downcase
   end

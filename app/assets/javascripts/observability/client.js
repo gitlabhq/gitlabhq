@@ -1,4 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
+import mockData from './mock_traces.json';
 
 function enableTraces() {
   // TODO remove mocks https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2271
@@ -17,6 +18,16 @@ function isTracingEnabled() {
       resolve(true);
     }, 1000);
   });
+}
+
+async function fetchTrace(tracingUrl, traceId) {
+  const data = mockData;
+  const trace = data.traces.find((t) => t.trace_id === traceId);
+  const duration = trace.spans.reduce((acc, cur) => acc + cur.duration_nano, 0);
+  return {
+    ...trace,
+    duration: duration / 1000,
+  };
 }
 
 async function fetchTraces(tracingUrl) {
@@ -39,5 +50,6 @@ export function buildClient({ provisioningUrl, tracingUrl }) {
     enableTraces: () => enableTraces(provisioningUrl),
     isTracingEnabled: () => isTracingEnabled(provisioningUrl),
     fetchTraces: () => fetchTraces(tracingUrl),
+    fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
   };
 }

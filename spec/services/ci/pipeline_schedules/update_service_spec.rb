@@ -3,15 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuous_integration do
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
   let_it_be(:reporter) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
 
   let_it_be(:pipeline_schedule_variable) do
     create(:ci_pipeline_schedule_variable,
       key: 'foo', value: 'foovalue', pipeline_schedule: pipeline_schedule)
   end
+
+  subject(:service) { described_class.new(pipeline_schedule, user, params) }
 
   before_all do
     project.add_maintainer(user)
@@ -123,5 +125,7 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
         end
       end
     end
+
+    it_behaves_like 'pipeline schedules checking variables permission'
   end
 end

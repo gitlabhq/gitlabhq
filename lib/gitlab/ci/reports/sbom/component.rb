@@ -5,12 +5,14 @@ module Gitlab
     module Reports
       module Sbom
         class Component
-          attr_reader :component_type, :name, :version
+          include Gitlab::Utils::StrongMemoize
+
+          attr_reader :component_type, :version
 
           def initialize(type:, name:, purl:, version:)
             @component_type = type
             @name = name
-            @purl = purl
+            @raw_purl = purl
             @version = version
           end
 
@@ -23,9 +25,16 @@ module Gitlab
           end
 
           def purl
-            return unless @purl
+            return unless @raw_purl
 
-            ::Sbom::PackageUrl.parse(@purl)
+            ::Sbom::PackageUrl.parse(@raw_purl)
+          end
+          strong_memoize_attr :purl
+
+          def name
+            return @name unless purl
+
+            [purl.namespace, purl.name].compact.join('/')
           end
 
           private
