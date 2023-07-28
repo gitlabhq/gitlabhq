@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe 'time travel' do
+  # rubocop:disable RSpec/BeforeAll
   before(:all) do
     @original_time_zone = Time.zone
     Time.zone = 'Eastern Time (US & Canada)'
@@ -9,6 +10,7 @@ RSpec.describe 'time travel' do
   after(:all) do
     Time.zone = @original_time_zone
   end
+  # rubocop:enable RSpec/BeforeAll
 
   describe ':freeze_time' do
     it 'freezes time around a spec example', :freeze_time do

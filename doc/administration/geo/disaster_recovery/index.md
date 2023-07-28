@@ -542,7 +542,7 @@ Geo on the new **primary** site.
 
 To bring a new **secondary** site online, follow the [Geo setup instructions](../index.md#setup-instructions).
 
-### Step 6. Removing the secondary's tracking database
+### Step 6. Removing the former secondary's tracking database
 
 Every **secondary** has a special tracking database that is used to save the status of the synchronization of all the items from the **primary**.
 Because the **secondary** is already promoted, that data in the tracking database is no longer required.

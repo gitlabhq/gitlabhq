@@ -11,7 +11,7 @@ const InternalEvents = {
    * @param {string} event
    */
   track_event(event) {
-    API.trackRedisHllUserEvent(event);
+    API.trackInternalEvent(event);
     Tracking.event(GITLAB_INTERNAL_EVENT_CATEGORY, event, {
       context: {
         schema: SERVICE_PING_SCHEMA,

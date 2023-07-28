@@ -7,7 +7,7 @@ import * as utils from '~/tracking/utils';
 import { Tracker } from '~/tracking/tracker';
 
 jest.mock('~/api', () => ({
-  trackRedisHllUserEvent: jest.fn(),
+  trackInternalEvent: jest.fn(),
 }));
 
 jest.mock('~/tracking/utils', () => ({
@@ -19,13 +19,13 @@ Tracker.enabled = jest.fn();
 
 describe('InternalEvents', () => {
   describe('track_event', () => {
-    it('track_event calls trackRedisHllUserEvent with correct arguments', () => {
+    it('track_event calls API.trackInternalEvent with correct arguments', () => {
       const event = 'TestEvent';
 
       InternalEvents.track_event(event);
 
-      expect(API.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
-      expect(API.trackRedisHllUserEvent).toHaveBeenCalledWith(event);
+      expect(API.trackInternalEvent).toHaveBeenCalledTimes(1);
+      expect(API.trackInternalEvent).toHaveBeenCalledWith(event);
     });
 
     it('track_event calls tracking.event functions with correct arguments', () => {

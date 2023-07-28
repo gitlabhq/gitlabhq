@@ -183,6 +183,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           expect(request.to_h).to eq(
             payload.merge({
               allow_conflicts: false,
+              expected_old_oid: "",
               repository: repository.gitaly_repository.to_h,
               message: message.dup.force_encoding(Encoding::ASCII_8BIT),
               user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,

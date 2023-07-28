@@ -86,6 +86,7 @@ const Api = {
   freezePeriodsPath: '/api/:version/projects/:id/freeze_periods',
   freezePeriodPath: '/api/:version/projects/:id/freeze_periods/:freeze_period_id',
   serviceDataIncrementCounterPath: '/api/:version/usage_data/increment_counter',
+  serviceDataInternalEventPath: '/api/:version/usage_data/track_event',
   serviceDataIncrementUniqueUsersPath: '/api/:version/usage_data/increment_unique_users',
   featureFlagUserLists: '/api/:version/projects/:id/feature_flags_user_lists',
   featureFlagUserList: '/api/:version/projects/:id/feature_flags_user_lists/:list_iid',
@@ -908,6 +909,20 @@ const Api = {
     };
 
     return axios.post(url, { event }, { headers });
+  },
+
+  trackInternalEvent(event) {
+    if (!gon.current_user_id || !gon.features?.usageDataApi) {
+      return null;
+    }
+    const url = Api.buildUrl(this.serviceDataInternalEventPath);
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    const { data = {} } = { ...window.gl?.snowplowStandardContext };
+    const { project_id, namespace_id } = data;
+    return axios.post(url, { event, project_id, namespace_id }, { headers });
   },
 
   buildUrl(url) {

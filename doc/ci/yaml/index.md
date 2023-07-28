@@ -179,7 +179,7 @@ The time limit to resolve all files is 30 seconds.
 
 #### `include:local`
 
-Use `include:local` to include a file that is in the same repository as the configuration file containing the `include` keyword.
+Use `include:local` to include a file that is in the same repository and branch as the configuration file containing the `include` keyword.
 Use `include:local` instead of symbolic links.
 
 **Keyword type**: Global keyword.
