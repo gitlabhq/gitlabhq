@@ -13,8 +13,6 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           SERVICES = [
-            ::Metrics::Dashboard::ClusterMetricsEmbedService,
-            ::Metrics::Dashboard::ClusterDashboardService,
             ::Metrics::Dashboard::GitlabAlertEmbedService,
             ::Metrics::Dashboard::CustomMetricEmbedService,
             ::Metrics::Dashboard::GrafanaMetricEmbedService,

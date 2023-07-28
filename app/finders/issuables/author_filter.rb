@@ -15,6 +15,7 @@ module Issuables
         issuables.authored(params[:author_id])
       elsif params[:author_username].present?
         issuables.authored(User.by_username(params[:author_username]))
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/419221")
       else
         issuables
       end
@@ -24,6 +25,7 @@ module Issuables
       return issuables unless or_filters_enabled? && or_params&.fetch(:author_username, false).present?
 
       issuables.authored(User.by_username(or_params[:author_username]))
+        .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/419221")
     end
 
     def by_negated_author(issuables)
@@ -33,6 +35,7 @@ module Issuables
         issuables.not_authored(not_params[:author_id])
       elsif not_params[:author_username].present?
         issuables.not_authored(User.by_username(not_params[:author_username]))
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/419221")
       else
         issuables
       end

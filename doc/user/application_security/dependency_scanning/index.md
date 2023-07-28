@@ -54,12 +54,7 @@ If you're using the shared runners on GitLab.com, this is enabled by default. Th
 provided are for the Linux/amd64 architecture.
 
 WARNING:
-If you use your own runners, make sure your installed version of Docker
-is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
-
-WARNING:
-Dependency Scanning does not support run-time installation of compilers and interpreters.
-If you need it, explain why by filling out [the survey](https://docs.google.com/forms/d/e/1FAIpQLScKo7xEYA65rOjPTGIufAyfjPGnCALSJZoTxBlvskfFMEOZMw/viewform).
+Dependency Scanning does not support runtime installation of compilers and interpreters.
 
 ## Supported languages and package managers
 
@@ -594,10 +589,6 @@ Because template is [evaluated before](../../../ci/yaml/index.md#include) the pi
 configuration, the last mention of the variable takes precedence.
 
 ### Overriding dependency scanning jobs
-
-WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/index.md#only--except)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/index.md#rules) instead.
 
 To override a job definition (for example, to change properties like `variables` or `dependencies`),
 declare a new job with the same name as the one to override. Place this new job after the template

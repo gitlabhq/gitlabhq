@@ -42464,8 +42464,10 @@ msgstr ""
 msgid "SecurityReports|Severity"
 msgstr ""
 
-msgid "SecurityReports|Show %{pageSize} items"
-msgstr ""
+msgid "SecurityReports|Show %d item"
+msgid_plural "SecurityReports|Show %d items"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "SecurityReports|Sometimes a scanner can't determine a finding's severity. Those findings may still be a potential source of risk though. Please review these manually."
 msgstr ""

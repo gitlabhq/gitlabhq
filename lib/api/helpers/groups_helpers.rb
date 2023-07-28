@@ -44,6 +44,9 @@ module API
       params :optional_projects_params_ee do
       end
 
+      params :optional_group_list_params_ee do
+      end
+
       params :optional_projects_params do
         use :optional_projects_params_ee
       end

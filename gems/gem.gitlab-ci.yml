@@ -13,12 +13,14 @@ spec:
 workflow:
   name: '$PIPELINE_NAME'
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
-      variables:
-        PIPELINE_NAME: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION $SCHEDULE_TYPE $CI_PIPELINE_SOURCE pipeline'
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       variables:
         PIPELINE_NAME: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+    # CI_PIPELINE_SOURCE will always be "parent_pipeline" since this is a child pipeline
+    # document this here to avoid confusion and to define the default value for PIPELINE_NAME
+    - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
+      variables:
+        PIPELINE_NAME: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION default pipeline'
 
 variables:
   BUNDLE_PATH: "vendor"

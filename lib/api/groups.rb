@@ -26,6 +26,7 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user'
         optional :top_level_only, type: Boolean, desc: 'Only include top level groups'
+        use :optional_group_list_params_ee
         use :pagination
       end
 
@@ -36,6 +37,7 @@ module API
           :custom_attributes,
           :owned, :min_access_level,
           :include_parent_descendants,
+          :repository_storage,
           :search
         )
 

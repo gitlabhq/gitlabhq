@@ -26,18 +26,19 @@ When accessed without authentication, this endpoint also supports [keyset pagina
 
 Parameters:
 
-| Attribute                | Type              | Required | Description |
-| ------------------------ | ----------------- | -------- | ---------- |
-| `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
-| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
-| `order_by`               | string            | no       | Order groups by `name`, `path`, `id`, or `similarity` (if searching, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332889) in GitLab 14.1). Default is `name` |
-| `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics`             | boolean           | no       | Include group statistics (administrators only).<br>*Note:* The REST API response does not provide the full `RootStorageStatistics` data that is shown in the UI. To match the data in the UI, use GraphQL instead of REST. For more information, see the [Group GraphQL API resources](../api/graphql/reference/index.md#group).|
-| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
-| `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
-| `top_level_only`         | boolean           | no       | Limit to top level groups, excluding all subgroups |
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `skip_groups`                         | array of integers | no       | Skip the group IDs passed |
+| `all_available`                       | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
+| `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
+| `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity` (if searching, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332889) in GitLab 14.1). Default is `name` |
+| `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
+| `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* The REST API response does not provide the full `RootStorageStatistics` data that is shown in the UI. To match the data in the UI, use GraphQL instead of REST. For more information, see the [Group GraphQL API resources](../api/graphql/reference/index.md#group).|
+| `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+| `owned`                               | boolean           | no       | Limit to groups explicitly owned by the current user |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
+| `top_level_only`                      | boolean           | no       | Limit to top level groups, excluding all subgroups |
+| `repository_storage` **(PREMIUM)**    | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3 |
 
 ```plaintext
 GET /groups
@@ -64,6 +65,7 @@ GET /groups
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
+    "repository_storage": "default",
     "full_name": "Foobar Group",
     "full_path": "foo-bar",
     "file_template_project_id": 1,
@@ -101,6 +103,7 @@ GET /groups?statistics=true
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
+    "repository_storage": "default",
     "full_name": "Foobar Group",
     "full_path": "foo-bar",
     "file_template_project_id": 1,
@@ -184,6 +187,7 @@ GET /groups/:id/subgroups
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://gitlab.example.com/groups/foo-bar",
     "request_access_enabled": false,
+    "repository_storage": "default",
     "full_name": "Foobar Group",
     "full_path": "foo-bar",
     "file_template_project_id": 1,
@@ -548,6 +552,7 @@ Example response:
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
   "request_access_enabled": false,
+  "repository_storage": "default",
   "full_name": "Twitter",
   "full_path": "twitter",
   "runners_token": "ba324ca7b1c77fc20bb9",
@@ -746,6 +751,7 @@ Example response:
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
   "request_access_enabled": false,
+  "repository_storage": "default",
   "full_name": "Twitter",
   "full_path": "twitter",
   "file_template_project_id": 1,
@@ -1022,6 +1028,7 @@ Example response:
   "avatar_url": null,
   "web_url": "http://gitlab.example.com/groups/h5bp",
   "request_access_enabled": false,
+  "repository_storage": "default",
   "full_name": "Foobar Group",
   "full_path": "h5bp",
   "file_template_project_id": 1,

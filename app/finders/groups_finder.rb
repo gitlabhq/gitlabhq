@@ -32,14 +32,8 @@ class GroupsFinder < UnionFinder
   end
 
   def execute
-    items = all_groups.map do |item|
-      item = by_parent(item)
-      item = by_custom_attributes(item)
-      item = filter_group_ids(item)
-      item = exclude_group_ids(item)
-      item = by_search(item)
-
-      item
+    items = all_groups.map do |groups|
+      filter_groups(groups)
     end
 
     find_union(items, Group).with_route.order_id_desc
@@ -48,6 +42,14 @@ class GroupsFinder < UnionFinder
   private
 
   attr_reader :current_user, :params
+
+  def filter_groups(groups)
+    groups = by_parent(groups)
+    groups = by_custom_attributes(groups)
+    groups = filter_group_ids(groups)
+    groups = exclude_group_ids(groups)
+    by_search(groups)
+  end
 
   def all_groups
     return [owned_groups] if params[:owned]
@@ -147,3 +149,5 @@ class GroupsFinder < UnionFinder
     groups
   end
 end
+
+GroupsFinder.prepend_mod_with('GroupsFinder')

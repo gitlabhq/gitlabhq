@@ -54,7 +54,10 @@ By default this feature is not available. To make it available, an administrator
 The [DORA metrics](dora_metrics.md) Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
 
 The chart is a breakdown of your project's DORA scores, categorized as high, medium, or low.
-Each bar on the chart displays the sum of total projects per score category, calculated monthly. To exclude data from the chart (for example, "Not Included"), in the legend select the series you want to exclude.
+It aggregates all the child projects in the group.
+
+Each bar on the chart displays the sum of total projects per score category, calculated monthly.
+To exclude data from the chart (for example, "Not Included"), in the legend select the series you want to exclude.
 Hovering over each bar reveals a dialog that explains the score's definition.
 
 For example, if a project has a high score for Deployment Frequency (Velocity), it means that the project has one or more deploys to production per day.
@@ -193,3 +196,13 @@ For an overview of editing label filters in the configuration file, see [GitLab 
 | Merge request throughput | The number of merge requests merged by month. | [Groups Productivity analytics](productivity_analytics.md), [Projects Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics)  | [Groups Productivity analytics](productivity_analytics.md) [Projects Merge request analytics](merge_request_analytics.md) | `merge_request_throughput` |
 | Critical vulnerabilities over time | Critical vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/index.md) | `vulnerability_critical` |
 | High vulnerabilities over time | High vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/index.md) | `vulnerability_high` |
+
+## Value Streams Dashboard metrics with Jira
+
+The following metrics do not depend on using Jira:
+
+- DORA Deployment frequency
+- DORA Lead time for changes
+- Number of deploys
+- Merge request throughput
+- Vulnerabilities

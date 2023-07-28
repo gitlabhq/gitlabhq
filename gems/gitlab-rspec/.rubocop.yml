@@ -8,3 +8,7 @@ RSpec/InstanceVariable:
 Gitlab/ChangeTimezone:
   Exclude:
     - spec/gitlab/rspec/time_travel_spec.rb
+
+RSpec/BeforeAll:
+  Exclude:
+    - spec/gitlab/rspec/time_travel_spec.rb

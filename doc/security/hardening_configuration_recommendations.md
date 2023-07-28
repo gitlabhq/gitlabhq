@@ -23,36 +23,48 @@ NGINX is controlled and integrated into GitLab, modification of the
 `/etc/gitlab/gitlab.rb` file used for adjustments. Here are a few recommendations for helping to improve
 the security of NGINX itself:
 
-```shell
-#
-# Only strong ciphers are used
-#
-nginx['ssl_ciphers'] = "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:TLS_AES_256_GCM_SHA384:TLS_AES_128_GCM_SHA256"
-#
-# Follow preferred ciphers and the order listed as preference
-#
-nginx['ssl_prefer_server_ciphers'] = "on"
-#
-# Only allow TLSv1.2 and TLSv1.3
-#
-nginx['ssl_protocols'] = "TLSv1.2 TLSv1.3"
+1. Create the [Diffie-Hellman key](https://nginx.org/en/docs/http/ngx_http_ssl_module.html#ssl_dhparam):
 
-##! **Recommended in: https://nginx.org/en/docs/http/ngx_http_ssl_module.html**
-nginx['ssl_session_cache'] = "builtin:1000  shared:SSL:10m"
+   ```shell
+   sudo openssl dhparam -out /etc/gitlab/ssl/dhparam.pem 4096
+   ```
 
-##! **Default according to https://nginx.org/en/docs/http/ngx_http_ssl_module.html**
-nginx['ssl_session_timeout'] = "5m"
+1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
-# Should prevent logjam attack etc
-# For the example below, run the following first:
-# openssl dhparam -out /etc/gitlab/ssl/dhparam.pem 4096
-nginx['ssl_dhparam'] = "/etc/gitlab/ssl/dhparams.pem" # changed from nil
+   ```ruby
+   #
+   # Only strong ciphers are used
+   #
+   nginx['ssl_ciphers'] = "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:TLS_AES_256_GCM_SHA384:TLS_AES_128_GCM_SHA256"
+   #
+   # Follow preferred ciphers and the order listed as preference
+   #
+   nginx['ssl_prefer_server_ciphers'] = "on"
+   #
+   # Only allow TLSv1.2 and TLSv1.3
+   #
+   nginx['ssl_protocols'] = "TLSv1.2 TLSv1.3"
 
-# Turn off session ticket reuse
-nginx['ssl_session_tickets'] = "off"
-# Pick our own curve instead of what openssl hands us
-nginx['ssl_ecdh_curve'] = "secp384r1"
-```
+   ##! **Recommended in: https://nginx.org/en/docs/http/ngx_http_ssl_module.html**
+   nginx['ssl_session_cache'] = "builtin:1000  shared:SSL:10m"
+
+   ##! **Default according to https://nginx.org/en/docs/http/ngx_http_ssl_module.html**
+   nginx['ssl_session_timeout'] = "5m"
+
+   # Should prevent logjam attack etc
+   nginx['ssl_dhparam'] = "/etc/gitlab/ssl/dhparams.pem" # changed from nil
+
+   # Turn off session ticket reuse
+   nginx['ssl_session_tickets'] = "off"
+   # Pick our own curve instead of what openssl hands us
+   nginx['ssl_ecdh_curve'] = "secp384r1"
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
 ## Consul
 
