@@ -65,11 +65,6 @@ export default {
         return {};
       },
     },
-    size: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     if (!this.readonly && !this.value) {
@@ -156,7 +151,6 @@ export default {
       <gl-form-input
         ref="input"
         :readonly="readonly"
-        :size="size"
         class="gl-font-monospace! gl-cursor-default!"
         v-bind="formInputGroupProps"
         :value="value"

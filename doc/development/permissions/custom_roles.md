@@ -6,12 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Custom Roles
 
-Users can create custom roles and define those roles by assigning specific abilities. For example, a user could create an "Engineer" role with `read code` and `admin merge requests` abilities, but without abilities like `admin issues`.
+Ultimate customers can create custom roles and define those roles by assigning specific abilities.
 
-In this context:
+For example, a user could create an "Engineer" role with `read code` and `admin merge requests` abilities, but without abilities like `admin issues`.
 
-- "Ability" is an action a user can do.
-- "Permission" defines the policy classes.
+In this context, the terms "permission" and "ability" are often used interchangeably.
+
+- "Ability" is an action a user can do. These map to [Declarative Policy abilities](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy/-/blob/main/doc/defining-policies.md#rules) and live in Policy classes in `ee/app/policies/*`.
+- "Permission" is how we refer to an ability [in user-facing documentation](../../user/permissions.md). The documentation of permissions is manually generated so there is not necessarily a 1:1 mapping of the permissions listed in documentation and the abilities defined in Policy classes.
 
 ## Custom roles vs static roles
 
@@ -20,18 +22,21 @@ In GitLab 15.9 and earlier, GitLab only had [static roles](predefined_roles.md) 
 With custom roles, the customers can decide which abilities they want to assign to certain user groups. For example:
 
 - In the static role system, reading of vulnerabilities is limited to a Developer role.
-- In the custom role system, a customer can assign this ability to a new custom role based on the Reporter role.
+- In the custom role system, a customer can assign this ability to a new custom role based on any static role.
+
+Like static roles, custom roles are [inherited](../../user/project/members/index.md#inherited-membership) within a group hierarchy. If a user has custom role for a group, that user will also have a custom role for any projects or subgroups within the group.
 
 ## Technical overview
 
-Individual custom roles are stored in the `member_roles` table (`MemberRole` model) and can be defined only for top-level groups. This table includes individual abilities and a `base_access_level` value. This value defines the minimum access level of:
-
-- Users who can be assigned to the custom role.
-- Every ability.
-
-For example, the `read_vulnerability` ability has a minimum access level of `Reporter`. That means only member role records with `base_access_level = REPORTER` (20) or higher can have the `read_vulnerability` value set to `true`. Also, only users who have at least the Reporter role can be assigned that ability.
-
-For now, custom role abilities are supported only at project level.
+- Individual custom roles are stored in the `member_roles` table (`MemberRole` model).
+- A `member_roles` record is associated with top-level groups (not subgroups) via the `namespace_id` foreign key.
+- A Group or project membership (`members` record) is associated with a custom role via the `member_role_id` foreign key.
+- A Group or project membership can be associated with any custom role that is defined on the root-level group of the group or project.
+- The `member_roles` table includes individual permissions and a `base_access_level` value.
+- The `base_access_level` must be a [valid access level](../../api/access_requests.md#valid-access-levels).
+The `base_access_level` determines which abilities are included in the custom role. For example, if the `base_access_level` is `10`, the custom role will include any abilities that a static Guest role would receive, plus any additional abilities that are enabled by the `member_roles` record by setting an attribute, such as `read_code`, to true.
+- A custom role can enable additional abilities for a `base_access_level` but it cannot disable a permission. As a result, custom roles are "additive only". The rationale for this choice is [in this comment](https://gitlab.com/gitlab-org/gitlab/-/issues/352891#note_1059561579).
+- For now, custom role abilities are supported only at project level. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411851) to add support for custom group abilities.
 
 ## How to implement a new ability for custom roles
 
@@ -152,6 +157,26 @@ Every feature added to custom roles should have minimal abilities. For most feat
 There might be features that require additional abilities but try to minimalize those. You can always ask members of the Authentication and Authorization group for their opinion or help.
 
 This is also where your work should begin. Take all the abilities for the feature you work on, and consolidate those abilities into `read_`, `admin_`, or additional abilities if necessary.
+
+Many abilities in the `GroupPolicy` and `ProjectPolicy` classes have many
+redundant policies. There is an [epic for consolidating these Policy classes](https://gitlab.com/groups/gitlab-org/-/epics/6689).
+If you encounter similar permissions in these classes, consider refactoring so
+that they have the same name.
+
+For example, you see in `GroupPolicy` that there is an ability called
+`read_group_security_dashboard` and in `ProjectPolicy` has an ability called
+`read_project_security_dashboard`. You'd like to make both customizable. Rather
+than adding a row to the `member_roles` table for each ability, consider
+renaming them to `read_security_dashboard` and adding `read_security_dashboard`
+to the `member_roles` table. This is more expected because it means that
+enabling `read_security_dashboard` on the parent group will enable the custom
+For example, `GroupPolicy` has an ability called `read_group_security_dashboard` and `ProjectPolicy` has an ability
+called `read_project_security_dashboard`. If you would like to make both customizable, rather than adding a row to the
+`member_roles` table for each ability, consider renaming them to `read_security_dashboard` and adding
+`read_security_dashboard` to the `member_roles` table. This convention means that enabling `read_security_dashboard` on
+the parent group will allow the custom role to access the group security dashboard and the project security dashboard
+for each project in that group. Enabling the same permission on a specific project will allow access to that projects'
+security dashboard.
 
 ### Implement a new ability
 

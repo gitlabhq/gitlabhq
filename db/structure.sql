@@ -33624,6 +33624,8 @@ CREATE INDEX index_vulnerability_reads_on_location_image_trigram ON vulnerabilit
 
 CREATE INDEX index_vulnerability_reads_on_namespace_type_severity_id ON vulnerability_reads USING btree (namespace_id, report_type, severity, vulnerability_id);
 
+CREATE INDEX index_vulnerability_reads_on_project_id_and_vulnerability_id ON vulnerability_reads USING btree (project_id, vulnerability_id);
+
 CREATE INDEX index_vulnerability_reads_on_scanner_id ON vulnerability_reads USING btree (scanner_id);
 
 CREATE UNIQUE INDEX index_vulnerability_reads_on_uuid ON vulnerability_reads USING btree (uuid);

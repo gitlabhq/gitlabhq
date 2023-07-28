@@ -4,11 +4,9 @@
 - type_plural = _('project access tokens')
 - @force_desktop_expanded_sidebar = true
 
-.settings-section.js-search-settings-section
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = page_title
+.gl-mt-5.js-search-settings-section
+  %h4.gl-my-0
+    = page_title
   %p.gl-text-secondary
     - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/project_access_tokens') }
     - if current_user.can?(:create_resource_access_tokens, @project)
@@ -25,21 +23,9 @@
 
   #js-new-access-token-app{ data: { access_token_type: type } }
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-border-b-0 gl-rounded-bottom-left-none gl-rounded-bottom-right-none js-toggle-container js-token-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body' }) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper
-        %h3.gl-new-card-title
-          = _('Active project access tokens')
-        .gl-new-card-count
-          = sprite_icon('token', css_class: 'gl-mr-2')
-          %span.js-token-count= @active_access_tokens.size
-      - if current_user.can?(:create_resource_access_tokens, @project)
-        .gl-new-card-actions
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content' }) do
-            = _('Add new token')
-    - c.with_body do
-      - if current_user.can?(:create_resource_access_tokens, @project)
-        .gl-new-card-add-form.gl-mt-3.gl-display-none.js-toggle-content.js-add-new-token-form
-          = render_if_exists 'projects/settings/access_tokens/form', type: type
+  - if current_user.can?(:create_resource_access_tokens, @project)
+    = render_if_exists 'projects/settings/access_tokens/form',
+      type: type
 
-  #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }
+  #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true
+ } }

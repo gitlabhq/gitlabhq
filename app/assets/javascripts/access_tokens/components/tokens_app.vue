@@ -88,7 +88,6 @@ export default {
       :input-label="$options.i18n[tokenType].label"
       :copy-button-title="$options.i18n[tokenType].copyButtonTitle"
       :data-testid="$options.htmlAttributes[tokenType].containerTestId"
-      size="md"
     >
       <template #title>
         <div class="settings-sticky-header">

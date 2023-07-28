@@ -23,7 +23,8 @@ created as private in GitLab as well.
 
 ## Import your Bitbucket repositories
 
-> Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
+> - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
+> - Ability to import reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416611) in GitLab 16.3.
 
 You can import Bitbucket repositories to GitLab.
 

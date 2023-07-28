@@ -91,6 +91,24 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(cells.at(0).text()).toBe(noTokensMessage);
   });
 
+  it('should show a title indicating the amount of tokens', () => {
+    createComponent();
+
+    expect(wrapper.find('h5').text()).toBe(
+      sprintf(__('Active %{accessTokenTypePlural} (%{totalAccessTokens})'), {
+        accessTokenTypePlural,
+        totalAccessTokens: defaultActiveAccessTokens.length,
+      }),
+    );
+  });
+
+  it('should render information section', () => {
+    const info = 'This is my information';
+    createComponent({ information: info });
+
+    expect(wrapper.findByTestId('information-section').text()).toBe(info);
+  });
+
   describe('table headers', () => {
     it('should include `Action` column', () => {
       createComponent();

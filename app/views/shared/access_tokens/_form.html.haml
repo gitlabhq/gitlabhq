@@ -7,7 +7,7 @@
 - access_levels = local_assigns.fetch(:access_levels, false)
 - default_access_level = local_assigns.fetch(:default_access_level, false)
 
-%h4.gl-mt-0
+%h5.gl-font-lg.gl-mt-0
   = title
 
 = gitlab_ui_form_for token, as: prefix, url: path, method: :post, html: { id: 'js-new-access-token-form', class: 'js-requires-input' }, remote: ajax do |f|
@@ -43,5 +43,3 @@
 
   .gl-mt-3
     = f.submit s_('AccessTokens|Create %{type}') % { type: type }, data: { qa_selector: 'create_token_button' }, pajamas_button: true
-    = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
-      = _('Cancel')

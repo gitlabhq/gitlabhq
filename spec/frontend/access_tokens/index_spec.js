@@ -50,6 +50,7 @@ describe('access tokens', () => {
         initialActiveAccessTokens,
 
         // Default values
+        information: undefined,
         noActiveTokensMessage: sprintf(__('This user has no active %{accessTokenTypePlural}.'), {
           accessTokenTypePlural,
         }),
@@ -58,12 +59,14 @@ describe('access tokens', () => {
     });
 
     it('mounts the component and provides all values', () => {
+      const information = 'Additional information';
       const noActiveTokensMessage = 'This group has no active access tokens.';
       setHTMLFixture(
         `<div id="js-access-token-table-app"
           data-access-token-type="${accessTokenType}"
           data-access-token-type-plural="${accessTokenTypePlural}"
           data-initial-active-access-tokens=${JSON.stringify(initialActiveAccessTokens)}
+          data-information="${information}"
           data-no-active-tokens-message="${noActiveTokensMessage}"
           data-show-role
           >
@@ -79,6 +82,7 @@ describe('access tokens', () => {
         accessTokenType,
         accessTokenTypePlural,
         initialActiveAccessTokens,
+        information,
         noActiveTokensMessage,
         showRole: true,
       });

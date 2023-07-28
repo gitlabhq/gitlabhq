@@ -91,9 +91,7 @@
     @include gl-border-gray-100;
     @include gl-rounded-base;
   }
-}
 
-.gl-new-card-body {
   // Table adjustments
   @mixin new-card-table-adjustments {
     tbody > tr {

@@ -32,6 +32,7 @@ export default {
   i18n: {
     emptyField: __('Never'),
     expired: __('Expired'),
+    header: __('Active %{accessTokenTypePlural} (%{totalAccessTokens})'),
     modalMessage: __(
       'Are you sure you want to revoke this %{accessTokenType}? This action cannot be undone.',
     ),
@@ -44,6 +45,7 @@ export default {
     'initialActiveAccessTokens',
     'noActiveTokensMessage',
     'showRole',
+    'information',
   ],
   data() {
     return {
@@ -71,6 +73,12 @@ export default {
       }
 
       return FIELDS.filter(({ key }) => !ignoredFields.includes(key));
+    },
+    header() {
+      return sprintf(this.$options.i18n.header, {
+        accessTokenTypePlural: this.accessTokenTypePlural,
+        totalAccessTokens: this.activeAccessTokens.length,
+      });
     },
     modalMessage() {
       return sprintf(this.$options.i18n.modalMessage, {
@@ -106,66 +114,65 @@ export default {
 
 <template>
   <dom-element-listener :selector="$options.FORM_SELECTOR" @[$options.EVENT_SUCCESS]="onSuccess">
-    <div>
-      <div
-        class="gl-new-card-body gl-px-0 gl-overflow-hidden gl-bg-gray-10 gl-border-l gl-border-r gl-border-b gl-rounded-bottom-base gl-mb-5 gl-md-mb-0"
+    <div class="gl-pt-6">
+      <h5>{{ header }}</h5>
+
+      <p v-if="information" data-testid="information-section">
+        {{ information }}
+      </p>
+
+      <gl-table
+        data-testid="active-tokens"
+        :empty-text="noActiveTokensMessage"
+        :fields="filteredFields"
+        :items="activeAccessTokens"
+        :per-page="$options.PAGE_SIZE"
+        :current-page="currentPage"
+        :sort-compare="sortingChanged"
+        show-empty
       >
-        <gl-table
-          data-testid="active-tokens"
-          :empty-text="noActiveTokensMessage"
-          :fields="filteredFields"
-          :items="activeAccessTokens"
-          :per-page="$options.PAGE_SIZE"
-          :current-page="currentPage"
-          :sort-compare="sortingChanged"
-          show-empty
-          stacked="sm"
-        >
-          <template #cell(createdAt)="{ item: { createdAt } }">
-            <user-date :date="createdAt" />
-          </template>
+        <template #cell(createdAt)="{ item: { createdAt } }">
+          <user-date :date="createdAt" />
+        </template>
 
-          <template #head(lastUsedAt)="{ label }">
-            <span>{{ label }}</span>
-            <gl-link :href="$options.lastUsedHelpLink"
-              ><gl-icon name="question-o" /><span class="gl-sr-only">{{
-                s__('AccessTokens|The last time a token was used')
-              }}</span></gl-link
-            >
-          </template>
+        <template #head(lastUsedAt)="{ label }">
+          <span>{{ label }}</span>
+          <gl-link :href="$options.lastUsedHelpLink"
+            ><gl-icon name="question-o" /><span class="gl-sr-only">{{
+              s__('AccessTokens|The last time a token was used')
+            }}</span></gl-link
+          >
+        </template>
 
-          <template #cell(lastUsedAt)="{ item: { lastUsedAt } }">
-            <time-ago-tooltip v-if="lastUsedAt" :time="lastUsedAt" />
-            <template v-else> {{ $options.i18n.emptyField }}</template>
-          </template>
+        <template #cell(lastUsedAt)="{ item: { lastUsedAt } }">
+          <time-ago-tooltip v-if="lastUsedAt" :time="lastUsedAt" />
+          <template v-else> {{ $options.i18n.emptyField }}</template>
+        </template>
 
-          <template #cell(expiresAt)="{ item: { expiresAt, expired, expiresSoon } }">
-            <template v-if="expiresAt">
-              <span v-if="expired" class="text-danger">{{ $options.i18n.expired }}</span>
-              <time-ago-tooltip v-else :class="{ 'text-warning': expiresSoon }" :time="expiresAt" />
-            </template>
-            <span v-else v-gl-tooltip :title="$options.i18n.tokenValidity">{{
-              $options.i18n.emptyField
-            }}</span>
+        <template #cell(expiresAt)="{ item: { expiresAt, expired, expiresSoon } }">
+          <template v-if="expiresAt">
+            <span v-if="expired" class="text-danger">{{ $options.i18n.expired }}</span>
+            <time-ago-tooltip v-else :class="{ 'text-warning': expiresSoon }" :time="expiresAt" />
           </template>
+          <span v-else v-gl-tooltip :title="$options.i18n.tokenValidity">{{
+            $options.i18n.emptyField
+          }}</span>
+        </template>
 
-          <template #cell(action)="{ item: { revokePath } }">
-            <gl-button
-              v-if="revokePath"
-              category="tertiary"
-              :title="$options.i18n.revokeButton"
-              :aria-label="$options.i18n.revokeButton"
-              :data-confirm="modalMessage"
-              data-confirm-btn-variant="danger"
-              data-qa-selector="revoke_button"
-              data-method="put"
-              :href="revokePath"
-              icon="remove"
-              class="has-tooltip"
-            />
-          </template>
-        </gl-table>
-      </div>
+        <template #cell(action)="{ item: { revokePath } }">
+          <gl-button
+            v-if="revokePath"
+            category="tertiary"
+            :aria-label="$options.i18n.revokeButton"
+            :data-confirm="modalMessage"
+            data-confirm-btn-variant="danger"
+            data-qa-selector="revoke_button"
+            data-method="put"
+            :href="revokePath"
+            icon="remove"
+          />
+        </template>
+      </gl-table>
       <gl-pagination
         v-if="showPagination"
         v-model="currentPage"
@@ -176,7 +183,6 @@ export default {
         :label-next-page="__('Go to next page')"
         :label-prev-page="__('Go to previous page')"
         align="center"
-        class="gl-mt-5"
       />
     </div>
   </dom-element-listener>
