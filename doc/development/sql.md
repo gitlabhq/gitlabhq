@@ -558,3 +558,129 @@ searchable using Kibana.
 
 See [the runbook](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/patroni/pg_collect_query_data.md#searching-postgresql-logs-with-kibanaelasticsearch)
 for more details.
+
+## When to use common table expressions
+
+You can use common table expressions (CTEs) to create a temporary result set within a more complex query.
+You can also use a recursive CTE to reference the CTE's result set within
+the query itself. The following example queries a chain of
+`personal access tokens` referencing each other in the
+`previous_personal_access_token_id` column.
+
+```sql
+WITH RECURSIVE "personal_access_tokens_cte" AS (
+(
+    SELECT
+      "personal_access_tokens".*
+    FROM
+      "personal_access_tokens"
+    WHERE
+      "personal_access_tokens"."previous_personal_access_token_id" = 15)
+  UNION (
+    SELECT
+      "personal_access_tokens".*
+    FROM
+      "personal_access_tokens",
+      "personal_access_tokens_cte"
+    WHERE
+      "personal_access_tokens"."previous_personal_access_token_id" = "personal_access_tokens_cte"."id"))
+SELECT
+  "personal_access_tokens".*
+FROM
+  "personal_access_tokens_cte" AS "personal_access_tokens"
+
+ id | previous_personal_access_token_id
+----+-----------------------------------
+ 16 |                                15
+ 17 |                                16
+ 18 |                                17
+ 19 |                                18
+ 20 |                                19
+ 21 |                                20
+(6 rows)
+```
+
+As CTEs are temporary result sets, you can use them within another `SELECT`
+statement. Using CTEs with `UPDATE`, or `DELETE` could lead to unexpected
+behavior:
+
+Consider the following method:
+
+```ruby
+def personal_access_token_chain(token)
+  cte = Gitlab::SQL::RecursiveCTE.new(:personal_access_tokens_cte)
+  personal_access_token_table = Arel::Table.new(:personal_access_tokens)
+
+  cte << PersonalAccessToken
+           .where(personal_access_token_table[:previous_personal_access_token_id].eq(token.id))
+  cte << PersonalAccessToken
+           .from([personal_access_token_table, cte.table])
+           .where(personal_access_token_table[:previous_personal_access_token_id].eq(cte.table[:id]))
+  PersonalAccessToken.with.recursive(cte.to_arel).from(cte.alias_to(personal_access_token_table))
+end
+```
+
+It works as expected when it is used to query data:
+
+```sql
+> personal_access_token_chain(token)
+
+WITH RECURSIVE "personal_access_tokens_cte" AS (
+(
+    SELECT
+      "personal_access_tokens".*
+    FROM
+      "personal_access_tokens"
+    WHERE
+      "personal_access_tokens"."previous_personal_access_token_id" = 11)
+  UNION (
+    SELECT
+      "personal_access_tokens".*
+    FROM
+      "personal_access_tokens",
+      "personal_access_tokens_cte"
+    WHERE
+      "personal_access_tokens"."previous_personal_access_token_id" = "personal_access_tokens_cte"."id"))
+SELECT
+    "personal_access_tokens".*
+FROM
+    "personal_access_tokens_cte" AS "personal_access_tokens"
+```
+
+However, the CTE is dropped when used with `#update_all`. As a result, the method
+updates the entire table:
+
+```sql
+> personal_access_token_chain(token).update_all(revoked: true)
+
+UPDATE
+    "personal_access_tokens"
+SET
+    "revoked" = TRUE
+```
+
+To work around this behavior:
+
+1. Query the `ids` of the records:
+
+   ```ruby
+   > token_ids = personal_access_token_chain(token).pluck_primary_key
+   => [16, 17, 18, 19, 20, 21]
+   ```
+
+1. Use this array to scope `PersonalAccessTokens`:
+
+   ```ruby
+   PersonalAccessToken.where(id: token_ids).update_all(revoked: true)
+   ```
+
+Alternatively, combine these two steps:
+
+```ruby
+PersonalAccessToken
+  .where(id: personal_access_token_chain(token).pluck_primary_key)
+  .update_all(revoked: true)
+```
+
+NOTE:
+Avoid updating large volumes of unbounded data. If there are no [application limits](application_limits.md) on the data, or you are unsure about the data volume, you should [update the data in batches](database/iterating_tables_in_batches.md).

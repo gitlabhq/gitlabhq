@@ -1,7 +1,7 @@
 <script>
 import Vue from 'vue';
 import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { intersection } from 'lodash';
 import Tracking from '~/tracking';
 import { NAV_LINK_COUNT_DEFAULT_CLASSES, LABEL_DEFAULT_CLASSES } from '../../constants';
@@ -27,7 +27,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(['query', 'useSidebarNavigation']),
     ...mapGetters(['queryLanguageFilters']),
     dataFilters() {
       return Object.values(this.filtersData?.filters || []);
@@ -62,7 +61,6 @@ export default {
       });
     },
   },
-  NAV_LINK_COUNT_DEFAULT_CLASSES,
   LABEL_DEFAULT_CLASSES,
 };
 </script>

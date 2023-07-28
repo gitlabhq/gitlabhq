@@ -72,6 +72,7 @@ export const mergeRequestMenuGroup = [
 ];
 
 export const sidebarData = {
+  is_logged_in: true,
   current_menu_items: [],
   current_context_header: {
     title: 'Your Work',
@@ -118,6 +119,26 @@ export const sidebarData = {
       css_class: 'shortcut-link-class',
     },
   ],
+};
+
+export const loggedOutSidebarData = {
+  is_logged_in: false,
+  current_menu_items: [],
+  current_context_header: {
+    title: 'Your Work',
+    icon: 'work',
+  },
+  support_path: '/support',
+  display_whats_new: true,
+  whats_new_most_recent_release_items_count: 5,
+  whats_new_version_digest: 1,
+  show_version_check: false,
+  gitlab_version: { major: 16, minor: 0 },
+  gitlab_version_check: { severity: 'success' },
+  search: {
+    search_path: '/search',
+  },
+  panel_type: 'your_work',
 };
 
 export const userMenuMockStatus = {

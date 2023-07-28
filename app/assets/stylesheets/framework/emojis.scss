@@ -45,6 +45,14 @@ gl-emoji {
 
 .emoji-picker-category-tab {
   border-bottom-color: transparent;
+
+  &:hover {
+    @include gl-text-gray-900;
+
+    &:not(.emoji-picker-category-active) {
+      @include gl-border-b-gray-200;
+    }
+  }
 }
 
 .emoji-picker-category-active {

@@ -4,6 +4,7 @@ import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
+import UserMenu from '~/super_sidebar/components/user_menu.vue';
 import SearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
@@ -11,13 +12,14 @@ import UserBar from '~/super_sidebar/components/user_bar.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
-import { sidebarData } from '../mock_data';
+import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
 import { MOCK_DEFAULT_SEARCH_OPTIONS } from './global_search/mock_data';
 
 describe('UserBar component', () => {
   let wrapper;
 
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
+  const findUserMenu = () => wrapper.findComponent(UserMenu);
   const findIssuesCounter = () => wrapper.findByTestId('issues-shortcut-button');
   const findMRsCounter = () => wrapper.findByTestId('merge-requests-shortcut-button');
   const findTodosCounter = () => wrapper.findByTestId('todos-shortcut-button');
@@ -37,13 +39,13 @@ describe('UserBar component', () => {
   });
   const createWrapper = ({
     hasCollapseButton = true,
-    extraSidebarData = {},
+    sidebarData = mockSidebarData,
     provideOverrides = {},
   } = {}) => {
     wrapper = shallowMountExtended(UserBar, {
       propsData: {
         hasCollapseButton,
-        sidebarData: { ...sidebarData, ...extraSidebarData },
+        sidebarData,
       },
       provide: {
         toggleNewNavEndpoint: '/-/profile/preferences',
@@ -63,17 +65,17 @@ describe('UserBar component', () => {
     });
 
     it('passes the "Create new..." menu groups to the create-menu component', () => {
-      expect(findCreateMenu().props('groups')).toBe(sidebarData.create_new_menu_groups);
+      expect(findCreateMenu().props('groups')).toBe(mockSidebarData.create_new_menu_groups);
     });
 
     it('passes the "Merge request" menu groups to the merge_request_menu component', () => {
-      expect(findMergeRequestMenu().props('items')).toBe(sidebarData.merge_request_menu);
+      expect(findMergeRequestMenu().props('items')).toBe(mockSidebarData.merge_request_menu);
     });
 
     it('renders issues counter', () => {
       const isuesCounter = findIssuesCounter();
       expect(isuesCounter.props('count')).toBe(userCounts.assigned_issues);
-      expect(isuesCounter.props('href')).toBe(sidebarData.issues_dashboard_path);
+      expect(isuesCounter.props('href')).toBe(mockSidebarData.issues_dashboard_path);
       expect(isuesCounter.props('label')).toBe(__('Issues'));
       expect(isuesCounter.attributes('data-track-action')).toBe('click_link');
       expect(isuesCounter.attributes('data-track-label')).toBe('issues_link');
@@ -95,7 +97,7 @@ describe('UserBar component', () => {
     describe('Todos counter', () => {
       it('renders it', () => {
         const todosCounter = findTodosCounter();
-        expect(todosCounter.props('href')).toBe(sidebarData.todos_dashboard_path);
+        expect(todosCounter.props('href')).toBe(mockSidebarData.todos_dashboard_path);
         expect(todosCounter.props('label')).toBe(__('To-Do list'));
         expect(todosCounter.attributes('data-track-action')).toBe('click_link');
         expect(todosCounter.attributes('data-track-label')).toBe('todos_link');
@@ -114,7 +116,7 @@ describe('UserBar component', () => {
 
     it('renders branding logo', () => {
       expect(findBrandLogo().exists()).toBe(true);
-      expect(findBrandLogo().props('logoUrl')).toBe(sidebarData.logo_url);
+      expect(findBrandLogo().props('logoUrl')).toBe(mockSidebarData.logo_url);
     });
 
     it('does not render the "Stop impersonating" button', () => {
@@ -134,16 +136,16 @@ describe('UserBar component', () => {
   describe('GitLab Next badge', () => {
     describe('when on canary', () => {
       it('should render a badge to switch off GitLab Next', () => {
-        createWrapper({ extraSidebarData: { gitlab_com_and_canary: true } });
+        createWrapper({ sidebarData: { ...mockSidebarData, gitlab_com_and_canary: true } });
         const badge = wrapper.findComponent(GlBadge);
         expect(badge.text()).toBe('Next');
-        expect(badge.attributes('href')).toBe(sidebarData.canary_toggle_com_url);
+        expect(badge.attributes('href')).toBe(mockSidebarData.canary_toggle_com_url);
       });
     });
 
     describe('when not on canary', () => {
       it('should not render the GitLab Next badge', () => {
-        createWrapper({ extraSidebarData: { gitlab_com_and_canary: false } });
+        createWrapper({ sidebarData: { ...mockSidebarData, gitlab_com_and_canary: false } });
         const badge = wrapper.findComponent(GlBadge);
         expect(badge.exists()).toBe(false);
       });
@@ -206,8 +208,36 @@ describe('UserBar component', () => {
     it('sets the href and data-method attributes', () => {
       const btn = findStopImpersonationButton();
 
-      expect(btn.attributes('href')).toBe(sidebarData.stop_impersonation_path);
+      expect(btn.attributes('href')).toBe(mockSidebarData.stop_impersonation_path);
       expect(btn.attributes('data-method')).toBe('delete');
+    });
+  });
+
+  describe('Logged out', () => {
+    beforeEach(() => {
+      createWrapper({ sidebarData: loggedOutSidebarData, gitlab_com_and_canary: true });
+    });
+
+    it('does not render brand logo', () => {
+      expect(findBrandLogo().exists()).toBe(false);
+    });
+
+    it('does not render Next badge', () => {
+      expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
+    });
+
+    it('does not render create menu', () => {
+      expect(findCreateMenu().exists()).toBe(false);
+    });
+
+    it('does not render user menu', () => {
+      expect(findUserMenu().exists()).toBe(false);
+    });
+
+    it('does not render counters', () => {
+      expect(findIssuesCounter().exists()).toBe(false);
+      expect(findMRsCounter().exists()).toBe(false);
+      expect(findTodosCounter().exists()).toBe(false);
     });
   });
 });

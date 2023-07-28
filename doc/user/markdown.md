@@ -215,8 +215,6 @@ For more information, see the [Kroki integration](../administration/integration/
 
 :::TabTitle Rendered Markdown
 
-<!-- vale gitlab.Markdown_emoji = NO -->
-
 Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":monkey:" alt=":monkey:"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/star2.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":star2:" alt=":star2:"> to your <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speech_balloon:" alt=":speech_balloon:">. Well we have a gift for you:
 
 <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/zap.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;"  title=":zap:" alt=":zap:">You can use emoji anywhere GitLab Flavored Markdown is supported. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/v.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":v:" alt=":v:">
@@ -226,8 +224,6 @@ You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-fos
 If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/fearful.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":fearful:" alt=":fearful:">. You can join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/family.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":family:" alt=":family:">. Just look up one of the supported codes.
 
 Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":thumbsup:" alt=":thumbsup:">
-
-<!-- vale gitlab.Markdown_emoji = YES -->
 
 :::TabTitle Code
 

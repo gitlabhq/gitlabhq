@@ -51,6 +51,7 @@ module Gitlab
       gon.dot_com                = Gitlab.com?
       gon.uf_error_prefix        = ::Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX
       gon.pat_prefix             = Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
+      gon.use_new_navigation     = NavHelper.show_super_sidebar?(current_user)
 
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
@@ -61,7 +62,6 @@ module Gitlab
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
         gon.time_display_relative = current_user.time_display_relative
-        gon.use_new_navigation = NavHelper.show_super_sidebar?(current_user)
       end
 
       # Initialize gon.features with any flags that should be

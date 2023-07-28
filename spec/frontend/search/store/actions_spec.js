@@ -327,28 +327,6 @@ describe('Global Search Store Actions', () => {
     });
   });
 
-  describe('resetLanguageQueryWithRedirect', () => {
-    it('calls visitUrl and setParams with the state.query', () => {
-      return testAction(actions.resetLanguageQueryWithRedirect, null, state, [], [], () => {
-        expect(urlUtils.setUrlParams).toHaveBeenCalledWith({ ...state.query, page: null });
-        expect(urlUtils.visitUrl).toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('resetLanguageQuery', () => {
-    it('calls commit SET_QUERY with value []', () => {
-      state = { ...state, query: { ...state.query, language: ['YAML', 'Text', 'Markdown'] } };
-      return testAction(
-        actions.resetLanguageQuery,
-        null,
-        state,
-        [{ type: types.SET_QUERY, payload: { key: 'language', value: [] } }],
-        [],
-      );
-    });
-  });
-
   describe('closeLabel', () => {
     beforeEach(() => {
       state = createState({

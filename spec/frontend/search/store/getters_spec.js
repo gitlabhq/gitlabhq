@@ -70,18 +70,6 @@ describe('Global Search Store Getters', () => {
     });
   });
 
-  describe('currentUrlQueryHasLanguageFilters', () => {
-    it.each`
-      description             | lang                        | result
-      ${'has valid language'} | ${{ language: ['a', 'b'] }} | ${true}
-      ${'has empty lang'}     | ${{ language: [] }}         | ${false}
-      ${'has no lang'}        | ${{}}                       | ${false}
-    `('$description', ({ lang, result }) => {
-      state.urlQuery = lang;
-      expect(getters.currentUrlQueryHasLanguageFilters(state)).toBe(result);
-    });
-  });
-
   describe('navigationItems', () => {
     it('returns the re-mapped navigation data', () => {
       state.navigation = MOCK_NAVIGATION;

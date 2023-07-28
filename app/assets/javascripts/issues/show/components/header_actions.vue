@@ -464,6 +464,7 @@ export default {
       </template>
       <gl-dropdown-item
         v-if="showToggleIssueStateButton && glFeatures.moveCloseIntoDropdown"
+        data-testid="toggle-issue-state-button"
         @click="toggleIssueState"
       >
         {{ buttonText }}

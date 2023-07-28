@@ -30,6 +30,10 @@ export default {
       type: Array,
       required: true,
     },
+    isLoggedIn: {
+      type: Boolean,
+      required: true,
+    },
     pinnedItemIds: {
       type: Array,
       required: false,
@@ -42,7 +46,8 @@ export default {
     },
     updatePinsUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
 
@@ -97,7 +102,7 @@ export default {
         .filter(Boolean);
     },
     supportsPins() {
-      return PANELS_WITH_PINS.includes(this.panelType);
+      return this.isLoggedIn && PANELS_WITH_PINS.includes(this.panelType);
     },
     hasStaticItems() {
       return this.staticItems.length > 0;

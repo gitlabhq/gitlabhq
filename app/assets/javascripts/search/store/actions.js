@@ -4,7 +4,6 @@ import axios from '~/lib/utils/axios_utils';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
-import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, SIDEBAR_PARAMS } from './constants';
 import * as types from './mutation_types';
@@ -125,14 +124,6 @@ export const closeLabel = ({ state, commit }, { key }) => {
 
 export const setLabelFilterSearch = ({ commit }, { value }) => {
   commit(types.SET_LABEL_SEARCH_STRING, value);
-};
-
-export const resetLanguageQueryWithRedirect = ({ state }) => {
-  visitUrl(setUrlParams({ ...state.query, language: null }, undefined, true));
-};
-
-export const resetLanguageQuery = ({ commit }) => {
-  commit(types.SET_QUERY, { key: languageFilterData?.filterParam, value: [] });
 };
 
 export const fetchSidebarCount = ({ commit, state }) => {

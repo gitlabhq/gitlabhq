@@ -74,6 +74,10 @@ RSpec.describe ApplicationSettingsHelper do
       expect(helper.visible_attributes).to include(*params)
     end
 
+    it 'contains :namespace_aggregation_schedule_lease_duration_in_seconds' do
+      expect(helper.visible_attributes).to include(:namespace_aggregation_schedule_lease_duration_in_seconds)
+    end
+
     context 'when on SaaS', :saas do
       it 'does not contain :deactivate_dormant_users' do
         expect(helper.visible_attributes).not_to include(:deactivate_dormant_users)

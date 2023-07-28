@@ -499,7 +499,8 @@ module ApplicationSettingsHelper
       :gitlab_dedicated_instance,
       :ci_max_includes,
       :allow_account_deletion,
-      :gitlab_shell_operation_limit
+      :gitlab_shell_operation_limit,
+      :namespace_aggregation_schedule_lease_duration_in_seconds
     ].tap do |settings|
       next if Gitlab.com?
 

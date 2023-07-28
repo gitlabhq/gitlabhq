@@ -44,7 +44,37 @@ Events" blueprint is about making it possible to:
 1. Describe technology required to match subscriptions with events at GitLab.com scale and beyond.
 1. Describe technology we could use to reduce the cost of running automation jobs significantly.
 
-## Proposals
+## Proposal
+
+### Requirements
+
+Any accepted proposal should take in consideration the following requirements and characteristics:
+
+1. Defining events should be done in separate files.
+    - If we define all events in a single file, then the single file gets too complicated and hard to
+    maintain for users. Then, users need to separate their configs with the `include` keyword again and we end up
+    with the same solution.
+    - The structure of the pipelines, the personas and the jobs will be different depending on the events being
+    subscribed to and the goals of the subscription.
+1. A single subscription configuration file should define a single pipeline that is created when an event is triggered.
+    - The pipeline config can include other files with the `include` keyword.
+    - The pipeline can have many jobs and trigger child pipelines or multi-project pipelines.
+1. The events and handling syntax should use the existing CI config syntax where it is pragmatic to do so.
+    - It'll be easier for users to adapt. It'll require less work to implement.
+1. The event subscription and emiting events should be performant, scalable, and non blocking.
+    - Reading from the database is usually faster than reading from files.
+    - A CI event can potentially have many subscriptions.
+    This also includes evaluating the right YAML files to create pipelines.
+    - The main business logic (e.g. creating an issue) should not be affected
+    by any subscriptions to the given CI event (e.g. issue created).
+1. The CI events design should be implemented in a maintainable and extensible way.
+    - If there is a `issues/create` event, then any new event (`merge_request/created`) can be added without
+    much effort.
+    - We expect that many events will be added. It should be trivial for developers to
+    register domain events (e.g. 'issue closed') as GitLab-defined CI events.
+    - Also, we should consider the opportunity of supporting user-defined CI events long term (e.g. 'order shipped').
+
+### Options
 
 For now, we have technical 5 proposals;
 

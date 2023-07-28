@@ -1,4 +1,4 @@
-import { GlAvatar } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContextSwitcherToggle from '~/super_sidebar/components/context_switcher_toggle.vue';
 
@@ -11,7 +11,7 @@ describe('ContextSwitcherToggle component', () => {
     avatar: '/path/to/avatar.png',
   };
 
-  const findGlAvatar = () => wrapper.getComponent(GlAvatar);
+  const findGlIcon = () => wrapper.getComponent(GlIcon);
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(ContextSwitcherToggle, {
@@ -23,28 +23,17 @@ describe('ContextSwitcherToggle component', () => {
     });
   };
 
-  describe('with an avatar', () => {
-    it('passes the correct props to GlAvatar', () => {
-      createWrapper();
-      const avatar = findGlAvatar();
+  it('renders "chevron-down" icon when not expanded', () => {
+    createWrapper();
 
-      expect(avatar.props('shape')).toBe('rect');
-      expect(avatar.props('entityName')).toBe(context.title);
-      expect(avatar.props('entityId')).toBe(context.id);
-      expect(avatar.props('src')).toBe(context.avatar);
+    expect(findGlIcon().props('name')).toBe('chevron-down');
+  });
+
+  it('renders "chevron-up" icon when expanded', () => {
+    createWrapper({
+      expanded: true,
     });
 
-    it('renders the avatar with a custom shape', () => {
-      const customShape = 'circle';
-      createWrapper({
-        context: {
-          ...context,
-          avatar_shape: customShape,
-        },
-      });
-      const avatar = findGlAvatar();
-
-      expect(avatar.props('shape')).toBe(customShape);
-    });
+    expect(findGlIcon().props('name')).toBe('chevron-up');
   });
 });

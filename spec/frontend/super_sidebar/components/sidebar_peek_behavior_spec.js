@@ -35,8 +35,10 @@ describe('SidebarPeek component', () => {
   let wrapper;
   let trackingSpy = null;
 
-  const createComponent = () => {
-    wrapper = mount(SidebarPeek);
+  const createComponent = (props = { isMouseOverSidebar: false }) => {
+    wrapper = mount(SidebarPeek, {
+      propsData: props,
+    });
   };
 
   const moveMouse = (clientX) => {
@@ -161,6 +163,17 @@ describe('SidebarPeek component', () => {
     moveMouse(X_AWAY_FROM_SIDEBAR);
 
     expect(lastNChangeEvents(2)).toEqual([STATE_OPEN, STATE_CLOSED]);
+  });
+
+  it('does not transition to will-close or closed when mouse is over sidebar child element', () => {
+    createComponent({ isMouseOverSidebar: true });
+    moveMouse(0);
+    jest.runOnlyPendingTimers();
+
+    moveMouse(X_SIDEBAR_EDGE);
+    moveMouse(X_AWAY_FROM_SIDEBAR);
+
+    expect(lastNChangeEvents(1)).toEqual([STATE_OPEN]);
   });
 
   it('immediately transitions will-close -> closed if mouse moves far away', () => {

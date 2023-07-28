@@ -19,8 +19,6 @@ import { sprintf } from '~/locale';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 
 import { I18N } from '~/vue_shared/global_search/constants';
-
-import { HR_DEFAULT_CLASSES, ONLY_SHOW_MD } from '../../constants';
 import LabelDropdownItems from './label_dropdown_items.vue';
 
 import {
@@ -62,7 +60,6 @@ export default {
       'filteredUnselectedLabels',
       'filteredAppliedSelectedLabels',
       'appliedSelectedLabels',
-      'filteredUnappliedSelectedLabels',
     ]),
     searchInputDescribeBy() {
       if (this.isLoggedIn) {
@@ -106,9 +103,6 @@ export default {
     },
     hasUnselectedLabels() {
       return this.filteredUnselectedLabels.length > 0;
-    },
-    dividerClasses() {
-      return [...HR_DEFAULT_CLASSES, ...ONLY_SHOW_MD];
     },
     labelSearchBox() {
       return this.$refs.searchLabelInputBox?.$el.querySelector('[role=searchbox]');
@@ -277,6 +271,5 @@ export default {
         <gl-loading-icon v-if="aggregations.fetching" size="lg" class="my-4" />
       </div>
     </div>
-    <hr v-if="!useSidebarNavigation" :class="dividerClasses" />
   </div>
 </template>

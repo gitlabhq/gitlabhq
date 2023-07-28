@@ -11,6 +11,7 @@ import SidebarPeekBehavior, {
   STATE_WILL_CLOSE,
 } from '~/super_sidebar/components/sidebar_peek_behavior.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
+import ContextHeader from '~/super_sidebar/components/context_header.vue';
 import ContextSwitcher from '~/super_sidebar/components/context_switcher.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import { sidebarState } from '~/super_sidebar/constants';
@@ -20,7 +21,7 @@ import {
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import { stubComponent } from 'helpers/stub_component';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import { sidebarData as mockSidebarData } from '../mock_data';
+import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
 
 const initialSidebarState = { ...sidebarState };
 
@@ -42,6 +43,7 @@ describe('SuperSidebar component', () => {
 
   const findSidebar = () => wrapper.findByTestId('super-sidebar');
   const findUserBar = () => wrapper.findComponent(UserBar);
+  const findContextHeader = () => wrapper.findComponent(ContextHeader);
   const findContextSwitcher = () => wrapper.findComponent(ContextSwitcher);
   const findNavContainer = () => wrapper.findByTestId('nav-container');
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
@@ -230,6 +232,15 @@ describe('SuperSidebar component', () => {
         expect(findSidebar().classes()).not.toContain(peekHintClass);
       },
     );
+
+    it('keeps track of if sidebar has mouseover or not', async () => {
+      createWrapper({ sidebarState: { isCollapsed: false, isPeekable: true } });
+      expect(findPeekBehavior().props('isMouseOverSidebar')).toBe(false);
+      await findSidebar().trigger('mouseenter');
+      expect(findPeekBehavior().props('isMouseOverSidebar')).toBe(true);
+      await findSidebar().trigger('mouseleave');
+      expect(findPeekBehavior().props('isMouseOverSidebar')).toBe(false);
+    });
   });
 
   describe('nav container', () => {
@@ -257,6 +268,17 @@ describe('SuperSidebar component', () => {
     it('renders trial status widget', () => {
       expect(findTrialStatusWidget().exists()).toBe(true);
       expect(findTrialStatusPopover().exists()).toBe(true);
+    });
+  });
+
+  describe('Logged out', () => {
+    beforeEach(() => {
+      createWrapper({ sidebarData: loggedOutSidebarData });
+    });
+
+    it('renders context header instead of context switcher', () => {
+      expect(findContextHeader().exists()).toBe(true);
+      expect(findContextSwitcher().exists()).toBe(false);
     });
   });
 });

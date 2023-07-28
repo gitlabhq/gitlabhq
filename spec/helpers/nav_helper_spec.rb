@@ -169,15 +169,39 @@ RSpec.describe NavHelper, feature_category: :navigation do
       end
     end
 
-    context 'when nil is provided' do
-      specify { expect(helper.show_super_sidebar?(nil)).to eq false }
+    shared_examples 'anonymous show_super_sidebar is supposed to' do
+      before do
+        stub_feature_flags(super_sidebar_logged_out: feature_flag)
+      end
+
+      context 'when super_sidebar_logged_out feature flag is disabled' do
+        let(:feature_flag) { false }
+
+        specify { expect(subject).to eq false }
+      end
+
+      context 'when super_sidebar_logged_out feature flag is enabled' do
+        let(:feature_flag) { true }
+
+        specify { expect(subject).to eq true }
+      end
     end
 
-    context 'when no user is signed-in' do
-      specify do
-        allow(helper).to receive(:current_user).and_return(nil)
+    context 'without a user' do
+      context 'with current_user (nil) as a default' do
+        before do
+          allow(helper).to receive(:current_user).and_return(nil)
+        end
 
-        expect(helper.show_super_sidebar?).to eq false
+        subject { helper.show_super_sidebar? }
+
+        it_behaves_like 'anonymous show_super_sidebar is supposed to'
+      end
+
+      context 'with nil provided as an argument' do
+        subject { helper.show_super_sidebar?(nil) }
+
+        it_behaves_like 'anonymous show_super_sidebar is supposed to'
       end
     end
 

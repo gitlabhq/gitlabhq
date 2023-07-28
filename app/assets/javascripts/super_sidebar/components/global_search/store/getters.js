@@ -1,6 +1,8 @@
 import { omitBy, isNil } from 'lodash';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import {
+  ISSUES_CATEGORY,
+  MERGE_REQUEST_CATEGORY,
   MSG_ISSUES_ASSIGNED_TO_ME,
   MSG_ISSUES_IVE_CREATED,
   MSG_MR_ASSIGNED_TO_ME,
@@ -60,6 +62,19 @@ export const scopedMRPath = (state) => {
 
 export const defaultSearchOptions = (state, getters) => {
   const userName = gon.current_username;
+
+  if (!userName) {
+    return [
+      {
+        text: ISSUES_CATEGORY,
+        href: getters.scopedIssuesPath,
+      },
+      {
+        text: MERGE_REQUEST_CATEGORY,
+        href: getters.scopedMRPath,
+      },
+    ];
+  }
 
   const issues = [
     {

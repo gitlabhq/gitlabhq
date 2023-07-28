@@ -81,6 +81,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['ci_max_includes']).to eq(150)
       expect(json_response['allow_account_deletion']).to eq(true)
       expect(json_response['gitlab_shell_operation_limit']).to eq(600)
+      expect(json_response['namespace_aggregation_schedule_lease_duration_in_seconds']).to eq(300)
     end
   end
 
@@ -193,7 +194,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             silent_mode_enabled: true,
             valid_runner_registrars: ['group'],
             allow_account_deletion: false,
-            gitlab_shell_operation_limit: 500
+            gitlab_shell_operation_limit: 500,
+            namespace_aggregation_schedule_lease_duration_in_seconds: 400
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -270,6 +272,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['valid_runner_registrars']).to eq(['group'])
         expect(json_response['allow_account_deletion']).to be(false)
         expect(json_response['gitlab_shell_operation_limit']).to be(500)
+        expect(json_response['namespace_aggregation_schedule_lease_duration_in_seconds']).to be(400)
       end
     end
 

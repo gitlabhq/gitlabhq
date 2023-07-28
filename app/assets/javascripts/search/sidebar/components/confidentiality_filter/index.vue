@@ -1,6 +1,5 @@
 <script>
 import { mapState } from 'vuex';
-import { HR_DEFAULT_CLASSES } from '../../constants';
 import RadioFilter from '../radio_filter.vue';
 import { confidentialFilterData } from './data';
 
@@ -13,7 +12,6 @@ export default {
     ...mapState(['useSidebarNavigation']),
   },
   confidentialFilterData,
-  HR_DEFAULT_CLASSES,
 };
 </script>
 

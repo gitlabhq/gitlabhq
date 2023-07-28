@@ -27,13 +27,3 @@ export const trackShowHasOverMax = () =>
     label: TRACKING_LABEL_MAX,
     property: TRACKING_PROPERTY_MAX,
   });
-
-export const trackSubmitQuery = () =>
-  Tracking.event(TRACKING_ACTION_CLICK, TRACKING_LABEL_APPLY, {
-    label: TRACKING_CATEGORY,
-  });
-
-export const trackResetQuery = () =>
-  Tracking.event(TRACKING_ACTION_CLICK, TRACKING_LABEL_RESET, {
-    label: TRACKING_CATEGORY,
-  });

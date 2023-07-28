@@ -91,10 +91,16 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       allow(user).to receive(:pinned_nav_items).and_return({ panel_type => %w[foo bar], 'another_panel' => %w[baz] })
     end
 
+    # Tests for logged-out sidebar context
+    it_behaves_like 'logged-out super-sidebar context'
+
+    # Tests for logged-in sidebar context below
+    it_behaves_like 'shared super sidebar context'
+    it { is_expected.to include({ is_logged_in: true }) }
+
     it 'returns sidebar values from user', :use_clean_rails_memory_store_caching do
       expect(subject).to include({
-        current_context_header: nil,
-        current_menu_items: nil,
+        is_logged_in: true,
         name: user.name,
         username: user.username,
         avatar_url: user.avatar_url,
@@ -128,25 +134,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         todos_dashboard_path: dashboard_todos_path,
         projects_path: dashboard_projects_path,
         groups_path: dashboard_groups_path,
-        support_path: helper.support_url,
-        display_whats_new: helper.display_whats_new?,
-        whats_new_most_recent_release_items_count: helper.whats_new_most_recent_release_items_count,
-        whats_new_version_digest: helper.whats_new_version_digest,
-        show_version_check: helper.show_version_check?,
-        gitlab_version: Gitlab.version_info,
-        gitlab_version_check: helper.gitlab_version_check,
         gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
         gitlab_com_and_canary: Gitlab.com_and_canary?,
         canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
-        search: {
-          search_path: search_path,
-          issues_path: issues_dashboard_path,
-          mr_path: merge_requests_dashboard_path,
-          autocomplete_path: search_autocomplete_path,
-          search_context: helper.header_search_context
-        },
         pinned_items: %w[foo bar],
-        panel_type: panel_type,
         update_pins_url: pins_url,
         shortcut_links: [
           {
@@ -471,8 +462,11 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
 
       describe 'when impersonating' do
+        before do
+          session[:impersonator_id] = 5
+        end
+
         it 'sets is_impersonating to `true`' do
-          expect(helper).to receive(:session).and_return({ impersonator_id: 1 })
           expect(subject[:is_impersonating]).to be(true)
         end
       end

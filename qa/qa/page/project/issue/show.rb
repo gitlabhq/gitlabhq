@@ -19,8 +19,8 @@ module QA
           end
 
           view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
-            element :toggle_issue_state_button
-            element :desktop_dropdown
+            element 'toggle-issue-state-button'
+            element 'desktop-dropdown'
             element :delete_issue_button
           end
 
@@ -63,21 +63,17 @@ module QA
           end
 
           def click_close_issue_button
-            # Click by JS is needed to bypass the Moved MR actions popover
-            # Change back to regular click_element when moved_mr_sidebar FF is removed
-            # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-            click_by_javascript(find_element(:toggle_issue_state_button, text: 'Close issue'))
+            open_actions_dropdown
+            click_element('toggle-issue-state-button', text: 'Close issue')
           end
 
           def has_reopen_issue_button?
-            has_element?(:toggle_issue_state_button, text: 'Reopen issue')
+            open_actions_dropdown
+            has_element?('toggle-issue-state-button', text: 'Reopen issue')
           end
 
           def has_delete_issue_button?
-            # Click by JS is needed to bypass the Moved MR actions popover
-            # Change back to regular click_element when moved_mr_sidebar FF is removed
-            # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-            click_by_javascript(find('[data-testid="desktop-dropdown"] > button'))
+            open_actions_dropdown
             has_element?(:delete_issue_button)
           end
 
@@ -93,6 +89,11 @@ module QA
             Page::Modal::DeleteIssue.perform(&:confirm_delete_issue)
 
             wait_for_requests
+          end
+
+          def open_actions_dropdown
+            # We use find here because these are gitlab-ui elements
+            find('[data-testid="desktop-dropdown"] > button').click
           end
         end
       end
