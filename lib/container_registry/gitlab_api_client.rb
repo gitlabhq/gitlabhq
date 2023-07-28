@@ -148,13 +148,16 @@ module ContainerRegistry
     end
 
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs-gitlab/api.md#list-repository-tags
-    def tags(path, page_size: 100, last: nil)
+    def tags(path, page_size: 100, last: nil, before: nil, name: nil, sort: nil)
       limited_page_size = [page_size, MAX_TAGS_PAGE_SIZE].min
       with_token_faraday do |faraday_client|
         url = "/gitlab/v1/repositories/#{path}/tags/list/"
         response = faraday_client.get(url) do |req|
           req.params['n'] = limited_page_size
           req.params['last'] = last if last
+          req.params['before'] = before if before
+          req.params['name'] = name if name
+          req.params['sort'] = sort if sort
         end
 
         unless response.success?

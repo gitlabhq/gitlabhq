@@ -109,7 +109,8 @@ Example response:
   "external_pipeline_validation_service_url": null,
   "jira_connect_application_key": null,
   "jira_connect_proxy_url": null,
-  "silent_mode_enabled": false
+  "silent_mode_enabled": false,
+  "package_registry_allow_anyone_to_pull_option": true
 }
 ```
 
@@ -249,7 +250,8 @@ Example response:
   "user_defaults_to_private_profile": true,
   "projects_api_rate_limit_unauthenticated": 400,
   "silent_mode_enabled": false,
-  "security_policy_global_group_approvers_enabled": true
+  "security_policy_global_group_approvers_enabled": true,
+  "package_registry_allow_anyone_to_pull_option": true
 }
 ```
 
@@ -459,6 +461,7 @@ listed in the descriptions of the relevant settings.
 | `npm_package_requests_forwarding` **(PREMIUM)** | boolean   | no                                   | Use npmjs.org as a default remote repository when the package is not found in the GitLab Package Registry for npm. |
 | `pypi_package_requests_forwarding` **(PREMIUM)** | boolean  | no                                   | Use pypi.org as a default remote repository when the package is not found in the GitLab Package Registry for PyPI. |
 | `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled.
+| `package_registry_allow_anyone_to_pull_option`          | boolean          | no                                   | Enable to [allow anyone to pull from Package Registry](../user/packages/package_registry/index.md#allow-anyone-to-pull-from-package-registry) visible and changeable.
 | `pages_domain_verification_enabled`       | boolean          | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
 | `password_authentication_enabled_for_git` | boolean         | no                                   | Enable authentication for Git over HTTP(S) via a GitLab account password. Default is `true`. |
 | `password_authentication_enabled_for_web` | boolean         | no                                   | Enable authentication for the web interface via a GitLab account password. Default is `true`. |

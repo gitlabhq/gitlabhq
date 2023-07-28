@@ -30,7 +30,9 @@ to access Merge Request, CI Job or Project by a known global ID.
 Cells will use many distinct and not connected databases, each of them having
 a separate IDs for most of entities.
 
-It might be desirable to retain globally unique IDs for all database rows
+At a minimum, any ID referenced between a cell and the shared schema will need to be unique across the cluster to avoid ambiguous references.
+
+Further to required global IDs, it might also be desirable to retain globally unique IDs for all database rows
 to allow migrating resources between Cells in the future.
 
 ## 1. Definition

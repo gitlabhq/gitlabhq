@@ -17,6 +17,7 @@ Setting | Table | Description
 `npm_package_requests_forwarding` | `application_settings` | Enables or disables npm package forwarding at the instance level.
 `pypi_package_requests_forwarding` | `application_settings` | Enables or disables PyPI package forwarding at the instance level.
 `packages_cleanup_package_file_worker_capacity` | `application_settings` | Number of concurrent workers allowed for package file cleanup.
+`package_registry_allow_anyone_to_pull_option`  | `application_settings` | Enables or disables the `Allow anyone to pull from Package Registry` toggle.
 `throttle_unauthenticated_packages_api_requests_per_period` | `application_settings` | Request limit for unauthenticated package API requests in the period defined by `throttle_unauthenticated_packages_api_period_in_seconds`.
 `throttle_unauthenticated_packages_api_period_in_seconds`  | `application_settings` | Period in seconds to measure unauthenticated package API requests.
 `throttle_authenticated_packages_api_requests_per_period` | `application_settings` | Request limit for authenticated package API requests in the period defined by `throttle_authenticated_packages_api_period_in_seconds`.

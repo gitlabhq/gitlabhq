@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::DependencyProxyForContainersController do
+RSpec.describe Groups::DependencyProxyForContainersController, feature_category: :dependency_proxy do
   include HttpBasicAuthHelpers
   include DependencyProxyHelpers
   include WorkhorseHelpers
@@ -249,13 +249,28 @@ RSpec.describe Groups::DependencyProxyForContainersController do
             expect(send_data_type).to eq('send-dependency')
             expect(header).to eq(
               "Authorization" => ["Bearer abcd1234"],
-              "Accept" => ::DependencyProxy::Manifest::ACCEPTED_TYPES
+              "Accept" => ::DependencyProxy::Manifest::ACCEPTED_TYPES + [ContainerRegistry::BaseClient::DOCKER_DISTRIBUTION_MANIFEST_LIST_V2_TYPE]
             )
             expect(url).to eq(DependencyProxy::Registry.manifest_url(image, tag))
             expect(response.headers['Content-Type']).to eq('application/gzip')
             expect(response.headers['Content-Disposition']).to eq(
               ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: manifest.file_name)
             )
+          end
+
+          context 'when add_docker_distribution_manifest_list_v2_type_to_accept_header disabled' do
+            before do
+              stub_feature_flags(add_docker_distribution_manifest_list_v2_type_to_accept_header: false)
+            end
+
+            it 'returns `Accept` header without docker manifest list v2' do
+              subject
+
+              _send_data_type, send_data = workhorse_send_data
+              header = send_data['Header']
+
+              expect(header['Accept']).to eq(::DependencyProxy::Manifest::ACCEPTED_TYPES)
+            end
           end
         end
       end

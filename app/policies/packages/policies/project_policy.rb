@@ -8,7 +8,8 @@ module Packages
       overrides(:read_package)
 
       condition(:packages_enabled_for_everyone, scope: :subject) do
-        @subject.package_registry_access_level == ProjectFeature::PUBLIC
+        @subject.package_registry_access_level == ProjectFeature::PUBLIC &&
+          Gitlab::CurrentSettings.package_registry_allow_anyone_to_pull_option
       end
 
       rule { project.packages_disabled }.policy do

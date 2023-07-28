@@ -519,26 +519,34 @@ describe('Settings Panel', () => {
     });
 
     it.each`
-      projectVisibilityLevel               | packageRegistryEnabled | packageRegistryApiForEveryoneEnabled | expectedAccessLevel
-      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${false}               | ${'disabled'}                        | ${featureAccessLevel.NOT_ENABLED}
-      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${true}                | ${false}                             | ${featureAccessLevel.PROJECT_MEMBERS}
-      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${true}                | ${true}                              | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
-      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${false}               | ${'disabled'}                        | ${featureAccessLevel.NOT_ENABLED}
-      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${true}                | ${false}                             | ${featureAccessLevel.EVERYONE}
-      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${true}                | ${true}                              | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
-      ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${false}               | ${'hidden'}                          | ${featureAccessLevel.NOT_ENABLED}
-      ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${true}                | ${'hidden'}                          | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+      projectVisibilityLevel               | packageRegistryEnabled | packageRegistryAllowAnyoneToPullOption | packageRegistryApiForEveryoneEnabled | expectedAccessLevel
+      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${false}               | ${true}                                | ${'disabled'}                        | ${featureAccessLevel.NOT_ENABLED}
+      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${true}                | ${true}                                | ${false}                             | ${featureAccessLevel.PROJECT_MEMBERS}
+      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${true}                | ${true}                                | ${true}                              | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${false}               | ${true}                                | ${'disabled'}                        | ${featureAccessLevel.NOT_ENABLED}
+      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${true}                | ${true}                                | ${false}                             | ${featureAccessLevel.EVERYONE}
+      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${true}                | ${true}                                | ${true}                              | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+      ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${false}               | ${true}                                | ${'hidden'}                          | ${featureAccessLevel.NOT_ENABLED}
+      ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${true}                | ${true}                                | ${'hidden'}                          | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${false}               | ${false}                               | ${'hidden'}                          | ${featureAccessLevel.NOT_ENABLED}
+      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${true}                | ${false}                               | ${'hidden'}                          | ${featureAccessLevel.PROJECT_MEMBERS}
+      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${false}               | ${false}                               | ${'hidden'}                          | ${featureAccessLevel.NOT_ENABLED}
+      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${true}                | ${false}                               | ${'hidden'}                          | ${featureAccessLevel.EVERYONE}
+      ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${false}               | ${false}                               | ${'hidden'}                          | ${featureAccessLevel.NOT_ENABLED}
+      ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${true}                | ${false}                               | ${'hidden'}                          | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
     `(
       'sets correct access level',
       async ({
         projectVisibilityLevel,
         packageRegistryEnabled,
+        packageRegistryAllowAnyoneToPullOption,
         packageRegistryApiForEveryoneEnabled,
         expectedAccessLevel,
       }) => {
         wrapper = mountComponent({
           packagesAvailable: true,
           currentSettings: {
+            packageRegistryAllowAnyoneToPullOption,
             visibilityLevel: projectVisibilityLevel,
           },
         });

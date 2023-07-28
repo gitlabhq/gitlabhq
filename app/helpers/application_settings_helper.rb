@@ -457,6 +457,7 @@ module ApplicationSettingsHelper
       :wiki_asciidoc_allow_uri_includes,
       :container_registry_delete_tags_service_timeout,
       :rate_limiting_response_text,
+      :package_registry_allow_anyone_to_pull_option,
       :package_registry_cleanup_policies_worker_capacity,
       :container_registry_expiration_policies_worker_capacity,
       :container_registry_cleanup_tags_service_max_list_size,

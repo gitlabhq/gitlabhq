@@ -6,6 +6,16 @@ module QA
       module Common
         prepend Mobile::Page::SubMenus::Common if QA::Runtime::Env.mobile_layout?
 
+        def self.included(base)
+          super
+
+          base.class_eval do
+            view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
+              element :navbar
+            end
+          end
+        end
+
         def hover_element(element)
           within_sidebar do
             find_element(element).hover
@@ -16,7 +26,7 @@ module QA
         def within_sidebar(&block)
           wait_for_requests
 
-          within_element(sidebar_element, &block)
+          within_element(:navbar, &block)
         end
 
         def within_submenu(element = nil, &block)
@@ -57,10 +67,6 @@ module QA
 
         def within_submenu_without_element(&block)
           has_css?('.fly-out-list') ? within('.fly-out-list', &block) : yield
-        end
-
-        def sidebar_element
-          raise NotImplementedError
         end
       end
     end

@@ -159,13 +159,29 @@ Registry disables all Package Registry operations.
 
 ### Allow anyone to pull from Package Registry
 
-> Introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `package_registry_access_level`. Enabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385994) in GitLab 15.7.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To disable it,
-an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `package_registry_access_level`.
+To allow anyone to pull from the Package Registry, regardless of project visibility:
 
-If you want to allow anyone (everyone on the internet) to pull from the Package Registry, no matter what the project visibility is, you can use the additional toggle `Allow anyone to pull from Package Registry` that appears when the project visibility is Private or Internal.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your private or internal project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Turn on the **Allow anyone to pull from Package Registry** toggle.
+1. Select **Save changes**.
+
+Anyone on the internet can access the Package Registry for the project.
+
+#### Disable allowing anyone to pull
+
+Prerequisite:
+
+- You must be an administrator.
+
+To hide the **Allow anyone to pull from Package Registry** toggle globally:
+
+- [Change the application setting](../../../api/settings.md#change-application-settings) `package_registry_allow_anyone_to_pull_option` to `false`.
+
+Anonymous downloads are disabled, even for projects that turned on the **Allow anyone to pull from Package Registry** toggle.
 
 Several known issues exist when you allow anyone to pull from the Package Registry:
 

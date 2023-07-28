@@ -186,21 +186,6 @@ e2e:package-and-test-ce:
     QA_RUN_TYPE: e2e-package-and-test-ce
     PIPELINE_NAME: E2E Omnibus GitLab CE
 
-e2e:package-and-test-old-nav:
-  extends:
-    - .e2e-trigger-base
-    - .qa:rules:package-and-test-old-nav
-  needs:
-    - build-qa-image
-    - trigger-omnibus
-    - e2e-test-pipeline-generate
-  variables:
-    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
-    QA_RUN_TYPE: e2e-package-and-test-old-nav
-    PIPELINE_NAME: E2E Omnibus Old Navigation
-    QA_SUPER_SIDEBAR_ENABLED: "false"
-    EXTRA_GITLAB_QA_OPTS: ""
-
 e2e:package-and-test-nightly:
   extends:
     - .e2e-trigger-base

@@ -993,6 +993,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
       expect(settings).to include(
         packagesEnabled: !!project.packages_enabled,
+        packageRegistryAllowAnyoneToPullOption: ::Gitlab::CurrentSettings.package_registry_allow_anyone_to_pull_option,
         visibilityLevel: project.visibility_level,
         requestAccessEnabled: !!project.request_access_enabled,
         issuesAccessLevel: project.project_feature.issues_access_level,

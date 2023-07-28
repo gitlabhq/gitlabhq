@@ -1648,21 +1648,6 @@
     - !reference [".qa:rules:e2e-blocking", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
 
-.qa:rules:package-and-test-old-nav:
-  rules:
-    - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-default-branch-schedule-nightly
-      allow_failure: true
-      variables:
-        CREATE_TEST_FAILURE_ISSUES: "true"
-        PROCESS_TEST_RESULTS: "true"
-        QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false"
-
 .qa:rules:package-and-test-nightly:
   rules:
     - <<: *if-default-branch-schedule-nightly

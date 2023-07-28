@@ -277,6 +277,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_values([true, false]).for(:instance_level_code_suggestions_enabled) }
     it { is_expected.not_to allow_value(nil).for(:instance_level_code_suggestions_enabled) }
 
+    it { is_expected.to allow_values([true, false]).for(:package_registry_allow_anyone_to_pull_option) }
+    it { is_expected.not_to allow_value(nil).for(:package_registry_allow_anyone_to_pull_option) }
+
     context 'when deactivate_dormant_users is enabled' do
       before do
         stub_application_setting(deactivate_dormant_users: true)

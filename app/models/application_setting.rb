@@ -730,6 +730,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: { message: N_("is required to enable Code Suggestions") },
     if: :instance_level_code_suggestions_enabled
 
+  validates :package_registry_allow_anyone_to_pull_option,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,

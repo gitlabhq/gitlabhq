@@ -706,6 +706,7 @@ module ProjectsHelper
     {
       packagesEnabled: !!project.packages_enabled,
       packageRegistryAccessLevel: feature.package_registry_access_level,
+      packageRegistryAllowAnyoneToPullOption: ::Gitlab::CurrentSettings.package_registry_allow_anyone_to_pull_option,
       visibilityLevel: project.visibility_level,
       requestAccessEnabled: !!project.request_access_enabled,
       issuesAccessLevel: feature.issues_access_level,

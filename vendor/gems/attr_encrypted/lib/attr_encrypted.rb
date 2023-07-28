@@ -186,6 +186,8 @@ module AttrEncrypted
     @attr_encrypted_options ||= superclass.attr_encrypted_options.dup
   end
 
+  # Encrypted attributes are ignored as part of ApplicationSetting Audit Event
+  # Log. If the prefix is updated then the corresponding Regex in ApplicationSettingChangesAuditor should also be updated.
   def attr_encrypted_default_options
     {
       prefix:            'encrypted_',

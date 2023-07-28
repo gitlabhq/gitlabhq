@@ -215,7 +215,6 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
   describe '#tags' do
     let(:path) { 'namespace/path/to/repository' }
     let(:page_size) { 100 }
-    let(:last) { nil }
     let(:response) do
       [
         {
@@ -235,7 +234,10 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       ]
     end
 
-    subject { client.tags(path, page_size: page_size, last: last) }
+    let(:previous_page_url) { 'http://sandbox.org/test?before=b' }
+    let(:next_page_url) { 'http://sandbox.org/test?last=b' }
+
+    subject { client.tags(path, page_size: page_size) }
 
     context 'with valid parameters' do
       let(:expected) do
@@ -252,8 +254,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       it { is_expected.to eq(expected) }
     end
 
-    context 'with a response with a link header' do
-      let(:next_page_url) { 'http://sandbox.org/test?last=b' }
+    context 'with a response with a link header containing next page' do
       let(:expected) do
         {
           pagination: { next: { uri: URI(next_page_url) } },
@@ -263,6 +264,36 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
 
       before do
         stub_tags(path, page_size: page_size, next_page_url: next_page_url, respond_with: response)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'with a response with a link header containing previous page' do
+      let(:expected) do
+        {
+          pagination: { previous: { uri: URI(previous_page_url) } },
+          response_body: ::Gitlab::Json.parse(response.to_json)
+        }
+      end
+
+      before do
+        stub_tags(path, page_size: page_size, previous_page_url: previous_page_url, respond_with: response)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'with a response with a link header containing previous and next pages' do
+      let(:expected) do
+        {
+          pagination: { previous: { uri: URI(previous_page_url) }, next: { uri: URI(next_page_url) } },
+          response_body: ::Gitlab::Json.parse(response.to_json)
+        }
+      end
+
+      before do
+        stub_tags(path, page_size: page_size, previous_page_url: previous_page_url, next_page_url: next_page_url, respond_with: response)
       end
 
       it { is_expected.to eq(expected) }
@@ -285,21 +316,33 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       it { is_expected.to eq(expected) }
     end
 
-    context 'with a last parameter set' do
-      let(:last) { 'test' }
-
-      let(:expected) do
-        {
-          pagination: {},
-          response_body: ::Gitlab::Json.parse(response.to_json)
-        }
+    context 'with pagination parameters set' do
+      subject do
+        client.tags(path, page_size: page_size, last: last, before: before, name: name, sort: sort)
       end
 
-      before do
-        stub_tags(path, page_size: page_size, last: last, respond_with: response)
+      where(:last, :before, :name, :sort, :input) do
+        'test' | nil    | nil    | nil    | { last: 'test' }
+        nil    | 'test' | nil    | nil    | { before: 'test' }
+        nil    | nil    | 'test' | nil    | { name: 'test' }
+        nil    | nil    | nil    | 'asc'  | { sort: 'asc' }
+        'a'    | 'b'    | 'test' | 'desc' | { last: 'a', before: 'b', name: 'test', sort: 'desc' }
       end
 
-      it { is_expected.to eq(expected) }
+      with_them do
+        let(:expected) do
+          {
+            pagination: {},
+            response_body: ::Gitlab::Json.parse(response.to_json)
+          }
+        end
+
+        before do
+          stub_tags(path, page_size: page_size, input: input, respond_with: response)
+        end
+
+        it { is_expected.to eq(expected) }
+      end
     end
 
     context 'with non successful response' do
@@ -829,8 +872,14 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       .to_return(status: status_code, body: respond_with.to_json, headers: { 'Content-Type' => described_class::JSON_TYPE })
   end
 
-  def stub_tags(path, page_size: nil, last: nil, next_page_url: nil, status_code: 200, respond_with: {})
-    params = { n: page_size, last: last }.compact
+  def stub_tags(path, page_size: nil, input: {}, previous_page_url: nil, next_page_url: nil, status_code: 200, respond_with: {})
+    params = {
+      n: page_size,
+      last: input[:last],
+      name: input[:name],
+      sort: input[:sort],
+      before: input[:before]
+    }.compact
 
     url = "#{registry_api_url}/gitlab/v1/repositories/#{path}/tags/list/"
 
@@ -842,8 +891,12 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     request_headers['Authorization'] = "bearer #{token}" if token
 
     response_headers = { 'Content-Type' => described_class::JSON_TYPE }
-    if next_page_url
-      response_headers['Link'] = "<#{next_page_url}>; rel=\"next\""
+    if next_page_url || previous_page_url
+      previous_page_url = %(<#{previous_page_url}>; rel="previous") if previous_page_url
+      next_page_url = %(<#{next_page_url}>; rel="next") if next_page_url
+
+      link_header = [previous_page_url, next_page_url].compact.join(" ,")
+      response_headers['Link'] = link_header
     end
 
     stub_request(:get, url)

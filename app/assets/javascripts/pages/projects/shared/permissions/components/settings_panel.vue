@@ -370,7 +370,10 @@ export default {
       return this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
     },
     packageRegistryApiForEveryoneEnabledShown() {
-      return this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER;
+      return (
+        this.packageRegistryAllowAnyoneToPullOption &&
+        this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER
+      );
     },
     monitorOperationsFeatureAccessLevelOptions() {
       return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);

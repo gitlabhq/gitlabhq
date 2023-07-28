@@ -4,7 +4,7 @@ module QA
   module Page
     module Group
       class Menu < Page::Base
-        include SubMenus::Common
+        include QA::Page::SubMenus::Common
 
         if Runtime::Env.super_sidebar_enabled?
           prepend Page::SubMenus::SuperSidebar::Manage

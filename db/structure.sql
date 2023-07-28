@@ -312,15 +312,6 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION trigger_cd1aeb22b34a() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."target_id_convert_to_bigint" := NEW."target_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION unset_has_issues_on_vulnerability_reads() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -11821,6 +11812,7 @@ CREATE TABLE application_settings (
     elasticsearch_worker_number_of_shards integer DEFAULT 2 NOT NULL,
     relay_state_domain_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     namespace_storage_forks_cost_factor double precision DEFAULT 1.0 NOT NULL,
+    package_registry_allow_anyone_to_pull_option boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -15955,7 +15947,6 @@ ALTER SEQUENCE error_tracking_errors_id_seq OWNED BY error_tracking_errors.id;
 CREATE TABLE events (
     project_id integer,
     author_id integer NOT NULL,
-    target_id_convert_to_bigint integer,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     action smallint NOT NULL,
@@ -35439,8 +35430,6 @@ CREATE TRIGGER trigger_7f3d66a7d7f5 BEFORE INSERT OR UPDATE ON ci_pipeline_varia
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
 CREATE TRIGGER trigger_bfad0e2b9c86 BEFORE INSERT OR UPDATE ON ci_pipeline_messages FOR EACH ROW EXECUTE FUNCTION trigger_bfad0e2b9c86();
-
-CREATE TRIGGER trigger_cd1aeb22b34a BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE FUNCTION trigger_cd1aeb22b34a();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
