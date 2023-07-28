@@ -42,10 +42,6 @@ module MetricsDashboardHelpers
     Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH
   end
 
-  def pod_dashboard_path
-    Metrics::Dashboard::PodDashboardService::DASHBOARD_PATH
-  end
-
   def business_metric_title
     Enums::PrometheusMetric.group_details[:business][:group_title]
   end

@@ -49,6 +49,20 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Interpolator, feature_category: :pipeli
       end
     end
 
+    context 'when spec header is missing but inputs are specified' do
+      let(:header) { nil }
+      let(:content) { { test: 'echo' } }
+      let(:arguments) { { foo: 'bar' } }
+
+      it 'surfaces an error about invalid inputs' do
+        subject.interpolate!
+
+        expect(subject).not_to be_valid
+        expect(subject.error_message).to eq subject.errors.first
+        expect(subject.errors).to include('unknown input arguments')
+      end
+    end
+
     context 'when spec header is invalid' do
       let(:header) do
         { spec: { arguments: { website: nil } } }

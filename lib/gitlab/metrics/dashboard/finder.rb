@@ -8,7 +8,6 @@ module Gitlab
     module Dashboard
       class Finder
         PREDEFINED_DASHBOARD_LIST = [
-          ::Metrics::Dashboard::PodDashboardService,
           ::Metrics::Dashboard::SystemDashboardService
         ].freeze
 

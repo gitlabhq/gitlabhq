@@ -14459,9 +14459,6 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-msgid "Dashboard uid not found"
-msgstr ""
-
 msgid "DashboardProjects|All"
 msgstr ""
 
@@ -14984,9 +14981,6 @@ msgid "DatadogIntegration|Trace your GitLab pipelines with Datadog."
 msgstr ""
 
 msgid "DatadogIntegration|have an invalid format"
-msgstr ""
-
-msgid "Datasource name not found"
 msgstr ""
 
 msgid "Date"
@@ -17731,9 +17725,6 @@ msgid "EnterpriseUsers|The user is already an enterprise user of the group"
 msgstr ""
 
 msgid "Environment"
-msgstr ""
-
-msgid "Environment is required for Stages::MetricEndpointInserter"
 msgstr ""
 
 msgid "Environment is required for Stages::VariableEndpointInserter"
@@ -21741,9 +21732,6 @@ msgid "Got it!"
 msgstr ""
 
 msgid "Grafana URL"
-msgstr ""
-
-msgid "Grafana response contains invalid json"
 msgstr ""
 
 msgid "Grant access"
@@ -26886,9 +26874,6 @@ msgstr ""
 msgid "Just me"
 msgstr ""
 
-msgid "K8s pod health"
-msgstr ""
-
 msgid "KEY"
 msgstr ""
 
@@ -29020,6 +29005,12 @@ msgid "Merge unverified changes"
 msgstr ""
 
 msgid "Merge unverified changes?"
+msgstr ""
+
+msgid "Merge when all merge checks pass"
+msgstr ""
+
+msgid "Merge when checks pass"
 msgstr ""
 
 msgid "Merge when pipeline succeeds"
@@ -33284,9 +33275,6 @@ msgid "Parameter"
 msgstr ""
 
 msgid "Parent"
-msgstr ""
-
-msgid "Parsing error for param :embed_json. %{message}"
 msgstr ""
 
 msgid "Part of merge request changes"
@@ -51636,6 +51624,9 @@ msgstr ""
 msgid "Vulnerability|Project:"
 msgstr ""
 
+msgid "Vulnerability|Providing the source code improves the response quality. If security is a concern, you can send basic vulnerability info for a generic example."
+msgstr ""
+
 msgid "Vulnerability|Remove identifier row"
 msgstr ""
 
@@ -51661,6 +51652,12 @@ msgid "Vulnerability|Security Audit"
 msgstr ""
 
 msgid "Vulnerability|Select a severity"
+msgstr ""
+
+msgid "Vulnerability|Send code with prompt"
+msgstr ""
+
+msgid "Vulnerability|Sending code to AI"
 msgstr ""
 
 msgid "Vulnerability|Sent request:"
@@ -52219,6 +52216,9 @@ msgid "When a deployment job is successful, prevent older deployment jobs that a
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"
+msgstr ""
+
+msgid "When all the merge checks for this merge request pass, it will %{linkStart}automatically merge%{linkEnd}."
 msgstr ""
 
 msgid "When enabled, SSH keys with no expiry date or an invalid expiration date are no longer accepted. Leave blank for no limit."
@@ -55632,6 +55632,9 @@ msgid "mrWidget|Revoke approval"
 msgstr ""
 
 msgid "mrWidget|Set by %{merge_author} to be added to the merge train when the pipeline succeeds"
+msgstr ""
+
+msgid "mrWidget|Set by %{merge_author} to be merged automatically when all merge checks pass"
 msgstr ""
 
 msgid "mrWidget|Set by %{merge_author} to be merged automatically when the pipeline succeeds"

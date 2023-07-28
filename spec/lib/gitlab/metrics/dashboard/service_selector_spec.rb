@@ -22,12 +22,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::ServiceSelector do
 
         it { is_expected.to be Metrics::Dashboard::SystemDashboardService }
       end
-
-      context 'when the path is for the pod dashboard' do
-        let(:arguments) { { dashboard_path: pod_dashboard_path } }
-
-        it { is_expected.to be Metrics::Dashboard::PodDashboardService }
-      end
     end
 
     context 'when the embedded flag is provided' do
@@ -80,28 +74,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::ServiceSelector do
         end
 
         it { is_expected.to be Metrics::Dashboard::CustomMetricEmbedService }
-      end
-
-      context 'with a grafana link' do
-        let(:arguments) do
-          {
-            embedded: true,
-            grafana_url: 'https://grafana.example.com'
-          }
-        end
-
-        it { is_expected.to be Metrics::Dashboard::GrafanaMetricEmbedService }
-      end
-
-      context 'with the embed defined in the arguments' do
-        let(:arguments) do
-          {
-            embedded: true,
-            embed_json: '{}'
-          }
-        end
-
-        it { is_expected.to be Metrics::Dashboard::TransientEmbedService }
       end
 
       context 'when metrics embed is for an alert' do

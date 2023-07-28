@@ -130,10 +130,9 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
   describe '.find_all_paths' do
     let(:all_dashboard_paths) { described_class.find_all_paths(project) }
     let(:system_dashboard) { { path: system_dashboard_path, display_name: 'Overview', default: true, system_dashboard: true, out_of_the_box_dashboard: true } }
-    let(:k8s_pod_health_dashboard) { { path: pod_dashboard_path, display_name: 'K8s pod health', default: false, system_dashboard: false, out_of_the_box_dashboard: true } }
 
     it 'includes OOTB dashboards by default' do
-      expect(all_dashboard_paths).to eq([k8s_pod_health_dashboard, system_dashboard])
+      expect(all_dashboard_paths).to eq([system_dashboard])
     end
 
     context 'when the project contains dashboards' do
@@ -164,7 +163,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
           out_of_the_box_dashboard: false
         }
 
-        expect(all_dashboard_paths).to eq([project_dashboard2, k8s_pod_health_dashboard, project_dashboard1, system_dashboard])
+        expect(all_dashboard_paths).to eq([project_dashboard2, project_dashboard1, system_dashboard])
       end
     end
   end

@@ -164,4 +164,30 @@ describe('MergeRequestStore', () => {
       },
     );
   });
+
+  describe('preventMerge', () => {
+    it('is false when approvals are not available', () => {
+      store.hasApprovalsAvailable = false;
+
+      expect(store.preventMerge).toBe(false);
+    });
+
+    describe('when approvals are available', () => {
+      beforeEach(() => {
+        store.hasApprovalsAvailable = true;
+      });
+
+      it('is true when MR is not approved', () => {
+        store.setApprovals({ approved: false });
+
+        expect(store.preventMerge).toBe(true);
+      });
+
+      it('is false when MR is approved', () => {
+        store.setApprovals({ approved: true });
+
+        expect(store.preventMerge).toBe(false);
+      });
+    });
+  });
 });

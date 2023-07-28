@@ -20356,7 +20356,8 @@ CREATE TABLE plan_limits (
     project_access_token_limit integer DEFAULT 0 NOT NULL,
     google_cloud_logging_configurations integer DEFAULT 5 NOT NULL,
     ml_model_max_file_size bigint DEFAULT '10737418240'::bigint NOT NULL,
-    limits_history jsonb DEFAULT '{}'::jsonb NOT NULL
+    limits_history jsonb DEFAULT '{}'::jsonb NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

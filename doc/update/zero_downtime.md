@@ -15,7 +15,7 @@ there are the following requirements:
    sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - You have to use [post-deployment migrations](../development/database/post_deployment_migrations.md).
 - You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
-- You have set up a multi-node GitLab instance. Single-node instances do not support zero-downtime upgrades.
+- You have set up a multi-node GitLab instance. Cloud Native Hybrid installations do [not support zero-downtime upgrades](../administration/reference_architectures/index.md#zero-downtime-upgrades).
 
 If you want to upgrade multiple releases or do not meet the other requirements:
 

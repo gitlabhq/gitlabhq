@@ -114,7 +114,6 @@ The following table lists the valid `objects` that can be used:
 | `dependency_proxy` | [Dependency Proxy](packages/dependency_proxy.md)                    |
 | `terraform_state`  | [Terraform state files](terraform_state.md)                                |
 | `pages`            | [Pages](pages/index.md)                                             |
-| `ci_secure_files`  | [Project-level Secure Files](secure_files.md)                              |
 
 Within each object type, three parameters can be defined:
 

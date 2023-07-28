@@ -1166,7 +1166,10 @@ Use lowercase for **personal access token**.
 
 ## please
 
-Do not use **please**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+Do not use **please** in the product documentation.
+
+In UI text, use **please** when we've inconvenienced the user. For more information,
+see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
 
 ## Premium
 

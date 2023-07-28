@@ -38,6 +38,7 @@ module Gitlab
 
           def interpolate!
             return @errors.push(config.error) unless config.valid?
+            return @errors.push('unknown input arguments') if inputs_without_header?
             return @result ||= config.content unless config.has_header?
 
             return @errors.concat(header.errors) unless header.valid?
@@ -55,6 +56,10 @@ module Gitlab
           end
 
           private
+
+          def inputs_without_header?
+            args.any? && !config.has_header?
+          end
 
           def header
             @entry ||= Ci::Config::Header::Root.new(config.header).tap do |header|

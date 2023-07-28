@@ -270,7 +270,7 @@ RSpec.describe PlanLimits do
     end
 
     let(:datetime_columns) do
-      %w[dashboard_limit_enabled_at]
+      %w[dashboard_limit_enabled_at updated_at]
     end
 
     let(:history_columns) do
