@@ -719,13 +719,28 @@ If you need to manually remove **all** job artifacts associated with multiple jo
 
    ```ruby
    project = Project.find_by_full_path('path/to/project')
-   builds_with_artifacts =  project.builds.with_existing_job_artifacts(Ci::JobArtifact.trace)
+   builds_with_artifacts =  project.builds.with_downloadable_artifacts
    ```
 
    To select jobs with artifacts across the entire GitLab instance:
 
    ```ruby
-   builds_with_artifacts = Ci::Build.with_existing_job_artifacts(Ci::JobArtifact.trace)
+   builds_with_artifacts = Ci::Build.with_downloadable_artifacts
+   ```
+
+   Occasionally, when choosing jobs with artifacts, there could be a risk of the process being terminated due to selecting a large number of rows. This can result in high memory usage and eventually lead to the process being killed due to an Out-of-Memory (OOM) error. To resolve this, you can run in small batches. The example below limits each batch to 1000.
+
+   To select jobs with artifacts for a single project:
+
+   ```ruby
+   project = Project.find_by_full_path('path/to/project')
+   builds_with_artifacts =  project.builds.with_downloadable_artifacts.find_each(batch_size: 1000)
+   ```
+
+   To select jobs with artifacts across the entire GitLab instance:
+
+   ```ruby
+   builds_with_artifacts = Ci::Build.with_downloadable_artifacts.find_each(batch_size: 1000)
    ```
 
 1. Select the user which is mentioned in the web UI as erasing the job:
