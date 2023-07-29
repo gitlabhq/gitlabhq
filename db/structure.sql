@@ -22073,6 +22073,9 @@ CREATE TABLE remote_development_agent_configs (
     cluster_agent_id bigint NOT NULL,
     enabled boolean NOT NULL,
     dns_zone text NOT NULL,
+    network_policy_enabled boolean DEFAULT true NOT NULL,
+    gitlab_workspaces_proxy_namespace text DEFAULT 'gitlab-workspaces'::text NOT NULL,
+    CONSTRAINT check_72947a4495 CHECK ((char_length(gitlab_workspaces_proxy_namespace) <= 63)),
     CONSTRAINT check_9f5cd54d1c CHECK ((char_length(dns_zone) <= 256))
 );
 
