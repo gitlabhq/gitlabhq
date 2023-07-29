@@ -47,7 +47,7 @@ RSpec.describe Gitlab::AvatarCache, :clean_gitlab_redis_cache do
     it "finds the cached value in the request store and doesn't execute the block" do
       expect(thing).to receive(:avatar_path).once
 
-      Gitlab::WithRequestStore.with_request_store do
+      Gitlab::SafeRequestStore.ensure_request_store do
         described_class.by_email("foo@bar.com", 20, 2, true) do
           thing.avatar_path
         end

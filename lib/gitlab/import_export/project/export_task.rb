@@ -35,7 +35,7 @@ module Gitlab
         end
 
         def with_export
-          with_request_store do
+          ::Gitlab::SafeRequestStore.ensure_request_store do
             # We are disabling ObjectStorage for `export`
             # since when direct upload is enabled, remote storage will be used
             # and Gitlab::ImportExport::AfterExportStrategies::MoveFileStrategy will fail to copy exported archive

@@ -24,6 +24,8 @@ gem 'bootsnap', '~> 1.16.0', require: false
 gem 'openssl', '~> 3.0'
 gem 'ipaddr', '~> 1.2.5'
 
+gem 'gitlab-safe_request_store', path: 'gems/gitlab-safe_request_store'
+
 # GitLab Monorepo Gems
 group :monorepo do
   gem 'gitlab-utils', path: 'gems/gitlab-utils'

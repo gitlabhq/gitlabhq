@@ -399,7 +399,7 @@ RSpec.configure do |config|
   end
 
   config.around(:example, :request_store) do |example|
-    Gitlab::WithRequestStore.with_request_store { example.run }
+    ::Gitlab::SafeRequestStore.ensure_request_store { example.run }
   end
 
   config.around(:example, :enable_rugged) do |example|

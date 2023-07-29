@@ -151,7 +151,7 @@ module GraphqlHelpers
     raise UnauthorizedObject unless parent
 
     # we enable the request store so we can track gitaly calls.
-    ::Gitlab::WithRequestStore.with_request_store do
+    ::Gitlab::SafeRequestStore.ensure_request_store do
       prepared_args = case arg_style
                       when :internal_prepared
                         args_internal_prepared(field, args: args, query_ctx: query_ctx, parent: parent, extras: extras, query: query)
@@ -267,7 +267,7 @@ module GraphqlHelpers
   # authentication (token set-up, license checks)
   # It clears the request store, rails cache, and BatchLoader Executor between runs.
   def run_with_clean_state(query, **args)
-    ::Gitlab::WithRequestStore.with_request_store do
+    ::Gitlab::SafeRequestStore.ensure_request_store do
       with_clean_rails_cache do
         with_clean_batchloader_executor do
           ::GitlabSchema.execute(query, **args)

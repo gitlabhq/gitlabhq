@@ -65,7 +65,7 @@ RSpec.describe Resolvers::LabelsResolver do
       end
 
       it 'prevents N+1 queries' do
-        control = Gitlab::WithRequestStore.with_request_store do
+        control = Gitlab::SafeRequestStore.ensure_request_store do
           ActiveRecord::QueryRecorder.new { resolve_labels(project, params).to_a }
         end
 
@@ -75,7 +75,7 @@ RSpec.describe Resolvers::LabelsResolver do
         create(:group_label, group: another_subgroup, name: 'another group feature')
 
         expect do
-          Gitlab::WithRequestStore.with_request_store do
+          Gitlab::SafeRequestStore.ensure_request_store do
             resolve_labels(project, params).to_a
           end
         end.not_to exceed_query_limit(control.count)

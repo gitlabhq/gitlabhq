@@ -20,6 +20,12 @@ PATH
       rspec (~> 3.0)
 
 PATH
+  remote: gems/gitlab-safe_request_store
+  specs:
+    gitlab-safe_request_store (0.1.0)
+      request_store
+
+PATH
   remote: gems/gitlab-schema-validation
   specs:
     gitlab-schema-validation (0.1.0)
@@ -1820,6 +1826,7 @@ DEPENDENCIES
   gitlab-markup (~> 1.9.0)
   gitlab-net-dns (~> 0.9.2)
   gitlab-rspec!
+  gitlab-safe_request_store!
   gitlab-schema-validation!
   gitlab-sidekiq-fetcher!
   gitlab-styles (~> 10.1.0)

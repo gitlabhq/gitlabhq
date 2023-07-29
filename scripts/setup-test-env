@@ -26,6 +26,7 @@ require 'omniauth'
 require 'omniauth-github'
 require 'etc'
 require 'gitlab/utils/all'
+require 'gitlab/safe_request_store'
 require_relative '../lib/gitlab/access'
 
 unless defined?(License)

@@ -3,8 +3,32 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SafeRequestStore do
+  it "has a version number" do
+    expect(described_class::Version::VERSION).not_to be nil
+  end
+
+  describe '.ensure_request_store' do
+    it 'starts a request store and yields control' do
+      expect(RequestStore).to receive(:begin!).ordered
+      expect(RequestStore).to receive(:end!).ordered
+      expect(RequestStore).to receive(:clear!).ordered
+
+      expect { |b| described_class.ensure_request_store(&b) }.to yield_control
+    end
+
+    it 'only starts a request store once when nested' do
+      expect(RequestStore).to receive(:begin!).ordered.once.and_call_original
+      expect(RequestStore).to receive(:end!).ordered.once.and_call_original
+      expect(RequestStore).to receive(:clear!).ordered.once.and_call_original
+
+      described_class.ensure_request_store do
+        expect { |b| described_class.ensure_request_store(&b) }.to yield_control
+      end
+    end
+  end
+
   describe '.store' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect(described_class.store).to eq(RequestStore)
       end
@@ -12,13 +36,13 @@ RSpec.describe Gitlab::SafeRequestStore do
 
     context 'when RequestStore is NOT active' do
       it 'does not use RequestStore' do
-        expect(described_class.store).to be_a(Gitlab::NullRequestStore)
+        expect(described_class.store).to be_a(described_class::NullStore)
       end
     end
   end
 
   describe '.begin!' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect(RequestStore).to receive(:begin!)
 
@@ -36,7 +60,7 @@ RSpec.describe Gitlab::SafeRequestStore do
   end
 
   describe '.clear!' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect(RequestStore).to receive(:clear!).once.and_call_original
 
@@ -54,7 +78,7 @@ RSpec.describe Gitlab::SafeRequestStore do
   end
 
   describe '.end!' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect(RequestStore).to receive(:end!).once.and_call_original
 
@@ -72,7 +96,7 @@ RSpec.describe Gitlab::SafeRequestStore do
   end
 
   describe '.write' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect do
           described_class.write('foo', true)
@@ -82,7 +106,7 @@ RSpec.describe Gitlab::SafeRequestStore do
       it 'does not pass the options hash to the underlying store implementation' do
         expect(described_class.store).to receive(:write).with('foo', true)
 
-        described_class.write('foo', true, expires_in: 15.seconds)
+        described_class.write('foo', true, expires_in: 15)
       end
     end
 
@@ -96,13 +120,13 @@ RSpec.describe Gitlab::SafeRequestStore do
       it 'does not pass the options hash to the underlying store implementation' do
         expect(described_class.store).to receive(:write).with('foo', true)
 
-        described_class.write('foo', true, expires_in: 15.seconds)
+        described_class.write('foo', true, expires_in: 15)
       end
     end
   end
 
   describe '.[]=' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect do
           described_class['foo'] = true
@@ -120,7 +144,7 @@ RSpec.describe Gitlab::SafeRequestStore do
   end
 
   describe '.read' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect do
           RequestStore.write('foo', true)
@@ -140,7 +164,7 @@ RSpec.describe Gitlab::SafeRequestStore do
   end
 
   describe '.[]' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect do
           RequestStore.write('foo', true)
@@ -160,7 +184,7 @@ RSpec.describe Gitlab::SafeRequestStore do
   end
 
   describe '.exist?' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect do
           RequestStore.write('foo', 'not nil')
@@ -180,7 +204,7 @@ RSpec.describe Gitlab::SafeRequestStore do
   end
 
   describe '.fetch' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         expect do
           described_class.fetch('foo') { 'block result' } # rubocop:disable Style/RedundantFetchBlock
@@ -202,7 +226,7 @@ RSpec.describe Gitlab::SafeRequestStore do
   end
 
   describe '.delete' do
-    context 'when RequestStore is active', :request_store do
+    context 'when RequestStore is active', :enable_request_store do
       it 'uses RequestStore' do
         described_class.write('foo', true)
 

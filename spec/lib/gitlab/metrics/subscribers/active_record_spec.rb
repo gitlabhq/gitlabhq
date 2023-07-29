@@ -384,7 +384,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
           end
 
           it 'does not store DB roles into into RequestStore' do
-            Gitlab::WithRequestStore.with_request_store do
+            Gitlab::SafeRequestStore.ensure_request_store do
               subscriber.sql(event)
 
               expect(described_class.db_counter_payload).to include(

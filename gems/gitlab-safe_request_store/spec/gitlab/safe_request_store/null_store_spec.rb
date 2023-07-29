@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::NullRequestStore do
+RSpec.describe Gitlab::SafeRequestStore::NullStore do
   let(:null_store) { described_class.new }
 
   describe '#store' do
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::NullRequestStore do
       end
 
       it 'returns the block result' do
-        expect(null_store.delete('foo') { |key| 'block result' }).to eq('block result')
+        expect(null_store.delete('foo') { |_key| 'block result' }).to eq('block result')
       end
     end
 

@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Cache::JsonCache, feature_category: :shared do
   describe '#active?' do
     context 'when backend respond to active? method' do
       it 'delegates to the underlying cache implementation' do
-        backend = instance_double(Gitlab::NullRequestStore, active?: false)
+        backend = instance_double(Gitlab::SafeRequestStore::NullStore, active?: false)
 
         cache = described_class.new(namespace: namespace, backend: backend)
 

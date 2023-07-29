@@ -2,8 +2,6 @@
 
 module Gitlab
   module Profiler
-    extend WithRequestStore
-
     FILTERED_STRING = '[FILTERED]'
 
     IGNORE_BACKTRACES = %w[
@@ -62,7 +60,7 @@ module Gitlab
 
       logger = create_custom_logger(logger, private_token: private_token)
 
-      result = with_request_store do
+      result = ::Gitlab::SafeRequestStore.ensure_request_store do
         # Make an initial call for an asset path in development mode to avoid
         # sprockets dominating the profiler output.
         ActionController::Base.helpers.asset_path('katex.css') if Rails.env.development?

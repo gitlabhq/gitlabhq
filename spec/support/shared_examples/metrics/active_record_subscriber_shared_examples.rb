@@ -34,7 +34,7 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
 
   it 'prevents db counters from leaking to the next transaction' do
     2.times do
-      Gitlab::WithRequestStore.with_request_store do
+      Gitlab::SafeRequestStore.ensure_request_store do
         subscriber.sql(event)
 
         expected = case db_role
