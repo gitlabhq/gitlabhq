@@ -23,10 +23,12 @@ RSpec.describe Tooling::Danger::ModelValidations, feature_category: :tooling do
   describe '#add_comment_for_added_validations' do
     let(:file_lines) { file_diff.map { |line| line.delete_prefix('+').delete_prefix('-') } }
     let(:filename) { 'app/models/user.rb' }
+    let(:added_filename) { 'app/models/user.rb' }
 
     before do
       allow(model_validations.project_helper).to receive(:file_lines).and_return(file_lines)
-      allow(model_validations.helper).to receive(:all_changed_files).and_return([filename])
+      allow(model_validations.helper).to receive(:added_files).and_return([added_filename])
+      allow(model_validations.helper).to receive(:modified_files).and_return([filename])
       allow(model_validations.helper).to receive(:changed_lines).with(filename).and_return(file_diff)
     end
 
@@ -83,11 +85,13 @@ RSpec.describe Tooling::Danger::ModelValidations, feature_category: :tooling do
         app/models/users/user_follow_user.rb
         ee/app/models/ee/user.rb
         ee/app/models/sca/license_policy.rb
+        app/models/concerns/presentable.rb
       ]
     end
 
     before do
-      all_new_files = %w[
+      added_files = %w[app/models/user_preferences.rb app/models/concerns/presentable.rb]
+      modified_files = %w[
         app/models/user.rb
         app/models/users/user_follow_user.rb
         ee/app/models/ee/user.rb
@@ -96,7 +100,8 @@ RSpec.describe Tooling::Danger::ModelValidations, feature_category: :tooling do
         app/assets/index.js
       ]
 
-      allow(model_validations.helper).to receive(:all_changed_files).and_return(all_new_files)
+      allow(model_validations.helper).to receive(:added_files).and_return(added_files)
+      allow(model_validations.helper).to receive(:modified_files).and_return(modified_files)
     end
 
     it 'returns added and modified files' do

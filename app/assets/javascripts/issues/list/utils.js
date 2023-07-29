@@ -232,10 +232,10 @@ export const getFilterTokens = (locationSearch) =>
       };
     });
 
-const isNotEmptySearchToken = (token) =>
+export const isNotEmptySearchToken = (token) =>
   !(token.type === FILTERED_SEARCH_TERM && !token.value.data);
 
-const isSpecialFilter = (type, data) => {
+export const isSpecialFilter = (type, data) => {
   const isAssigneeIdParam =
     type === TOKEN_TYPE_ASSIGNEE &&
     isPositiveInteger(data) &&

@@ -2,14 +2,17 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { cloneDeep } from 'lodash';
+import VueRouter from 'vue-router';
 import * as Sentry from '@sentry/browser';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { STATUS_CLOSED, STATUS_OPEN } from '~/service_desk/constants';
+import { STATUS_CLOSED, STATUS_OPEN, STATUS_ALL } from '~/service_desk/constants';
 import getServiceDeskIssuesQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues.query.graphql';
 import getServiceDeskIssuesCountsQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues_counts.query.graphql';
 import ServiceDeskListApp from '~/service_desk/components/service_desk_list_app.vue';
@@ -27,14 +30,19 @@ import {
 import {
   getServiceDeskIssuesQueryResponse,
   getServiceDeskIssuesCountsQueryResponse,
+  filteredTokens,
+  urlParams,
+  locationSearch,
 } from '../mock_data';
 
 jest.mock('@sentry/browser');
 
-describe('ServiceDeskListApp', () => {
+describe('CE ServiceDeskListApp', () => {
   let wrapper;
+  let router;
 
   Vue.use(VueApollo);
+  Vue.use(VueRouter);
 
   const defaultProvide = {
     releasesPath: 'releases/path',
@@ -49,6 +57,7 @@ describe('ServiceDeskListApp', () => {
     fullPath: 'path/to/project',
     isServiceDeskSupported: true,
     hasAnyIssues: true,
+    initialSort: '',
   };
 
   let defaultQueryResponse = getServiceDeskIssuesQueryResponse;
@@ -82,6 +91,8 @@ describe('ServiceDeskListApp', () => {
       [getServiceDeskIssuesCountsQuery, serviceDeskIssuesCountsQueryResponseHandler],
     ];
 
+    router = new VueRouter({ mode: 'history' });
+
     return shallowMount(ServiceDeskListApp, {
       apolloProvider: createMockApollo(
         requestHandlers,
@@ -98,6 +109,7 @@ describe('ServiceDeskListApp', () => {
           },
         },
       ),
+      router,
       provide: {
         ...defaultProvide,
         ...provide,
@@ -106,6 +118,7 @@ describe('ServiceDeskListApp', () => {
   };
 
   beforeEach(() => {
+    setWindowLocation(TEST_HOST);
     wrapper = createComponent();
     return waitForPromises();
   });
@@ -113,7 +126,7 @@ describe('ServiceDeskListApp', () => {
   it('fetches service desk issues and renders them in the issuable list', () => {
     expect(findIssuableList().props()).toMatchObject({
       namespace: 'service-desk',
-      recentSearchesStorageKey: 'issues',
+      recentSearchesStorageKey: 'service-desk-issues',
       issuables: defaultQueryResponse.data.project.issues.nodes,
       tabs: issuableListTabs,
       currentTab: STATUS_OPEN,
@@ -142,6 +155,36 @@ describe('ServiceDeskListApp', () => {
       await waitForPromises();
 
       expect(findInfoBanner().exists()).toBe(false);
+    });
+  });
+
+  describe('Initial url params', () => {
+    describe('search', () => {
+      it('is set from the url params', () => {
+        setWindowLocation(locationSearch);
+        wrapper = createComponent();
+
+        expect(router.history.current.query).toMatchObject({ search: 'find issues' });
+      });
+    });
+
+    describe('state', () => {
+      it('is set from the url params', () => {
+        const initialState = STATUS_ALL;
+        setWindowLocation(`?state=${initialState}`);
+        wrapper = createComponent();
+
+        expect(findIssuableList().props('currentTab')).toBe(initialState);
+      });
+    });
+
+    describe('filter tokens', () => {
+      it('are set from the url params', () => {
+        setWindowLocation(locationSearch);
+        wrapper = createComponent();
+
+        expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
+      });
     });
   });
 
@@ -200,13 +243,35 @@ describe('ServiceDeskListApp', () => {
 
   describe('Events', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
-      it('updates ui to the new tab', async () => {
-        createComponent();
+      beforeEach(() => {
+        wrapper = createComponent();
+        router.push = jest.fn();
 
         findIssuableList().vm.$emit('click-tab', STATUS_CLOSED);
+      });
 
-        await nextTick();
+      it('updates ui to the new tab', () => {
         expect(findIssuableList().props('currentTab')).toBe(STATUS_CLOSED);
+      });
+
+      it('updates url to the new tab', () => {
+        expect(router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining({ state: STATUS_CLOSED }),
+        });
+      });
+    });
+
+    describe('when "filter" event is emitted by IssuableList', () => {
+      it('updates IssuableList with url params', async () => {
+        wrapper = createComponent();
+        router.push = jest.fn();
+
+        findIssuableList().vm.$emit('filter', filteredTokens);
+        await nextTick();
+
+        expect(router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining(urlParams),
+        });
       });
     });
   });

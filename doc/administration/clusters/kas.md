@@ -41,7 +41,7 @@ To enable the agent server on a single node:
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 For additional configuration options, see the **Enable GitLab KAS** section of the
-[`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-config-template/gitlab.rb.template).
+[`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/be52c36c243a3422ec38b7d45d459682a07e195f/files/gitlab-config-template/gitlab.rb.template#L1951).
 
 ##### Configure KAS to listen on a UNIX socket
 

@@ -7,8 +7,11 @@ module Tooling
     module ModelValidations
       include ::Tooling::Danger::Suggestor
 
-      MODEL_FILES_REGEX = 'app/models'
+      MODEL_FILES_PATH = 'app/models'
+      MODEL_CONCERN_FILES_PATH = 'app/models/concerns'
       EE_PREFIX = 'ee/'
+      MODEL_FILES_REGEX = %r{\A(#{EE_PREFIX})?#{MODEL_FILES_PATH}}
+      MODEL_CONCERN_FILES_REGEX = %r{\A(#{EE_PREFIX})?#{MODEL_CONCERN_FILES_PATH}}
       VALIDATION_METHODS = %w[validates validate validates_each validates_with validates_associated].freeze
       VALIDATIONS_REGEX = /^\+\s*(.*\.)?(#{VALIDATION_METHODS.join('|')})[( ]/
 
@@ -32,10 +35,10 @@ module Tooling
       end
 
       def changed_model_files
-        changed_files = helper.all_changed_files
-        ee_folder_prefix = "(#{EE_PREFIX})?"
+        added_files = helper.added_files
+        modified_files = helper.modified_files
 
-        changed_files.grep(%r{\A#{ee_folder_prefix}#{MODEL_FILES_REGEX}})
+        modified_files.grep(MODEL_FILES_REGEX) + added_files.grep(MODEL_CONCERN_FILES_REGEX)
       end
     end
   end

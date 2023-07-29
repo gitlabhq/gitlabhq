@@ -2,15 +2,38 @@
 import { GlEmptyState } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { isEmpty } from 'lodash';
 import { fetchPolicies } from '~/lib/graphql';
+import { isPositiveInteger } from '~/lib/utils/number_utils';
 import axios from '~/lib/utils/axios_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
+import {
+  convertToSearchQuery,
+  convertToApiParams,
+  getInitialPageParams,
+  getFilterTokens,
+  isSortKey,
+} from '~/issues/list/utils';
 import {
   OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  MAX_LIST_SIZE,
+  ISSUE_REFERENCE,
+  PARAM_STATE,
+  PARAM_FIRST_PAGE_SIZE,
+  PARAM_LAST_PAGE_SIZE,
+  PARAM_PAGE_AFTER,
+  PARAM_PAGE_BEFORE,
+  PARAM_SORT,
+  CREATED_DESC,
+  UPDATED_DESC,
+  urlSortParams,
+} from '~/issues/list/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import searchUsersQuery from '~/issues/list/queries/search_users.query.graphql';
@@ -24,12 +47,12 @@ import {
   noSearchNoFilterTitle,
   searchPlaceholder,
   SERVICE_DESK_BOT_USERNAME,
-  MAX_LIST_SIZE,
   STATUS_OPEN,
   STATUS_CLOSED,
   STATUS_ALL,
   WORKSPACE_PROJECT,
 } from '../constants';
+import { convertToUrlParams } from '../utils';
 import {
   searchWithinTokenBase,
   assigneeTokenBase,
@@ -68,6 +91,7 @@ export default {
     'fullPath',
     'isServiceDeskSupported',
     'hasAnyIssues',
+    'initialSort',
   ],
   props: {
     eeSearchTokens: {
@@ -81,7 +105,12 @@ export default {
       serviceDeskIssues: [],
       serviceDeskIssuesCounts: {},
       sortOptions: [],
+      filterTokens: [],
+      pageInfo: {},
+      pageParams: {},
+      sortKey: CREATED_DESC,
       state: STATUS_OPEN,
+      pageSize: DEFAULT_PAGE_SIZE,
       issuesError: null,
     };
   },
@@ -109,7 +138,7 @@ export default {
         Sentry.captureException(error);
       },
       skip() {
-        return !this.hasAnyIssues;
+        return this.shouldSkipQuery;
       },
     },
     serviceDeskIssuesCounts: {
@@ -124,6 +153,9 @@ export default {
         this.issuesError = this.$options.i18n.errorFetchingCounts;
         Sentry.captureException(error);
       },
+      skip() {
+        return this.shouldSkipQuery;
+      },
       context: {
         isSingleRequest: true,
       },
@@ -131,13 +163,22 @@ export default {
   },
   computed: {
     queryVariables() {
+      const isIidSearch = ISSUE_REFERENCE.test(this.searchQuery);
       return {
         fullPath: this.fullPath,
+        iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         isProject: this.isProject,
         isSignedIn: this.isSignedIn,
         authorUsername: SERVICE_DESK_BOT_USERNAME,
+        sort: this.sortKey,
         state: this.state,
+        ...this.pageParams,
+        ...this.apiFilterParams,
+        search: isIidSearch ? undefined : this.searchQuery,
       };
+    },
+    shouldSkipQuery() {
+      return !this.hasAnyIssues || isEmpty(this.pageParams);
     },
     tabCounts() {
       const { openedIssues, closedIssues, allIssues } = this.serviceDeskIssuesCounts;
@@ -147,11 +188,39 @@ export default {
         [STATUS_ALL]: allIssues?.count,
       };
     },
+    urlParams() {
+      return {
+        sort: urlSortParams[this.sortKey],
+        state: this.state,
+        ...this.urlFilterParams,
+        first_page_size: this.pageParams.firstPageSize,
+        last_page_size: this.pageParams.lastPageSize,
+        page_after: this.pageParams.afterCursor ?? undefined,
+        page_before: this.pageParams.beforeCursor ?? undefined,
+      };
+    },
     isInfoBannerVisible() {
       return this.isServiceDeskSupported && this.hasAnyIssues;
     },
     hasOrFeature() {
       return this.glFeatures.orIssuableQueries;
+    },
+    hasSearch() {
+      return Boolean(
+        this.searchQuery ||
+          Object.keys(this.urlFilterParams).length ||
+          this.pageParams.afterCursor ||
+          this.pageParams.beforeCursor,
+      );
+    },
+    apiFilterParams() {
+      return convertToApiParams(this.filterTokens);
+    },
+    urlFilterParams() {
+      return convertToUrlParams(this.filterTokens);
+    },
+    searchQuery() {
+      return convertToSearchQuery(this.filterTokens);
     },
     searchTokens() {
       const preloadedUsers = [];
@@ -219,7 +288,15 @@ export default {
       return tokens;
     },
   },
+  watch: {
+    $route(newValue, oldValue) {
+      if (newValue.fullPath !== oldValue.fullPath) {
+        this.updateData(getParameterByName(PARAM_SORT));
+      }
+    },
+  },
   created() {
+    this.updateData(this.initialSort);
     this.cache = {};
   },
   methods: {
@@ -287,6 +364,37 @@ export default {
         return;
       }
       this.state = state;
+      this.pageParams = getInitialPageParams(this.pageSize);
+
+      this.$router.push({ query: this.urlParams });
+    },
+    handleFilter(tokens) {
+      this.filterTokens = tokens;
+      this.pageParams = getInitialPageParams(this.pageSize);
+
+      this.$router.push({ query: this.urlParams });
+    },
+    updateData(sortValue) {
+      const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
+      const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
+      const state = getParameterByName(PARAM_STATE);
+
+      const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
+      const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
+
+      const sortKey = graphQLSortKey || defaultSortKey;
+
+      this.filterTokens = getFilterTokens(window.location.search);
+
+      this.pageParams = getInitialPageParams(
+        this.pageSize,
+        isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
+        isPositiveInteger(lastPageSize) ? parseInt(lastPageSize, 10) : undefined,
+        getParameterByName(PARAM_PAGE_AFTER),
+        getParameterByName(PARAM_PAGE_BEFORE),
+      );
+      this.sortKey = sortKey;
+      this.state = state || STATUS_OPEN;
     },
   },
 };
@@ -297,16 +405,22 @@ export default {
     <info-banner v-if="isInfoBannerVisible" />
     <issuable-list
       namespace="service-desk"
-      recent-searches-storage-key="issues"
+      recent-searches-storage-key="service-desk-issues"
       :error="issuesError"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
+      :initial-filter-value="filterTokens"
+      :show-filtered-search-friendly-text="hasOrFeature"
       :sort-options="sortOptions"
+      :initial-sort-by="sortKey"
       :issuables="serviceDeskIssues"
       :tabs="$options.issuableListTabs"
       :tab-counts="tabCounts"
       :current-tab="state"
+      :default-page-size="pageSize"
+      sync-filter-and-sort
       @click-tab="handleClickTab"
+      @filter="handleFilter"
     >
       <template #empty-state>
         <gl-empty-state

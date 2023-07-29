@@ -1,14 +1,16 @@
 ---
 stage: Deploy
 group: Environments
-info: A tutorial for structuring a repository for GitOps deployments
+info: A tutorial for deploying a GitLab repository using Flux
 ---
 
-# Tutorial: Structure your repository for GitOps deployments **(FREE)**
+# Tutorial: Deploy a Git repository using Flux **(FREE)**
 
 In this tutorial, you'll create a GitLab project that builds and deploys an application
 to a Kubernetes cluster using Flux. You'll set up a sample manifest project, configure it to
-push manifests to a deployment branch, and configure Flux to sync the deployment branch.
+push manifests to a deployment branch, and configure Flux to sync the deployment branch. With this
+setup, you can run additional steps in GitLab pipelines before Flux picks up the changes
+from the repository.
 
 This tutorial deploys an application from a public project. If you want to add a non-public project, you should create a [project deploy token](../../../project/deploy_tokens/index.md).
 
