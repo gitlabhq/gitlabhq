@@ -53,7 +53,7 @@ module BulkImports
     end
 
     def validate_symlink(filepath)
-      raise(ServiceError, 'Invalid file') if Gitlab::Utils::FileInfo.linked?(filepath)
+      raise(ServiceError, 'Invalid file') if File.lstat(filepath).symlink?
     end
 
     def decompress_file

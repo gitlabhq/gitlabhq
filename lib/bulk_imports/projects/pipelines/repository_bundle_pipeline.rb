@@ -26,7 +26,7 @@ module BulkImports
 
           return unless File.exist?(bundle_path)
           return if File.directory?(bundle_path)
-          return if Gitlab::Utils::FileInfo.linked?(bundle_path)
+          return if File.lstat(bundle_path).symlink?
 
           portable.repository.create_from_bundle(bundle_path)
         end

@@ -26,7 +26,7 @@ module BulkImports
           return unless portable.lfs_enabled?
           return unless File.exist?(bundle_path)
           return if File.directory?(bundle_path)
-          return if Gitlab::Utils::FileInfo.linked?(bundle_path)
+          return if File.lstat(bundle_path).symlink?
 
           portable.design_repository.create_from_bundle(bundle_path)
         end

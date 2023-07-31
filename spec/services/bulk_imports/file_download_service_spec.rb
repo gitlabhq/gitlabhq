@@ -10,7 +10,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     let_it_be(:content_type) { 'application/octet-stream' }
     let_it_be(:content_disposition) { nil }
     let_it_be(:filename) { 'file_download_service_spec' }
-    let_it_be(:tmpdir) { Dir.mktmpdir }
+    let_it_be(:tmpdir) { Dir.tmpdir }
     let_it_be(:filepath) { File.join(tmpdir, filename) }
     let_it_be(:content_length) { 1000 }
 
@@ -244,36 +244,6 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
         )
 
         expect(File.exist?(symlink)).to eq(false)
-      end
-    end
-
-    context 'when file shares multiple hard links' do
-      let_it_be(:hard_link) { File.join(tmpdir, 'hard_link') }
-
-      before do
-        existing_file = File.join(Dir.mktmpdir, filename)
-        FileUtils.touch(existing_file)
-        FileUtils.link(existing_file, hard_link)
-      end
-
-      subject do
-        described_class.new(
-          configuration: config,
-          relative_url: '/test',
-          tmpdir: tmpdir,
-          filename: 'hard_link',
-          file_size_limit: file_size_limit,
-          allowed_content_types: allowed_content_types
-        )
-      end
-
-      it 'raises an error and removes the file' do
-        expect { subject.execute }.to raise_error(
-          described_class::ServiceError,
-          'Invalid downloaded file'
-        )
-
-        expect(File.exist?(hard_link)).to eq(false)
       end
     end
 

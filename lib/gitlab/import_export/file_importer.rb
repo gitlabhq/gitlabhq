@@ -23,7 +23,7 @@ module Gitlab
         mkdir_p(@shared.export_path)
         mkdir_p(@shared.archive_path)
 
-        clean_extraction_dir!(@shared.export_path)
+        remove_symlinks(@shared.export_path)
         copy_archive
 
         wait_for_archived_file do
@@ -35,7 +35,7 @@ module Gitlab
         false
       ensure
         remove_import_file
-        clean_extraction_dir!(@shared.export_path)
+        remove_symlinks(@shared.export_path)
       end
 
       private

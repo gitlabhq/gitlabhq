@@ -77,7 +77,7 @@ export function prepareRawDiffFile({ file, allFiles, meta = false, index = -1 })
 }
 
 export function collapsedType(file) {
-  const isManual = typeof file?.viewer?.manuallyCollapsed === 'boolean';
+  const isManual = typeof file.viewer?.manuallyCollapsed === 'boolean';
 
   return isManual ? DIFF_FILE_MANUAL_COLLAPSE : DIFF_FILE_AUTOMATIC_COLLAPSE;
 }
@@ -85,8 +85,8 @@ export function collapsedType(file) {
 export function isCollapsed(file) {
   const type = collapsedType(file);
   const collapsedStates = {
-    [DIFF_FILE_AUTOMATIC_COLLAPSE]: file?.viewer?.automaticallyCollapsed || false,
-    [DIFF_FILE_MANUAL_COLLAPSE]: file?.viewer?.manuallyCollapsed,
+    [DIFF_FILE_AUTOMATIC_COLLAPSE]: file.viewer?.automaticallyCollapsed || false,
+    [DIFF_FILE_MANUAL_COLLAPSE]: file.viewer?.manuallyCollapsed,
   };
 
   return collapsedStates[type];

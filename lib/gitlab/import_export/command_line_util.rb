@@ -5,11 +5,8 @@ module Gitlab
     module CommandLineUtil
       UNTAR_MASK = 'u+rwX,go+rX,go-w'
       DEFAULT_DIR_MODE = 0700
-      CLEAN_DIR_IGNORE_FILE_NAMES = %w[. ..].freeze
 
-      CommandLineUtilError = Class.new(StandardError)
-      FileOversizedError = Class.new(CommandLineUtilError)
-      HardLinkError = Class.new(CommandLineUtilError)
+      FileOversizedError = Class.new(StandardError)
 
       def tar_czf(archive:, dir:)
         tar_with_options(archive: archive, dir: dir, options: 'czf')
@@ -93,7 +90,7 @@ module Gitlab
       def untar_with_options(archive:, dir:, options:)
         execute_cmd(%W(tar -#{options} #{archive} -C #{dir}))
         execute_cmd(%W(chmod -R #{UNTAR_MASK} #{dir}))
-        clean_extraction_dir!(dir)
+        remove_symlinks(dir)
       end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -125,27 +122,17 @@ module Gitlab
         true
       end
 
-      # Scans and cleans the directory tree.
-      # Symlinks are considered legal but are removed.
-      # Files sharing hard links are considered illegal and the directory will be removed
-      # and a `HardLinkError` exception will be raised.
-      #
-      # @raise [HardLinkError] if there multiple hard links to the same file detected.
-      # @return [Boolean] true
-      def clean_extraction_dir!(dir)
+      def remove_symlinks(dir)
+        ignore_file_names = %w[. ..]
+
         # Using File::FNM_DOTMATCH to also delete symlinks starting with "."
-        Dir.glob("#{dir}/**/*", File::FNM_DOTMATCH).each do |filepath|
-          next if CLEAN_DIR_IGNORE_FILE_NAMES.include?(File.basename(filepath))
-
-          raise HardLinkError, 'File shares hard link' if Gitlab::Utils::FileInfo.shares_hard_link?(filepath)
-
-          FileUtils.rm(filepath) if Gitlab::Utils::FileInfo.linked?(filepath)
-        end
+        Dir.glob("#{dir}/**/*", File::FNM_DOTMATCH)
+          .reject { |f| ignore_file_names.include?(File.basename(f)) }
+          .each do |filepath|
+            FileUtils.rm(filepath) if File.lstat(filepath).symlink?
+          end
 
         true
-      rescue HardLinkError
-        FileUtils.remove_dir(dir)
-        raise
       end
     end
   end

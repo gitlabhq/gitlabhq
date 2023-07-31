@@ -39,7 +39,6 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
 
     it_behaves_like 'fails fast', 'A' * 50000
     it_behaves_like 'fails fast', '/a' * 50000
-    it_behaves_like 'fails fast', "mailto:#{'a-' * 499_000}@aaaaaaaa..aaaaaaaa.example.com"
   end
 
   it 'allows references with text after the > character' do

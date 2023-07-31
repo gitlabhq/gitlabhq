@@ -105,7 +105,6 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
         it 'returns' do
           path = File.join(tmpdir, 'test')
           FileUtils.touch(path)
-
           expect { pipeline.load(context, path) }.not_to change { portable.uploads.count }
         end
       end
@@ -119,19 +118,10 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
       context 'when path is a symlink' do
         it 'does not upload the file' do
           symlink = File.join(tmpdir, 'symlink')
-          FileUtils.ln_s(upload_file_path, symlink)
 
-          expect(Gitlab::Utils::FileInfo).to receive(:linked?).with(symlink).and_call_original
+          FileUtils.ln_s(File.join(tmpdir, upload_file_path), symlink)
+
           expect { pipeline.load(context, symlink) }.not_to change { portable.uploads.count }
-        end
-      end
-
-      context 'when path has multiple hard links' do
-        it 'does not upload the file' do
-          FileUtils.link(upload_file_path, File.join(tmpdir, 'hard_link'))
-
-          expect(Gitlab::Utils::FileInfo).to receive(:linked?).with(upload_file_path).and_call_original
-          expect { pipeline.load(context, upload_file_path) }.not_to change { portable.uploads.count }
         end
       end
 

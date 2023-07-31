@@ -4,17 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::RecursiveMergeFolders do
   describe '.merge' do
-    it 'merges folder and ignores symlinks and files that share hard links' do
+    it 'merge folder and ignore symlinks' do
       Dir.mktmpdir do |tmpdir|
         source = "#{tmpdir}/source"
         FileUtils.mkdir_p("#{source}/folder/folder")
         FileUtils.touch("#{source}/file1.txt")
-        FileUtils.touch("#{source}/file_that_shares_hard_links.txt")
         FileUtils.touch("#{source}/folder/file2.txt")
         FileUtils.touch("#{source}/folder/folder/file3.txt")
         FileUtils.ln_s("#{source}/file1.txt", "#{source}/symlink-file1.txt")
         FileUtils.ln_s("#{source}/folder", "#{source}/symlink-folder")
-        FileUtils.link("#{source}/file_that_shares_hard_links.txt", "#{source}/hard_link.txt")
 
         target = "#{tmpdir}/target"
         FileUtils.mkdir_p("#{target}/folder/folder")

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers do
+RSpec.describe Gitlab::ImportExport::FileImporter do
   include ExportFileHelper
 
   let(:shared) { Gitlab::ImportExport::Shared.new(nil) }
@@ -113,72 +113,27 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
   end
 
   context 'error' do
-    subject(:import) { described_class.import(importable: build(:project), archive_file: '', shared: shared) }
-
     before do
       allow_next_instance_of(described_class) do |instance|
-        allow(instance).to receive(:wait_for_archived_file).and_raise(StandardError, 'foo')
+        allow(instance).to receive(:wait_for_archived_file).and_raise(StandardError)
       end
+      described_class.import(importable: build(:project), archive_file: '', shared: shared)
     end
 
     it 'removes symlinks in root folder' do
-      import
-
       expect(File.exist?(symlink_file)).to be false
     end
 
     it 'removes hidden symlinks in root folder' do
-      import
-
       expect(File.exist?(hidden_symlink_file)).to be false
     end
 
     it 'removes symlinks in subfolders' do
-      import
-
       expect(File.exist?(subfolder_symlink_file)).to be false
     end
 
     it 'does not remove a valid file' do
-      import
-
       expect(File.exist?(valid_file)).to be true
-    end
-
-    it 'returns false and sets an error on shared' do
-      result = import
-
-      expect(result).to eq(false)
-      expect(shared.errors.join).to eq('foo')
-    end
-
-    context 'when files in the archive share hard links' do
-      let(:hard_link_file) { "#{shared.export_path}/hard_link_file.txt" }
-
-      before do
-        FileUtils.link(valid_file, hard_link_file)
-      end
-
-      it 'returns false and sets an error on shared' do
-        result = import
-
-        expect(result).to eq(false)
-        expect(shared.errors.join).to eq('File shares hard link')
-      end
-
-      it 'removes all files in export path' do
-        expect(Dir).to exist(shared.export_path)
-        expect(File).to exist(symlink_file)
-        expect(File).to exist(hard_link_file)
-        expect(File).to exist(valid_file)
-
-        import
-
-        expect(File).not_to exist(symlink_file)
-        expect(File).not_to exist(hard_link_file)
-        expect(File).not_to exist(valid_file)
-        expect(Dir).not_to exist(shared.export_path)
-      end
     end
   end
 
@@ -202,10 +157,8 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
         allow(Gitlab::ImportExport::DecompressedArchiveSizeValidator).to receive(:max_bytes).and_return(1)
       end
 
-      it 'returns false and sets an error on shared' do
-        result = subject.import
-
-        expect(result).to eq(false)
+      it 'returns false' do
+        expect(subject.import).to eq(false)
         expect(shared.errors.join).to eq('Decompressed archive size validation failed.')
       end
     end

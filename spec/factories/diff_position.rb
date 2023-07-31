@@ -54,10 +54,6 @@ FactoryBot.define do
       end
     end
 
-    factory :file_diff_position do
-      position_type { 'file' }
-    end
-
     factory :image_diff_position do
       position_type { 'image' }
       x { 1 }

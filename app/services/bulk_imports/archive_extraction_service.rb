@@ -49,7 +49,11 @@ module BulkImports
     end
 
     def validate_symlink
-      raise(BulkImports::Error, 'Invalid file') if Gitlab::Utils::FileInfo.linked?(filepath)
+      raise(BulkImports::Error, 'Invalid file') if symlink?(filepath)
+    end
+
+    def symlink?(filepath)
+      File.lstat(filepath).symlink?
     end
 
     def extract_archive

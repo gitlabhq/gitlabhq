@@ -157,7 +157,7 @@ export default {
       return !this.discussionResolved ? this.discussion.resolve_with_issue_path : '';
     },
     canShowReplyActions() {
-      if (this.shouldRenderDiffs && !this.discussion.diff_file?.diff_refs) {
+      if (this.shouldRenderDiffs && !this.discussion.diff_file.diff_refs) {
         return false;
       }
 

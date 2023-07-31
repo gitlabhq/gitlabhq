@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_category: :importers do
+RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline do
   let_it_be(:portable) { create(:project) }
   let_it_be(:oid) { 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' }
 
@@ -118,19 +118,10 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
     context 'when file path is symlink' do
       it 'returns' do
         symlink = File.join(tmpdir, 'symlink')
-        FileUtils.ln_s(lfs_file_path, symlink)
 
-        expect(Gitlab::Utils::FileInfo).to receive(:linked?).with(symlink).and_call_original
+        FileUtils.ln_s(File.join(tmpdir, lfs_file_path), symlink)
+
         expect { pipeline.load(context, symlink) }.not_to change { portable.lfs_objects.count }
-      end
-    end
-
-    context 'when file path shares multiple hard links' do
-      it 'returns' do
-        FileUtils.link(lfs_file_path, File.join(tmpdir, 'hard_link'))
-
-        expect(Gitlab::Utils::FileInfo).to receive(:linked?).with(lfs_file_path).and_call_original
-        expect { pipeline.load(context, lfs_file_path) }.not_to change { portable.lfs_objects.count }
       end
     end
 

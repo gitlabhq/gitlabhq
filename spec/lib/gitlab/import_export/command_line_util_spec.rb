@@ -5,16 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importers do
   include ExportFileHelper
 
+  let(:path) { "#{Dir.tmpdir}/symlink_test" }
+  let(:archive) { 'spec/fixtures/symlink_export.tar.gz' }
   let(:shared) { Gitlab::ImportExport::Shared.new(nil) }
-  # Separate where files are written during this test by their kind, to avoid them interfering with each other:
-  # - `source_dir` Dir to compress files from.
-  # - `target_dir` Dir to decompress archived files into.
-  # - `archive_dir` Dir to write any archive files to.
-  let(:source_dir) { Dir.mktmpdir }
-  let(:target_dir) { Dir.mktmpdir }
+  let(:tmpdir) { Dir.mktmpdir }
   let(:archive_dir) { Dir.mktmpdir }
 
-  subject(:mock_class) do
+  subject do
     Class.new do
       include Gitlab::ImportExport::CommandLineUtil
 
@@ -28,59 +25,38 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
   end
 
   before do
-    FileUtils.mkdir_p(source_dir)
+    FileUtils.mkdir_p(path)
   end
 
   after do
-    FileUtils.rm_rf(source_dir)
-    FileUtils.rm_rf(target_dir)
+    FileUtils.rm_rf(path)
     FileUtils.rm_rf(archive_dir)
+    FileUtils.remove_entry(tmpdir)
   end
 
   shared_examples 'deletes symlinks' do |compression, decompression|
     it 'deletes the symlinks', :aggregate_failures do
-      Dir.mkdir("#{source_dir}/.git")
-      Dir.mkdir("#{source_dir}/folder")
-      FileUtils.touch("#{source_dir}/file.txt")
-      FileUtils.touch("#{source_dir}/folder/file.txt")
-      FileUtils.touch("#{source_dir}/.gitignore")
-      FileUtils.touch("#{source_dir}/.git/config")
-      File.symlink('file.txt', "#{source_dir}/.symlink")
-      File.symlink('file.txt', "#{source_dir}/.git/.symlink")
-      File.symlink('file.txt', "#{source_dir}/folder/.symlink")
-      archive_file = File.join(archive_dir, 'symlink_archive.tar.gz')
-      subject.public_send(compression, archive: archive_file, dir: source_dir)
-      subject.public_send(decompression, archive: archive_file, dir: target_dir)
+      Dir.mkdir("#{tmpdir}/.git")
+      Dir.mkdir("#{tmpdir}/folder")
+      FileUtils.touch("#{tmpdir}/file.txt")
+      FileUtils.touch("#{tmpdir}/folder/file.txt")
+      FileUtils.touch("#{tmpdir}/.gitignore")
+      FileUtils.touch("#{tmpdir}/.git/config")
+      File.symlink('file.txt', "#{tmpdir}/.symlink")
+      File.symlink('file.txt', "#{tmpdir}/.git/.symlink")
+      File.symlink('file.txt', "#{tmpdir}/folder/.symlink")
+      archive = File.join(archive_dir, 'archive')
+      subject.public_send(compression, archive: archive, dir: tmpdir)
 
-      expect(File).to exist("#{target_dir}/file.txt")
-      expect(File).to exist("#{target_dir}/folder/file.txt")
-      expect(File).to exist("#{target_dir}/.gitignore")
-      expect(File).to exist("#{target_dir}/.git/config")
-      expect(File).not_to exist("#{target_dir}/.symlink")
-      expect(File).not_to exist("#{target_dir}/.git/.symlink")
-      expect(File).not_to exist("#{target_dir}/folder/.symlink")
-    end
-  end
+      subject.public_send(decompression, archive: archive, dir: archive_dir)
 
-  shared_examples 'handles shared hard links' do |compression, decompression|
-    let(:archive_file) { File.join(archive_dir, 'hard_link_archive.tar.gz') }
-
-    subject(:decompress) { mock_class.public_send(decompression, archive: archive_file, dir: target_dir) }
-
-    before do
-      Dir.mkdir("#{source_dir}/dir")
-      FileUtils.touch("#{source_dir}/file.txt")
-      FileUtils.touch("#{source_dir}/dir/.file.txt")
-      FileUtils.link("#{source_dir}/file.txt", "#{source_dir}/.hard_linked_file.txt")
-
-      mock_class.public_send(compression, archive: archive_file, dir: source_dir)
-    end
-
-    it 'raises an exception and deletes the extraction dir', :aggregate_failures do
-      expect(FileUtils).to receive(:remove_dir).with(target_dir).and_call_original
-      expect(Dir).to exist(target_dir)
-      expect { decompress }.to raise_error(described_class::HardLinkError)
-      expect(Dir).not_to exist(target_dir)
+      expect(File.exist?("#{archive_dir}/file.txt")).to eq(true)
+      expect(File.exist?("#{archive_dir}/folder/file.txt")).to eq(true)
+      expect(File.exist?("#{archive_dir}/.gitignore")).to eq(true)
+      expect(File.exist?("#{archive_dir}/.git/config")).to eq(true)
+      expect(File.exist?("#{archive_dir}/.symlink")).to eq(false)
+      expect(File.exist?("#{archive_dir}/.git/.symlink")).to eq(false)
+      expect(File.exist?("#{archive_dir}/folder/.symlink")).to eq(false)
     end
   end
 
@@ -236,8 +212,6 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
   end
 
   describe '#gzip' do
-    let(:path) { source_dir }
-
     it 'compresses specified file' do
       tempfile = Tempfile.new('test', path)
       filename = File.basename(tempfile.path)
@@ -255,16 +229,14 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
   end
 
   describe '#gunzip' do
-    let(:path) { source_dir }
-
     it 'decompresses specified file' do
       filename = 'labels.ndjson.gz'
       gz_filepath = "spec/fixtures/bulk_imports/gz/#{filename}"
-      FileUtils.copy_file(gz_filepath, File.join(path, filename))
+      FileUtils.copy_file(gz_filepath, File.join(tmpdir, filename))
 
-      subject.gunzip(dir: path, filename: filename)
+      subject.gunzip(dir: tmpdir, filename: filename)
 
-      expect(File.exist?(File.join(path, 'labels.ndjson'))).to eq(true)
+      expect(File.exist?(File.join(tmpdir, 'labels.ndjson'))).to eq(true)
     end
 
     context 'when exception occurs' do
@@ -278,7 +250,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
     it 'archives a folder without compression' do
       archive_file = File.join(archive_dir, 'archive.tar')
 
-      result = subject.tar_cf(archive: archive_file, dir: source_dir)
+      result = subject.tar_cf(archive: archive_file, dir: tmpdir)
 
       expect(result).to eq(true)
       expect(File.exist?(archive_file)).to eq(true)
@@ -298,35 +270,29 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
   end
 
   describe '#untar_zxf' do
-    let(:tar_archive_fixture) { 'spec/fixtures/symlink_export.tar.gz' }
-
     it_behaves_like 'deletes symlinks', :tar_czf, :untar_zxf
-    it_behaves_like 'handles shared hard links', :tar_czf, :untar_zxf
 
     it 'has the right mask for project.json' do
-      subject.untar_zxf(archive: tar_archive_fixture, dir: target_dir)
+      subject.untar_zxf(archive: archive, dir: path)
 
-      expect(file_permissions("#{target_dir}/project.json")).to eq(0755) # originally 777
+      expect(file_permissions("#{path}/project.json")).to eq(0755) # originally 777
     end
 
     it 'has the right mask for uploads' do
-      subject.untar_zxf(archive: tar_archive_fixture, dir: target_dir)
+      subject.untar_zxf(archive: archive, dir: path)
 
-      expect(file_permissions("#{target_dir}/uploads")).to eq(0755) # originally 555
+      expect(file_permissions("#{path}/uploads")).to eq(0755) # originally 555
     end
   end
 
   describe '#untar_xf' do
-    let(:tar_archive_fixture) { 'spec/fixtures/symlink_export.tar.gz' }
-
     it_behaves_like 'deletes symlinks', :tar_cf, :untar_xf
-    it_behaves_like 'handles shared hard links', :tar_cf, :untar_xf
 
     it 'extracts archive without decompression' do
       filename = 'archive.tar.gz'
       archive_file = File.join(archive_dir, 'archive.tar')
 
-      FileUtils.copy_file(tar_archive_fixture, File.join(archive_dir, filename))
+      FileUtils.copy_file(archive, File.join(archive_dir, filename))
       subject.gunzip(dir: archive_dir, filename: filename)
 
       result = subject.untar_xf(archive: archive_file, dir: archive_dir)

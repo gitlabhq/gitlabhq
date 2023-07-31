@@ -24,7 +24,7 @@ module BulkImports
           return if tar_filepath?(file_path)
           return if lfs_json_filepath?(file_path)
           return if File.directory?(file_path)
-          return if Gitlab::Utils::FileInfo.linked?(file_path)
+          return if File.lstat(file_path).symlink?
 
           size = File.size(file_path)
           oid = LfsObject.calculate_oid(file_path)
