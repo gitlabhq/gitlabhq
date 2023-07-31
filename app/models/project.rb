@@ -579,6 +579,8 @@ class Project < ApplicationRecord
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
   validates :suggestion_commit_message, length: { maximum: MAX_SUGGESTIONS_TEMPLATE_LENGTH }
 
+  validate :path_availability, if: :path_changed?
+
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
@@ -3219,6 +3221,15 @@ class Project < ApplicationRecord
     return false unless group
 
     group.crm_enabled?
+  end
+
+  def path_availability
+    base, _, host = path.partition('.')
+
+    return unless host == Gitlab.config.pages&.dig('host')
+    return unless ProjectSetting.where(pages_unique_domain: base).exists?
+
+    errors.add(:path, s_('Project|already in use'))
   end
 
   private

@@ -65,7 +65,7 @@ module Gitlab
       def validate_archive_path
         Gitlab::PathTraversal.check_path_traversal!(archive_path)
 
-        raise(ServiceError, 'Archive path is a symlink') if File.lstat(archive_path).symlink?
+        raise(ServiceError, 'Archive path is a symlink or hard link') if Gitlab::Utils::FileInfo.linked?(archive_path)
         raise(ServiceError, 'Archive path is not a file') unless File.file?(archive_path)
       end
 

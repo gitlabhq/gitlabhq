@@ -36590,6 +36590,9 @@ msgstr ""
 msgid "ProjectSettings|Your project is set up. %{linkStart}View instrumentation instructions%{linkEnd}."
 msgstr ""
 
+msgid "ProjectSetting|already in use"
+msgstr ""
+
 msgid "ProjectTemplates|.NET Core"
 msgstr ""
 
@@ -36885,6 +36888,9 @@ msgid "ProjectsNew|You can always change your URL later"
 msgstr ""
 
 msgid "ProjectsNew|Your project will be created at:"
+msgstr ""
+
+msgid "Project|already in use"
 msgstr ""
 
 msgid "PrometheusAlerts|exceeded"

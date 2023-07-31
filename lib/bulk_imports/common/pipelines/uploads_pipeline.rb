@@ -26,7 +26,7 @@ module BulkImports
           # Validate that the path is OK to load
           Gitlab::PathTraversal.check_allowed_absolute_path_and_path_traversal!(file_path, [Dir.tmpdir])
           return if File.directory?(file_path)
-          return if File.lstat(file_path).symlink?
+          return if Gitlab::Utils::FileInfo.linked?(file_path)
 
           avatar_path = AVATAR_PATTERN.match(file_path)
           return save_avatar(file_path) if avatar_path
