@@ -21,6 +21,10 @@ module BitbucketServer
         raw['description']
       end
 
+      def reviewers
+        raw['reviewers']
+      end
+
       def iid
         raw['id']
       end
@@ -75,6 +79,7 @@ module BitbucketServer
           author_email: author_email,
           author_username: author_username,
           description: description,
+          reviewers: reviewers,
           created_at: created_at,
           updated_at: updated_at,
           state: state,

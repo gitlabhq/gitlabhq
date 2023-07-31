@@ -120,11 +120,31 @@ eos
       c1acaa58bbcbc3eafe538cb8274ba387047b69f8
     ).reverse # last commit is recent one
 
+    reviewers = [
+      {
+        "user" => {
+          "name" => "Jane",
+          "emailAddress" => "jane@doe.com",
+          "displayName" => "Jane Doe",
+          "slug" => "jane_doe"
+        }
+      },
+      {
+        "user" => {
+          "name" => "John",
+          "emailAddress" => "john@smith.com",
+          "displayName" => "John Smith",
+          "slug" => "john_smith"
+        }
+      }
+    ]
+
     OpenStruct.new(
       source_branch: 'master',
       target_branch: 'feature',
       changes: changes,
-      commits: commits
+      commits: commits,
+      reviewers: reviewers
     )
   end
 
