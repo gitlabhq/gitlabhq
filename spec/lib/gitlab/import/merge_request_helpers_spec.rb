@@ -66,4 +66,26 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper do
       end
     end
   end
+
+  describe '.insert_merge_request_reviewers' do
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    subject { helper.insert_merge_request_reviewers(merge_request, reviewers) }
+
+    context 'when reviewers are not present' do
+      let(:reviewers) { nil }
+
+      it 'does not insert reviewers' do
+        expect { subject }.not_to change { MergeRequestReviewer.count }
+      end
+    end
+
+    context 'when reviewers are present' do
+      let(:reviewers) { create_list(:user, 3).pluck(:id) }
+
+      it 'inserts reviewers' do
+        expect { subject }.to change { MergeRequestReviewer.count }.by(3)
+      end
+    end
+  end
 end

@@ -1,147 +1,189 @@
 {
-   "author":{
-      "approved":false,
-      "role":"AUTHOR",
-      "status":"UNAPPROVED",
-      "user":{
-         "active":true,
-         "displayName":"displayName",
-         "emailAddress":"joe.montana@49ers.com",
-         "username": "username",
-         "id":1,
-         "links":{
-            "self":[
-               {
-                  "href":"http://localhost:7990/users/root"
-               }
-            ]
-         },
-         "name":"root",
-         "slug":"slug",
-         "type":"NORMAL"
+  "author": {
+    "approved": false,
+    "role": "AUTHOR",
+    "status": "UNAPPROVED",
+    "user": {
+      "active": true,
+      "displayName": "displayName",
+      "emailAddress": "joe.montana@49ers.com",
+      "username": "username",
+      "id": 1,
+      "links": {
+        "self": [
+          {
+            "href": "http://localhost:7990/users/root"
+          }
+        ]
+      },
+      "name": "root",
+      "slug": "slug",
+      "type": "NORMAL"
+    }
+  },
+  "closed": true,
+  "closedDate": 1530600648850,
+  "createdDate": 1530600635690,
+  "description": "Test",
+  "fromRef": {
+    "displayId": "root/CODE_OF_CONDUCTmd-1530600625006",
+    "id": "refs/heads/root/CODE_OF_CONDUCTmd-1530600625006",
+    "latestCommit": "074e2b4dddc5b99df1bf9d4a3f66cfc15481fdc8",
+    "repository": {
+      "forkable": true,
+      "id": 1,
+      "links": {
+        "clone": [
+          {
+            "href": "http://root@localhost:7990/scm/test/rouge.git",
+            "name": "http"
+          },
+          {
+            "href": "ssh://git@localhost:7999/test/rouge.git",
+            "name": "ssh"
+          }
+        ],
+        "self": [
+          {
+            "href": "http://localhost:7990/projects/TEST/repos/rouge/browse"
+          }
+        ]
+      },
+      "name": "rouge",
+      "project": {
+        "description": "Test",
+        "id": 1,
+        "key": "TEST",
+        "links": {
+          "self": [
+            {
+              "href": "http://localhost:7990/projects/TEST"
+            }
+          ]
+        },
+        "name": "test",
+        "public": false,
+        "type": "NORMAL"
+      },
+      "public": false,
+      "scmId": "git",
+      "slug": "rouge",
+      "state": "AVAILABLE",
+      "statusMessage": "Available"
+    }
+  },
+  "id": 7,
+  "links": {
+    "self": [
+      {
+        "href": "http://localhost:7990/projects/TEST/repos/rouge/pull-requests/7"
       }
-   },
-   "closed":true,
-   "closedDate":1530600648850,
-   "createdDate":1530600635690,
-   "description":"Test",
-   "fromRef":{
-      "displayId":"root/CODE_OF_CONDUCTmd-1530600625006",
-      "id":"refs/heads/root/CODE_OF_CONDUCTmd-1530600625006",
-      "latestCommit":"074e2b4dddc5b99df1bf9d4a3f66cfc15481fdc8",
-      "repository":{
-         "forkable":true,
-         "id":1,
-         "links":{
-            "clone":[
-               {
-                  "href":"http://root@localhost:7990/scm/test/rouge.git",
-                  "name":"http"
-               },
-               {
-                  "href":"ssh://git@localhost:7999/test/rouge.git",
-                  "name":"ssh"
-               }
-            ],
-            "self":[
-               {
-                  "href":"http://localhost:7990/projects/TEST/repos/rouge/browse"
-               }
-            ]
-         },
-         "name":"rouge",
-         "project":{
-            "description":"Test",
-            "id":1,
-            "key":"TEST",
-            "links":{
-               "self":[
-                  {
-                     "href":"http://localhost:7990/projects/TEST"
-                  }
-               ]
-            },
-            "name":"test",
-            "public":false,
-            "type":"NORMAL"
-         },
-         "public":false,
-         "scmId":"git",
-         "slug":"rouge",
-         "state":"AVAILABLE",
-         "statusMessage":"Available"
-      }
-   },
-   "id":7,
-   "links":{
-      "self":[
-         {
-            "href":"http://localhost:7990/projects/TEST/repos/rouge/pull-requests/7"
-         }
-      ]
-   },
-   "locked":false,
-   "open":false,
-   "participants":[
+    ]
+  },
+  "locked": false,
+  "open": false,
+  "participants": [
 
-   ],
-   "properties":{
-      "commentCount":1,
-      "openTaskCount":0,
-      "resolvedTaskCount":0
-   },
-   "reviewers":[
-
-   ],
-   "state":"MERGED",
-   "title":"Added a new line",
-   "toRef":{
-      "displayId":"master",
-      "id":"refs/heads/master",
-      "latestCommit":"839fa9a2d434eb697815b8fcafaecc51accfdbbc",
-      "repository":{
-         "forkable":true,
-         "id":1,
-         "links":{
-            "clone":[
-               {
-                  "href":"http://root@localhost:7990/scm/test/rouge.git",
-                  "name":"http"
-               },
-               {
-                  "href":"ssh://git@localhost:7999/test/rouge.git",
-                  "name":"ssh"
-               }
-            ],
-            "self":[
-               {
-                  "href":"http://localhost:7990/projects/TEST/repos/rouge/browse"
-               }
-            ]
-         },
-         "name":"rouge",
-         "project":{
-            "description":"Test",
-            "id":1,
-            "key":"TEST",
-            "links":{
-               "self":[
-                  {
-                     "href":"http://localhost:7990/projects/TEST"
-                  }
-               ]
-            },
-            "name":"test",
-            "public":false,
-            "type":"NORMAL"
-         },
-         "public":false,
-         "scmId":"git",
-         "slug":"rouge",
-         "state":"AVAILABLE",
-         "statusMessage":"Available"
-      }
-   },
-   "updatedDate":1530600648850,
-   "version":2
+  ],
+  "properties": {
+    "commentCount": 1,
+    "openTaskCount": 0,
+    "resolvedTaskCount": 0
+  },
+  "reviewers": [
+    {
+      "user": {
+        "name": "Jane",
+        "emailAddress": "jane@doe.com",
+        "active": true,
+        "displayName": "Jane Doe",
+        "id": 3,
+        "slug": "jane_doe",
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "https://api.bitbucket.org/2.0/users/jane_doe"
+            }
+          ]
+        }
+      },
+      "role": "REVIEWER",
+      "approved": false,
+      "status": "UNAPPROVED"
+    },
+    {
+      "user": {
+        "name": "John",
+        "emailAddress": "john@smith.com",
+        "active": true,
+        "displayName": "John Smith",
+        "id": 2,
+        "slug": "john_smith",
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "https://api.bitbucket.org/2.0/users/john_smith"
+            }
+          ]
+        }
+      },
+      "lastReviewedCommit": "38f1424ea696f5316907ad70b1f179b356b07d1b",
+      "role": "REVIEWER",
+      "approved": true,
+      "status": "APPROVED"
+    }
+  ],
+  "state": "MERGED",
+  "title": "Added a new line",
+  "toRef": {
+    "displayId": "master",
+    "id": "refs/heads/master",
+    "latestCommit": "839fa9a2d434eb697815b8fcafaecc51accfdbbc",
+    "repository": {
+      "forkable": true,
+      "id": 1,
+      "links": {
+        "clone": [
+          {
+            "href": "http://root@localhost:7990/scm/test/rouge.git",
+            "name": "http"
+          },
+          {
+            "href": "ssh://git@localhost:7999/test/rouge.git",
+            "name": "ssh"
+          }
+        ],
+        "self": [
+          {
+            "href": "http://localhost:7990/projects/TEST/repos/rouge/browse"
+          }
+        ]
+      },
+      "name": "rouge",
+      "project": {
+        "description": "Test",
+        "id": 1,
+        "key": "TEST",
+        "links": {
+          "self": [
+            {
+              "href": "http://localhost:7990/projects/TEST"
+            }
+          ]
+        },
+        "name": "test",
+        "public": false,
+        "type": "NORMAL"
+      },
+      "public": false,
+      "scmId": "git",
+      "slug": "rouge",
+      "state": "AVAILABLE",
+      "statusMessage": "Available"
+    }
+  },
+  "updatedDate": 1530600648850,
+  "version": 2
 }

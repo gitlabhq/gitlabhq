@@ -25,12 +25,14 @@ module Gitlab
       def execute(attributes)
         source_branch_sha = attributes.delete(:source_branch_sha)
         target_branch_sha = attributes.delete(:target_branch_sha)
+        reviewer_ids = attributes.delete(:reviewer_ids)
         iid = attributes[:iid]
 
         merge_request, already_exists = create_merge_request_without_hooks(project, attributes, iid)
 
         if merge_request
           insert_or_replace_git_data(merge_request, source_branch_sha, target_branch_sha, already_exists)
+          insert_merge_request_reviewers(merge_request, reviewer_ids)
         end
 
         merge_request

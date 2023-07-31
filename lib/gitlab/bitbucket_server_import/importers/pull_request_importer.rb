@@ -27,6 +27,7 @@ module Gitlab
             iid: object[:iid],
             title: object[:title],
             description: description,
+            reviewer_ids: reviewers,
             source_project_id: project.id,
             source_branch: Gitlab::Git.ref_name(object[:source_branch_name]),
             source_branch_sha: object[:source_branch_sha],
@@ -54,6 +55,18 @@ module Gitlab
           return '' if user_finder.uid(object)
 
           formatter.author_line(object[:author])
+        end
+
+        def reviewers
+          return [] unless object[:reviewers].present?
+
+          object[:reviewers].filter_map do |reviewer|
+            if Feature.enabled?(:bitbucket_server_user_mapping_by_username, type: :ops)
+              user_finder.find_user_id(by: :username, value: reviewer.dig('user', 'slug'))
+            else
+              user_finder.find_user_id(by: :email, value: reviewer.dig('user', 'emailAddress'))
+            end
+          end
         end
       end
     end

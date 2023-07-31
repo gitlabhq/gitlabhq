@@ -62,6 +62,13 @@ module Gitlab
         diff.save_git_content
         diff.set_as_latest_diff
       end
+
+      def insert_merge_request_reviewers(merge_request, reviewers)
+        return unless reviewers.present?
+
+        rows = reviewers.map { |reviewer_id| { merge_request_id: merge_request.id, user_id: reviewer_id } }
+        MergeRequestReviewer.insert_all(rows)
+      end
     end
   end
 end
