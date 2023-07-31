@@ -52,6 +52,8 @@ class ProjectSetting < ApplicationRecord
 
   validate :validates_mr_default_target_self
 
+  validate :pages_unique_domain_availability, if: :pages_unique_domain_changed?
+
   attribute :legacy_open_source_license_available, default: -> do
     Feature.enabled?(:legacy_open_source_license_available, type: :ops)
   end
@@ -101,6 +103,15 @@ class ProjectSetting < ApplicationRecord
   def require_unique_domain?
     pages_unique_domain_enabled ||
       pages_unique_domain_in_database.present?
+  end
+
+  def pages_unique_domain_availability
+    host = Gitlab.config.pages&.dig('host')
+
+    return if host.blank?
+    return unless Project.where(path: "#{pages_unique_domain}.#{host}").exists?
+
+    errors.add(:pages_unique_domain, s_('ProjectSetting|already in use'))
   end
 end
 

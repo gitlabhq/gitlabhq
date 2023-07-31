@@ -9,6 +9,10 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
     project.update_pages_deployment!(create(:pages_deployment, project: project))
   end
 
+  before do
+    stub_pages_setting(host: 'example.com')
+  end
+
   it 'returns nil when host is empty' do
     expect(described_class.new(nil).execute).to be_nil
     expect(described_class.new('').execute).to be_nil
@@ -69,7 +73,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
       end
 
       it 'returns the virual domain with no lookup_paths' do
-        virtual_domain = described_class.new("#{project.namespace.path}.#{Settings.pages.host}").execute
+        virtual_domain = described_class.new("#{project.namespace.path}.example.com").execute
 
         expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
         expect(virtual_domain.cache_key).to match(/pages_domain_for_namespace_#{project.namespace.id}_/)
@@ -82,7 +86,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         end
 
         it 'returns the virual domain with no lookup_paths' do
-          virtual_domain = described_class.new("#{project.namespace.path}.#{Settings.pages.host}".downcase).execute
+          virtual_domain = described_class.new("#{project.namespace.path}.example.com".downcase).execute
 
           expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
           expect(virtual_domain.cache_key).to be_nil
@@ -104,7 +108,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
       end
 
       it 'returns the virual domain when there are pages deployed for the project' do
-        virtual_domain = described_class.new("#{project.namespace.path}.#{Settings.pages.host}").execute
+        virtual_domain = described_class.new("#{project.namespace.path}.example.com").execute
 
         expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
         expect(virtual_domain.cache_key).to match(/pages_domain_for_namespace_#{project.namespace.id}_/)
@@ -113,7 +117,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
       end
 
       it 'finds domain with case-insensitive' do
-        virtual_domain = described_class.new("#{project.namespace.path}.#{Settings.pages.host.upcase}").execute
+        virtual_domain = described_class.new("#{project.namespace.path}.Example.com").execute
 
         expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
         expect(virtual_domain.cache_key).to match(/pages_domain_for_namespace_#{project.namespace.id}_/)
@@ -127,7 +131,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         end
 
         it 'returns the virual domain when there are pages deployed for the project' do
-          virtual_domain = described_class.new("#{project.namespace.path}.#{Settings.pages.host}").execute
+          virtual_domain = described_class.new("#{project.namespace.path}.example.com").execute
 
           expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
           expect(virtual_domain.cache_key).to be_nil
@@ -143,7 +147,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
       project.project_setting.update!(pages_unique_domain: 'unique-domain')
     end
 
-    subject(:virtual_domain) { described_class.new("unique-domain.#{Settings.pages.host.upcase}").execute }
+    subject(:virtual_domain) { described_class.new('unique-domain.example.com').execute }
 
     context 'when pages unique domain is enabled' do
       before_all do
@@ -169,6 +173,19 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
           expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
           expect(virtual_domain.lookup_paths.length).to eq(1)
           expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
+        end
+
+        context 'when a project path conflicts with a unique domain' do
+          it 'prioritizes the unique domain project' do
+            group = create(:group, path: 'unique-domain')
+            other_project = build(:project, path: 'unique-domain.example.com', group: group)
+            other_project.save!(validate: false)
+            other_project.update_pages_deployment!(create(:pages_deployment, project: other_project))
+            other_project.mark_pages_as_deployed
+
+            expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+            expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
+          end
         end
 
         context 'when :cache_pages_domain_api is disabled' do

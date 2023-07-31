@@ -32,7 +32,7 @@ module BulkImports
       end
 
       def validate_symlink
-        return unless File.lstat(filepath).symlink?
+        return unless Gitlab::Utils::FileInfo.linked?(filepath)
 
         File.delete(filepath)
         raise_error 'Invalid downloaded file'

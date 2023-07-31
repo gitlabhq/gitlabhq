@@ -35,16 +35,22 @@ RSpec.describe Gitlab::ImportExport::Json::NdjsonReader, feature_category: :impo
       expect(subject).to eq(root_tree)
     end
 
-    context 'when project.json is symlink' do
-      it 'raises error an error' do
-        Dir.mktmpdir do |tmpdir|
-          FileUtils.touch(File.join(tmpdir, 'passwd'))
-          File.symlink(File.join(tmpdir, 'passwd'), File.join(tmpdir, 'project.json'))
+    context 'when project.json is symlink or hard link' do
+      using RSpec::Parameterized::TableSyntax
 
-          ndjson_reader = described_class.new(tmpdir)
+      where(:link_method) { [:link, :symlink] }
 
-          expect { ndjson_reader.consume_attributes(importable_path) }
-            .to raise_error(Gitlab::ImportExport::Error, 'Invalid file')
+      with_them do
+        it 'raises an error' do
+          Dir.mktmpdir do |tmpdir|
+            FileUtils.touch(File.join(tmpdir, 'passwd'))
+            FileUtils.send(link_method, File.join(tmpdir, 'passwd'), File.join(tmpdir, 'project.json'))
+
+            ndjson_reader = described_class.new(tmpdir)
+
+            expect { ndjson_reader.consume_attributes(importable_path) }
+              .to raise_error(Gitlab::ImportExport::Error, 'Invalid file')
+          end
         end
       end
     end
@@ -97,18 +103,24 @@ RSpec.describe Gitlab::ImportExport::Json::NdjsonReader, feature_category: :impo
         end
       end
 
-      context 'when relation file is a symlink' do
-        it 'yields nothing to the Enumerator' do
-          Dir.mktmpdir do |tmpdir|
-            Dir.mkdir(File.join(tmpdir, 'project'))
-            File.write(File.join(tmpdir, 'passwd'), "{}\n{}")
-            File.symlink(File.join(tmpdir, 'passwd'), File.join(tmpdir, 'project', 'issues.ndjson'))
+      context 'when relation file is a symlink or hard link' do
+        using RSpec::Parameterized::TableSyntax
 
-            ndjson_reader = described_class.new(tmpdir)
+        where(:link_method) { [:link, :symlink] }
 
-            result = ndjson_reader.consume_relation(importable_path, 'issues')
+        with_them do
+          it 'yields nothing to the Enumerator' do
+            Dir.mktmpdir do |tmpdir|
+              Dir.mkdir(File.join(tmpdir, 'project'))
+              File.write(File.join(tmpdir, 'passwd'), "{}\n{}")
+              FileUtils.send(link_method, File.join(tmpdir, 'passwd'), File.join(tmpdir, 'project', 'issues.ndjson'))
 
-            expect(result.to_a).to eq([])
+              ndjson_reader = described_class.new(tmpdir)
+
+              result = ndjson_reader.consume_relation(importable_path, 'issues')
+
+              expect(result.to_a).to eq([])
+            end
           end
         end
       end

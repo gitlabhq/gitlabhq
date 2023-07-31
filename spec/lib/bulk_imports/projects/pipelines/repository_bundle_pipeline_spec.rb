@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline do
+RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, feature_category: :importers do
   let_it_be(:source) { create(:project, :repository) }
 
   let(:portable) { create(:project) }
@@ -123,12 +123,25 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline do
     context 'when path is symlink' do
       it 'returns' do
         symlink = File.join(tmpdir, 'symlink')
+        FileUtils.ln_s(bundle_path, symlink)
 
-        FileUtils.ln_s(File.join(tmpdir, bundle_path), symlink)
-
+        expect(Gitlab::Utils::FileInfo).to receive(:linked?).with(symlink).and_call_original
         expect(portable.repository).not_to receive(:create_from_bundle)
 
         pipeline.load(context, symlink)
+
+        expect(portable.repository.exists?).to eq(false)
+      end
+    end
+
+    context 'when path has mutiple hard links' do
+      it 'returns' do
+        FileUtils.link(bundle_path, File.join(tmpdir, 'hard_link'))
+
+        expect(Gitlab::Utils::FileInfo).to receive(:linked?).with(bundle_path).and_call_original
+        expect(portable.repository).not_to receive(:create_from_bundle)
+
+        pipeline.load(context, bundle_path)
 
         expect(portable.repository.exists?).to eq(false)
       end
