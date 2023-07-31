@@ -2,9 +2,10 @@
 # frozen_string_literal: true
 
 require_relative '../config/bundler_setup'
-require_relative '../spec/simplecov_env'
-SimpleCovEnv.configure_profile
-SimpleCovEnv.configure_formatter
+require_relative '../spec/simplecov_env_core'
+
+SimpleCovEnvCore.configure_profile
+SimpleCovEnvCore.configure_formatter
 
 resultset_files = Dir.glob(File.join(SimpleCov.coverage_path, '*', '.resultset.json'))
 exit(0) if resultset_files.empty?

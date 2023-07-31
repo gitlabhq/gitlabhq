@@ -14,6 +14,35 @@ static site generator.
 View the [`gitlab-docs` architecture page](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/architecture.md)
 for more information.
 
+## Source files
+
+The documentation source files are in the same repositories as the product code.
+
+| Project | Path |
+| --- | --- |
+| [GitLab](https://gitlab.com/gitlab-org/gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) |
+| [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/) | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs) |
+| [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc) |
+| [Charts](https://gitlab.com/gitlab-org/charts/gitlab) | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc) |
+| [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator) | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) |
+
+Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
+
+## Publication
+
+Documentation for GitLab, GitLab Runner, GitLab Operator, Omnibus GitLab, and Charts is published to <https://docs.gitlab.com>.
+
+The same documentation is included in the application. To view the in-product help,
+go to the URL and add `/help` at the end.
+Only help for your current edition and version is included.
+
+Help for other versions is available at <https://docs.gitlab.com/archives/>.
+
+## Updating older versions
+
+If you need to add or edit documentation for a GitLab version that has already been
+released, follow the [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md).
+
 ## Documentation in other repositories
 
 If you have code and documentation in a repository other than the [primary repositories](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/architecture.md),
@@ -41,7 +70,10 @@ Then you can use one of these approaches:
 The docs website supports versions and each month we add the latest one to the list.
 For more information, read about the [monthly release process](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/releases.md).
 
-## Review Apps for documentation merge requests
+## Danger Bot
 
-If you are contributing to GitLab docs read how to
-[create a Review App with each merge request](../index.md#previewing-the-changes-live).
+GitLab uses [Danger](https://github.com/danger/danger) for some elements in
+code review. For docs changes in merge requests, whenever a change to files under `/doc`
+is made, Danger Bot leaves a comment with further instructions about the documentation
+process. This is configured in the `Dangerfile` in the GitLab repository under
+[/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/danger/documentation).

@@ -884,23 +884,4 @@ export const MOCK_FILTERED_LABELS = [
   },
 ];
 
-export const MOCK_FILTERED_UNAPPLIED_SELECTED_LABELS = [
-  {
-    key: '6',
-    count: 12,
-    title: 'Cosche',
-    color: '#cea786',
-    type: 'GroupLabel',
-    parent_full_name: 'Toolbox',
-  },
-  {
-    key: '73',
-    count: 12,
-    title: 'Accent',
-    color: '#a5c6fb',
-    type: 'ProjectLabel',
-    parent_full_name: 'Toolbox / Gitlab Smoke Tests',
-  },
-];
-
 export const CURRENT_SCOPE = 'blobs';

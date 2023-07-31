@@ -47,9 +47,6 @@ export const appliedSelectedLabels = (state) => {
   );
 };
 
-export const filteredUnappliedSelectedLabels = (state) =>
-  filteredLabels(state)?.filter((label) => state?.query?.labels?.includes(label.key));
-
 export const filteredUnselectedLabels = (state) => {
   if (!state?.urlQuery?.labels) {
     return filteredLabels(state);

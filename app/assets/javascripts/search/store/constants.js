@@ -2,6 +2,7 @@ import { statusFilterData } from '~/search/sidebar/components/status_filter/data
 import { confidentialFilterData } from '~/search/sidebar/components/confidentiality_filter/data';
 import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
+import { archivedFilterData } from '~/search/sidebar/components/archived_filter/data';
 
 export const MAX_FREQUENT_ITEMS = 5;
 
@@ -16,6 +17,7 @@ export const SIDEBAR_PARAMS = [
   confidentialFilterData.filterParam,
   languageFilterData.filterParam,
   labelFilterData.filterParam,
+  archivedFilterData.filterParam,
 ];
 
 export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: 'short' };

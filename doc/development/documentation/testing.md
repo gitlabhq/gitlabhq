@@ -33,7 +33,7 @@ We also run some documentation tests in the:
 
 ## Run tests locally
 
-Similar to [previewing your changes locally](index.md#previewing-the-changes-live), you can also
+Similar to [previewing your changes locally](review_apps.md), you can also
 run these tests on your local computer. This has the advantage of:
 
 - Speeding up the feedback loop. You can know of any problems with the changes in your branch

@@ -3,10 +3,12 @@ import { mapState, mapGetters } from 'vuex';
 import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
-import { SCOPE_ISSUES, SCOPE_MERGE_REQUESTS, SCOPE_BLOB } from '../constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { SCOPE_ISSUES, SCOPE_MERGE_REQUESTS, SCOPE_BLOB, SCOPE_PROJECTS } from '../constants';
 import IssuesFilters from './issues_filters.vue';
 import MergeRequestsFilters from './merge_requests_filters.vue';
 import BlobsFilters from './blobs_filters.vue';
+import ProjectsFilters from './projects_filters.vue';
 
 export default {
   name: 'GlobalSearchSidebar',
@@ -17,7 +19,9 @@ export default {
     SidebarPortal,
     MergeRequestsFilters,
     BlobsFilters,
+    ProjectsFilters,
   },
+  mixins: [glFeatureFlagsMixin()],
   computed: {
     // useSidebarNavigation refers to whether the new left sidebar navigation is enabled
     ...mapState(['useSidebarNavigation']),
@@ -30,6 +34,10 @@ export default {
     },
     showBlobFilters() {
       return this.currentScope === SCOPE_BLOB;
+    },
+    showProjectsFilters() {
+      // for now the feature flag is here. Since we have only one filter in projects scope
+      return this.currentScope === SCOPE_PROJECTS && this.glFeatures.searchProjectsHideArchived;
     },
     showScopeNavigation() {
       // showScopeNavigation refers to whether the scope navigation should be shown
@@ -48,6 +56,7 @@ export default {
       <issues-filters v-if="showIssuesFilters" />
       <merge-requests-filters v-if="showMergeRequestFilters" />
       <blobs-filters v-if="showBlobFilters" />
+      <projects-filters v-if="showProjectsFilters" />
     </sidebar-portal>
   </section>
   <section
@@ -58,5 +67,6 @@ export default {
     <issues-filters v-if="showIssuesFilters" />
     <merge-requests-filters v-if="showMergeRequestFilters" />
     <blobs-filters v-if="showBlobFilters" />
+    <projects-filters v-if="showProjectsFilters" />
   </section>
 </template>

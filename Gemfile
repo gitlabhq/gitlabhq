@@ -452,7 +452,7 @@ end
 group :development, :test, :coverage do
   gem 'simplecov', '~> 0.21', require: false
   gem 'simplecov-lcov', '~> 0.8.0', require: false
-  gem 'simplecov-cobertura', '~> 1.3.1', require: false
+  gem 'simplecov-cobertura', '~> 2.1.0', require: false
   gem 'undercover', '~> 0.4.4', require: false
 end
 

@@ -145,10 +145,18 @@ module Gitlab
 
         desc { _('Set time estimate') }
         explanation do |time_estimate|
-          formatted_time_estimate = format_time_estimate(time_estimate)
-          _("Sets time estimate to %{time_estimate}.") % { time_estimate: formatted_time_estimate } if formatted_time_estimate
+          next unless time_estimate
+
+          if time_estimate == 0
+            _('Removes time estimate.')
+          elsif time_estimate > 0
+            formatted_time_estimate = format_time_estimate(time_estimate)
+            _("Sets time estimate to %{time_estimate}.") % { time_estimate: formatted_time_estimate } if formatted_time_estimate
+          end
         end
         execution_message do |time_estimate|
+          next _('Removed time estimate.') if time_estimate == 0
+
           formatted_time_estimate = format_time_estimate(time_estimate)
           _("Set time estimate to %{time_estimate}.") % { time_estimate: formatted_time_estimate } if formatted_time_estimate
         end

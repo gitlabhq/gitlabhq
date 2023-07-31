@@ -13,9 +13,11 @@ contrast this with alternatives before deciding which approach to implement.
 This documentation will be kept even if we decide not to implement this so that
 we can document the reasons for not choosing this approach.
 
-# Cells:Explore
+# Cells: Explore
 
-The existing Group and Project Explore will initially be scoped to an Organization. However, there is a need for a global Explore that spans across Organizations to support the discoverability of public Groups and Projects.
+Explore may not play a critical role in GitLab as it functions today, but GitLab today is not isolated. It is the isolation that makes Explore or some viable replacement necessary.
+
+The existing Group and Project Explore will initially be scoped to an Organization. However, there is a need for a global Explore that spans across Organizations to support the discoverability of public Groups and Projects, in particular in the context of discovering open source Projects. See user feedback [here](https://gitlab.com/gitlab-org/gitlab/-/issues/21582#note_1458298192) and [here](https://gitlab.com/gitlab-org/gitlab/-/issues/418228#note_1470045468).
 
 ## 1. Definition
 
@@ -49,10 +51,21 @@ Downsides:
 
 ### 3.2 Explore scoped to an Organization
 
-The Project Explore and Group Explore will be scoped to an organization
+The Project Explore and Group Explore are scoped to an Organization.
+
+Downsides:
+
+- No global discoverability of Groups and Projects.
 
 ## 4. Evaluation
 
+The existing Group and Project Explore will initially be scoped to an Organization. Considering the [current usage of the Explore feature](https://gitlab.com/gitlab-data/product-analytics/-/issues/1302#note_1491215521), we deem this acceptable. Since all existing Users, Groups and Projects will initially be part of the default Organization, Groups and Projects will remain explorable and accessible as they are today. Only once existing Groups and Projects are moved out of the default Organization into different Organizations will this become a noticeable problem. Solutions to mitigate this are discussed in [issue #418228](https://gitlab.com/gitlab-org/gitlab/-/issues/418228). Ultimately, Explore could be replaced with a better search experience altogether.
+
 ## 4.1. Pros
 
+- Initially the lack of discoverability will not be a problem.
+- Only around [1.5% of all exisiting Users are using the Explore functionality on a monthly basis](https://gitlab.com/gitlab-data/product-analytics/-/issues/1302#note_1491215521).
+
 ## 4.2. Cons
+
+- The GitLab owned top-level Groups would be some of the first to be moved into their own Organization and thus be detached from the explorability of the default Organization.

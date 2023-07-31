@@ -7,22 +7,11 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 
 # Documentation Style Guide
 
-This document defines the standards for GitLab documentation, including grammar, formatting, word use, and more.
+This document defines the standards for GitLab documentation, including grammar, formatting, and more.
+For guidelines on specific words, see [the word list](word_list.md).
 
 For style questions, mention `@tw-style` in an issue or merge request. If you have access to the GitLab Slack workspace,
 use the `#docs-processes` channel.
-
-In addition to this page, the following resources can help you craft and contribute to documentation:
-
-- [Doc contribution guidelines](../index.md)
-- [Recommended word list](word_list.md)
-- [Doc style and consistency testing](../testing.md)
-- [Guidelines for UI error messages](https://design.gitlab.com/content/voice-and-tone#clear-error-messages)
-- [Documentation global navigation](../site_architecture/global_nav.md)
-- [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
-- [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
-- [Google Developer Documentation Style Guide](https://developers.google.com/style)
-- [Recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix)
 
 ## The GitLab voice
 
@@ -34,47 +23,15 @@ direct, and precise. The goal is to provide information that's easy to search an
 
 The voice in the documentation should be conversational but brief, friendly but succinct.
 
-## Documentation is the single source of truth (SSOT)
+## Documentation is the single source of truth (SSoT)
 
-The GitLab documentation is the SSOT for all
-information related to GitLab implementation, usage, and troubleshooting. It evolves
-continuously, in keeping with new products and features, and with improvements
-for clarity, accuracy, and completeness.
+The GitLab documentation is the SSoT for all information related to implementation,
+use, and troubleshooting. The documentation evolves continuously. It is updated with
+new products and features, and with improvements for clarity, accuracy, and completeness.
 
 This policy prevents information silos, making it easier to find information
-about GitLab products.
-
-It also informs decisions about the kinds of content we include in our
-documentation.
-
-### The documentation includes all information
-
-Include problem-solving actions that may address rare cases or be considered
-risky, but provide proper context through fully detailed
-warnings and caveats. This kind of content should be included as it could be
-helpful to others and, when properly explained, its benefits outweigh the risks.
-If you think you have found an exception to this rule, contact the
-Technical Writing team.
-
-GitLab adds all troubleshooting information to the documentation, no matter how
-unlikely a user is to encounter a situation.
-
-GitLab Support maintains their own
-[troubleshooting content](../../../administration/troubleshooting/index.md)
-in the GitLab documentation.
-
-### The documentation includes all media types
-
-Include any media types/sources if the content is relevant to readers. You can
-freely include or link presentations, diagrams, and videos. No matter who
-it was originally composed for, if it is helpful to any of our audiences, we can
-include it.
-
-- If you use an image that has a separate source file (for example, a vector or
-  diagram format), link the image to the source file so that anyone can update or reuse it.
-- Do not copy and paste content from other sources unless it is a limited
-  quotation with the source cited. Typically it is better to either rephrase
-  relevant information in your own words or link out to the other source.
+about GitLab products. It also informs decisions about the kinds of content that
+is included in the documentation.
 
 ### Topic types
 
@@ -157,10 +114,13 @@ also aid in consistency, which is important for localization.
 
 All GitLab documentation is written using [Markdown](https://en.wikipedia.org/wiki/Markdown).
 
-The [documentation website](https://docs.gitlab.com) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown),
+The [documentation website](https://docs.gitlab.com) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/ruby/gems/gitlab_kramdown),
 a "flavored" Kramdown engine to render pages from Markdown to HTML. The use of Kramdown
 features is limited by our linters, so, use regular Markdown and follow the rules in the
 linked style guide. You can't use Kramdown-specific markup (for example, `{:.class}`).
+
+For a complete Kramdown reference, see the
+[GitLab Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
 
 ### HTML in Markdown
 
@@ -230,6 +190,84 @@ included in backticks. For example:
 - "Run `git clone` to clone a Git repository..."
   - `git clone` is a command, so it must be lowercase, while Git is the product,
     so it must have a capital G.
+
+## Metadata
+
+Each documentation Markdown page contains YAML front matter.
+All values in the metadata are treated as strings and are used for the
+docs website only.
+
+### Stage and group metadata
+
+Each page should have metadata related to the stage and group it
+belongs to, as well as an information block. For example:
+
+```yaml
+---
+stage: Example Stage
+group: Example Group
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+```
+
+To populate the metadata, include this information:
+
+- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+  that the majority of the page's content belongs to.
+- `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
+  that the majority of the page's content belongs to.
+- `info`: How to find the Technical Writer associated with the page's stage and
+  group.
+
+### Additional metadata
+
+Each page can have additional, optional metadata (set in the
+[default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
+Nanoc layout), which is displayed at the top of the page if defined.
+
+### Deprecated metadata
+
+The `type` metadata parameter is deprecated but still exists in documentation
+pages. You can remove the `type` metadata parameter and its values.
+
+### Batch updates for TW metadata
+
+The [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS)
+file contains a list of files and the associated technical writers.
+
+When a merge request contains documentation, the information in the `CODEOWNERS` file determines:
+
+- The list of users in the **Approvers** section.
+- The technical writer that the GitLab Bot pings for community contributions.
+
+You can use a Rake task to update the `CODEOWNERS` file.
+
+#### Update the `CODEOWNERS` file
+
+When groups or [TW assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
+change, you must update the `CODEOWNERS` file:
+
+1. Update the [stage and group metadata](#stage-and-group-metadata) for any affected doc pages, if necessary. If there are many changes, you can do this step in a separate MR.
+1. Update the [`codeowners.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake) file with the changes.
+1. Go to the root of the `gitlab` repository.
+1. Run the Rake task with this command: `bundle exec rake tw:codeowners`
+1. Review the changes in the `CODEOWNERS` file.
+1. Add and commit all your changes and push your branch up to `origin`.
+1. Create a merge request and assign it to a technical writing manager for review.
+
+When you update the `codeowners.rake` file:
+
+- To specify multiple writers for a single group, use a space between writer names:
+
+  ```plaintext
+  CodeOwnerRule.new('Group Name', '@writer1 @writer2'),
+  ```
+
+- For a group that does not have an assigned writer, include the group name in the file and comment out the line:
+
+  ```plaintext
+  # CodeOwnerRule.new('Group Name', ''),
+  ```
 
 ## Language
 
@@ -1201,6 +1239,61 @@ include a visual representation to help readers understand it, you can:
   an area of the screen.
 - Create a short video of the interaction and link to it.
 
+### Automatic screenshot generator
+
+You can use an automatic screenshot generator to take and compress screenshots.
+
+1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/gitlab_docs.md).
+1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
+1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
+1. Install `pngquant`, see the tool website for more information: [`pngquant`](https://pngquant.org/)
+1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
+1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
+1. Commit the newly created screenshots.
+
+#### Extending the tool
+
+To add an additional **screenshot generator**, complete the following steps:
+
+1. Locate the `spec/docs_screenshots` directory.
+1. Add a new file with a `_docs.rb` extension.
+1. Be sure to include the following information in the file:
+
+   ```ruby
+   require 'spec_helper'
+
+   RSpec.describe '<What I am taking screenshots of>', :js do
+     include DocsScreenshotHelpers # Helper that enables the screenshots taking mechanism
+
+     before do
+       page.driver.browser.manage.window.resize_to(1366, 1024) # length and width of the page
+     end
+   ```
+
+1. In addition, every `it` block must include the path where the screenshot is saved:
+
+   ```ruby
+   it 'user/packages/container_registry/img/project_image_repositories_list'
+   ```
+
+##### Full page screenshots
+
+To take a full page screenshot, `visit the page` and perform any expectation on real content (to have capybara wait till the page is ready and not take a white screenshot).
+
+##### Element screenshot
+
+To have the screenshot focuses few more steps are needed:
+
+- **find the area**: `screenshot_area = find('#js-registry-policies')`
+- **scroll the area in focus**: `scroll_to screenshot_area`
+- **wait for the content**: `expect(screenshot_area).to have_content 'Expiration interval'`
+- **set the crop area**: `set_crop_data(screenshot_area, 20)`
+
+In particular, `set_crop_data` accepts as arguments: a `DOM` element and a
+padding. The padding is added around the element, enlarging the screenshot area.
+
+Use `spec/docs_screenshots/container_registry_docs.rb` as a guide and as an example to create your own scripts.
+
 ## Emoji
 
 Don't use the Markdown emoji format, for example `:smile:`, for any purpose. Use
@@ -1522,6 +1615,12 @@ Until we implement automated testing for broken links to tabs ([Issue 1355](http
 See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
 details on tabs.
 
+## Plagiarism
+
+Do not copy and paste content from other sources unless it is a limited
+quotation with the source cited. Typically it is better to rephrase
+relevant information in your own words or link out to the other source.
+
 ## Terms
 
 To maintain consistency through GitLab documentation, use these styles and terms.
@@ -1604,6 +1703,25 @@ instance administrator.
 
 Certain styles should be applied to specific sections. Styles for specific
 sections are outlined in this section.
+
+## Help and feedback section
+
+This section ([introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/319) in GitLab 11.4)
+is displayed at the end of each document and can be omitted by adding a key into
+the front matter:
+
+```yaml
+---
+feedback: false
+---
+```
+
+The default is to leave it there. If you want to omit it from a document, you
+must check with a technical writer before doing so.
+
+The click events in the feedback section are tracked with Google Tag Manager.
+The conversions can be viewed on Google Analytics by navigating to
+**Behavior > Events > Top events > docs**.
 
 ### GitLab restart
 

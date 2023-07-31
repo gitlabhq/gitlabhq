@@ -1,0 +1,125 @@
+---
+stage: none
+group: Documentation Guidelines
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+
+# GitLab /help
+
+Every GitLab instance includes documentation at `/help` (`https://gitlab.example.com/help`)
+that matches the version of the instance. For example, <https://gitlab.com/help>.
+
+The documentation available online at <https://docs.gitlab.com> is deployed every
+hour from the default branch of GitLab, Omnibus, Runner, Charts, and Operator.
+After a merge request that updates documentation is merged, it is available online
+in an hour or less.
+
+However, it's only available at `/help` on self-managed instances in the next released
+version. The date an update is merged can impact which self-managed release the update
+is present in.
+
+For example:
+
+1. A merge request in `gitlab` updates documentation. It has a milestone of 14.4,
+   with an expected release date of 2021-10-22.
+1. It is merged on 2021-10-19 and available online the same day at <https://docs.gitlab.com>.
+1. GitLab 14.4 is released on 2021-10-22, based on the `gitlab` codebase from 2021-10-18
+   (one day *before* the update was merged).
+1. The change shows up in the 14.5 self-managed release, due to missing the release cutoff
+   for 14.4.
+
+The exact cutoff date for each release is flexible, and can be sooner or later
+than expected due to holidays, weekends or other events. In general, MRs merged
+by the 17th should be present in the release on the 22nd, though it is not guaranteed.
+If it is important that a documentation update is present in that month's release,
+merge it as early as possible.
+
+## Linking to `/help`
+
+When you're building a new feature, you may need to link to the documentation
+from the GitLab application. This is usually done in files inside the
+`app/views/` directory, with the help of the `help_page_path` helper method.
+
+The `help_page_path` contains the path to the document you want to link to,
+with the following conventions:
+
+- It's relative to the `doc/` directory in the GitLab repository.
+- It omits the `.md` extension.
+- It doesn't end with a forward slash (`/`).
+
+The help text follows the [Pajamas guidelines](https://design.gitlab.com/usability/contextual-help#formatting-help-content).
+
+### Linking to `/help` in HAML
+
+Use the following special cases depending on the context, ensuring all link text
+is inside `_()` so it can be translated:
+
+- Linking to a doc page. In its most basic form, the HAML code to generate a
+  link to the `/help` page is:
+
+  ```haml
+  = link_to _('Learn more.'), help_page_path('user/permissions'), target: '_blank', rel: 'noopener noreferrer'
+  ```
+
+- Linking to an anchor link. Use `anchor` as part of the `help_page_path`
+  method:
+
+  ```haml
+  = link_to _('Learn more.'), help_page_path('user/permissions', anchor: 'anchor-link'), target: '_blank', rel: 'noopener noreferrer'
+  ```
+
+- Using links inline of some text. First, define the link, and then use it. In
+  this example, `link_start` is the name of the variable that contains the
+  link:
+
+  ```haml
+  - link = link_to('', help_page_path('user/permissions'), target: '_blank', rel: 'noopener noreferrer')
+  %p= safe_format(_("This is a text describing the option/feature in a sentence. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
+  ```
+
+- Using a button link. Useful in places where text would be out of context with
+  the rest of the page layout:
+
+  ```haml
+  = link_to _('Learn more.'), help_page_path('user/permissions'),  class: 'btn btn-info', target: '_blank', rel: 'noopener noreferrer'
+  ```
+
+### Linking to `/help` in JavaScript
+
+To link to the documentation from a JavaScript or a Vue component, use the `helpPagePath` function from [`help_page_helper.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/helpers/help_page_helper.js):
+
+```javascript
+import { helpPagePath } from '~/helpers/help_page_helper';
+
+helpPagePath('user/permissions', { anchor: 'anchor-link' })
+// evaluates to '/help/user/permissions#anchor-link' for GitLab.com
+```
+
+This is preferred over static paths, as the helper also works on instances installed under a [relative URL](../../install/relative_url.md).
+
+### Linking to `/help` in Ruby
+
+To link to the documentation from within Ruby code, use the following code block as a guide, ensuring all link text is inside `_()` so it can
+be translated:
+
+```ruby
+docs_link = link_to _('Learn more.'), help_page_url('user/permissions', anchor: 'anchor-link'), target: '_blank', rel: 'noopener noreferrer'
+safe_format(_('This is a text describing the option/feature in a sentence. %{docs_link}'), docs_link: docs_link)
+```
+
+In cases where you need to generate a link from outside of views/helpers, where the `link_to` and `help_page_url` methods are not available, use the following code block
+as a guide where the methods are fully qualified:
+
+```ruby
+docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/permissions', anchor: 'anchor-link'), target: '_blank', rel: 'noopener noreferrer'
+safe_format(_('This is a text describing the option/feature in a sentence. %{docs_link}'), docs_link: docs_link)
+```
+
+Do not use `include ActionView::Helpers::UrlHelper` just to make the `link_to` method available as you might see in some existing code. Read more in
+[issue 340567](https://gitlab.com/gitlab-org/gitlab/-/issues/340567).
+
+## `/help` tests
+
+Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/features/help_pages_spec.rb)
+are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../index.md) works correctly from `/help`.
+For example, [GitLab.com's `/help`](https://gitlab.com/help).

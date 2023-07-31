@@ -2690,12 +2690,44 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     end
 
     describe 'estimate command' do
-      let(:content) { '/estimate 79d' }
+      context 'positive estimation' do
+        let(:content) { '/estimate 79d' }
 
-      it 'includes the formatted duration' do
-        _, explanations = service.explain(content, merge_request)
+        it 'includes the formatted duration' do
+          _, explanations = service.explain(content, merge_request)
 
-        expect(explanations).to eq(['Sets time estimate to 3mo 3w 4d.'])
+          expect(explanations).to eq(['Sets time estimate to 3mo 3w 4d.'])
+        end
+      end
+
+      context 'zero estimation' do
+        let(:content) { '/estimate 0' }
+
+        it 'includes the formatted duration' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to eq(['Removes time estimate.'])
+        end
+      end
+
+      context 'negative estimation' do
+        let(:content) { '/estimate -79d' }
+
+        it 'does not explain' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to be_empty
+        end
+      end
+
+      context 'invalid estimation' do
+        let(:content) { '/estimate a' }
+
+        it 'does not explain' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to be_empty
+        end
       end
     end
 

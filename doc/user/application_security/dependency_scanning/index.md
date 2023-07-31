@@ -6,36 +6,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning **(ULTIMATE)**
 
-The Dependency Scanning feature can automatically find security vulnerabilities in your
-software dependencies while you're developing and testing your applications. For example,
-dependency scanning lets you know if your application uses an external (open source)
-library that is known to be vulnerable. You can then take action to protect your application.
+Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
+dependencies are scanned, including transitive dependencies, also known as nested dependencies.
 
 Dependency Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
 aspects of inspecting the items your code uses. These items typically include application and system
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
+Dependency Scanning can run in the development phase of your application's life cycle. Every time a
+pipeline runs, vulnerabilities are identified and compared between the source and target branches.
+Vulnerabilities and their severity are listed in the merge request, enabling you to proactively
+address the risk to your application, before the code change is committed.
+
 GitLab offers both Dependency Scanning and [Container Scanning](../container_scanning/index.md) to
 ensure coverage for all of these dependency types. To cover as much of your risk area as possible,
 we encourage you to use all of our security scanners. For a comparison of these features, see
 [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
-
-If you're using [GitLab CI/CD](../../../ci/index.md), you can use dependency scanning to analyze
-your dependencies for known vulnerabilities. GitLab scans all dependencies, including transitive
-dependencies (also known as nested dependencies). You can take advantage of dependency scanning by
-either:
-
-- [Including the dependency scanning template](#configuration)
-  in your existing `.gitlab-ci.yml` file.
-- Implicitly using
-  the [auto dependency scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
-  provided by [Auto DevOps](../../../topics/autodevops/index.md).
-
-GitLab checks the dependency scanning report, compares the found vulnerabilities
-between the source and target branches, and shows the information on the
-merge request. The results are sorted by the [severity](../vulnerabilities/severities.md) of the
-vulnerability.
 
 ![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
 
