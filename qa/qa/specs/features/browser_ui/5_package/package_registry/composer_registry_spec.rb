@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry do
-    describe 'Composer Repository' do
+    describe 'Composer Repository', :external_api_calls do
       include Runtime::Fixtures
 
       let(:project) do

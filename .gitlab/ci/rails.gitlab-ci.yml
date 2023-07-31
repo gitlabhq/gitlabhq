@@ -477,12 +477,6 @@ rspec:coverage:
     # Memory jobs
     - job: memory-on-boot
       optional: true
-  variables:
-    BUNDLE_ONLY: "coverage"
-    BUNDLE_WITHOUT: "" # We don't want to use the default value of this variable.
-  before_script:
-    - source scripts/utils.sh
-    - bundle_install_script
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'

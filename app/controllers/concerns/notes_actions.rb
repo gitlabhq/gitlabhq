@@ -11,6 +11,7 @@ module NotesActions
 
   included do
     before_action :set_polling_interval_header, only: [:index]
+    before_action :require_last_fetched_at_header!, only: [:index]
     before_action :require_noteable!, only: [:index, :create]
     before_action :authorize_admin_note!, only: [:update, :destroy]
     before_action :note_project, only: [:create]
@@ -260,6 +261,12 @@ module NotesActions
 
   def require_noteable!
     render_404 unless noteable
+  end
+
+  def require_last_fetched_at_header!
+    return if request.headers['X-Last-Fetched-At'].present? || Feature.disabled?(:require_notes_last_fetched_at)
+
+    render json: { message: 'X-Last-Fetched-At header is required' }, status: :bad_request
   end
 
   def last_fetched_at

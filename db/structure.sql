@@ -20276,7 +20276,6 @@ ALTER SEQUENCE personal_access_tokens_id_seq OWNED BY personal_access_tokens.id;
 CREATE TABLE plan_limits (
     id bigint NOT NULL,
     plan_id bigint NOT NULL,
-    ci_active_pipelines integer DEFAULT 0 NOT NULL,
     ci_pipeline_size integer DEFAULT 0 NOT NULL,
     ci_active_jobs integer DEFAULT 0 NOT NULL,
     project_hooks integer DEFAULT 100 NOT NULL,

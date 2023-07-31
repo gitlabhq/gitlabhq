@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'airgapped' } do
+  RSpec.describe 'Package', :object_storage, :external_api_calls do
     describe 'Maven project level endpoint', product_group: :package_registry do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry do
-    describe 'NuGet group level endpoint' do
+    describe 'NuGet group level endpoint', :external_api_calls do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

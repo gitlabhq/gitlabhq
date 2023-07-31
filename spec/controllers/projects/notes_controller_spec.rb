@@ -18,7 +18,7 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
     }
   end
 
-  describe 'GET index' do
+  describe 'GET index', :freeze_time do
     let(:request_params) do
       {
         namespace_id: project.namespace,
@@ -31,10 +31,13 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
     let(:parsed_response) { json_response.with_indifferent_access }
     let(:note_json) { parsed_response[:notes].first }
+    let(:last_fetched_at) { Time.zone.at(3.hours.ago.to_i) }
 
     before do
       sign_in(user)
       project.add_developer(user)
+
+      request.headers['X-Last-Fetched-At'] = microseconds(last_fetched_at)
     end
 
     specify { expect(get(:index, params: request_params)).to have_request_urgency(:medium) }
@@ -46,10 +49,6 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
     end
 
     it 'passes last_fetched_at from headers to NotesFinder and MergeIntoNotesService' do
-      last_fetched_at = Time.zone.at(3.hours.ago.to_i) # remove nanoseconds
-
-      request.headers['X-Last-Fetched-At'] = microseconds(last_fetched_at)
-
       expect(NotesFinder).to receive(:new)
         .with(anything, hash_including(last_fetched_at: last_fetched_at))
         .and_call_original
@@ -59,6 +58,28 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
         .and_call_original
 
       get :index, params: request_params
+    end
+
+    it 'returns status 400 when last_fetched_at is not present' do
+      request.headers['X-Last-Fetched-At'] = nil
+
+      get :index, params: request_params
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    context 'when require_notes_last_fetched_at is disabled' do
+      before do
+        stub_feature_flags(require_notes_last_fetched_at: false)
+      end
+
+      it 'returns status 200 when last_fetched_at is not present' do
+        request.headers['X-Last-Fetched-At'] = nil
+
+        get :index, params: request_params
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
 
     context 'when user notes_filter is present' do

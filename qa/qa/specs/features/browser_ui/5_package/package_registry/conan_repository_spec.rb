@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
-    only: { job: %w[object_storage airgapped], condition: -> { QA::Support::FIPS.enabled? } },
+  RSpec.describe 'Package', :object_storage, :external_api_calls, product_group: :package_registry, quarantine: {
+    only: { job: 'object_storage', condition: -> { QA::Support::FIPS.enabled? } },
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417584',
     type: :bug
   } do

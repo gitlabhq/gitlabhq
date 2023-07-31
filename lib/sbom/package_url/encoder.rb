@@ -83,13 +83,14 @@ module Sbom
         # - Apply type-specific normalization to the name if needed
         # - UTF-8-encode the name if needed in your programming language
         # - Append the percent-encoded name to the purl
-        if @namespace.nil?
-          io.write(URI.encode_www_form_component(@name, Encoding::UTF_8))
-        else
-          io.write(encode_segments(@namespace, &:empty?))
+        if @namespace.present?
+          normalized_namespace = Normalizer.new(type: @type, text: @namespace).normalize_namespace
+          io.write(encode_segments(normalized_namespace, &:empty?))
           io.write('/')
-          io.write(URI.encode_www_form_component(strip(@name, '/'), Encoding::UTF_8))
         end
+
+        normalized_name = Normalizer.new(type: @type, text: strip(@name, '/')).normalize_name
+        io.write(URI.encode_www_form_component(normalized_name, Encoding::UTF_8))
       end
 
       def encode_version!

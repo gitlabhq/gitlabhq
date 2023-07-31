@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry do
-    describe 'NuGet project level endpoint' do
+    describe 'NuGet project level endpoint', :external_api_calls do
       include Support::Helpers::MaskToken
 
       let(:project) do

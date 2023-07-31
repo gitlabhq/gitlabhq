@@ -14,6 +14,10 @@ RSpec.describe Snippets::NotesController, feature_category: :team_planning do
   let(:note_on_public)   { create(:note_on_personal_snippet, noteable: public_snippet) }
 
   describe 'GET index' do
+    before do
+      request.headers['X-Last-Fetched-At'] = 0
+    end
+
     context 'when a snippet is public' do
       before do
         note_on_public

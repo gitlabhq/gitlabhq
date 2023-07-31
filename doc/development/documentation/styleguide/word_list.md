@@ -625,6 +625,10 @@ Use title case for **Geo**.
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
 
+## GitLab Dedicated
+
+Do not use **Dedicated** by itself. Always use **GitLab Dedicated**.
+
 ## GitLab Duo
 
 Do not use **Duo** by itself. Always use **GitLab Duo**.

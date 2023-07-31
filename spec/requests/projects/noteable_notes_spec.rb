@@ -14,6 +14,8 @@ RSpec.describe 'Project noteable notes', feature_category: :team_planning do
     let(:response_etag) { response.headers['ETag'] }
     let(:stored_etag) { "W/\"#{etag_store.get(notes_path)}\"" }
 
+    let(:default_headers) { { 'X-Last-Fetched-At' => 0 } }
+
     before do
       login_as(user)
     end
@@ -21,7 +23,7 @@ RSpec.describe 'Project noteable notes', feature_category: :team_planning do
     it 'does not set a Gitlab::EtagCaching ETag if there is a note' do
       create(:note_on_merge_request, noteable: merge_request, project: merge_request.project)
 
-      get notes_path
+      get notes_path, headers: default_headers
 
       expect(response).to have_gitlab_http_status(:ok)
 
@@ -31,7 +33,7 @@ RSpec.describe 'Project noteable notes', feature_category: :team_planning do
     end
 
     it 'sets a Gitlab::EtagCaching ETag if there is no note' do
-      get notes_path
+      get notes_path, headers: default_headers
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response_etag).to eq(stored_etag)
@@ -68,7 +70,7 @@ RSpec.describe 'Project noteable notes', feature_category: :team_planning do
         )
       )
 
-      get notes_path, headers: { "if-none-match": stored_etag }
+      get notes_path, headers: default_headers.merge("if-none-match": stored_etag)
 
       expect(response).to have_gitlab_http_status(:not_modified)
     end

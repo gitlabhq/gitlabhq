@@ -71,9 +71,12 @@ To enable 2FA with a one-time password:
       - Cloud-based (recommended because you can restore access if you lose the hardware device):
         - [Authy](https://authy.com/).
         - [Duo](https://duo.com/).
-      - Other:
+      - Other (proprietary):
         - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en).
         - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app).
+      - Other (Free Software)
+        - [Aegis Authenticator](https://getaegis.app/).
+        - [FreeOTP](https://freeotp.github.io/).
    1. In the application, add a new entry in one of two ways:
       - Scan the code displayed by GitLab with your device's camera to add the entry automatically.
       - Enter the details provided to add the entry manually.

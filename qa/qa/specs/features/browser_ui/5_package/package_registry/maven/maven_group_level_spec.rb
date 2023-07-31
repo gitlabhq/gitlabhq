@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry do
-    describe 'Maven group level endpoint', except: { job: 'airgapped' } do
+    describe 'Maven group level endpoint', :external_api_calls do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
       include_context 'packages registry qa scenario'

@@ -4,25 +4,21 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Working with the GitHub importer
+# GitHub importer developer documentation
 
-In GitLab 10.2 a new version of the GitHub importer was introduced. This new
-importer performs its work in parallel using Sidekiq, greatly reducing the time
-necessary to import GitHub projects into a GitLab instance.
+The GitHub importer offers two different types of importers:
 
-The GitHub importer offers two different types of importers: a sequential
-importer and a parallel importer. The Rake task `import:github` uses the
-sequential importer, and everything else uses the parallel importer. The
-difference between these two importers is:
+- A sequential importer. Used by the `import:github` Rake task.
+- A parallel importer. Used by everything else.
+
+The difference between these two importers is:
 
 - The sequential importer does all the work in a single thread, so it's more suited for debugging purposes or Rake tasks.
 - The parallel importer uses Sidekiq.
 
 ## Prerequisites
 
-- GitLab CE 10.2.0 or newer.
-- Sidekiq workers that process the `github_importer` and
-  `github_importer_advance_stage` queues (this is enabled by default).
+- Sidekiq workers that process the `github_importer` and `github_importer_advance_stage` queues (enabled by default).
 - Octokit (used for interacting with the GitHub API).
 
 ## Code structure
@@ -221,14 +217,14 @@ long we're still performing work.
 
 GitHub has a rate limit of 5,000 API calls per hour. The number of requests
 necessary to import a project is largely dominated by the number of unique users
-involved in a project (for example, issue authors). Other data such as issue pages
-and comments typically only requires a few dozen requests to import. This is
-because we need the Email address of users to map them to GitLab users.
+involved in a project (for example, issue authors), because we need the email address of users to map
+them to GitLab users. Other data such as issue pages and comments typically only requires a few dozen requests to import.
 
-We handle this by doing the following:
+We handle the rate limit by doing the following:
 
-1. After we hit the rate limit all jobs automatically reschedule themselves
-   in such a way that they are not executed until the rate limit has been reset.
+1. After we hit the rate limit, we either:
+   - Automatically reschedule jobs in such a way that they are not executed until the rate limit has been reset.
+   - Move onto another GitHub access token if multiple GitHub access tokens were passed to the API.
 1. We cache the mapping of GitHub users to GitLab users in Redis.
 
 More information on user caching can be found below.
@@ -253,7 +249,7 @@ Redis. For every user looked up we store three keys:
 - A Redis key mapping a GitHub Email addresses to a GitLab user ID.
 - A Redis key mapping a GitHub user ID to GitLab user ID.
 
-There are two types of lookups we cache:
+We cache two types of lookups:
 
 - A positive lookup, meaning we found a GitLab user ID.
 - A negative lookup, meaning we didn't find a GitLab user ID. Caching this

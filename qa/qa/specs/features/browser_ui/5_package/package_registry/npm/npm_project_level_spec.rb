@@ -2,7 +2,8 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'npm Registry project level endpoint', :object_storage, product_group: :package_registry do
+    describe 'npm Registry project level endpoint', :object_storage, :external_api_calls,
+      product_group: :package_registry do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

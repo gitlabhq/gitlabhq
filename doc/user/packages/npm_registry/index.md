@@ -29,12 +29,13 @@ Do not use authentication methods other than the methods documented here. Undocu
 
 Depending on how the package is installed, you may need to adhere to the naming convention.
 
-You can use one of two API endpoints to install packages:
+You can use one of three API endpoints to install packages:
 
 - **Instance-level**: Use when you have many npm packages in different GitLab groups or in their own namespace.
+- **Group-level**: Use when you have many npm packages in different projects under the same group or subgroup.
 - **Project-level**: Use when you have few npm packages and they are not in the same GitLab group.
 
-If you plan to install a package through the [project level](#install-from-the-project-level), then you do not have to adhere to the naming convention.
+If you plan to install a package through the [project level](#install-from-the-project-level) or [group level](#install-from-the-group-level), then you do not have to adhere to the naming convention.
 
 If you plan to install a package through the [instance level](#install-from-the-instance-level), then you must name your package with a [scope](https://docs.npmjs.com/misc/scope/). Scoped packages begin with a `@` have the format of `@owner/package-name`. You can set up the scope for your package in the `.npmrc` file and by using the `publishConfig` option in the `package.json`.
 

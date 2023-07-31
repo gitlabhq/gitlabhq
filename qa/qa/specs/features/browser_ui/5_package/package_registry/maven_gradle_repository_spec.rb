@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage,
+  RSpec.describe 'Package', :object_storage, :external_api_calls,
     quarantine: {
       only: { condition: -> { QA::Support::FIPS.enabled? } },
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417600',

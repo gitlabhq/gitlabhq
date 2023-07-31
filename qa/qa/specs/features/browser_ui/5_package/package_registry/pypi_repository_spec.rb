@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry do
-    describe 'PyPI Repository', except: { job: 'airgapped' } do
+    describe 'PyPI Repository', :external_api_calls do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
