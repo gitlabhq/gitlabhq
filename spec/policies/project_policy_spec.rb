@@ -2736,26 +2736,62 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           expect_allowed(:build_read_container_image)
         end
       end
+    end
 
-      def permissions_abilities(role)
-        case role
-        when :admin
-          if project_visibility == :private || access_level == ProjectFeature::PRIVATE
-            maintainer_operations_permissions - admin_excluded_permissions
-          else
-            maintainer_operations_permissions
-          end
-        when :maintainer, :owner
-          maintainer_operations_permissions
-        when :developer
-          developer_operations_permissions
-        when :reporter, :guest
-          guest_operations_permissions
-        when :anonymous
-          anonymous_operations_permissions
-        else
-          raise "Unknown role #{role}"
+    context 'with external guest users' do
+      where(:project_visibility, :access_level, :allowed) do
+        :public   | ProjectFeature::ENABLED  | true
+        :public   | ProjectFeature::PRIVATE  | false
+        :public   | ProjectFeature::DISABLED | false
+
+        :internal | ProjectFeature::ENABLED  | true
+        :internal | ProjectFeature::PRIVATE  | false
+        :internal | ProjectFeature::DISABLED | false
+
+        :private  | ProjectFeature::ENABLED  | false
+        :private  | ProjectFeature::PRIVATE  | false
+        :private  | ProjectFeature::DISABLED | false
+      end
+
+      with_them do
+        let(:current_user) { guest }
+        let(:project) { send("#{project_visibility}_project") }
+
+        before do
+          project.project_feature.update!(container_registry_access_level: access_level)
+          current_user.update_column(:external, true)
         end
+
+        it 'allows/disallows the abilities based on the container_registry feature access level' do
+          if allowed
+            expect_allowed(*permissions_abilities(:guest))
+            expect_disallowed(*(all_permissions - permissions_abilities(:guest)))
+          else
+            expect_disallowed(*all_permissions)
+          end
+        end
+      end
+    end
+
+    # Overrides `permissions_abilities` defined below to be suitable for container_image policies
+    def permissions_abilities(role)
+      case role
+      when :admin
+        if project_visibility == :private || access_level == ProjectFeature::PRIVATE
+          maintainer_operations_permissions - admin_excluded_permissions
+        else
+          maintainer_operations_permissions
+        end
+      when :maintainer, :owner
+        maintainer_operations_permissions
+      when :developer
+        developer_operations_permissions
+      when :reporter, :guest
+        guest_operations_permissions
+      when :anonymous
+        anonymous_operations_permissions
+      else
+        raise "Unknown role #{role}"
       end
     end
   end

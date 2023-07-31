@@ -45,7 +45,11 @@ module QA
           end
 
           it 'unlocks job artifacts from previous successful pipeline family',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/395516' do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/395516',
+            quarantine: {
+              type: :flaky,
+              issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/418668"
+            } do
             find_job('parent_2').visit!
             Page::Project::Job::Show.perform do |job|
               expect(job).to have_locked_artifact

@@ -135,11 +135,24 @@ Let's consider that we want to iterate over the `users` table and print the `Use
 standard output. The `users` table contains millions of records, thus running one query to fetch
 the users likely times out.
 
-![Users table overview](../img/each_batch_users_table_v13_7.png)
-
-This is a simplified version of the `users` table which contains several rows. We have a few
+This table is a simplified version of the `users` table which contains several rows. We have a few
 smaller gaps in the `id` column to make the example a bit more realistic (a few records were
-already deleted). Currently, we have one index on the `id` field.
+already deleted). One index exists on the `id` field:
+
+| `ID` | `sign_in_count` | `created_at` |
+| -- | :-------------: | ------------ |
+| 1 | 1 | 2020-01-01
+| 2 | 4 | 2020-01-01
+| 9 | 1 | 2020-01-03
+| 300 | 5 | 2020-01-03
+| 301 | 9 | 2020-01-03
+| 302 | 8 | 2020-01-03
+| 303 | 2 | 2020-01-03
+| 350 | 1 | 2020-01-03
+| 351 | 3 | 2020-01-04
+| 352 | 0 | 2020-01-05
+| 353 | 9 | 2020-01-11
+| 354 | 3 | 2020-01-12
 
 Loading all users into memory (avoid):
 
