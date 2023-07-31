@@ -40760,6 +40760,9 @@ msgstr ""
 msgid "SAML|The %{strongOpen}%{group_path}%{strongClose} group allows you to sign in using single sign-on."
 msgstr ""
 
+msgid "SAML|The SAML response did not contain an email address. Either the SAML identity provider is not configured to send the attribute, or the identity provider directory does not have an email address value for your user."
+msgstr ""
+
 msgid "SAML|There is already a GitLab account associated with this email address. Sign in with your existing credentials to connect your organization's account"
 msgstr ""
 
@@ -54388,6 +54391,9 @@ msgid "can only be changed by a group admin."
 msgstr ""
 
 msgid "can only have one escalation policy"
+msgstr ""
+
+msgid "can't be blank"
 msgstr ""
 
 msgid "can't be enabled when delayed group deletion is disabled"
