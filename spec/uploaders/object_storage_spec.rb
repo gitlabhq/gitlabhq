@@ -1097,18 +1097,30 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
               let(:fog_config) do
                 Gitlab.config.uploads.object_store.tap do |config|
                   config[:remote_directory] = 'main-bucket'
-                  config[:bucket_prefix] = 'uploads'
+                  config[:bucket_prefix] = 'my/uploads'
                 end
               end
 
               let(:bucket) { 'main-bucket' }
-              let(:fog_file_path) { "uploads/#{final_path}" }
+              let(:fog_file_path) { "my/uploads/#{final_path}" }
 
               it 'stores the file final path in the db without the prefix' do
                 expect { subject }.not_to raise_error
 
-                expect(uploader.store_path).to eq("uploads/#{final_path}")
+                expect(uploader.store_path).to eq("my/uploads/#{final_path}")
                 expect(object.file_final_path).to eq(final_path)
+              end
+
+              context 'and file is stored' do
+                subject do
+                  uploader.store!(uploaded_file)
+                end
+
+                it 'completes the matching pending upload entry' do
+                  expect { subject }
+                    .to change { ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, final_path) }
+                    .to(false)
+                end
               end
             end
 
