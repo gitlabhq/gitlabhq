@@ -80,20 +80,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
         end
 
         context 'as a project-defined panel' do
-          let(:dashboard_path) { '.gitlab/dashboard/test.yml' }
-          let(:params) do
-            {
-              environment: environment,
-              embedded: true,
-              dashboard_path: dashboard_path,
-              group: 'Group A',
-              title: 'Super Chart A1',
-              y_label: 'y_label'
-            }
-          end
-
-          it_behaves_like 'misconfigured dashboard service response', :not_found
-
           context 'when the metric exists' do
             let(:project) { project_with_dashboard(dashboard_path) }
 

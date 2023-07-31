@@ -483,6 +483,40 @@ RestartRequested : User has requested a workspace restart.\n**desired_state** wi
 RestartRequested -left-> Running : status=Running
 ```
 
+## Injecting environment variables and files into a workspace
+
+Like CI, there is a need to inject environment variables and files into a workspace. These environment variables and files will be frozen in time during workspace creation to ensure the same values are injected into the workspace every time it starts/restarts. Thus, a new database table, on the lines of `ci_job_variables` will be required. This table will contain the following columns -
+
+- `key` - To store the name of the environment variable or the file.
+- `encrypted_value` - To store the encrypted value of the environment variable or the file.
+- `encrypted_value_iv` - To store the initialization vector used for encryption.
+- `workspace_id` - To reference the workspace the environment variable or the file is to be injected into.
+- `variable_type` - To store whether this data is to be injected as an environment variable or a file.
+
+To perform the encryption, a secret key would be required. This would be uniquely generated for each workpsace upon creation.
+Having a unique secret key which is used for encrypting the corresponding workspace's environment variable and file data in the workspace, improves the security profile.
+
+Because of the nature of reconciliation loop between Agent and Rails, it is not scalable to decrypt these values at Rails side for each request.
+Instead, the `key`, `encrypted_value` and `encrypted_value_iv` of each environment variable of the workspace are sent to the Agent along with the workspace's `secret_key`
+for the Agent to decrypt them in place.
+
+To optimize this further, the data about the environment variables and files along with the secret key will only be sent when required i.e.
+
+- When new workspace creation request has been received from the user and an Agent initiates a Partial Reonciliation request
+- When an Agent initiates a Full Reconciliation request
+
+When a workspace is created from a project, it will inherit all the variables from the group/subgroup/project hierarchy which are defined under
+[`Settings > CI/CD > Variables`](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui). This aspect will be generalized to allow for defining `Variables`
+which will be inherited in both CI/CD and Workspaces.
+
+A user will also be able to define, at a user level, environment variables and files to be injected into each workspace created by them.
+
+When a new workspace is created, a new personal access token associated to the user who created the workspace will be generated.
+This personal access token will be tied to the lifecycle of the workspace and will be injected into the workspace as an environment variable or a file
+to allow for cloning private projects and supporting transparent Git operations from within the workspace out-of-the-box among other things.
+
+More details about the implementation details can be found in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/10882).
+
 ## Workspace user traffic authentication and authorization
 
 We need to only allow certain users to access workspaces. Currently, we are restricting this to the creator/owner of the workspace. After the workspace is created, it needs to be exposed to the network so that the user can connect to it.

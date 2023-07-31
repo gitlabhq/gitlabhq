@@ -54,7 +54,6 @@ module EnvironmentsHelper
     {
       'settings_path' => edit_project_settings_integration_path(project, 'prometheus'),
       'clusters_path' => project_clusters_path(project),
-      'dashboards_endpoint' => project_performance_monitoring_dashboards_path(project, format: :json),
       'default_branch' => project.default_branch,
       'project_path' => project_path(project),
       'tags_path' => project_tags_path(project),

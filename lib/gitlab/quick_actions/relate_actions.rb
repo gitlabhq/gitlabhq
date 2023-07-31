@@ -36,7 +36,7 @@ module Gitlab
           extract_references(issue_param, :issue).first
         end
         command :unlink do |issue|
-          link = IssueLink.for_issues(quick_action_target, issue).first
+          link = IssueLink.for_items(quick_action_target, issue).first
 
           if link
             call_link_service(IssueLinks::DestroyService.new(link, current_user))

@@ -20431,6 +20431,7 @@ CREATE TABLE pm_affected_packages (
     affected_range text NOT NULL,
     fixed_versions text[] DEFAULT '{}'::text[],
     overridden_advisory_fields jsonb DEFAULT '{}'::jsonb NOT NULL,
+    versions jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT check_5dd528a2be CHECK ((char_length(package_name) <= 256)),
     CONSTRAINT check_80dea16c7b CHECK ((char_length(affected_range) <= 512)),
     CONSTRAINT check_d1d4646298 CHECK ((char_length(solution) <= 2048)),
@@ -33827,6 +33828,10 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree 
 CREATE INDEX tmp_idx_for_feedback_comment_processing ON vulnerability_feedback USING btree (id) WHERE (char_length(comment) > 50000);
 
 CREATE INDEX tmp_idx_for_vulnerability_feedback_migration ON vulnerability_feedback USING btree (id) WHERE ((migrated_to_state_transition = false) AND (feedback_type = 0));
+
+CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_request_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
+
+CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
 CREATE INDEX tmp_idx_packages_on_project_id_when_npm_not_pending_destruction ON packages_packages USING btree (project_id) WHERE ((package_type = 2) AND (status <> 4));
 

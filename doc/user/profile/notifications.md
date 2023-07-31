@@ -199,6 +199,8 @@ Users are notified of the following events:
 | Two-factor authentication disabled       | User            | Security email, always sent.                                                                                                            |
 | User added to group                      | User            | Sent when user is added to group.                                                                                                       |
 | User added to project                    | User            | Sent when user is added to project.                                                                                                     |
+| Group access expired                     | Group members   | Sent when user's access to a group expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                 |
+| Project access expired                   | Project members | Sent when user's access to a project expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                                   |
 
 ## Notifications on issues, merge requests, and epics
 
@@ -330,6 +332,13 @@ The participants are:
 - Authors of the design (can be multiple people if different authors have uploaded different versions of the design).
 - Authors of comments on the design.
 - Anyone that is [mentioned](../discussions/index.md#mentions) in a comment on the design.
+
+## Notifications on group or project access expiration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3.
+
+GitLab sends an email notification if a user's access to a group or project expires in seven days.
+This reminds group or project members to extend their access duration if they want to.
 
 ## Opt out of all GitLab emails
 

@@ -35,33 +35,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::ServiceSelector do
         it { is_expected.to be Metrics::Dashboard::DefaultEmbedService }
       end
 
-      context 'when all the chart identifiers are provided' do
-        let(:arguments) do
-          {
-            embedded: true,
-            dashboard_path: '.gitlab/dashboards/test.yml',
-            group: 'Important Metrics',
-            title: 'Total Requests',
-            y_label: 'req/sec'
-          }
-        end
-
-        it { is_expected.to be Metrics::Dashboard::DynamicEmbedService }
-      end
-
-      context 'when all chart params expect dashboard_path are provided' do
-        let(:arguments) do
-          {
-            embedded: true,
-            group: 'Important Metrics',
-            title: 'Total Requests',
-            y_label: 'req/sec'
-          }
-        end
-
-        it { is_expected.to be Metrics::Dashboard::DynamicEmbedService }
-      end
-
       context 'with a system dashboard and "custom" group' do
         let(:arguments) do
           {

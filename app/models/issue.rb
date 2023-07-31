@@ -542,18 +542,18 @@ class Issue < ApplicationRecord
   end
 
   def related_issues(current_user, preload: nil)
-    related_issues = ::Issue
-                       .select(['issues.*', 'issue_links.id AS issue_link_id',
-                                'issue_links.link_type as issue_link_type_value',
-                                'issue_links.target_id as issue_link_source_id',
-                                'issue_links.created_at as issue_link_created_at',
-                                'issue_links.updated_at as issue_link_updated_at'])
-                       .joins("INNER JOIN issue_links ON
-	                             (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
-	                             OR
-	                             (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
-                       .preload(preload)
-                       .reorder('issue_link_id')
+    related_issues = self.class
+                         .select(['issues.*', 'issue_links.id AS issue_link_id',
+                                  'issue_links.link_type as issue_link_type_value',
+                                  'issue_links.target_id as issue_link_source_id',
+                                  'issue_links.created_at as issue_link_created_at',
+                                  'issue_links.updated_at as issue_link_updated_at'])
+                         .joins("INNER JOIN issue_links ON
+                                 (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
+                                 OR
+                                 (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
+                         .preload(preload)
+                         .reorder('issue_link_id')
 
     related_issues = yield related_issues if block_given?
 

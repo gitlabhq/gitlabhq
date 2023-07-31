@@ -44,6 +44,10 @@ class SearchService
     project.blank? && group.blank?
   end
 
+  def search_type
+    'basic'
+  end
+
   def show_snippets?
     strong_memoize(:show_snippets) do
       params[:snippets] == 'true'

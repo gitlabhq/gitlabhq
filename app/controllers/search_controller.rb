@@ -252,7 +252,7 @@ class SearchController < ApplicationController
   end
 
   def search_type
-    'basic'
+    search_service.search_type
   end
 end
 

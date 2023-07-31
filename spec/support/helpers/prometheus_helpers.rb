@@ -240,12 +240,11 @@ module PrometheusHelpers
   def prometheus_alert_payload(firing: [], resolved: [])
     status = firing.any? ? 'firing' : 'resolved'
     alerts = firing + resolved
-    alert_name = alerts.first&.title || ''
-    prometheus_metric_id = alerts.first&.prometheus_metric_id&.to_s
+    alert_name = alerts.first || ''
 
     alerts_map = \
-      firing.map { |alert| prometheus_map_alert_payload('firing', alert) } +
-      resolved.map { |alert| prometheus_map_alert_payload('resolved', alert) }
+      firing.map { |title| prometheus_map_alert_payload('firing', title) } +
+      resolved.map { |title| prometheus_map_alert_payload('resolved', title) }
 
     # See https://prometheus.io/docs/alerting/configuration/#%3Cwebhook_config%3E
     {
@@ -257,9 +256,7 @@ module PrometheusHelpers
         'alertname' => alert_name
       },
       'commonLabels' => {
-        'alertname' => alert_name,
-        'gitlab' => 'hook',
-        'gitlab_alert_id' => prometheus_metric_id
+        'alertname' => alert_name
       },
       'commonAnnotations' => {},
       'externalURL' => '',
@@ -267,22 +264,21 @@ module PrometheusHelpers
     }
   end
 
-  def prometheus_alert_payload_fingerprint(prometheus_alert)
+  def prometheus_alert_payload_fingerprint(title)
     # timestamp is hard-coded in #prometheus_map_alert_payload
-    fingerprint = "#{prometheus_alert.prometheus_metric_id}/2018-09-24T08:57:31.095725221Z"
+    # sample fingerprint format comes from AlertManagement::Payload::Prometheus
+    fingerprint = ["2018-09-24T08:57:31.095725221Z", title].join('/')
 
     Gitlab::AlertManagement::Fingerprint.generate(fingerprint)
   end
 
   private
 
-  def prometheus_map_alert_payload(status, alert)
+  def prometheus_map_alert_payload(status, title)
     {
       'status' => status,
       'labels' => {
-        'alertname' => alert.title,
-        'gitlab' => 'hook',
-        'gitlab_alert_id' => alert.prometheus_metric_id.to_s
+        'alertname' => title
       },
       'annotations' => {},
       'startsAt' => '2018-09-24T08:57:31.095725221Z',

@@ -1452,7 +1452,7 @@ ee/lib/ee/api/entities/project.rb
 /app/workers/releases/create_evidence_worker.rb
 /app/workers/releases/manage_evidence_worker.rb
 
-[Fulfillment::Utilization] @sheldonled @aalakkad @kpalchyk
+^[Fulfillment::Utilization] @sheldonled @aalakkad @kpalchyk
 /ee/app/assets/javascripts/usage_quotas/components/
 /ee/app/assets/javascripts/usage_quotas/seats/
 /ee/app/assets/javascripts/usage_quotas/storage/

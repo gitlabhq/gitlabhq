@@ -18,6 +18,7 @@ module API
       expose :finished_at, documentation: { type: 'dateTime', example: '2016-01-21T08:40:25.832Z' }
       expose :allow_failure, documentation: { type: 'boolean', example: false }
       expose :coverage, documentation: { type: 'number', format: 'float', example: 98.29 }
+      expose :pipeline_id, documentation: { type: 'integer', example: 101 }
 
       expose :author, using: Entities::UserBasic
     end

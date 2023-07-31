@@ -80,8 +80,7 @@ module Projects
 
         def valid_alert_manager_token?(token, integration)
           valid_for_alerts_endpoint?(token, integration) ||
-            valid_for_manual?(token) ||
-            valid_for_cluster?(token)
+            valid_for_manual?(token)
         end
 
         def valid_for_manual?(token)
@@ -107,44 +106,6 @@ module Projects
           return false unless integration&.active?
 
           compare_token(token, integration.token)
-        end
-
-        def valid_for_cluster?(token)
-          cluster_integration = find_cluster_integration(project)
-          return false unless cluster_integration
-
-          cluster_integration_token = cluster_integration.alert_manager_token
-
-          if token
-            compare_token(token, cluster_integration_token)
-          else
-            cluster_integration_token.nil?
-          end
-        end
-
-        def find_cluster_integration(project)
-          alert_id = gitlab_alert_id
-          return unless alert_id
-
-          alert = find_alert(project, alert_id)
-          return unless alert
-
-          cluster = alert.environment.deployment_platform&.cluster
-          return unless cluster&.enabled?
-          return unless cluster.integration_prometheus_available?
-
-          cluster.integration_prometheus
-        end
-
-        def find_alert(project, metric)
-          Projects::Prometheus::AlertsFinder
-            .new(project: project, metric: metric)
-            .execute
-            .first
-        end
-
-        def gitlab_alert_id
-          alerts&.first&.dig('labels', 'gitlab_alert_id')
         end
 
         def compare_token(expected, actual)

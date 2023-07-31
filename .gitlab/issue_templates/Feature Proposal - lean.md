@@ -47,6 +47,13 @@ Create tracking issue using the Snowplow event tracking template. See https://gi
 
 -->
 
+### Does this feature require an audit event?
+
+<!--- Checkout these docs to know more
+https://docs.gitlab.com/ee/development/audit_event_guide/#what-are-audit-events
+https://docs.gitlab.com/ee/administration/audit_events.html
+--->
+
 <!-- Label reminders
 Use the following resources to find the appropriate labels:
 - Use only one tier label choosing the lowest tier this is intended for

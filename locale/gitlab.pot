@@ -1795,9 +1795,6 @@ msgstr ""
 msgid "A file was not found."
 msgstr ""
 
-msgid "A file with '%{file_name}' already exists in %{branch} branch"
-msgstr ""
-
 msgid "A file with this name already exists."
 msgstr ""
 
@@ -4256,6 +4253,12 @@ msgid "AdvancedSearch|Select projects to index"
 msgstr ""
 
 msgid "AdvancedSearch|You are using outdated code search mappings. To improve code search quality, we recommend you use %{reindexing_link_start}zero-downtime reindexing%{link_end} or %{recreate_link_start}re-create your index%{link_end}."
+msgstr ""
+
+msgid "AdvancedSearch|You have %{count} pending %{migrations_link_start}advanced search migrations%{link_end} that are obsolete. These migrations might affect your search experience. To resolve the issue, you must %{recreate_link_start}recreate your index%{link_end}."
+msgstr ""
+
+msgid "AdvancedSearch|You have pending obsolete migrations"
 msgstr ""
 
 msgid "After a successful password update you will be redirected to login screen."
@@ -39390,9 +39393,6 @@ msgstr ""
 msgid "Request details"
 msgstr ""
 
-msgid "Request parameter %{param} is missing."
-msgstr ""
-
 msgid "Request review from"
 msgstr ""
 
@@ -47153,12 +47153,6 @@ msgstr ""
 msgid "There was a problem updating the keep latest artifacts setting."
 msgstr ""
 
-msgid "There was an error creating the dashboard, branch name is invalid."
-msgstr ""
-
-msgid "There was an error creating the dashboard, branch named: %{branch} already exists."
-msgstr ""
-
 msgid "There was an error creating the issue"
 msgstr ""
 
@@ -54002,12 +53996,6 @@ msgstr ""
 msgid "Your current password is required to register a two-factor authenticator app."
 msgstr ""
 
-msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."
-msgstr ""
-
-msgid "Your dashboard has been updated. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."
-msgstr ""
-
 msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."
 msgstr ""
 
@@ -54430,6 +54418,9 @@ msgid "can't include: %{invalid_storages}"
 msgstr ""
 
 msgid "can't reference a branch that does not exist"
+msgstr ""
+
+msgid "cannot assign a linked work item as a parent"
 msgstr ""
 
 msgid "cannot assign a non-confidential work item to a confidential parent. Make the work item confidential and try again."
@@ -55194,6 +55185,9 @@ msgid "invalidated"
 msgstr ""
 
 msgid "is"
+msgstr ""
+
+msgid "is a parent or child of this %{item}"
 msgstr ""
 
 msgid "is already associated to a GitLab Issue. New issue will not be associated."

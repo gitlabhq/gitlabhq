@@ -15,7 +15,6 @@ module Gitlab
           SERVICES = [
             ::Metrics::Dashboard::GitlabAlertEmbedService,
             ::Metrics::Dashboard::CustomMetricEmbedService,
-            ::Metrics::Dashboard::DynamicEmbedService,
             ::Metrics::Dashboard::DefaultEmbedService,
             ::Metrics::Dashboard::SystemDashboardService,
             ::Metrics::Dashboard::CustomDashboardService

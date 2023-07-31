@@ -53,7 +53,7 @@ module IssuableLink
       return unless source && target
 
       if self.class.base_class.find_by(source: target, target: source)
-        errors.add(:source, "is already related to this #{self.class.issuable_type}")
+        errors.add(:source, "is already related to this #{self.class.issuable_type.to_s.humanize(capitalize: false)}")
       end
     end
   end

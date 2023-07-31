@@ -337,14 +337,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        namespace :performance_monitoring do
-          resources :dashboards, only: [:create] do
-            collection do
-              put '/:file_name', to: 'dashboards#update', constraints: { file_name: /.+\.yml/ }
-            end
-          end
-        end
-
         resources :alert_management, only: [:index] do
           member do
             get 'details(/*page)', to: 'alert_management#details', as: 'details'

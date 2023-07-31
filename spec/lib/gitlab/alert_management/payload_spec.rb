@@ -19,12 +19,6 @@ RSpec.describe Gitlab::AlertManagement::Payload do
         let(:payload) { { 'monitoring_tool' => 'Prometheus' } }
 
         it { is_expected.to be_a Gitlab::AlertManagement::Payload::Prometheus }
-
-        context 'with gitlab-managed attributes' do
-          let(:payload) { { 'monitoring_tool' => 'Prometheus', 'labels' => { 'gitlab_alert_id' => '12' } } }
-
-          it { is_expected.to be_a Gitlab::AlertManagement::Payload::ManagedPrometheus }
-        end
       end
 
       context 'with the payload specifying an unknown tool' do
@@ -42,12 +36,6 @@ RSpec.describe Gitlab::AlertManagement::Payload do
 
         context 'with an externally managed prometheus payload' do
           it { is_expected.to be_a Gitlab::AlertManagement::Payload::Prometheus }
-        end
-
-        context 'with a self-managed prometheus payload' do
-          let(:payload) { { 'labels' => { 'gitlab_alert_id' => '14' } } }
-
-          it { is_expected.to be_a Gitlab::AlertManagement::Payload::ManagedPrometheus }
         end
       end
 

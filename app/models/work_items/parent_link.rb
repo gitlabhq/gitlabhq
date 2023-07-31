@@ -19,8 +19,10 @@ module WorkItems
     validate :validate_same_project
     validate :validate_max_children
     validate :validate_confidentiality
+    validate :check_existing_related_link
 
     scope :for_parents, ->(parent_ids) { where(work_item_parent_id: parent_ids) }
+    scope :for_children, ->(children_ids) { where(work_item: children_ids) }
 
     class << self
       def has_public_children?(parent_id)
@@ -108,6 +110,15 @@ module WorkItems
       if work_item_parent.ancestors.detect { |ancestor| work_item.id == ancestor.id }
         errors.add :work_item, _('is already present in ancestors')
       end
+    end
+
+    def check_existing_related_link
+      return unless work_item && work_item_parent
+
+      existing_link = WorkItems::RelatedWorkItemLink.for_items(work_item, work_item_parent)
+      return if existing_link.none?
+
+      errors.add(:work_item, _('cannot assign a linked work item as a parent'))
     end
   end
 end
