@@ -186,6 +186,7 @@ module Gitlab
     # - Any parameter containing `password`
     # - Any parameter containing `secret`
     # - Any parameter ending with `key`
+    # - Any parameter named `redirect`, filtered for security concerns of exposing sensitive information
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build traces (:trace)
@@ -228,6 +229,7 @@ module Gitlab
       variables
       content
       sharedSecret
+      redirect
     )
 
     # This config option can be removed after Rails 7.1 by https://gitlab.com/gitlab-org/gitlab/-/issues/416270
