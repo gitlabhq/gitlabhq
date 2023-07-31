@@ -57,7 +57,7 @@ module Gitlab
           source_child = File.join(source_path, child)
           target_child = File.join(target_path, child)
 
-          next if File.lstat(source_child).symlink?
+          next if Gitlab::Utils::FileInfo.linked?(source_child)
 
           if File.directory?(source_child)
             FileUtils.mkdir_p(target_child, mode: DEFAULT_DIR_MODE) unless File.exist?(target_child)
