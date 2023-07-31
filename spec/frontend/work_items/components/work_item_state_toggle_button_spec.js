@@ -1,11 +1,11 @@
+import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import ItemState from '~/work_items/components/item_state.vue';
-import WorkItemState from '~/work_items/components/work_item_state.vue';
+import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
 import {
   STATE_OPEN,
   STATE_CLOSED,
@@ -16,59 +16,58 @@ import {
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import { updateWorkItemMutationResponse, workItemQueryResponse } from '../mock_data';
 
-describe('WorkItemState component', () => {
+describe('Work Item State toggle button component', () => {
   let wrapper;
 
   Vue.use(VueApollo);
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
 
-  const findItemState = () => wrapper.findComponent(ItemState);
+  const findStateToggleButton = () => wrapper.findComponent(GlButton);
+
+  const { id } = workItemQueryResponse.data.workItem;
 
   const createComponent = ({
-    state = STATE_OPEN,
     mutationHandler = mutationSuccessHandler,
     canUpdate = true,
+    workItemState = STATE_OPEN,
+    workItemType = 'Task',
   } = {}) => {
-    const { id, workItemType } = workItemQueryResponse.data.workItem;
-    wrapper = shallowMount(WorkItemState, {
+    wrapper = shallowMount(WorkItemStateToggleButton, {
       apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
       propsData: {
-        workItem: {
-          id,
-          state,
-          workItemType,
-        },
+        workItemId: id,
+        workItemState,
+        workItemType,
         canUpdate,
       },
     });
   };
 
-  it('renders state', () => {
-    createComponent();
+  describe('work item State button text', () => {
+    it.each`
+      workItemState   | workItemType    | buttonText
+      ${STATE_OPEN}   | ${'Task'}       | ${'Close task'}
+      ${STATE_CLOSED} | ${'Task'}       | ${'Reopen task'}
+      ${STATE_OPEN}   | ${'Objective'}  | ${'Close objective'}
+      ${STATE_CLOSED} | ${'Objective'}  | ${'Reopen objective'}
+      ${STATE_OPEN}   | ${'Key result'} | ${'Close key result'}
+      ${STATE_CLOSED} | ${'Key result'} | ${'Reopen key result'}
+    `(
+      'is "$buttonText" when "$workItemType" state is "$workItemState"',
+      ({ workItemState, workItemType, buttonText }) => {
+        createComponent({ workItemState, workItemType });
 
-    expect(findItemState().props('state')).toBe(workItemQueryResponse.data.workItem.state);
-  });
-
-  describe('item state disabled prop', () => {
-    describe.each`
-      description             | canUpdate | value
-      ${'when cannot update'} | ${false}  | ${true}
-      ${'when can update'}    | ${true}   | ${false}
-    `('$description', ({ canUpdate, value }) => {
-      it(`renders item state component with disabled=${value}`, () => {
-        createComponent({ canUpdate });
-
-        expect(findItemState().props('disabled')).toBe(value);
-      });
-    });
+        expect(findStateToggleButton().text()).toBe(buttonText);
+      },
+    );
   });
 
   describe('when updating the state', () => {
     it('calls a mutation', () => {
       createComponent();
 
-      findItemState().vm.$emit('changed', STATE_CLOSED);
+      findStateToggleButton().vm.$emit('click');
 
       expect(mutationSuccessHandler).toHaveBeenCalledWith({
         input: {
@@ -80,10 +79,10 @@ describe('WorkItemState component', () => {
 
     it('calls a mutation with REOPEN', () => {
       createComponent({
-        state: STATE_CLOSED,
+        workItemState: STATE_CLOSED,
       });
 
-      findItemState().vm.$emit('changed', STATE_OPEN);
+      findStateToggleButton().vm.$emit('click');
 
       expect(mutationSuccessHandler).toHaveBeenCalledWith({
         input: {
@@ -96,7 +95,7 @@ describe('WorkItemState component', () => {
     it('emits an error message when the mutation was unsuccessful', async () => {
       createComponent({ mutationHandler: jest.fn().mockRejectedValue('Error!') });
 
-      findItemState().vm.$emit('changed', STATE_CLOSED);
+      findStateToggleButton().vm.$emit('click');
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([
@@ -109,7 +108,7 @@ describe('WorkItemState component', () => {
 
       createComponent();
 
-      findItemState().vm.$emit('changed', STATE_CLOSED);
+      findStateToggleButton().vm.$emit('click');
       await waitForPromises();
 
       expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'updated_state', {

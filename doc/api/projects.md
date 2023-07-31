@@ -1487,7 +1487,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
      --header "Content-Type: application/json" --data '{
         "name": "new_project", "description": "New Project", "path": "new_project",
         "namespace_id": "42", "initialize_with_readme": "true"}' \
-     --url 'https://gitlab.example.com/api/v4/projects/'
+     --url "https://gitlab.example.com/api/v4/projects/"
 ```
 
 | Attribute                                                   | Type    | Required               | Description |
@@ -1671,7 +1671,7 @@ For example, to toggle the setting for
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
-     --url 'https://gitlab.com/api/v4/projects/<your-project-ID>' \
+     --url "https://gitlab.com/api/v4/projects/<your-project-ID>" \
      --data "shared_runners_enabled=true" # to turn off: "shared_runners_enabled=false"
 ```
 

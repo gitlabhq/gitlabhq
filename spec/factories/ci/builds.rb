@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require_relative 'deployable'
+
 FactoryBot.define do
   factory :ci_build, class: 'Ci::Build', parent: :ci_processable do
+    instance_eval ::Factories::Ci::Deployable.traits
+
     name { 'test' }
     add_attribute(:protected) { false }
     created_at { 'Di 29. Okt 09:50:00 CET 2013' }
@@ -137,122 +141,6 @@ FactoryBot.define do
       self.when { 'manual' }
     end
 
-    trait :teardown_environment do
-      environment { 'staging' }
-      options do
-        {
-          script: %w(ls),
-          environment: { name: 'staging',
-                         action: 'stop',
-                         url: 'http://staging.example.com/$CI_JOB_NAME' }
-        }
-      end
-    end
-
-    trait :environment_with_deployment_tier do
-      environment { 'test_portal' }
-      options do
-        {
-          script: %w(ls),
-          environment: { name: 'test_portal',
-                         action: 'start',
-                         url: 'http://staging.example.com/$CI_JOB_NAME',
-                         deployment_tier: 'testing' }
-        }
-      end
-    end
-
-    trait :deploy_to_production do
-      environment { 'production' }
-
-      options do
-        {
-          script: %w(ls),
-          environment: { name: 'production',
-                         url: 'http://prd.example.com/$CI_JOB_NAME' }
-        }
-      end
-    end
-
-    trait :start_review_app do
-      environment { 'review/$CI_COMMIT_REF_NAME' }
-
-      options do
-        {
-          script: %w(ls),
-          environment: { name: 'review/$CI_COMMIT_REF_NAME',
-                         url: 'http://staging.example.com/$CI_JOB_NAME',
-                         on_stop: 'stop_review_app' }
-        }
-      end
-    end
-
-    trait :stop_review_app do
-      name { 'stop_review_app' }
-      environment { 'review/$CI_COMMIT_REF_NAME' }
-
-      options do
-        {
-          script: %w(ls),
-          environment: { name: 'review/$CI_COMMIT_REF_NAME',
-                         url: 'http://staging.example.com/$CI_JOB_NAME',
-                         action: 'stop' }
-        }
-      end
-    end
-
-    trait :prepare_staging do
-      name { 'prepare staging' }
-      environment { 'staging' }
-
-      options do
-        {
-          script: %w(ls),
-          environment: { name: 'staging', action: 'prepare' }
-        }
-      end
-
-      set_expanded_environment_name
-    end
-
-    trait :start_staging do
-      name { 'start staging' }
-      environment { 'staging' }
-
-      options do
-        {
-          script: %w(ls),
-          environment: { name: 'staging', action: 'start' }
-        }
-      end
-
-      set_expanded_environment_name
-    end
-
-    trait :stop_staging do
-      name { 'stop staging' }
-      environment { 'staging' }
-
-      options do
-        {
-          script: %w(ls),
-          environment: { name: 'staging', action: 'stop' }
-        }
-      end
-
-      set_expanded_environment_name
-    end
-
-    trait :set_expanded_environment_name do
-      after(:build) do |build, evaluator|
-        build.assign_attributes(
-          metadata_attributes: {
-            expanded_environment_name: build.expanded_environment_name
-          }
-        )
-      end
-    end
-
     trait :allowed_to_fail do
       allow_failure { true }
     end
@@ -309,20 +197,6 @@ FactoryBot.define do
 
     trait :triggered do
       trigger_request factory: :ci_trigger_request
-    end
-
-    trait :with_deployment do
-      after(:build) do |build, evaluator|
-        ##
-        # Build deployment/environment relations if environment name is set
-        # to the job. If `build.deployment` has already been set, it doesn't
-        # build a new instance.
-        Environments::CreateForBuildService.new.execute(build)
-      end
-
-      after(:create) do |build, evaluator|
-        Deployments::CreateForBuildService.new.execute(build)
-      end
     end
 
     trait :tag do

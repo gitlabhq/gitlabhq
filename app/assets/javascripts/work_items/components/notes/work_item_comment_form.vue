@@ -1,22 +1,13 @@
 <script>
 import { GlButton, GlFormCheckbox, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { s__, __, sprintf } from '~/locale';
+import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
-import {
-  I18N_WORK_ITEM_ERROR_UPDATING,
-  sprintfWorkItem,
-  STATE_OPEN,
-  STATE_EVENT_REOPEN,
-  STATE_EVENT_CLOSE,
-  TRACKING_CATEGORY_SHOW,
-  i18n,
-} from '~/work_items/constants';
+import { STATE_OPEN, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { getUpdateWorkItemMutation } from '~/work_items/components/update_work_item';
+import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
 
 export default {
   i18n: {
@@ -25,6 +16,7 @@ export default {
       'Notes|Internal notes are only visible to members with the role of Reporter or higher',
     ),
     addInternalNote: __('Add internal note'),
+    cancelButtonText: __('Cancel'),
   },
   constantOptions: {
     markdownDocsPath: helpPagePath('user/markdown'),
@@ -34,6 +26,7 @@ export default {
     MarkdownEditor,
     GlFormCheckbox,
     GlIcon,
+    WorkItemStateToggleButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -123,14 +116,6 @@ export default {
     isWorkItemOpen() {
       return this.workItemState === STATE_OPEN;
     },
-    toggleWorkItemStateText() {
-      return this.isWorkItemOpen
-        ? sprintf(__('Close %{workItemType}'), { workItemType: this.workItemType.toLowerCase() })
-        : sprintf(__('Reopen %{workItemType}'), { workItemType: this.workItemType.toLowerCase() });
-    },
-    cancelButtonText() {
-      return this.isNewDiscussion ? this.toggleWorkItemStateText : __('Cancel');
-    },
     commentButtonTextComputed() {
       return this.isNoteInternal ? this.$options.i18n.addInternalNote : this.commentButtonText;
     },
@@ -165,48 +150,6 @@ export default {
 
       this.$emit('cancelEditing');
       clearDraft(this.autosaveKey);
-    },
-    async toggleWorkItemState() {
-      const input = {
-        id: this.workItemId,
-        stateEvent: this.isWorkItemOpen ? STATE_EVENT_CLOSE : STATE_EVENT_REOPEN,
-      };
-
-      this.updateInProgress = true;
-
-      try {
-        this.track('updated_state');
-
-        const { mutation, variables } = getUpdateWorkItemMutation({
-          workItemParentId: this.workItemParentId,
-          input,
-        });
-
-        const { data } = await this.$apollo.mutate({
-          mutation,
-          variables,
-        });
-
-        const errors = data.workItemUpdate?.errors;
-
-        if (errors?.length) {
-          this.$emit('error', i18n.updateError);
-        }
-      } catch (error) {
-        const msg = sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType);
-
-        this.$emit('error', msg);
-        Sentry.captureException(error);
-      }
-
-      this.updateInProgress = false;
-    },
-    cancelButtonAction() {
-      if (this.isNewDiscussion) {
-        this.toggleWorkItemState();
-      } else {
-        this.cancelEditing();
-      }
     },
   },
 };
@@ -257,13 +200,23 @@ export default {
           @click="$emit('submitForm', { commentText, isNoteInternal })"
           >{{ commentButtonTextComputed }}
         </gl-button>
+        <work-item-state-toggle-button
+          v-if="isNewDiscussion"
+          class="gl-ml-3"
+          :work-item-id="workItemId"
+          :work-item-state="workItemState"
+          :work-item-type="workItemType"
+          can-update
+          @error="$emit('error', $event)"
+        />
         <gl-button
+          v-else
           data-testid="cancel-button"
           category="primary"
           class="gl-ml-3"
           :loading="updateInProgress"
-          @click="cancelButtonAction"
-          >{{ cancelButtonText }}
+          @click="cancelEditing"
+          >{{ $options.i18n.cancelButtonText }}
         </gl-button>
       </form>
     </div>

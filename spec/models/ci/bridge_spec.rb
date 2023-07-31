@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :in_group) }
+  let_it_be(:project, reload: true) { create(:project, :repository, :in_group) }
   let_it_be(:target_project) { create(:project, name: 'project', namespace: create(:namespace, name: 'my')) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -26,6 +26,10 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   it_behaves_like 'has ID tokens', :ci_bridge
 
   it_behaves_like 'a retryable job'
+
+  it_behaves_like 'a deployable job' do
+    let(:job) { bridge }
+  end
 
   it 'has one downstream pipeline' do
     expect(bridge).to have_one(:sourced_pipeline)

@@ -1,18 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe Deployments::CreateForBuildService, feature_category: :continuous_delivery do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
-
-  let(:service) { described_class.new }
-
+RSpec.shared_examples 'create deployment for job' do
   describe '#execute' do
     subject { service.execute(build) }
 
     context 'with a deployment job' do
-      let!(:build) { create(:ci_build, :start_review_app, project: project) }
+      let!(:build) { create(factory_type, :start_review_app, project: project) }
       let!(:environment) { create(:environment, project: project, name: build.expanded_environment_name) }
 
       it 'creates a deployment record' do
@@ -43,7 +36,7 @@ RSpec.describe Deployments::CreateForBuildService, feature_category: :continuous
       end
 
       context 'when the corresponding environment does not exist' do
-        let!(:environment) {}
+        let!(:environment) {} # rubocop:disable Lint/EmptyBlock
 
         it 'does not create a deployment record' do
           expect { subject }.not_to change { Deployment.count }
@@ -54,7 +47,7 @@ RSpec.describe Deployments::CreateForBuildService, feature_category: :continuous
     end
 
     context 'with a teardown job' do
-      let!(:build) { create(:ci_build, :stop_review_app, project: project) }
+      let!(:build) { create(factory_type, :stop_review_app, project: project) }
       let!(:environment) { create(:environment, name: build.expanded_environment_name) }
 
       it 'does not create a deployment record' do
@@ -65,7 +58,7 @@ RSpec.describe Deployments::CreateForBuildService, feature_category: :continuous
     end
 
     context 'with a normal job' do
-      let!(:build) { create(:ci_build, project: project) }
+      let!(:build) { create(factory_type, project: project) }
 
       it 'does not create a deployment record' do
         expect { subject }.not_to change { Deployment.count }
@@ -74,18 +67,10 @@ RSpec.describe Deployments::CreateForBuildService, feature_category: :continuous
       end
     end
 
-    context 'with a bridge' do
-      let!(:build) { create(:ci_bridge, project: project) }
-
-      it 'does not create a deployment record' do
-        expect { subject }.not_to change { Deployment.count }
-      end
-    end
-
     context 'when build has environment attribute' do
       let!(:build) do
-        create(:ci_build, environment: 'production', project: project,
-                          options: { environment: { name: 'production', **kubernetes_options } })
+        create(factory_type, environment: 'production', project: project,
+                          options: { environment: { name: 'production', **kubernetes_options } }) # rubocop:disable Layout/ArgumentAlignment
       end
 
       let!(:environment) { create(:environment, project: project, name: build.expanded_environment_name) }
@@ -129,8 +114,8 @@ RSpec.describe Deployments::CreateForBuildService, feature_category: :continuous
       end
 
       context 'when build already has deployment' do
-        let!(:build) { create(:ci_build, :with_deployment, project: project, environment: 'production') }
-        let!(:environment) {}
+        let!(:build) { create(factory_type, :with_deployment, project: project, environment: 'production') }
+        let!(:environment) {} # rubocop:disable Lint/EmptyBlock
 
         it 'returns the persisted deployment' do
           expect { subject }.not_to change { Deployment.count }
@@ -147,8 +132,8 @@ RSpec.describe Deployments::CreateForBuildService, feature_category: :continuous
 
       with_them do
         let!(:build) do
-          create(:ci_build, environment: 'production', project: project,
-                            options: { environment: { name: 'production', action: action } })
+          create(factory_type, environment: 'production', project: project,
+                            options: { environment: { name: 'production', action: action } }) # rubocop:disable Layout/ArgumentAlignment
         end
 
         it 'returns nothing' do
@@ -158,7 +143,7 @@ RSpec.describe Deployments::CreateForBuildService, feature_category: :continuous
     end
 
     context 'when build does not have environment attribute' do
-      let!(:build) { create(:ci_build, project: project) }
+      let!(:build) { create(factory_type, project: project) }
 
       it 'returns nothing' do
         is_expected.to be_nil

@@ -1,0 +1,14 @@
+---
+# Error: gitlab.CommandStringsQuoted
+#
+# Ensures all code blocks wrap URL strings in quotation marks.
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: existence
+message: "For the command example, use double quotes around the URL: %s"
+link: https://docs.gitlab.com/ee/development/documentation/restful_api_styleguide.html#curl-commands
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '(curl|--url)[^"\]\n]+?https?:\/\/[^ \n]*'

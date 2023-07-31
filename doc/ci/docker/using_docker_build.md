@@ -37,7 +37,7 @@ the Docker commands, but needs permission to do so.
 
    ```shell
    sudo gitlab-runner register -n \
-     --url https://gitlab.com/ \
+     --url "https://gitlab.com/" \
      --registration-token REGISTRATION_TOKEN \
      --executor shell \
      --description "My Runner"
@@ -117,7 +117,7 @@ To use Docker-in-Docker with TLS enabled:
 
    ```shell
    sudo gitlab-runner register -n \
-     --url https://gitlab.com/ \
+     --url "https://gitlab.com/" \
      --registration-token REGISTRATION_TOKEN \
      --executor docker \
      --description "My Docker Runner" \
@@ -381,7 +381,7 @@ To mount `/var/run/docker.sock` while registering your runner, include the follo
 
 ```shell
 sudo gitlab-runner register -n \
-  --url https://gitlab.com/ \
+  --url "https://gitlab.com/" \
   --registration-token REGISTRATION_TOKEN \
   --executor docker \
   --description "My Docker Runner" \

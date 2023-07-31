@@ -24,6 +24,7 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
@@ -47,6 +48,10 @@ describe('WorkItemDetail component', () => {
   Vue.use(VueApollo);
 
   const workItemQueryResponse = workItemByIidResponseFactory({ canUpdate: true, canDelete: true });
+  const workItemQueryResponseWithCannotUpdate = workItemByIidResponseFactory({
+    canUpdate: false,
+    canDelete: false,
+  });
   const workItemQueryResponseWithoutParent = workItemByIidResponseFactory({
     parent: null,
     canUpdate: true,
@@ -82,6 +87,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
   const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
+  const findWorkItemStateToggleButton = () => wrapper.findComponent(WorkItemStateToggleButton);
 
   const createComponent = ({
     isModal = false,
@@ -191,6 +197,25 @@ describe('WorkItemDetail component', () => {
 
     it('calls the work item updated subscription', () => {
       expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({ id });
+    });
+  });
+
+  describe('work item state toggle button', () => {
+    describe.each`
+      description                  | canUpdate
+      ${'when user cannot update'} | ${false}
+      ${'when user can update'}    | ${true}
+    `('$description', ({ canUpdate }) => {
+      it(`${canUpdate ? 'is rendered' : 'is not rendered'}`, async () => {
+        createComponent({
+          handler: canUpdate
+            ? jest.fn().mockResolvedValue(workItemQueryResponse)
+            : jest.fn().mockResolvedValue(workItemQueryResponseWithCannotUpdate),
+        });
+        await waitForPromises();
+
+        expect(findWorkItemStateToggleButton().exists()).toBe(canUpdate);
+      });
     });
   });
 

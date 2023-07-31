@@ -49,6 +49,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemNotes from './work_item_notes.vue';
 import WorkItemDetailModal from './work_item_detail_modal.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
+import WorkItemStateToggleButton from './work_item_state_toggle_button.vue';
 
 export default {
   i18n,
@@ -57,6 +58,7 @@ export default {
   },
   isLoggedIn: isLoggedIn(),
   components: {
+    WorkItemStateToggleButton,
     GlAlert,
     GlBadge,
     GlButton,
@@ -445,6 +447,14 @@ export default {
             class="gl-mr-3 gl-cursor-help"
             >{{ __('Confidential') }}</gl-badge
           >
+          <work-item-state-toggle-button
+            v-if="canUpdate"
+            :work-item-id="workItem.id"
+            :work-item-state="workItem.state"
+            :work-item-parent-id="workItemParentId"
+            :work-item-type="workItemType"
+            @error="updateError = $event"
+          />
           <work-item-todos
             v-if="showWorkItemCurrentUserTodos"
             :work-item-id="workItem.id"

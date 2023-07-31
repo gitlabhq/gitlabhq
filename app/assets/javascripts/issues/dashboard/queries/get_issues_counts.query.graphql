@@ -12,6 +12,10 @@ query getDashboardIssuesCount(
   $in: [IssuableSearchableField!]
   $not: NegatedIssueFilterInput
   $or: UnionedIssueFilterInput
+  $createdAfter: Time
+  $createdBefore: Time
+  $closedAfter: Time
+  $closedBefore: Time
 ) {
   openedIssues: issues(
     state: opened
@@ -28,6 +32,10 @@ query getDashboardIssuesCount(
     in: $in
     not: $not
     or: $or
+    createdAfter: $createdAfter
+    createdBefore: $createdBefore
+    closedAfter: $closedAfter
+    closedBefore: $closedBefore
   ) {
     count
   }
@@ -46,6 +54,10 @@ query getDashboardIssuesCount(
     in: $in
     not: $not
     or: $or
+    createdAfter: $createdAfter
+    createdBefore: $createdBefore
+    closedAfter: $closedAfter
+    closedBefore: $closedBefore
   ) {
     count
   }
@@ -64,6 +76,10 @@ query getDashboardIssuesCount(
     in: $in
     not: $not
     or: $or
+    createdAfter: $createdAfter
+    createdBefore: $createdBefore
+    closedAfter: $closedAfter
+    closedBefore: $closedBefore
   ) {
     count
   }

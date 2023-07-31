@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require_relative 'deployable'
+
 FactoryBot.define do
   factory :ci_bridge, class: 'Ci::Bridge', parent: :ci_processable do
+    instance_eval ::Factories::Ci::Deployable.traits
+
     name { 'bridge' }
     created_at { '2013-10-29 09:50:00 CET' }
     status { :created }

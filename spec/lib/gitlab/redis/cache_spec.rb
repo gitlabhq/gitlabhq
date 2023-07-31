@@ -17,5 +17,9 @@ RSpec.describe Gitlab::Redis::Cache do
 
       expect(described_class.active_support_config[:expires_in]).to eq(1.day)
     end
+
+    it 'has a pool set to false' do
+      expect(described_class.active_support_config[:pool]).to eq(false)
+    end
   end
 end

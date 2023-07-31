@@ -6,6 +6,7 @@ import {
   FILTERED_SEARCH_TERM,
   OPERATOR_NOT,
   OPERATOR_OR,
+  OPERATOR_AFTER,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -246,8 +247,9 @@ export const isSpecialFilter = (type, data) => {
 const getFilterType = ({ type, value: { data, operator } }) => {
   const isUnionedAuthor = type === TOKEN_TYPE_AUTHOR && operator === OPERATOR_OR;
   const isUnionedLabel = type === TOKEN_TYPE_LABEL && operator === OPERATOR_OR;
+  const isAfter = operator === OPERATOR_AFTER;
 
-  if (isUnionedAuthor || isUnionedLabel) {
+  if (isUnionedAuthor || isUnionedLabel || isAfter) {
     return ALTERNATIVE_FILTER;
   }
   if (isSpecialFilter(type, data)) {

@@ -4,6 +4,7 @@ module Ci
   class Bridge < Ci::Processable
     include Ci::Contextable
     include Ci::Metadatable
+    include Ci::Deployable
     include Importable
     include AfterCommitQueue
     include Ci::HasRef
@@ -177,20 +178,6 @@ module Ci
     end
 
     def any_unmet_prerequisites?
-      false
-    end
-
-    def outdated_deployment?
-      false
-    end
-
-    def expanded_environment_name
-    end
-
-    def persisted_environment
-    end
-
-    def deployment_job?
       false
     end
 

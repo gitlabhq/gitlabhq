@@ -17,12 +17,19 @@ export const OPERATOR_NOT = '!=';
 export const OPERATOR_NOT_TEXT = __('is not one of');
 export const OPERATOR_OR = '||';
 export const OPERATOR_OR_TEXT = __('is one of');
+export const OPERATOR_AFTER = '≥';
+export const OPERATOR_AFTER_TEXT = __('on or after');
+export const OPERATOR_BEFORE = '<';
+export const OPERATOR_BEFORE_TEXT = __('before');
 
 export const OPERATORS_IS = [{ value: OPERATOR_IS, description: OPERATOR_IS_TEXT }];
 export const OPERATORS_NOT = [{ value: OPERATOR_NOT, description: OPERATOR_NOT_TEXT }];
 export const OPERATORS_OR = [{ value: OPERATOR_OR, description: OPERATOR_OR_TEXT }];
+export const OPERATORS_AFTER = [{ value: OPERATOR_AFTER, description: OPERATOR_AFTER_TEXT }];
+export const OPERATORS_BEFORE = [{ value: OPERATOR_BEFORE, description: OPERATOR_BEFORE_TEXT }];
 export const OPERATORS_IS_NOT = [...OPERATORS_IS, ...OPERATORS_NOT];
 export const OPERATORS_IS_NOT_OR = [...OPERATORS_IS, ...OPERATORS_NOT, ...OPERATORS_OR];
+export const OPERATORS_AFTER_BEFORE = [...OPERATORS_AFTER, ...OPERATORS_BEFORE];
 
 export const OPTION_NONE = { value: FILTER_NONE, text: __('None'), title: __('None') };
 export const OPTION_ANY = { value: FILTER_ANY, text: __('Any'), title: __('Any') };
@@ -62,6 +69,8 @@ export const TOKEN_TITLE_STATUS = __('Status');
 export const TOKEN_TITLE_TARGET_BRANCH = __('Target Branch');
 export const TOKEN_TITLE_TYPE = __('Type');
 export const TOKEN_TITLE_SEARCH_WITHIN = __('Search Within');
+export const TOKEN_TITLE_CREATED = __('Created date');
+export const TOKEN_TITLE_CLOSED = __('Closed date');
 
 export const TOKEN_TYPE_APPROVED_BY = 'approved-by';
 export const TOKEN_TYPE_ASSIGNEE = 'assignee';
@@ -88,3 +97,5 @@ export const TOKEN_TYPE_TARGET_BRANCH = 'target-branch';
 export const TOKEN_TYPE_TYPE = 'type';
 export const TOKEN_TYPE_WEIGHT = 'weight';
 export const TOKEN_TYPE_SEARCH_WITHIN = 'in';
+export const TOKEN_TYPE_CREATED = 'created';
+export const TOKEN_TYPE_CLOSED = 'closed';

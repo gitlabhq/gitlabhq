@@ -195,7 +195,8 @@ module IssuesHelper
       is_signed_in: current_user.present?.to_s,
       jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
       rss_path: url_for(safe_params.merge(rss_url_options)),
-      sign_in_path: new_user_session_path
+      sign_in_path: new_user_session_path,
+      has_issue_date_filter_feature: Feature.enabled?(:issue_date_filter, namespace)
     }
   end
 

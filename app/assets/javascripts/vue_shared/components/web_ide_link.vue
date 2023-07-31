@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
+import Tracking from '~/tracking';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
@@ -28,6 +29,8 @@ export const i18n = {
   toggleText: __('Edit'),
 };
 
+const TRACKING_ACTION_NAME = 'click_consolidated_edit';
+
 export default {
   name: 'CEWebIdeLink',
   components: {
@@ -40,6 +43,7 @@ export default {
     ConfirmForkModal,
   },
   i18n,
+  mixins: [Tracking.mixin()],
   props: {
     isFork: {
       type: Boolean,
@@ -181,9 +185,9 @@ export default {
         key: KEY_EDIT,
         text: __('Edit single file'),
         secondaryText: __('Edit this file only.'),
-        attrs: {
-          'data-track-action': 'click_consolidated_edit',
-          'data-track-label': 'edit',
+        tracking: {
+          action: TRACKING_ACTION_NAME,
+          label: 'single_file',
         },
         ...handleOptions,
       };
@@ -223,9 +227,9 @@ export default {
         key: KEY_WEB_IDE,
         text: this.webIdeActionText,
         secondaryText: this.$options.i18n.webIdeText,
-        attrs: {
-          'data-track-action': 'click_consolidated_edit_ide',
-          'data-track-label': 'web_ide',
+        tracking: {
+          action: TRACKING_ACTION_NAME,
+          label: 'web_ide',
         },
         ...handleOptions,
       };
@@ -253,9 +257,9 @@ export default {
         text: __('Edit in pipeline editor'),
         secondaryText,
         href: this.pipelineEditorUrl,
-        attrs: {
-          'data-track-action': 'click_consolidated_pipeline_editor',
-          'data-track-label': 'pipeline_editor',
+        tracking: {
+          action: TRACKING_ACTION_NAME,
+          label: 'pipeline_editor',
         },
       };
     },
@@ -277,6 +281,10 @@ export default {
         key: KEY_GITPOD,
         text: this.gitpodActionText,
         secondaryText,
+        tracking: {
+          action: TRACKING_ACTION_NAME,
+          label: 'gitpod',
+        },
         ...handleOptions,
       };
     },
@@ -311,6 +319,7 @@ export default {
       this[dataKey] = true;
     },
     executeAction(action) {
+      this.track(action.tracking.action, { label: action.tracking.label });
       action.handle?.();
     },
   },
@@ -335,7 +344,6 @@ export default {
         <gl-disclosure-dropdown-item
           v-for="action in actions"
           :key="action.key"
-          v-bind="action.attrs"
           :item="action"
           :data-qa-selector="`${action.key}_menu_item`"
           @action="executeAction(action)"

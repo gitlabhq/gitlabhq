@@ -2,6 +2,7 @@
 import { GlAvatarLink, GlSprintf } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
 export default {
@@ -9,6 +10,7 @@ export default {
     GlAvatarLink,
     GlSprintf,
     TimeAgoTooltip,
+    WorkItemStateBadge,
   },
   inject: ['fullPath'],
   props: {
@@ -30,6 +32,9 @@ export default {
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
+    },
+    workItemState() {
+      return this.workItem?.state;
     },
   },
   apollo: {
@@ -54,7 +59,8 @@ export default {
 
 <template>
   <div class="gl-mb-3">
-    <span data-testid="work-item-created">
+    <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
+    <span data-testid="work-item-created" class="gl-vertical-align-middle">
       <gl-sprintf v-if="author.name" :message="__('Created %{timeAgo} by %{author}')">
         <template #timeAgo>
           <time-ago-tooltip :time="createdAt" />

@@ -1,4 +1,5 @@
 import { GlModal, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { omit } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 
@@ -6,13 +7,14 @@ import getWritableForksResponse from 'test_fixtures/graphql/vue_shared/component
 import WebIdeLink, { i18n } from '~/vue_shared/components/web_ide_link.vue';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
+import { mockTracking } from 'helpers/tracking_helper';
 import {
   shallowMountExtended,
   mountExtended,
   extendedWrapper,
 } from 'helpers/vue_test_utils_helper';
-import createMockApollo from 'helpers/mock_apollo_helper';
 
 import { visitUrl } from '~/lib/utils/url_utility';
 import getWritableForksQuery from '~/vue_shared/components/web_ide/get_writable_forks.query.graphql';
@@ -34,8 +36,10 @@ const ACTION_EDIT = {
   secondaryText: 'Edit this file only.',
   attrs: {
     'data-qa-selector': 'edit_menu_item',
-    'data-track-action': 'click_consolidated_edit',
-    'data-track-label': 'edit',
+  },
+  tracking: {
+    action: 'click_consolidated_edit',
+    label: 'single_file',
   },
 };
 const ACTION_EDIT_CONFIRM_FORK = {
@@ -48,11 +52,13 @@ const ACTION_WEB_IDE = {
   text: 'Web IDE',
   attrs: {
     'data-qa-selector': 'webide_menu_item',
-    'data-track-action': 'click_consolidated_edit_ide',
-    'data-track-label': 'web_ide',
   },
   href: undefined,
   handle: expect.any(Function),
+  tracking: {
+    action: 'click_consolidated_edit',
+    label: 'web_ide',
+  },
 };
 const ACTION_WEB_IDE_CONFIRM_FORK = {
   ...ACTION_WEB_IDE,
@@ -67,6 +73,10 @@ const ACTION_GITPOD = {
   attrs: {
     'data-qa-selector': 'gitpod_menu_item',
   },
+  tracking: {
+    action: 'click_consolidated_edit',
+    label: 'gitpod',
+  },
 };
 const ACTION_GITPOD_ENABLE = {
   ...ACTION_GITPOD,
@@ -79,8 +89,10 @@ const ACTION_PIPELINE_EDITOR = {
   text: 'Edit in pipeline editor',
   attrs: {
     'data-qa-selector': 'pipeline_editor_menu_item',
-    'data-track-action': 'click_consolidated_pipeline_editor',
-    'data-track-label': 'pipeline_editor',
+  },
+  tracking: {
+    action: 'click_consolidated_edit',
+    label: 'pipeline_editor',
   },
 };
 
@@ -88,6 +100,7 @@ describe('vue_shared/components/web_ide_link', () => {
   Vue.use(VueApollo);
 
   let wrapper;
+  let trackingSpy;
 
   function createComponent(props, { mountFn = shallowMountExtended, slots = {} } = {}) {
     const fakeApollo = createMockApollo([
@@ -116,6 +129,8 @@ describe('vue_shared/components/web_ide_link', () => {
       },
       apolloProvider: fakeApollo,
     });
+
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   }
 
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
@@ -135,13 +150,12 @@ describe('vue_shared/components/web_ide_link', () => {
         handle: props.item.handle,
         attrs: {
           'data-qa-selector': attributes['data-qa-selector'],
-          'data-track-action': attributes['data-track-action'],
-          'data-track-label': attributes['data-track-label'],
         },
       };
     });
+  const omitTrackingParams = (actions) => actions.map((action) => omit(action, 'tracking'));
 
-  it.each([
+  describe.each([
     {
       props: {},
       expectedActions: [ACTION_WEB_IDE, ACTION_EDIT],
@@ -231,10 +245,27 @@ describe('vue_shared/components/web_ide_link', () => {
       props: { showEditButton: false },
       expectedActions: [ACTION_WEB_IDE],
     },
-  ])('renders actions with appropriately for given props', ({ props, expectedActions }) => {
-    createComponent(props);
+  ])('for a set of props', ({ props, expectedActions }) => {
+    beforeEach(() => {
+      createComponent(props);
+    });
 
-    expect(getDropdownItemsAsData()).toEqual(expectedActions);
+    it('renders the appropiate actions', () => {
+      // omit tracking property because it is not included in the dropdown item
+      expect(getDropdownItemsAsData()).toEqual(omitTrackingParams(expectedActions));
+    });
+
+    describe('when an action is clicked', () => {
+      it('tracks event', () => {
+        expectedActions.forEach((action, index) => {
+          findDisclosureDropdownItems().at(index).vm.$emit('action');
+
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, action.tracking.action, {
+            label: action.tracking.label,
+          });
+        });
+      });
+    });
   });
 
   it('bubbles up shown and hidden events triggered by actions button component', () => {
@@ -272,11 +303,9 @@ describe('vue_shared/components/web_ide_link', () => {
     });
 
     it('displays Pipeline Editor as the first action', () => {
-      expect(getDropdownItemsAsData()).toEqual([
-        ACTION_PIPELINE_EDITOR,
-        ACTION_WEB_IDE,
-        ACTION_GITPOD,
-      ]);
+      expect(getDropdownItemsAsData()).toEqual(
+        omitTrackingParams([ACTION_PIPELINE_EDITOR, ACTION_WEB_IDE, ACTION_GITPOD]),
+      );
     });
 
     it('when web ide button is clicked it opens in a new tab', async () => {

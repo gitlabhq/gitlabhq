@@ -238,7 +238,7 @@ Now that your server is set up, install GitLab:
 1. Add the GitLab package repository and install the package:
 
    ```shell
-   curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh | sudo bash
+   curl "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" | sudo bash
    ```
 
    To see the contents of the script, visit <https://packages.gitlab.com/gitlab/gitlab-ee/install>.

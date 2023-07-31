@@ -49857,6 +49857,9 @@ msgstr ""
 msgid "UsageQuota|%{linkTitle} help link"
 msgstr ""
 
+msgid "UsageQuota|%{percentageRemaining}%% namespace storage remaining."
+msgstr ""
+
 msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
 msgstr ""
 
@@ -49966,9 +49969,6 @@ msgid "UsageQuota|Recalculate repository usage"
 msgstr ""
 
 msgid "UsageQuota|Registry"
-msgstr ""
-
-msgid "UsageQuota|Search"
 msgstr ""
 
 msgid "UsageQuota|Seats"
@@ -54343,6 +54343,9 @@ msgstr ""
 msgid "banned user already exists"
 msgstr ""
 
+msgid "before"
+msgstr ""
+
 msgid "beta"
 msgstr ""
 
@@ -55884,6 +55887,9 @@ msgid "nounSeries|%{item}, %{nextItem}"
 msgstr ""
 
 msgid "nounSeries|%{item}, and %{lastItem}"
+msgstr ""
+
+msgid "on or after"
 msgstr ""
 
 msgid "only available on top-level groups."

@@ -7,6 +7,8 @@ RSpec.shared_examples 'a deployable job' do
 
   shared_examples 'calling proper BuildFinishedWorker' do
     it 'calls Ci::BuildFinishedWorker' do
+      skip unless described_class == ::Ci::Build
+
       expect(Ci::BuildFinishedWorker).to receive(:perform_async)
 
       subject
@@ -14,12 +16,12 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#outdated_deployment?' do
-    subject { build.outdated_deployment? }
+    subject { job.outdated_deployment? }
 
-    let(:build) { create(:ci_build, :created, :with_deployment, pipeline: pipeline, environment: 'production') }
+    let(:job) { create(factory_type, :created, :with_deployment, project: project, pipeline: pipeline, environment: 'production') }
 
-    context 'when build has no environment' do
-      let(:build) { create(:ci_build, :created, pipeline: pipeline, environment: nil) }
+    context 'when job has no environment' do
+      let(:job) { create(factory_type, :created, pipeline: pipeline, environment: nil) }
 
       it { expect(subject).to be_falsey }
     end
@@ -32,27 +34,27 @@ RSpec.shared_examples 'a deployable job' do
       it { expect(subject).to be_falsey }
     end
 
-    context 'when build is not an outdated deployment' do
+    context 'when job is not an outdated deployment' do
       before do
-        allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(false)
+        allow(job.deployment).to receive(:older_than_last_successful_deployment?).and_return(false)
       end
 
       it { expect(subject).to be_falsey }
     end
 
-    context 'when build is older than the latest deployment and still pending status' do
+    context 'when job is older than the latest deployment and still pending status' do
       before do
-        allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
+        allow(job.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
       end
 
-      it { expect(subject).to be_truthy }
+      it { expect(subject).to be_truthy} # rubocop: disable Layout/SpaceInsideBlockBraces
     end
 
-    context 'when build is older than the latest deployment but succeeded once' do
-      let(:build) { create(:ci_build, :success, :with_deployment, pipeline: pipeline, environment: 'production') }
+    context 'when job is older than the latest deployment but succeeded once' do
+      let(:job) { create(factory_type, :success, :with_deployment, pipeline: pipeline, environment: 'production') }
 
       before do
-        allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
+        allow(job.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
       end
 
       it 'returns false for allowing rollback' do
@@ -72,10 +74,10 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe 'state transition as a deployable' do
-    subject { build.send(event) }
+    subject { job.send(event) }
 
-    let!(:build) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline) }
-    let(:deployment) { build.deployment }
+    let!(:job) { create(factory_type, :with_deployment, :start_review_app, status: :pending, pipeline: pipeline) }
+    let(:deployment) { job.deployment }
     let(:environment) { deployment.environment }
 
     before do
@@ -116,13 +118,13 @@ RSpec.shared_examples 'a deployable job' do
 
       context 'when deployment is already running state' do
         before do
-          build.deployment.success!
+          job.deployment.success!
         end
 
         it 'does not change deployment status and tracks an error' do
           expect(Gitlab::ErrorTracking)
             .to receive(:track_exception).with(
-              instance_of(Deployment::StatusSyncError), deployment_id: deployment.id, build_id: build.id)
+              instance_of(Deployment::StatusSyncError), deployment_id: deployment.id, build_id: job.id)
 
           with_cross_database_modification_prevented do
             expect { subject }.not_to change { deployment.reload.status }
@@ -199,7 +201,7 @@ RSpec.shared_examples 'a deployable job' do
     # `needs + when:manual` scenario, see: https://gitlab.com/gitlab-org/gitlab/-/issues/347502
     context 'when transits from skipped to created to running' do
       before do
-        build.skip!
+        job.skip!
       end
 
       context 'during skipped to created' do
@@ -216,8 +218,8 @@ RSpec.shared_examples 'a deployable job' do
         let(:event) { :run! }
 
         before do
-          build.process!
-          build.enqueue!
+          job.process!
+          job.enqueue!
         end
 
         it 'transitions to running and calls webhook' do
@@ -235,10 +237,10 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#on_stop' do
-    subject { build.on_stop }
+    subject { job.on_stop }
 
     context 'when a job has a specification that it can be stopped from the other job' do
-      let(:build) { create(:ci_build, :start_review_app, pipeline: pipeline) }
+      let(:job) { create(factory_type, :start_review_app, pipeline: pipeline) }
 
       it 'returns the other job name' do
         is_expected.to eq('stop_review_app')
@@ -246,7 +248,7 @@ RSpec.shared_examples 'a deployable job' do
     end
 
     context 'when a job does not have environment information' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+      let(:job) { create(factory_type, pipeline: pipeline) }
 
       it 'returns nil' do
         is_expected.to be_nil
@@ -255,9 +257,9 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#environment_tier_from_options' do
-    subject { build.environment_tier_from_options }
+    subject { job.environment_tier_from_options }
 
-    let(:build) { Ci::Build.new(options: options) }
+    let(:job) { Ci::Build.new(options: options) }
     let(:options) { { environment: { deployment_tier: 'production' } } }
 
     it { is_expected.to eq('production') }
@@ -270,11 +272,11 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#environment_tier' do
-    subject { build.environment_tier }
+    subject { job.environment_tier }
 
     let(:options) { { environment: { deployment_tier: 'production' } } }
     let!(:environment) { create(:environment, name: 'production', tier: 'development', project: project) }
-    let(:build) { Ci::Build.new(options: options, environment: 'production', project: project) }
+    let(:job) { Ci::Build.new(options: options, environment: 'production', project: project) }
 
     it { is_expected.to eq('production') }
 
@@ -295,11 +297,11 @@ RSpec.shared_examples 'a deployable job' do
 
   describe 'environment' do
     describe '#has_environment_keyword?' do
-      subject { build.has_environment_keyword? }
+      subject { job.has_environment_keyword? }
 
       context 'when environment is defined' do
         before do
-          build.update!(environment: 'review')
+          job.update!(environment: 'review')
         end
 
         it { is_expected.to be_truthy }
@@ -307,7 +309,7 @@ RSpec.shared_examples 'a deployable job' do
 
       context 'when environment is not defined' do
         before do
-          build.update!(environment: nil)
+          job.update!(environment: nil)
         end
 
         it { is_expected.to be_falsey }
@@ -315,12 +317,12 @@ RSpec.shared_examples 'a deployable job' do
     end
 
     describe '#expanded_environment_name' do
-      subject { build.expanded_environment_name }
+      subject { job.expanded_environment_name }
 
       context 'when environment uses $CI_COMMIT_REF_NAME' do
-        let(:build) do
+        let(:job) do
           create(
-            :ci_build,
+            factory_type,
             ref: 'master',
             environment: 'review/$CI_COMMIT_REF_NAME',
             pipeline: pipeline
@@ -331,9 +333,9 @@ RSpec.shared_examples 'a deployable job' do
       end
 
       context 'when environment uses yaml_variables containing symbol keys' do
-        let(:build) do
+        let(:job) do
           create(
-            :ci_build,
+            factory_type,
             yaml_variables: [{ key: :APP_HOST, value: 'host' }],
             environment: 'review/$APP_HOST',
             pipeline: pipeline
@@ -344,13 +346,13 @@ RSpec.shared_examples 'a deployable job' do
           is_expected.to eq('review/host')
         end
 
-        context 'when build metadata has already persisted the expanded environment name' do
+        context 'when job metadata has already persisted the expanded environment name' do
           before do
-            build.metadata.expanded_environment_name = 'review/foo'
+            job.metadata.expanded_environment_name = 'review/foo'
           end
 
           it 'returns a persisted expanded environment name without a list of variables' do
-            expect(build).not_to receive(:simple_variables)
+            expect(job).not_to receive(:simple_variables)
 
             is_expected.to eq('review/foo')
           end
@@ -358,8 +360,8 @@ RSpec.shared_examples 'a deployable job' do
       end
 
       context 'when using persisted variables' do
-        let(:build) do
-          create(:ci_build, environment: 'review/x$CI_JOB_ID', pipeline: pipeline)
+        let(:job) do
+          create(factory_type, environment: 'review/x$CI_JOB_ID', pipeline: pipeline)
         end
 
         it { is_expected.to eq('review/x') }
@@ -372,9 +374,9 @@ RSpec.shared_examples 'a deployable job' do
           ]
         end
 
-        let(:build) do
+        let(:job) do
           create(
-            :ci_build,
+            factory_type,
             ref: 'master',
             yaml_variables: yaml_variables,
             environment: 'review/$ENVIRONMENT_NAME',
@@ -387,9 +389,9 @@ RSpec.shared_examples 'a deployable job' do
     end
 
     describe '#expanded_kubernetes_namespace' do
-      let(:build) { create(:ci_build, environment: environment, options: options, pipeline: pipeline) }
+      let(:job) { create(factory_type, environment: environment, options: options, pipeline: pipeline) }
 
-      subject { build.expanded_kubernetes_namespace }
+      subject { job.expanded_kubernetes_namespace }
 
       context 'environment and namespace are not set' do
         let(:environment) { nil }
@@ -435,11 +437,11 @@ RSpec.shared_examples 'a deployable job' do
     end
 
     describe '#deployment_job?' do
-      subject { build.deployment_job? }
+      subject { job.deployment_job? }
 
       context 'when environment is defined' do
         before do
-          build.update!(environment: 'review')
+          job.update!(environment: 'review')
         end
 
         context 'no action is defined' do
@@ -448,7 +450,7 @@ RSpec.shared_examples 'a deployable job' do
 
         context 'and start action is defined' do
           before do
-            build.update!(options: { environment: { action: 'start' } })
+            job.update!(options: { environment: { action: 'start' } })
           end
 
           it { is_expected.to be_truthy }
@@ -457,7 +459,7 @@ RSpec.shared_examples 'a deployable job' do
 
       context 'when environment is not defined' do
         before do
-          build.update!(environment: nil)
+          job.update!(environment: nil)
         end
 
         it { is_expected.to be_falsey }
@@ -465,11 +467,11 @@ RSpec.shared_examples 'a deployable job' do
     end
 
     describe '#stops_environment?' do
-      subject { build.stops_environment? }
+      subject { job.stops_environment? }
 
       context 'when environment is defined' do
         before do
-          build.update!(environment: 'review')
+          job.update!(environment: 'review')
         end
 
         context 'no action is defined' do
@@ -478,7 +480,7 @@ RSpec.shared_examples 'a deployable job' do
 
         context 'and stop action is defined' do
           before do
-            build.update!(options: { environment: { action: 'stop' } })
+            job.update!(options: { environment: { action: 'stop' } })
           end
 
           it { is_expected.to be_truthy }
@@ -487,7 +489,7 @@ RSpec.shared_examples 'a deployable job' do
 
       context 'when environment is not defined' do
         before do
-          build.update!(environment: nil)
+          job.update!(environment: nil)
         end
 
         it { is_expected.to be_falsey }
@@ -500,19 +502,19 @@ RSpec.shared_examples 'a deployable job' do
       create(:environment, project: project, name: "foo-#{project.default_branch}")
     end
 
-    subject { build.persisted_environment }
+    subject { job.persisted_environment }
 
     context 'when referenced literally' do
-      let(:build) do
-        create(:ci_build, pipeline: pipeline, environment: "foo-#{project.default_branch}")
+      let(:job) do
+        create(factory_type, pipeline: pipeline, environment: "foo-#{project.default_branch}")
       end
 
       it { is_expected.to eq(environment) }
     end
 
     context 'when referenced with a variable' do
-      let(:build) do
-        create(:ci_build, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME")
+      let(:job) do
+        create(factory_type, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME")
       end
 
       it { is_expected.to eq(environment) }
@@ -522,11 +524,11 @@ RSpec.shared_examples 'a deployable job' do
       it { is_expected.to be_nil }
     end
 
-    context 'when build has a stop environment' do
-      let(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
+    context 'when job has a stop environment' do
+      let(:job) { create(factory_type, :stop_review_app, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
 
       it 'expands environment name' do
-        expect(build).to receive(:expanded_environment_name).and_call_original
+        expect(job).to receive(:expanded_environment_name).and_call_original
 
         is_expected.to eq(environment)
       end
@@ -538,38 +540,42 @@ RSpec.shared_examples 'a deployable job' do
       allow_any_instance_of(Ci::Build).to receive(:create_deployment) # rubocop:disable RSpec/AnyInstanceOf
     end
 
-    context 'when build is a last deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline) }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
+    context 'when job is a last deployment' do
+      let(:job) { create(factory_type, :success, environment: 'production', pipeline: pipeline) }
+      let(:environment) { create(:environment, name: 'production', project: job.project) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: job) }
 
-      it { expect(build.deployment_status).to eq(:last) }
+      it { expect(job.deployment_status).to eq(:last) }
     end
 
-    context 'when there is a newer build with deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline) }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
+    context 'when there is a newer job with deployment' do
+      let(:job) { create(factory_type, :success, environment: 'production', pipeline: pipeline) }
+      let(:environment) { create(:environment, name: 'production', project: job.project) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: job) }
       let!(:last_deployment) { create(:deployment, :success, environment: environment, project: environment.project) }
 
-      it { expect(build.deployment_status).to eq(:out_of_date) }
+      it { expect(job.deployment_status).to eq(:out_of_date) }
     end
 
-    context 'when build with deployment has failed' do
-      let(:build) { create(:ci_build, :failed, environment: 'production', pipeline: pipeline) }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
+    context 'when job with deployment has failed' do
+      let(:job) { create(factory_type, :failed, environment: 'production', pipeline: pipeline) }
+      let(:environment) { create(:environment, name: 'production', project: job.project) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: job) }
 
-      it { expect(build.deployment_status).to eq(:failed) }
+      it { expect(job.deployment_status).to eq(:failed) }
     end
 
-    context 'when build with deployment is running' do
-      let(:build) { create(:ci_build, environment: 'production', pipeline: pipeline) }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
+    context 'when job with deployment is running' do
+      let(:job) { create(factory_type, environment: 'production', pipeline: pipeline) }
+      let(:environment) { create(:environment, name: 'production', project: job.project) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: job) }
 
-      it { expect(build.deployment_status).to eq(:creating) }
+      it { expect(job.deployment_status).to eq(:creating) }
     end
+  end
+
+  def factory_type
+    described_class.name.underscore.tr('/', '_')
   end
 end
 # rubocop:enable Layout/LineLength

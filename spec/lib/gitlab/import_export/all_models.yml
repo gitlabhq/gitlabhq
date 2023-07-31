@@ -441,6 +441,7 @@ bridges:
 - needs
 - resource
 - sourced_pipeline
+- deployment
 - resource_group
 - metadata
 - trigger_request

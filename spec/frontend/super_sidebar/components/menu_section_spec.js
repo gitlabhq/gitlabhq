@@ -14,7 +14,7 @@ describe('MenuSection component', () => {
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const createWrapper = (item, otherProps) => {
     wrapper = shallowMountExtended(MenuSection, {
-      propsData: { item, ...otherProps },
+      propsData: { item: { items: [], ...item }, ...otherProps },
       stubs: {
         GlCollapse: stubComponent(GlCollapse, {
           props: ['visible'],
@@ -99,6 +99,25 @@ describe('MenuSection component', () => {
             await findButton().trigger('pointerover', { pointerType: 'mouse' });
             expect(findFlyout().isVisible()).toBe(true);
           });
+        });
+      });
+
+      describe('when section gets closed', () => {
+        beforeEach(async () => {
+          createWrapper({ title: 'Asdf' }, { expanded: true, 'has-flyout': true });
+          await findButton().trigger('click');
+          await findButton().trigger('pointerover', { pointerType: 'mouse' });
+        });
+
+        it('shows the flyout only after section title gets hovered out and in again', async () => {
+          expect(findCollapse().props('visible')).toBe(false);
+          expect(findFlyout().isVisible()).toBe(false);
+
+          await findButton().trigger('pointerleave');
+          await findButton().trigger('pointerover', { pointerType: 'mouse' });
+
+          expect(findCollapse().props('visible')).toBe(false);
+          expect(findFlyout().isVisible()).toBe(true);
         });
       });
     });

@@ -100,7 +100,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it_behaves_like 'has ID tokens', :ci_build
 
   it_behaves_like 'a retryable job'
-  it_behaves_like 'a deployable job'
+
+  it_behaves_like 'a deployable job' do
+    let(:job) { build }
+  end
 
   describe '.manual_actions' do
     let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }

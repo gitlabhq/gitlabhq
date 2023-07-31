@@ -146,13 +146,13 @@ the `pgai` Gem:
 
 1. To get started, you need to gather some values from the [Postgres.ai instances page](https://console.postgres.ai/gitlab/instances):
 
-   1. Navigate to the instance that you want to configure and the on right side of the screen.
+   1. Go to the instance that you want to configure and the on right side of the screen.
    1. Under **Connection**, select **Connect**. The menu might be collapsed.
 
-      A pop-up with everything that's needed for configuration appears, using this format:
+      A dialog with everything that's needed for configuration appears, using this format:
 
       ```shell
-      dblab init --url http://127.0.0.1:1234 --token TOKEN --environment-id <environment-id>
+      dblab init --url "http://127.0.0.1:1234" --token TOKEN --environment-id <environment-id>
       ```
 
       ```shell

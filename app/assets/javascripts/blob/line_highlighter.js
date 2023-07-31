@@ -153,7 +153,7 @@ LineHighlighter.prototype.highlightRange = function (range) {
     const results = [];
     const ref = range[0] <= range[1] ? range : range.reverse();
 
-    for (let lineNumber = ref[0]; lineNumber <= ref[1]; lineNumber += 1) {
+    for (let lineNumber = range[0]; lineNumber <= ref[1]; lineNumber += 1) {
       results.push(this.highlightLine(lineNumber));
     }
 

@@ -43,6 +43,7 @@ export default {
       isExpanded: Boolean(this.expanded || this.item.is_active),
       isMouseOverSection: false,
       isMouseOverFlyout: false,
+      keepFlyoutClosed: false,
     };
   },
   computed: {
@@ -77,11 +78,16 @@ export default {
   watch: {
     isExpanded(newIsExpanded) {
       this.$emit('collapse-toggle', newIsExpanded);
+      this.keepFlyoutClosed = !this.newIsExpanded;
     },
   },
   methods: {
     handlePointerover(e) {
       this.isMouseOverSection = e.pointerType === 'mouse';
+    },
+    handlePointerleave() {
+      this.isMouseOverSection = false;
+      this.keepFlyoutClosed = false;
     },
   },
 };
@@ -99,7 +105,7 @@ export default {
       v-bind="buttonProps"
       @click="isExpanded = !isExpanded"
       @pointerover="handlePointerover"
-      @pointerleave="isMouseOverSection = false"
+      @pointerleave="handlePointerleave"
     >
       <span
         :class="[isActive ? 'gl-bg-blue-500' : 'gl-bg-transparent']"
@@ -124,7 +130,7 @@ export default {
 
     <flyout-menu
       v-if="hasFlyout"
-      v-show="isMouseOver && !isExpanded"
+      v-show="isMouseOver && !isExpanded && !keepFlyoutClosed"
       :target-id="`menu-section-button-${itemId}`"
       :items="item.items"
       @mouseover="isMouseOverFlyout = true"

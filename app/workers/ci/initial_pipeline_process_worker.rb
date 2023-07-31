@@ -32,7 +32,7 @@ module Ci
     end
 
     def create_deployment(build)
-      ::Deployments::CreateForBuildService.new.execute(build)
+      ::Deployments::CreateForJobService.new.execute(build)
     end
   end
 end

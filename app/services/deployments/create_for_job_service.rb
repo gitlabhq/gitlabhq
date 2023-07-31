@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module Deployments
-  # This class creates a deployment record for a build (a pipeline job).
-  class CreateForBuildService
+  # This class creates a deployment record for a pipeline job.
+  class CreateForJobService
     DeploymentCreationError = Class.new(StandardError)
 
     def execute(build)
-      return unless build.instance_of?(::Ci::Build) && build.persisted_environment.present?
+      return unless build.is_a?(::Ci::Processable) && build.persisted_environment.present?
 
       environment = build.actual_persisted_environment
 
@@ -37,7 +37,7 @@ module Deployments
       # non-environment job.
       return unless deployment.valid? && deployment.environment.persisted?
 
-      if cluster = deployment.environment.deployment_platform&.cluster
+      if cluster = deployment.environment.deployment_platform&.cluster # rubocop: disable Lint/AssignmentInCondition
         # double write cluster_id until 12.9: https://gitlab.com/gitlab-org/gitlab/issues/202628
         deployment.cluster_id = cluster.id
         deployment.deployment_cluster = ::DeploymentCluster.new(

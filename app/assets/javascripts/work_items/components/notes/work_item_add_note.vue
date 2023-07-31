@@ -265,6 +265,7 @@ export default {
             :comment-button-text="commentButtonText"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
+            @error="$emit('error', $event)"
           />
           <textarea
             v-else

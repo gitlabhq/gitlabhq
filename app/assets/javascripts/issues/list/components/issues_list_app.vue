@@ -40,6 +40,7 @@ import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
+  OPERATORS_AFTER_BEFORE,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
@@ -51,6 +52,8 @@ import {
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_SEARCH_WITHIN,
   TOKEN_TITLE_TYPE,
+  TOKEN_TITLE_CREATED,
+  TOKEN_TITLE_CLOSED,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -62,6 +65,8 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_CREATED,
+  TOKEN_TYPE_CLOSED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
@@ -125,6 +130,7 @@ const CrmContactToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue');
 const CrmOrganizationToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue');
+const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 
 export default {
   i18n,
@@ -166,6 +172,7 @@ export default {
     'hasAnyProjects',
     'hasBlockedIssuesFeature',
     'hasIssuableHealthStatusFeature',
+    'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
     'hasScopedLabelsFeature',
     'initialEmail',
@@ -460,6 +467,24 @@ export default {
             { icon: 'eye', value: 'no', title: this.$options.i18n.confidentialNo },
           ],
         });
+
+        if (this.hasIssueDateFilterFeature) {
+          tokens.push({
+            type: TOKEN_TYPE_CREATED,
+            title: TOKEN_TITLE_CREATED,
+            icon: 'history',
+            token: DateToken,
+            operators: OPERATORS_AFTER_BEFORE,
+          });
+
+          tokens.push({
+            type: TOKEN_TYPE_CLOSED,
+            title: TOKEN_TITLE_CLOSED,
+            icon: 'history',
+            token: DateToken,
+            operators: OPERATORS_AFTER_BEFORE,
+          });
+        }
       }
 
       if (this.canReadCrmContact) {

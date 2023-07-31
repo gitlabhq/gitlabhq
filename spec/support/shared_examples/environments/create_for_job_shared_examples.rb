@@ -1,15 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe Environments::CreateForBuildService, feature_category: :continuous_delivery do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-
-  let!(:job) { build(:ci_build, project: project, pipeline: pipeline, **attributes) }
-  let(:service) { described_class.new }
-  let(:merge_request) {}
+RSpec.shared_examples 'create environment for job' do
+  let!(:job) { build(factory_type, project: project, pipeline: pipeline, **attributes) }
+  let(:merge_request) {} # rubocop:disable Lint/EmptyBlock
 
   describe '#execute' do
     subject { service.execute(job) }
@@ -218,7 +211,7 @@ RSpec.describe Environments::CreateForBuildService, feature_category: :continuou
 
     context 'when a pipeline contains a deployment job' do
       let(:pipeline) { create(:ci_pipeline, project: project, merge_request: merge_request) }
-      let!(:job) { build(:ci_build, :start_review_app, project: project, pipeline: pipeline) }
+      let!(:job) { build(factory_type, :start_review_app, project: project, pipeline: pipeline) }
 
       context 'and the environment does not exist' do
         it 'creates the environment specified by the job' do
@@ -280,7 +273,7 @@ RSpec.describe Environments::CreateForBuildService, feature_category: :continuou
     end
 
     context 'when a pipeline contains a teardown job' do
-      let!(:job) { build(:ci_build, :stop_review_app, project: project) }
+      let!(:job) { build(factory_type, :stop_review_app, project: project) }
 
       it 'ensures environment existence for the job' do
         expect { subject }.to change { Environment.count }.by(1)
@@ -292,7 +285,7 @@ RSpec.describe Environments::CreateForBuildService, feature_category: :continuou
     end
 
     context 'when a pipeline does not contain a deployment job' do
-      let!(:job) { build(:ci_build, project: project) }
+      let!(:job) { build(factory_type, project: project) }
 
       it 'does not create any environments' do
         expect { subject }.not_to change { Environment.count }

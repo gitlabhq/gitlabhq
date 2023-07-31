@@ -18,6 +18,10 @@ query getIssuesCount(
   $crmOrganizationId: String
   $not: NegatedIssueFilterInput
   $or: UnionedIssueFilterInput
+  $createdAfter: Time
+  $createdBefore: Time
+  $closedAfter: Time
+  $closedBefore: Time
 ) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
     id
@@ -39,6 +43,10 @@ query getIssuesCount(
       crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       count
     }
@@ -60,6 +68,10 @@ query getIssuesCount(
       crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       count
     }
@@ -81,6 +93,10 @@ query getIssuesCount(
       crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       count
     }
@@ -106,6 +122,10 @@ query getIssuesCount(
       crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       count
     }
@@ -128,6 +148,10 @@ query getIssuesCount(
       crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       count
     }
@@ -150,6 +174,10 @@ query getIssuesCount(
       crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       count
     }

@@ -1,37 +1,41 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
+import { __, sprintf } from '~/locale';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { getUpdateWorkItemMutation } from '~/work_items/components/update_work_item';
 import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_UPDATING,
   STATE_OPEN,
-  STATE_CLOSED,
   STATE_EVENT_CLOSE,
   STATE_EVENT_REOPEN,
   TRACKING_CATEGORY_SHOW,
 } from '../constants';
-import { getUpdateWorkItemMutation } from './update_work_item';
-import ItemState from './item_state.vue';
 
 export default {
   components: {
-    ItemState,
+    GlButton,
   },
   mixins: [Tracking.mixin()],
   props: {
-    workItem: {
-      type: Object,
+    workItemState: {
+      type: String,
+      required: true,
+    },
+    workItemId: {
+      type: String,
+      required: true,
+    },
+    workItemType: {
+      type: String,
       required: true,
     },
     workItemParentId: {
       type: String,
       required: false,
       default: null,
-    },
-    canUpdate: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -40,8 +44,16 @@ export default {
     };
   },
   computed: {
-    workItemType() {
-      return this.workItem.workItemType?.name;
+    isWorkItemOpen() {
+      return this.workItemState === STATE_OPEN;
+    },
+    toggleWorkItemStateText() {
+      const baseText = this.isWorkItemOpen
+        ? __('Close %{workItemType}')
+        : __('Reopen %{workItemType}');
+      return capitalizeFirstCharacter(
+        sprintf(baseText, { workItemType: this.workItemType.toLowerCase() }),
+      );
     },
     tracking() {
       return {
@@ -52,25 +64,10 @@ export default {
     },
   },
   methods: {
-    updateWorkItemState(newState) {
-      const stateEventMap = {
-        [STATE_OPEN]: STATE_EVENT_REOPEN,
-        [STATE_CLOSED]: STATE_EVENT_CLOSE,
-      };
-
-      const stateEvent = stateEventMap[newState];
-
-      this.updateWorkItem(stateEvent);
-    },
-
-    async updateWorkItem(updatedState) {
-      if (!updatedState) {
-        return;
-      }
-
+    async updateWorkItem() {
       const input = {
-        id: this.workItem.id,
-        stateEvent: updatedState,
+        id: this.workItemId,
+        stateEvent: this.isWorkItemOpen ? STATE_EVENT_CLOSE : STATE_EVENT_REOPEN,
       };
 
       this.updateInProgress = true;
@@ -107,10 +104,10 @@ export default {
 </script>
 
 <template>
-  <item-state
-    v-if="workItem.state"
-    :state="workItem.state"
-    :disabled="updateInProgress || !canUpdate"
-    @changed="updateWorkItemState"
-  />
+  <gl-button
+    :loading="updateInProgress"
+    data-testid="work-item-state-toggle"
+    @click="updateWorkItem"
+    >{{ toggleWorkItemStateText }}</gl-button
+  >
 </template>

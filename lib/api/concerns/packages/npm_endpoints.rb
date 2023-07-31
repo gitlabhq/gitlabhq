@@ -96,9 +96,8 @@ module API
 
               track_package_event(:list_tags, :npm, project: project, namespace: project.namespace)
 
-              metadata = generate_metadata_service(packages).execute(only_dist_tags: true)
-              present ::Packages::Npm::PackagePresenter.new(metadata),
-                      with: ::API::Entities::NpmPackageTag
+              metadata = generate_metadata_service(packages).execute(only_dist_tags: true).payload
+              present metadata, with: ::API::Entities::NpmPackageTag
             end
 
             params do
@@ -229,8 +228,8 @@ module API
                 enqueue_sync_metadata_cache_worker(project, package_name)
               end
 
-              present ::Packages::Npm::PackagePresenter.new(generate_metadata_service(packages).execute),
-                with: ::API::Entities::NpmPackage
+              metadata = generate_metadata_service(packages).execute.payload
+              present metadata, with: ::API::Entities::NpmPackage
             end
           end
 

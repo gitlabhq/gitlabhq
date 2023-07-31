@@ -15,17 +15,17 @@ RSpec.shared_examples 'work items title' do
   end
 end
 
-RSpec.shared_examples 'work items status' do
-  let(:state_selector) { '[data-testid="work-item-state-select"]' }
+RSpec.shared_examples 'work items toggle status button' do
+  let(:state_button) { '[data-testid="work-item-state-toggle"]' }
 
   it 'successfully shows and changes the status of the work item' do
-    expect(find(state_selector)).to have_content 'Open'
+    expect(find(state_button, match: :first)).to have_content 'Close'
 
-    find(state_selector).select("Closed")
+    find(state_button, match: :first).click
 
     wait_for_requests
 
-    expect(find(state_selector)).to have_content 'Closed'
+    expect(find(state_button, match: :first)).to have_content 'Reopen'
     expect(work_item.reload.state).to eq('closed')
   end
 end

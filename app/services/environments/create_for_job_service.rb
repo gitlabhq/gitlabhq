@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Environments
-  # This class creates an environment record for a build (a pipeline job).
-  class CreateForBuildService
+  # This class creates an environment record for a pipeline job.
+  class CreateForJobService
     def execute(build)
-      return unless build.instance_of?(::Ci::Build) && build.has_environment_keyword?
+      return unless build.is_a?(::Ci::Processable) && build.has_environment_keyword?
 
       environment = to_resource(build)
 
