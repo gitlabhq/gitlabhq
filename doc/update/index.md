@@ -279,6 +279,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   in the `tls_options` hash, or use the legacy `gitlab_rails['ldap_host']` option.
   See the [configuration workarounds](https://gitlab.com/gitlab-org/gitlab/-/issues/419485#workarounds)
   for more details.
+- Git 2.41.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../install/installation.md#git).
 
 ### 16.1.0
 
