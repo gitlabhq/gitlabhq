@@ -6,7 +6,9 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
   let_it_be(:user) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
+  let_it_be(:pipeline_schedule) do
+    create(:ci_pipeline_schedule, project: project, owner: user, ref: 'master')
+  end
 
   before_all do
     project.add_maintainer(user)
