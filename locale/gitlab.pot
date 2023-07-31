@@ -54488,9 +54488,6 @@ msgstr ""
 msgid "eligible users"
 msgstr ""
 
-msgid "email '%{email}' is not a verified email."
-msgstr ""
-
 msgid "email address settings"
 msgstr ""
 
@@ -54776,6 +54773,9 @@ msgid "is not the member project"
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."
+msgstr ""
+
+msgid "is not verified."
 msgstr ""
 
 msgid "is one of"
