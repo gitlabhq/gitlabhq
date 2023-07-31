@@ -41,7 +41,7 @@ export default {
       return getDiffMode(this.discussion.diff_file);
     },
     diffViewerMode() {
-      return this.discussion.diff_file.viewer.name;
+      return this.discussion.diff_file?.viewer.name;
     },
     fileDiffRefs() {
       return this.discussion.diff_file.diff_refs;
@@ -96,6 +96,7 @@ export default {
 <template>
   <div :class="{ 'text-file': isTextFile }" class="diff-file file-holder">
     <diff-file-header
+      v-if="discussion.diff_file"
       :discussion-path="discussion.discussion_path"
       :diff-file="discussion.diff_file"
       :can-current-user-fork="false"

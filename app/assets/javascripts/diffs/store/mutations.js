@@ -175,7 +175,7 @@ export default {
       originalStartLineCode,
       ...(discussion.line_codes || []),
     ];
-    const fileHash = discussion.diff_file.file_hash;
+    const fileHash = discussion.diff_file?.file_hash;
     const lineCheck = (line) =>
       discussionLineCodes.some(
         (discussionLineCode) =>
