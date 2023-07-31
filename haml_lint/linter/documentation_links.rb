@@ -17,7 +17,7 @@ module HamlLint
         (send _ {:help_page_url :help_page_path} $...)
       PATTERN
 
-      MARKDOWN_HEADER = %r{\A\#{1,6}\s+(?<header>.+)\Z}.freeze
+      MARKDOWN_HEADER = %r{\A\#{1,6}\s+(?<header>.+)\Z}
 
       def visit_script(node)
         check(node)

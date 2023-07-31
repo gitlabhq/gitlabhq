@@ -111,7 +111,9 @@ Example response with attribute `select = package_file`:
 ### Publishing a package with the same name or version
 
 When you publish a package with the same name and version as an existing package, the new package
-files are added to the existing package. You can still use the UI or API to access and view the
+files are added to the existing package. When you install a generic package that has a duplicate, GitLab downloads the latest version.
+
+You can use the UI or API to access and view the
 existing package's older files. To delete these older package revisions, consider using the Packages
 API or the UI.
 

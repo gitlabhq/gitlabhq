@@ -1191,6 +1191,19 @@ into similar problems in the future (e.g. when new tables are created).
           .present?
       end
 
+      # While it is safe to call `change_column_default` on a column without
+      # default it would still require access exclusive lock on the table
+      # and for tables with high autovacuum(wraparound prevention) it will
+      # fail if their executions overlap.
+      #
+      def remove_column_default(table_name, column_name)
+        column = connection.columns(table_name).find { |col| col.name == column_name.to_s }
+
+        if column.default || column.default_function
+          change_column_default(table_name, column_name, to: nil)
+        end
+      end
+
       private
 
       def multiple_columns(columns, separator: ', ')

@@ -25,6 +25,7 @@ module QA
         :description,
         :merge_when_pipeline_succeeds,
         :detailed_merge_status,
+        :prepared_at,
         :state,
         :reviewers
 
@@ -110,7 +111,9 @@ module QA
       rescue ResourceNotFoundError, NoValueError # rescue if iid not populated
         populate_target_and_source_if_required
 
-        super
+        url = super
+        wait_for_preparation
+        url
       end
 
       def api_merge_path
@@ -264,6 +267,18 @@ module QA
 
         raise Support::Repeater::WaitExceededError,
           "Timed out waiting for merge of MR with id '#{iid}'. Final status was '#{detailed_merge_status}'"
+      end
+
+      # Wait until the merge request is prepared. Raises WaitExceededError if the MR is not prepared within 60 seconds
+      # https://docs.gitlab.com/ee/api/merge_requests.html#preparation-steps
+      #
+      # @return [void]
+      def wait_for_preparation
+        return if Support::Waiter.wait_until(sleep_interval: 1, raise_on_failure: false, log: false) do
+          reload!.prepared_at
+        end
+
+        raise Support::Repeater::WaitExceededError, "Timed out waiting for MR with id '#{iid}' to be prepared."
       end
     end
   end

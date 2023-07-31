@@ -2867,4 +2867,43 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       it { is_expected.to be_falsey }
     end
   end
+
+  describe '#remove_column_default' do
+    let(:test_table) { :_test_defaults_table }
+    let(:drop_default_statement) do
+      /ALTER TABLE "#{test_table}" ALTER COLUMN "#{column_name}" SET DEFAULT NULL/
+    end
+
+    subject(:recorder) do
+      ActiveRecord::QueryRecorder.new do
+        model.remove_column_default(test_table, column_name)
+      end
+    end
+
+    before do
+      model.create_table(test_table) do |t|
+        t.integer :int_with_default, default: 100
+        t.integer :int_with_default_function, default: -> { 'ceil(random () * 100)::int' }
+        t.integer :int_without_default
+      end
+    end
+
+    context 'with default values' do
+      let(:column_name) { :int_with_default }
+
+      it { expect(recorder.log).to include(drop_default_statement) }
+    end
+
+    context 'with default functions' do
+      let(:column_name) { :int_with_default_function }
+
+      it { expect(recorder.log).to include(drop_default_statement) }
+    end
+
+    context 'without any defaults' do
+      let(:column_name) { :int_without_default }
+
+      it { expect(recorder.log).to be_empty }
+    end
+  end
 end

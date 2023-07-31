@@ -40664,6 +40664,9 @@ msgstr ""
 msgid "Runners|Use Group runners when you want all projects in a group to have access to a set of runners."
 msgstr ""
 
+msgid "Runners|Use the dashboard to view performance statistics of your runner fleet."
+msgstr ""
+
 msgid "Runners|Use the runner for jobs without tags in addition to tagged jobs."
 msgstr ""
 
