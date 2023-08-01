@@ -6,7 +6,7 @@ require 'spec_helper'
 RSpec.describe ::Gitlab::Graphql::Pagination::Connections do
   include GraphqlHelpers
 
-  before(:all) do
+  before_all do
     ActiveRecord::Schema.define do
       create_table :_test_testing_pagination_nodes, force: true do |t|
         t.integer :value, null: false

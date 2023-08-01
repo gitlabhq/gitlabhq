@@ -72,7 +72,7 @@ RSpec.describe Postgresql::ReplicationSlot do
   context 'with enough slots available' do
     skip_examples = described_class.max_replication_slots <= described_class.count
 
-    before(:all) do
+    before_all do
       skip('max_replication_slots too small') if skip_examples
 
       @current_slot_count = described_class

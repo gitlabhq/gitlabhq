@@ -573,7 +573,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           end
 
           context 'when updating relative position' do
-            before(:all) do
+            before_all do
               create(:parent_link, work_item_parent: valid_parent, work_item: valid_child1)
               create(:parent_link, work_item_parent: valid_parent, work_item: valid_child2)
             end
@@ -655,7 +655,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         let_it_be(:work_item, reload: true) { create(:work_item, :task, project: project) }
 
         context "when parent is already assigned" do
-          before(:all) do
+          before_all do
             create(:parent_link, work_item_parent: valid_parent, work_item: work_item)
             create(:parent_link, work_item_parent: valid_parent, work_item: valid_child1)
             create(:parent_link, work_item_parent: valid_parent, work_item: valid_child2)

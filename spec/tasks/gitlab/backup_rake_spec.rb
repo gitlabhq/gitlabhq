@@ -38,7 +38,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     %w[db repositories]
   end
 
-  before(:all) do
+  before_all do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/gitlab/backup'
     Rake.application.rake_require 'tasks/gitlab/shell'

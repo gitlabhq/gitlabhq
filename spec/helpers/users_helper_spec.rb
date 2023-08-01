@@ -604,7 +604,7 @@ RSpec.describe UsersHelper do
   describe '#load_max_project_member_accesses' do
     let_it_be(:projects) { create_list(:project, 3) }
 
-    before(:all) do
+    before_all do
       projects.first.add_developer(user)
     end
 

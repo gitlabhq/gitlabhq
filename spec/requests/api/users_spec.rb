@@ -4789,7 +4789,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
       }.as_json
     end
 
-    before :all do
+    before_all do
       group.add_member(user, Gitlab::Access::OWNER)
       project.add_member(user, Gitlab::Access::OWNER)
       create(:merge_request, source_project: project, source_branch: "my-personal-branch-1", author: user)

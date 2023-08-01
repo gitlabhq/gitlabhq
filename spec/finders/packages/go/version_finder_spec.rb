@@ -8,7 +8,7 @@ RSpec.describe Packages::Go::VersionFinder do
 
   let(:finder) { described_class.new mod }
 
-  before :all do
+  before_all do
     create :go_module_commit, :files,   project: project, tag: 'v1.0.0', files: { 'README.md' => 'Hi' }
     create :go_module_commit, :module,  project: project, tag: 'v1.0.1'
     create :go_module_commit, :package, project: project, tag: 'v1.0.2', path: 'pkg'

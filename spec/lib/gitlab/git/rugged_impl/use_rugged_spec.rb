@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged, feature_category: :gitaly do
   let(:feature_flag_name) { wrapper.rugged_feature_keys.first }
   let(:temp_gitaly_metadata_file) { create_temporary_gitaly_metadata_file }
 
-  before(:all) do
+  before_all do
     create_gitaly_metadata_file
   end
 

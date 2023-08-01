@@ -6,8 +6,13 @@ RSpec.describe 'ActionCableSubscriptionAdapterIdentifier override' do
   describe '#identifier' do
     let!(:original_config) { ::ActionCable::Server::Base.config.cable }
 
+    before do
+      ActionCable.server.restart
+    end
+
     after do
       ::ActionCable::Server::Base.config.cable = original_config
+      ActionCable.server.restart
     end
 
     context 'when id key is nil on cable.yml' do

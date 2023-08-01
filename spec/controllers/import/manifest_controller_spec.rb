@@ -8,7 +8,7 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 
-  before(:all) do
+  before_all do
     group.add_maintainer(user)
   end
 

@@ -580,6 +580,7 @@ RSpec/BeforeAll:
     - 'spec/lib/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
+    - 'spec/lib/gitlab/database/**/*.rb'
 
 RSpec/FactoryBot/StrategyInCallback:
   Enabled: true

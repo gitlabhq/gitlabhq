@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkInsertSafe, feature_category: :database do
-  before(:all) do
+  before_all do
     ActiveRecord::Schema.define do
       create_table :_test_bulk_insert_parent_items, force: true do |t|
         t.string :name, null: false

@@ -576,7 +576,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
   end
 
   context 'with full processing of static and WYSIWYG HTML' do
-    before(:all) do
+    before(:all) do # rubocop: disable RSpec/BeforeAll
       # NOTE: It is a necessary to do a `yarn install` in order to ensure that
       #   `scripts/lib/glfm/render_wysiwyg_html_and_json.js` can be invoked successfully
       #   on the CI job (which will not be set up for frontend specs since this is

@@ -6,7 +6,7 @@ require 'fileutils'
 require 'excon'
 
 RSpec.describe 'Puma' do
-  before(:all) do
+  before_all do
     project_root = Rails.root.to_s
     config_lines = File.read(Rails.root.join('config/puma.example.development.rb'))
       .gsub('config.ru', File.join(__dir__, 'configs/config.ru'))

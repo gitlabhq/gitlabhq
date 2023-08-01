@@ -22,7 +22,7 @@ RSpec.describe Backup::Database, feature_category: :backup_restore do
     end
   end
 
-  before(:all) do
+  before_all do
     Rake::Task.define_task(:environment)
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/gitlab/backup'

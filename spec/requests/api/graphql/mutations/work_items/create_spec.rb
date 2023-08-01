@@ -140,7 +140,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
             }
           end
 
-          before(:all) do
+          before_all do
             create(:parent_link, work_item_parent: parent, work_item: adjacent, relative_position: 0)
           end
 

@@ -322,7 +322,7 @@ RSpec.describe Milestone, feature_category: :team_planning do
       let_it_be(:group) { create(:group) }
       let_it_be(:group_other) { create(:group) }
 
-      before(:all) do
+      before_all do
         create(:milestone, project: project)
         create(:milestone, project: project_other)
         create(:milestone, group: group)

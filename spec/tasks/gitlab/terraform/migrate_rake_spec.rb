@@ -8,7 +8,7 @@ RSpec.describe 'gitlab:terraform_states', :silence_stdout do
   let(:logger) { instance_double(Logger) }
   let(:helper) { double }
 
-  before(:all) do
+  before_all do
     Rake.application.rake_require 'tasks/gitlab/terraform/migrate'
   end
 

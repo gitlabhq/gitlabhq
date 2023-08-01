@@ -28,7 +28,7 @@ RSpec.describe Gitlab::HTTP do
   end
 
   context 'when reading the response is too slow' do
-    before(:all) do
+    before_all do
       # Override Net::HTTP to add a delay between sending each response chunk
       mocked_http = Class.new(Net::HTTP) do
         def request(*)

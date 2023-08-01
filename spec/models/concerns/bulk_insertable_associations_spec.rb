@@ -40,7 +40,7 @@ RSpec.describe BulkInsertableAssociations do
     end
   end
 
-  before(:all) do
+  before_all do
     ActiveRecord::Schema.define do
       create_table :_test_bulk_parents, force: true do |t|
         t.string :name, null: true

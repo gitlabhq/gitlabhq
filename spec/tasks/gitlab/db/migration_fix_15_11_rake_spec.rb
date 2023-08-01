@@ -7,7 +7,7 @@ RSpec.describe 'migration_fix_15_11', :reestablished_active_record_base, feature
   let(:target_init_schema) { '20220314184009' }
   let(:earlier_init_schema) { '20210101010101' }
 
-  before :all do
+  before_all do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/gitlab/db/migration_fix_15_11'
 

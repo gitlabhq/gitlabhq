@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
           create(:release, project: existing_project, sha: 'sha-1', released_at: Time.zone.now)
         end
 
-        before(:all) do
+        before_all do
           # Previous release
           create(:release, project: existing_project, sha: 'sha-2', released_at: Time.zone.now - 1.day)
         end
