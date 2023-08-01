@@ -30130,6 +30130,8 @@ CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_helm ON 
 
 CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_npm ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 2) AND (status <> 4));
 
+CREATE INDEX idx_packages_packages_on_npm_scope_and_project_id ON packages_packages USING btree (split_part((name)::text, '/'::text, 1), project_id) WHERE ((package_type = 2) AND ("position"((name)::text, '/'::text) > 0) AND (status = ANY (ARRAY[0, 3])) AND (version IS NOT NULL));
+
 CREATE INDEX idx_packages_packages_on_project_id_name_version_package_type ON packages_packages USING btree (project_id, name, version, package_type);
 
 CREATE INDEX idx_personal_access_tokens_on_previous_personal_access_token_id ON personal_access_tokens USING btree (previous_personal_access_token_id);

@@ -163,6 +163,14 @@ class Packages::Package < ApplicationRecord
   scope :preload_pypi_metadatum, -> { preload(:pypi_metadatum) }
   scope :preload_conan_metadatum, -> { preload(:conan_metadatum) }
 
+  scope :with_npm_scope, ->(scope) do
+    if Feature.enabled?(:npm_package_registry_fix_group_path_validation)
+      npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
+    else
+      npm.where("name ILIKE :package_name", package_name: "@#{sanitize_sql_like(scope)}/%")
+    end
+  end
+
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
   scope :has_version, -> { where.not(version: nil) }
@@ -184,7 +192,6 @@ class Packages::Package < ApplicationRecord
   scope :order_project_name, -> { joins(:project).reorder('projects.name ASC') }
   scope :order_project_name_desc, -> { joins(:project).reorder('projects.name DESC') }
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
-  scope :with_npm_scope, ->(scope) { npm.where("name ILIKE :package_name", package_name: "@#{sanitize_sql_like(scope)}/%") }
 
   scope :order_project_path, -> do
     keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)

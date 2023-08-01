@@ -2,23 +2,23 @@
 
 RSpec.shared_examples 'create deployment for job' do
   describe '#execute' do
-    subject { service.execute(build) }
+    subject { service.execute(job) }
 
     context 'with a deployment job' do
-      let!(:build) { create(factory_type, :start_review_app, project: project) }
-      let!(:environment) { create(:environment, project: project, name: build.expanded_environment_name) }
+      let!(:job) { create(factory_type, :start_review_app, project: project) }
+      let!(:environment) { create(:environment, project: project, name: job.expanded_environment_name) }
 
       it 'creates a deployment record' do
         expect { subject }.to change { Deployment.count }.by(1)
 
-        build.reset
-        expect(build.deployment.project).to eq(build.project)
-        expect(build.deployment.ref).to eq(build.ref)
-        expect(build.deployment.sha).to eq(build.sha)
-        expect(build.deployment.deployable).to eq(build)
-        expect(build.deployment.deployable_type).to eq('CommitStatus')
-        expect(build.deployment.environment).to eq(build.persisted_environment)
-        expect(build.deployment.valid?).to be_truthy
+        job.reset
+        expect(job.deployment.project).to eq(job.project)
+        expect(job.deployment.ref).to eq(job.ref)
+        expect(job.deployment.sha).to eq(job.sha)
+        expect(job.deployment.deployable).to eq(job)
+        expect(job.deployment.deployable_type).to eq('CommitStatus')
+        expect(job.deployment.environment).to eq(job.persisted_environment)
+        expect(job.deployment.valid?).to be_truthy
       end
 
       context 'when creation failure occures' do
@@ -41,39 +41,39 @@ RSpec.shared_examples 'create deployment for job' do
         it 'does not create a deployment record' do
           expect { subject }.not_to change { Deployment.count }
 
-          expect(build.deployment).to be_nil
+          expect(job.deployment).to be_nil
         end
       end
     end
 
     context 'with a teardown job' do
-      let!(:build) { create(factory_type, :stop_review_app, project: project) }
-      let!(:environment) { create(:environment, name: build.expanded_environment_name) }
+      let!(:job) { create(factory_type, :stop_review_app, project: project) }
+      let!(:environment) { create(:environment, name: job.expanded_environment_name) }
 
       it 'does not create a deployment record' do
         expect { subject }.not_to change { Deployment.count }
 
-        expect(build.deployment).to be_nil
+        expect(job.deployment).to be_nil
       end
     end
 
     context 'with a normal job' do
-      let!(:build) { create(factory_type, project: project) }
+      let!(:job) { create(factory_type, project: project) }
 
       it 'does not create a deployment record' do
         expect { subject }.not_to change { Deployment.count }
 
-        expect(build.deployment).to be_nil
+        expect(job.deployment).to be_nil
       end
     end
 
-    context 'when build has environment attribute' do
-      let!(:build) do
+    context 'when job has environment attribute' do
+      let!(:job) do
         create(factory_type, environment: 'production', project: project,
                           options: { environment: { name: 'production', **kubernetes_options } }) # rubocop:disable Layout/ArgumentAlignment
       end
 
-      let!(:environment) { create(:environment, project: project, name: build.expanded_environment_name) }
+      let!(:environment) { create(:environment, project: project, name: job.expanded_environment_name) }
 
       let(:kubernetes_options) { {} }
 
@@ -113,25 +113,25 @@ RSpec.shared_examples 'create deployment for job' do
         end
       end
 
-      context 'when build already has deployment' do
-        let!(:build) { create(factory_type, :with_deployment, project: project, environment: 'production') }
+      context 'when job already has deployment' do
+        let!(:job) { create(factory_type, :with_deployment, project: project, environment: 'production') }
         let!(:environment) {} # rubocop:disable Lint/EmptyBlock
 
         it 'returns the persisted deployment' do
           expect { subject }.not_to change { Deployment.count }
 
-          is_expected.to eq(build.deployment)
+          is_expected.to eq(job.deployment)
         end
       end
     end
 
-    context 'when build does not start environment' do
+    context 'when job does not start environment' do
       where(:action) do
         %w[stop prepare verify access]
       end
 
       with_them do
-        let!(:build) do
+        let!(:job) do
           create(factory_type, environment: 'production', project: project,
                             options: { environment: { name: 'production', action: action } }) # rubocop:disable Layout/ArgumentAlignment
         end
@@ -142,8 +142,8 @@ RSpec.shared_examples 'create deployment for job' do
       end
     end
 
-    context 'when build does not have environment attribute' do
-      let!(:build) { create(factory_type, project: project) }
+    context 'when job does not have environment attribute' do
+      let!(:job) { create(factory_type, project: project) }
 
       it 'returns nothing' do
         is_expected.to be_nil

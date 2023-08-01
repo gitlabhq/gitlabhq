@@ -1130,16 +1130,39 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#fork_button_disabled_tooltip' do
+  describe '#fork_button_data_attributes' do
     using RSpec::Parameterized::TableSyntax
 
-    subject { helper.fork_button_disabled_tooltip(project) }
+    let_it_be(:project) { create(:project, :repository, :public) }
 
-    where(:has_user, :can_fork_project, :can_create_fork, :expected) do
-      false | false | false | nil
-      true | true | true | nil
-      true | false | true | 'You don\'t have permission to fork this project'
-      true | true | false | 'You have reached your project limit'
+    project_path = '/project/path'
+    project_forks_path = '/project/forks'
+    project_new_fork_path = '/project/new/fork'
+    user_fork_url = '/user/fork'
+
+    common_data_attributes = {
+      forks_count: 4,
+      project_full_path: project_path,
+      project_forks_url: project_forks_path,
+      can_create_fork: "true",
+      can_fork_project: "true",
+      can_read_code: "true",
+      new_fork_url: project_new_fork_path
+    }
+
+    data_attributes_with_user_fork_url = common_data_attributes.merge({ user_fork_url: user_fork_url })
+    data_attributes_without_user_fork_url = common_data_attributes.merge({ user_fork_url: nil })
+
+    subject { helper.fork_button_data_attributes(project) }
+
+    # The stubs for the forkable namespaces seem not to make sense (they're just numbers),
+    # but they're set up that way because we don't really care about what the array contains, only about its length
+    where(:has_user, :project_already_forked, :forkable_namespaces, :expected) do
+      false | false | []     | nil
+      true  | false | [0]    | data_attributes_without_user_fork_url
+      true  | false | [0, 1] | data_attributes_without_user_fork_url
+      true  | true  | [0]    | data_attributes_with_user_fork_url
+      true  | true  | [0, 1] | data_attributes_without_user_fork_url
     end
 
     with_them do
@@ -1147,13 +1170,22 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         current_user = user if has_user
 
         allow(helper).to receive(:current_user).and_return(current_user)
-        allow(user).to receive(:can?).with(:fork_project, project).and_return(can_fork_project)
-        allow(user).to receive(:can?).with(:create_fork).and_return(can_create_fork)
+        allow(user).to receive(:can?).with(:fork_project, project).and_return(true)
+        allow(user).to receive(:can?).with(:create_fork).and_return(true)
+        allow(user).to receive(:can?).with(:create_projects, anything).and_return(true)
+        allow(user).to receive(:already_forked?).with(project).and_return(project_already_forked)
+        allow(user).to receive(:forkable_namespaces).and_return(forkable_namespaces)
+
+        allow(project).to receive(:forks_count).and_return(4)
+        allow(project).to receive(:full_path).and_return(project_path)
+
+        user_fork_path = user_fork_url if project_already_forked
+        allow(helper).to receive(:namespace_project_path).with(user, anything).and_return(user_fork_path)
+        allow(helper).to receive(:new_project_fork_path).with(project).and_return(project_new_fork_path)
+        allow(helper).to receive(:project_forks_path).with(project).and_return(project_forks_path)
       end
 
-      it 'returns tooltip text when user lacks privilege' do
-        expect(subject).to eq(expected)
-      end
+      it { is_expected.to eq(expected) }
     end
   end
 

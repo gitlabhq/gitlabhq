@@ -49,7 +49,7 @@ module QA
           element :forked_from_link
         end
 
-        view 'app/views/projects/buttons/_fork.html.haml' do
+        view 'app/assets/javascripts/forks/components/forks_button.vue' do
           element :fork_button
         end
 

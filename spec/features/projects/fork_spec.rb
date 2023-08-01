@@ -14,7 +14,7 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
   end
 
   shared_examples 'fork button on project page' do
-    context 'when the user has access to only one namespace and has already forked the project' do
+    context 'when the user has access to only one namespace and has already forked the project', :js do
       before do
         fork_project(project, user, repository: true, namespace: user.namespace)
       end
@@ -25,7 +25,7 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
         path = namespace_project_path(user, user.fork_of(project))
 
         fork_button = find_link 'Fork'
-        expect(fork_button['href']).to eq(path)
+        expect(fork_button['href']).to include(path)
         expect(fork_button['class']).not_to include('disabled')
       end
     end
@@ -37,7 +37,7 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
         path = new_project_fork_path(project)
 
         fork_button = find_link 'Fork'
-        expect(fork_button['href']).to eq(path)
+        expect(fork_button['href']).to include(path)
         expect(fork_button['class']).not_to include('disabled')
       end
 
@@ -53,7 +53,7 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
           path = new_project_fork_path(project)
 
           fork_button = find_link 'Fork'
-          expect(fork_button['href']).to eq(path)
+          expect(fork_button['href']).to include(path)
           expect(fork_button['class']).to include('disabled')
         end
       end
@@ -69,17 +69,17 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
           path = new_project_fork_path(project)
 
           fork_button = find_link 'Fork'
-          expect(fork_button['href']).to eq(path)
+          expect(fork_button['href']).to include(path)
           expect(fork_button['class']).to include('disabled')
         end
       end
     end
 
-    context 'when the user has not already forked the project' do
+    context 'when the user has not already forked the project', :js do
       it_behaves_like 'fork button creates new fork'
     end
 
-    context 'when the user has access to more than one namespace' do
+    context 'when the user has access to more than one namespace', :js do
       let(:group) { create(:group) }
 
       before do
@@ -99,11 +99,11 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
     context 'forking is enabled' do
       let(:forking_access_level) { ProjectFeature::ENABLED }
 
-      it 'enables fork button' do
+      it 'enables fork button', :js do
         visit project_path(project)
 
-        expect(page).to have_css('a', text: 'Fork')
-        expect(page).not_to have_css('a.disabled', text: 'Select')
+        fork_button = find_link 'Fork'
+        expect(fork_button['class']).not_to include('disabled')
       end
 
       it 'renders new project fork page' do
@@ -117,11 +117,13 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
     context 'forking is disabled' do
       let(:forking_access_level) { ProjectFeature::DISABLED }
 
-      it 'render a disabled fork button' do
+      it 'render a disabled fork button', :js do
         visit project_path(project)
 
-        expect(page).to have_css('a.disabled', text: 'Fork')
-        expect(page).to have_css('a.count', text: '0')
+        fork_button = find_link 'Fork'
+
+        expect(fork_button['class']).to include('disabled')
+        expect(page).to have_selector('[data-testid="forks-count"]')
       end
 
       it 'does not render new project fork page' do
@@ -139,11 +141,13 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
       end
 
       context 'user is not a team member' do
-        it 'render a disabled fork button' do
+        it 'render a disabled fork button', :js do
           visit project_path(project)
 
-          expect(page).to have_css('a.disabled', text: 'Fork')
-          expect(page).to have_css('a.count', text: '0')
+          fork_button = find_link 'Fork'
+
+          expect(fork_button['class']).to include('disabled')
+          expect(page).to have_selector('[data-testid="forks-count"]')
         end
 
         it 'does not render new project fork page' do
@@ -158,12 +162,13 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
           project.add_developer(user)
         end
 
-        it 'enables fork button' do
+        it 'enables fork button', :js do
           visit project_path(project)
 
-          expect(page).to have_css('a', text: 'Fork')
-          expect(page).to have_css('a.count', text: '0')
-          expect(page).not_to have_css('a.disabled', text: 'Fork')
+          fork_button = find_link 'Fork'
+
+          expect(fork_button['class']).not_to include('disabled')
+          expect(page).to have_selector('[data-testid="forks-count"]')
         end
 
         it 'renders new project fork page' do
@@ -242,7 +247,8 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
 
         visit project_path(project)
 
-        expect(page).to have_css('.fork-count', text: 2)
+        forks_count_button = find('[data-testid="forks-count"]')
+        expect(forks_count_button).to have_content("2")
       end
     end
   end

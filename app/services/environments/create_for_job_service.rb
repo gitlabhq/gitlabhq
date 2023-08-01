@@ -3,16 +3,16 @@
 module Environments
   # This class creates an environment record for a pipeline job.
   class CreateForJobService
-    def execute(build)
-      return unless build.is_a?(::Ci::Processable) && build.has_environment_keyword?
+    def execute(job)
+      return unless job.is_a?(::Ci::Processable) && job.has_environment_keyword?
 
-      environment = to_resource(build)
+      environment = to_resource(job)
 
       if environment.persisted?
-        build.persisted_environment = environment
-        build.assign_attributes(metadata_attributes: { expanded_environment_name: environment.name })
+        job.persisted_environment = environment
+        job.assign_attributes(metadata_attributes: { expanded_environment_name: environment.name })
       else
-        build.assign_attributes(status: :failed, failure_reason: :environment_creation_failure)
+        job.assign_attributes(status: :failed, failure_reason: :environment_creation_failure)
       end
 
       environment
@@ -21,20 +21,20 @@ module Environments
     private
 
     # rubocop: disable Performance/ActiveRecordSubtransactionMethods
-    def to_resource(build)
-      build.project.environments.safe_find_or_create_by(name: build.expanded_environment_name) do |environment|
+    def to_resource(job)
+      job.project.environments.safe_find_or_create_by(name: job.expanded_environment_name) do |environment|
         # Initialize the attributes at creation
-        environment.auto_stop_in = expanded_auto_stop_in(build)
-        environment.tier = build.environment_tier_from_options
-        environment.merge_request = build.pipeline.merge_request
+        environment.auto_stop_in = expanded_auto_stop_in(job)
+        environment.tier = job.environment_tier_from_options
+        environment.merge_request = job.pipeline.merge_request
       end
     end
     # rubocop: enable Performance/ActiveRecordSubtransactionMethods
 
-    def expanded_auto_stop_in(build)
-      return unless build.environment_auto_stop_in
+    def expanded_auto_stop_in(job)
+      return unless job.environment_auto_stop_in
 
-      ExpandVariables.expand(build.environment_auto_stop_in, -> { build.simple_variables.sort_and_expand_all })
+      ExpandVariables.expand(job.environment_auto_stop_in, -> { job.simple_variables.sort_and_expand_all })
     end
   end
 end

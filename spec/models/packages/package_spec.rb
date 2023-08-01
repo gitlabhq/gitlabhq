@@ -867,6 +867,24 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  describe '.with_npm_scope' do
+    let_it_be(:package1) { create(:npm_package, name: '@test/foobar') }
+    let_it_be(:package2) { create(:npm_package, name: '@test2/foobar') }
+    let_it_be(:package3) { create(:npm_package, name: 'foobar') }
+
+    subject { described_class.with_npm_scope('test') }
+
+    it { is_expected.to contain_exactly(package1) }
+
+    context 'when npm_package_registry_fix_group_path_validation is disabled' do
+      before do
+        stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
+      end
+
+      it { is_expected.to contain_exactly(package1) }
+    end
+  end
+
   describe '.without_nuget_temporary_name' do
     let!(:package1) { create(:nuget_package) }
     let!(:package2) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }

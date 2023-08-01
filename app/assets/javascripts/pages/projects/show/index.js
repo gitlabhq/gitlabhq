@@ -8,6 +8,8 @@ import initTerraformNotification from '~/projects/terraform_notification';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 
+import initForksButton from '~/forks/init_forks_button';
+
 // Project show page loads different overview content based on user preferences
 if (document.getElementById('js-tree-list')) {
   import(/* webpackChunkName: 'treeList' */ 'ee_else_ce/repository')
@@ -57,3 +59,5 @@ if (document.querySelector('.js-autodevops-banner')) {
     })
     .catch(() => {});
 }
+
+initForksButton();

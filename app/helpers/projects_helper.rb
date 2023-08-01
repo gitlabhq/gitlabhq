@@ -464,14 +464,23 @@ module ProjectsHelper
     project.forking_enabled? && can?(user, :read_code, project)
   end
 
-  def fork_button_disabled_tooltip(project)
+  def fork_button_data_attributes(project)
     return unless current_user
 
-    if !current_user.can?(:fork_project, project)
-      s_("ProjectOverview|You don't have permission to fork this project")
-    elsif !current_user.can?(:create_fork)
-      s_('ProjectOverview|You have reached your project limit')
+    if current_user.already_forked?(project) && current_user.forkable_namespaces.size < 2
+      user_fork_url = namespace_project_path(current_user, current_user.fork_of(project))
     end
+
+    {
+      forks_count: project.forks_count,
+      project_full_path: project.full_path,
+      project_forks_url: project_forks_path(project),
+      user_fork_url: user_fork_url,
+      new_fork_url: new_project_fork_path(project),
+      can_read_code: can?(current_user, :read_code, project).to_s,
+      can_fork_project: can?(current_user, :fork_project, project).to_s,
+      can_create_fork: can?(current_user, :create_fork).to_s
+    }
   end
 
   def import_from_bitbucket_message
