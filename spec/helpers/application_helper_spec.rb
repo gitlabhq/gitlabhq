@@ -845,4 +845,50 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
+
+  describe '#hidden_resource_icon', feature_category: :insider_threat do
+    let_it_be(:mock_svg) { '<svg></svg>'.html_safe }
+
+    shared_examples 'returns icon with tooltip' do
+      before do
+        allow(helper).to receive(:sprite_icon).with('spam', css_class: 'gl-vertical-align-text-bottom').and_return(mock_svg)
+      end
+
+      it 'returns icon with tooltip' do
+        result = helper.hidden_resource_icon(resource)
+        expect(result).to eq("<span class=\"has-tooltip\" title=\"#{expected_title}\">#{mock_svg}</span>")
+      end
+    end
+
+    context 'when resource is an issue' do
+      let_it_be(:resource) { build(:issue) }
+      let(:expected_title) { 'This issue is hidden because its author has been banned' }
+
+      it_behaves_like 'returns icon with tooltip'
+    end
+
+    context 'when resource is a merge request' do
+      let_it_be(:resource) { build(:merge_request) }
+      let(:expected_title) { 'This merge request is hidden because its author has been banned' }
+
+      it_behaves_like 'returns icon with tooltip'
+    end
+
+    context 'when resource is a project' do
+      let_it_be(:resource) { build(:project) }
+      let(:expected_title) { 'This project is hidden because its creator has been banned' }
+
+      it_behaves_like 'returns icon with tooltip'
+    end
+
+    context 'when css_class is provided' do
+      let_it_be(:resource) { build(:issue) }
+
+      it 'passes the value to sprite_icon' do
+        expect(helper).to receive(:sprite_icon).with('spam', css_class: 'gl-vertical-align-text-bottom extra-class').and_return(mock_svg)
+
+        helper.hidden_resource_icon(resource, css_class: 'extra-class')
+      end
+    end
+  end
 end

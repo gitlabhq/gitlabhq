@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ProjectSearchResults do
+RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
   include SearchHelpers
 
   let_it_be(:user) { create(:user) }
@@ -306,6 +306,34 @@ RSpec.describe Gitlab::ProjectSearchResults do
 
       it 'lists notes' do
         expect(notes).to include note
+      end
+    end
+
+    context 'with an archived project' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:project) { create(:project, :public, :archived) }
+      let_it_be(:note) { create(:note, project: project) }
+      let(:note_collection) { [note.id] }
+      let(:filters) do
+        { include_archived: param_include_archived }
+      end
+
+      where(:feature_flag_search_notes_hide_archived_projects, :param_include_archived, :result) do
+        false | true  | ref(:note_collection)
+        true  | nil   | Note.none
+        false | true  | ref(:note_collection)
+        false | nil   | ref(:note_collection)
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(search_notes_hide_archived_projects: feature_flag_search_notes_hide_archived_projects)
+        end
+
+        it 'returns correct result' do
+          expect(notes.map(&:id)).to eq(result)
+        end
       end
     end
 

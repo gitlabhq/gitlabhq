@@ -133,9 +133,13 @@ To populate the embedding database for GitLab chat:
 ### Debugging
 
 To gather more insights about the full request, use the `Gitlab::Llm::Logger` file to debug logs.
+The default logging level on production is `INFO` and **must not** be used to log any data that could contain personal identifying information.
+
 To follow the debugging messages related to the AI requests on the abstraction layer, you can use:
 
 ```shell
+export LLM_DEBUG=1
+gdk start
 tail -f log/llm.log
 ```
 

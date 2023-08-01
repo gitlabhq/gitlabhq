@@ -79,10 +79,9 @@ describe('Batch comments submit dropdown', () => {
 
     findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
-    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
-      context: 'MergeRequest_review',
-      editorType: 'editor_type_plain_text_editor',
-      label: 'editor_tracking',
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+      label: 'markdown_editor',
+      property: 'MergeRequest_review',
     });
   });
 

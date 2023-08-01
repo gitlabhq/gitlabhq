@@ -1,14 +1,14 @@
 import Tracking from '~/tracking';
 
-export const EDITOR_TRACKING_LABEL = 'editor_tracking';
-export const EDITOR_TYPE_ACTION = 'editor_type_used';
-export const EDITOR_TYPE_PLAIN_TEXT_EDITOR = 'editor_type_plain_text_editor';
-export const EDITOR_TYPE_RICH_TEXT_EDITOR = 'editor_type_rich_text_editor';
+export const MARKDOWN_EDITOR_TRACKING_LABEL = 'markdown_editor';
+export const RICH_TEXT_EDITOR_TRACKING_LABEL = 'rich_text_editor';
 
-export const trackSavedUsingEditor = (isRichText, context) => {
-  Tracking.event(undefined, EDITOR_TYPE_ACTION, {
-    label: EDITOR_TRACKING_LABEL,
-    editorType: isRichText ? EDITOR_TYPE_RICH_TEXT_EDITOR : EDITOR_TYPE_PLAIN_TEXT_EDITOR,
-    context,
+export const SAVE_MARKDOWN_TRACKING_ACTION = 'save_markdown';
+export const TOOLBAR_CONTROL_TRACKING_ACTION = 'execute_toolbar_control';
+
+export const trackSavedUsingEditor = (isRichText, property) => {
+  Tracking.event(undefined, SAVE_MARKDOWN_TRACKING_ACTION, {
+    label: isRichText ? RICH_TEXT_EDITOR_TRACKING_LABEL : MARKDOWN_EDITOR_TRACKING_LABEL,
+    property,
   });
 };

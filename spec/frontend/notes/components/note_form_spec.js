@@ -234,10 +234,9 @@ describe('issue_note_form component', () => {
         const saveButton = wrapper.find('.js-vue-issue-save');
         saveButton.vm.$emit('click');
 
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
-          context: 'Issue_note',
-          editorType: 'editor_type_plain_text_editor',
-          label: 'editor_tracking',
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+          label: 'markdown_editor',
+          property: 'Issue_note',
         });
       });
     });

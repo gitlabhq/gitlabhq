@@ -66,6 +66,7 @@ Some of these services have their own environment variables to override the log 
 | Sidekiq (server)     | `INFO`    |                      |
 | Snowplow Tracker     | `FATAL`   |                      |
 | gRPC Client (Gitaly) | `WARN`    | `GRPC_LOG_LEVEL`     |
+| LLM                  | `INFO`    | `LLM_DEBUG`          |
 
 ## Log Rotation
 

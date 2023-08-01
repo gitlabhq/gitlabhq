@@ -455,6 +455,13 @@ The labels higher in the list get higher priority.
 To learn what happens when you sort by priority or label priority, see
 [Sorting and ordering issue lists](issues/sorting_issue_lists.md).
 
+## Related topics
+
+Practice working with labels in the following tutorials:
+
+- [Set up a single project for issue triage](../../tutorials/issue_triage/index.md)
+- [Set up issue boards for team hand-off](../../tutorials/boards_for_teams/index.md)
+
 ## Troubleshooting
 
 ### Some label titles end with `_duplicate<number>`

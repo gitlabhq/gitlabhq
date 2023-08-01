@@ -6,6 +6,8 @@ module Ci
     extend ActiveSupport::Concern
 
     included do
+      prepend_mod_with('Ci::Deployable') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
       has_one :deployment, as: :deployable, class_name: 'Deployment', inverse_of: :deployable
 
       state_machine :status do

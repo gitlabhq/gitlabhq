@@ -995,7 +995,7 @@ tcpdump
 teardown
 templated
 Thanos
-Thoughtbot
+thoughtbot
 throughputs
 Tiller
 timebox

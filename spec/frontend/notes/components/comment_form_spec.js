@@ -170,10 +170,9 @@ describe('issue_comment_form component', () => {
 
         findCloseReopenButton().trigger('click');
 
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
-          context: 'Issue_comment',
-          editorType: 'editor_type_plain_text_editor',
-          label: 'editor_tracking',
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+          label: 'markdown_editor',
+          property: 'Issue_comment',
         });
       });
 

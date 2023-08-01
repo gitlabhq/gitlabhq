@@ -560,6 +560,20 @@ module ProjectsHelper
     project_settings_repository_path(@project, anchor: 'js-branch-rules')
   end
 
+  def visibility_level_content(project, css_class: nil, icon_css_class: nil)
+    if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
+      return hidden_resource_icon(project, css_class: css_class)
+    end
+
+    title = visibility_icon_description(project)
+    container_class = ['has-tooltip', css_class].compact.join(' ')
+    data = { container: 'body', placement: 'top' }
+
+    content_tag(:span, class: container_class, data: data, title: title) do
+      visibility_level_icon(project.visibility_level, options: { class: icon_css_class })
+    end
+  end
+
   private
 
   def can_admin_project_clusters?(project)

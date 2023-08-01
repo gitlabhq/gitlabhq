@@ -18,15 +18,19 @@ class NotesFinder
   #     last_fetched_at: time
   #     search: string
   #     sort: string
+  #     hide_notes_from_archived_project: boolean
   #
   def initialize(current_user, params = {})
     @project = params[:project]
     @current_user = current_user
     @params = params.dup
     @target_type = @params[:target_type]
+    @hide_notes_from_archived_project = params[:hide_notes_from_archived_project]
   end
 
   def execute
+    return Note.none if @project&.archived && @hide_notes_from_archived_project
+
     notes = init_collection
     notes = since_fetch_at(notes)
     notes = notes.with_notes_filter(@params[:notes_filter]) if notes_filter?

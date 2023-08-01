@@ -381,9 +381,6 @@
   # Gitaly has interactions with background migrations: https://gitlab.com/gitlab-org/gitlab/-/issues/336538
   - "GITALY_SERVER_VERSION"
   - "lib/gitlab/setup_helper.rb"
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
 
 # DB backup patterns
 .db-backup-patterns: &db-backup-patterns
@@ -2245,8 +2242,6 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-default-branch-schedule-nightly
-    - <<: *if-merge-request
-      changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
 .rails:rules:default-branch-schedule-nightly--code-backstage:
   rules:

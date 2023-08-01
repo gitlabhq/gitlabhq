@@ -1647,4 +1647,62 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     it { is_expected.to eq(project_settings_repository_path(project, anchor: 'js-branch-rules')) }
   end
+
+  describe '#visibility_level_content' do
+    shared_examples 'returns visibility level content_tag' do
+      let(:icon) { '<svg>fake visib level icon</svg>'.html_safe }
+      let(:description) { 'Fake visib desc' }
+
+      before do
+        allow(helper).to receive(:visibility_icon_description).and_return(description)
+        allow(helper).to receive(:visibility_level_icon).and_return(icon)
+      end
+
+      it 'returns visibility level content_tag' do
+        expected_result = "<span class=\"has-tooltip\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\">#{icon}</span>"
+        expect(helper.visibility_level_content(project)).to eq(expected_result)
+      end
+
+      it 'returns visibility level content_tag with extra CSS classes' do
+        expected_result = "<span class=\"has-tooltip extra-class\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\">#{icon}</span>"
+
+        expect(helper).to receive(:visibility_level_icon)
+          .with(anything, options: { class: 'extra-icon-class' })
+          .and_return(icon)
+        result = helper.visibility_level_content(project, css_class: 'extra-class', icon_css_class: 'extra-icon-class')
+        expect(result).to eq(expected_result)
+      end
+    end
+
+    it_behaves_like 'returns visibility level content_tag'
+
+    context 'when project creator is banned' do
+      let(:hidden_resource_icon) { '<svg>fake hidden resource icon</svg>' }
+
+      before do
+        allow(project).to receive(:created_and_owned_by_banned_user?).and_return(true)
+        allow(helper).to receive(:hidden_resource_icon).and_return(hidden_resource_icon)
+      end
+
+      it 'returns hidden resource icon' do
+        expect(helper.visibility_level_content(project)).to eq hidden_resource_icon
+      end
+    end
+
+    context 'with hide_projects_of_banned_users feature flag disabled' do
+      before do
+        stub_feature_flags(hide_projects_of_banned_users: false)
+      end
+
+      it_behaves_like 'returns visibility level content_tag'
+
+      context 'when project creator is banned' do
+        before do
+          allow(project).to receive(:created_and_owned_by_banned_user?).and_return(true)
+        end
+
+        it_behaves_like 'returns visibility level content_tag'
+      end
+    end
+  end
 end

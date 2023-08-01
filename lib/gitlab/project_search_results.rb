@@ -142,7 +142,7 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def notes_finder(type)
-      NotesFinder.new(@current_user, search: query, target_type: type, project: project).execute.user.order('updated_at DESC')
+      NotesFinder.new(@current_user, search: query, target_type: type, project: project, hide_notes_from_archived_project: hide_notes_from_archived_project?).execute.user.order('updated_at DESC')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -190,6 +190,10 @@ module Gitlab
 
     def issuable_params
       super.merge(project_id: project.id)
+    end
+
+    def hide_notes_from_archived_project?
+      !filters[:include_archived] && Feature.enabled?(:search_notes_hide_archived_projects)
     end
   end
 end

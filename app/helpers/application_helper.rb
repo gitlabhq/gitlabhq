@@ -466,6 +466,25 @@ module ApplicationHelper
     form_with(**args.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder }), &block)
   end
 
+  def hidden_resource_icon(resource, css_class: nil)
+    issuable_title = _('This %{issuable} is hidden because its author has been banned')
+
+    case resource
+    when Issue
+      title = format(issuable_title, issuable: _('issue'))
+    when MergeRequest
+      title = format(issuable_title, issuable: _('merge request'))
+    when Project
+      title = _('This project is hidden because its creator has been banned')
+    end
+
+    return unless title
+
+    content_tag(:span, class: 'has-tooltip', title: title) do
+      sprite_icon('spam', css_class: ['gl-vertical-align-text-bottom', css_class].compact_blank.join(' '))
+    end
+  end
+
   private
 
   def browser_id

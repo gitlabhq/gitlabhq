@@ -340,6 +340,10 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   - Impacted versions: GitLab versions 15.2 - 15.11
   - Version 16.0 and later are not impacted. Note, 15.11 is a mandatory upgrade stop on the way to 16.0.
 
+### 15.11.x
+
+- A [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/411604) can cause new LDAP users signing in for the first time to be assigned a username based on their email address instead of their LDAP username attribute. A manual workaround is to set `gitlab_rails['omniauth_auto_link_ldap_user'] = true`, or upgrade to GitLab 16.1 or later where the bug has been fixed.
+
 ### 15.10.5
 
 - Many [project importers](../user/project/import/index.md) and [group importers](../user/group/import/index.md) now

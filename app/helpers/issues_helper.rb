@@ -55,7 +55,7 @@ module IssuesHelper
   def hidden_issue_icon(issue)
     return unless issue_hidden?(issue)
 
-    hidden_issuable_icon(issue)
+    hidden_resource_icon(issue)
   end
 
   def award_user_list(awards, current_user, limit: 10)

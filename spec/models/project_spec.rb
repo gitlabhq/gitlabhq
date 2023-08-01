@@ -8901,6 +8901,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it { is_expected.to eq false }
     end
+
+    context 'when there is no creator' do
+      let_it_be(:project) { build_stubbed(:project, creator: nil) }
+
+      it { is_expected.to eq false }
+    end
   end
 
   it_behaves_like 'something that has web-hooks' do
