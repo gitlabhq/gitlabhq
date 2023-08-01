@@ -58,7 +58,8 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
           let(:total_count) { Clusters::Cluster.instance_type.page.total_count }
 
           before do
-            create_list(:cluster, 30, :provided_by_gcp, :production_environment, :instance)
+            allow(Clusters::Cluster).to receive(:default_per_page).and_return(1)
+            create_list(:cluster, 2, :provided_by_gcp, :production_environment, :instance)
           end
 
           it 'redirects to the page' do
