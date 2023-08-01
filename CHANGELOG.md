@@ -2,6 +2,28 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.0.8 (2023-08-01)
+
+### Fixed (1 change)
+
+- [Disable IAT verification by default](gitlab-org/security/gitlab@6d17a50539b8518da18bc68accc03b48d73173a0)
+
+### Security (13 changes)
+
+- [Prevent leaking emails of newly created users](gitlab-org/security/gitlab@b2872b398599cd7ee20c4119ae4c8e6ba2a6882d) ([merge request](gitlab-org/security/gitlab!3451))
+- [Added redirect to filtered params](gitlab-org/security/gitlab@49ffc2cc98af0e66305c8a653c74e0b92ee06ce8) ([merge request](gitlab-org/security/gitlab!3443))
+- [Relocate PlantUML config and disable SVG support](gitlab-org/security/gitlab@c6ded17a7d17ec8c3ed55cb94b8e6e524b6bbd5e) ([merge request](gitlab-org/security/gitlab!3440))
+- [Sanitize multiple hardlinks from import archives](gitlab-org/security/gitlab@9dabd8ebca50d8ea3781a0c4955a40cd07c453e7) ([merge request](gitlab-org/security/gitlab!3437))
+- [Validates project path availability](gitlab-org/security/gitlab@97e6ce4d15c8f4bcc7f60a560b789a023d391531) ([merge request](gitlab-org/security/gitlab!3428))
+- [Fix policy project assign](gitlab-org/security/gitlab@c1cca8ce8f24f6466563a50463e3254c5c423e97) ([merge request](gitlab-org/security/gitlab!3425))
+- [Fix pipeline schedule authorization for protected branch/tag](gitlab-org/security/gitlab@0c7017d993a33ef9fc693d4435505a4aea0141d1) ([merge request](gitlab-org/security/gitlab!3363))
+- [Mitigate autolink filter ReDOS](gitlab-org/security/gitlab@9072c630608a81645548b64b32d9f81bd258ba06) ([merge request](gitlab-org/security/gitlab!3432))
+- [Fix XSS vector in Web IDE](gitlab-org/security/gitlab@2832d1ae3b3e1bfc42bbeaeb29841a1e5fecac8a) ([merge request](gitlab-org/security/gitlab!3411))
+- [Mitigate project reference filter ReDOS](gitlab-org/security/gitlab@9c73619acaad3eb3605bf632f066bcee59b86566) ([merge request](gitlab-org/security/gitlab!3429))
+- [Add a stricter regex for the Harbor search param](gitlab-org/security/gitlab@c27e5e48a02d3411e84617b4fb7fd3f0fb49b618) ([merge request](gitlab-org/security/gitlab!3396))
+- [Update pipeline user to the last policy MR author](gitlab-org/security/gitlab@b1e9bcb33106ba7e279d5fd42c4f2c1727629f63) ([merge request](gitlab-org/security/gitlab!3393))
+- [Prohibit 40 character hex plus a hyphen if branch name is path](gitlab-org/security/gitlab@66c81ff6b50d0e53fc1f1b153439ad95614c9d09) ([merge request](gitlab-org/security/gitlab!3406))
+
 ## 16.0.7 (2023-07-04)
 
 ### Security (1 change)
