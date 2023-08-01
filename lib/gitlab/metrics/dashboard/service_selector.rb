@@ -16,8 +16,7 @@ module Gitlab
             ::Metrics::Dashboard::GitlabAlertEmbedService,
             ::Metrics::Dashboard::CustomMetricEmbedService,
             ::Metrics::Dashboard::DefaultEmbedService,
-            ::Metrics::Dashboard::SystemDashboardService,
-            ::Metrics::Dashboard::CustomDashboardService
+            ::Metrics::Dashboard::SystemDashboardService
           ].freeze
 
           # Returns a class which inherits from the BaseService

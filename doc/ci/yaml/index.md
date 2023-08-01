@@ -2389,6 +2389,8 @@ This example creates four paths of execution:
   it depends on all jobs created in parallel, not just one job. It also downloads
   artifacts from all the parallel jobs by default. If the artifacts have the same
   name, they overwrite each other and only the last one downloaded is saved.
+  - To have `needs` refer to a subset of parallelized jobs (and not all of the parallelized jobs),
+    use the [`needs:parallel:matrix`](#needsparallelmatrix) keyword.
 - In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632) you
   can refer to jobs in the same stage as the job you are configuring. This feature is
   enabled on GitLab.com and ready for production use. On self-managed [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
@@ -2678,6 +2680,61 @@ upstream_status:
 
 - If you add the `job` keyword to `needs:pipeline`, the job no longer mirrors the
   pipeline status. The behavior changes to [`needs:pipeline:job`](#needspipelinejob).
+
+#### `needs:parallel:matrix`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `ci_needs_parallel_matrix`. Disabled by default.
+
+Jobs can use [`parallel:matrix`](#parallelmatrix) to run a job multiple times in parallel in a single pipeline,
+but with different variable values for each instance of the job.
+
+Use `needs:parallel:matrix` to execute jobs out-of-order depending on parallelized jobs.
+
+**Keyword type**: Job keyword. You can use it only as part of a job. Must be used with `needs:job`.
+
+**Possible inputs**: An array of hashes of variables:
+
+- The variables and values must be selected from the variables and values defined in the `parallel:matrix` job.
+
+**Example of `needs:parallel:matrix`**:
+
+```yaml
+linux:build:
+  stage: build
+  script: echo "Building linux..."
+  parallel:
+    matrix:
+      - PROVIDER: aws
+        STACK:
+          - monitoring
+          - app1
+          - app2
+
+linux:rspec:
+  stage: test
+  needs:
+    - job: linux:build
+      parallel:
+        matrix:
+          - PROVIDER: aws
+          - STACK: app1
+  script: echo "Running rspec on linux..."
+```
+
+The above example generates the following jobs:
+
+```plaintext
+linux:build: [aws, monitoring]
+linux:build: [aws, app1]
+linux:build: [aws, app2]
+linux:rspec
+```
+
+The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishes.
+
+**Related topics**:
+
+- [Specify a parallelized job using needs with multiple parallelized jobs](../jobs/job_control.md#specify-a-parallelized-job-using-needs-with-multiple-parallelized-jobs).
 
 ### `only` / `except`
 

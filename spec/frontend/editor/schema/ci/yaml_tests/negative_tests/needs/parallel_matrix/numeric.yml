@@ -1,0 +1,6 @@
+# invalid needs:parallel:matrix where parallel has a numeric value
+job_with_needs_parallel_matrix:
+  script: exit 0
+  needs:
+    - job: some_job_with_parallel_matrix
+      parallel: 10

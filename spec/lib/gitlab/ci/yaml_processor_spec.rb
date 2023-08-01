@@ -2675,6 +2675,42 @@ module Gitlab
 
           it_behaves_like 'returns errors', 'jobs:test1 dependencies should be an array of strings'
         end
+
+        context 'needs with parallel:matrix' do
+          let(:config) do
+            {
+              build1: {
+                stage: 'build',
+                script: 'build',
+                parallel: { matrix: [{ 'PROVIDER': ['aws'], 'STACK': %w[monitoring app1 app2] }] }
+              },
+              test1: {
+                stage: 'test',
+                script: 'test',
+                needs: [{ job: 'build1', parallel: { matrix: [{ 'PROVIDER': ['aws'], 'STACK': ['app1'] }] } }]
+              }
+            }
+          end
+
+          it "does create jobs with valid specification" do
+            expect(subject.builds.size).to eq(4)
+            expect(subject.builds[3]).to eq(
+              stage: "test",
+              stage_idx: 2,
+              name: "test1",
+              only: { refs: %w[branches tags] },
+              options: { script: ["test"] },
+              needs_attributes: [
+                { name: "build1: [aws, app1]", artifacts: true, optional: false }
+              ],
+              when: "on_success",
+              allow_failure: false,
+              job_variables: [],
+              root_variables_inheritance: true,
+              scheduling_type: :dag
+            )
+          end
+        end
       end
 
       context 'with when/rules' do

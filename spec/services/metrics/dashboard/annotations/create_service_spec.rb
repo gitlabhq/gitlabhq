@@ -143,19 +143,5 @@ RSpec.describe Metrics::Dashboard::Annotations::CreateService, feature_category:
         it_behaves_like 'annotation creation failure'
       end
     end
-
-    context 'incorrect dashboard_path' do
-      let(:cluster) { create(:cluster, :project) }
-      let(:environment) { nil }
-      let(:dashboard_path) { 'something_incorrect.yml' }
-
-      context 'with maintainer user' do
-        before do
-          cluster.project.add_maintainer(user)
-        end
-
-        it_behaves_like 'prevented annotation creation', 'Dashboard with requested path can not be found'
-      end
-    end
   end
 end

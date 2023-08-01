@@ -17,18 +17,10 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
     let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
     let(:service_call) { described_class.find(project, user, environment: environment, dashboard_path: dashboard_path) }
 
-    it_behaves_like 'misconfigured dashboard service response', :not_found
-
     context 'when the dashboard exists' do
       let(:project) { project_with_dashboard(dashboard_path) }
 
       it_behaves_like 'valid dashboard service response'
-    end
-
-    context 'when the dashboard is configured incorrectly' do
-      let(:project) { project_with_dashboard(dashboard_path, {}) }
-
-      it_behaves_like 'misconfigured dashboard service response', :unprocessable_entity
     end
 
     context 'when the system dashboard is specified' do
@@ -103,14 +95,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
 
       it { is_expected.to eq dashboard }
     end
-
-    context 'when an existing project dashboard is specified' do
-      let(:dashboard) { load_sample_dashboard }
-      let(:params) { { dashboard_path: '.gitlab/dashboards/test.yml' } }
-      let(:project) { project_with_dashboard(params[:dashboard_path]) }
-
-      it { is_expected.to eq dashboard }
-    end
   end
 
   describe '.find_all_paths' do
@@ -119,38 +103,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
 
     it 'includes OOTB dashboards by default' do
       expect(all_dashboard_paths).to eq([system_dashboard])
-    end
-
-    context 'when the project contains dashboards' do
-      let(:dashboard_content) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
-      let(:project) { project_with_dashboards(dashboards) }
-
-      let(:dashboards) do
-        {
-          '.gitlab/dashboards/metrics.yml' => dashboard_content,
-          '.gitlab/dashboards/better_metrics.yml' => dashboard_content
-        }
-      end
-
-      it 'includes OOTB and project dashboards' do
-        project_dashboard1 = {
-          path: '.gitlab/dashboards/metrics.yml',
-          display_name: 'metrics.yml',
-          default: false,
-          system_dashboard: false,
-          out_of_the_box_dashboard: false
-        }
-
-        project_dashboard2 = {
-          path: '.gitlab/dashboards/better_metrics.yml',
-          display_name: 'better_metrics.yml',
-          default: false,
-          system_dashboard: false,
-          out_of_the_box_dashboard: false
-        }
-
-        expect(all_dashboard_paths).to eq([project_dashboard2, project_dashboard1, system_dashboard])
-      end
     end
   end
 end

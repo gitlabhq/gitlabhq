@@ -832,6 +832,83 @@ deploy:
 
 Quotes around the `dependencies` entry are required.
 
+## Specify a parallelized job using needs with multiple parallelized jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `ci_needs_parallel_matrix`. Disabled by default.
+
+You can use variables defined in [`needs:parallel:matrix`](../yaml/index.md#needsparallelmatrix) with multiple parallelized jobs.
+
+For example:
+
+```yaml
+linux:build:
+  stage: build
+  script: echo "Building linux..."
+  parallel:
+    matrix:
+      - PROVIDER: aws
+        STACK:
+          - monitoring
+          - app1
+          - app2
+
+mac:build:
+  stage: build
+  script: echo "Building mac..."
+  parallel:
+    matrix:
+      - PROVIDER: [gcp, vultr]
+        STACK: [data, processing]
+
+linux:rspec:
+  stage: test
+  needs:
+    - job: linux:build
+      parallel:
+        matrix:
+          - PROVIDER: aws
+          - STACK: app1
+  script: echo "Running rspec on linux..."
+
+mac:rspec:
+  stage: test
+  needs:
+    - job: mac:build
+      parallel:
+        matrix:
+          - PROVIDER: [gcp, vultr]
+          - STACK: [data]
+  script: echo "Running rspec on mac..."
+
+production:
+  stage: deploy
+  script: echo "Running production..."
+  environment: production
+```
+
+This example generates several jobs. The parallel jobs each have different values
+for `PROVIDER` and `STACK`.
+
+- 3 parallel `linux:build` jobs:
+  - `linux:build: [aws, monitoring]`
+  - `linux:build: [aws, app1]`
+  - `linux:build: [aws, app2]`
+- 4 parallel `mac:build` jobs:
+  - `mac:build: [gcp, data]`
+  - `mac:build: [gcp, processing]`
+  - `mac:build: [vultr, data]`
+  - `mac:build: [vultr, processing]`
+- A `linux:rspec` job.
+- A `production` job.
+
+The jobs have three paths of execution:
+
+- Linux path: The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]`
+  job finishes, without waiting for `mac:build` to finish.
+- macOS path: The `mac:rspec` job runs as soon as the `mac:build: [gcp, data]` and
+  `mac:build: [vultr, data]` jobs finish, without waiting for `linux:build` to finish.
+- The `production` job runs as soon as all previous jobs finish.
+
 ## Use predefined CI/CD variables to run jobs only in specific pipeline types
 
 You can use [predefined CI/CD variables](../variables/predefined_variables.md) to choose

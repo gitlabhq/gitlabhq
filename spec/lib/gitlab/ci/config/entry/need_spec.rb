@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Ci::Config::Entry::Need do
+RSpec.describe ::Gitlab::Ci::Config::Entry::Need, feature_category: :pipeline_composition do
   subject(:need) { described_class.new(config) }
 
   shared_examples 'job type' do
@@ -218,6 +218,81 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Need do
       end
 
       it_behaves_like 'job type'
+    end
+
+    context 'when parallel:matrix has a value' do
+      before do
+        need.compose!
+      end
+
+      context 'and it is a string value' do
+        let(:config) do
+          { job: 'job_name', parallel: { matrix: [{ platform: 'p1', stack: 's1' }] } }
+        end
+
+        describe '#valid?' do
+          it { is_expected.to be_valid }
+        end
+
+        describe '#value' do
+          it 'returns job needs configuration' do
+            expect(need.value).to eq(
+              name: 'job_name',
+              artifacts: true,
+              optional: false,
+              parallel: { matrix: [{ "platform" => ['p1'], "stack" => ['s1'] }] }
+            )
+          end
+        end
+
+        it_behaves_like 'job type'
+      end
+
+      context 'and it is an array value' do
+        let(:config) do
+          { job: 'job_name', parallel: { matrix: [{ platform: %w[p1 p2], stack: %w[s1 s2] }] } }
+        end
+
+        describe '#valid?' do
+          it { is_expected.to be_valid }
+        end
+
+        describe '#value' do
+          it 'returns job needs configuration' do
+            expect(need.value).to eq(
+              name: 'job_name',
+              artifacts: true,
+              optional: false,
+              parallel: { matrix: [{ 'platform' => %w[p1 p2], 'stack' => %w[s1 s2] }] }
+            )
+          end
+        end
+
+        it_behaves_like 'job type'
+      end
+
+      context 'and it is a both an array and string value' do
+        let(:config) do
+          { job: 'job_name', parallel: { matrix: [{ platform: %w[p1 p2], stack: 's1' }] } }
+        end
+
+        describe '#valid?' do
+          it { is_expected.to be_valid }
+        end
+
+        describe '#value' do
+          it 'returns job needs configuration' do
+            expect(need.value).to eq(
+              name: 'job_name',
+              artifacts: true,
+              optional: false,
+              parallel: { matrix: [{ 'platform' => %w[p1 p2], 'stack' => ['s1'] }] }
+            )
+          end
+        end
+
+        it_behaves_like 'job type'
+      end
     end
   end
 

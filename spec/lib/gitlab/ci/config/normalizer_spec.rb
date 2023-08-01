@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Normalizer do
   let(:job_name) { :rspec }
@@ -103,6 +103,50 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
       end
     end
 
+    shared_examples 'needs:parallel:matrix' do
+      let(:expanded_needs_parallel_job_attributes) do
+        expanded_needs_parallel_job_names.map do |job_name|
+          { name: job_name }
+        end
+      end
+
+      context 'when job has needs:parallel:matrix on parallelized jobs' do
+        let(:config) do
+          {
+            job_name => job_config,
+            other_job: {
+              script: 'echo 1',
+              needs: {
+                job: [
+                  { name: job_name.to_s, parallel: needs_parallel_config }
+                ]
+              }
+            }
+          }
+        end
+
+        it 'parallelizes and only keeps needs specified by needs:parallel:matrix' do
+          expect(subject.dig(:other_job, :needs, :job)).to eq(expanded_needs_parallel_job_attributes)
+        end
+
+        context 'when FF `ci_needs_parallel_matrix` is disabled' do
+          before do
+            stub_feature_flags(ci_needs_parallel_matrix: false)
+          end
+
+          let(:expanded_job_attributes) do
+            expanded_job_names.map do |job_name|
+              { name: job_name, parallel: needs_parallel_config }
+            end
+          end
+
+          it 'keeps all parallelized jobs' do
+            expect(subject.dig(:other_job, :needs, :job)).to eq(expanded_job_attributes)
+          end
+        end
+      end
+    end
+
     context 'with parallel config as integer' do
       let(:variables_config) { {} }
       let(:parallel_config) { 5 }
@@ -167,7 +211,7 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
       it_behaves_like 'parallel needs'
     end
 
-    context 'with parallel matrix config' do
+    context 'with a simple parallel matrix config' do
       let(:variables_config) do
         {
           USER_VARIABLE: 'user value'
@@ -191,6 +235,19 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
           'rspec: [A, C]'
         ]
       end
+
+      let(:needs_parallel_config) do
+        {
+          matrix: [
+            {
+              VAR_1: ['A'],
+              VAR_2: ['C']
+            }
+          ]
+        }
+      end
+
+      let(:expanded_needs_parallel_job_names) { ['rspec: [A, C]'] }
 
       it 'does not have original job' do
         is_expected.not_to include(job_name)
@@ -228,6 +285,66 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
 
       it_behaves_like 'parallel dependencies'
       it_behaves_like 'parallel needs'
+      it_behaves_like 'needs:parallel:matrix'
+    end
+
+    context 'with a complex parallel matrix config' do
+      let(:variables_config) { {} }
+      let(:parallel_config) do
+        {
+          matrix: [
+            {
+              PLATFORM: ['centos'],
+              STACK: %w[ruby python java],
+              DB: %w[postgresql mysql]
+            },
+            {
+              PLATFORM: ['ubuntu'],
+              PROVIDER: %w[aws gcp]
+            }
+          ]
+        }
+      end
+
+      let(:needs_parallel_config) do
+        {
+          matrix: [
+            {
+              PLATFORM: ['centos'],
+              STACK: %w[ruby python],
+              DB: ['postgresql']
+            },
+            {
+              PLATFORM: ['ubuntu'],
+              PROVIDER: ['aws']
+            }
+          ]
+        }
+      end
+
+      let(:expanded_needs_parallel_job_names) do
+        [
+          'rspec: [centos, ruby, postgresql]',
+          'rspec: [centos, python, postgresql]',
+          'rspec: [ubuntu, aws]'
+        ]
+      end
+
+      let(:expanded_job_names) do
+        [
+          'rspec: [centos, ruby, postgresql]',
+          'rspec: [centos, ruby, mysql]',
+          'rspec: [centos, python, postgresql]',
+          'rspec: [centos, python, mysql]',
+          'rspec: [centos, java, postgresql]',
+          'rspec: [centos, java, mysql]',
+          'rspec: [ubuntu, aws]',
+          'rspec: [ubuntu, gcp]'
+        ]
+      end
+
+      it_behaves_like 'parallel needs'
+      it_behaves_like 'needs:parallel:matrix'
     end
 
     context 'when parallel config does not matches a factory' do

@@ -229,16 +229,6 @@ RSpec.describe PerformanceMonitoring::PrometheusDashboard do
       allow(Gitlab::Metrics::Dashboard::Finder).to receive(:find_raw).with(project, dashboard_path: path).and_call_original
     end
 
-    context 'when schema is valid' do
-      let(:dashboard_schema) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')) }
-
-      it 'returns empty array' do
-        expect(described_class).to receive(:from_json).with(dashboard_schema)
-
-        expect(schema_validation_warnings).to eq []
-      end
-    end
-
     context 'when schema is invalid' do
       let(:dashboard_schema) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/dashboard_missing_panel_groups.yml')) }
 
@@ -250,28 +240,5 @@ RSpec.describe PerformanceMonitoring::PrometheusDashboard do
         expect(described_class.new.schema_validation_warnings).to eq ['test: test error']
       end
     end
-
-    context 'when YAML has wrong syntax' do
-      let(:project) { create(:project, :repository, :custom_repo, files: { path => fixture_file('lib/gitlab/metrics/dashboard/broken_yml_syntax.yml') }) }
-
-      subject(:schema_validation_warnings) { described_class.new(path: path, environment: environment).schema_validation_warnings }
-
-      it 'returns array with errors messages' do
-        expect(described_class).not_to receive(:from_json)
-
-        expect(schema_validation_warnings).to eq ['Invalid yaml']
-      end
-    end
-  end
-
-  describe '#to_yaml' do
-    subject { prometheus_dashboard.to_yaml }
-
-    let(:prometheus_dashboard) { described_class.from_json(json_content) }
-    let(:expected_yaml) do
-      "---\npanel_groups:\n- panels:\n  - metrics:\n    - id: metric_of_ages\n      unit: count\n      label: Metric of Ages\n      query: \n      query_range: http_requests_total\n    type: area-chart\n    title: Chart Title\n    y_label: Y-Axis\n    weight: \n  group: Group Title\n  priority: \ndashboard: Dashboard Title\n"
-    end
-
-    it { is_expected.to eq(expected_yaml) }
   end
 end

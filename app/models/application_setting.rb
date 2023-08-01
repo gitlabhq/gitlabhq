@@ -726,10 +726,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  validates :ai_access_token,
-    presence: { message: N_("is required to enable Code Suggestions") },
-    if: :instance_level_code_suggestions_enabled
-
   validates :package_registry_allow_anyone_to_pull_option,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
@@ -968,5 +964,4 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 end
 
-ApplicationSetting.prepend(ApplicationSettingMaskedAttrs)
 ApplicationSetting.prepend_mod_with('ApplicationSetting')

@@ -35,6 +35,7 @@ import IdTokensYaml from './yaml_tests/positive_tests/id_tokens.yml';
 import HooksYaml from './yaml_tests/positive_tests/hooks.yml';
 import SecretsYaml from './yaml_tests/positive_tests/secrets.yml';
 import ServicesYaml from './yaml_tests/positive_tests/services.yml';
+import NeedsParallelMatrixYaml from './yaml_tests/positive_tests/needs_parallel_matrix.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
@@ -56,6 +57,9 @@ import IdTokensNegativeYaml from './yaml_tests/negative_tests/id_tokens.yml';
 import HooksNegative from './yaml_tests/negative_tests/hooks.yml';
 import SecretsNegativeYaml from './yaml_tests/negative_tests/secrets.yml';
 import ServicesNegativeYaml from './yaml_tests/negative_tests/services.yml';
+import NeedsParallelMatrixNumericYaml from './yaml_tests/negative_tests/needs/parallel_matrix/numeric.yml';
+import NeedsParallelMatrixWrongParallelValueYaml from './yaml_tests/negative_tests/needs/parallel_matrix/wrong_parallel_value.yml';
+import NeedsParallelMatrixWrongMatrixValueYaml from './yaml_tests/negative_tests/needs/parallel_matrix/wrong_matrix_value.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -96,6 +100,7 @@ describe('positive tests', () => {
       IdTokensYaml,
       ServicesYaml,
       SecretsYaml,
+      NeedsParallelMatrixYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a
@@ -136,6 +141,9 @@ describe('negative tests', () => {
       ProjectPathIncludeTailSlashYaml,
       SecretsNegativeYaml,
       ServicesNegativeYaml,
+      NeedsParallelMatrixNumericYaml,
+      NeedsParallelMatrixWrongParallelValueYaml,
+      NeedsParallelMatrixWrongMatrixValueYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a

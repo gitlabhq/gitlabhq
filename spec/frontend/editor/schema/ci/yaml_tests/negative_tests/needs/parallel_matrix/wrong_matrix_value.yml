@@ -1,0 +1,30 @@
+# invalid needs:parallel:matrix where matrix value is incorrect
+job_with_needs_parallel_matrix:
+  script: exit 0
+  needs:
+    - job: some_job_with_parallel_matrix
+      parallel:
+        matrix: 10
+
+job_with_needs_parallel_matrix_2:
+  script: exit 0
+  needs:
+    - job: some_job_with_parallel_matrix
+      parallel:
+        matrix: "string"
+
+job_with_needs_parallel_matrix_3:
+  script: exit 0
+  needs:
+    - job: some_job_with_parallel_matrix
+      parallel:
+        matrix: [a1, a2]
+
+job_with_needs_parallel_matrix_4:
+  script: exit 0
+  needs:
+    - job: some_job_with_parallel_matrix
+      parallel:
+        matrix:
+          VAR_1: 1
+          VAR_2: 2

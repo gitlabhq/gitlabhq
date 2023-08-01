@@ -6973,10 +6973,6 @@ Input type: `UserSetNamespaceCommitEmailInput`
 
 ### `Mutation.vulnerabilitiesDismiss`
 
-WARNING:
-**Introduced** in 16.2.
-This feature is an Experiment. It can be changed or removed at any time.
-
 Input type: `VulnerabilitiesDismissInput`
 
 #### Arguments
@@ -6994,7 +6990,7 @@ Input type: `VulnerabilitiesDismissInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilitiesdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilitiesdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationvulnerabilitiesdismissvulnerabilities"></a>`vulnerabilities` **{warning-solid}** | [`[Vulnerability!]!`](#vulnerability) | **Deprecated:** This feature is an Experiment. It can be changed or removed at any time. Introduced in 16.2. |
+| <a id="mutationvulnerabilitiesdismissvulnerabilities"></a>`vulnerabilities` | [`[Vulnerability!]!`](#vulnerability) | Vulnerabilities after state change. |
 
 ### `Mutation.vulnerabilityConfirm`
 

@@ -1,0 +1,32 @@
+# valid needs:parallel:matrix
+job_with_needs_parallel_matrix:
+  script: exit 0
+  needs:
+    - job: job_with_parallel_matrix
+      parallel:
+        matrix:
+          - VAR_1: [a]
+            VAR_2: [d]
+
+job_with_needs_parallel_matrix_2:
+  script: exit 0
+  needs:
+    - job: job_with_parallel_matrix
+      parallel:
+        matrix:
+          - VAR_1: a
+            VAR_2: d
+
+job_with_needs_parallel_matrix_3:
+  script: exit 0
+  needs:
+    - job: job_with_parallel_matrix
+      parallel:
+        matrix:
+          - VAR_1: ["a", b]
+            VAR_2: d
+    - job: job_with_parallel_matrix_2
+      parallel:
+        matrix:
+          - VAR_1: [a, "b", c]
+            VAR_5: [d, "e"]

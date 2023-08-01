@@ -13,6 +13,12 @@ PATH
       json (~> 2.6.3)
 
 PATH
+  remote: gems/error_tracking_open_api
+  specs:
+    error_tracking_open_api (1.0.0)
+      typhoeus (~> 1.0, >= 1.0.1)
+
+PATH
   remote: gems/gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
@@ -83,12 +89,6 @@ PATH
     devise-pbkdf2-encryptable (0.0.0)
       devise (~> 4.0)
       devise-two-factor (~> 4.0)
-
-PATH
-  remote: vendor/gems/error_tracking_open_api
-  specs:
-    error_tracking_open_api (1.0.0)
-      typhoeus (~> 1.0, >= 1.0.1)
 
 PATH
   remote: vendor/gems/mail-smtp_pool

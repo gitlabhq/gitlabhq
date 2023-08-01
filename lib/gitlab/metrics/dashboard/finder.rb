@@ -63,7 +63,7 @@ module Gitlab
           #                              display_name: String,
           #                              default: Boolean }]
           def find_all_paths(project)
-            dashboards = user_facing_dashboard_services.flat_map do |service|
+            dashboards = PREDEFINED_DASHBOARD_LIST.flat_map do |service|
               service.all_dashboard_paths(project)
             end
 
@@ -72,16 +72,8 @@ module Gitlab
 
           private
 
-          def user_facing_dashboard_services
-            PREDEFINED_DASHBOARD_LIST + [project_service]
-          end
-
           def system_service
             ::Metrics::Dashboard::SystemDashboardService
-          end
-
-          def project_service
-            ::Metrics::Dashboard::CustomDashboardService
           end
 
           def service_for(options)
