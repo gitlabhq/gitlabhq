@@ -11,7 +11,7 @@ module Banzai
       def call
         return doc unless settings.plantuml_enabled? && doc.at_xpath(lang_tag)
 
-        plantuml_setup
+        Gitlab::Plantuml.configure
 
         doc.xpath(lang_tag).each do |node|
           img_tag = Nokogiri::HTML::DocumentFragment.parse(
@@ -37,15 +37,6 @@ module Banzai
 
       def settings
         Gitlab::CurrentSettings.current_application_settings
-      end
-
-      def plantuml_setup
-        Asciidoctor::PlantUml.configure do |conf|
-          conf.url = settings.plantuml_url
-          conf.png_enable = settings.plantuml_enabled
-          conf.svg_enable = false
-          conf.txt_enable = false
-        end
       end
     end
   end

@@ -78,20 +78,11 @@ module Gitlab
       context[:pipeline] = :ascii_doc
       context[:max_includes] = [MAX_INCLUDES, context[:max_includes]].compact.min
 
-      plantuml_setup
+      Gitlab::Plantuml.configure
 
       html = ::Asciidoctor.convert(input, asciidoc_opts)
       html = Banzai.render(html, context)
       html.html_safe
-    end
-
-    def self.plantuml_setup
-      Asciidoctor::PlantUml.configure do |conf|
-        conf.url = Gitlab::CurrentSettings.plantuml_url
-        conf.svg_enable = Gitlab::CurrentSettings.plantuml_enabled
-        conf.png_enable = Gitlab::CurrentSettings.plantuml_enabled
-        conf.txt_enable = false
-      end
     end
   end
 end

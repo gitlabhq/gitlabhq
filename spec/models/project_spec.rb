@@ -827,6 +827,37 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project).to be_valid
       end
 
+      context 'when validating if path already exist as pages unique domain' do
+        before do
+          stub_pages_setting(host: 'example.com')
+        end
+
+        it 'rejects paths that match pages unique domain' do
+          create(:project_setting, pages_unique_domain: 'some-unique-domain')
+
+          project = build(:project, path: 'some-unique-domain.example.com')
+
+          expect(project).not_to be_valid
+          expect(project.errors.full_messages_for(:path)).to match(['Path already in use'])
+        end
+
+        it 'accepts path when the host does not match' do
+          create(:project_setting, pages_unique_domain: 'some-unique-domain')
+
+          project = build(:project, path: 'some-unique-domain.another-example.com')
+
+          expect(project).to be_valid
+        end
+
+        it 'accepts path when the domain does not match' do
+          create(:project_setting, pages_unique_domain: 'another-unique-domain')
+
+          project = build(:project, path: 'some-unique-domain.example.com')
+
+          expect(project).to be_valid
+        end
+      end
+
       context 'path is unchanged' do
         let_it_be(:invalid_path_project) do
           project = create(:project, :repository, :public)
@@ -4727,6 +4758,33 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project).to receive(:visibility_level_allowed_by_group).and_call_original
 
       project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    end
+
+    context 'when validating if path already exist as pages unique domain' do
+      before do
+        stub_pages_setting(host: 'example.com')
+      end
+
+      it 'rejects paths that match pages unique domain' do
+        stub_pages_setting(host: 'example.com')
+        create(:project_setting, pages_unique_domain: 'some-unique-domain')
+
+        expect(project.update(path: 'some-unique-domain.example.com')).to eq(false)
+        expect(project.errors.full_messages_for(:path)).to match(['Path already in use'])
+      end
+
+      it 'accepts path when the host does not match' do
+        create(:project_setting, pages_unique_domain: 'some-unique-domain')
+
+        expect(project.update(path: 'some-unique-domain.another-example.com')).to eq(true)
+      end
+
+      it 'accepts path when the domain does not match' do
+        stub_pages_setting(host: 'example.com')
+        create(:project_setting, pages_unique_domain: 'another-unique-domain')
+
+        expect(project.update(path: 'some-unique-domain.example.com')).to eq(true)
+      end
     end
 
     it 'does not validate the visibility' do

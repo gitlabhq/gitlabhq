@@ -2,6 +2,37 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.2.2 (2023-08-01)
+
+### Added (1 change)
+
+- [Add MR reviewers to BitBucketServer import to 16-2](gitlab-org/security/gitlab@aeb33292029aae649352dea089d9e86933e01a80)
+
+### Fixed (2 changes)
+
+- [Disable IAT verification by default](gitlab-org/security/gitlab@b3a0c02721101596c644443d412ca13e8f4ce000)
+- [Enable descendant_security_scans by default](gitlab-org/security/gitlab@66eaaabed118b3b4b75fca17ef13e56b64e4eb4b) **GitLab Enterprise Edition**
+
+### Security (17 changes)
+
+- [Fix undefined method licenses for nil:NilClass bug](gitlab-org/security/gitlab@aa4c4dc26a239e7799f9e9aa14d893c7a696d112) ([merge request](gitlab-org/security/gitlab!3471))
+- [Fix undefined method page error in list dependencies](gitlab-org/security/gitlab@08acd6aa91d34de2403e1d2a28b437c58af107c1) ([merge request](gitlab-org/security/gitlab!3470))
+- [Add pagination for license scanning](gitlab-org/security/gitlab@b58ed3a7c40dd08ab0fe48c0cc4386e1cb7fa48a) ([merge request](gitlab-org/security/gitlab!3467))
+- [Prevent leaking emails of newly created users](gitlab-org/security/gitlab@25d75bb2494dffb7e2b55f3b9d190a7302461fe1) ([merge request](gitlab-org/security/gitlab!3449))
+- [Added redirect to filtered params](gitlab-org/security/gitlab@a72a1d48e871716ebeae3a4082078d4626cab8a0) ([merge request](gitlab-org/security/gitlab!3441))
+- [Relocate PlantUML config and disable SVG support](gitlab-org/security/gitlab@6aac3a3e7223cbb85a62d6e95cf096e8a582cfcf) ([merge request](gitlab-org/security/gitlab!3438))
+- [Sanitize multiple hardlinks from import archives](gitlab-org/security/gitlab@286c5b4e79f1a94554ee20b2535376d7c1c329a8) ([merge request](gitlab-org/security/gitlab!3435))
+- [Validates project path availability](gitlab-org/security/gitlab@d970c230a0dc1113de469e4636bac020fa7cdeac) ([merge request](gitlab-org/security/gitlab!3426))
+- [Fix policy project assign](gitlab-org/security/gitlab@5564547ac37f5f80c58f444778bdaf3e3a491ff7) ([merge request](gitlab-org/security/gitlab!3423))
+- [Fix bug where comments on files with incorrect sha breaks UI](gitlab-org/security/gitlab@da3ff8cc07ec7449f8bf1092ad1219fc2debbe53) ([merge request](gitlab-org/security/gitlab!3446))
+- [Fix pipeline schedule authorization for protected branch/tag](gitlab-org/security/gitlab@0d9a0ab46faa06cc33144096382f1375f95e91bd) ([merge request](gitlab-org/security/gitlab!3413))
+- [Mitigate autolink filter ReDOS](gitlab-org/security/gitlab@f8d9f5fa2617f1e372c6e477bc3840fd2161d7a7) ([merge request](gitlab-org/security/gitlab!3434))
+- [Fix XSS vector in Web IDE](gitlab-org/security/gitlab@530b97903782b2108284d47e33421e21f576ec8e) ([merge request](gitlab-org/security/gitlab!3409))
+- [Mitigate project reference filter ReDOS](gitlab-org/security/gitlab@93f7983d73955244994a131f7093ab8699347eb6) ([merge request](gitlab-org/security/gitlab!3431))
+- [Add a stricter regex for the Harbor search param](gitlab-org/security/gitlab@988280e72ac7570825e7451c528b718d38be681c) ([merge request](gitlab-org/security/gitlab!3408))
+- [Update pipeline user to the last policy MR author](gitlab-org/security/gitlab@85f3797d29aa957df88b4f8eaf47ec102021dd1a) ([merge request](gitlab-org/security/gitlab!3421))
+- [Prohibit 40 character hex plus a hyphen if branch name is path](gitlab-org/security/gitlab@14fabf71a196dcfa6af566084f0b5266be4bfe2d) ([merge request](gitlab-org/security/gitlab!3405))
+
 ## 16.2.1 (2023-07-25)
 
 ### Fixed (1 change)

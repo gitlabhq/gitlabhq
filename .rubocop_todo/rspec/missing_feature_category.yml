@@ -5088,7 +5088,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/policies/ci/bridge_policy_spec.rb'
     - 'spec/policies/ci/build_policy_spec.rb'
     - 'spec/policies/ci/pipeline_policy_spec.rb'
-    - 'spec/policies/ci/pipeline_schedule_policy_spec.rb'
     - 'spec/policies/ci/trigger_policy_spec.rb'
     - 'spec/policies/clusters/agent_policy_spec.rb'
     - 'spec/policies/clusters/agent_token_policy_spec.rb'
