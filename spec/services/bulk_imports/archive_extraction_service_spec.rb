@@ -43,10 +43,18 @@ RSpec.describe BulkImports::ArchiveExtractionService, feature_category: :importe
 
     context 'when archive file is a symlink' do
       it 'raises an error' do
-        FileUtils.ln_s(File.join(tmpdir, filename), File.join(tmpdir, 'symlink'))
+        FileUtils.ln_s(filepath, File.join(tmpdir, 'symlink'))
 
         expect { described_class.new(tmpdir: tmpdir, filename: 'symlink').execute }
           .to raise_error(BulkImports::Error, 'Invalid file')
+      end
+    end
+
+    context 'when archive file shares multiple hard links' do
+      it 'raises an error' do
+        FileUtils.link(filepath, File.join(tmpdir, 'hard_link'))
+
+        expect { subject.execute }.to raise_error(BulkImports::Error, 'Invalid file')
       end
     end
 

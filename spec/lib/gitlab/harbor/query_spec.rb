@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Harbor::Query do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:harbor_integration) { create(:harbor_integration) }
 
   let(:params) { {} }
@@ -111,19 +113,20 @@ RSpec.describe Gitlab::Harbor::Query do
     end
 
     context 'search' do
-      context 'with valid search' do
-        let(:params) { { search: 'name=desc' } }
-
-        it 'initialize successfully' do
-          expect(query.valid?).to eq(true)
-        end
+      where(:search_param, :is_valid) do
+        "name=desc"                  | true
+        "name=value1,name=value-2"   | true
+        "name=value1,name=value_2"   | false
+        "name=desc,key=value"        | false
+        "name=value1, name=value2"   | false
+        "name"                       | false
       end
 
-      context 'with invalid search' do
-        let(:params) { { search: 'blabla' } }
+      with_them do
+        let(:params) { { search: search_param } }
 
-        it 'initialize failed' do
-          expect(query.valid?).to eq(false)
+        it "validates according to the regex" do
+          expect(query.valid?).to eq(is_valid)
         end
       end
     end

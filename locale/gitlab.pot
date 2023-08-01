@@ -36421,6 +36421,9 @@ msgstr ""
 msgid "ProjectSettings|With GitLab Pages you can host your static websites on GitLab. GitLab Pages uses a caching mechanism for efficiency. Your changes may not take effect until that cache is invalidated, which usually takes less than a minute."
 msgstr ""
 
+msgid "ProjectSetting|already in use"
+msgstr ""
+
 msgid "ProjectTemplates|.NET Core"
 msgstr ""
 
@@ -36716,6 +36719,9 @@ msgid "ProjectsNew|You can always change your URL later"
 msgstr ""
 
 msgid "ProjectsNew|Your project will be created at:"
+msgstr ""
+
+msgid "Project|already in use"
 msgstr ""
 
 msgid "PrometheusAlerts|exceeded"
@@ -54166,9 +54172,6 @@ msgstr ""
 msgid "eligible users"
 msgstr ""
 
-msgid "email '%{email}' is not a verified email."
-msgstr ""
-
 msgid "email address settings"
 msgstr ""
 
@@ -54463,6 +54466,9 @@ msgid "is not the member project"
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."
+msgstr ""
+
+msgid "is not verified."
 msgstr ""
 
 msgid "is one of"

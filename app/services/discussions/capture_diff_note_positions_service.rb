@@ -26,7 +26,7 @@ module Discussions
       active_diff_discussions = merge_request.notes.new_diff_notes.discussions.select do |discussion|
         discussion.active?(merge_request.diff_refs)
       end
-      paths = active_diff_discussions.flat_map { |n| n.diff_file.paths }
+      paths = active_diff_discussions.flat_map { |n| n.diff_file&.paths }
 
       [active_diff_discussions, paths]
     end
