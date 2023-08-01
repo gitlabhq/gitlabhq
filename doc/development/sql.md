@@ -354,7 +354,10 @@ values (the new column is missing), because the values are cached within the `Ac
 cache. These values are usually populated when the application boots up.
 
 At this point, the only fix would be a full application restart so that the schema cache gets
-updated.
+updated. Since [GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121957),
+the schema cache will be automatically reset so that subsequent queries
+will succeed. This reset can be disabled by disabling the `ops` feature
+flag `reset_column_information_on_statement_invalid`.
 
 The problem can be avoided if we always use `SELECT users.*` or we always explicitly define the
 columns.

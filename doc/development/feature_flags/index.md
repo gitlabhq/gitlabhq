@@ -199,7 +199,7 @@ Only feature flags that have a YAML definition file can be used when running the
 
 ```shell
 $ bin/feature-flag my_feature_flag
->> Specify the group introducing the feature flag, like `group::apm`:
+>> Specify the group introducing the feature flag, like `group::project management`:
 ?> group::application performance
 
 >> URL of the MR introducing the feature flag (enter to skip):
@@ -557,6 +557,8 @@ to ensure the feature works properly. If automated tests are not included for bo
 with the untested code path should be manually tested before deployment to production.
 
 When using the testing environment, all feature flags are enabled by default.
+Flags can be disabled by default in the [`spec/spec_helper.rb` file](https://gitlab.com/gitlab-org/gitlab/-/blob/b61fba42eea2cf5bb1ca64e80c067a07ed5d1921/spec/spec_helper.rb#L274).
+Please add a comment inline to explain why the flag needs to be disabled. You can also attach the issue URL for reference if possible.
 
 WARNING:
 This does not apply to end-to-end (QA) tests, which [do not enable feature flags by default](#end-to-end-qa-tests). There is a different [process for using feature flags in end-to-end tests](../testing_guide/end_to_end/feature_flags.md).

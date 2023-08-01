@@ -488,7 +488,9 @@ We collect information about tests duration in [`rspec_profiling_stats`](https:/
 
 With [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375983) we defined thresholds for tests duration that can act a guide.
 
-For tests that are not meeting the thresholds it is recommended to create issues and improve the tests duration.
+For tests that are not meeting the thresholds, we create [issues](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=rspec%3Aslow%20test&first_page_size=100) automatically in order to improve them.
+
+For tests that are slow for a legitimate reason and to skip issue creation, add `allowed_to_be_slow: true`.
 
 | Date | Feature tests | Controllers and Requests tests | Unit | Other | Method |
 | :-: | :-: | :-: | :-: | :-: | :-: |

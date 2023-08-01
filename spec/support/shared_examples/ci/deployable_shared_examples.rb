@@ -51,7 +51,7 @@ RSpec.shared_examples 'a deployable job' do
     end
 
     context 'when job is older than the latest deployment but succeeded once' do
-      let(:job) { create(factory_type, :success, :with_deployment, pipeline: pipeline, environment: 'production') }
+      let(:job) { create(factory_type, :success, :with_deployment, project: project, pipeline: pipeline, environment: 'production') }
 
       before do
         allow(job.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)

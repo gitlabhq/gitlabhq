@@ -30,9 +30,13 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
       end
 
       context 'when the feature flag `ui_for_organizations` is disabled' do
-        it 'renders 404' do
-          stub_feature_flags(ui_for_organizations: false)
+        let_it_be(:other_user) { create :user }
 
+        before do
+          stub_feature_flags(ui_for_organizations: other_user)
+        end
+
+        it 'renders 404' do
           gitlab_request
 
           expect(response).to have_gitlab_http_status(:not_found)

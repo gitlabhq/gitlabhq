@@ -217,3 +217,16 @@ You cannot use interactive web terminals to interact with a runner.
 However, you can use a terminal to install dependencies and compile and debug code.
 
 For more information about configuring a workspace that supports interactive web terminals, see [remote development](../remote_development/index.md).
+
+## Troubleshooting
+
+When working with the Web IDE, you might encounter the following issues.
+
+### Character offset in the Web IDE
+
+When you type in the Web IDE, you might get a four-character offset. To resolve the issue, do one of the following:
+
+- Add `"editor.disableMonospaceOptimizations": true` to your settings.
+- Modify your `"editor.font"` setting.
+
+For more information, see [VS Code issue 80170](https://github.com/microsoft/vscode/issues/80170).
