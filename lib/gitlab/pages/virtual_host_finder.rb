@@ -10,13 +10,12 @@ module Gitlab
       def execute
         return if host.blank?
 
-        gitlab_host = ::Settings.pages.host.downcase.prepend(".")
+        gitlab_host = ::Gitlab.config.pages.host.downcase.prepend(".")
 
         if host.ends_with?(gitlab_host)
           name = host.delete_suffix(gitlab_host)
 
-          by_namespace_domain(name) ||
-            by_unique_domain(name)
+          by_unique_domain(name) || by_namespace_domain(name)
         else
           by_custom_domain(host)
         end

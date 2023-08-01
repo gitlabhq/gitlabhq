@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator do
+RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_category: :importers do
   let_it_be(:filepath) { File.join(Dir.tmpdir, 'decompressed_archive_size_validator_spec.gz') }
 
   before(:all) do
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator do
 
       context 'which archive path is a symlink' do
         let(:filepath) { File.join(Dir.tmpdir, 'symlink') }
-        let(:error_message) { 'Archive path is a symlink' }
+        let(:error_message) { 'Archive path is a symlink or hard link' }
 
         before do
           FileUtils.ln_s(filepath, filepath, force: true)
@@ -129,6 +129,19 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator do
 
         it 'returns false' do
           expect(subject.valid?).to eq(false)
+        end
+      end
+
+      context 'when archive path shares multiple hard links' do
+        let(:filesize) { 32 }
+        let(:error_message) { 'Archive path is a symlink or hard link' }
+
+        before do
+          FileUtils.link(filepath, File.join(Dir.mktmpdir, 'hard_link'))
+        end
+
+        it 'returns false' do
+          expect(subject).not_to be_valid
         end
       end
 

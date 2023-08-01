@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::FileDecompressionService, feature_category: :importers do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:tmpdir) { Dir.mktmpdir }
   let_it_be(:ndjson_filename) { 'labels.ndjson' }
   let_it_be(:ndjson_filepath) { File.join(tmpdir, ndjson_filename) }
@@ -70,39 +72,68 @@ RSpec.describe BulkImports::FileDecompressionService, feature_category: :importe
       end
     end
 
-    context 'when compressed file is a symlink' do
-      let_it_be(:symlink) { File.join(tmpdir, 'symlink.gz') }
-
-      before do
-        FileUtils.ln_s(File.join(tmpdir, gz_filename), symlink)
-      end
-
-      subject { described_class.new(tmpdir: tmpdir, filename: 'symlink.gz') }
-
-      it 'raises an error and removes the file' do
+    shared_examples 'raises an error and removes the file' do |error_message:|
+      specify do
         expect { subject.execute }
-          .to raise_error(BulkImports::FileDecompressionService::ServiceError, 'File decompression error')
-
-        expect(File.exist?(symlink)).to eq(false)
+          .to raise_error(BulkImports::FileDecompressionService::ServiceError, error_message)
+        expect(File).not_to exist(file)
       end
     end
 
-    context 'when decompressed file is a symlink' do
-      let_it_be(:symlink) { File.join(tmpdir, 'symlink') }
+    shared_context 'when compressed file' do
+      let_it_be(:file) { File.join(tmpdir, 'file.gz') }
+
+      subject { described_class.new(tmpdir: tmpdir, filename: 'file.gz') }
 
       before do
-        FileUtils.ln_s(File.join(tmpdir, ndjson_filename), symlink)
-
-        subject.instance_variable_set(:@decompressed_filepath, symlink)
+        FileUtils.send(link_method, File.join(tmpdir, gz_filename), file)
       end
+    end
+
+    shared_context 'when decompressed file' do
+      let_it_be(:file) { File.join(tmpdir, 'file.txt') }
 
       subject { described_class.new(tmpdir: tmpdir, filename: gz_filename) }
 
-      it 'raises an error and removes the file' do
-        expect { subject.execute }.to raise_error(described_class::ServiceError, 'Invalid file')
+      before do
+        original_file = File.join(tmpdir, 'original_file.txt')
+        FileUtils.touch(original_file)
+        FileUtils.send(link_method, original_file, file)
 
-        expect(File.exist?(symlink)).to eq(false)
+        subject.instance_variable_set(:@decompressed_filepath, file)
       end
+    end
+
+    context 'when compressed file is a symlink' do
+      let(:link_method) { :symlink }
+
+      include_context 'when compressed file'
+
+      include_examples 'raises an error and removes the file', error_message: 'File decompression error'
+    end
+
+    context 'when compressed file shares multiple hard links' do
+      let(:link_method) { :link }
+
+      include_context 'when compressed file'
+
+      include_examples 'raises an error and removes the file', error_message: 'File decompression error'
+    end
+
+    context 'when decompressed file is a symlink' do
+      let(:link_method) { :symlink }
+
+      include_context 'when decompressed file'
+
+      include_examples 'raises an error and removes the file', error_message: 'Invalid file'
+    end
+
+    context 'when decompressed file shares multiple hard links' do
+      let(:link_method) { :link }
+
+      include_context 'when decompressed file'
+
+      include_examples 'raises an error and removes the file', error_message: 'Invalid file'
     end
   end
 end

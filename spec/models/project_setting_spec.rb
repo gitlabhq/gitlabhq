@@ -77,12 +77,36 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :projects do
       expect(project_setting).not_to be_valid
       expect(project_setting.errors.full_messages).to include("Pages unique domain has already been taken")
     end
+
+    it "validates if the pages_unique_domain already exist as a project path" do
+      stub_pages_setting(host: 'example.com')
+
+      create(:project, path: "random-unique-domain.example.com")
+      project_setting = build(:project_setting, pages_unique_domain: "random-unique-domain")
+
+      expect(project_setting).not_to be_valid
+      expect(project_setting.errors.full_messages_for(:pages_unique_domain))
+        .to match(["Pages unique domain already in use"])
+    end
+
+    context "when updating" do
+      it "validates if the pages_unique_domain already exist as a project path" do
+        stub_pages_setting(host: 'example.com')
+        project_setting = create(:project_setting)
+
+        create(:project, path: "random-unique-domain.example.com")
+
+        expect(project_setting.update(pages_unique_domain: "random-unique-domain")).to eq(false)
+        expect(project_setting.errors.full_messages_for(:pages_unique_domain))
+          .to match(["Pages unique domain already in use"])
+      end
+    end
   end
 
   describe 'target_platforms=' do
     it 'stringifies and sorts' do
       project_setting = build(:project_setting, target_platforms: [:watchos, :ios])
-      expect(project_setting.target_platforms).to eq %w(ios watchos)
+      expect(project_setting.target_platforms).to eq %w[ios watchos]
     end
   end
 

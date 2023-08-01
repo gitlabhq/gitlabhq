@@ -25,7 +25,7 @@ module Gitlab
         message: 'params invalid'
       }, allow_blank: true
       validates :search, format: {
-        with: /\A([a-z\_]*=[a-zA-Z0-9\- :]*,*)*\z/,
+        with: /\A(name=[a-zA-Z0-9\-:]+(?:,name=[a-zA-Z0-9\-:]+)*)\z/,
         message: 'params invalid'
       }, allow_blank: true
 

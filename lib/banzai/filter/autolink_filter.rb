@@ -34,7 +34,12 @@ module Banzai
       # https://github.com/vmg/rinku/blob/v2.0.1/ext/rinku/autolink.c#L65
       #
       # Rubular: http://rubular.com/r/nrL3r9yUiq
+      # Note that it's not possible to use Gitlab::UntrustedRegexp for LINK_PATTERN,
+      # as `(?<!` is unsupported in `re2`, see https://github.com/google/re2/wiki/Syntax
       LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}.freeze
+
+      ENTITY_UNTRUSTED = '((?:&[\w#]+;)+)\z'
+      ENTITY_UNTRUSTED_REGEX = Gitlab::UntrustedRegexp.new(ENTITY_UNTRUSTED, multiline: false)
 
       # Text matching LINK_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
@@ -85,10 +90,14 @@ module Banzai
         # Remove any trailing HTML entities and store them for appending
         # outside the link element. The entity must be marked HTML safe in
         # order to be output literally rather than escaped.
-        match.gsub!(/((?:&[\w#]+;)+)\z/, '')
-        dropped = (Regexp.last_match(1) || '').html_safe
+        dropped = ''
+        match = ENTITY_UNTRUSTED_REGEX.replace_gsub(match) do |entities|
+          dropped = entities[1].html_safe
 
-        # To match the behaviour of Rinku, if the matched link ends with a
+          ''
+        end
+
+        # To match the behavior of Rinku, if the matched link ends with a
         # closing part of a matched pair of punctuation, we remove that trailing
         # character unless there are an equal number of closing and opening
         # characters in the link.

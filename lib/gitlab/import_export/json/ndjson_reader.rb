@@ -21,7 +21,9 @@ module Gitlab
           # This reads from `tree/project.json`
           path = file_path("#{importable_path}.json")
 
-          raise Gitlab::ImportExport::Error, 'Invalid file' if !File.exist?(path) || File.symlink?(path)
+          if !File.exist?(path) || Gitlab::Utils::FileInfo.linked?(path)
+            raise Gitlab::ImportExport::Error, 'Invalid file'
+          end
 
           data = File.read(path, MAX_JSON_DOCUMENT_SIZE)
           json_decode(data)
@@ -34,7 +36,7 @@ module Gitlab
             # This reads from `tree/project/merge_requests.ndjson`
             path = file_path(importable_path, "#{key}.ndjson")
 
-            next if !File.exist?(path) || File.symlink?(path)
+            next if !File.exist?(path) || Gitlab::Utils::FileInfo.linked?(path)
 
             File.foreach(path, MAX_JSON_DOCUMENT_SIZE).with_index do |line, line_num|
               documents << [json_decode(line), line_num]
