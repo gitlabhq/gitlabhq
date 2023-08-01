@@ -19,7 +19,7 @@ describe('~/user_lists/components/user_lists.vue', () => {
   const mockProvide = {
     newUserListPath: '/user-lists/new',
     featureFlagsHelpPagePath: '/help/feature-flags',
-    errorStateSvgPath: '/assets/illustrations/feature_flag.svg',
+    errorStateSvgPath: '/assets/illustrations/empty-state/empty-feature-flag-md.svg',
   };
 
   const mockState = {

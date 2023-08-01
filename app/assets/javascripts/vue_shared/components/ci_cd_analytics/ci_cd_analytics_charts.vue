@@ -18,6 +18,11 @@ export default {
       required: true,
       type: Object,
     },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -58,6 +63,7 @@ export default {
       v-bind="$attrs"
       :chart-data="chart.data"
       :area-chart-options="chartOptions"
+      :loading="loading"
     >
       <slot name="alerts"></slot>
       <p>{{ dateRange }}</p>

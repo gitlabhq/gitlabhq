@@ -30,7 +30,7 @@ describe('Feature flags', () => {
     userListPath: '/user-list',
     unleashApiUrl: `${TEST_HOST}/api/unleash`,
     projectName: 'fakeProjectName',
-    errorStateSvgPath: '/assets/illustrations/feature_flag.svg',
+    errorStateSvgPath: '/assets/illustrations/empty-state/empty-feature-flag-md.svg',
   };
 
   const mockState = {

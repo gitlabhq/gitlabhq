@@ -137,6 +137,7 @@ export default {
         :title="$options.translations.emptyStateTitle"
         :description="$options.translations.emptyStateDescription"
         :svg-path="emptyStatePath"
+        :svg-height="150"
       />
     </div>
   </div>

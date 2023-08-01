@@ -1,0 +1,14 @@
+#import "./label.fragment.graphql"
+
+query searchProjectLabels($fullPath: ID!, $search: String) {
+  project(fullPath: $fullPath) @persist {
+    id
+    labels(searchTerm: $search, includeAncestorGroups: true) {
+      __persist
+      nodes {
+        __persist
+        ...Label
+      }
+    }
+  }
+}

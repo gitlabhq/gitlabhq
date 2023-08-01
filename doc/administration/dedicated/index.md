@@ -35,15 +35,41 @@ To request the creation of a new GitLab Dedicated environment for your organizat
 
 ### Maintenance window
 
-When onboarding, you must also specify your preference for the weekly four-hour time slot that GitLab uses to perform maintenance and upgrade operations on the tenant instance.
+When onboarding, you must also specify your preference for the weekly four-hour time slot that GitLab uses to perform routine maintenance and upgrade operations on all tenant instances.
 
-- APAC (outside working hours): Wednesday 1 AM - 5 PM UTC
-- EU (outside working hours): Tuesday 1 AM - 5 AM UTC
-- AMER Option 1 (outside working hours): Tuesday 7 AM - 11 AM UTC
-- AMER Option 2 (outside working hours): Sunday 9 PM - Monday 1 AM UTC
+Available scheduled mainenance windows, performed outside standard working hours:
 
-NOTE:
-Some downtime may be incurred during this window. This downtime is not counting towards [the system SLA](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/).
+- APAC: Wednesday 1 AM - 5 PM UTC
+- EU: Tuesday 1 AM - 5 AM UTC
+- AMER Option 1: Tuesday 7 AM - 11 AM UTC
+- AMER Option 2: Sunday 9 PM - Monday 1 AM UTC
+
+Consider the following notes:
+
+- Some downtime might be incurred during this window. This downtime does not count toward
+  [the system SLA](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/).
+- The weekly scheduled mainenance window can be postponed into another window within the same week.
+  This option needs to be agreed with the assigned Customer Success Manager at least one week in advance.
+- The scheduled weekly maintenance window is different from
+  [emergency maintenance](#emergency-maintenance).
+
+#### Emergency maintenance
+
+In an event of a platform outage, degradation or a security event requiring urgent action,
+emergency maintenance will be carried out per
+[the emergency change processes](https://about.gitlab.com/handbook/engineering/infrastructure/emergency-change-processes/).
+
+The emergency maintenance is initiated urgently when urgent actions need to be executed by GitLab
+on a Dedicated tenant instance.
+Communication with the customer will be provided on best effort basis prior to commencing the
+maintenance, and full communication will follow after the immediate action is carried out.
+
+For example, when a critical security process is initiated to address an S1 vulnerability in GitLab,
+emergency maintenance is carried out to upgrade GitLab to the non-vulnerable version and that
+can occur outside of a scheduled maintenance window.
+Postponing emergency maintenance is not possible, because the same process must be applied to all
+existing Dedicated customers, and the primary concern is to ensure safety and availability of
+Dedicated tenant instances.
 
 ## Configuration changes
 

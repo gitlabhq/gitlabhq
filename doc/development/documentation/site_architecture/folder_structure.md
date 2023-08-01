@@ -75,7 +75,7 @@ place for it.
 ## Avoid duplication
 
 Do not include the same information in multiple places.
-[Link to a single source of truth instead.](../styleguide/index.md#link-instead-of-repeating-text)
+Link to a single source of truth instead.
 
 For example, if you have code in a repository other than the [primary repositories](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/architecture.md),
 and documentation in the same repository, you can keep the documentation in that repository.

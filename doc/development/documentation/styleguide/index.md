@@ -33,65 +33,32 @@ This policy prevents information silos, making it easier to find information
 about GitLab products. It also informs decisions about the kinds of content that
 is included in the documentation.
 
-### Topic types
+## Topic types
 
-In the software industry, it is a best practice to organize documentation in
-different types. For example:
+GitLab uses [topic types](../topic_types/index.md) to organize the product documentation.
 
-- Concepts
-- Tasks
-- Reference
-- Troubleshooting
+Topic types help users digest information more quickly. They also help address these issues:
 
-At GitLab, we have not traditionally used topic types. However, we are starting to
-move in this direction, so we can address these issues:
-
-- **Content is hard to find.** Our docs are comprehensive and include a large amount of
-  useful information. Topic types create repeatable patterns that make our content easier
+- **Content is hard to find.** The GitLab docs are comprehensive and include a large amount of
+  useful information. Topic types create repeatable patterns that make the content easier
   to scan and parse.
-- **Content is often written from the contributor's point of view.**  Our docs
-  are written by contributors. Topic types (tasks specifically) help put
+- **Content is often written from the contributor's point of view.**  The GitLab docs
+  are written by a variety of contributors. Topic types (tasks, specifically) help put
   information into a format that is geared toward helping others, rather than
   documenting how a feature was implemented.
 
-GitLab uses these [topic types](../topic_types/index.md).
+## Docs-first methodology
 
-### Link instead of repeating text
-
-Rather than repeating information from another topic, link to the single source
-of truth and explain why it is important.
-
-### Docs-first methodology
-
-We employ a documentation-first methodology. This method ensures the documentation
-remains a complete and trusted resource, and makes communicating about the use
-of GitLab more efficient.
+The product documentation should be a complete and trusted resource.
 
 - If the answer to a question exists in documentation, share the link to the
   documentation instead of rephrasing the information.
-- When you encounter new information not available in GitLab documentation (for
-  example, when working on a support case or testing a feature), your first step
-  should be to create a merge request (MR) to add this information to the
-  documentation. You can then share the MR to communicate this information.
-
-New information that would be useful toward the future usage or troubleshooting
-of GitLab should not be written directly in a forum or other messaging system,
-but added to a documentation MR and then referenced, as described above.
+- When you encounter information that's not available in GitLab documentation,
+  create a merge request (MR) to add the information to the
+  documentation. Then share the MR to communicate the information.
 
 The more we reflexively add information to the documentation, the more
 the documentation helps others efficiently accomplish tasks and solve problems.
-
-If you have questions when considering, authoring, or editing documentation, ask
-the Technical Writing team. They're available on Slack in `#docs` or in GitLab by
-mentioning [the writer for](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-the applicable [DevOps stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
-Otherwise, forge ahead with your best effort. It does not need to be perfect;
-the team is happy to review and improve upon your content. Review the
-[Documentation guidelines](index.md) before you begin your first documentation MR.
-
-Maintaining a knowledge base separate from the documentation would
-be against the documentation-first methodology because the content would overlap with
-the documentation.
 
 ## Writing for localization
 
@@ -112,7 +79,7 @@ also aid in consistency, which is important for localization.
 
 ## Markdown
 
-All GitLab documentation is written using [Markdown](https://en.wikipedia.org/wiki/Markdown).
+All GitLab documentation is written in [Markdown](https://en.wikipedia.org/wiki/Markdown).
 
 The [documentation website](https://docs.gitlab.com) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/ruby/gems/gitlab_kramdown),
 a "flavored" Kramdown engine to render pages from Markdown to HTML. The use of Kramdown
@@ -121,6 +88,8 @@ linked style guide. You can't use Kramdown-specific markup (for example, `{:.cla
 
 For a complete Kramdown reference, see the
 [GitLab Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
+
+The Markdown format is [tested](../testing.md) by using markdownlint and Vale.
 
 ### HTML in Markdown
 
@@ -152,44 +121,6 @@ Use backticks for:
 - Error messages.
 - Commands, parameters, and filenames.
 - Values. For example: "In the **Name** text box, type `test`."
-
-### Markdown Rules
-
-GitLab ensures that the Markdown used across all documentation is consistent, as
-well as easy to review and maintain, by [testing documentation changes](../testing.md)
-with [markdownlint](../testing.md#markdownlint). This lint test fails when any
-document has an issue with Markdown formatting that may cause the page to render
-incorrectly in GitLab. It also fails when a document has
-non-standard Markdown (which may render correctly, but is not the current
-standard for GitLab documentation).
-
-#### Markdown rule `MD044/proper-names` (capitalization)
-
-A rule that could cause confusion is `MD044/proper-names`, as it might not be
-immediately clear what caused markdownlint to fail, or how to correct the
-failure. This rule checks a list of known words, listed in the `.markdownlint.yml`
-file in each project, to verify proper use of capitalization and backticks.
-Words in backticks are ignored by markdownlint.
-
-In general, product names should follow the exact capitalization of the official
-names of the products, protocols, and so on.
-
-Some examples fail if incorrect capitalization is used:
-
-- MinIO (needs capital `IO`)
-- NGINX (needs all capitals)
-- runit (needs lowercase `r`)
-
-Additionally, commands, parameters, values, filenames, and so on must be
-included in backticks. For example:
-
-- "Change the `needs` keyword in your `.gitlab-ci.yml`..."
-  - `needs` is a parameter, and `.gitlab-ci.yml` is a file, so both need backticks.
-    Additionally, `.gitlab-ci.yml` without backticks fails markdownlint because it
-    does not have capital G or L.
-- "Run `git clone` to clone a Git repository..."
-  - `git clone` is a command, so it must be lowercase, while Git is the product,
-    so it must have a capital G.
 
 ## Metadata
 

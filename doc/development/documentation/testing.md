@@ -274,6 +274,34 @@ You can use markdownlint:
 - [In a code editor](#configure-editors).
 - [In a `pre-push` hook](#configure-pre-push-hooks).
 
+#### Markdown rule `MD044/proper-names` (capitalization)
+
+A rule that can cause confusion is `MD044/proper-names`. The failure, or
+how to correct it, might not be immediately clear.
+This rule checks a list of known words, listed in the `.markdownlint.yml`
+file in each project, to verify proper use of capitalization and backticks.
+Words in backticks are ignored by markdownlint.
+
+In general, product names should follow the exact capitalization of the official
+names of the products, protocols, and so on.
+
+Some examples fail if incorrect capitalization is used:
+
+- MinIO (needs capital `IO`)
+- NGINX (needs all capitals)
+- runit (needs lowercase `r`)
+
+Additionally, commands, parameters, values, filenames, and so on must be
+included in backticks. For example:
+
+- "Change the `needs` keyword in your `.gitlab-ci.yml`..."
+  - `needs` is a parameter, and `.gitlab-ci.yml` is a file, so both need backticks.
+    Additionally, `.gitlab-ci.yml` without backticks fails markdownlint because it
+    does not have capital G or L.
+- "Run `git clone` to clone a Git repository..."
+  - `git clone` is a command, so it must be lowercase, while Git is the product,
+    so it must have a capital G.
+
 ### Vale
 
 [Vale](https://vale.sh/) is a grammar, style, and word usage linter for the

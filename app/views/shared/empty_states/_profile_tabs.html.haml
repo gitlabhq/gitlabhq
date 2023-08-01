@@ -12,10 +12,10 @@
         - if current_user_empty_message_description.present?
           %p= current_user_empty_message_description
 
-        - if secondary_button_link.present?
-          = link_button_to secondary_button_label, secondary_button_link, variant: :confirm, category: :secondary
-
         - if primary_button_link.present?
           = link_button_to primary_button_label, primary_button_link, variant: :confirm
+
+        - if secondary_button_link.present?
+          = link_button_to secondary_button_label, secondary_button_link, variant: :confirm, category: :secondary
       - else
         %h5= visitor_empty_message

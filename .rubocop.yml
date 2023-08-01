@@ -115,6 +115,11 @@ Layout/LineLength:
 Lint/LastKeywordArgument:
   Safe: false
 
+Lint/Debugger:
+  DebuggerMethods:
+    PryShell:
+      binding.pry_shell
+
 Lint/EmptyFile:
   Exclude:
     - 'db/seeds.rb'

@@ -36,11 +36,11 @@ import {
 } from '~/issues/list/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import searchUsersQuery from '~/issues/list/queries/search_users.query.graphql';
-import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
-import searchMilestonesQuery from '~/issues/list/queries/search_milestones.query.graphql';
+import searchProjectMembers from '~/graphql_shared/queries/project_user_members_search.query.graphql';
 import getServiceDeskIssuesQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues.query.graphql';
 import getServiceDeskIssuesCounts from 'ee_else_ce/service_desk/queries/get_service_desk_issues_counts.query.graphql';
+import searchProjectLabelsQuery from '../queries/search_project_labels.query.graphql';
+import searchProjectMilestonesQuery from '../queries/search_project_milestones.query.graphql';
 import {
   errorFetchingCounts,
   errorFetchingIssues,
@@ -316,8 +316,8 @@ export default {
     fetchUsers(search) {
       return this.$apollo
         .query({
-          query: searchUsersQuery,
-          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
+          query: searchProjectMembers,
+          variables: { fullPath: this.fullPath, search },
         })
         .then(({ data }) =>
           data[WORKSPACE_PROJECT]?.[`${WORKSPACE_PROJECT}Members`].nodes.map(
@@ -328,8 +328,8 @@ export default {
     fetchMilestones(search) {
       return this.$apollo
         .query({
-          query: searchMilestonesQuery,
-          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
+          query: searchProjectMilestonesQuery,
+          variables: { fullPath: this.fullPath, search },
         })
         .then(({ data }) => data[WORKSPACE_PROJECT]?.milestones.nodes);
     },
@@ -342,8 +342,8 @@ export default {
     fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
       return this.$apollo
         .query({
-          query: searchLabelsQuery,
-          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
+          query: searchProjectLabelsQuery,
+          variables: { fullPath: this.fullPath, search },
           fetchPolicy,
         })
         .then(({ data }) => data[WORKSPACE_PROJECT]?.labels.nodes)

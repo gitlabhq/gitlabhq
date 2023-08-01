@@ -81,6 +81,7 @@ export default {
       v-else-if="emptyState"
       :title="emptyTitle"
       :svg-path="errorStateSvgPath"
+      :svg-height="150"
       data-testid="empty-state"
     >
       <template #description>

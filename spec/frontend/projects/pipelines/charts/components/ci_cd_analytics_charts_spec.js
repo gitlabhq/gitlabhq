@@ -82,15 +82,25 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
       ]);
     });
 
-    it('should select a different chart on change', async () => {
-      findSegmentedControl().vm.$emit('input', 1);
+    describe('when the date range is updated', () => {
+      let chart;
 
-      const chart = wrapper.findComponent(CiCdAnalyticsAreaChart);
+      beforeEach(async () => {
+        chart = wrapper.findComponent(CiCdAnalyticsAreaChart);
 
-      await nextTick();
+        await findSegmentedControl().vm.$emit('input', 1);
+      });
 
-      expect(chart.props('chartData')).toEqual(transformedAreaChartData);
-      expect(chart.text()).toBe('Date range: test range 2');
+      it('should select a different chart on change', () => {
+        expect(chart.props('chartData')).toEqual(transformedAreaChartData);
+        expect(chart.text()).toBe('Date range: test range 2');
+      });
+
+      it('will emit a `select-chart` event', () => {
+        expect(wrapper.emitted()).toEqual({
+          'select-chart': [[1]],
+        });
+      });
     });
   });
 

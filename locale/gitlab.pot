@@ -5294,6 +5294,9 @@ msgstr ""
 msgid "Analytics dashboards"
 msgstr ""
 
+msgid "Analytics settings"
+msgstr ""
+
 msgid "Analytics|A visualization with that name already exists."
 msgstr ""
 
@@ -5307,6 +5310,9 @@ msgid "Analytics|An error occurred while loading the %{visualizationTitle} visua
 msgstr ""
 
 msgid "Analytics|Analytics dashboards"
+msgstr ""
+
+msgid "Analytics|Analytics settings for '%{project_name}' were successfully updated."
 msgstr ""
 
 msgid "Analytics|Browser"
@@ -14292,6 +14298,9 @@ msgstr ""
 msgid "DORA4Metrics|Deploys"
 msgstr ""
 
+msgid "DORA4Metrics|Failed to generate forecast. Try again later. If the problem persists, consider %{linkStart}creating an issue%{linkEnd}."
+msgstr ""
+
 msgid "DORA4Metrics|Failed to load DORA performance scores for Namespace: %{fullPath}"
 msgstr ""
 
@@ -14436,6 +14445,9 @@ msgid "DORA4Metrics|The chart displays the frequency of deployments to productio
 msgstr ""
 
 msgid "DORA4Metrics|The chart displays the median time between a merge request being merged and deployed to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
+msgstr ""
+
+msgid "DORA4Metrics|The forecast might be inaccurate. To improve it, select a wider time frame or try again when more data is available"
 msgstr ""
 
 msgid "DORA4Metrics|This is a lower-bound approximation. Your group has too many issues and MRs to calculate in real time."
@@ -36427,6 +36439,9 @@ msgstr ""
 msgid "ProjectSettings|All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
+msgid "ProjectSettings|All your dashboard data sources."
+msgstr ""
+
 msgid "ProjectSettings|Allow"
 msgstr ""
 
@@ -36484,13 +36499,10 @@ msgstr ""
 msgid "ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release."
 msgstr ""
 
-msgid "ProjectSettings|Configure analytics features for this project"
-msgstr ""
-
 msgid "ProjectSettings|Configure your infrastructure."
 msgstr ""
 
-msgid "ProjectSettings|Connect to your instance"
+msgid "ProjectSettings|Connect your instance"
 msgstr ""
 
 msgid "ProjectSettings|Contact an admin to change this setting."
@@ -36505,7 +36517,13 @@ msgstr ""
 msgid "ProjectSettings|Cube API key"
 msgstr ""
 
+msgid "ProjectSettings|Custom dashboard projects"
+msgstr ""
+
 msgid "ProjectSettings|Customize this project's badges."
+msgstr ""
+
+msgid "ProjectSettings|Data sources"
 msgstr ""
 
 msgid "ProjectSettings|Determine what happens to the commit history when you merge a merge request."
@@ -36596,9 +36614,6 @@ msgid "ProjectSettings|Infrastructure"
 msgstr ""
 
 msgid "ProjectSettings|Instrument your application"
-msgstr ""
-
-msgid "ProjectSettings|Instrument your application to track events and behaviors."
 msgstr ""
 
 msgid "ProjectSettings|Instrumentation details"
@@ -36697,6 +36712,9 @@ msgstr ""
 msgid "ProjectSettings|Private"
 msgstr ""
 
+msgid "ProjectSettings|Product analytics"
+msgstr ""
+
 msgid "ProjectSettings|Product analytics configurator connection string"
 msgstr ""
 
@@ -36779,6 +36797,9 @@ msgid "ProjectSettings|Squashing is never performed and the checkbox is hidden."
 msgstr ""
 
 msgid "ProjectSettings|Status checks must succeed"
+msgstr ""
+
+msgid "ProjectSettings|Store custom configuration files."
 msgstr ""
 
 msgid "ProjectSettings|Submit changes to be merged upstream."
@@ -36881,9 +36902,6 @@ msgid "ProjectSettings|What are badges?"
 msgstr ""
 
 msgid "ProjectSettings|What are merge trains?"
-msgstr ""
-
-msgid "ProjectSettings|What is Analytics Dashboards?"
 msgstr ""
 
 msgid "ProjectSettings|What is squashing?"

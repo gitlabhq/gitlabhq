@@ -112,6 +112,7 @@ RSpec.shared_context 'project navbar structure' do
           _('CI/CD'),
           _('Packages and registries'),
           _('Monitor'),
+          (_('Analytics') if Gitlab.ee?),
           s_('UsageQuota|Usage Quotas')
         ]
       }

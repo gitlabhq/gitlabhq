@@ -29,6 +29,7 @@ export default {
       await this.$nextTick();
       handleBlobRichViewer(this.$refs.content, this.type);
       handleLocationHash();
+      this.$emit('richContentLoaded');
     });
   },
   safeHtmlConfig: {
