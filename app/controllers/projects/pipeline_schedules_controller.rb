@@ -21,7 +21,6 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def new
-    @schedule = project.pipeline_schedules.new
   end
 
   def create
@@ -99,6 +98,15 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     params.require(:schedule)
       .permit(:description, :cron, :cron_timezone, :ref, :active,
         variables_attributes: [:id, :variable_type, :key, :secret_value, :_destroy])
+  end
+
+  def new_schedule
+    # We need the `ref` here for `authorize_create_pipeline_schedule!`
+    @schedule ||= project.pipeline_schedules.new(ref: params.dig(:schedule, :ref))
+  end
+
+  def authorize_create_pipeline_schedule!
+    return access_denied! unless can?(current_user, :create_pipeline_schedule, new_schedule)
   end
 
   def authorize_play_pipeline_schedule!

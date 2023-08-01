@@ -65,6 +65,10 @@ Graphql/AuthorizeTypes:
 Graphql/Descriptions:
   Enabled: false
 
+# This cop doesn't make sense in the context of gems
+RSpec/BeforeAll:
+  Enabled: false
+
 Naming/FileName:
   Exclude:
     - spec/**/*.rb

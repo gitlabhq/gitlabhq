@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Milestoneable do
-  let(:user) { create(:user) }
-  let(:milestone) { create(:milestone, project: project) }
+  let_it_be(:group, reload: true) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, group: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
 
   shared_examples_for 'an object that can be assigned a milestone' do
     describe 'Validation' do
       describe 'milestone' do
-        let(:project) { create(:project, :repository) }
         let(:milestone_id) { milestone.id }
 
         subject { milestoneable_class.new(params) }
@@ -39,8 +40,6 @@ RSpec.describe Milestoneable do
     end
 
     describe '#milestone_available?' do
-      let(:group) { create(:group) }
-      let(:project) { create(:project, group: group) }
       let(:issue) { create(:issue, project: project) }
 
       def build_milestoneable(milestone_id)
@@ -62,9 +61,9 @@ RSpec.describe Milestoneable do
       it 'returns true with a milestone from the the parent of the issue project group' do
         parent = create(:group)
         group.update!(parent: parent)
-        milestone = create(:milestone, group: parent)
+        parent_milestone = create(:milestone, group: parent)
 
-        expect(build_milestoneable(milestone.id).milestone_available?).to be(true)
+        expect(build_milestoneable(parent_milestone.id).milestone_available?).to be(true)
       end
 
       it 'returns true with a blank milestone' do
@@ -86,9 +85,6 @@ RSpec.describe Milestoneable do
   end
 
   describe '#supports_milestone?' do
-    let(:group)   { create(:group) }
-    let(:project) { create(:project, group: group) }
-
     context "for issues" do
       let(:issue) { build(:issue, project: project) }
 
@@ -215,6 +211,15 @@ RSpec.describe Milestoneable do
     end
 
     it_behaves_like 'an object that can be assigned a milestone'
+
+    describe '#milestone_available?' do
+      it 'returns true with a milestone from the issue group' do
+        milestone = create(:milestone, group: group)
+        milestoneable = milestoneable_class.new(namespace: group, milestone_id: milestone.id)
+
+        expect(milestoneable.milestone_available?).to be_truthy
+      end
+    end
   end
 
   context 'MergeRequests' do

@@ -32,6 +32,12 @@ RSpec.describe Gitlab::Checks::BranchCheck, feature_category: :source_code_manag
         expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, "You cannot create a branch with a 40-character hexadecimal branch name.")
       end
 
+      it "prohibits 40-character hexadecimal branch names followed by a dash as the start of a path" do
+        allow(subject).to receive(:branch_name).and_return("267208abfe40e546f5e847444276f7d43a39503e-/test")
+
+        expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, "You cannot create a branch with a 40-character hexadecimal branch name.")
+      end
+
       it "prohibits 64-character hexadecimal branch names" do
         allow(subject).to receive(:branch_name).and_return("09b9fd3ea68e9b95a51b693a29568c898e27d1476bbd83c825664f18467fc175")
 

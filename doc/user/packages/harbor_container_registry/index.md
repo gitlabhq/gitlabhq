@@ -68,7 +68,7 @@ To remove the Harbor Registry for a project:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
 1. Select **Settings > Integrations**.
 1. Select **Harbor** under **Active integrations**.
-1. Clear the **Active** checkbox under **Enable integration**.
+1. Under **Enable integration**, clear the **Active** checkbox.
 1. Select **Save changes**.
 
 The **Operate > Harbor Registry** entry is removed from the sidebar.

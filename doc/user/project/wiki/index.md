@@ -287,7 +287,7 @@ To hide the link to an external wiki:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **External wiki**.
-1. In the **Enable integration** section, clear the **Active** checkbox.
+1. Under **Enable integration**, clear the **Active** checkbox.
 1. Select **Save changes**.
 
 ## Disable the project's wiki

@@ -32,7 +32,7 @@ GitLab supports enabling the Apple App Store integration at the project level. C
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Apple App Store Connect**.
-1. Turn on the **Active** toggle under **Enable Integration**.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide the Apple App Store Connect configuration information:
    - **Issuer ID**: The Apple App Store Connect issuer ID.
    - **Key ID**: The key ID of the generated private key.

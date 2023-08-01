@@ -16462,6 +16462,7 @@ GPG signature for a signed commit.
 | <a id="groupvisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
 | <a id="groupvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. (see [Connections](#connections)) |
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
+| <a id="groupworkitems"></a>`workItems` **{warning-solid}** | [`WorkItemConnection`](#workitemconnection) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Work items that belong to the namespace. |
 
 #### Fields with arguments
 

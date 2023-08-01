@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
+RSpec.describe API::NpmGroupPackages, feature_category: :package_registry,
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/418757' do
   using RSpec::Parameterized::TableSyntax
 
   include_context 'npm api setup'

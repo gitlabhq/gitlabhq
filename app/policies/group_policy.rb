@@ -148,6 +148,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_member
     enable :read_custom_emoji
     enable :read_counts
+    enable :read_issue
   end
 
   rule { achievements_enabled }.policy do

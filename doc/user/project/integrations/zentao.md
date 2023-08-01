@@ -43,7 +43,7 @@ Complete these steps in GitLab:
 
 1. Go to your project and select **Settings > Integrations**.
 1. Select **ZenTao**.
-1. Turn on the **Active** toggle under **Enable Integration**.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide the ZenTao configuration information:
    - **ZenTao Web URL**: The base URL of the ZenTao instance web interface you're linking to this GitLab project (for example, `example.zentao.net`).
    - **ZenTao API URL** (optional): The base URL to the ZenTao instance API. Defaults to the Web URL value if not set.

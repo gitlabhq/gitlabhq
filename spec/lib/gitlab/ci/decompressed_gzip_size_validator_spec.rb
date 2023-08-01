@@ -105,6 +105,16 @@ RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :imp
       end
     end
 
+    context 'when archive path has multiple hard links' do
+      before do
+        FileUtils.link(filepath, File.join(Dir.mktmpdir, 'hard_link'))
+      end
+
+      it 'returns false' do
+        expect(subject).not_to be_valid
+      end
+    end
+
     context 'when archive path is not a file' do
       let(:filepath) { Dir.mktmpdir }
       let(:filesize) { File.size(filepath) }

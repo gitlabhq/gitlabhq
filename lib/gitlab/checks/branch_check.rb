@@ -43,7 +43,7 @@ module Gitlab
       def prohibited_branch_checks
         return if deletion?
 
-        if %r{\A#{Gitlab::Git::Commit::RAW_FULL_SHA_PATTERN}(/|\z)}o.match?(branch_name)
+        if %r{\A#{Gitlab::Git::Commit::RAW_FULL_SHA_PATTERN}(-/|/|\z)}o.match?(branch_name)
           raise GitAccess::ForbiddenError, ERROR_MESSAGES[:prohibited_hex_branch_name]
         end
 

@@ -262,6 +262,12 @@ module Types
           resolver: Resolvers::DataTransfer::GroupDataTransferResolver,
           description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
 
+    field :work_items,
+          null: true,
+          description: 'Work items that belong to the namespace.',
+          alpha: { milestone: '16.3' },
+          resolver: ::Resolvers::Namespaces::WorkItemsResolver
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

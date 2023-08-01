@@ -34,7 +34,7 @@ you can automatically configure Mattermost slash commands:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Mattermost slash commands**.
-1. In **Enable integration**, ensure the **Active** checkbox is selected.
+1. Under **Enable integration**, ensure the **Active** checkbox is selected.
 1. Select **Add to Mattermost**, and select **Save changes**.
 
 ## Configure manually

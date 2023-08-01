@@ -36943,6 +36943,9 @@ msgstr ""
 msgid "ProjectSettings|Your project is set up. %{linkStart}View instrumentation instructions%{linkEnd}."
 msgstr ""
 
+msgid "ProjectSetting|already in use"
+msgstr ""
+
 msgid "ProjectTemplates|.NET Core"
 msgstr ""
 
@@ -37238,6 +37241,9 @@ msgid "ProjectsNew|You can always change your URL later"
 msgstr ""
 
 msgid "ProjectsNew|Your project will be created at:"
+msgstr ""
+
+msgid "Project|already in use"
 msgstr ""
 
 msgid "PrometheusAlerts|exceeded"
@@ -55008,9 +55014,6 @@ msgstr ""
 msgid "eligible users"
 msgstr ""
 
-msgid "email '%{email}' is not a verified email."
-msgstr ""
-
 msgid "email address settings"
 msgstr ""
 
@@ -55299,6 +55302,9 @@ msgid "is not the member project"
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."
+msgstr ""
+
+msgid "is not verified."
 msgstr ""
 
 msgid "is one of"

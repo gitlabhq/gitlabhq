@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::AttachmentsDownloader do
+RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :importers do
   subject(:downloader) { described_class.new(file_url) }
 
   let_it_be(:file_url) { 'https://example.com/avatar.png' }
@@ -36,6 +36,26 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader do
         file = downloader.perform
 
         expect(File.exist?(file.path)).to eq(true)
+      end
+    end
+
+    context 'when file shares multiple hard links' do
+      let(:tmpdir) { Dir.mktmpdir }
+      let(:hard_link) { File.join(tmpdir, 'hard_link') }
+
+      before do
+        existing_file = File.join(tmpdir, 'file.txt')
+        FileUtils.touch(existing_file)
+        FileUtils.link(existing_file, hard_link)
+        allow(downloader).to receive(:filepath).and_return(hard_link)
+      end
+
+      it 'raises expected exception' do
+        expect(Gitlab::Utils::FileInfo).to receive(:linked?).with(hard_link).and_call_original
+        expect { downloader.perform }.to raise_exception(
+          described_class::DownloadError,
+          'Invalid downloaded file'
+        )
       end
     end
 

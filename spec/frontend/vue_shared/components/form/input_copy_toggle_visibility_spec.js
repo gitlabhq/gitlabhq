@@ -192,7 +192,7 @@ describe('InputCopyToggleVisibility', () => {
       describe('when input is clicked', () => {
         it('selects input value', async () => {
           const mockSelect = jest.fn();
-          wrapper.vm.$refs.input.$el.select = mockSelect;
+          findFormInput().element.select = mockSelect;
           await findFormInput().trigger('click');
 
           expect(mockSelect).toHaveBeenCalled();
@@ -202,7 +202,7 @@ describe('InputCopyToggleVisibility', () => {
       describe('when label is clicked', () => {
         it('selects input value', async () => {
           const mockSelect = jest.fn();
-          wrapper.vm.$refs.input.$el.select = mockSelect;
+          findFormInput().element.select = mockSelect;
           await wrapper.find('label').trigger('click');
 
           expect(mockSelect).toHaveBeenCalled();

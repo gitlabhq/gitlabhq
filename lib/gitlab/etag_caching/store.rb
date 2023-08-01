@@ -9,15 +9,15 @@ module Gitlab
       SHARED_STATE_NAMESPACE = 'etag:'
 
       def get(key)
-        Gitlab::Redis::SharedState.with { |redis| redis.get(redis_shared_state_key(key)) }
+        with_redis { |redis| redis.get(redis_shared_state_key(key)) }
       end
 
       def touch(*keys, only_if_missing: false)
         etags = keys.map { generate_etag }
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          Gitlab::Redis::SharedState.with do |redis|
-            redis.pipelined do |pipeline|
+          with_redis do |redis|
+            Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
               keys.each_with_index do |key, i|
                 pipeline.set(redis_shared_state_key(key), etags[i], ex: EXPIRY_TIME, nx: only_if_missing)
               end
@@ -29,6 +29,12 @@ module Gitlab
       end
 
       private
+
+      def with_redis(&blk)
+        # We use multistore as n interweaving double-write will result in n-1 subsequent requests
+        # becoming a cache-miss, however, 2 interweaving .touch will lead to 1 cache miss anyway.
+        Gitlab::Redis::EtagCache.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
+      end
 
       def generate_etag
         SecureRandom.hex

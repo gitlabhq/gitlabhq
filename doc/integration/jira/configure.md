@@ -29,7 +29,7 @@ To configure your project settings in GitLab:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Jira**.
-1. In **Enable integration**, select the **Active** checkbox.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide connection details:
    - **Web URL**: Base URL for the Jira instance web interface you're linking to
      this GitLab project (for example, `https://jira.example.com`).

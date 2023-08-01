@@ -123,6 +123,14 @@ index 5fa7ae8a2bc1..5fe996ba0345 100644
      def valid?
 ```
 
+### Working with GitLab Duo Chat
+
+Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the Large Language Model to perform certain tasks.
+
+The state of the prompts is the result of weeks of iteration. If you want to change any prompt in the current tool, you must put it behind a feature flag.
+
+If you have any new or updated prompts, ask members of AI Framework team to review, because they have significant experience with them.
+
 ### Setup for GitLab documentation chat (legacy chat)
 
 To populate the embedding database for GitLab chat:

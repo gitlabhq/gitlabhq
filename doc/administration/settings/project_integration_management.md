@@ -136,7 +136,7 @@ To use instance-level or group-level default settings for a project integration:
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use default settings**.
-1. In **Enable integration**, ensure the **Active** checkbox is selected.
+1. Under **Enable integration**, ensure the **Active** checkbox is selected.
 1. Complete the fields.
 1. Select **Save changes**.
 
@@ -148,6 +148,6 @@ To use custom settings for a project or group integration:
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use custom settings**.
-1. In **Enable integration**, ensure the **Active** checkbox is selected.
+1. Under **Enable integration**, ensure the **Active** checkbox is selected.
 1. Complete the fields.
 1. Select **Save changes**.

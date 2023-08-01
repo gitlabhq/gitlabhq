@@ -26,7 +26,7 @@ To enable the Shimo integration for your project:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Shimo**.
-1. In **Enable integration**, ensure the **Active** checkbox is selected.
+1. Under **Enable integration**, ensure the **Active** checkbox is selected.
 1. Provide the **Shimo Workspace URL** you want to link to your group or project (for example, `https://shimo.im/space/aBAYV6VvajUP873j`).
 1. Select **Save changes**.
 

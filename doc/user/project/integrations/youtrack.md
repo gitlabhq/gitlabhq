@@ -17,7 +17,7 @@ To enable the YouTrack integration in a project:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **YouTrack**.
-1. Select the checkbox under **Enable integration**.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Fill in the required fields:
    - **Project URL**: The URL to the project in YouTrack.
    - **Issue URL**: The URL to view an issue in the YouTrack project.
