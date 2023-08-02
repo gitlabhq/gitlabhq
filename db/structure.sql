@@ -22567,30 +22567,6 @@ CREATE SEQUENCE scan_result_policies_id_seq
 
 ALTER SEQUENCE scan_result_policies_id_seq OWNED BY scan_result_policies.id;
 
-CREATE TABLE schema_inconsistencies (
-    id bigint NOT NULL,
-    issue_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    object_name text NOT NULL,
-    table_name text NOT NULL,
-    valitador_name text NOT NULL,
-    diff text NOT NULL,
-    CONSTRAINT check_001d186ac7 CHECK ((char_length(diff) <= 6144)),
-    CONSTRAINT check_120b6c86d0 CHECK ((char_length(valitador_name) <= 63)),
-    CONSTRAINT check_a0411f31fd CHECK ((char_length(object_name) <= 63)),
-    CONSTRAINT check_d96408dfd2 CHECK ((char_length(table_name) <= 63))
-);
-
-CREATE SEQUENCE schema_inconsistencies_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE schema_inconsistencies_id_seq OWNED BY schema_inconsistencies.id;
-
 CREATE TABLE schema_migrations (
     version character varying NOT NULL,
     finished_at timestamp with time zone DEFAULT now()
@@ -26071,8 +26047,6 @@ ALTER TABLE ONLY sbom_sources ALTER COLUMN id SET DEFAULT nextval('sbom_sources_
 
 ALTER TABLE ONLY scan_result_policies ALTER COLUMN id SET DEFAULT nextval('scan_result_policies_id_seq'::regclass);
 
-ALTER TABLE ONLY schema_inconsistencies ALTER COLUMN id SET DEFAULT nextval('schema_inconsistencies_id_seq'::regclass);
-
 ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_identities_id_seq'::regclass);
 
 ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('scim_oauth_access_tokens_id_seq'::regclass);
@@ -28530,9 +28504,6 @@ ALTER TABLE ONLY sbom_sources
 
 ALTER TABLE ONLY scan_result_policies
     ADD CONSTRAINT scan_result_policies_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY schema_inconsistencies
-    ADD CONSTRAINT schema_inconsistencies_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
@@ -33210,8 +33181,6 @@ CREATE UNIQUE INDEX index_scan_result_policies_on_position_in_configuration ON s
 
 CREATE INDEX index_scan_result_policies_on_project_id ON scan_result_policies USING btree (project_id);
 
-CREATE INDEX index_schema_inconsistencies_on_issue_id ON schema_inconsistencies USING btree (issue_id);
-
 CREATE INDEX index_scim_identities_on_group_id ON scim_identities USING btree (group_id);
 
 CREATE UNIQUE INDEX index_scim_identities_on_lower_extern_uid_and_group_id ON scim_identities USING btree (lower((extern_uid)::text), group_id);
@@ -36456,9 +36425,6 @@ ALTER TABLE p_ci_builds
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_a44ff95be5 FOREIGN KEY (parent_id) REFERENCES bulk_import_entities(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY users
-    ADD CONSTRAINT fk_a4b8fefe3e FOREIGN KEY (managing_group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT fk_a50430b375 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -38393,9 +38359,6 @@ ALTER TABLE ONLY packages_debian_group_component_files
 
 ALTER TABLE ONLY incident_management_timeline_event_tags
     ADD CONSTRAINT fk_rails_dd5c91484e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY schema_inconsistencies
-    ADD CONSTRAINT fk_rails_dd7d763602 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_callouts
     ADD CONSTRAINT fk_rails_ddfdd80f3d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

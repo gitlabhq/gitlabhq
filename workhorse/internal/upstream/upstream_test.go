@@ -30,6 +30,12 @@ type testCase struct {
 	expectedResponse string
 }
 
+type testCasePost struct {
+	test        testCase
+	contentType string
+	body        io.Reader
+}
+
 func TestMain(m *testing.M) {
 	// Secret should be configured before any Geo API poll happens to prevent
 	// race conditions where the first API call happens without a secret path
@@ -345,6 +351,24 @@ func runTestCases(t *testing.T, ws *httptest.Server, testCases []testCase) {
 	}
 }
 
+func runTestCasesPost(t *testing.T, ws *httptest.Server, testCases []testCasePost) {
+	t.Helper()
+	for _, tc := range testCases {
+		t.Run(tc.test.desc, func(t *testing.T) {
+
+			resp, err := http.Post(ws.URL+tc.test.path, tc.contentType, tc.body)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+
+			body, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+
+			require.Equal(t, 200, resp.StatusCode, "response code")
+			require.Equal(t, tc.test.expectedResponse, string(body))
+		})
+	}
+}
+
 func runTestCasesWithGeoProxyEnabled(t *testing.T, testCases []testCase) {
 	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
 	defer rsDeferredClose()
@@ -357,6 +381,20 @@ func runTestCasesWithGeoProxyEnabled(t *testing.T, testCases []testCase) {
 	defer wsDeferredClose()
 
 	runTestCases(t, ws, testCases)
+}
+
+func runTestCasesWithGeoProxyEnabledPost(t *testing.T, testCases []testCasePost) {
+	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
+	defer rsDeferredClose()
+
+	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
+	defer deferredClose()
+
+	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
+	defer wsDeferredClose()
+
+	runTestCasesPost(t, ws, testCases)
 }
 
 func newUpstreamConfig(authBackend string) *config.Config {

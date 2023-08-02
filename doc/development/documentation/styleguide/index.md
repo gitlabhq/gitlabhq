@@ -355,8 +355,6 @@ For numbers in text, spell out zero through nine and use numbers for 10 and grea
 ## Text
 
 - [Write in Markdown](#markdown).
-- Splitting long lines (preferably up to 100 characters) can make it easier to
-  provide feedback on small chunks of text.
 - Insert an empty line for new paragraphs.
 - Insert an empty line between different markups (for example, after every
   paragraph, header, list, and so on). Example:
@@ -369,6 +367,14 @@ For numbers in text, spell out zero through nine and use numbers for 10 and grea
   - List item 1
   - List item 2
   ```
+
+### Line length
+
+To make the source content easy to read, and to more easily compare diffs,
+follow these best practices when possible.
+
+- Split long lines at approximately 100 characters.
+- Start each new sentence on a new line.
 
 ### Comments
 

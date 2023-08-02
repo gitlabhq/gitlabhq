@@ -1271,7 +1271,7 @@ If you are using the Linux package installation, something might have failed dur
 ### GitLab indicates that more than 100% of repositories were synced
 
 This can be caused by orphaned records in the project registry. You can clear them
-[using a Rake task](../../../administration/raketasks/geo.md#remove-orphaned-project-registries).
+[using the Rake task to remove orphaned project registries](../../../administration/raketasks/geo.md#remove-orphaned-project-registries).
 
 ### Geo Admin Area returns 404 error for a secondary site
 

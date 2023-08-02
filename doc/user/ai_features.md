@@ -168,7 +168,7 @@ This is an experimental feature and we're continuously extending the capabilitie
 1. Select **Ask in GitLab Duo Chat**. A drawer opens on the right side of your screen.
 1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
 1. You can ask a follow-up question.
-1. If you want to ask a new question unrelated to the previous conversation, you may receive better answers if you clear the context by typing `/reset` into the input box an press **Send**
+1. If you want to ask a new question unrelated to the previous conversation, you may receive better answers if you clear the context by typing `/reset` into the input box and selecting **Send**.
 
 To give feedback about a specific response, use the feedback buttons in the response message.
 Or, you can add a comment in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/415591).

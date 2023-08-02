@@ -394,6 +394,7 @@ func configureRoutes(u *upstream) {
 		u.route("GET", geoGitProjectPattern+`info/refs\z`, git.GetInfoRefsHandler(api)),
 		u.route("POST", geoGitProjectPattern+`git-upload-pack\z`, contentEncodingHandler(git.UploadPack(api)), withMatcher(isContentType("application/x-git-upload-pack-request"))),
 		u.route("GET", geoGitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})\z`, defaultUpstream),
+		u.route("POST", geoGitProjectPattern+`info/lfs/objects/batch\z`, defaultUpstream),
 
 		// Serve health checks from this Geo secondary
 		u.route("", "^/-/(readiness|liveness)$", static.DeployPage(probeUpstream)),

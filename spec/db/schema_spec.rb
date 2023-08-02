@@ -111,7 +111,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     todos: %w[target_id commit_id],
     uploads: %w[model_id],
     user_agent_details: %w[subject_id],
-    users: %w[color_scheme_id created_by_id theme_id email_opted_in_source_id],
+    users: %w[color_scheme_id created_by_id theme_id email_opted_in_source_id managing_group_id],
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],

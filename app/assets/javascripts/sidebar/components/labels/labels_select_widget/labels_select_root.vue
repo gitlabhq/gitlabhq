@@ -412,6 +412,7 @@ export default {
             :workspace-type="workspaceType"
             :attr-workspace-path="attrWorkspacePath"
             :label-create-type="labelCreateType"
+            class="gl-mt-3"
             @setLabels="handleDropdownClose"
             @closeDropdown="collapseEditableItem"
           />
@@ -421,8 +422,8 @@ export default {
     <template v-else>
       <dropdown-contents
         ref="dropdownContents"
-        :allow-multiselect="allowMultiselect"
         :dropdown-button-text="dropdownButtonText"
+        :allow-multiselect="allowMultiselect"
         :labels-list-title="labelsListTitle"
         :footer-create-label-title="footerCreateLabelTitle"
         :footer-manage-label-title="footerManageLabelTitle"

@@ -7,4 +7,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114876
 milestone: '15.11'
 classes:
 - Gitlab::Database::SchemaValidation::SchemaInconsistency
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126479
+removed_in_milestone: '16.3'
 gitlab_schema: gitlab_main
