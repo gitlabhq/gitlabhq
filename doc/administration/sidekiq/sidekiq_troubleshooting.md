@@ -105,7 +105,14 @@ Gather data on the state of the Sidekiq workers with the following Ruby script.
 
    If the performance issue is intermittent:
 
-   - Run this in a cron job every five minutes. Write the files to a location with enough space: allow for 500 KB per file.
+   - Run this in a cron job every five minutes. Write the files to a location with enough space: allow for at least 500 KB per file.
+
+     ```shell
+     cat > /etc/cron.d/sidekiqcheck <<EOF
+     */5 * * * *  root  /opt/gitlab/bin/gitlab-rails runner /var/opt/gitlab/sidekiqcheck.rb > /tmp/sidekiqcheck_$(date '+\%Y\%m\%d-\%H:\%M').out
+     EOF
+     ```
+
    - Refer back to the data to see what went wrong.
 
 1. Analyze the output. The following commands assume that you have a directory of output files.

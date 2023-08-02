@@ -1,7 +1,11 @@
 <script>
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
-import { extractFilterAndSorting, getQueryParams } from '~/packages_and_registries/shared/utils';
+import {
+  extractFilterAndSorting,
+  extractPageInfo,
+  getQueryParams,
+} from '~/packages_and_registries/shared/utils';
 
 export default {
   components: { RegistrySearch, UrlSync },
@@ -31,6 +35,7 @@ export default {
         orderBy: this.defaultOrder,
         sort: this.defaultSort,
       },
+      pageInfo: {},
       mountRegistrySearch: false,
     };
   },
@@ -40,27 +45,49 @@ export default {
       return `${cleanOrderBy}_${this.sorting?.sort}`.toUpperCase();
     },
   },
+  watch: {
+    $route(newValue, oldValue) {
+      if (newValue.fullPath !== oldValue.fullPath) {
+        this.updateDataFromUrl();
+        this.emitUpdate();
+      }
+    },
+  },
   mounted() {
-    const queryParams = getQueryParams(window.document.location.search);
-    const { sorting, filters } = extractFilterAndSorting(queryParams);
-    this.updateSorting(sorting);
-    this.updateFilters(filters);
+    this.updateDataFromUrl();
     this.mountRegistrySearch = true;
     this.emitUpdate();
   },
   methods: {
+    updateDataFromUrl() {
+      const queryParams = getQueryParams(window.location.search);
+      const { sorting, filters } = extractFilterAndSorting(queryParams);
+      const pageInfo = extractPageInfo(queryParams);
+      this.updateSorting(sorting);
+      this.updateFilters(filters);
+      this.updatePageInfo(pageInfo);
+    },
     updateFilters(newValue) {
+      this.updatePageInfo({});
       this.filters = newValue;
     },
     updateSorting(newValue) {
+      this.updatePageInfo({});
       this.sorting = { ...this.sorting, ...newValue };
+    },
+    updatePageInfo(newValue) {
+      this.pageInfo = newValue;
     },
     updateSortingAndEmitUpdate(newValue) {
       this.updateSorting(newValue);
       this.emitUpdate();
     },
     emitUpdate() {
-      this.$emit('update', { sort: this.parsedSorting, filters: this.filters });
+      this.$emit('update', {
+        sort: this.parsedSorting,
+        filters: this.filters,
+        pageInfo: this.pageInfo,
+      });
     },
   },
 };

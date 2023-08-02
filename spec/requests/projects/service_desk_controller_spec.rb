@@ -71,7 +71,7 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
     it 'toggles services desk incoming email' do
       project.update!(service_desk_enabled: false)
 
-      put project_service_desk_refresh_path(project, format: :json), params: { service_desk_enabled: true }
+      put project_service_desk_path(project, format: :json), params: { service_desk_enabled: true }
 
       expect(json_response["service_desk_address"]).to be_present
       expect(json_response["service_desk_enabled"]).to be_truthy
@@ -79,7 +79,7 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
     end
 
     it 'sets issue_template_key' do
-      put project_service_desk_refresh_path(project, format: :json), params: { issue_template_key: 'service_desk' }
+      put project_service_desk_path(project, format: :json), params: { issue_template_key: 'service_desk' }
 
       settings = project.service_desk_setting
       expect(settings).to be_present
@@ -89,7 +89,7 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
     end
 
     it 'returns an error when update of service desk settings fails' do
-      put project_service_desk_refresh_path(project, format: :json), params: { issue_template_key: 'invalid key' }
+      put project_service_desk_path(project, format: :json), params: { issue_template_key: 'invalid key' }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to eq('Issue template key is empty or does not exist')
@@ -100,7 +100,7 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
 
       it 'renders 404' do
         sign_in(other_user)
-        put project_service_desk_refresh_path(project, format: :json), params: { service_desk_enabled: true }
+        put project_service_desk_path(project, format: :json), params: { service_desk_enabled: true }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

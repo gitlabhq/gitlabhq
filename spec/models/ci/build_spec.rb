@@ -2400,6 +2400,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true, masked: false },
           { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true, masked: false },
           { key: 'CI_PIPELINE_CREATED_AT', value: pipeline.created_at.iso8601, public: true, masked: false },
+          { key: 'CI_PIPELINE_NAME', value: pipeline.name, public: true, masked: false },
           { key: 'CI_COMMIT_SHA', value: build.sha, public: true, masked: false },
           { key: 'CI_COMMIT_SHORT_SHA', value: build.short_sha, public: true, masked: false },
           { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true, masked: false },

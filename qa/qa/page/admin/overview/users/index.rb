@@ -12,7 +12,7 @@ module QA
             end
 
             view 'app/assets/javascripts/admin/users/components/users_table.vue' do
-              element :user_row_content
+              element 'user-row-content'
             end
 
             def search_user(username)
@@ -24,13 +24,13 @@ module QA
             end
 
             def click_user(username)
-              within_element(:user_row_content, text: username) do
+              within_element('user-row-content', text: username) do
                 click_link(username)
               end
             end
 
             def has_username?(username)
-              has_element?(:user_row_content, text: username, wait: 1)
+              has_element?('user-row-content', text: username, wait: 1)
             end
           end
         end

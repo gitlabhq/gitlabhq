@@ -518,7 +518,7 @@ export default {
         <gl-dropdown-item
           v-gl-modal="$options.deleteModalId"
           variant="danger"
-          data-testid="delete_issue_button"
+          data-testid="delete-issue-button"
           @click="track('click_dropdown')"
         >
           {{ deleteButtonText }}

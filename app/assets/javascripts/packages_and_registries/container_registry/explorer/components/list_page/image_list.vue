@@ -1,11 +1,9 @@
 <script>
-import { GlKeysetPagination } from '@gitlab/ui';
 import ImageListRow from './image_list_row.vue';
 
 export default {
   name: 'ImageList',
   components: {
-    GlKeysetPagination,
     ImageListRow,
   },
   props: {
@@ -17,10 +15,6 @@ export default {
       type: Boolean,
       default: false,
       required: false,
-    },
-    pageInfo: {
-      type: Object,
-      required: true,
     },
     expirationPolicy: {
       type: Object,
@@ -41,13 +35,5 @@ export default {
       :expiration-policy="expirationPolicy"
       @delete="$emit('delete', $event)"
     />
-    <div class="gl-display-flex gl-justify-content-center">
-      <gl-keyset-pagination
-        v-bind="pageInfo"
-        class="gl-mt-3"
-        @prev="$emit('prev-page')"
-        @next="$emit('next-page')"
-      />
-    </div>
   </div>
 </template>

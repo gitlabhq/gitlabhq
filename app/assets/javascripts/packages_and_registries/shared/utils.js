@@ -30,6 +30,14 @@ export const extractFilterAndSorting = (queryObject) => {
   return { filters, sorting };
 };
 
+export const extractPageInfo = (queryObject) => {
+  const { before, after } = queryObject;
+  return {
+    before,
+    after,
+  };
+};
+
 export const beautifyPath = (path) => (path ? path.split('/').join(' / ') : '');
 
 export const getCommitLink = ({ project_path: projectPath, pipeline = {} }, isGroup = false) => {

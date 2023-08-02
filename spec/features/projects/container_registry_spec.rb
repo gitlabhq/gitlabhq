@@ -185,6 +185,13 @@ RSpec.describe 'Container Registry', :js, feature_category: :groups_and_projects
       visit_next_page
       expect(page).to have_content 'my/image'
     end
+
+    it 'pagination is preserved after navigating back from details' do
+      visit_next_page
+      click_link 'my/image'
+      page.go_back
+      expect(page).to have_content 'my/image'
+    end
   end
 
   def visit_container_registry

@@ -25,6 +25,8 @@ describe('Registry Search', () => {
     orderBy: 'name',
     search: [],
     sort: 'asc',
+    after: null,
+    before: null,
   };
 
   const mountComponent = (propsData = defaultProps) => {

@@ -21,7 +21,7 @@ module QA
           view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
             element 'toggle-issue-state-button'
             element 'desktop-dropdown'
-            element :delete_issue_button
+            element 'delete-issue-button'
           end
 
           view 'app/assets/javascripts/related_issues/components/add_issuable_form.vue' do
@@ -33,7 +33,7 @@ module QA
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_block.vue' do
-            element :related_issues_plus_button
+            element 'related-issues-plus-button'
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_list.vue' do
@@ -42,7 +42,7 @@ module QA
           end
 
           def relate_issue(issue)
-            click_element(:related_issues_plus_button)
+            click_element('related-issues-plus-button')
             fill_element(:add_issue_field, issue.web_url)
             send_keys_to_element(:add_issue_field, :enter)
           end
@@ -74,14 +74,14 @@ module QA
 
           def has_delete_issue_button?
             open_actions_dropdown
-            has_element?(:delete_issue_button)
+            has_element?('delete-issue-button')
           end
 
           def delete_issue
             has_delete_issue_button?
 
             click_element(
-              :delete_issue_button,
+              'delete-issue-button',
               Page::Modal::DeleteIssue,
               wait: Support::Repeater::DEFAULT_MAX_WAIT_TIME
             )

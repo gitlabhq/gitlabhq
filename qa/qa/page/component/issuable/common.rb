@@ -11,7 +11,7 @@ module QA
             super
 
             base.view 'app/assets/javascripts/issues/show/components/title.vue' do
-              element :issue_title, required: true
+              element 'issue-title', required: true
             end
           end
         end

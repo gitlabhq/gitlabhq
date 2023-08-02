@@ -60,7 +60,13 @@ export default {
   methods: {
     generateQueryData({ sorting = {}, filter = [] } = {}) {
       // Ensure that we clean up the query when we remove a token from the search
-      const result = { ...this.baselineQueryStringFilters, ...sorting, search: [] };
+      const result = {
+        ...this.baselineQueryStringFilters,
+        ...sorting,
+        search: [],
+        after: null,
+        before: null,
+      };
 
       filter.forEach((f) => {
         if (f.type === FILTERED_SEARCH_TERM) {

@@ -40,19 +40,14 @@ module QA
       end
 
       def matches?(line)
-        !!(line =~ /["']#{name}['"]|["']#{convert_to_kebabcase(name)}['"]|#{expression}/)
+        !!(line =~ /["']#{name}['"]|#{expression}/)
       end
 
       private
 
-      def convert_to_kebabcase(text)
-        text.to_s.tr('_', '-')
-      end
-
       def qa_selector
         [
           %([data-testid="#{name}"]#{additional_selectors}),
-          %([data-testid="#{convert_to_kebabcase(name)}"]#{additional_selectors}),
           %([data-qa-selector="#{name}"]#{additional_selectors})
         ].join(',')
       end

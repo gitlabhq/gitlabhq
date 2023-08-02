@@ -14,6 +14,7 @@ import { createAlert } from '~/alert';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import Tracking from '~/tracking';
+import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import DeleteImage from '../components/delete_image.vue';
@@ -33,6 +34,7 @@ import {
   SETTINGS_TEXT,
 } from '../constants/index';
 import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
+import { getPageParams, getNextPageParams, getPreviousPageParams } from '../utils';
 
 export default {
   name: 'RegistryListPage',
@@ -62,6 +64,7 @@ export default {
     GlSkeletonLoader,
     RegistryHeader,
     DeleteImage,
+    PersistedPagination,
     PersistedSearch,
   },
   directives: {
@@ -198,25 +201,18 @@ export default {
       this.deleteAlertType = null;
       this.itemToDelete = {};
     },
-    async fetchNextPage() {
-      this.pageParams = {
-        after: this.pageInfo?.endCursor,
-        first: GRAPHQL_PAGE_SIZE,
-      };
+    fetchNextPage() {
+      this.pageParams = getNextPageParams(this.pageInfo?.endCursor);
     },
-    async fetchPreviousPage() {
-      this.pageParams = {
-        first: null,
-        before: this.pageInfo?.startCursor,
-        last: GRAPHQL_PAGE_SIZE,
-      };
+    fetchPreviousPage() {
+      this.pageParams = getPreviousPageParams(this.pageInfo?.startCursor);
     },
     startDelete() {
       this.track('confirm_delete');
       this.mutationLoading = true;
     },
-    handleSearchUpdate({ sort, filters }) {
-      this.pageParams = {};
+    handleSearchUpdate({ sort, filters, pageInfo }) {
+      this.pageParams = getPageParams(pageInfo);
       this.sorting = sort;
 
       const search = filters.find((i) => i.type === FILTERED_SEARCH_TERM);
@@ -322,11 +318,8 @@ export default {
             v-if="images.length"
             :images="images"
             :metadata-loading="$apollo.queries.additionalDetails.loading"
-            :page-info="pageInfo"
             :expiration-policy="config.expirationPolicy"
             @delete="deleteImage"
-            @prev-page="fetchPreviousPage"
-            @next-page="fetchNextPage"
           />
 
           <gl-empty-state
@@ -345,6 +338,15 @@ export default {
           <group-empty-state v-else />
         </template>
       </template>
+
+      <div class="gl-display-flex gl-justify-content-center">
+        <persisted-pagination
+          class="gl-mt-3"
+          :pagination="pageInfo"
+          @prev="fetchPreviousPage"
+          @next="fetchNextPage"
+        />
+      </div>
 
       <delete-image
         :id="itemToDelete.id"

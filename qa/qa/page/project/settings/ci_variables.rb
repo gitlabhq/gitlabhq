@@ -19,8 +19,7 @@ module QA
             click_ci_variable_save_button
 
             wait_until(reload: false) do
-              # Using data-testid="ci-variable-table"
-              within_element(:ci_variable_table) { has_element?(:edit_ci_variable_button) }
+              within_element('ci-variable-table') { has_element?(:edit_ci_variable_button) }
             end
           end
 
@@ -29,8 +28,7 @@ module QA
           end
 
           def click_edit_ci_variable
-            # Using data-testid="ci-variable-table"
-            within_element(:ci_variable_table) do
+            within_element('ci-variable-table') do
               click_element :edit_ci_variable_button
             end
           end

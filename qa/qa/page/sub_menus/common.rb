@@ -43,7 +43,7 @@ module QA
         #
         # @return [void]
         def within_new_item_menu
-          click_element(:new_menu_toggle)
+          click_element('new-menu-toggle')
 
           yield
         end

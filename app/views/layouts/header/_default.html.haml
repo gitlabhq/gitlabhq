@@ -92,7 +92,7 @@
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
               = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos js-prefetch-document',
-                data: { testid: 'todos_shortcut_button', toggle: 'tooltip', placement: 'bottom',
+                data: { testid: 'todos-shortcut-button', toggle: 'tooltip', placement: 'bottom',
                 track_label: 'main_navigation',
                 track_action: 'click_to_do_link',
                 track_property: 'navigation_top',

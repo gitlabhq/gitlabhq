@@ -27,7 +27,7 @@ module QA
         Flow::Login.sign_in_as_admin
 
         Page::Main::Menu.perform do |menu|
-          menu.go_to_page_by_shortcut(:todos_shortcut_button)
+          menu.go_to_page_by_shortcut('todos-shortcut-button')
         end
 
         Page::Dashboard::Todos.perform do |todos|

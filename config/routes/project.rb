@@ -483,8 +483,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       #
       # Service Desk
       #
-      get '/service_desk' => 'service_desk#show', as: :service_desk # rubocop:todo Cop/PutProjectRoutesUnderScope
-      put '/service_desk' => 'service_desk#update', as: :service_desk_refresh # rubocop:todo Cop/PutProjectRoutesUnderScope
+      get '/service_desk' => 'service_desk#show' # rubocop:todo Cop/PutProjectRoutesUnderScope
+      put '/service_desk' => 'service_desk#update' # rubocop:todo Cop/PutProjectRoutesUnderScope
 
       #
       # Templates

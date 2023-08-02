@@ -20,7 +20,7 @@ module QA
           end
 
           view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
-            element :user_dropdown, required: !Runtime::Env.phone_layout?
+            element 'user-dropdown', required: !Runtime::Env.phone_layout?
             element :user_avatar_content, required: !Runtime::Env.phone_layout?
             element :sign_out_link
             element :edit_profile_link
@@ -31,26 +31,26 @@ module QA
           end
 
           view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
-            element :super_sidebar_search_button
-            element :stop_impersonation_btn
-            element :issues_shortcut_button, required: !Runtime::Env.phone_layout?
-            element :merge_requests_shortcut_button, required: !Runtime::Env.phone_layout?
-            element :todos_shortcut_button, required: !Runtime::Env.phone_layout?
+            element 'super-sidebar-search-button'
+            element 'stop-impersonation-btn'
+            element 'issues-shortcut-button', required: !Runtime::Env.phone_layout?
+            element 'merge-requests-shortcut-button', required: !Runtime::Env.phone_layout?
+            element 'todos-shortcut-button', required: !Runtime::Env.phone_layout?
           end
 
           view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
-            element :global_search_input
+            element 'global-search-input'
           end
         else
           view 'app/views/layouts/header/_default.html.haml' do
             element :navbar, required: true
             element :canary_badge_link
             element :user_avatar_content, required: !Runtime::Env.phone_layout?
-            element :user_dropdown, required: !Runtime::Env.phone_layout?
-            element :stop_impersonation_btn
-            element :issues_shortcut_button, required: !Runtime::Env.phone_layout?
-            element :merge_requests_shortcut_button, required: !Runtime::Env.phone_layout?
-            element :todos_shortcut_button, required: !Runtime::Env.phone_layout?
+            element 'user-dropdown', required: !Runtime::Env.phone_layout?
+            element 'stop-impersonation-btn'
+            element 'issues-shortcut-button', required: !Runtime::Env.phone_layout?
+            element 'merge-requests-shortcut-button', required: !Runtime::Env.phone_layout?
+            element 'todos-shortcut-button', required: !Runtime::Env.phone_layout?
           end
 
           view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
@@ -65,7 +65,7 @@ module QA
         end
 
         view 'app/assets/javascripts/nav/components/top_nav_dropdown_menu.vue' do
-          element :menu_subview
+          element 'menu-subview'
         end
 
         view 'lib/gitlab/nav/top_nav_menu_item.rb' do
@@ -84,11 +84,11 @@ module QA
         end
 
         view 'app/assets/javascripts/header_search/components/app.vue' do
-          element :global_search_input
+          element 'global-search-input'
         end
 
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
-          element :new_menu_toggle
+          element 'new-menu-toggle'
         end
 
         view 'app/helpers/nav/new_dropdown_helper.rb' do
@@ -140,17 +140,17 @@ module QA
         end
 
         def go_to_create_project
-          click_element(:new_menu_toggle)
+          click_element('new-menu-toggle')
           click_element(:global_new_project_link)
         end
 
         def go_to_create_group
-          click_element(:new_menu_toggle)
+          click_element('new-menu-toggle')
           click_element(:global_new_group_link)
         end
 
         def go_to_create_snippet
-          click_element(:new_menu_toggle)
+          click_element('new-menu-toggle')
           click_element(:global_new_snippet_link)
         end
 
@@ -167,7 +167,7 @@ module QA
         # @param [Symbol] the name of the element (e.g: `:issues_shortcut button`)
         # @example:
         #   Menu.perform do |menu|
-        #     menu.go_to_page_by_shortcut(:issues_shortcut_button) #=> Go to Issues page using shortcut button
+        #     menu.go_to_page_by_shortcut('issues-shortcut-button') #=> Go to Issues page using shortcut button
         #   end
         def go_to_page_by_shortcut(button)
           within_top_menu do
@@ -243,8 +243,8 @@ module QA
         end
 
         def search_for(term)
-          click_element(Runtime::Env.super_sidebar_enabled? ? :super_sidebar_search_button : :search_box)
-          fill_element(:global_search_input, "#{term}\n")
+          click_element(Runtime::Env.super_sidebar_enabled? ? 'super-sidebar-search-button' : :search_box)
+          fill_element('global-search-input', "#{term}\n")
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
@@ -265,7 +265,7 @@ module QA
         end
 
         def click_stop_impersonation_link
-          click_element(:stop_impersonation_btn)
+          click_element('stop-impersonation-btn')
         end
 
         # To verify whether the user has been directed to a canary web node
@@ -308,20 +308,20 @@ module QA
           within_top_menu do
             click_element :user_avatar_content unless has_element?(:user_profile_link, wait: 1)
 
-            within_element(:user_dropdown, &block)
+            within_element('user-dropdown', &block)
           end
         end
 
         def within_groups_menu(&block)
           go_to_menu_dropdown_option(:groups_dropdown)
 
-          within_element(:menu_subview, &block)
+          within_element('menu-subview', &block)
         end
 
         def within_projects_menu(&block)
           go_to_menu_dropdown_option(:projects_dropdown)
 
-          within_element(:menu_subview, &block)
+          within_element('menu-subview', &block)
         end
 
         def click_admin_area

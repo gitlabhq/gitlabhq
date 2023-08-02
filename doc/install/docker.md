@@ -544,7 +544,7 @@ To upgrade GitLab that was [installed using Docker Engine](#install-gitlab-using
 On the first run, GitLab will reconfigure and upgrade itself.
 
 Refer to the GitLab [Upgrade recommendations](../policy/maintenance.md#upgrade-recommendations)
-when upgrading between major versions.
+when upgrading between versions.
 
 ### Upgrade GitLab using Docker compose
 

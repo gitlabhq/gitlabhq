@@ -111,6 +111,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
           value: pipeline.source },
         { key: 'CI_PIPELINE_CREATED_AT',
           value: pipeline.created_at.iso8601 },
+        { key: 'CI_PIPELINE_NAME',
+          value: pipeline.name },
         { key: 'CI_COMMIT_SHA',
           value: job.sha },
         { key: 'CI_COMMIT_SHORT_SHA',

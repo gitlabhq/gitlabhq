@@ -23,6 +23,7 @@ import deleteContainerRepositoryMutation from '~/packages_and_registries/contain
 import getContainerRepositoriesDetails from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
 import component from '~/packages_and_registries/container_registry/explorer/pages/list.vue';
 import Tracking from '~/tracking';
+import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -61,8 +62,10 @@ describe('List Page', () => {
   const findEmptySearchMessage = () => wrapper.find('[data-testid="emptySearch"]');
   const findDeleteImage = () => wrapper.findComponent(DeleteImage);
 
+  const findPersistedPagination = () => wrapper.findComponent(PersistedPagination);
+
   const fireFirstSortUpdate = () => {
-    findPersistedSearch().vm.$emit('update', { sort: 'UPDATED_DESC', filters: [] });
+    findPersistedSearch().vm.$emit('update', { sort: 'UPDATED_DESC', filters: [], pageInfo: {} });
   };
 
   const waitForApolloRequestRender = async () => {
@@ -217,6 +220,12 @@ describe('List Page', () => {
       mountComponent();
 
       expect(findImageList().exists()).toBe(false);
+    });
+
+    it('pagination is set to empty object', () => {
+      mountComponent();
+
+      expect(findPersistedPagination().props('pagination')).toEqual({});
     });
 
     it('cli commands is not visible', () => {
@@ -462,7 +471,15 @@ describe('List Page', () => {
     });
 
     describe('pagination', () => {
-      it('prev-page event triggers a fetchMore request', async () => {
+      it('exists', async () => {
+        mountComponent();
+        fireFirstSortUpdate();
+        await waitForApolloRequestRender();
+
+        expect(findPersistedPagination().props('pagination')).toEqual(pageInfo);
+      });
+
+      it('prev event triggers a previous page request', async () => {
         const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
         const detailsResolver = jest
           .fn()
@@ -471,7 +488,7 @@ describe('List Page', () => {
         fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
-        findImageList().vm.$emit('prev-page');
+        findPersistedPagination().vm.$emit('prev');
         await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith(
@@ -490,7 +507,39 @@ describe('List Page', () => {
         );
       });
 
-      it('next-page event triggers a fetchMore request', async () => {
+      it('calls resolver with pagination params when persisted search returns before', async () => {
+        const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
+        const detailsResolver = jest
+          .fn()
+          .mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
+        mountComponent({ resolver, detailsResolver });
+
+        findPersistedSearch().vm.$emit('update', {
+          sort: 'UPDATED_DESC',
+          filters: [],
+          pageInfo: { before: pageInfo.startCursor },
+        });
+        await waitForApolloRequestRender();
+
+        expect(resolver).toHaveBeenCalledWith(
+          expect.objectContaining({
+            sort: 'UPDATED_DESC',
+            before: pageInfo.startCursor,
+            first: null,
+            last: GRAPHQL_PAGE_SIZE,
+          }),
+        );
+        expect(detailsResolver).toHaveBeenCalledWith(
+          expect.objectContaining({
+            sort: 'UPDATED_DESC',
+            before: pageInfo.startCursor,
+            first: null,
+            last: GRAPHQL_PAGE_SIZE,
+          }),
+        );
+      });
+
+      it('next event triggers a next page request', async () => {
         const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
         const detailsResolver = jest
           .fn()
@@ -499,7 +548,7 @@ describe('List Page', () => {
         fireFirstSortUpdate();
         await waitForApolloRequestRender();
 
-        findImageList().vm.$emit('next-page');
+        findPersistedPagination().vm.$emit('next');
         await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith(
@@ -510,6 +559,36 @@ describe('List Page', () => {
         );
         expect(detailsResolver).toHaveBeenCalledWith(
           expect.objectContaining({
+            after: pageInfo.endCursor,
+            first: GRAPHQL_PAGE_SIZE,
+          }),
+        );
+      });
+
+      it('calls resolver with pagination params when persisted search returns after', async () => {
+        const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
+        const detailsResolver = jest
+          .fn()
+          .mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
+        mountComponent({ resolver, detailsResolver });
+
+        findPersistedSearch().vm.$emit('update', {
+          sort: 'UPDATED_DESC',
+          filters: [],
+          pageInfo: { after: pageInfo.endCursor },
+        });
+        await waitForApolloRequestRender();
+
+        expect(resolver).toHaveBeenCalledWith(
+          expect.objectContaining({
+            sort: 'UPDATED_DESC',
+            after: pageInfo.endCursor,
+            first: GRAPHQL_PAGE_SIZE,
+          }),
+        );
+        expect(detailsResolver).toHaveBeenCalledWith(
+          expect.objectContaining({
+            sort: 'UPDATED_DESC',
             after: pageInfo.endCursor,
             first: GRAPHQL_PAGE_SIZE,
           }),
