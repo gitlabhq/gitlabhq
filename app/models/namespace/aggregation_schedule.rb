@@ -13,11 +13,7 @@ class Namespace::AggregationSchedule < ApplicationRecord
   after_create :schedule_root_storage_statistics
 
   def default_lease_timeout
-    if Feature.enabled?(:reduce_aggregation_schedule_lease, namespace.root_ancestor)
-      ::Gitlab::CurrentSettings.namespace_aggregation_schedule_lease_duration_in_seconds
-    else
-      30.minutes.to_i
-    end
+    ::Gitlab::CurrentSettings.namespace_aggregation_schedule_lease_duration_in_seconds
   end
 
   def schedule_root_storage_statistics

@@ -1,0 +1,8 @@
+---
+name: nuget_duplicates_option
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123783
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419078
+milestone: '16.3'
+type: development
+group: group::package registry
+default_enabled: false

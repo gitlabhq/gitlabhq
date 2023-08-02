@@ -13,7 +13,6 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           SERVICES = [
-            ::Metrics::Dashboard::CustomMetricEmbedService,
             ::Metrics::Dashboard::DefaultEmbedService,
             ::Metrics::Dashboard::SystemDashboardService
           ].freeze

@@ -6715,6 +6715,8 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | <a id="mutationupdatenamespacepackagesettingsmavenpackagerequestsforwarding"></a>`mavenPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether Maven package forwarding is allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the namespace package setting is located. |
 | <a id="mutationupdatenamespacepackagesettingsnpmpackagerequestsforwarding"></a>`npmPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether npm package forwarding is allowed for this namespace. |
+| <a id="mutationupdatenamespacepackagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. Error is raised if `nuget_duplicates_option` feature flag is disabled. |
+| <a id="mutationupdatenamespacepackagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. Error is raised if `nuget_duplicates_option` feature flag is disabled. |
 | <a id="mutationupdatenamespacepackagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
 
 #### Fields
@@ -20235,6 +20237,8 @@ Namespace-level Package Registry settings.
 | <a id="packagesettingsmavenpackagerequestsforwardinglocked"></a>`mavenPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether Maven package forwarding settings are locked by a parent namespace. |
 | <a id="packagesettingsnpmpackagerequestsforwarding"></a>`npmPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether npm package forwarding is allowed for this namespace. |
 | <a id="packagesettingsnpmpackagerequestsforwardinglocked"></a>`npmPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether npm package forwarding settings are locked by a parent namespace. |
+| <a id="packagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. Error is raised if `nuget_duplicates_option` feature flag is disabled. |
+| <a id="packagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. Error is raised if `nuget_duplicates_option` feature flag is disabled. |
 | <a id="packagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
 | <a id="packagesettingspypipackagerequestsforwardinglocked"></a>`pypiPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether PyPI package forwarding settings are locked by a parent namespace. |
 

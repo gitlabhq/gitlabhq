@@ -21,6 +21,8 @@ RSpec.describe GitlabSchema.types['PackageSettings'], feature_category: :package
       maven_duplicate_exception_regex
       generic_duplicates_allowed
       generic_duplicate_exception_regex
+      nuget_duplicates_allowed
+      nuget_duplicate_exception_regex
       maven_package_requests_forwarding
       lock_maven_package_requests_forwarding
       npm_package_requests_forwarding

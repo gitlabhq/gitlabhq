@@ -35005,6 +35005,9 @@ msgstr ""
 msgid "Preferences|Choose what content you want to see on a project’s overview page."
 msgstr ""
 
+msgid "Preferences|Code Suggestions"
+msgstr ""
+
 msgid "Preferences|Color for added lines"
 msgstr ""
 
@@ -35039,6 +35042,9 @@ msgid "Preferences|Customize the colors of removed and added lines in diffs."
 msgstr ""
 
 msgid "Preferences|Diff colors"
+msgstr ""
+
+msgid "Preferences|Enable %{link_start}Code Suggestions%{link_end} for the following groups.%{br_tag}Only groups that have purchased the Code Suggestion add-on and have available seats are listed here.%{br_tag} If you were expecting to see a group and it is missing from the list, please contact the group owner."
 msgstr ""
 
 msgid "Preferences|Enable Gitpod integration"

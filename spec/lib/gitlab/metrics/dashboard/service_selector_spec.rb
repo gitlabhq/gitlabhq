@@ -30,20 +30,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::ServiceSelector do
 
         it { is_expected.to be Metrics::Dashboard::DefaultEmbedService }
       end
-
-      context 'with a system dashboard and "custom" group' do
-        let(:arguments) do
-          {
-            embedded: true,
-            dashboard_path: system_dashboard_path,
-            group: business_metric_title,
-            title: 'Total Requests',
-            y_label: 'req/sec'
-          }
-        end
-
-        it { is_expected.to be Metrics::Dashboard::CustomMetricEmbedService }
-      end
     end
   end
 end

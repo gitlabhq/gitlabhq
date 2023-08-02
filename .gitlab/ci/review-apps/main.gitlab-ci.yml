@@ -33,6 +33,23 @@ review-build-cng-env:
     - .review-build-cng-env
     - .default-retry
     - .review:rules:review-build-cng
+    - .fast-no-clone-job
+  variables:
+    # We use > instead of | because we want the files to be space-separated.
+    FILES_TO_DOWNLOAD: >
+      GITALY_SERVER_VERSION
+      GITLAB_ELASTICSEARCH_INDEXER_VERSION
+      GITLAB_KAS_VERSION
+      GITLAB_METRICS_EXPORTER_VERSION
+      GITLAB_PAGES_VERSION
+      GITLAB_SHELL_VERSION
+      scripts/trigger-build.rb
+      VERSION
+  before_script:
+    - apk add --no-cache --update curl # Not present in ruby-alpine, so we add it manually
+    - !reference [".fast-no-clone-job", before_script]
+    - !reference [".review-build-cng-env", before_script]
+    - mv VERSION GITLAB_WORKHORSE_VERSION # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
 
 review-build-cng:
   extends:
@@ -62,6 +79,7 @@ review-deploy:
   extends:
     - .review-workflow-base
     - .review:rules:review-deploy
+    - .fast-no-clone-job
   stage: deploy
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}dtzar/helm-kubectl:3.9.3
   needs:
@@ -73,7 +91,18 @@ review-deploy:
       - "gitlab-${GITLAB_HELM_CHART_REF}"
   environment:
     action: start
+  variables:
+    # We use > instead of | because we want the files to be space-separated.
+    FILES_TO_DOWNLOAD: >
+      GITALY_SERVER_VERSION
+      GITLAB_SHELL_VERSION
+      scripts/review_apps/review-apps.sh
+      scripts/review_apps/seed-dast-test-data.sh
+      VERSION
   before_script:
+    - apk add --no-cache --update curl # Not present in ruby-alpine, so we add it manually
+    - !reference [".fast-no-clone-job", before_script]
+    - mv VERSION GITLAB_WORKHORSE_VERSION # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)

@@ -141,7 +141,7 @@ To preview the upcoming changes to the CI/CD configuration in GitLab 15.3 or ear
         template: 'Jobs/SAST.latest.gitlab-ci.yaml'
       ```
 
-    - On a Self-Managed instance, download the template from GitLab.com:
+    - On a self-managed instance, download the template from GitLab.com:
 
       ```yaml
       include:

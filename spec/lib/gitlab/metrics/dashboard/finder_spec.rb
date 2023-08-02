@@ -60,8 +60,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
             }
           end
 
-          it_behaves_like 'misconfigured dashboard service response', :not_found
-
           context 'when the metric exists' do
             before do
               create(:prometheus_metric, project: project)

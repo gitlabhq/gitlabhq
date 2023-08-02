@@ -218,7 +218,9 @@ We can argue that a typical user does not visit these pages, however, API users 
 
 ### Keyset pagination
 
-Keyset pagination addresses the performance concerns of "skipping" previous rows when requesting a large page, however, it's not a drop-in replacement for offset-based pagination. Keyset pagination is used only in the [GraphQL API](../graphql_guide/pagination.md)
+Keyset pagination addresses the performance concerns of "skipping" previous rows when requesting a large page, however, it's not a drop-in replacement for offset-based pagination. When moving an API endpoint from offset-based pagination to keyset-based pagination, both must be supported. Removing one type of pagination entirely is a [breaking changes](../../update/terminology.md#breaking-change).
+
+Keyset pagination used in both the [GraphQL API](../graphql_guide/pagination.md#keyset-pagination) and the [REST API](../../api/rest/index.md#keyset-based-pagination).
 
 Consider the following `issues` table:
 

@@ -294,3 +294,98 @@ qa:selectors-as-if-foss:
   extends:
     - .qa:rules:as-if-foss
 ```
+
+### Extend the `.fast-no-clone-job` job
+
+Downloading the branch for the canonical project takes between 20 and 30 seconds.
+
+Some jobs only need a limited number of files, which we can download via the GitLab API.
+
+You can skip a job `git clone`/`git fetch` by adding the following pattern to a job.
+
+#### Scenario 1: no `before_script` is defined in the job
+
+You can just extend the `.fast-no-clone-job`:
+
+```yaml
+  extends:
+    - .fast-no-clone-job
+  variables:
+    FILES_TO_DOWNLOAD: >
+      scripts/rspec_helpers.sh
+      scripts/slack
+```
+
+#### Scenario 2: a `before_script` block is already defined in the job
+
+You have to include the `.fast-no-clone-job` via a `!reference` as well:
+
+```yaml
+  extends:
+    - .fast-no-clone-job
+  variables:
+    FILES_TO_DOWNLOAD: >
+      scripts/rspec_helpers.sh
+      scripts/slack
+  before_script:
+    - !reference [".fast-no-clone-job", before_script]
+    - # [...]
+```
+
+- The job sets the `GIT_STRATEGY` to `none`.
+- The files are downloaded from current project, on the current `CI_COMMIT_SHA`
+- We use the `PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE` to fetch files from the repository (particularly important if we are in a private project)
+
+Below is an example on how to convert a job using this pattern:
+
+```yaml
+# Before
+my-job:
+  image: ruby
+  stage: prepare
+  script: # This job requires two files to function
+    - source ./scripts/rspec_helpers.sh
+    - source ./scripts/slack
+    - echo "The files were successfully sourced!"
+
+# After
+my-job:
+  extends:
+    - .fast-no-clone-job
+  image: ruby
+  stage: prepare
+  variables:
+    FILES_TO_DOWNLOAD: >
+      scripts/rspec_helpers.sh
+      scripts/slack
+  script: # This job requires two files to function
+    - source ./scripts/rspec_helpers.sh
+    - source ./scripts/slack
+    - echo "The files were successfully sourced!"
+```
+
+#### Caveats
+
+- This pattern does not work if a script relies on `git` to access the repository, because we don't have the repository without cloning or fetching.
+- The job using this pattern needs to have `curl` available.
+
+#### Where is this pattern used?
+
+- For now, we use this pattern for the following jobs, and those do not block private repositories:
+  - `review-build-cng-env` for:
+    - `GITALY_SERVER_VERSION`
+    - `GITLAB_ELASTICSEARCH_INDEXER_VERSION`
+    - `GITLAB_KAS_VERSION`
+    - `GITLAB_METRICS_EXPORTER_VERSION`
+    - `GITLAB_PAGES_VERSION`
+    - `GITLAB_SHELL_VERSION`
+    - `scripts/trigger-build.rb`
+    - `VERSION`
+  - `review-deploy` for:
+    - `GITALY_SERVER_VERSION`
+    - `GITLAB_SHELL_VERSION`
+    - `scripts/review_apps/review-apps.sh`
+    - `scripts/review_apps/seed-dast-test-data.sh`
+    - `VERSION`
+
+Additionally, `scripts/utils.sh` is always downloaded from the API when this pattern is used (this file contains the code for `.fast-no-clone-job`).

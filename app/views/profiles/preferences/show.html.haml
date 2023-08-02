@@ -13,6 +13,7 @@
   = stylesheet_link_tag "themes/#{theme.css_filename}" if theme.css_filename
 
 = gitlab_ui_form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { id: "profile-preferences-form" } do |f|
+  = render_if_exists 'profiles/preferences/code_suggestions_settings_self_assignment'
   .settings-section.js-preferences-form.js-search-settings-section.application-theme#navigation-theme
     .settings-sticky-header
       .settings-sticky-header-inner

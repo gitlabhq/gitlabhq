@@ -146,7 +146,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
         end
       end
 
-      describe 'update labels' do
+      describe 'update labels', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/345229' do
         it 'will not send ajax request when no data is changed' do
           page.within '.labels' do
             click_on 'Edit'

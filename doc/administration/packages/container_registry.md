@@ -1618,7 +1618,7 @@ this error appears:
 
 - `Error response from daemon: manifest invalid: Schema 1 manifest not supported`
 
-For Self-Managed GitLab instances, you can regain access to these images by temporarily downgrading
+For self-managed GitLab instances, you can regain access to these images by temporarily downgrading
 the GitLab Container Registry to a version lower than `v3.0.0-gitlab`. Follow these steps to regain
 access to these images:
 

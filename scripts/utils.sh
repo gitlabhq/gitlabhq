@@ -357,3 +357,62 @@ function setup_gcloud() {
   gcloud auth activate-service-account --key-file="${REVIEW_APPS_GCP_CREDENTIALS}"
   gcloud config set project "${REVIEW_APPS_GCP_PROJECT}"
 }
+
+function download_files() {
+  base_url_prefix="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/files"
+  base_url_suffix="raw?ref=${CI_COMMIT_SHA}"
+
+  # Construct the list of files to download with curl
+  for file in "$@"; do
+    local url_encoded_filename
+    url_encoded_filename=$(url_encode "${file}")
+    local file_url="${base_url_prefix}/${url_encoded_filename}/${base_url_suffix}"
+    echo "url = ${file_url}" >> urls_outputs.txt
+    echo "output = ${file}" >> urls_outputs.txt
+  done
+
+  echo "List of files to download:"
+  cat urls_outputs.txt
+
+  curl -f --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" --create-dirs --parallel --config urls_outputs.txt
+}
+
+# Taken from https://gist.github.com/jaytaylor/5a90c49e0976aadfe0726a847ce58736
+#
+# It is surprisingly hard to url-encode an URL in shell. shorter alternatives used jq,
+# but we would then need to install it wherever we would use this no-clone functionality.
+#
+# For the purposes of url-encoding filenames, this function should be enough.
+function url_encode() {
+  echo "$@" | sed \
+    -e 's/%/%25/g' \
+    -e 's/ /%20/g' \
+    -e 's/!/%21/g' \
+    -e 's/"/%22/g' \
+    -e "s/'/%27/g" \
+    -e 's/#/%23/g' \
+    -e 's/(/%28/g' \
+    -e 's/)/%29/g' \
+    -e 's/+/%2b/g' \
+    -e 's/,/%2c/g' \
+    -e 's/-/%2d/g' \
+    -e 's/:/%3a/g' \
+    -e 's/;/%3b/g' \
+    -e 's/?/%3f/g' \
+    -e 's/@/%40/g' \
+    -e 's/\$/%24/g' \
+    -e 's/\&/%26/g' \
+    -e 's/\*/%2a/g' \
+    -e 's/\./%2e/g' \
+    -e 's/\//%2f/g' \
+    -e 's/\[/%5b/g' \
+    -e 's/\\/%5c/g' \
+    -e 's/\]/%5d/g' \
+    -e 's/\^/%5e/g' \
+    -e 's/_/%5f/g' \
+    -e 's/`/%60/g' \
+    -e 's/{/%7b/g' \
+    -e 's/|/%7c/g' \
+    -e 's/}/%7d/g' \
+    -e 's/~/%7e/g'
+}

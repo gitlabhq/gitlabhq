@@ -31,6 +31,8 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           maven_duplicate_exception_regex: 'SNAPSHOT',
           generic_duplicates_allowed: true,
           generic_duplicate_exception_regex: 'foo',
+          nuget_duplicates_allowed: true,
+          nuget_duplicate_exception_regex: 'foo',
           maven_package_requests_forwarding: nil,
           lock_maven_package_requests_forwarding: false,
           npm_package_requests_forwarding: nil,
@@ -42,6 +44,8 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           maven_duplicate_exception_regex: 'RELEASE',
           generic_duplicates_allowed: false,
           generic_duplicate_exception_regex: 'bar',
+          nuget_duplicates_allowed: false,
+          nuget_duplicate_exception_regex: 'bar',
           maven_package_requests_forwarding: true,
           lock_maven_package_requests_forwarding: true,
           npm_package_requests_forwarding: true,
@@ -67,6 +71,18 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
             package_settings: nil,
             errors: ['Maven duplicate exception regex not valid RE2 syntax: missing ]: [']
           )
+        end
+      end
+
+      context 'when nuget_duplicates_option FF is disabled' do
+        let_it_be(:params) { { namespace_path: namespace.full_path, nuget_duplicates_allowed: false } }
+
+        before do
+          stub_feature_flags(nuget_duplicates_option: false)
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, /feature flag is disabled/)
         end
       end
     end
@@ -95,6 +111,8 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           maven_duplicate_exception_regex: 'RELEASE',
           generic_duplicates_allowed: false,
           generic_duplicate_exception_regex: 'bar',
+          nuget_duplicates_allowed: false,
+          nuget_duplicate_exception_regex: 'bar',
           maven_package_requests_forwarding: true,
           lock_maven_package_requests_forwarding: true,
           npm_package_requests_forwarding: true,
