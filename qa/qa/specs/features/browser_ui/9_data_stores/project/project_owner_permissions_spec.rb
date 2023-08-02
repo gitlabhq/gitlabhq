@@ -13,7 +13,7 @@ module QA
         Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2)
       end
 
-      shared_examples 'when user is added as owner' do |project_type, testcase|
+      shared_examples 'adds user as owner' do |project_type, testcase|
         let!(:issue) do
           Resource::Issue.fabricate_via_api! do |issue|
             issue.api_client = owner_api_client
@@ -27,7 +27,7 @@ module QA
           Flow::Login.sign_in(as: owner)
         end
 
-        it "has owner role with owner permissions", testcase: testcase do
+        it "has owner role and permissions", testcase: testcase do
           Page::Dashboard::Projects.perform do |projects|
             projects.filter_by_name(project.name)
 
@@ -44,7 +44,7 @@ module QA
         end
       end
 
-      shared_examples 'when user is added as maintainer' do |testcase|
+      shared_examples 'adds user as maintainer' do |testcase|
         let!(:issue) do
           Resource::Issue.fabricate_via_api! do |issue|
             issue.api_client = owner_api_client
@@ -82,8 +82,8 @@ module QA
           end
         end
 
-        it_behaves_like 'when user is added as owner', :personal_project, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352542'
-        it_behaves_like 'when user is added as maintainer', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352607'
+        it_behaves_like 'adds user as owner', :personal_project, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352542'
+        it_behaves_like 'adds user as maintainer', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352607'
       end
 
       context 'for group projects' do
@@ -96,8 +96,8 @@ module QA
           end
         end
 
-        it_behaves_like 'when user is added as owner', :group_project, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366436'
-        it_behaves_like 'when user is added as maintainer', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366435'
+        it_behaves_like 'adds user as owner', :group_project, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366436'
+        it_behaves_like 'adds user as maintainer', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366435'
       end
     end
   end

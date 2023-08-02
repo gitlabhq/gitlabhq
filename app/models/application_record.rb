@@ -6,6 +6,7 @@ class ApplicationRecord < ActiveRecord::Base
   include LegacyBulkInsert
   include CrossDatabaseModification
   include SensitiveSerializableHash
+  include ResetOnUnionError
 
   self.abstract_class = true
 

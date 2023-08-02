@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Project transfer between groups', :reliable, product_group: :tenant_scale do
+    describe 'Project transfer', :reliable, product_group: :tenant_scale do
       let(:source_group) do
         Resource::Group.fabricate_via_api! do |group|
           group.path = "source-group-#{SecureRandom.hex(8)}"

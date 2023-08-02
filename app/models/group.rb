@@ -635,7 +635,7 @@ class Group < Namespace
   end
 
   # Returns all members that are part of the group, it's subgroups, and ancestor groups
-  def direct_and_indirect_members
+  def hierarchy_members
     GroupMember
       .active_without_invites_and_requests
       .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
@@ -665,31 +665,6 @@ class Group < Namespace
     User
       .where(id: members_with_descendants.select(:user_id))
       .reorder(nil)
-  end
-
-  # Returns all users that are members of the group because:
-  # 1. They belong to the group
-  # 2. They belong to a project that belongs to the group
-  # 3. They belong to a sub-group or project in such sub-group
-  # 4. They belong to an ancestor group
-  # 5. They belong to a group that is shared with this group, if share_with_groups is true
-  def direct_and_indirect_users(share_with_groups: false)
-    members = if share_with_groups
-                # We only need :user_id column, but
-                # `members_from_self_and_ancestor_group_shares` needs more
-                # columns to make the CTE query work.
-                GroupMember.from_union([
-                  direct_and_indirect_members.select(:user_id, :source_type, :type),
-                  members_from_self_and_ancestor_group_shares.reselect(:user_id, :source_type, :type)
-                ])
-              else
-                direct_and_indirect_members
-              end
-
-    User.from_union([
-      User.where(id: members.select(:user_id)).reorder(nil),
-      project_users_with_descendants
-    ])
   end
 
   def users_count
@@ -944,7 +919,7 @@ class Group < Namespace
   end
 
   def update_two_factor_requirement_for_members
-    direct_and_indirect_members.find_each(&:update_two_factor_requirement)
+    hierarchy_members.find_each(&:update_two_factor_requirement)
   end
 
   def readme_project
@@ -956,6 +931,42 @@ class Group < Namespace
     readme_project&.repository&.readme
   end
   strong_memoize_attr :group_readme
+
+  def members_from_self_and_ancestor_group_shares
+    group_group_link_table = GroupGroupLink.arel_table
+    group_member_table = GroupMember.arel_table
+
+    source_ids =
+      if has_parent?
+        self_and_ancestors.reorder(nil).select(:id)
+      else
+        id
+      end
+
+    group_group_links_query = GroupGroupLink.where(shared_group_id: source_ids)
+    cte = Gitlab::SQL::CTE.new(:group_group_links_cte, group_group_links_query)
+    cte_alias = cte.table.alias(GroupGroupLink.table_name)
+
+    # Instead of members.access_level, we need to maximize that access_level at
+    # the respective group_group_links.group_access.
+    member_columns = GroupMember.attribute_names.map do |column_name|
+      if column_name == 'access_level'
+        smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]], 'access_level')
+      else
+        group_member_table[column_name]
+      end
+    end
+
+    GroupMember
+      .with(cte.to_arel)
+      .select(*member_columns)
+      .from([group_member_table, cte.alias_to(group_group_link_table)])
+      .where(group_member_table[:requested_at].eq(nil))
+      .where(group_member_table[:source_id].eq(group_group_link_table[:shared_with_group_id]))
+      .where(group_member_table[:source_type].eq('Namespace'))
+      .where(group_member_table[:state].eq(::Member::STATE_ACTIVE))
+      .non_minimal_access
+  end
 
   private
 
@@ -1015,42 +1026,6 @@ class Group < Namespace
     return if parent_allows_two_factor_authentication?
 
     errors.add(:require_two_factor_authentication, _('is forbidden by a top-level group'))
-  end
-
-  def members_from_self_and_ancestor_group_shares
-    group_group_link_table = GroupGroupLink.arel_table
-    group_member_table = GroupMember.arel_table
-
-    source_ids =
-      if has_parent?
-        self_and_ancestors.reorder(nil).select(:id)
-      else
-        id
-      end
-
-    group_group_links_query = GroupGroupLink.where(shared_group_id: source_ids)
-    cte = Gitlab::SQL::CTE.new(:group_group_links_cte, group_group_links_query)
-    cte_alias = cte.table.alias(GroupGroupLink.table_name)
-
-    # Instead of members.access_level, we need to maximize that access_level at
-    # the respective group_group_links.group_access.
-    member_columns = GroupMember.attribute_names.map do |column_name|
-      if column_name == 'access_level'
-        smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]], 'access_level')
-      else
-        group_member_table[column_name]
-      end
-    end
-
-    GroupMember
-      .with(cte.to_arel)
-      .select(*member_columns)
-      .from([group_member_table, cte.alias_to(group_group_link_table)])
-      .where(group_member_table[:requested_at].eq(nil))
-      .where(group_member_table[:source_id].eq(group_group_link_table[:shared_with_group_id]))
-      .where(group_member_table[:source_type].eq('Namespace'))
-      .where(group_member_table[:state].eq(::Member::STATE_ACTIVE))
-      .non_minimal_access
   end
 
   def smallest_value_arel(args, column_alias)

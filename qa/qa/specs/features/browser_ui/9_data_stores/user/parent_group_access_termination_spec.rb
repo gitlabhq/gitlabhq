@@ -25,7 +25,7 @@ module QA
         end
       end
 
-      context 'when parent group membership is terminated' do
+      context 'with terminated parent group membership' do
         before do
           group.add_member(user)
 
@@ -40,7 +40,7 @@ module QA
           end
         end
 
-        it 'is not allowed to edit the project files',
+        it 'can not edit the project files',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347866' do
           Flow::Login.sign_in(as: user)
           project.visit!

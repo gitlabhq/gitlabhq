@@ -6,6 +6,7 @@ module QA
       class New < Page::Base
         include Page::Component::Project::Templates
         include Page::Component::VisibilitySetting
+        include QA::Page::Component::Dropdown
 
         include Layout::Flash
         include Page::Component::Import::Selection
@@ -50,7 +51,7 @@ module QA
         def choose_namespace(namespace)
           click_element :select_namespace_dropdown
           fill_element :select_namespace_dropdown_search_field, namespace
-          within_element(:select_namespace_dropdown) { click_button namespace }
+          select_item(namespace, css: '.gl-dropdown-item')
         end
 
         def click_import_project

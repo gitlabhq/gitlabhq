@@ -132,6 +132,52 @@ RSpec.describe Gitlab::Kas do
     end
   end
 
+  describe '.tunnel_ws_url' do
+    before do
+      stub_config(gitlab_kas: { external_url: external_url })
+    end
+
+    let(:external_url) { 'xyz' }
+
+    subject { described_class.tunnel_ws_url }
+
+    context 'with a gitlab_kas.external_k8s_proxy_url setting' do
+      let(:external_k8s_proxy_url) { 'http://abc' }
+
+      before do
+        stub_config(gitlab_kas: { external_k8s_proxy_url: external_k8s_proxy_url })
+      end
+
+      it { is_expected.to eq('ws://abc') }
+    end
+
+    context 'without a gitlab_kas.external_k8s_proxy_url setting' do
+      context 'external_url uses wss://' do
+        let(:external_url) { 'wss://kas.gitlab.example.com' }
+
+        it { is_expected.to eq('wss://kas.gitlab.example.com/k8s-proxy') }
+      end
+
+      context 'external_url uses ws://' do
+        let(:external_url) { 'ws://kas.gitlab.example.com' }
+
+        it { is_expected.to eq('ws://kas.gitlab.example.com/k8s-proxy') }
+      end
+
+      context 'external_url uses grpcs://' do
+        let(:external_url) { 'grpcs://kas.gitlab.example.com' }
+
+        it { is_expected.to eq('wss://kas.gitlab.example.com/k8s-proxy') }
+      end
+
+      context 'external_url uses grpc://' do
+        let(:external_url) { 'grpc://kas.gitlab.example.com' }
+
+        it { is_expected.to eq('ws://kas.gitlab.example.com/k8s-proxy') }
+      end
+    end
+  end
+
   describe '.internal_url' do
     it 'returns gitlab_kas internal_url config' do
       expect(described_class.internal_url).to eq(Gitlab.config.gitlab_kas.internal_url)

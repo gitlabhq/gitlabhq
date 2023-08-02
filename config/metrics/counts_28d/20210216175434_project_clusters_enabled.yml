@@ -18,5 +18,6 @@ tier:
 - premium
 - ultimate
 name: 'count_distinct_user_id_from_enabled_clusters_attached_to_projects'
-performance_indicator_type: []
+performance_indicator_type:
+- customer_health_score
 milestone: "<13.9"

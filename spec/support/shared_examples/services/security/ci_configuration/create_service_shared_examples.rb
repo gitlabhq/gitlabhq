@@ -111,11 +111,14 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
           YAML
         end
 
-        it 'fails with error' do
+        it 'returns a ServiceResponse error' do
           expect(project).to receive(:ci_config_for).and_return(unsupported_yaml)
 
-          expect { result }.to raise_error(Gitlab::Graphql::Errors::MutationError,
-            _(".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually."))
+          expect(result).to be_kind_of(ServiceResponse)
+          expect(result.status).to eq(:error)
+          expect(result.message).to eq(
+            _(".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually.")
+          )
         end
       end
 
@@ -133,11 +136,13 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
           YAML
         end
 
-        it 'fails with error' do
+        it 'returns a ServiceResponse error' do
           expect(project).to receive(:ci_config_for).and_return(invalid_yaml)
           expect(YAML).to receive(:safe_load).and_raise(Psych::Exception)
 
-          expect { result }.to raise_error(Gitlab::Graphql::Errors::MutationError, /merge request creation mutation failed/)
+          expect(result).to be_kind_of(ServiceResponse)
+          expect(result.status).to eq(:error)
+          expect(result.message).to match(/merge request creation failed/)
         end
       end
 

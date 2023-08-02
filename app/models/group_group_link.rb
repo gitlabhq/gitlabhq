@@ -13,6 +13,7 @@ class GroupGroupLink < ApplicationRecord
   validates :group_access, inclusion: { in: Gitlab::Access.all_values }, presence: true
 
   scope :non_guests, -> { where('group_access > ?', Gitlab::Access::GUEST) }
+  scope :for_shared_groups, -> (group_ids) { where(shared_group_id: group_ids) }
 
   scope :with_owner_or_maintainer_access, -> do
     where(group_access: [Gitlab::Access::OWNER, Gitlab::Access::MAINTAINER])

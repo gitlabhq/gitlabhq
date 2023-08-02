@@ -187,6 +187,13 @@ e = Projects::ImportExport::ExportService.new(p,u)
 
 e.send(:version_saver).send(:save)
 e.send(:repo_saver).send(:save)
+e.send(:avatar_saver).send(:save)
+e.send(:project_tree_saver).send(:save)
+e.send(:uploads_saver).send(:save)
+e.send(:wiki_repo_saver).send(:save)
+e.send(:lfs_saver).send(:save)
+e.send(:snippets_repo_saver).send(:save)
+e.send(:design_repo_saver).send(:save)
 ## continue using `e.send(:exporter_name).send(:save)` going through the list of exporters
 
 # The following line should show you the export_path similar to /var/opt/gitlab/gitlab-rails/shared/tmp/gitlab_exports/@hashed/49/94/4994....

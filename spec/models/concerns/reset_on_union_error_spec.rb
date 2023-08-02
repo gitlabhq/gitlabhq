@@ -2,10 +2,9 @@
 
 require 'spec_helper'
 
-# rubocop:disable Database/MultipleDatabases
-RSpec.describe ActiveRecordRelationUnionReset, :delete, feature_category: :shared do
+RSpec.describe ResetOnUnionError, :delete, feature_category: :shared do
   let(:test_unioned_model) do
-    Class.new(ActiveRecord::Base) do
+    Class.new(ApplicationRecord) do
       include FromUnion
 
       self.table_name = '_test_unioned_model'
@@ -17,7 +16,7 @@ RSpec.describe ActiveRecordRelationUnionReset, :delete, feature_category: :share
   end
 
   before(:context) do
-    ActiveRecord::Base.connection.execute(<<~SQL)
+    ApplicationRecord.connection.execute(<<~SQL)
       CREATE TABLE _test_unioned_model (
         id serial NOT NULL PRIMARY KEY,
         created_at timestamptz NOT NULL
@@ -26,7 +25,7 @@ RSpec.describe ActiveRecordRelationUnionReset, :delete, feature_category: :share
   end
 
   after(:context) do
-    ActiveRecord::Base.connection.execute(<<~SQL)
+    ApplicationRecord.connection.execute(<<~SQL)
       DROP TABLE _test_unioned_model
     SQL
   end
@@ -44,13 +43,13 @@ RSpec.describe ActiveRecordRelationUnionReset, :delete, feature_category: :share
     before do
       load_query
 
-      ActiveRecord::Base.connection.execute(<<~SQL)
+      ApplicationRecord.connection.execute(<<~SQL)
         ALTER TABLE _test_unioned_model ADD COLUMN _test_new_column int;
       SQL
     end
 
     after do
-      ActiveRecord::Base.connection.execute(<<~SQL)
+      ApplicationRecord.connection.execute(<<~SQL)
         ALTER TABLE _test_unioned_model DROP COLUMN _test_new_column;
       SQL
 
@@ -131,4 +130,3 @@ RSpec.describe ActiveRecordRelationUnionReset, :delete, feature_category: :share
     end
   end
 end
-# rubocop:enable Database/MultipleDatabases
