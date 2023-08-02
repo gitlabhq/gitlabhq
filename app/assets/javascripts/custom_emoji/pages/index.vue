@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { fetchPolicies } from '~/lib/graphql';
 import customEmojisQuery from '../queries/custom_emojis.query.graphql';

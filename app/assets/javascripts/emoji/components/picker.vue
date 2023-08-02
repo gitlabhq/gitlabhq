@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIcon, GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
 import { findLastIndex } from 'lodash';

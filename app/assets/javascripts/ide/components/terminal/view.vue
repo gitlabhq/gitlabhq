@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import EmptyState from './empty_state.vue';

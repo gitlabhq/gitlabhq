@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import { getParameterByName } from '~/lib/utils/url_utility';

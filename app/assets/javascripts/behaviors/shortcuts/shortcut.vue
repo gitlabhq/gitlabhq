@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { getModifierKey } from '~/constants';
 import { __, s__ } from '~/locale';

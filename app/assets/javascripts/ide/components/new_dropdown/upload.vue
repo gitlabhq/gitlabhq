@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { isTextFile } from '~/ide/utils';
 import ItemButton from './button.vue';

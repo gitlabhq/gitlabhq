@@ -1,18 +1,18 @@
 <script>
-import Simple from './simple.vue';
+import SimpleComponent from './simple_component.vue';
 
 export default {
   components: {
-    Simple,
+    SimpleComponent,
   },
 };
 </script>
 <template>
-  <simple>
+  <simple-component>
     <!-- slot comment typical for gitlab-ui, for example -->
     <!-- slot comment typical for gitlab-ui, for example -->
     <slot></slot>
     <!-- slot comment typical for gitlab-ui, for example -->
     <!-- slot comment typical for gitlab-ui, for example -->
-  </simple>
+  </simple-component>
 </template>

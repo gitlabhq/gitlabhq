@@ -2668,13 +2668,19 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-msgid "Active %{accessTokenTypePlural} (%{totalAccessTokens})"
-msgstr ""
-
 msgid "Active Sessions"
 msgstr ""
 
 msgid "Active chat names (%{count})"
+msgstr ""
+
+msgid "Active group access tokens"
+msgstr ""
+
+msgid "Active personal access tokens"
+msgstr ""
+
+msgid "Active project access tokens"
 msgstr ""
 
 msgid "Activity"
@@ -2894,6 +2900,9 @@ msgid "Add new emoji"
 msgstr ""
 
 msgid "Add new key"
+msgstr ""
+
+msgid "Add new token"
 msgstr ""
 
 msgid "Add new webhook"
@@ -8634,6 +8643,12 @@ msgstr ""
 msgid "BulkImport|Destination"
 msgstr ""
 
+msgid "BulkImport|Direct Transfer maximum download file size (MiB)"
+msgstr ""
+
+msgid "BulkImport|Direct transfer maximum download file size (MB)"
+msgstr ""
+
 msgid "BulkImport|Existing groups"
 msgstr ""
 
@@ -8671,6 +8686,9 @@ msgid "BulkImport|Importing the group failed."
 msgstr ""
 
 msgid "BulkImport|Last imported to %{link}"
+msgstr ""
+
+msgid "BulkImport|Maximum download file size when importing from source GitLab instances by direct transfer."
 msgstr ""
 
 msgid "BulkImport|Name already exists."
@@ -23633,6 +23651,9 @@ msgstr ""
 msgid "Impersonation has been disabled"
 msgstr ""
 
+msgid "Impersonation tokens"
+msgstr ""
+
 msgid "Import"
 msgstr ""
 
@@ -23850,6 +23871,15 @@ msgid "Import|An error occurred while fetching import details."
 msgstr ""
 
 msgid "Import|GitHub import details"
+msgstr ""
+
+msgid "Import|Maximum import remote file size (MB)"
+msgstr ""
+
+msgid "Import|Maximum import remote file size (MiB)"
+msgstr ""
+
+msgid "Import|Maximum remote file size for imports from external object storages. For example, AWS S3."
 msgstr ""
 
 msgid "Import|No import details"
@@ -41015,16 +41045,10 @@ msgstr ""
 msgid "ScanExecutionPolicy|Maximum number of CI-criteria is one"
 msgstr ""
 
-msgid "ScanExecutionPolicy|Maximum number of runner tags-criteria is one"
-msgstr ""
-
 msgid "ScanExecutionPolicy|Only one variable can be added at a time."
 msgstr ""
 
 msgid "ScanExecutionPolicy|Run a %{scan} scan with the following options:"
-msgstr ""
-
-msgid "ScanExecutionPolicy|Runner tags"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Runner tags:"
@@ -41058,9 +41082,6 @@ msgid "ScanExecutionPolicy|Select site profile"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select timezone"
-msgstr ""
-
-msgid "ScanExecutionPolicy|Tags"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Triggers:"

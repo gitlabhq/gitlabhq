@@ -84,7 +84,7 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
           .with(
             import_export_upload.import_file,
             kind_of(String),
-            size_limit: ::Import::GitlabProjects::RemoteFileValidator::FILE_SIZE_LIMIT
+            size_limit: Gitlab::CurrentSettings.current_application_settings.max_import_remote_file_size.megabytes
           )
 
         described_class.import(importable: project, archive_file: nil, shared: shared)
@@ -104,7 +104,7 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
           .with(
             file_url,
             kind_of(String),
-            size_limit: ::Import::GitlabProjects::RemoteFileValidator::FILE_SIZE_LIMIT
+            size_limit: Gitlab::CurrentSettings.current_application_settings.max_import_remote_file_size.megabytes
           )
 
         described_class.import(importable: project, archive_file: nil, shared: shared)

@@ -306,36 +306,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
         subject
       end
-
-      context 'when repository_size does not match repository_info' do
-        before do
-          allow(repository.gitaly_repository_client).to receive(:repository_size).and_return(0)
-          allow(repository.gitaly_repository_client).to receive(:repository_info).and_return(
-            Gitaly::RepositoryInfoResponse.new(size: 1.megabytes)
-          )
-        end
-
-        it 'logs the difference' do
-          expect(Gitlab::AppJsonLogger).to receive(:info).with(
-            message: "Discrepancy between RepositorySize and RepositoryInfo",
-            repository_size_megabytes: 0.0,
-            repository_info_megabytes: 1.0,
-            project_id: project.id
-          ).and_call_original
-          subject
-        end
-
-        context 'when the log_discrepancies_repository_info_for_repository_size flag is disabled' do
-          before do
-            stub_feature_flags(log_discrepancies_repository_info_for_repository_size: false)
-          end
-
-          it 'does not log' do
-            expect(Gitlab::AppJsonLogger).not_to receive(:info)
-            subject
-          end
-        end
-      end
     end
   end
 

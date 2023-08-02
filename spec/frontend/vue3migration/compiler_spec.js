@@ -28,11 +28,11 @@ describe('Vue.js 3 compiler edge cases', () => {
 
   it('treats empty slots with comments as empty', () => {
     const wrapper = mount(SlotWithComment);
-    expect(wrapper.html()).toBe('<div>Simple</div>');
+    expect(wrapper.html()).toBe('<div>SimpleComponent</div>');
   });
 
   it('treats empty default slot with comments as empty', () => {
     const wrapper = mount(DefaultSlotWithComment);
-    expect(wrapper.html()).toBe('<div>Simple</div>');
+    expect(wrapper.html()).toBe('<div>SimpleComponent</div>');
   });
 });

@@ -136,8 +136,6 @@ rules:
     - paths:
         - name: mousetrap
           message: 'Import { Mousetrap } from ~/lib/mousetrap instead.'
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
-  vue/multi-word-component-names: off
   unicorn/prefer-dom-node-dataset:
     - error
   no-unsanitized/method:
@@ -149,6 +147,11 @@ rules:
     - escape:
         methods: 'sanitize'
 overrides:
+  - files:
+      - 'ee/**/*'
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
+    rules:
+      vue/multi-word-component-names: off
   - files:
       - '{,ee/,jh/}spec/frontend*/**/*'
     rules:

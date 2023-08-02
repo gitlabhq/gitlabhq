@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { MANUAL_DEPLOY, WILL_DEPLOY, CREATED } from './constants';
 import DeploymentActions from './deployment_actions.vue';

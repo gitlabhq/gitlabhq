@@ -10,6 +10,14 @@ module Gitlab
       def merge_request_draft
         /\A(?i)(\[draft\]|\(draft\)|draft:)/
       end
+
+      def git_diff_prefix
+        /\A@@( -\d+,\d+ \+\d+,\d+ )@@/
+      end
+
+      def generate_commit_message_git_diff_prefix
+        /\A@@( -\d+,\d+ \+\d+(,\d+)? )@@/
+      end
     end
   end
 end

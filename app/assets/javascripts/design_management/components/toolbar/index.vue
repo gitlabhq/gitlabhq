@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlIcon, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';

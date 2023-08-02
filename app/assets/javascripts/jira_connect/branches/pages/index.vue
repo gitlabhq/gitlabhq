@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlEmptyState } from '@gitlab/ui';
 import { sprintf } from '~/locale';

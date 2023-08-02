@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import eventHub from '~/blob/components/eventhub';

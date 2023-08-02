@@ -48,7 +48,6 @@ Style/RedundantRegexpEscape:
     - 'lib/banzai/filter/inline_diff_filter.rb'
     - 'lib/banzai/filter/task_list_filter.rb'
     - 'lib/bulk_imports/common/pipelines/uploads_pipeline.rb'
-    - 'lib/csv_builder.rb'
     - 'lib/gitlab/background_migration/backfill_integrations_enable_ssl_verification.rb'
     - 'lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/not_matches.rb'

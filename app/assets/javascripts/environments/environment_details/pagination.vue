@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlKeysetPagination } from '@gitlab/ui';
 import { setUrlParams } from '~/lib/utils/url_utility';

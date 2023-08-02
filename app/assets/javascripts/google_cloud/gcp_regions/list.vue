@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlEmptyState, GlTable } from '@gitlab/ui';
 import { __ } from '~/locale';

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf, GlTable } from '@gitlab/ui';
 import { setUrlParams, DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';

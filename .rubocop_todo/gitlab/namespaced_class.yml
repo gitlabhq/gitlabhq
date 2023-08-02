@@ -1082,7 +1082,6 @@ Gitlab/NamespacedClass:
     - 'ee/spec/support/elastic_query_name_inspector.rb'
     - 'ee/spec/support/test_license.rb'
     - 'lib/carrier_wave_string_file.rb'
-    - 'lib/csv_builder.rb'
     - 'lib/event_filter.rb'
     - 'lib/file_size_validator.rb'
     - 'lib/forever.rb'

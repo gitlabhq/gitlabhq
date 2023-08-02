@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { VALID_DESIGN_FILE_MIMETYPE } from '../../constants';

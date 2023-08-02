@@ -5,7 +5,6 @@ module Import
     # Validates the given object's #content_type and #content_length accordingly
     # with the Project Import requirements
     class RemoteFileValidator < ActiveModel::Validator
-      FILE_SIZE_LIMIT = 10.gigabytes
       ALLOWED_CONTENT_TYPES = [
         'application/gzip',
         # S3 uses different file types
@@ -23,8 +22,8 @@ module Import
       def validate_content_length(record)
         if record.content_length.to_i <= 0
           record.errors.add(:content_length, :size_too_small, file_size: humanize(1.byte))
-        elsif record.content_length > FILE_SIZE_LIMIT
-          record.errors.add(:content_length, :size_too_big, file_size: humanize(FILE_SIZE_LIMIT))
+        elsif file_size_limit > 0 && record.content_length > file_size_limit
+          record.errors.add(:content_length, :size_too_big, file_size: humanize(file_size_limit))
         end
       end
 
@@ -39,6 +38,10 @@ module Import
           content_type: record.content_type,
           allowed: ALLOWED_CONTENT_TYPES.join(', ')
         })
+      end
+
+      def file_size_limit
+        Gitlab::CurrentSettings.current_application_settings.max_import_remote_file_size.megabytes
       end
     end
   end

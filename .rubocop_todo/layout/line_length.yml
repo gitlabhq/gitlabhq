@@ -3697,7 +3697,6 @@ Layout/LineLength:
     - 'spec/lib/container_registry/client_spec.rb'
     - 'spec/lib/container_registry/gitlab_api_client_spec.rb'
     - 'spec/lib/container_registry/registry_spec.rb'
-    - 'spec/lib/csv_builder_spec.rb'
     - 'spec/lib/declarative_enum_spec.rb'
     - 'spec/lib/error_tracking/sentry_client/issue_link_spec.rb'
     - 'spec/lib/error_tracking/sentry_client/pagination_parser_spec.rb'

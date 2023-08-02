@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIcon, GlBadge } from '@gitlab/ui';
 

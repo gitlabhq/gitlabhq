@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlPopover, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';

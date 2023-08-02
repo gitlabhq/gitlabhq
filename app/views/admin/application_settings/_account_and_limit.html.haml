@@ -27,6 +27,14 @@
       = f.number_field :max_import_size, class: 'form-control gl-form-input', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted= _('Only effective when remote storage is enabled. Set to 0 for no size limit.')
     .form-group
+      = f.label :max_import_remote_file_size, s_('Import|Maximum import remote file size (MB)'), class: 'label-light'
+      = f.number_field :max_import_remote_file_size, class: 'form-control gl-form-input', title: s_('Import|Maximum remote file size for imports from external object storages. For example, AWS S3.'), data: { toggle: 'tooltip', container: 'body' }
+      %span.form-text.text-muted= _('Set to 0 for no size limit.')
+    .form-group
+      = f.label :bulk_import_max_download_file_size, s_('BulkImport|Direct transfer maximum download file size (MB)'), class: 'label-light'
+      = f.number_field :bulk_import_max_download_file_size, class: 'form-control gl-form-input', title: s_('BulkImport|Maximum download file size when importing from source GitLab instances by direct transfer.'), data: { toggle: 'tooltip', container: 'body' }
+      %span.form-text.text-muted= _('Set to 0 for no size limit.')
+    .form-group
       = f.label :session_expire_delay, _('Session duration (minutes)'), class: 'label-light'
       = f.number_field :session_expire_delay, class: 'form-control gl-form-input', title: _('Maximum duration of a session.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted#session_expire_delay_help_block= _('Restart GitLab to apply changes.')

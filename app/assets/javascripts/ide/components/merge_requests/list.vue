@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { debounce } from 'lodash';

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module CsvBuilders
-  class SingleBatch < CsvBuilder
+module CsvBuilder
+  class SingleBatch < CsvBuilder::Builder
     protected
 
     def each(&block)

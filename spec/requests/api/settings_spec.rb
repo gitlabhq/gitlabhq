@@ -187,6 +187,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             jira_connect_application_key: '123',
             jira_connect_proxy_url: 'http://example.com',
             bulk_import_enabled: false,
+            bulk_import_max_download_file_size: 1,
             allow_runner_registration_token: true,
             user_defaults_to_private_profile: true,
             default_syntax_highlighting_theme: 2,
@@ -195,7 +196,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             valid_runner_registrars: ['group'],
             allow_account_deletion: false,
             gitlab_shell_operation_limit: 500,
-            namespace_aggregation_schedule_lease_duration_in_seconds: 400
+            namespace_aggregation_schedule_lease_duration_in_seconds: 400,
+            max_import_remote_file_size: 2
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -273,6 +275,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['allow_account_deletion']).to be(false)
         expect(json_response['gitlab_shell_operation_limit']).to be(500)
         expect(json_response['namespace_aggregation_schedule_lease_duration_in_seconds']).to be(400)
+        expect(json_response['max_import_remote_file_size']).to be(2)
+        expect(json_response['bulk_import_max_download_file_size']).to be(1)
       end
     end
 

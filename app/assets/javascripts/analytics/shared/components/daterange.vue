@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlDaterangePicker } from '@gitlab/ui';
 import { n__, __, sprintf } from '~/locale';

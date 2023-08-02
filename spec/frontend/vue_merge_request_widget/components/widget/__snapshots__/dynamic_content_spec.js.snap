@@ -28,7 +28,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
               Badge is optional. Text to be displayed inside badge
             </gl-badge-stub>
           </div>
-          <actions-stub widget=\\"MyWidget\\" tertiarybuttons=\\"\\" class=\\"gl-ml-auto gl-pl-3\\"></actions-stub>
+          <!---->
           <p class=\\"gl-m-0 gl-font-sm\\">Optional: Smaller sub-text to be displayed below the main text</p>
         </div>
         <ul class=\\"gl-m-0 gl-p-0 gl-list-style-none\\">
@@ -54,7 +54,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
                         </div>
                         <!---->
                       </div>
-                      <actions-stub widget=\\"MyWidget\\" tertiarybuttons=\\"\\" class=\\"gl-ml-auto gl-pl-3\\"></actions-stub>
+                      <!---->
                       <!---->
                     </div>
                     <!---->

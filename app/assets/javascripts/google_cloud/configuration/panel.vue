@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import GcpRegionsList from '../gcp_regions/list.vue';
 import GoogleCloudMenu from '../components/google_cloud_menu.vue';

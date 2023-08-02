@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlModal, GlButton } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';

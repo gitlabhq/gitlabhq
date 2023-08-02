@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIntersectionObserver } from '@gitlab/ui';
 import LineHighlighter from '~/blob/line_highlighter';

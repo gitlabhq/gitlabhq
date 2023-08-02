@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Import::GitlabProjects::RemoteFileValidator, :aggregate_failures do
+RSpec.describe ::Import::GitlabProjects::RemoteFileValidator, :aggregate_failures, feature_category: :importers do
   let(:validated_class) do
     Class.new do
       include ActiveModel::Validations
@@ -20,11 +20,15 @@ RSpec.describe ::Import::GitlabProjects::RemoteFileValidator, :aggregate_failure
     end
   end
 
-  let(:validated_object) { validated_class.new(content_length: 1.gigabytes, content_type: 'application/gzip') }
+  let(:validated_object) { validated_class.new(content_length: 10.megabytes, content_type: 'application/gzip') }
 
   subject { described_class.new }
 
-  it 'does nothing when the oject is valid' do
+  before do
+    stub_application_setting(max_import_remote_file_size: 100)
+  end
+
+  it 'does nothing when the object is valid' do
     subject.validate(validated_object)
 
     expect(validated_object.errors.full_messages).to be_empty
@@ -41,12 +45,24 @@ RSpec.describe ::Import::GitlabProjects::RemoteFileValidator, :aggregate_failure
     end
 
     it 'is invalid with file too large' do
-      validated_object.content_length = (described_class::FILE_SIZE_LIMIT + 1).gigabytes
+      validated_object.content_length = 200.megabytes
 
       subject.validate(validated_object)
 
       expect(validated_object.errors.full_messages)
-        .to include('Content length is too big (should be at most 10 GiB)')
+        .to include('Content length is too big (should be at most 100 MiB)')
+    end
+
+    context 'when max_import_remote_file_size is 0' do
+      it 'does not validate file size' do
+        stub_application_setting(max_import_remote_file_size: 0)
+
+        validated_object.content_length = 200.megabytes
+
+        subject.validate(validated_object)
+
+        expect(validated_object.errors.full_messages).to be_empty
+      end
     end
   end
 

@@ -107,6 +107,34 @@ details.
 
 For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/index.md#account-and-limit-settings).
 
+## Maximum remote file size for imports
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+
+You can modify the maximum remote file size for imports from external object storages (for example, AWS) in GitLab.
+
+To modify the maximum import remote file size:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Increase or decrease by changing the value in **Maximum import remote file size (MB)**. Set to `0` to set no file size limit.
+
+## Maximum download file size for imports by direct transfer
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+
+You can modify the maximum download file size for imports by direct transfer in GitLab.
+
+To modify the maximum download file size for imports by direct transfer:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Increase or decrease by changing the value in **Direct transfer maximum download file size (MB)**. Set to `0` to set no download file size limit.
+
 ## Personal access token prefix
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20968) in GitLab 13.7.

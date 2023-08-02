@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import GoogleCloudMenu from '../components/google_cloud_menu.vue';
 import IncubationBanner from '../components/incubation_banner.vue';

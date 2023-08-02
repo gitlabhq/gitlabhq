@@ -12323,6 +12323,8 @@ Information about a connected Agent.
 | <a id="airesponseerrors"></a>`errors` | [`[String!]`](#string) | Errors return by AI API as response. |
 | <a id="airesponserequestid"></a>`requestId` | [`String`](#string) | ID of the original request. |
 | <a id="airesponseresponsebody"></a>`responseBody` | [`String`](#string) | Response body from AI API. |
+| <a id="airesponserole"></a>`role` | [`AiCachedMessageRole!`](#aicachedmessagerole) | Message role. |
+| <a id="airesponsetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
 
 ### `AlertManagementAlert`
 
@@ -25789,6 +25791,7 @@ Name of the check for the compliance standard.
 | Value | Description |
 | ----- | ----------- |
 | <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_author"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_AUTHOR` | Prevent approval by merge request author. |
+| <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_committers"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_COMMITTERS` | Prevent approval by merge request committers. |
 
 ### `ComplianceStandardsAdherenceStandard`
 

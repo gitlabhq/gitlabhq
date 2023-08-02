@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { TYPE_ISSUE } from '~/issues/constants';
 import CollapsedAssigneeList from './collapsed_assignee_list.vue';

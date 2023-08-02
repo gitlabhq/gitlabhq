@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { mapState, mapActions } from 'vuex';
 import { scrollToElement } from '~/lib/utils/common_utils';

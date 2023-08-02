@@ -10,7 +10,7 @@ RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFileS3
   let(:secret_access_key) { 'secret_access_key' }
   let(:file_exists) { true }
   let(:content_type) { 'application/x-tar' }
-  let(:content_length) { 2.gigabytes }
+  let(:content_length) { 10.megabytes }
   let(:presigned_url) { 'https://external.file.path/file.tar.gz?PRESIGNED=true&TOKEN=some-token' }
 
   let(:s3_double) do
@@ -39,6 +39,8 @@ RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFileS3
     # Avoid network requests
     expect(Aws::S3::Client).to receive(:new).and_return(double)
     expect(Aws::S3::Object).to receive(:new).and_return(s3_double)
+
+    stub_application_setting(max_import_remote_file_size: 10)
   end
 
   describe 'validation' do
@@ -59,12 +61,12 @@ RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFileS3
     end
 
     context 'content-length validation' do
-      let(:content_length) { 11.gigabytes }
+      let(:content_length) { 11.megabytes }
 
       it 'validates the remote content-length' do
         expect(subject).not_to be_valid
         expect(subject.errors.full_messages)
-          .to include('Content length is too big (should be at most 10 GiB)')
+          .to include('Content length is too big (should be at most 10 MiB)')
       end
     end
 

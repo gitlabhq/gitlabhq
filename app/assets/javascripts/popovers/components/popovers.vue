@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlPopover } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';

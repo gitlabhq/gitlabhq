@@ -36,6 +36,16 @@ To sign in to Customers Portal with your email and to receive a one-time sign-in
 NOTE:
 The one-time sign-in link expires in 24 hours and can only be used once.
 
+## Confirm Customers Portal email address
+
+The first time you sign in to the Customers Portal with a one-time sign-in link,
+you must confirm your email address to maintain access to the Customers Portal. If you sign in
+to the Customers Portal through GitLab.com, you don't need to confirm your email address.
+
+You must also confirm any updates to the account email address. You will receive
+an automatic email with instructions about how to confirm, which you can [resend](https://customers.gitlab.com/customers/confirmation/new)
+if required.
+
 ## Change account owner information
 
 The account owner's personal details are used on invoices. The account owner's email address is used for the [Customers Portal legacy sign-in](#sign-in-to-customers-portal) and license-related email.

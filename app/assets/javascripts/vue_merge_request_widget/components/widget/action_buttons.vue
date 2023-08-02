@@ -19,8 +19,7 @@ export default {
     },
     tertiaryButtons: {
       type: Array,
-      required: false,
-      default: () => [],
+      required: true,
     },
   },
   data() {
@@ -74,7 +73,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="tertiaryButtons.length" class="gl-display-flex gl-align-items-flex-start">
+  <div class="gl-display-flex gl-align-items-flex-start">
     <gl-dropdown
       v-gl-tooltip
       :title="__('Options')"

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLoadingIcon, GlTableLite, GlTabs, GlTab, GlBadge, GlKeysetPagination } from '@gitlab/ui';
 import { __ } from '~/locale';

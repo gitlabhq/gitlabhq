@@ -2,18 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe CsvBuilders::Stream do
+RSpec.describe CsvBuilder::Stream do
   let(:event_1) { double(title: 'Added salt', description: 'A teaspoon') }
   let(:event_2) { double(title: 'Added sugar', description: 'Just a pinch') }
-  let(:fake_relation) { FakeRelation.new([event_1, event_2]) }
+  let(:fake_relation) { described_class::FakeRelation.new([event_1, event_2]) }
 
   subject(:builder) { described_class.new(fake_relation, 'Title' => 'title', 'Description' => 'description') }
 
   describe '#render' do
     before do
-      stub_const('FakeRelation', Array)
+      stub_const("#{described_class}::FakeRelation", Array)
 
-      FakeRelation.class_eval do
+      described_class::FakeRelation.class_eval do
         def find_each(&block)
           each(&block)
         end

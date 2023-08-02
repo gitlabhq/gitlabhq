@@ -53,7 +53,9 @@ class InstanceConfiguration
       diff_max_patch_bytes: application_settings[:diff_max_patch_bytes].bytes,
       max_artifacts_size: application_settings[:max_artifacts_size].megabytes,
       max_pages_size: application_settings[:max_pages_size] > 0 ? application_settings[:max_pages_size].megabytes : nil,
-      snippet_size_limit: application_settings[:snippet_size_limit]&.bytes
+      snippet_size_limit: application_settings[:snippet_size_limit]&.bytes,
+      max_import_remote_file_size: application_settings[:max_import_remote_file_size] > 0 ? application_settings[:max_import_remote_file_size].megabytes : 0,
+      bulk_import_max_download_file_size: application_settings[:bulk_import_max_download_file_size] > 0 ? application_settings[:bulk_import_max_download_file_size].megabytes : 0
     }
   end
 

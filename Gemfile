@@ -257,6 +257,7 @@ gem 're2', '~> 1.7.0'
 
 gem 'semver_dialects', '~> 1.2.1'
 gem 'version_sorter', '~> 2.3'
+gem 'csv_builder', path: 'gems/csv_builder'
 
 # Export Ruby Regex to Javascript
 gem 'js_regex', '~> 3.8'

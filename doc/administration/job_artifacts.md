@@ -417,7 +417,7 @@ reasons are:
 - Artifact files might be left on disk and not deleted by housekeeping. Run the
   [Rake task for _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
   to remove these. This script should always find work to do, as it also removes empty directories (see above).
-- [Artifact housekeeping was changed significantly](#artifacts-housekeeping-disabled-in-gitlab-146-to-152),
+- [Artifact housekeeping was changed significantly](#housekeeping-disabled-in-gitlab-146-to-152),
   and you might need to enable a feature flag to used the updated system.
 - The [keep latest artifacts from most recent success jobs](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   feature is enabled.
@@ -426,11 +426,20 @@ In these and other cases, identify the projects most responsible
 for disk space usage, figure out what types of artifacts are using the most
 space, and in some cases, manually delete job artifacts to reclaim disk space.
 
-#### Artifacts housekeeping disabled in GitLab 14.6 to 15.2
+#### Artifacts housekeeping
 
-Artifact housekeeping was significantly changed in GitLab 14.10, and the changes
-were back ported to GitLab 14.6 and later. The updated housekeeping must be
-enabled with feature flags [until GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92931).
+Artifacts housekeeping is the process that identifies which artifacts are expired
+and can be deleted.
+
+##### Housekeeping disabled in GitLab 14.6 to 15.2
+
+Artifact housekeeping was disabled in GitLab 14.6. It was significantly improved
+in GitLab 14.10, and the changes were back ported to patch versions of GitLab 14.6 and later,
+introduced behind [feature flags](feature_flags.md) disabled by default. The flags were
+enabled by default [in GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92931).
+
+If artifacts housekeeping does not seem to be working in GitLab 14.6 to GitLab 15.2,
+you should check if the feature flags are enabled.
 
 To check if the feature flags are enabled:
 
@@ -443,15 +452,15 @@ To check if the feature flags are enabled:
      ```ruby
      Feature.enabled?(:ci_detect_wrongly_expired_artifacts, default_enabled: :yaml)
      Feature.enabled?(:ci_update_unlocked_job_artifacts, default_enabled: :yaml)
-     Feature.enabled?(:ci_destroy_unlocked_job_artifacts, default_enabled: :yaml)
+     Feature.enabled?(:ci_job_artifacts_backlog_work, default_enabled: :yaml)
      ```
 
-   - GitLab 15.00 and later:
+   - GitLab 15.0 and later:
 
      ```ruby
      Feature.enabled?(:ci_detect_wrongly_expired_artifacts)
      Feature.enabled?(:ci_update_unlocked_job_artifacts)
-     Feature.enabled?(:ci_destroy_unlocked_job_artifacts)
+     Feature.enabled?(:ci_job_artifacts_backlog_work)
      ```
 
 1. If any of the feature flags are disabled, enable them:
@@ -465,8 +474,10 @@ To check if the feature flags are enabled:
 These changes include switching artifacts from `unlocked` to `locked` if
 they [should be retained](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 
-Artifacts created before this feature was introduced have a status of `unknown`. After they expire,
-these artifacts are not processed by the new housekeeping jobs.
+##### Artifacts with `unknown` status
+
+Artifacts created before housekeeping was updated have a status of `unknown`. After they expire,
+these artifacts are not processed by the new housekeeping.
 
 You can check the database to confirm if your instance has artifacts with the `unknown` status:
 
@@ -529,6 +540,8 @@ is unable to process. For example:
 Artifacts with locked status `2` are `unknown`. Check
 [issue #346261](https://gitlab.com/gitlab-org/gitlab/-/issues/346261#note_1028871458)
 for more details.
+
+##### Clean up `unknown` artifacts
 
 The Sidekiq worker that processes all `unknown` artifacts is enabled by default in
 GitLab 15.3 and later. It analyzes the artifacts returned by the above database query and

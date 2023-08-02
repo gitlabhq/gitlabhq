@@ -43,6 +43,7 @@ Example response:
   "max_attachment_size" : 10,
   "max_export_size": 50,
   "max_import_size": 50,
+  "max_import_remote_file_size": 10240,
   "user_oauth_applications" : true,
   "updated_at" : "2016-01-04T15:44:55.176Z",
   "session_expire_delay" : 10080,
@@ -110,7 +111,8 @@ Example response:
   "jira_connect_application_key": null,
   "jira_connect_proxy_url": null,
   "silent_mode_enabled": false,
-  "package_registry_allow_anyone_to_pull_option": true
+  "package_registry_allow_anyone_to_pull_option": true,
+  "bulk_import_max_download_file_size": 5120
 }
 ```
 
@@ -180,6 +182,7 @@ Example response:
   "max_attachment_size": 10,
   "max_export_size": 50,
   "max_import_size": 50,
+  "max_import_remote_file_size": 10240,
   "session_expire_delay": 10080,
   "default_ci_config_path" : null,
   "default_project_visibility": "internal",
@@ -251,7 +254,8 @@ Example response:
   "projects_api_rate_limit_unauthenticated": 400,
   "silent_mode_enabled": false,
   "security_policy_global_group_approvers_enabled": true,
-  "package_registry_allow_anyone_to_pull_option": true
+  "package_registry_allow_anyone_to_pull_option": true,
+  "bulk_import_max_download_file_size": 5120
 }
 ```
 
@@ -315,6 +319,7 @@ listed in the descriptions of the relevant settings.
 | `auto_devops_enabled`                    | boolean          | no                                   | Enable Auto DevOps for projects by default. It automatically builds, tests, and deploys applications based on a predefined CI/CD configuration. |
 | `automatic_purchased_storage_allocation` | boolean          | no                                   | Enabling this permits automatic allocation of purchased storage in a namespace. Relevant only to EE distributions. |
 | `bulk_import_enabled`                    | boolean          | no                                   | Enable migrating GitLab groups by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. Setting also [available](../administration/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer) in the Admin Area. |
+| `bulk_import_max_download_file_size`                    | integer          | no                                   | Maximum download file size when importing from source GitLab instances by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `can_create_group` | boolean | no | Indicates whether users can create top-level groups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5. Defaults to `true`. |
 | `check_namespace_plan` **(PREMIUM)**     | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
 | `ci_max_includes`                        | integer          | no                                   | The maximum number of [includes](../ci/yaml/includes.md) per pipeline. Default is `150`. |
@@ -441,6 +446,7 @@ listed in the descriptions of the relevant settings.
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB. |
 | `max_export_size`                        | integer          | no                                   | Maximum export size in MB. 0 for unlimited. Default = 0 (unlimited). |
 | `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited). [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8. |
+| `max_import_size`                        | integer          | no                                   | Maximum remote file size for imports from external object storages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB. |
 | `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                                   | Maximum allowable lifetime for access tokens in days. When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked.|
 | `max_ssh_key_lifetime` **(ULTIMATE SELF)** | integer        | no                                   | Maximum allowable lifetime for SSH keys in days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6. |

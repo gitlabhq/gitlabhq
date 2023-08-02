@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'Simple',
+  name: 'SimpleComponent',
 };
 </script>
 <template>

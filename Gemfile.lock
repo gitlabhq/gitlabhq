@@ -19,6 +19,11 @@ PATH
       typhoeus (~> 1.0, >= 1.0.1)
 
 PATH
+  remote: gems/csv_builder
+  specs:
+    csv_builder (0.1.0)
+
+PATH
   remote: gems/gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
@@ -1760,6 +1765,7 @@ DEPENDENCIES
   countries (~> 4.0.0)
   creole (~> 0.5.0)
   crystalball (~> 0.7.0)
+  csv_builder!
   cvss-suite (~> 3.0.1)
   database_cleaner (~> 1.7.0)
   deckar01-task_list (= 2.3.2)

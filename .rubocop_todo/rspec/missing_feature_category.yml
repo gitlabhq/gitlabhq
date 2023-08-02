@@ -2808,8 +2808,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/container_registry/path_spec.rb'
     - 'spec/lib/container_registry/registry_spec.rb'
     - 'spec/lib/container_registry/tag_spec.rb'
-    - 'spec/lib/csv_builder_spec.rb'
-    - 'spec/lib/csv_builders/stream_spec.rb'
     - 'spec/lib/declarative_enum_spec.rb'
     - 'spec/lib/error_tracking/sentry_client/api_urls_spec.rb'
     - 'spec/lib/error_tracking/sentry_client/event_spec.rb'

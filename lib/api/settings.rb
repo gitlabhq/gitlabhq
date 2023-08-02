@@ -105,6 +105,7 @@ module API
       optional :max_attachment_size, type: Integer, desc: 'Maximum attachment size in MB'
       optional :max_export_size, type: Integer, desc: 'Maximum export size in MB'
       optional :max_import_size, type: Integer, desc: 'Maximum import size in MB'
+      optional :max_import_remote_file_size, type: Integer, desc: 'Maximum remote file size in MB for imports from external object storages'
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :max_pages_custom_domains_per_project, type: Integer, desc: 'Maximum number of GitLab Pages custom domains per project'
       optional :max_terraform_state_size_bytes, type: Integer, desc: "Maximum size in bytes of the Terraform state file. Set this to 0 for unlimited file size."
@@ -200,6 +201,7 @@ module API
       optional :jira_connect_application_key, type: String, desc: "Application ID of the OAuth application that should be used to authenticate with the GitLab for Jira Cloud app"
       optional :jira_connect_proxy_url, type: String, desc: "URL of the GitLab instance that should be used as a proxy for the GitLab for Jira Cloud app"
       optional :bulk_import_enabled, type: Boolean, desc: 'Enable migrating GitLab groups and projects by direct transfer'
+      optional :bulk_import_max_download_file, type: Integer, desc: 'Maximum download file size when importing from source GitLab instances by direct transfer'
       optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'
       optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
       optional :security_policy_global_group_approvers_enabled, type: Boolean, desc: 'Query scan result policy approval groups globally'

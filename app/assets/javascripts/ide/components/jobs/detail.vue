@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlTooltipDirective, GlButton, GlIcon } from '@gitlab/ui';
 import { throttle } from 'lodash';

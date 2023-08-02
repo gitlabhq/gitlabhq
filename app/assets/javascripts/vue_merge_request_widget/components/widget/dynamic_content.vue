@@ -52,6 +52,9 @@ export default {
     shouldShowThirdLevel() {
       return this.data.children?.length > 0 && this.level === 2;
     },
+    hasActionButtons() {
+      return this.data.actions?.length > 0;
+    },
   },
   methods: {
     onClickedAction(action) {
@@ -88,6 +91,7 @@ export default {
             </gl-badge>
           </div>
           <actions
+            v-if="hasActionButtons"
             :widget="widgetName"
             :tertiary-buttons="data.actions"
             class="gl-ml-auto gl-pl-3"

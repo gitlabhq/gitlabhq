@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { getDraft, updateDraft, getLockVersion, clearDraft } from '~/lib/utils/autosave';

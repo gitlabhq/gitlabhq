@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIcon, GlLink, GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { head, tail } from 'lodash';

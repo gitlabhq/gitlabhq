@@ -10,8 +10,6 @@ module Gitlab
       UnknownEvent = Class.new(EventError)
       InvalidContext = Class.new(EventError)
 
-      KNOWN_EVENTS_PATH = File.expand_path('known_events/*.yml', __dir__)
-
       # Track event on entity_id
       # Increment a Redis HLL counter for unique event_name and entity_id
       #
@@ -61,7 +59,7 @@ module Gitlab
         end
 
         def known_events
-          @known_events ||= load_events(KNOWN_EVENTS_PATH)
+          @known_events ||= load_events
         end
 
         def calculate_events_union(event_names:, start_date:, end_date:)
@@ -111,26 +109,16 @@ module Gitlab
           end.flatten.uniq
         end
 
-        def load_events(wildcard)
-          if Feature.enabled?(:use_metric_definitions_for_events_list)
-            events = Gitlab::Usage::MetricDefinition.all.map do |d|
-              next unless d.available?
+        def load_events
+          events = Gitlab::Usage::MetricDefinition.all.map do |d|
+            next unless d.available?
 
-              d.attributes[:options] && d.attributes[:options][:events]
-            end.flatten.compact.uniq
+            d.attributes[:options] && d.attributes[:options][:events]
+          end.flatten.compact.uniq
 
-            events.map do |e|
-              { name: e }.with_indifferent_access
-            end
-          else
-            Dir[wildcard].each_with_object([]) do |path, events|
-              events.push(*load_yaml_from_path(path))
-            end
+          events.map do |e|
+            { name: e }.with_indifferent_access
           end
-        end
-
-        def load_yaml_from_path(path)
-          YAML.safe_load(File.read(path))&.map(&:with_indifferent_access)
         end
 
         def known_events_names

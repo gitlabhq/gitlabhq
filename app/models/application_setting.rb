@@ -255,6 +255,14 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :max_import_remote_file_size,
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :bulk_import_max_download_file_size,
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :max_pages_size,
     presence: true,
     numericality: {

@@ -103,7 +103,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
       let(:local) { false }
 
       it 'downloads the file' do
-        expect(subject).to receive(:download).with(:url, upload_path, size_limit: nil)
+        expect(subject).to receive(:download).with(:url, upload_path, size_limit: 0)
 
         subject.download_or_copy_upload(uploader, upload_path)
       end

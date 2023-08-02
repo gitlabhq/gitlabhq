@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';

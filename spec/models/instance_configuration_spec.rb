@@ -103,7 +103,9 @@ RSpec.describe InstanceConfiguration do
             diff_max_patch_bytes: 409600,
             max_artifacts_size: 50,
             max_pages_size: 60,
-            snippet_size_limit: 70
+            snippet_size_limit: 70,
+            max_import_remote_file_size: 80,
+            bulk_import_max_download_file_size: 90
           )
         end
 
@@ -118,6 +120,8 @@ RSpec.describe InstanceConfiguration do
           expect(size_limits[:max_artifacts_size]).to eq(50.megabytes)
           expect(size_limits[:max_pages_size]).to eq(60.megabytes)
           expect(size_limits[:snippet_size_limit]).to eq(70.bytes)
+          expect(size_limits[:max_import_remote_file_size]).to eq(80.megabytes)
+          expect(size_limits[:bulk_import_max_download_file_size]).to eq(90.megabytes)
         end
 
         it 'returns nil if receive_max_input_size not set' do
@@ -132,7 +136,9 @@ RSpec.describe InstanceConfiguration do
           Gitlab::CurrentSettings.current_application_settings.update!(
             max_import_size: 0,
             max_export_size: 0,
-            max_pages_size: 0
+            max_pages_size: 0,
+            max_import_remote_file_size: 0,
+            bulk_import_max_download_file_size: 0
           )
 
           size_limits = subject.settings[:size_limits]
@@ -140,6 +146,8 @@ RSpec.describe InstanceConfiguration do
           expect(size_limits[:max_import_size]).to be_nil
           expect(size_limits[:max_export_size]).to be_nil
           expect(size_limits[:max_pages_size]).to be_nil
+          expect(size_limits[:max_import_remote_file_size]).to eq(0)
+          expect(size_limits[:bulk_import_max_download_file_size]).to eq(0)
         end
       end
 

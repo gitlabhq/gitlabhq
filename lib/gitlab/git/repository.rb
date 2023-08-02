@@ -341,21 +341,7 @@ module Gitlab
           repository_info_size_megabytes
         else
           kilobytes = gitaly_repository_client.repository_size
-          repository_size_megabytes = (kilobytes.to_f / 1024).round(2)
-
-          if Feature.enabled?(:log_discrepancies_repository_info_for_repository_size)
-            repository_info_megabytes = repository_info_size_megabytes
-            if repository_info_megabytes != repository_size_megabytes
-              Gitlab::AppJsonLogger.info(
-                message: "Discrepancy between RepositorySize and RepositoryInfo",
-                repository_size_megabytes: repository_size_megabytes,
-                repository_info_megabytes: repository_info_megabytes,
-                project_id: container.id
-              )
-            end
-          end
-
-          repository_size_megabytes
+          (kilobytes.to_f / 1024).round(2)
         end
       end
 

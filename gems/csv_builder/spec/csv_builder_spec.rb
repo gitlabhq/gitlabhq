@@ -1,21 +1,27 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe CsvBuilder do
   let(:object) { double(question: :answer) }
-  let(:fake_relation) { FakeRelation.new([object]) }
-  let(:subject) { described_class.new(fake_relation, 'Q & A' => :question, 'Reversed' => -> (o) { o.question.to_s.reverse }) }
+  let(:fake_relation) { described_class::FakeRelation.new([object]) }
   let(:csv_data) { subject.render }
 
-  before do
-    stub_const('FakeRelation', Array)
+  let(:subject) do
+    described_class.new(
+      fake_relation, 'Q & A' => :question, 'Reversed' => ->(o) { o.question.to_s.reverse })
+  end
 
-    FakeRelation.class_eval do
+  before do
+    stub_const("#{described_class}::FakeRelation", Array)
+
+    described_class::FakeRelation.class_eval do
       def find_each(&block)
         each(&block)
       end
     end
+  end
+
+  it "has a version number" do
+    expect(CsvBuilder::Version::VERSION).not_to be nil
   end
 
   it 'generates a csv' do
@@ -50,7 +56,7 @@ RSpec.describe CsvBuilder do
   describe 'truncation' do
     let(:big_object) { double(question: 'Long' * 1024) }
     let(:row_size) { big_object.question.length * 2 }
-    let(:fake_relation) { FakeRelation.new([big_object, big_object, big_object]) }
+    let(:fake_relation) { described_class::FakeRelation.new([big_object, big_object, big_object]) }
 
     it 'occurs after given number of bytes' do
       expect(subject.render(row_size * 2).length).to be_between(row_size * 2, row_size * 3)
@@ -92,7 +98,7 @@ RSpec.describe CsvBuilder do
   describe 'excel sanitization' do
     let(:dangerous_title) { double(title: "=cmd|' /C calc'!A0 title", description: "*safe_desc") }
     let(:dangerous_desc) { double(title: "*safe_title", description: "=cmd|' /C calc'!A0 desc") }
-    let(:fake_relation) { FakeRelation.new([dangerous_title, dangerous_desc]) }
+    let(:fake_relation) { described_class::FakeRelation.new([dangerous_title, dangerous_desc]) }
     let(:subject) { described_class.new(fake_relation, 'Title' => 'title', 'Description' => 'description') }
     let(:csv_data) { subject.render }
 
@@ -109,7 +115,7 @@ RSpec.describe CsvBuilder do
     context 'when dangerous characters are after a line break' do
       it 'does not append single quote to description' do
         fake_object = double(title: "Safe title", description: "With task list\n-[x] todo 1")
-        fake_relation = FakeRelation.new([fake_object])
+        fake_relation = described_class::FakeRelation.new([fake_object])
         builder = described_class.new(fake_relation, 'Title' => 'title', 'Description' => 'description')
 
         csv_data = builder.render

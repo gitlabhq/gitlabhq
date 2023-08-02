@@ -79,7 +79,6 @@ Style/RedundantFreeze:
     - 'lib/banzai/filter/task_list_filter.rb'
     - 'lib/bulk_imports/common/pipelines/uploads_pipeline.rb'
     - 'lib/bulk_imports/file_downloads/filename_fetch.rb'
-    - 'lib/csv_builder.rb'
     - 'lib/error_tracking/sentry_client/pagination_parser.rb'
     - 'lib/expand_variables.rb'
     - 'lib/feature/definition.rb'

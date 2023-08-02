@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
 import { isString, isEmpty } from 'lodash';
