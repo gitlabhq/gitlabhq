@@ -1,9 +1,10 @@
 <script>
-import { GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
 
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { truncate } from '~/lib/utils/text_utility';
 import searchNamespacesWhereUserCanImportProjectsQuery from '~/import_entities/import_projects/graphql/queries/search_namespaces_where_user_can_import_projects.query.graphql';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
@@ -21,13 +22,28 @@ const reportNamespaceLoadError = debounce(
 
 export default {
   components: {
-    GlDropdown,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
-  inheritAttrs: false,
+
+  props: {
+    selected: {
+      type: String,
+      required: true,
+    },
+    userNamespace: {
+      type: String,
+      required: true,
+    },
+  },
+
+  MAX_IMPORT_TARGET_LENGTH: 24,
+
   data() {
-    return { searchTerm: '' };
+    return {
+      searchTerm: '',
+    };
   },
+
   apollo: {
     namespaces: {
       query: searchNamespacesWhereUserCanImportProjectsQuery,
@@ -48,25 +64,56 @@ export default {
       debounce: DEBOUNCE_DELAY,
     },
   },
+
   computed: {
     filteredNamespaces() {
       return (this.namespaces ?? []).filter((ns) =>
         ns.fullPath.toLowerCase().includes(this.searchTerm.toLowerCase()),
       );
     },
+
+    toggleText() {
+      return truncate(this.selected, this.$options.MAX_IMPORT_TARGET_LENGTH);
+    },
+
+    items() {
+      return [
+        {
+          text: __('Users'),
+          options: [{ text: this.userNamespace, value: this.userNamespace }],
+        },
+        {
+          text: __('Groups'),
+          options: this.filteredNamespaces.map((namespace) => {
+            return { text: namespace.fullPath, value: namespace.fullPath };
+          }),
+        },
+      ];
+    },
+  },
+
+  methods: {
+    onSelect(value) {
+      this.$emit('select', value);
+    },
+
+    onSearch(value) {
+      this.searchTerm = value.trim();
+    },
   },
 };
 </script>
+
 <template>
-  <gl-dropdown
+  <gl-collapsible-listbox
+    :items="items"
+    :selected="selected"
+    :toggle-text="toggleText"
+    searchable
+    fluid-width
     toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
-    class="gl-h-7 gl-flex-fill-1"
     data-qa-selector="target_namespace_selector_dropdown"
-    v-bind="$attrs"
-  >
-    <template #header>
-      <gl-search-box-by-type v-model.trim="searchTerm" />
-    </template>
-    <slot :namespaces="filteredNamespaces"></slot>
-  </gl-dropdown>
+    @select="onSelect"
+    @search="onSearch"
+  />
 </template>

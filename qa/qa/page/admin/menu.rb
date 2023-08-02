@@ -67,6 +67,12 @@ module QA
           click_element :admin_overview_groups_link
         end
 
+        def go_to_security_and_compliance
+          hover_element(:admin_settings_menu_link) do
+            click_element :admin_security_and_compliance_link
+          end
+        end
+
         def go_to_applications
           return click_element(:nav_item_link, submenu_item: 'Applications') if Runtime::Env.super_sidebar_enabled?
 

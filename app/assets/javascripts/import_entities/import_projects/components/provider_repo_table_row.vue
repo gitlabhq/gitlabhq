@@ -5,9 +5,6 @@ import {
   GlFormInput,
   GlButton,
   GlLink,
-  GlDropdownItem,
-  GlDropdownDivider,
-  GlDropdownSectionHeader,
   GlTooltip,
   GlSprintf,
   GlTooltipDirective,
@@ -15,7 +12,7 @@ import {
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import ImportGroupDropdown from '../../components/group_dropdown.vue';
+import ImportTargetDropdown from '../../components/import_target_dropdown.vue';
 import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
 import { isProjectImportable, isImporting, isIncompatible, getImportStatus } from '../utils';
@@ -23,13 +20,10 @@ import { isProjectImportable, isImporting, isIncompatible, getImportStatus } fro
 export default {
   name: 'ProviderRepoTableRow',
   components: {
-    ImportGroupDropdown,
     ImportStatus,
+    ImportTargetDropdown,
     GlFormInput,
     GlButton,
-    GlDropdownItem,
-    GlDropdownDivider,
-    GlDropdownSectionHeader,
     GlIcon,
     GlBadge,
     GlLink,
@@ -151,6 +145,10 @@ export default {
         });
       }
     },
+
+    onSelect(value) {
+      this.updateImportTarget({ targetNamespace: value });
+    },
   },
 
   helpUrl: helpPagePath('/user/project/import/github.md'),
@@ -188,27 +186,13 @@ export default {
         <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
         <template v-else-if="isImportNotStarted || isSelectedForReimport">
           <div class="gl-display-flex gl-align-items-stretch gl-w-full">
-            <import-group-dropdown #default="{ namespaces }" :text="importTarget.targetNamespace">
-              <template v-if="namespaces.length">
-                <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
-                <gl-dropdown-item
-                  v-for="ns in namespaces"
-                  :key="ns.fullPath"
-                  data-qa-selector="target_group_dropdown_item"
-                  :data-qa-group-name="ns.fullPath"
-                  @click="updateImportTarget({ targetNamespace: ns.fullPath })"
-                >
-                  {{ ns.fullPath }}
-                </gl-dropdown-item>
-                <gl-dropdown-divider />
-              </template>
-              <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
-              <gl-dropdown-item @click="updateImportTarget({ targetNamespace: userNamespace })">{{
-                userNamespace
-              }}</gl-dropdown-item>
-            </import-group-dropdown>
+            <import-target-dropdown
+              :selected="importTarget.targetNamespace"
+              :user-namespace="userNamespace"
+              @select="onSelect"
+            />
             <div
-              class="gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1"
+              class="gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1 gl-border-gray-400"
             >
               /
             </div>

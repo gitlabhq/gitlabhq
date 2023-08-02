@@ -1043,3 +1043,12 @@ Search/AvoidCheckingFinishedOnDeprecatedMigrations:
     - 'ee/lib/elastic/**/*.rb'
     - 'ee/lib/gitlab/elastic/**/*.rb'
     - 'ee/spec/support/helpers/elasticsearch_helpers.rb'
+
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/407233
+Cop/ExperimentsTestCoverage:
+  Enabled: true
+  Include:
+    - 'app/**/*'
+    - 'lib/**/*'
+    - 'ee/app/**/*'
+    - 'ee/lib/**/*'

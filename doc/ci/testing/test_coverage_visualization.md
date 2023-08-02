@@ -431,6 +431,7 @@ the coverage report itself and verify that:
   to match the files in your repository.
 - The pipeline has completed. If the pipeline is [blocked on a manual job](../jobs/job_control.md#types-of-manual-jobs),
   the pipeline is not considered complete.
+- The coverage report file does not exceed the [limits](#limits).
 
 Report artifacts are not downloadable by default. If you want the report to be downloadable
 from the job details page, add your coverage report to the artifact `paths`:
