@@ -446,17 +446,23 @@ When the docs are generated, the output is:
 
 To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
 
+### Buttons in the UI
+
+For elements with a visible label, use the label in bold with matching case.
+
+For example: `Select **Cancel**.`
+
 ### Text entered in the UI
 
 If you want the user to type something in the UI, use backticks. For example:
 
 ```plaintext
-In the **Commit message** box, type `This is my merge request`.
+In the **Commit message** text box, type `This is my merge request`.
 ```
 
 Backticks are more precise than quotes. For example, in this string:
 
-- In the **Commit message** box, type "This is my merge request."
+- In the **Commit message** text box, type "This is my merge request."
 
 It's not clear whether the user should include the period in the string.
 
@@ -1552,20 +1558,6 @@ Do not copy and paste content from other sources unless it is a limited
 quotation with the source cited. Typically it is better to rephrase
 relevant information in your own words or link out to the other source.
 
-## Terms
-
-To maintain consistency through GitLab documentation, use these styles and terms.
-
-### Describe UI elements
-
-Follow these styles when you're describing user interface elements in an
-application:
-
-- For elements with a visible label, use that label in bold with matching case.
-  For example, `Select **Cancel**`.
-- For elements with a tooltip or hover label, use that label in bold with
-  matching case. For example, `Select **Add status emoji**`.
-
 ## Products and features
 
 Refer to the information in this section when describing products and features
@@ -1871,8 +1863,3 @@ It renders as:
    ```
 
 ::EndTabs
-
-## Feature flags
-
-Learn how to [document features deployed behind flags](../feature_flags.md). For
-guidance on developing GitLab with feature flags, see [Feature flags in development of GitLab](../../feature_flags/index.md).

@@ -136,7 +136,7 @@ To use private runners:
 
    ```shell
    $ gitlab-runner register --executor "docker" \
-     --docker-image="docker:stable" \
+     --docker-image="docker:latest" \
      --url "https://gitlab.com/" \
      --description "cq-sans-dind" \
      --tag-list "cq-sans-dind" \
@@ -171,7 +171,7 @@ To use private runners:
      builds_dir = "/tmp/builds"
      [runners.docker]
        tls_verify = false
-       image = "docker:stable"
+       image = "docker:latest"
        privileged = false
        disable_entrypoint_overwrite = false
        oom_kill_disable = false

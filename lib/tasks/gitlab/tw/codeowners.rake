@@ -71,7 +71,7 @@ namespace :tw do
       CodeOwnerRule.new('Runner', '@fneill'),
       CodeOwnerRule.new('Runner SaaS', '@fneill'),
       CodeOwnerRule.new('Security Policies', '@rdickenson'),
-      CodeOwnerRule.new('Source Code', '@aqualls @msedlakjakubowski'),
+      CodeOwnerRule.new('Source Code', ->(path) { path.start_with?('/doc/user') ? '@aqualls' : '@msedlakjakubowski' }),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Tenant Scale', '@lciutacu'),
@@ -100,8 +100,14 @@ namespace :tw do
       end
     end
 
-    def self.writer_for_group(category)
-      CODE_OWNER_RULES.find { |rule| rule.category == category }&.writer
+    def self.writer_for_group(category, path)
+      writer = CODE_OWNER_RULES.find { |rule| rule.category == category }&.writer
+
+      if writer.is_a?(String) || writer.nil?
+        writer
+      else
+        writer.call(path)
+      end
     end
 
     errors = []
@@ -118,7 +124,7 @@ namespace :tw do
         next
       end
 
-      writer = writer_for_group(document.group)
+      writer = writer_for_group(document.group, relative_file)
       next unless writer
 
       mappings << DocumentOwnerMapping.new(relative_file, writer) if document.has_a_valid_group?

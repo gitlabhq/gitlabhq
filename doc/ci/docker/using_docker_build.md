@@ -91,7 +91,7 @@ You should use Docker-in-Docker with TLS enabled,
 which is supported by [GitLab.com shared runners](../runners/index.md).
 
 You should always pin a specific version of the image, like `docker:20.10.16`.
-If you use a tag like `docker:stable`, you have no control over which version is used.
+If you use a tag like `docker:latest`, you have no control over which version is used.
 This can cause incompatibility problems when new versions are released.
 
 #### Use the Docker executor with Docker-in-Docker

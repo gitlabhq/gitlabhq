@@ -309,6 +309,8 @@ Event type filters are removed if:
 
 Manage Google Cloud Logging destinations for top-level groups.
 
+Before setting up Google Cloud Logging streaming audit events, you must satisfy [the prerequisites](index.md#prerequisites).
+
 #### Add a new Google Cloud Logging destination
 
 Add a new Google Cloud Logging configuration destination to a top-level group.

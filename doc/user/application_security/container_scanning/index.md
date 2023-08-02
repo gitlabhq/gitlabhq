@@ -602,7 +602,7 @@ variables:
   SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:6
   TARGET_IMAGE: $CI_REGISTRY/namespace/container-scanning
 
-image: docker:stable
+image: docker:latest
 
 update-scanner-image:
   services:

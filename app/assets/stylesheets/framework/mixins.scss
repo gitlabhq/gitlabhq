@@ -474,3 +474,10 @@
     margin-left: $gl-padding;
   }
 }
+
+@mixin btn-svg {
+  height: $gl-padding;
+  width: $gl-padding;
+  top: 0;
+  vertical-align: text-top;
+}
