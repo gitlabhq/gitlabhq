@@ -326,3 +326,42 @@ end
 For [idempotent jobs](idempotent_jobs.md) that declare either `:sticky` or `:delayed` data consistency, we are
 [preserving the latest WAL location](idempotent_jobs.md#preserve-the-latest-wal-location-for-idempotent-jobs) while deduplicating,
 ensuring that we read from the replica that is fully caught up.
+
+## Job pause control
+
+With the `pause_control` property, you can conditionally pause job processing. If the strategy is active, the job
+is stored in a separate `ZSET` and re-enqueued when the strategy becomes inactive. `PauseControl::ResumeWorker` is a cron
+worker that checks if any paused jobs must be restarted.
+
+To use `pause_control`, you can:
+
+- Use one of the strategies defined in `lib/gitlab/sidekiq_middleware/pause_control/strategies/`.
+- Define a custom strategy in `lib/gitlab/sidekiq_middleware/pause_control/strategies/` and add the strategy to `lib/gitlab/sidekiq_middleware/pause_control/strategies.rb`.
+
+For example:
+
+```ruby
+module Gitlab
+  module SidekiqMiddleware
+    module PauseControl
+      module Strategies
+        class CustomStrategy < Base
+          def enabled?
+            ApplicationSetting.current.elasticsearch_pause_indexing?
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+```ruby
+class PausedWorker
+  include ApplicationWorker
+
+  pause_control :custom_strategy
+
+  # ...
+end
+```

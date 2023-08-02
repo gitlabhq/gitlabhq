@@ -21,6 +21,6 @@ export const INPUT_FIELD_PADDING = 84;
 export const FETCH_TYPES = ['generic', 'search'];
 export const SEARCH_MODAL_ID = 'super-sidebar-search-modal';
 
-export const SEARCH_INPUT_SELECTOR = '.gl-search-box-by-type-input-borderless';
+export const SEARCH_INPUT_SELECTOR = 'input[role="searchbox"]';
 
 export const SEARCH_RESULTS_ITEM_SELECTOR = '.gl-new-dropdown-item';

@@ -880,10 +880,10 @@ Example response:
 ```json
 {
   "id": 1,
-    "user_id": 1
-      "view_diffs_file_by_file": true,
-      "show_whitespace_in_diffs": false,
-      "pass_user_identities_to_ci_jwt": false
+  "user_id": 1,
+  "view_diffs_file_by_file": true,
+  "show_whitespace_in_diffs": false,
+  "pass_user_identities_to_ci_jwt": false
 }
 ```
 
@@ -902,10 +902,10 @@ PUT /user/preferences
 ```json
 {
   "id": 1,
-    "user_id": 1
-      "view_diffs_file_by_file": true,
-      "show_whitespace_in_diffs": false,
-      "pass_user_identities_to_ci_jwt": false
+  "user_id": 1,
+  "view_diffs_file_by_file": true,
+  "show_whitespace_in_diffs": false,
+  "pass_user_identities_to_ci_jwt": false
 }
 ```
 

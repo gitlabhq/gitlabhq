@@ -25,12 +25,6 @@ describe('Comment templates list component', () => {
     expect(wrapper.findAllComponents(ListItem).length).toBe(0);
   });
 
-  it('render comment templates count', () => {
-    wrapper = createComponent(savedRepliesResponse);
-
-    expect(wrapper.find('[data-testid="title"]').text()).toEqual('My comment templates (2)');
-  });
-
   it('renders list of comment templates', () => {
     const savedReplies = savedRepliesResponse.data.currentUser.savedReplies.nodes;
     wrapper = createComponent(savedRepliesResponse);

@@ -151,6 +151,10 @@ module WorkerAttributes
       set_class_attribute(:weight, value)
     end
 
+    def pause_control(value)
+      ::Gitlab::SidekiqMiddleware::PauseControl::WorkersMap.set_strategy_for(strategy: value, worker: self)
+    end
+
     def get_weight
       get_class_attribute(:weight) ||
         NAMESPACE_WEIGHTS[queue_namespace] ||

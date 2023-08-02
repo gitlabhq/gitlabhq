@@ -1013,6 +1013,7 @@ Search/NamespacedClass:
     - 'lib/gitlab/instrumentation/**/*.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/**/*.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/**/*.rb'
+    - 'lib/gitlab/sidekiq_middleware/pause_control/strategies/zoekt.rb'
 
 SidekiqLoadBalancing/WorkerDataConsistency:
   Enabled: true

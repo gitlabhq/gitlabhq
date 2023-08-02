@@ -794,104 +794,69 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       let(:group) { create(:group, path: 'group') }
       let(:project) { create(:project, path: 'project', group: group) }
 
-      context 'with pages_unique_domain feature flag disabled' do
-        before do
-          stub_feature_flags(pages_unique_domain: false)
-        end
+      it 'updates project pages unique domain' do
+        expect do
+          update_project(project, user, project_setting_attributes: {
+            pages_unique_domain_enabled: true
+          })
+        end.to change { project.project_setting.pages_unique_domain_enabled }
 
-        it 'does not change pages unique domain' do
-          expect(project)
-            .to receive(:update)
-            .with({ project_setting_attributes: { has_confluence: true } })
-            .and_call_original
-
-          expect do
-            update_project(project, user, project_setting_attributes: {
-              has_confluence: true,
-              pages_unique_domain_enabled: true
-            })
-          end.not_to change { project.project_setting.pages_unique_domain_enabled }
-        end
-
-        it 'does not remove other attributes' do
-          expect(project)
-            .to receive(:update)
-            .with({ name: 'True' })
-            .and_call_original
-
-          update_project(project, user, name: 'True')
-        end
+        expect(project.project_setting.pages_unique_domain_enabled).to eq true
+        expect(project.project_setting.pages_unique_domain).to match %r{project-group-\w+}
       end
 
-      context 'with pages_unique_domain feature flag enabled' do
-        before do
-          stub_feature_flags(pages_unique_domain: true)
-        end
+      it 'does not changes unique domain when it already exists' do
+        project.project_setting.update!(
+          pages_unique_domain_enabled: false,
+          pages_unique_domain: 'unique-domain'
+        )
 
-        it 'updates project pages unique domain' do
-          expect do
-            update_project(project, user, project_setting_attributes: {
-              pages_unique_domain_enabled: true
-            })
-          end.to change { project.project_setting.pages_unique_domain_enabled }
+        expect do
+          update_project(project, user, project_setting_attributes: {
+            pages_unique_domain_enabled: true
+          })
+        end.to change { project.project_setting.pages_unique_domain_enabled }
 
-          expect(project.project_setting.pages_unique_domain_enabled).to eq true
-          expect(project.project_setting.pages_unique_domain).to match %r{project-group-\w+}
-        end
+        expect(project.project_setting.pages_unique_domain_enabled).to eq true
+        expect(project.project_setting.pages_unique_domain).to eq 'unique-domain'
+      end
 
-        it 'does not changes unique domain when it already exists' do
-          project.project_setting.update!(
-            pages_unique_domain_enabled: false,
-            pages_unique_domain: 'unique-domain'
-          )
+      it 'does not changes unique domain when it disabling unique domain' do
+        project.project_setting.update!(
+          pages_unique_domain_enabled: true,
+          pages_unique_domain: 'unique-domain'
+        )
 
-          expect do
-            update_project(project, user, project_setting_attributes: {
-              pages_unique_domain_enabled: true
-            })
-          end.to change { project.project_setting.pages_unique_domain_enabled }
+        expect do
+          update_project(project, user, project_setting_attributes: {
+            pages_unique_domain_enabled: false
+          })
+        end.not_to change { project.project_setting.pages_unique_domain }
 
-          expect(project.project_setting.pages_unique_domain_enabled).to eq true
-          expect(project.project_setting.pages_unique_domain).to eq 'unique-domain'
-        end
+        expect(project.project_setting.pages_unique_domain_enabled).to eq false
+        expect(project.project_setting.pages_unique_domain).to eq 'unique-domain'
+      end
 
-        it 'does not changes unique domain when it disabling unique domain' do
-          project.project_setting.update!(
+      context 'when there is another project with the unique domain' do
+        it 'fails pages unique domain already exists' do
+          create(
+            :project_setting,
             pages_unique_domain_enabled: true,
             pages_unique_domain: 'unique-domain'
           )
 
-          expect do
-            update_project(project, user, project_setting_attributes: {
-              pages_unique_domain_enabled: false
-            })
-          end.not_to change { project.project_setting.pages_unique_domain }
+          allow(Gitlab::Pages::RandomDomain)
+            .to receive(:generate)
+            .and_return('unique-domain')
 
-          expect(project.project_setting.pages_unique_domain_enabled).to eq false
-          expect(project.project_setting.pages_unique_domain).to eq 'unique-domain'
-        end
+          result = update_project(project, user, project_setting_attributes: {
+            pages_unique_domain_enabled: true
+          })
 
-        context 'when there is another project with the unique domain' do
-          it 'fails pages unique domain already exists' do
-            create(
-              :project_setting,
-              pages_unique_domain_enabled: true,
-              pages_unique_domain: 'unique-domain'
-            )
-
-            allow(Gitlab::Pages::RandomDomain)
-              .to receive(:generate)
-              .and_return('unique-domain')
-
-            result = update_project(project, user, project_setting_attributes: {
-              pages_unique_domain_enabled: true
-            })
-
-            expect(result).to eq(
-              status: :error,
-              message: 'Project setting pages unique domain has already been taken'
-            )
-          end
+          expect(result).to eq(
+            status: :error,
+            message: 'Project setting pages unique domain has already been taken'
+          )
         end
       end
     end

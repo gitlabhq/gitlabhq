@@ -436,3 +436,9 @@ current_user = User.first
 recipients = NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: "push_to"); recipients.count
 recipients.each { |notify| puts notify.user.username }
 ```
+
+### Notifications about failed pipeline that doesn't exist
+
+If you receive notifications (through email or Slack) regarding a failed pipeline that no longer
+exists, double-check to see if you have any duplicate GitLab instances that could have triggered the
+message.

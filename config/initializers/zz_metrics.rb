@@ -35,6 +35,7 @@ if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
   elsif Gitlab::Runtime.sidekiq?
     Gitlab::Metrics::GlobalSearchIndexingSlis.initialize_slis! if Gitlab.ee?
     Gitlab::Metrics::LooseForeignKeysSlis.initialize_slis!
+    Gitlab::Metrics::Llm.initialize_slis! if Gitlab.ee?
   end
 
   GC::Profiler.enable

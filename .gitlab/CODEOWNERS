@@ -1333,6 +1333,7 @@ lib/gitlab/checks/**
 /app/policies/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /app/presenters/ci/runner_*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /app/serializers/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/services/groups/update_shared_runners_service.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /app/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /app/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /db/docs/ci_runner*.yml @gitlab-org/ci-cd/runner-fleet-team/backend-approvers

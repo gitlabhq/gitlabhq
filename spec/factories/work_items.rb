@@ -58,6 +58,10 @@ FactoryBot.define do
       association :work_item_type, :default, :key_result
     end
 
+    trait :epic do
+      association :work_item_type, :default, :epic
+    end
+
     before(:create, :build) do |work_item, evaluator|
       if evaluator.namespace.present?
         work_item.project = nil

@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+import { GlCard, GlLoadingIcon, GlIcon, GlButton } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
 import CreateForm from '../components/form.vue';
 import savedRepliesQuery from '../queries/saved_replies.query.graphql';
@@ -28,6 +29,10 @@ export default {
     },
   },
   components: {
+    GlCard,
+    GlButton,
+    GlLoadingIcon,
+    GlIcon,
     CreateForm,
     List,
   },
@@ -37,34 +42,58 @@ export default {
       count: 0,
       pageInfo: {},
       pagination: {},
+      showForm: false,
     };
   },
   methods: {
     refetchSavedReplies() {
       this.pagination = {};
       this.$apollo.queries.savedReplies.refetch();
+      this.toggleShowForm();
     },
     changePage(pageInfo) {
       this.pagination = pageInfo;
+    },
+    toggleShowForm() {
+      this.showForm = !this.showForm;
     },
   },
 };
 </script>
 
 <template>
-  <div>
-    <div class="settings-section">
-      <h5 class="gl-mt-0 gl-font-lg">
-        {{ __('Add new comment template') }}
-      </h5>
-      <create-form @saved="refetchSavedReplies" />
+  <gl-card
+    class="gl-new-card gl-overflow-hidden"
+    header-class="gl-new-card-header"
+    body-class="gl-new-card-body gl-px-0"
+  >
+    <template #header>
+      <div class="gl-new-card-title-wrapper" data-testid="title">
+        <h3 class="gl-new-card-title">
+          {{ __('My comment templates') }}
+        </h3>
+        <div class="gl-new-card-count">
+          <gl-icon name="comment-lines" class="gl-mr-2" />
+          {{ count }}
+        </div>
+      </div>
+      <gl-button v-if="!showForm" size="small" class="gl-ml-3" @click="toggleShowForm">
+        {{ __('Add new') }}
+      </gl-button>
+    </template>
+    <div v-if="showForm" class="gl-new-card-add-form gl-m-3 gl-mb-4">
+      <h4 class="gl-mt-0">{{ __('Add new comment template') }}</h4>
+      <create-form @saved="refetchSavedReplies" @cancel="toggleShowForm" />
     </div>
+    <gl-loading-icon v-if="$apollo.queries.savedReplies.loading" size="sm" class="gl-my-5" />
     <list
-      :loading="$apollo.queries.savedReplies.loading"
+      v-else-if="savedReplies"
       :saved-replies="savedReplies"
       :page-info="pageInfo"
-      :count="count"
       @input="changePage"
     />
-  </div>
+    <div v-else class="gl-new-card-empty gl-px-5 gl-py-4">
+      {{ __('You have no saved replies yet.') }}
+    </div>
+  </gl-card>
 </template>

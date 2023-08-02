@@ -93,6 +93,10 @@ FactoryBot.define do
       association :work_item_type, :default, :test_case
     end
 
+    trait :epic do
+      association :work_item_type, :default, :epic
+    end
+
     factory :incident do
       association :work_item_type, :default, :incident
 

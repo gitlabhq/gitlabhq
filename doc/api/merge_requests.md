@@ -1271,8 +1271,7 @@ POST /projects/:id/merge_requests
 | `milestone_id`             | integer | **{dotted-circle}** No       | The global ID of a milestone. |
 | `remove_source_branch`     | boolean | **{dotted-circle}** No       | Flag indicating if a merge request should remove the source branch when merging. |
 | `reviewer_ids`             | integer array | **{dotted-circle}** No | The ID of the users added as a reviewer to the merge request. If set to `0` or left empty, no reviewers are added. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49341) in GitLab 13.8. |
-| `squash`                   | boolean | no       | Indicates if the merge request is set to be squashed when merged. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account. |
-| `squash_on_merge`          | boolean | no       | Indicates if the merge request will be squashed when merged. |
+| `squash`                   | boolean | **{dotted-circle}** No       | Indicates if the merge request is set to be squashed when merged. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) may override this value. |
 | `target_project_id`        | integer | **{dotted-circle}** No       | Numeric ID of the target project. |
 
 ```json
@@ -1423,8 +1422,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `remove_labels`            | string  | **{dotted-circle}** No       | Comma-separated label names to remove from a merge request. |
 | `remove_source_branch`     | boolean | **{dotted-circle}** No       | Flag indicating if a merge request should remove the source branch when merging. |
 | `reviewer_ids`             | integer array | **{dotted-circle}** No | The ID of the users set as a reviewer to the merge request. Set the value to `0` or provide an empty value to unset all reviewers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49341) in GitLab 13.8. |
-| `squash`                   | boolean | no       | Indicates if the merge request is set to be squashed when merged. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account. |
-| `squash_on_merge`          | boolean | no       | Indicates if the merge request will be squashed when merged. |
+| `squash`                   | boolean | **{dotted-circle}** No       | Indicates if the merge request is set to be squashed when merged. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) may override this value. |
 | `state_event`              | string  | **{dotted-circle}** No       | New state (close/reopen). |
 | `target_branch`            | string  | **{dotted-circle}** No       | The target branch. |
 | `title`                    | string  | **{dotted-circle}** No       | Title of MR. |

@@ -94,10 +94,7 @@ export default {
   <div>
     <runner-upgrade-status-alert class="gl-my-4" :runner="runner" />
     <div class="gl-pt-4">
-      <dl
-        class="gl-mb-0 gl-display-grid runner-details-grid-template"
-        data-testid="runner-details-list"
-      >
+      <dl class="gl-mb-0 gl-display-grid runner-details-grid-template">
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
         <runner-detail
           :label="s__('Runners|Last contact')"

@@ -5,7 +5,19 @@ require 'spec_helper'
 RSpec.describe Organizations::OrganizationsController, feature_category: :cell do
   let_it_be(:organization) { create(:organization) }
 
-  RSpec.shared_examples 'basic organization controller action' do
+  shared_examples 'action disabled by `ui_for_organizations` feature flag' do
+    before do
+      stub_feature_flags(ui_for_organizations: false)
+    end
+
+    it 'renders 404' do
+      gitlab_request
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
+  shared_examples 'basic organization controller action' do
     before do
       sign_in(user)
     end
@@ -18,6 +30,8 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+
+      it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
     end
 
     context 'when the user has authorization', :enable_admin_mode do
@@ -29,19 +43,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      context 'when the feature flag `ui_for_organizations` is disabled' do
-        let_it_be(:other_user) { create :user }
-
-        before do
-          stub_feature_flags(ui_for_organizations: other_user)
-        end
-
-        it 'renders 404' do
-          gitlab_request
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
+      it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
     end
   end
 

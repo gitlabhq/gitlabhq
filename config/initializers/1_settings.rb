@@ -789,6 +789,9 @@ Gitlab.ee do
   Settings.cron_jobs['search_index_curation_worker'] ||= {}
   Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_index_curation_worker']['job_class'] ||= 'Search::IndexCurationWorker'
+  Settings.cron_jobs['pause_control_resume_worker'] ||= {}
+  Settings.cron_jobs['pause_control_resume_worker']['cron'] ||= '*/5 * * * *'
+  Settings.cron_jobs['pause_control_resume_worker']['job_class'] ||= 'PauseControl::ResumeWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= {}
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'

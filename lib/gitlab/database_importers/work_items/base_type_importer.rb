@@ -105,6 +105,18 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji
+          ],
+          epic: [
+            :assignees,
+            :description,
+            :hierarchy,
+            :labels,
+            :notes,
+            :start_and_due_date,
+            :health_status,
+            :status,
+            :notifications,
+            :award_emoji
           ]
         }.freeze
 

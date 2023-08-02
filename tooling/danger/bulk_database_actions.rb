@@ -7,7 +7,7 @@ module Tooling
     module BulkDatabaseActions
       include ::Tooling::Danger::Suggestor
 
-      BULK_UPDATE_METHODS_REGEX = /\W(((update|delete|destroy)_all)|delete|update)(\(|\s+|$)/
+      BULK_UPDATE_METHODS_REGEX = /\.((update|delete|destroy)(_all)?)\b/
 
       DOCUMENTATION_LINK = 'https://docs.gitlab.com/ee/development/database_review.html#preparation-when-using-update-delete-update_all-and-destroy_all'
       COMMENT_TEXT =

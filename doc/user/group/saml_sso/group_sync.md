@@ -106,7 +106,69 @@ Users granted:
 
 SAML group membership is evaluated each time a user signs in.
 
-### Global SAML group memberships lock **(PREMIUM SELF)**
+### Use the API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
+
+You can use the GitLab API to [list, add, and delete](../../../api/groups.md#saml-group-links) SAML group links.
+
+## Microsoft Azure Active Directory integration
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10507) in GitLab 16.3.
+
+NOTE:
+Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-becoming-microsoft-entra-id/) that Azure Active Directory (AD) is being renamed to Entra ID.
+
+Azure AD sends up to 150 groups in the groups claim. When users are members of more than 150 groups Azure AD sends a
+group overage claim attribute in the SAML response. Then group memberships must be obtained using the Microsoft Graph API.
+
+To integrate Microsoft Azure AD, you:
+
+- Configure Azure AD to enable GitLab to communicate with the Microsoft Graph API.
+- Configure GitLab.
+
+### GitLab settings to Azure AD fields
+
+| GitLab setting | Azure field                                |
+| ============== | ========================================== |
+| Tenant ID      | Directory (tenant) ID                      |
+| Client ID      | Application (client) ID                    |
+| Client Secret  | Value (on **Certificates & secrets** page) |
+
+### Configure Azure AD
+
+<!-- vale gitlab.SentenceSpacing = NO -->
+
+1. In the [Azure Portal](https://portal.azure.com), go to **Azure Active Directory > App registrations > All applications**, and select your GitLab SAML application.
+1. Under **Essentials**, the **Application (client) ID** and **Directory (tenant) ID** values are displayed. Copy these values, because you need them for the GitLab configuration.
+1. In the left navigation, select **Certificates & secrets**.
+1. On the **Client secrets** tab, select **New client secret**.
+   1. In the **Description** text box, add a description.
+   1. In the **Expires** dropdown list, set the expiration date for the credentials. If the secret expires, the GitLab integration will no longer work until the credentials are updated.
+   1. To generate the credentials, select **Add**.
+   1. Copy the **Value** of the credential. This value is displayed only once, and you need it for the GitLab configuration.
+1. In the left navigation, select **API permissions**.
+1. Select **Microsoft Graph > Application permissions**.
+1. Select the checkboxes **GroupMember.Read.All** and **User.Read.All**.
+1. Select **Add permissions** to save.
+1. Select **Grant admin consent for <application name>**, then on the confirmation dialog select **Yes**. The **Status** column for both permissions should change to a green check with **Granted for <application name>**.
+
+<!-- vale gitlab.SentenceSpacing = YES -->
+
+### Configure GitLab
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. Select **Settings > SAML SSO**.
+1. In the Microsoft Azure integration section, select the **Enable Microsoft Azure integration for this group** checkbox.
+1. Enter the **Tenant ID**, **Client ID**, and **Client secret** obtained earlier when configuring Azure Active Directory in the Azure Portal.
+1. Optional. If using Azure AD for US Government or Azure AD China, enter the appropriate **Login API endpoint** and **Graph API endpoint**. The default values work for most organizations.
+1. Select **Save changes**.
+
+With this configuration, if a user signs in with SAML and Azure sends a group overage claim in the response,
+GitLab initiates a Group Sync job to call the Microsoft Graph API and retrieve the user's group membership.
+Then the GitLab Group membership is updated according to SAML Group Links.
+
+## Global SAML group memberships lock **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386390) in GitLab 15.10.
 
@@ -131,7 +193,7 @@ To enable global group memberships lock:
 1. Expand the **Visibility and access controls** section.
 1. Ensure the **Lock memberships to SAML synchronization** checkbox is selected.
 
-### Automatic member removal
+## Automatic member removal
 
 After a group sync, users who are not members of a mapped SAML group are removed from the group.
 On GitLab.com, users in the top-level group are assigned the
@@ -215,23 +277,17 @@ graph TB
    GitLabGroupD --> |Member|GitLabUserD
 ```
 
-#### User that belongs to many SAML groups automatically removed from GitLab group
+### User that belongs to many SAML groups automatically removed from GitLab group
 
-When using Azure AD as the SAML identity provider, users that belong to many SAML groups can be automatically removed from your GitLab group. Users are removed from GitLab
-groups if the group claim is missing from the user's SAML assertion.
+When using Azure AD with SAML, if any user in your organization is a member of more than 150 groups and you use SAML Group Sync,
+that user may lose their group memberships.
+For more information, see
+[Microsoft Group overages](https://learn.microsoft.com/en-us/security/zero-trust/develop/configure-tokens-group-claims-app-roles#group-overages).
 
-Because of a [known issue with Azure AD](https://support.esri.com/en/technical-article/000022190), if a user belongs to more than 150 SAML groups, the group claim is not sent
-in the user's SAML assertion.
-
-With an Azure AD premium subscription, you can allow up to 500 group IDs to be sent in a SAML token using the
-[Azure AD documentation configuration steps](https://support.esri.com/en/technical-article/000022190).
+GitLab has a [Microsoft Azure Active Directory integration](#microsoft-azure-active-directory-integration) that enables SAML Group Sync for organizations
+with users in more than 150 groups. This integration uses the Microsoft Graph API to obtain all user memberships and is
+not limited to 150 groups.
 
 Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/azure/active-directory/hybrid/connect/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
 
 ![Manage Group Claims](img/Azure-manage-group-claims.png).
-
-### Use the API
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
-
-You can use the GitLab API to [list, add, and delete](../../../api/groups.md#saml-group-links) SAML group links.

@@ -2887,6 +2887,9 @@ msgstr ""
 msgid "Add list"
 msgstr ""
 
+msgid "Add new"
+msgstr ""
+
 msgid "Add new application"
 msgstr ""
 
@@ -12083,6 +12086,9 @@ msgstr ""
 msgid "ComplianceReport|No projects found that match filters"
 msgstr ""
 
+msgid "ComplianceReport|No standards adherences found"
+msgstr ""
+
 msgid "ComplianceReport|No violations found"
 msgstr ""
 
@@ -12111,6 +12117,27 @@ msgid "ComplianceReport|Update filtered results?"
 msgstr ""
 
 msgid "ComplianceReport|Update result"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Have a valid rule that prevents author approved merge requests"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Have a valid rule that prevents merge requests approved by committers"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Have a valid rule that requires any merge request to have more than two approvals"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Prevent authors as approvers"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Prevent committers as approvers"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Two approvals"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|View details"
 msgstr ""
 
 msgid "Component"
@@ -19140,6 +19167,9 @@ msgid "ExternalWikiService|https://example.com/xxx/wiki/..."
 msgstr ""
 
 msgid "Facebook"
+msgstr ""
+
+msgid "Fail"
 msgstr ""
 
 msgid "Failed"
@@ -30173,7 +30203,7 @@ msgstr ""
 msgid "My awesome group"
 msgstr ""
 
-msgid "My comment templates (%{count})"
+msgid "My comment templates"
 msgstr ""
 
 msgid "My company or team"
@@ -45299,6 +45329,9 @@ msgstr ""
 msgid "Succeeded"
 msgstr ""
 
+msgid "Success"
+msgstr ""
+
 msgid "Successfully activated"
 msgstr ""
 
@@ -53662,6 +53695,9 @@ msgid "You have more active users than are allowed by your license. GitLab must 
 msgstr ""
 
 msgid "You have no permissions"
+msgstr ""
+
+msgid "You have no saved replies yet."
 msgstr ""
 
 msgid "You have not added any approvers. Start by adding users or groups."

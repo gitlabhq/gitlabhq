@@ -136,18 +136,45 @@ We cannot guarantee that the large language model produces results that are corr
 
 > Introduced in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
-Getting help has never been easier. If you have a question about how the GitLab product works, you can get AI generated support from GitLab Duo Chat.
+GitLab Duo Chat is powered by Anthropic's Claude-2.0 and Claude-instant-1.1 large language models and OpenAI's text-embedding-ada-002 embeddings. The LLMs are employed to analyze user questions to collect appropriate context data from the user's project, and to generate responses. In some cases, embeddings are used to embed user questions and find relevant content in GitLab documentation to share with the LLMs to generate an answer.
+
+You can get AI generated support from GitLab Duo Chat about the following topics:
+
+- How to use GitLab.
+- Questions about an issue.
+- Summarizing an issue.
+
+Example questions you might ask:
+
+- `What is a fork?`
+- `How to reset my password`
+- `Summarize the issue <link to your issue>`
+- `Summarize the description of the current issue`
+
+The examples above all use data from either the issue or the GitLab documentation. However, you can also ask to generate code, CI/CD configurations, or to explain code. For example:
+
+- `Write a hello world function in Ruby`
+- `Write a tic tac toe game in JavaScript`
+- `Write a .gitlab-ci.yml file to test and build a rails application`
+- `Explain the following code: def sum(a, b) a + b end`
+
+You can also ask follow-up questions.
+
+This is an experimental feature and we're continuously extending the capabilities and reliability of the chat.
 
 1. In the lower-left corner, select the Help icon.
 1. Select **Ask in GitLab Duo Chat**. A drawer opens on the right side of your screen.
-1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to search the product documentation and produce an answer.
+1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
+1. You can ask a follow-up question.
+1. If you want to ask a new question unrelated to the previous conversation, you may receive better answers if you clear the context by typing `/reset` into the input box an press **Send**
 
-To give feedback, select the **Give Feedback** link.
+To give feedback about a specific response, use the feedback buttons in the response message.
+Or, you can add a comment in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/415591).
 
 NOTE:
-Only the last 50 messages in the chat history are retained. The chat history expires 3 days after last use.
+Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.
 
 ### Summarize merge request changes **(ULTIMATE SAAS)**
 

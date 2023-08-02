@@ -100,10 +100,6 @@ categories.subtract([:database, :ux, :analytics_instrumentation]) if stable_bran
 if changes.any?
   random_roulette_spins = roulette.spin(nil, categories)
 
-  if categories.include?(:ux) # rubocop:disable Style/IfUnlessModifier
-    roulette.assign_pedroms_for_ux_wider_community_contribution(random_roulette_spins)
-  end
-
   rows = random_roulette_spins.map do |spin|
     markdown_row_for_spin(spin.category, spin)
   end

@@ -1102,6 +1102,14 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
     end
 
+    context 'when trying to create an epic' do
+      it 'defaults to issue type' do
+        issue = post_new_issue(issue_type: 'epic')
+
+        expect(issue.work_item_type.base_type).to eq('issue')
+      end
+    end
+
     context 'when create service return an unrecoverable error with http_status' do
       let(:http_status) { 403 }
 

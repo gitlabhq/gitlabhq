@@ -1058,7 +1058,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#to_branch_name' do
-    let_it_be(:issue) { create(:issue, project: reusable_project, iid: 123, title: 'Testing Issue') }
+    let_it_be(:issue, reload: true) { create(:issue, project: reusable_project, iid: 123, title: 'Testing Issue') }
 
     it 'returns a branch name with the issue title if not confidential' do
       expect(issue.to_branch_name).to eq('123-testing-issue')

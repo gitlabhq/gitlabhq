@@ -678,6 +678,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:pause_control_resume
+  :worker_name: PauseControl::ResumeWorker
+  :feature_category: :global_search
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:personal_access_tokens_expired_notification
   :worker_name: PersonalAccessTokens::ExpiredNotificationWorker
   :feature_category: :system_access

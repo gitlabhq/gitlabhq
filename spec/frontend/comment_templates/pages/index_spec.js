@@ -42,4 +42,13 @@ describe('Comment templates index page component', () => {
       expect.objectContaining(savedReplies[1]),
     );
   });
+
+  it('render comment templates count', async () => {
+    const mockApollo = createMockApolloProvider(savedRepliesResponse);
+    wrapper = createComponent({ mockApollo });
+
+    await waitForPromises();
+
+    expect(wrapper.find('[data-testid="title"]').text()).toContain('2');
+  });
 });

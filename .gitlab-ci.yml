@@ -143,7 +143,7 @@ variables:
   BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3"
   BUNDLE_FROZEN: "true"
   # we override the max_old_space_size to prevent OOM errors
-  NODE_OPTIONS: --max_old_space_size=4096
+  NODE_OPTIONS: --max_old_space_size=5120
   GIT_DEPTH: "20"
   # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
   GIT_STRATEGY: "clone"

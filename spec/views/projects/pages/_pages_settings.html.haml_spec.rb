@@ -17,15 +17,5 @@ RSpec.describe 'projects/pages/_pages_settings', feature_category: :pages do
 
       expect(rendered).to have_content('Use unique domain')
     end
-
-    context 'when pages_unique_domain feature flag is disabled' do
-      it 'does not show the unique domain toggle' do
-        stub_feature_flags(pages_unique_domain: false)
-
-        # We have to use `view.render` because `render` causes issues
-        # https://github.com/rails/rails/issues/41320
-        expect(view.render('projects/pages/pages_settings')).to be_nil
-      end
-    end
   end
 end
