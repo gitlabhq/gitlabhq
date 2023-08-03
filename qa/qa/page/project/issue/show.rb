@@ -77,6 +77,11 @@ module QA
             has_element?('delete-issue-button')
           end
 
+          def has_no_delete_issue_button?
+            open_actions_dropdown
+            has_no_element?('delete-issue-button')
+          end
+
           def delete_issue
             has_delete_issue_button?
 

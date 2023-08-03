@@ -34,7 +34,7 @@ always take into account the
 as well as the permission level of the user.
 
 NOTE:
-External users still count towards a license seat.
+External users still count towards a license seat, unless the user has the [Guest role](../subscriptions/self_managed/index.md#free-guest-users) in the Ultimate tier.
 
 An administrator can flag a user as external by either of the following methods:
 

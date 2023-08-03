@@ -43081,6 +43081,9 @@ msgstr ""
 msgid "ServiceDesk|Cannot update custom email"
 msgstr ""
 
+msgid "ServiceDesk|Configure a custom email address"
+msgstr ""
+
 msgid "ServiceDesk|Custom email address could not be verified."
 msgstr ""
 
@@ -43106,6 +43109,9 @@ msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Eac
 msgstr ""
 
 msgid "ServiceDesk|Parameters missing"
+msgstr ""
+
+msgid "ServiceDesk|Please share your feedback on this feature in the %{linkStart}feedback issue%{linkEnd}"
 msgstr ""
 
 msgid "ServiceDesk|Service Desk is not enabled"

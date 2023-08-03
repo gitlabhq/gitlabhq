@@ -524,7 +524,7 @@ You can see the required minimal access levels and abilities requirements in the
 To associate a custom role with an existing group member, a group member with
 the Owner role:
 
-1. Invites a user to the root group or any subgroup or project in the root
+1. Invites a user as a direct member to the root group or any subgroup or project in the root
    group's hierarchy as a Guest. At this point, this Guest user cannot see any
    code on the projects in the group or subgroup.
 1. Optional. If the Owner does not know the `ID` of the Guest user receiving a custom

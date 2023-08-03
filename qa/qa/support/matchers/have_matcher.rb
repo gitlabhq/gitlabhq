@@ -30,6 +30,7 @@ module QA
           alert_with_title
           incident
           framework
+          delete_issue_button
         ].each do |predicate|
           RSpec::Matchers.define "have_#{predicate}" do |*args, **kwargs|
             match do |page_object|

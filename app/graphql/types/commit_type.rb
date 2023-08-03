@@ -34,6 +34,9 @@ module Types
     field :authored_date, type: Types::TimeType, null: true,
                           description: 'Timestamp of when the commit was authored.'
 
+    field :committed_date, type: Types::TimeType, null: true,
+                           description: 'Timestamp of when the commit was committed.'
+
     field :web_url, type: GraphQL::Types::String, null: false,
                     description: 'Web URL of the commit.'
 
@@ -54,6 +57,12 @@ module Types
                             description: 'Commit authors gravatar.'
     field :author_name, type: GraphQL::Types::String, null: true,
                         description: 'Commit authors name.'
+
+    field :committer_email, type: GraphQL::Types::String, null: true,
+                         description: "Email of the committer."
+
+    field :committer_name, type: GraphQL::Types::String, null: true,
+                        description: "Name of the committer."
 
     # models/commit lazy loads the author by email
     field :author, type: Types::UserType, null: true,

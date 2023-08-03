@@ -19,6 +19,7 @@
         outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
         project_key: "#{@project.service_desk_setting&.project_key}",
         templates: available_service_desk_templates_for(@project),
-        public_project: "#{@project.public?}" } }
+        public_project: "#{@project.public?}",
+        custom_email_endpoint: project_service_desk_custom_email_path(@project) } }
     - elsif show_callout?('promote_service_desk_dismissed')
       = render 'shared/promotions/promote_servicedesk'

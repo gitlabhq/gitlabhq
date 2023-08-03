@@ -12240,9 +12240,11 @@ CREATE TABLE audit_events_google_cloud_logging_configurations (
     log_id_name text DEFAULT 'audit_events'::text,
     encrypted_private_key bytea NOT NULL,
     encrypted_private_key_iv bytea NOT NULL,
+    name text,
     CONSTRAINT check_0ef835c61e CHECK ((char_length(client_email) <= 254)),
     CONSTRAINT check_55783c7c19 CHECK ((char_length(google_project_id_name) <= 30)),
-    CONSTRAINT check_898a76b005 CHECK ((char_length(log_id_name) <= 511))
+    CONSTRAINT check_898a76b005 CHECK ((char_length(log_id_name) <= 511)),
+    CONSTRAINT check_cdf6883cd6 CHECK ((char_length(name) <= 72))
 );
 
 CREATE SEQUENCE audit_events_google_cloud_logging_configurations_id_seq
@@ -20983,7 +20985,8 @@ ALTER SEQUENCE project_aliases_id_seq OWNED BY project_aliases.id;
 CREATE TABLE project_authorizations (
     user_id integer NOT NULL,
     project_id integer NOT NULL,
-    access_level integer NOT NULL
+    access_level integer NOT NULL,
+    is_unique boolean
 );
 
 CREATE TABLE project_auto_devops (
@@ -32383,6 +32386,8 @@ CREATE INDEX index_notes_on_id_where_internal ON notes USING btree (id) WHERE (i
 
 CREATE INDEX index_notes_on_line_code ON notes USING btree (line_code);
 
+CREATE INDEX index_notes_on_namespace_id ON notes USING btree (namespace_id);
+
 CREATE INDEX index_notes_on_noteable_id_and_noteable_type_and_system ON notes USING btree (noteable_id, noteable_type, system);
 
 CREATE INDEX index_notes_on_project_id_and_id_and_system_false ON notes USING btree (project_id, id) WHERE (NOT system);
@@ -34007,11 +34012,15 @@ CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 
+CREATE INDEX tmp_index_project_statistics_pipeline_artifacts_size ON project_statistics USING btree (project_id) WHERE (pipeline_artifacts_size <> 0);
+
 CREATE INDEX tmp_index_vulnerability_dismissal_info ON vulnerabilities USING btree (id) WHERE ((state = 2) AND ((dismissed_at IS NULL) OR (dismissed_by_id IS NULL)));
 
 CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USING btree (id) WHERE (length(title_html) > 800);
 
 CREATE UNIQUE INDEX u_project_compliance_standards_adherence_for_reporting ON project_compliance_standards_adherence USING btree (project_id, check_name, standard);
+
+CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 14);
 
@@ -36229,6 +36238,9 @@ ALTER TABLE ONLY environments
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_76bc5f5455 FOREIGN KEY (resolved_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY notes
+    ADD CONSTRAINT fk_76db6d50c6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY oauth_openid_requests
     ADD CONSTRAINT fk_77114b3b09 FOREIGN KEY (access_grant_id) REFERENCES oauth_access_grants(id) ON DELETE CASCADE;

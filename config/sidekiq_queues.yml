@@ -469,8 +469,6 @@
   - 5
 - - process_commit
   - 3
-- - product_analytics_initialize_analytics
-  - 1
 - - product_analytics_initialize_snowplow_product_analytics
   - 1
 - - product_analytics_post_push

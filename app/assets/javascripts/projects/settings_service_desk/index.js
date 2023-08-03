@@ -22,6 +22,7 @@ export default () => {
     selectedFileTemplateProjectId,
     templates,
     publicProject,
+    customEmailEndpoint,
   } = el.dataset;
 
   return new Vue({
@@ -39,6 +40,7 @@ export default () => {
       selectedFileTemplateProjectId: parseInt(selectedFileTemplateProjectId, 10) || null,
       templates: JSON.parse(templates),
       publicProject: parseBoolean(publicProject),
+      customEmailEndpoint,
     },
     render: (createElement) => createElement(ServiceDeskRoot),
   });

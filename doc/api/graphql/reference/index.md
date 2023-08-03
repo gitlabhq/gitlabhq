@@ -13954,6 +13954,9 @@ Code Quality report for a pipeline.
 | <a id="commitauthorgravatar"></a>`authorGravatar` | [`String`](#string) | Commit authors gravatar. |
 | <a id="commitauthorname"></a>`authorName` | [`String`](#string) | Commit authors name. |
 | <a id="commitauthoreddate"></a>`authoredDate` | [`Time`](#time) | Timestamp of when the commit was authored. |
+| <a id="commitcommitteddate"></a>`committedDate` | [`Time`](#time) | Timestamp of when the commit was committed. |
+| <a id="commitcommitteremail"></a>`committerEmail` | [`String`](#string) | Email of the committer. |
+| <a id="commitcommittername"></a>`committerName` | [`String`](#string) | Name of the committer. |
 | <a id="commitdescription"></a>`description` | [`String`](#string) | Description of the commit message. |
 | <a id="commitdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="commitdiffs"></a>`diffs` | [`[Diff!]`](#diff) | Diffs contained within the commit. This field can only be resolved for 10 diffs in any single request. |
