@@ -1210,6 +1210,86 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
     end
   end
 
+  describe '#replace_file_without_saving!' do
+    context 'when object storage and direct upload is enabled' do
+      let(:upload_path) { 'some/path/123' }
+
+      let!(:fog_connection) do
+        stub_uploads_object_storage(uploader_class, enabled: true, direct_upload: true)
+      end
+
+      let!(:fog_file) do
+        fog_connection.directories.new(key: 'uploads').files.create( # rubocop:disable Rails/SaveBang
+          key: upload_path,
+          body: 'old content'
+        )
+      end
+
+      before do
+        uploader.object_store = described_class::Store::REMOTE
+      end
+
+      # This scenario can happen when replicating object storage uploads.
+      # See Geo::Replication::BlobDownloader#download_file
+      # A SanitizedFile from a Tempfile will be passed to replace_file_without_saving!
+      context 'and given file is not a CarrierWave::Storage::Fog::File' do
+        let(:temp_file) { Tempfile.new("test") }
+        let(:new_file) { CarrierWave::SanitizedFile.new(temp_file) }
+
+        before do
+          temp_file.write('new content')
+          temp_file.close
+          FileUtils.touch(temp_file)
+          allow(object).to receive(:file_final_path).and_return(file_final_path)
+        end
+
+        after do
+          FileUtils.rm_f(temp_file)
+        end
+
+        shared_examples 'skipping triggers for local file' do
+          it 'allows file to be replaced without triggering any callbacks' do
+            expect(uploader).not_to receive(:with_callbacks)
+
+            uploader.replace_file_without_saving!(new_file)
+          end
+
+          it 'does not trigger pending upload checks' do
+            expect(ObjectStorage::PendingDirectUpload).not_to receive(:complete)
+
+            uploader.replace_file_without_saving!(new_file)
+          end
+        end
+
+        context 'and uploader model has the file_final_path' do
+          let(:file_final_path) { upload_path }
+
+          it_behaves_like 'skipping triggers for local file'
+
+          it 'uses default CarrierWave behavior and uploads the file to object storage using the final path' do
+            uploader.replace_file_without_saving!(new_file)
+
+            updated_content = fog_connection.directories.get('uploads').files.get(upload_path).body
+            expect(updated_content).to eq('new content')
+          end
+        end
+
+        context 'and uploader model has no file_final_path' do
+          let(:file_final_path) { nil }
+
+          it_behaves_like 'skipping triggers for local file'
+
+          it 'uses default CarrierWave behavior and uploads the file to object storage using the uploader store path' do
+            uploader.replace_file_without_saving!(new_file)
+
+            content = fog_connection.directories.get('uploads').files.get(uploader.store_path).body
+            expect(content).to eq('new content')
+          end
+        end
+      end
+    end
+  end
+
   describe '.generate_final_store_path' do
     let(:root_id) { 12345 }
     let(:expected_root_hashed_path) { Gitlab::HashedPath.new(root_hash: root_id) }

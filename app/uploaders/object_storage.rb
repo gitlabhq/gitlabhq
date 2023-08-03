@@ -25,7 +25,29 @@ module ObjectStorage
   end
 
   class DirectUploadStorage < ::CarrierWave::Storage::Fog
+    extend ::Gitlab::Utils::Override
+
+    # This override only applies to object storage uploaders (e.g JobArtifactUploader).
+    # - The DirectUploadStorage is only used when object storage is enabled. See `#storage_for`
+    # - This method is called in two possible ways:
+    #   - When a model (e.g. JobArtifact) is saved
+    #   - When uploader.replace_file_without_saving! is called directly
+    #     - For example, see `Gitlab::Geo::Replication::BlobDownloader#download_file`
+    # - We need this override to add the special behavior that bypasses
+    #   CarrierWave's default storing mechanism, which copies a tempfile
+    #   to its final location. In the case of files that are directly uploaded
+    #   by Workhorse to the final location (determined by presence of `<mounted_as>_final_path`) in
+    #   the object storage, the extra copy/delete step of CarrierWave
+    #   is unnecessary.
+    # - We also need to ensure to only bypass the default store behavior if the file given
+    #   is a `CarrierWave::Storage::Fog::File` (uploaded to object storage) and with `<mounted_as>_final_path`
+    #   defined. For everything else, we want to still use the default CarrierWave storage behavior.
+    #   - For example, during Geo replication of job artifacts, `replace_file_without_saving!` is
+    #     called with a sanitized Tempfile. In this case, we want to use the default behavior of
+    #     moving the tempfile to its final location and let CarrierWave upload the file to object storage.
+    override :store!
     def store!(file)
+      return super unless file.is_a?(::CarrierWave::Storage::Fog::File)
       return super unless @uploader.direct_upload_final_path.present?
 
       # The direct_upload_final_path is defined which means
