@@ -16,6 +16,7 @@ RSpec.describe API::Entities::Nuget::Metadatum, feature_category: :package_regis
   let(:expected) do
     {
       'authors': 'Authors',
+      'description': 'Description',
       'summary': 'Description',
       'projectUrl': 'http://sandbox.com/project',
       'licenseUrl': 'http://sandbox.com/license',
@@ -50,8 +51,10 @@ RSpec.describe API::Entities::Nuget::Metadatum, feature_category: :package_regis
     context 'with default value' do
       let(:metadatum) { super().merge(description: nil) }
 
+      it { is_expected.to have_key(:description) }
       it { is_expected.to have_key(:summary) }
-      it { is_expected.to eq(expected.merge(summary: '')) }
+
+      it { is_expected.to eq(expected.merge(description: '', summary: '')) }
     end
   end
 end

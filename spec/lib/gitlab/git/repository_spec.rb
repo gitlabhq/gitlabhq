@@ -309,6 +309,32 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#recent_objects_size' do
+    subject(:recent_objects_size) { repository.recent_objects_size }
+
+    it { is_expected.to be_a(Float) }
+
+    it 'uses repository_info for size' do
+      expect(repository.gitaly_repository_client).to receive(:repository_info).and_call_original
+
+      recent_objects_size
+    end
+
+    it 'returns the recent objects size' do
+      objects_response = Gitaly::RepositoryInfoResponse::ObjectsInfo.new(recent_size: 5.megabytes)
+
+      allow(repository.gitaly_repository_client).to receive(:repository_info).and_return(
+        Gitaly::RepositoryInfoResponse.new(objects: objects_response)
+      )
+
+      expect(recent_objects_size).to eq 5.0
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitaly::RepositoryInfoResponse::ObjectsInfo, :recent_size do
+      subject { recent_objects_size }
+    end
+  end
+
   describe '#to_s' do
     subject { repository.to_s }
 

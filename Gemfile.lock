@@ -1217,7 +1217,7 @@ GEM
       pry (>= 0.13, < 0.15)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    pry-shell (0.6.1)
+    pry-shell (0.6.4)
       pry (>= 0.13.0)
       tty-markdown
       tty-prompt
@@ -1941,7 +1941,7 @@ DEPENDENCIES
   prometheus-client-mmap (~> 0.27)
   pry-byebug
   pry-rails (~> 0.3.9)
-  pry-shell (~> 0.6.1)
+  pry-shell (~> 0.6.4)
   puma (~> 6.3)
   rack (~> 2.2.7)
   rack-attack (~> 6.6.1)

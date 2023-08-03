@@ -19,17 +19,5 @@ RSpec.describe Gitlab::Metrics::Dashboard::ServiceSelector do
         it { is_expected.to be Metrics::Dashboard::SystemDashboardService }
       end
     end
-
-    context 'when the embedded flag is provided' do
-      let(:arguments) { { embedded: true } }
-
-      it { is_expected.to be Metrics::Dashboard::DefaultEmbedService }
-
-      context 'when an incomplete set of dashboard identifiers are provided' do
-        let(:arguments) { { embedded: true, dashboard_path: '.gitlab/dashboards/test.yml' } }
-
-        it { is_expected.to be Metrics::Dashboard::DefaultEmbedService }
-      end
-    end
   end
 end

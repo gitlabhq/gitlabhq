@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildPolicy do
+RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
@@ -10,6 +10,8 @@ RSpec.describe Ci::BuildPolicy do
   let(:policy) do
     described_class.new(user, build)
   end
+
+  it_behaves_like 'a deployable job policy', :ci_build
 
   shared_context 'public pipelines disabled' do
     before do

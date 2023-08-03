@@ -318,6 +318,7 @@ module ApplicationSettingsHelper
       :max_export_size,
       :max_import_size,
       :max_import_remote_file_size,
+      :max_decompressed_archive_size,
       :max_pages_size,
       :max_pages_custom_domains_per_project,
       :max_terraform_state_size_bytes,

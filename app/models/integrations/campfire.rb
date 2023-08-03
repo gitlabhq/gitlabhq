@@ -13,7 +13,7 @@ module Integrations
       format: { with: SUBDOMAIN_REGEXP }, length: { in: 1..63 }
 
     field :token,
-      type: 'password',
+      type: :password,
       title: -> { _('Campfire token') },
       help: -> { s_('CampfireService|API authentication token from Campfire.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },

@@ -263,6 +263,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :max_decompressed_archive_size,
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :max_pages_size,
     presence: true,
     numericality: {

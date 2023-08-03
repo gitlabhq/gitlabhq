@@ -67,7 +67,13 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_repository_size
-    self.repository_size = project.repository.size * 1.megabyte
+    size = if Feature.enabled?(:recent_objects_for_project_statistics, project)
+             project.repository.recent_objects_size
+           else
+             project.repository.size
+           end
+
+    self.repository_size = size.megabytes
   end
 
   def update_wiki_size

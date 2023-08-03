@@ -820,6 +820,23 @@ This file is located at:
 This structured log file records internal activity in the `mail_room` gem.
 Its name and path are configurable, so the name and path may not match the above.
 
+## `web_hooks.log`
+
+> Introduced in GitLab 16.3.
+
+This file is located at:
+
+- `/var/log/gitlab/gitlab-rails/web_hooks.log` on Linux package installations.
+- `/home/git/gitlab/log/web_hooks.log` on self-compiled installations.
+
+The back-off, disablement, and re-enablement events for Webhook are recorded in this file. For example:
+
+```json
+{"severity":"INFO","time":"2020-11-24T02:30:59.860Z","hook_id":12,"action":"backoff","disabled_until":"2020-11-24T04:30:59.860Z","backoff_count":2,"recent_failures":2}
+{"severity":"INFO","time":"2020-11-24T02:30:59.860Z","hook_id":12,"action":"disable","disabled_until":null,"backoff_count":5,"recent_failures":100}
+{"severity":"INFO","time":"2020-11-24T02:30:59.860Z","hook_id":12,"action":"enable","disabled_until":null,"backoff_count":0,"recent_failures":0}
+```
+
 ## Reconfigure logs
 
 Reconfigure log files are in `/var/log/gitlab/reconfigure` for Linux package installations. Self-compiled installations

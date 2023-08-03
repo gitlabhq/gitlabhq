@@ -687,11 +687,23 @@ export function redirectTo(url) {
 }
 
 /**
- * Navigates to a URL
- * @param {*} url - url to navigate to
+ * Navigates to a URL.
+ *
+ * If destination is a querystring, it will be automatically transformed into a fully qualified URL.
+ * If the URL is not a safe URL (see isSafeURL implementation), this function will log an exception into Sentry.
+ *
+ * @param {*} destination - url to navigate to. This can be a fully qualified URL or a querystring.
  * @param {*} external - if true, open a new page or tab
  */
-export function visitUrl(url, external = false) {
+export function visitUrl(destination, external = false) {
+  let url = destination;
+
+  if (destination.startsWith('?')) {
+    const currentUrl = new URL(window.location.href);
+    currentUrl.search = destination;
+    url = currentUrl.toString();
+  }
+
   if (!isSafeURL(url)) {
     // For now log this to Sentry and do not block the execution.
     // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121551#note_1408873600

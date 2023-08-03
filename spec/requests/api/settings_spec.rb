@@ -59,6 +59,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['group_runner_token_expiration_interval']).to be_nil
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
       expect(json_response['max_export_size']).to eq(0)
+      expect(json_response['max_decompressed_archive_size']).to eq(25600)
       expect(json_response['max_terraform_state_size_bytes']).to eq(0)
       expect(json_response['pipeline_limit_per_project_user_sha']).to eq(0)
       expect(json_response['delete_inactive_projects']).to be(false)
@@ -169,6 +170,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             mailgun_events_enabled: true,
             mailgun_signing_key: 'MAILGUN_SIGNING_KEY',
             max_export_size: 6,
+            max_decompressed_archive_size: 20000,
             max_terraform_state_size_bytes: 1_000,
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
@@ -248,6 +250,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['mailgun_events_enabled']).to be(true)
         expect(json_response['mailgun_signing_key']).to eq('MAILGUN_SIGNING_KEY')
         expect(json_response['max_export_size']).to eq(6)
+        expect(json_response['max_decompressed_archive_size']).to eq(20000)
         expect(json_response['max_terraform_state_size_bytes']).to eq(1_000)
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w(github bitbucket))

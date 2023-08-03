@@ -15,7 +15,6 @@ module Metrics
         STAGES::CommonMetricsInserter,
         STAGES::CustomMetricsInserter,
         STAGES::CustomMetricsDetailsInserter,
-        STAGES::VariableEndpointInserter,
         STAGES::PanelIdsInserter
       ].freeze
 

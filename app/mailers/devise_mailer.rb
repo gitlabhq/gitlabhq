@@ -8,6 +8,7 @@ class DeviseMailer < Devise::Mailer
 
   helper EmailsHelper
   helper ApplicationHelper
+  helper RegistrationsHelper
 
   def password_change_by_admin(record, opts = {})
     devise_mail(record, :password_change_by_admin, opts)

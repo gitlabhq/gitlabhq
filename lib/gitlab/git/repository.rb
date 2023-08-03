@@ -345,6 +345,21 @@ module Gitlab
         end
       end
 
+      # Return repository recent objects size in mebibytes
+      #
+      # This differs from the #size method in that it does not include the size of:
+      # - stale objects
+      # - cruft packs of unreachable objects
+      #
+      # see: https://gitlab.com/gitlab-org/gitaly/-/blob/257ee33ca268d48c8f99dcbfeaaf7d8b19e07f06/internal/gitaly/service/repository/repository_info.go#L41-62
+      def recent_objects_size
+        wrapped_gitaly_errors do
+          recent_size_in_bytes = gitaly_repository_client.repository_info.objects.recent_size
+
+          Gitlab::Utils.bytes_to_megabytes(recent_size_in_bytes)
+        end
+      end
+
       # Return git object directory size in bytes
       def object_directory_size
         gitaly_repository_client.get_object_directory_size.to_f * 1024

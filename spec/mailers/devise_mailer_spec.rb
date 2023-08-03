@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-RSpec.describe DeviseMailer do
+RSpec.describe DeviseMailer, feature_category: :user_management do
   include EmailSpec::Matchers
   include_context 'gitlab email notification'
 

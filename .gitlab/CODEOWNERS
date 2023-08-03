@@ -63,10 +63,17 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 # This entry must occur before `/scripts/` in order to be matched first
 /scripts/remote_development/
 
-[Engineering Productivity] @gl-quality/eng-prod
+# This entry must occur before `/scripts/glfm/**/*`/`/scripts/lib/glfm/**/*` in order to be matched first
+/scripts/glfm/**/*.js @gitlab-org/maintainers/frontend
+/scripts/lib/glfm/**/*.js @gitlab-org/maintainers/frontend
+/scripts/glfm/**/* @gitlab-org/maintainers/rails-backend
+/scripts/lib/glfm/**/* @gitlab-org/maintainers/rails-backend
+
+[Pipeline configuration] @gl-quality/eng-prod
 /.gitlab-ci.yml
 /.gitlab/ci/
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
+/.gitlab/ci/frontend.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /.gitlab/ci/package-and-test/ @gl-quality/eng-prod @gl-quality/qe-maintainers
 /.gitlab/ci/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
 /.gitlab/ci/qa-common/ @gl-quality/eng-prod @gl-quality/qe-maintainers
@@ -74,14 +81,29 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /.gitlab/ci/reports.gitlab-ci.yml @gl-quality/eng-prod @gitlab-com/gl-security/appsec
 /.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
 /.gitlab/ci/test-on-gdk/ @gl-quality/eng-prod @gl-quality/qe-maintainers
+/gems/gem.gitlab-ci.yml
+
+[Tooling] @gl-quality/eng-prod
+/.gitlab/CODEOWNERS
 Dangerfile
 /danger/
-/gems/gem.gitlab-ci.yml
 /tooling/danger/
 /scripts/
+/scripts/**/*.rb @gl-quality/eng-prod @gitlab-org/maintainers/rails-backend
+/scripts/**/*.js @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /scripts/review_apps/seed-dast-test-data.sh @gl-quality/eng-prod @dappelt @ngeorge1
-.editorconfig
+/.codeclimate.yml
+/.dockerignore
+/.editorconfig
+/.gitpod.yml
+/.haml-lint_todo.yml
+/.haml-lint.yml
+/.nvmrc
+/.ruby-version
+/.tool-versions
+/lefthook.yml
+/tests.yml
 
 ^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull @splattael
 .rubocop*.yml

@@ -101,6 +101,7 @@ Keep in mind that restricting group access by IP address has the following impli
 - IP access restrictions for Git operations via SSH are supported on GitLab SaaS.
   IP access restrictions applied to self-managed instances are possible with [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md)
   with [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
+- IP restriction is not applicable to shared resources belonging to a group. Any shared resource is accessible to a user even if that user is not able to access the group.
 
 ## Restrict group access by domain **(PREMIUM)**
 

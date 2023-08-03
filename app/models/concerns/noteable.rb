@@ -171,9 +171,9 @@ module Noteable
     return unless etag_caching_enabled?
 
     # TODO: We need to figure out a way to make ETag caching work for group-level work items
-    return if is_a?(Issue) && project.nil?
+    Gitlab::EtagCaching::Store.new.touch(note_etag_key) unless is_a?(Issue) && project.nil?
 
-    Gitlab::EtagCaching::Store.new.touch(note_etag_key)
+    Noteable::NotesChannel.broadcast_to(self, event: 'updated') if Feature.enabled?(:action_cable_notes, project || try(:group))
   end
 
   def note_etag_key

@@ -7,7 +7,7 @@ module Integrations
     validates :api_key, presence: true, if: :activated?
 
     field :api_key,
-      type: 'password',
+      type: :password,
       title: 'API key',
       help: -> { s_('AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new API key') },

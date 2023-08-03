@@ -1298,6 +1298,12 @@ Use lowercase for **runner managers**. These are a type of runner that can creat
 
 Use lowercase for **runner workers**. This is the process created by the runner on the host computing platform to run jobs. See also [GitLab Runner](#gitlab-runner).
 
+## runner authentication token
+
+Use **runner authentication token** instead of variations like **runner token**, **authentication token**, or **token**.
+Runners are assigned runner authentication tokens when they are created, and use them to authenticate with GitLab when
+they execute jobs.
+
 ## (s)
 
 Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:

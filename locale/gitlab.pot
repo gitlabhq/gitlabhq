@@ -17904,9 +17904,6 @@ msgstr ""
 msgid "Environment"
 msgstr ""
 
-msgid "Environment is required for Stages::VariableEndpointInserter"
-msgstr ""
-
 msgid "Environment scope"
 msgstr ""
 
@@ -23984,10 +23981,16 @@ msgstr ""
 msgid "Import|GitHub import details"
 msgstr ""
 
+msgid "Import|Maximum decompressed size (MiB)"
+msgstr ""
+
 msgid "Import|Maximum import remote file size (MB)"
 msgstr ""
 
 msgid "Import|Maximum remote file size for imports from external object storages. For example, AWS S3."
+msgstr ""
+
+msgid "Import|Maximum size of decompressed archive."
 msgstr ""
 
 msgid "Import|No import details"
@@ -53842,6 +53845,9 @@ msgid "You must be authenticated to access this path."
 msgstr ""
 
 msgid "You must be logged in to search across all of GitLab"
+msgstr ""
+
+msgid "You must confirm your email within %{cut_off_days} days of signing up. If you do not confirm your email in this timeframe, your account will be deleted and you will need to sign up for GitLab again."
 msgstr ""
 
 msgid "You must have developer or higher permissions in the associated project to view job logs when debug trace is enabled. To disable debug trace, set the 'CI_DEBUG_TRACE' and 'CI_DEBUG_SERVICES' variables to 'false' in your pipeline configuration or CI/CD settings. If you must view this job log, a project maintainer or owner must add you to the project with developer permissions or higher."

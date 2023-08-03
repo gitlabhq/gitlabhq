@@ -32,7 +32,7 @@ module Integrations
     field :app_store_private_key, api_only: true
 
     field :app_store_protected_refs,
-      type: 'checkbox',
+      type: :checkbox,
       section: SECTION_TYPE_CONFIGURATION,
       title: -> { s_('AppleAppStore|Protected branches and tags only') },
       checkbox_label: -> { s_('AppleAppStore|Only set variables on protected branches and tags') }

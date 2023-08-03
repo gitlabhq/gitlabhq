@@ -461,7 +461,7 @@
 {"name":"pry","version":"0.14.2","platform":"ruby","checksum":"c4fe54efedaca1d351280b45b8849af363184696fcac1c72e0415f9bdac4334d"},
 {"name":"pry-byebug","version":"3.10.1","platform":"ruby","checksum":"c8f975c32255bfdb29e151f5532130be64ff3d0042dc858d0907e849125581f8"},
 {"name":"pry-rails","version":"0.3.9","platform":"ruby","checksum":"468662575abb6b67f4a9831219f99290d5eae7bf186e64dd810d0a3e4a8cc4b1"},
-{"name":"pry-shell","version":"0.6.1","platform":"ruby","checksum":"a99a6b3dffe4df274ea1751866816906861a23851f13346e10a8e8f61b53360c"},
+{"name":"pry-shell","version":"0.6.4","platform":"ruby","checksum":"ad024882d29912b071a7de65ebea538b242d2dc1498c60c7c2352ef94769f208"},
 {"name":"public_suffix","version":"5.0.0","platform":"ruby","checksum":"26ee4fbce33ada25eb117ac71f2c24bf4d8b3414ab6b34f05b4708a3e90f1c6b"},
 {"name":"puma","version":"6.3.0","platform":"java","checksum":"5e2ff95953608d1ba0350b80a3961a43e9bbb78ec60ebd5e4db1940c2921d5d8"},
 {"name":"puma","version":"6.3.0","platform":"ruby","checksum":"b0e35b4fe7ae440237a9ff1647c6bb252a1c0951ff356020670d2e62c1aeeeec"},

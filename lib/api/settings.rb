@@ -106,6 +106,7 @@ module API
       optional :max_export_size, type: Integer, desc: 'Maximum export size in MB'
       optional :max_import_size, type: Integer, desc: 'Maximum import size in MB'
       optional :max_import_remote_file_size, type: Integer, desc: 'Maximum remote file size in MB for imports from external object storages'
+      optional :max_decompressed_archive_size, type: Integer, desc: 'Maximum decompressed size in MB'
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :max_pages_custom_domains_per_project, type: Integer, desc: 'Maximum number of GitLab Pages custom domains per project'
       optional :max_terraform_state_size_bytes, type: Integer, desc: "Maximum size in bytes of the Terraform state file. Set this to 0 for unlimited file size."

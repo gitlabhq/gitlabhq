@@ -24,6 +24,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.repository_storages_weighted).to eq({}) }
     it { expect(setting.kroki_formats).to eq({}) }
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
+    it { expect(setting.max_decompressed_archive_size).to eq(25600) }
   end
 
   describe 'validations' do
@@ -600,6 +601,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       is_expected.to validate_numericality_of(:bulk_import_max_download_file_size)
        .only_integer
        .is_greater_than_or_equal_to(0)
+    end
+
+    it { is_expected.to validate_presence_of(:max_decompressed_archive_size) }
+
+    specify do
+      is_expected.to validate_numericality_of(:max_decompressed_archive_size)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
     end
 
     specify do

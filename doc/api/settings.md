@@ -44,6 +44,7 @@ Example response:
   "max_export_size": 50,
   "max_import_size": 50,
   "max_import_remote_file_size": 10240,
+  "max_decompressed_archive_size": 25600,
   "user_oauth_applications" : true,
   "updated_at" : "2016-01-04T15:44:55.176Z",
   "session_expire_delay" : 10080,
@@ -185,6 +186,7 @@ Example response:
   "max_export_size": 50,
   "max_import_size": 50,
   "max_import_remote_file_size": 10240,
+  "max_decompressed_archive_size": 25600,
   "session_expire_delay": 10080,
   "default_ci_config_path" : null,
   "default_project_visibility": "internal",
@@ -456,9 +458,10 @@ listed in the descriptions of the relevant settings.
 | `maintenance_mode` **(PREMIUM)**         | boolean          | no                                   | When instance is in maintenance mode, non-administrative users can sign in with read-only access and make read-only API requests. |
 | `max_artifacts_size`                     | integer          | no                                   | Maximum artifacts size in MB. |
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB. |
+| `max_decompressed_archive_size`          | integer          | no                                   | Maximum decompressed file size for imported archives in MB. Set to `0` for unlimited. Default is `25600`.  |
 | `max_export_size`                        | integer          | no                                   | Maximum export size in MB. 0 for unlimited. Default = 0 (unlimited). |
 | `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited). [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8. |
-| `max_import_remote_file_size`            | integer          | no                                   | Maximum remote file size for imports from external object storages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
+| `max_import_remote_file_size`                        | integer          | no                                   | Maximum remote file size for imports from external object storages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB. |
 | `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                                   | Maximum allowable lifetime for access tokens in days. When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked.|
 | `max_ssh_key_lifetime` **(ULTIMATE SELF)** | integer        | no                                   | Maximum allowable lifetime for SSH keys in days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6. |

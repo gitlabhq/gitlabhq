@@ -197,9 +197,7 @@ class Note < ApplicationRecord
   # Syncs `confidential` with `internal` as we rename the column.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/367923
   before_create :set_internal_flag
-  after_destroy :expire_etag_cache
   after_save :keep_around_commit, if: :for_project_noteable?, unless: -> { importing? || skip_keep_around_commits }
-  after_save :expire_etag_cache, unless: :importing?
   after_save :touch_noteable, unless: :importing?
   after_commit :notify_after_create, on: :create
   after_commit :notify_after_destroy, on: :destroy
@@ -207,6 +205,7 @@ class Note < ApplicationRecord
   after_commit :trigger_note_subscription_create, on: :create
   after_commit :trigger_note_subscription_update, on: :update
   after_commit :trigger_note_subscription_destroy, on: :destroy
+  after_commit :expire_etag_cache, unless: :importing?
 
   def trigger_note_subscription_create
     return unless trigger_note_subscription?

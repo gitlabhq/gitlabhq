@@ -259,13 +259,30 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '#update_repository_size' do
-    before do
-      allow(project.repository).to receive(:size).and_return(12)
-      statistics.update_repository_size
+    context 'with recent_objects_for_project_statistics enabled' do
+      before do
+        stub_feature_flags(recent_objects_for_project_statistics: true)
+        allow(project.repository).to receive(:recent_objects_size).and_return(5)
+
+        statistics.update_repository_size
+      end
+
+      it 'stores the size of the repository' do
+        expect(statistics.repository_size).to eq 5.megabytes
+      end
     end
 
-    it "stores the size of the repository" do
-      expect(statistics.repository_size).to eq 12.megabytes
+    context 'with use_recent_objects_for_project_statistics disabled' do
+      before do
+        stub_feature_flags(recent_objects_for_project_statistics: false)
+        allow(project.repository).to receive(:size).and_return(10)
+
+        statistics.update_repository_size
+      end
+
+      it 'stores the size of the repository' do
+        expect(statistics.repository_size).to eq 10.megabytes
+      end
     end
   end
 

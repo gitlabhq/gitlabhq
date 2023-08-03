@@ -120,6 +120,7 @@ module ApplicationSettingImplementation
         max_export_size: 0,
         max_import_size: 0,
         max_import_remote_file_size: 10240,
+        max_decompressed_archive_size: 25600,
         max_terraform_state_size_bytes: 0,
         max_yaml_size_bytes: 1.megabyte,
         max_yaml_depth: 100,

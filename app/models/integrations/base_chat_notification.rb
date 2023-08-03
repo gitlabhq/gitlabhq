@@ -78,27 +78,27 @@ module Integrations
     def default_fields
       [
         {
-          type: 'checkbox',
+          type: :checkbox,
           section: SECTION_TYPE_CONFIGURATION,
           name: 'notify_only_broken_pipelines',
           help: 'Do not send notifications for successful pipelines.'
         }.freeze,
         {
-          type: 'select',
+          type: :select,
           section: SECTION_TYPE_CONFIGURATION,
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
           choices: self.class.branch_choices
         }.freeze,
         {
-          type: 'text',
+          type: :text,
           section: SECTION_TYPE_CONFIGURATION,
           name: 'labels_to_be_notified',
           placeholder: '~backend,~frontend',
           help: 'Send notifications for issue, merge request, and comment events with the listed labels only. Leave blank to receive notifications for all events.'
         }.freeze,
         {
-          type: 'select',
+          type: :select,
           section: SECTION_TYPE_CONFIGURATION,
           name: 'labels_to_be_notified_behavior',
           choices: [
@@ -110,8 +110,8 @@ module Integrations
         next unless requires_webhook?
 
         fields.unshift(
-          { type: 'text', name: 'webhook', help: webhook_help, required: true }.freeze,
-          { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze
+          { type: :text, name: 'webhook', help: webhook_help, required: true }.freeze,
+          { type: :text, name: 'username', placeholder: 'GitLab-integration' }.freeze
         )
       end.freeze
     end
@@ -264,7 +264,7 @@ module Integrations
 
     def build_event_channels
       event_channel_names.map do |channel_field|
-        { type: 'text', name: channel_field, placeholder: default_channel_placeholder }
+        { type: :text, name: channel_field, placeholder: default_channel_placeholder }
       end
     end
 

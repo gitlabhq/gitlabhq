@@ -2,6 +2,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
+import actionCable from '~/actioncable_consumer';
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -43,6 +44,15 @@ jest.mock('~/alert', () => ({
 }));
 
 jest.mock('~/vue_shared/plugins/global_toast');
+
+jest.mock('@rails/actioncable', () => {
+  const mockConsumer = {
+    subscriptions: { create: jest.fn().mockReturnValue({ unsubscribe: jest.fn() }) },
+  };
+  return {
+    createConsumer: jest.fn().mockReturnValue(mockConsumer),
+  };
+});
 
 describe('Actions Notes Store', () => {
   let commit;
@@ -248,6 +258,59 @@ describe('Actions Notes Store', () => {
         [{ type: 'REOPEN_ISSUE' }],
         [],
       );
+    });
+  });
+
+  describe('initPolling', () => {
+    afterEach(() => {
+      gon.features = {};
+    });
+
+    it('creates the Action Cable subscription', () => {
+      gon.features = { actionCableNotes: true };
+
+      store.dispatch('setNotesData', notesDataMock);
+      store.dispatch('initPolling');
+
+      expect(actionCable.subscriptions.create).toHaveBeenCalledTimes(1);
+      expect(actionCable.subscriptions.create).toHaveBeenCalledWith(
+        {
+          channel: 'Noteable::NotesChannel',
+          project_id: store.state.notesData.projectId,
+          group_id: store.state.notesData.groupId,
+          noteable_type: store.state.notesData.noteableType,
+          noteable_id: store.state.notesData.noteableId,
+        },
+        expect.any(Object),
+      );
+    });
+  });
+
+  describe('fetchUpdatedNotes', () => {
+    const response = { notes: [], last_fetched_at: '123456' };
+    const successMock = () =>
+      axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, response);
+    const failureMock = () =>
+      axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+
+    beforeEach(() => {
+      return store.dispatch('setNotesData', notesDataMock);
+    });
+
+    it('calls the endpoint and stores last fetched state', async () => {
+      successMock();
+
+      await store.dispatch('fetchUpdatedNotes');
+
+      expect(store.state.lastFetchedAt).toBe('123456');
+    });
+
+    it('shows an alert when fetching fails', async () => {
+      failureMock();
+
+      await store.dispatch('fetchUpdatedNotes');
+
+      expect(createAlert).toHaveBeenCalledTimes(1);
     });
   });
 

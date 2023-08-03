@@ -10,7 +10,6 @@ module Metrics
       STAGES = ::Gitlab::Metrics::Dashboard::Stages
       SEQUENCE = [
         STAGES::CommonMetricsInserter,
-        STAGES::VariableEndpointInserter,
         STAGES::PanelIdsInserter,
         STAGES::TrackPanelType,
         STAGES::UrlValidator

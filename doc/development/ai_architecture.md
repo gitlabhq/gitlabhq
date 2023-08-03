@@ -15,7 +15,7 @@ AI is moving very quickly, and we need to be able to keep pace with changes in t
 
 The following diagram from the [architecture blueprint](../architecture/blueprints/ai_gateway/index.md) shows a simplified view of how the different components in GitLab interact. The abstraction layer helps avoid code duplication within the REST APIs within the `AI API` block.
 
-![architecture diagram](../architecture/blueprints/ai_gateway/img/architecture.png)
+![architecture diagram](img/architecture.png)
 
 ## SaaS-based AI abstraction layer
 

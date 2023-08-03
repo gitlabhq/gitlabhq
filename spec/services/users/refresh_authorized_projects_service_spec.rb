@@ -108,10 +108,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
   describe '#update_authorizations' do
     context 'when there are no rows to add and remove' do
       it 'does not change authorizations' do
-        expect(ProjectAuthorization).not_to receive(:delete_all_in_batches_for_user)
-        expect(ProjectAuthorization).not_to receive(:insert_all_in_batches)
-
-        service.update_authorizations([], [])
+        expect { service.update_authorizations([], []) }.to not_change { user.project_authorizations.count }
       end
     end
 

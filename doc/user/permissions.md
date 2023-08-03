@@ -284,6 +284,7 @@ More details about the permissions for some project-level features follow.
 | Run CI/CD pipeline                                                                                                        |            |         |          | ✓         | ✓          | ✓     |
 | Run CI/CD pipeline for a protected branch                                                                                 |            |         |          | ✓ (5)   | ✓ (5)    | ✓     |
 | Stop [environments](../ci/environments/index.md)                                                                          |            |         |          | ✓         | ✓          | ✓     |
+| Run deployment job for a protected environment                                                                            |            |         |  ✓ (5)   | ✓ (6)   | ✓ (6)    | ✓     |
 | View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                            |            |         |          | ✓         | ✓          | ✓     |
 | Use pipeline editor                                                                                                       |            |         |          | ✓         | ✓          | ✓     |
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                  |            |         |          | ✓         | ✓          | ✓     |
@@ -307,6 +308,7 @@ More details about the permissions for some project-level features follow.
    - [In GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069) and later,
      run for a non-protected branch.
 5. If the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
+6. If the user if [part of a group with at least the Reporter role](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments)
 
 <!-- markdownlint-enable MD029 -->
 

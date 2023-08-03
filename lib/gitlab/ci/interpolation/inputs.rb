@@ -8,8 +8,14 @@ module Gitlab
         UnknownInputTypeError = Class.new(StandardError)
 
         TYPES = [
+          BooleanInput,
+          NumberInput,
           StringInput
         ].freeze
+
+        def self.input_types
+          TYPES.map(&:type_name)
+        end
 
         def initialize(specs, args)
           @specs = specs.to_h

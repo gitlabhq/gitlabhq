@@ -37,6 +37,26 @@ RSpec.describe Gitlab::Ci::Interpolation::Inputs, feature_category: :pipeline_co
         [
           { foo: { default: 'bar' }, baz: nil }, { baz: 'test' },
           { foo: 'bar', baz: 'test' }
+        ],
+        [
+          { number_input: { type: 'number' } },
+          { number_input: 8 },
+          { number_input: 8 }
+        ],
+        [
+          { default_number_input: { default: 9, type: 'number' } },
+          {},
+          { default_number_input: 9 }
+        ],
+        [
+          { true_input: { type: 'boolean' }, false_input: { type: 'boolean' } },
+          { true_input: true, false_input: false },
+          { true_input: true, false_input: false }
+        ],
+        [
+          { default_boolean_input: { default: true, type: 'boolean' } },
+          {},
+          { default_boolean_input: true }
         ]
       ]
     end
@@ -62,11 +82,11 @@ RSpec.describe Gitlab::Ci::Interpolation::Inputs, feature_category: :pipeline_co
         ],
         [
           { foo: 123 }, {},
-          ['unknown input specification for `foo` (valid types: string)']
+          ['unknown input specification for `foo` (valid types: boolean, number, string)']
         ],
         [
           { a: nil, foo: 123 }, { a: '123' },
-          ['unknown input specification for `foo` (valid types: string)']
+          ['unknown input specification for `foo` (valid types: boolean, number, string)']
         ],
         [
           { foo: nil }, {},
@@ -83,6 +103,26 @@ RSpec.describe Gitlab::Ci::Interpolation::Inputs, feature_category: :pipeline_co
         [
           { foo: nil }, { foo: 123 },
           ['`foo` input: provided value is not a string']
+        ],
+        [
+          { number_input: { type: 'number' } },
+          { number_input: 'NaN' },
+          ['`number_input` input: provided value is not a number']
+        ],
+        [
+          { default_number_input: { default: 'NaN', type: 'number' } },
+          {},
+          ['`default_number_input` input: default value is not a number']
+        ],
+        [
+          { boolean_input: { type: 'boolean' } },
+          { boolean_input: 'string' },
+          ['`boolean_input` input: provided value is not a boolean']
+        ],
+        [
+          { default_boolean_input: { default: 'string', type: 'boolean' } },
+          {},
+          ['`default_boolean_input` input: default value is not a boolean']
         ]
       ]
     end

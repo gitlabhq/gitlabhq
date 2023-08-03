@@ -106,28 +106,6 @@ module Tooling
         %r{\A((ee|jh)/)?app/finders/} => [:database, :backend],
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
 
-        %r{\A(\.ruby-version\z|\.nvmrc\z|\.tool-versions\z)} => :tooling,
-        %r{\A(\.gitlab-ci\.yml\z|\.gitlab/ci)} => :tooling,
-        %r{\A\.codeclimate\.yml\z} => :tooling,
-        %r{\Alefthook.yml\z} => :tooling,
-        %r{\A\.editorconfig\z} => :tooling,
-        %r{Dangerfile\z} => :tooling,
-        %r{\A((ee|jh)/)?(danger/|tooling/danger/)} => :tooling,
-        %r{\Agems/gem\.gitlab-ci\.yml\z} => :tooling,
-        %r{\Agems/config/} => :tooling,
-
-        %r{\A((ee|jh)/)?scripts/(lib/)?glfm/.*\.rb} => [:backend],
-        %r{\A((ee|jh)/)?scripts/(lib/)?glfm/.*\.js} => [:frontend],
-        %r{\A((ee|jh)/)?scripts/remote_development/.*} => [:remote_development_be],
-        %r{\A((ee|jh)/)?scripts/.*\.rb} => [:backend, :tooling],
-        %r{\A((ee|jh)/)?scripts/.*\.js} => [:frontend, :tooling],
-        %r{\A((ee|jh)/)?scripts/} => :tooling,
-
-        %r{\Atooling/} => :tooling,
-        %r{(CODEOWNERS)} => :tooling,
-        %r{(tests.yml)} => :tooling,
-        %r{\A\.gitpod\.yml} => :tooling,
-
         %r{\Alib/gitlab/ci/templates} => :ci_template,
 
         %r{\A((ee|jh)/)?spec/features/} => :test,

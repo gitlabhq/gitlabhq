@@ -15,6 +15,10 @@ export const notesDataMock = {
   closePath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=close',
   reopenPath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=reopen',
   canAwardEmoji: true,
+  noteableType: 'issue',
+  noteableId: 1,
+  projectId: 2,
+  groupId: null,
 };
 
 export const userDataMock = {

@@ -47,7 +47,7 @@ class Repository
   #
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
-  CACHED_METHODS = %i(size commit_count readme_path contribution_guide
+  CACHED_METHODS = %i(size recent_objects_size commit_count readme_path contribution_guide
                       changelog license_blob license_gitaly gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
@@ -363,7 +363,7 @@ class Repository
   end
 
   def expire_statistics_caches
-    expire_method_caches(%i(size commit_count))
+    expire_method_caches(%i(size recent_objects_size commit_count))
   end
 
   def expire_all_method_caches
@@ -578,6 +578,12 @@ class Repository
     exists? ? raw_repository.size : 0.0
   end
   cache_method :size, fallback: 0.0
+
+  # The recent objects size of this repository in mebibytes.
+  def recent_objects_size
+    exists? ? raw_repository.recent_objects_size : 0.0
+  end
+  cache_method :recent_objects_size, fallback: 0.0
 
   def commit_count
     root_ref ? raw_repository.commit_count(root_ref) : 0

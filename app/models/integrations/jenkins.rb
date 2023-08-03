@@ -22,7 +22,7 @@ module Integrations
       help: -> { s_('The username for the Jenkins server.') }
 
     field :password,
-      type: 'password',
+      type: :password,
       help: -> { s_('The password for the Jenkins server.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new password.') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password.') }

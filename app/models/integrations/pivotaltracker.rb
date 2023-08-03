@@ -7,7 +7,7 @@ module Integrations
     validates :token, presence: true, if: :activated?
 
     field :token,
-      type: 'password',
+      type: :password,
       help: -> { s_('PivotalTrackerService|Pivotal Tracker API token. User must have access to the story. All comments are attributed to this user.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },

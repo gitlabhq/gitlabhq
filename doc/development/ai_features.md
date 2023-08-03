@@ -1,6 +1,6 @@
 ---
-stage: none
-group: none
+stage: ModelOps
+group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -420,6 +420,52 @@ module EE
   end
 end
 ```
+
+### Pairing requests with responses
+
+Because multiple users' requests can be processed in parallel, when receiving responses,
+it can be difficult to pair a response with its original request. The `requestId`
+field can be used for this purpose, because both the request and response are assured
+to have the same `requestId` UUID.
+
+### Caching
+
+AI requests and responses can be cached. Cached conversation is being used to
+display user interaction with AI features. In the current implementation, this cache
+is not used to skip consecutive calls to the AI service when a user repeats
+their requests.
+
+```graphql
+query {
+  aiMessages {
+    nodes {
+      id
+      requestId
+      content
+      role
+      errors
+      timestamp
+    }
+  }
+}
+```
+
+This cache is especially useful for chat functionality. For other services,
+caching is disabled. (It can be enabled for a service by using `skip_cache: false`
+option.)
+
+Caching has following limitations:
+
+- Messages are stored in Redis stream.
+- There is a single stream of messages per user. This means that all services
+  currently share the same cache. If needed, this could be extended to multiple
+  streams per user (after checking with the infrastructure team that Redis can handle
+  the estimated amount of messages).
+- Only the last 50 messages (requests + responses) are kept.
+- Expiration time of the stream is 3 days since adding last message.
+- User can access only their own messages. There is no authorization on the caching
+  level, and any authorization (if accessed by not current user) is expected on
+  the service layer.
 
 ### Check if feature is allowed for this resource based on namespace settings
 

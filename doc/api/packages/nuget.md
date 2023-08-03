@@ -324,7 +324,8 @@ Example response:
             "version": "1.3.0.17",
             "tags": "",
             "packageContent": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/helloworld.1.3.0.17.nupkg",
-            "summary": "Summary of the package",
+            "description": "Description of the package",
+            "summary": "Description of the package",
             "published": "2023-05-08T17:23:25Z",
           }
         }
@@ -367,7 +368,8 @@ Example response:
     "version": "1.3.0.17",
     "tags": "",
     "packageContent": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/helloworld.1.3.0.17.nupkg",
-    "summary": "Summary of the package",
+    "description": "Description of the package",
+    "summary": "Description of the package",
     "published": "2023-05-08T17:23:25Z",
   }
 }
@@ -405,7 +407,8 @@ Example response:
       "authors": "Author1, Author2",
       "id": "MyNuGetPkg",
       "title": "MyNuGetPkg",
-      "summary": "Summary of the package",
+      "description": "Description of the package",
+      "summary": "Description of the package",
       "totalDownloads": 0,
       "verified": true,
       "version": "1.3.0.17",

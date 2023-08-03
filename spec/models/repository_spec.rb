@@ -2400,6 +2400,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect(repository).to receive(:expire_method_caches).with(
         [
           :size,
+          :recent_objects_size,
           :commit_count,
           :readme_path,
           :contribution_guide,
@@ -2874,7 +2875,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_statistics_caches' do
     it 'expires the caches' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(size commit_count))
+        .with(%i(size recent_objects_size commit_count))
 
       repository.expire_statistics_caches
     end
@@ -3002,6 +3003,22 @@ RSpec.describe Repository, feature_category: :source_code_management do
     context 'with an existing repository' do
       it 'returns the repository size as a Float' do
         expect(repository.size).to be_an_instance_of(Float)
+      end
+    end
+  end
+
+  describe '#recent_objects_size' do
+    context 'with a non-existing repository' do
+      it 'returns 0' do
+        expect(repository).to receive(:exists?).and_return(false)
+
+        expect(repository.recent_objects_size).to eq(0.0)
+      end
+    end
+
+    context 'with an existing repository' do
+      it 'returns the repository recent_objects_size as a Float' do
+        expect(repository.recent_objects_size).to be_an_instance_of(Float)
       end
     end
   end

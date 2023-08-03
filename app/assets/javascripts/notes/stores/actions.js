@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
+import actionCable from '~/actioncable_consumer';
 import Api from '~/api';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
@@ -151,7 +152,30 @@ export const initPolling = ({ state, dispatch, getters, commit }) => {
 
   dispatch('setLastFetchedAt', getters.getNotesDataByProp('lastFetchedAt'));
 
-  dispatch('poll');
+  if (gon.features?.actionCableNotes) {
+    actionCable.subscriptions.create(
+      {
+        channel: 'Noteable::NotesChannel',
+        project_id: state.notesData.projectId,
+        group_id: state.notesData.groupId,
+        noteable_type: state.notesData.noteableType,
+        noteable_id: state.notesData.noteableId,
+      },
+      {
+        connected() {
+          dispatch('fetchUpdatedNotes');
+        },
+        received(data) {
+          if (data.event === 'updated') {
+            dispatch('fetchUpdatedNotes');
+          }
+        },
+      },
+    );
+  } else {
+    dispatch('poll');
+  }
+
   commit(types.SET_IS_POLLING_INITIALIZED, true);
 };
 
@@ -491,7 +515,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
      {"commands_changes":{},"valid":false,"errors":{"commands_only":["Commands applied"]}}
      */
     if (hasQuickActions && message) {
-      eTagPoll.makeRequest();
+      if (eTagPoll) eTagPoll.makeRequest();
 
       // synchronizing the quick action with the sidebar widget
       // this is a temporary solution until we have confidentiality real-time updates
@@ -590,6 +614,21 @@ const getFetchDataParams = (state) => {
   };
 
   return { endpoint, options };
+};
+
+export const fetchUpdatedNotes = ({ commit, state, getters, dispatch }) => {
+  const { endpoint, options } = getFetchDataParams(state);
+
+  return axios
+    .get(endpoint, options)
+    .then(({ data }) => {
+      pollSuccessCallBack(data, commit, state, getters, dispatch);
+    })
+    .catch(() => {
+      createAlert({
+        message: __('Something went wrong while fetching latest comments.'),
+      });
+    });
 };
 
 export const poll = ({ commit, state, getters, dispatch }) => {

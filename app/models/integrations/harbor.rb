@@ -25,7 +25,7 @@ module Integrations
       required: true
 
     field :password,
-      type: 'password',
+      type: :password,
       title: -> { s_('HarborIntegration|Harbor password') },
       help: -> { s_('HarborIntegration|Password for your Harbor username.') },
       non_empty_password_title: -> { s_('HarborIntegration|Enter new Harbor password') },

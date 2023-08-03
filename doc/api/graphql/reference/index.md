@@ -6888,6 +6888,7 @@ Input type: `UserAddOnAssignmentCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentcreateaddonpurchase"></a>`addOnPurchase` | [`AddOnPurchase`](#addonpurchase) | AddOnPurchase state after mutation. |
 | <a id="mutationuseraddonassignmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationuseraddonassignmentcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 

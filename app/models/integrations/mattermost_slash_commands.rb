@@ -5,7 +5,7 @@ module Integrations
     include Ci::TriggersHelper
 
     field :token,
-      type: 'password',
+      type: :password,
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
       placeholder: ''

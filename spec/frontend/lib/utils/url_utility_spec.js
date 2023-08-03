@@ -421,6 +421,16 @@ describe('URL utility', () => {
       window.location = originalLocation;
     });
 
+    it.each`
+      inputQuery                   | expectedQuery
+      ${'?scope=all&state=merged'} | ${'?scope=all&state=merged'}
+      ${'?'}                       | ${'?'}
+    `('handles query string: $inputQuery', ({ inputQuery, expectedQuery }) => {
+      window.location.href = mockUrl;
+      urlUtils.visitUrl(inputQuery);
+      expect(window.location.assign).toHaveBeenCalledWith(`${mockUrl}${expectedQuery}`);
+    });
+
     it('does not navigate to unsafe urls', () => {
       // eslint-disable-next-line no-script-url
       const url = 'javascript:alert(document.domain)';

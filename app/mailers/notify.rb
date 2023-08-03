@@ -39,6 +39,7 @@ class Notify < ApplicationMailer
   helper GitlabRoutingHelper
   helper IssuablesHelper
   helper InProductMarketingHelper
+  helper RegistrationsHelper
 
   def test_email(recipient_email, subject, body)
     mail_with_locale(

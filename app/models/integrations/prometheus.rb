@@ -6,7 +6,7 @@ module Integrations
     include Gitlab::Utils::StrongMemoize
 
     field :manual_configuration,
-      type: 'checkbox',
+      type: :checkbox,
       title: -> { s_('PrometheusService|Active') },
       help: -> { s_('PrometheusService|Select this checkbox to override the auto configuration settings with your own settings.') },
       required: true
@@ -24,7 +24,7 @@ module Integrations
       required: false
 
     field :google_iap_service_account_json,
-      type: 'textarea',
+      type: :textarea,
       title: 'Google IAP Service Account JSON',
       placeholder: -> { s_('PrometheusService|{ "type": "service_account", "project_id": ... }') },
       help: -> { s_('PrometheusService|The contents of the credentials.json file of your service account.') },

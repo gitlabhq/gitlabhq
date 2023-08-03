@@ -31,6 +31,7 @@ RSpec.describe API::Entities::Nuget::PackageMetadataCatalogEntry, feature_catego
       'dependencyGroups': [],
       'tags': 'tag1 tag2 tag3',
       'packageContent': 'http://sandbox.com/archive/package',
+      'description': 'Summary',
       'summary': 'Summary',
       'projectUrl': 'http://sandbox.com/project',
       'licenseUrl': 'http://sandbox.com/license',

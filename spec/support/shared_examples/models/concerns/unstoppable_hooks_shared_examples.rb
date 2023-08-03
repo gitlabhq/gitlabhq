@@ -137,12 +137,6 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
     end
   end
 
-  describe '#disable!' do
-    it 'does not disable a group hook' do
-      expect { hook.disable! }.not_to change { hook.executable? }.from(true)
-    end
-  end
-
   describe '#temporarily_disabled?' do
     it 'is false' do
       # Initially
@@ -164,7 +158,7 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
       # Initially
       expect(hook).not_to be_permanently_disabled
 
-      hook.disable!
+      hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
 
       expect(hook).not_to be_permanently_disabled
     end
@@ -177,7 +171,7 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
 
     context 'when hook has been disabled' do
       before do
-        hook.disable!
+        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
       end
 
       it { is_expected.to eq :executable }
@@ -185,7 +179,7 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
 
     context 'when hook has been backed off' do
       before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
         hook.disabled_until = 1.hour.from_now
       end
 

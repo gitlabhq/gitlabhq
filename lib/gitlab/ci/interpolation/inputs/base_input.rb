@@ -59,7 +59,7 @@ module Gitlab
             return error("default value is not a #{self.class.type_name}") if !required_input? && !valid_value?(default)
 
             # validate provided value
-            error("provided value is not a #{self.class.type_name}") unless valid_value?(value)
+            error("provided value is not a #{self.class.type_name}") unless valid_value?(actual_value)
           end
 
           def error(message)

@@ -34,50 +34,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
 
       it_behaves_like 'valid dashboard service response'
     end
-
-    context 'when the dashboard is expected to be embedded' do
-      let(:service_call) { described_class.find(project, user, **params) }
-      let(:params) { { environment: environment, embedded: true } }
-
-      it_behaves_like 'valid embedded dashboard service response'
-
-      context 'when params are incomplete' do
-        let(:params) { { environment: environment, embedded: true, dashboard_path: system_dashboard_path } }
-
-        it_behaves_like 'valid embedded dashboard service response'
-      end
-
-      context 'when the panel is specified' do
-        context 'as a custom metric' do
-          let(:params) do
-            {
-              environment: environment,
-              embedded: true,
-              dashboard_path: system_dashboard_path,
-              group: business_metric_title,
-              title: 'title',
-              y_label: 'y_label'
-            }
-          end
-
-          context 'when the metric exists' do
-            before do
-              create(:prometheus_metric, project: project)
-            end
-
-            it_behaves_like 'valid embedded dashboard service response'
-          end
-        end
-
-        context 'as a project-defined panel' do
-          context 'when the metric exists' do
-            let(:project) { project_with_dashboard(dashboard_path) }
-
-            it_behaves_like 'valid embedded dashboard service response'
-          end
-        end
-      end
-    end
   end
 
   describe '.find_raw' do
