@@ -1,0 +1,10 @@
+- title: "Twitter OmniAuth login option is removed from GitLab.com"
+  removal_milestone: "16.3"
+  announcement_milestone: "16.3"
+  breaking_change: true
+  reporter: jessieay
+  stage: Manage
+  issue_url: https://gitlab.com/gitlab-com/Product/-/issues/11417
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Twitter OAuth 1.0a OmniAuth is being deprecated and removed on GitLab.com in GitLab 16.3 due to low use, lack of gem support, and the lack of a functional sign-in option for this feature. If you sign into GitLab.com with Twitter, you can sign in with a password or another [supported OmniAuth provider](https://gitlab.com/users/sign_in).
+  documentation_url: https://docs.gitlab.com/ee/integration/twitter.html

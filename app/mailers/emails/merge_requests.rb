@@ -186,5 +186,3 @@ module Emails
     end
   end
 end
-
-Emails::MergeRequests.prepend_mod_with('Emails::MergeRequests')

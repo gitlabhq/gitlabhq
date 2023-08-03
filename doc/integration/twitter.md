@@ -4,7 +4,14 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Twitter OAuth 1.0a OmniAuth Provider **(FREE SELF)**
+# Twitter OAuth 1.0a OmniAuth Provider (deprecated) **(FREE SELF)**
+
+<!--- start_remove The following content will be removed on remove_date: '2024-05-17' -->
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-com/Product/-/issues/11417) in GitLab 16.3 and is planned for removal in 17.0. Use [another supported OmniAuth provider](omniauth.md#supported-providers) instead. This change is a breaking change.
+
+<!--- end_remove -->
 
 NOTE:
 Twitter OAuth 2.0 support is [not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/366213).

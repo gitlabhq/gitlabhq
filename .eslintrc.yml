@@ -148,11 +148,6 @@ rules:
         methods: 'sanitize'
 overrides:
   - files:
-      - 'ee/**/*'
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
-    rules:
-      vue/multi-word-component-names: off
-  - files:
       - '{,ee/,jh/}spec/frontend*/**/*'
     rules:
       '@gitlab/require-i18n-strings': off

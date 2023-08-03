@@ -97,7 +97,8 @@
   // Table adjustments
   @mixin new-card-table-adjustments {
     tbody > tr {
-      &:first-of-type > td[data-label] {
+      &:first-of-type > td[data-label],
+      &:first-of-type > td:first-of-type:last-of-type {
         @include gl-border-t-0;
       }
 

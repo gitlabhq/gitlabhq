@@ -1,4 +1,4 @@
-import { GlAlert, GlBadge, GlKeysetPagination } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination, GlCard, GlIcon } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
@@ -36,7 +36,7 @@ describe('Ci variable table', () => {
   };
 
   const findRevealButton = () => wrapper.findByText('Reveal values');
-  const findAddButton = () => wrapper.findByLabelText('Add');
+  const findAddButton = () => wrapper.findByTestId('add-ci-variable-button');
   const findEditButton = () => wrapper.findByLabelText('Edit');
   const findEmptyVariablesPlaceholder = () => wrapper.findByText('There are no variables yet.');
   const findHiddenValues = () => wrapper.findAllByTestId('hiddenValue');
@@ -50,10 +50,29 @@ describe('Ci variable table', () => {
   const findGroupCiCdSettingsLink = (rowIndex) =>
     wrapper.findAllByTestId('ci-variable-table-row-cicd-path').at(rowIndex).attributes('href');
   const findKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findCard = () => wrapper.findComponent(GlCard);
 
   const generateExceedsVariableLimitText = (entity, currentVariableCount, maxVariableLimit) => {
     return sprintf(EXCEEDS_VARIABLE_LIMIT_TEXT, { entity, currentVariableCount, maxVariableLimit });
   };
+
+  describe('card', () => {
+    it('displays the correct title', () => {
+      createComponent();
+      expect(findCard().text()).toContain('CI/CD Variables');
+    });
+
+    it('displays the correct icon', () => {
+      createComponent();
+      expect(findCard().findComponent(GlIcon).props('name')).toBe('code');
+    });
+
+    it('displays the number of added CI/CD Variables', () => {
+      const variables = [1, 2, 3];
+      createComponent({ props: { variables } });
+      expect(findCard().text()).toContain(String(variables.length));
+    });
+  });
 
   describe.each`
     isVariablePagesEnabled | text
@@ -88,7 +107,7 @@ describe('Ci variable table', () => {
         ${1}  | ${'Value'}
         ${2}  | ${'Attributes'}
         ${3}  | ${'Environments'}
-        ${4}  | ${''}
+        ${4}  | ${'Actions'}
       `('renders the $text column', ({ index, text }) => {
         expect(findTableColumnText(index)).toEqual(text);
       });

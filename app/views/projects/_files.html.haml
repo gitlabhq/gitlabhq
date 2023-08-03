@@ -15,7 +15,7 @@
       #js-code-owners{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
 
   .nav-block.gl-display-flex.gl-xs-flex-direction-column.gl-align-items-stretch
-    = render 'projects/tree/tree_header', tree: @tree, is_project_overview: is_project_overview
+    = render 'projects/tree/tree_header', tree: @tree
 
   - if project.forked?
     #js-fork-info{ data: vue_fork_divergence_data(project, ref) }

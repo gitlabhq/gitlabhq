@@ -117,6 +117,7 @@ export default {
         @handle-prev-page="$emit('handle-prev-page')"
         @handle-next-page="$emit('handle-next-page')"
         @set-selected-variable="setSelectedVariable"
+        @delete-variable="deleteVariable"
         @sort-changed="(val) => $emit('sort-changed', val)"
       />
       <ci-variable-modal

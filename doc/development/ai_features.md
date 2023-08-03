@@ -138,6 +138,53 @@ To populate the embedding database for GitLab chat:
 1. Open a rails console
 1. Run [this script](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/10588#note_1373586079) to populate the embedding database
 
+### Contributing to GitLab Duo Chat
+
+The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb) that includes a system prompt explaining how the large language model should interpret the question and provide an
+answer. The system prompt defines available tools that can be used to gather
+information to answer the user's question.
+
+The zero-shot agent receives the user's question and decides which tools to use to gather information to answer it.
+It then makes a request to the large language model, which decides if it can answer directly or if it needs to use one
+of the defined tools.
+
+The tools each have their own prompt that provides instructions to the large language model on how to use that tool to
+gather information. The tools are designed to be self-sufficient and avoid multiple requests back and forth to
+the large language model.
+
+After the tools have gathered the required information, it is returned to the zero-shot agent, which asks the large language
+model if enough information has been gathered to provide the final answer to the user's question.
+
+#### Adding a new tool
+
+To add a new tool:
+
+1. Create files for the tool in the `ee/lib/gitlab/llm/chain/tools/` folder. Use existing tools like `issue_identifier` or
+`resource_reader` as a template.
+
+1. Write a class for the tool that includes:
+
+   - Name and description of what the tool does
+   - Example questions that would use this tool
+   - Instructions for the large language model on how to use the tool to gather information - so the main prompts that
+   this tool is using.
+
+1. Test and iterate on the prompt using RSpec tests that make real requests to the large language model.
+   - Prompts require trial and error, the non-deterministic nature of working with LLM can be surprising.
+   - Anthropic provides good [guide](https://docs.anthropic.com/claude/docs/introduction-to-prompt-design) on working on prompts.
+
+1. Implement code in the tool to parse the response from the large language model and return it to the zero-shot agent.
+
+1. Add the new tool name to the `tools` array in `ee/lib/gitlab/llm/completions/chat.rb` so the zero-shot agent knows about it.
+
+1. Add tests by adding questions to the test-suite for which the new tool should respond to. Iterate on the prompts as needed.
+
+The key things to keep in mind are properly instructing the large language model through prompts and tool descriptions,
+keeping tools self-sufficient, and returning responses to the zero-shot agent. With some trial and error on prompts,
+adding new tools can expand the capabilities of the chat feature.
+
+There are available short [videos](https://www.youtube.com/playlist?list=PL05JrBw4t0KoOK-bm_bwfHaOv-1cveh8i) covering this topic.
+
 ### Debugging
 
 To gather more insights about the full request, use the `Gitlab::Llm::Logger` file to debug logs.

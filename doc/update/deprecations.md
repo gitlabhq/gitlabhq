@@ -774,6 +774,20 @@ In some cases, like when a downstream pipeline had the `passed with warnings` st
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Twitter OmniAuth login option is deprecated from self-managed GitLab
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/11417).
+</div>
+
+Twitter OAuth 1.0a OmniAuth is deprecated and will be removed for self-managed GitLab instances in GitLab 17.0 due to low use and lack of gem support. Use [another supported OmniAuth provider](https://docs.gitlab.com/ee/integration/omniauth.html#supported-providers) instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Unified approval rules are deprecated
 
 <div class="deprecation-notes">
@@ -1030,6 +1044,20 @@ The GitLab [License Compliance](https://docs.gitlab.com/ee/user/compliance/licen
 | Both DS and LS templates | License data from LS job is used | License data from LS job is used | License data from DS job is used |
 | DS template is included but LS template is not | No license data | License data from DS job is used | License data from DS job is used |
 | LS template is included but DS template is not | License data from LS job is used | License data from LS job is used | No license data |
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.3">
+
+### Twitter OmniAuth login option is removed from GitLab.com
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">16.3</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/11417).
+</div>
+
+Twitter OAuth 1.0a OmniAuth is being deprecated and removed on GitLab.com in GitLab 16.3 due to low use, lack of gem support, and the lack of a functional sign-in option for this feature. If you sign into GitLab.com with Twitter, you can sign in with a password or another [supported OmniAuth provider](https://gitlab.com/users/sign_in).
 
 </div>
 </div>

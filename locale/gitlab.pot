@@ -10083,13 +10083,25 @@ msgstr ""
 msgid "CiVariables|Add Variable"
 msgstr ""
 
+msgid "CiVariables|Add variable"
+msgstr ""
+
 msgid "CiVariables|Attributes"
+msgstr ""
+
+msgid "CiVariables|CI/CD Variables"
 msgstr ""
 
 msgid "CiVariables|Cancel"
 msgstr ""
 
 msgid "CiVariables|Cannot use Masked Variable with current value"
+msgstr ""
+
+msgid "CiVariables|Delete variable"
+msgstr ""
+
+msgid "CiVariables|Do you want to delete the variable %{key}?"
 msgstr ""
 
 msgid "CiVariables|Environments"

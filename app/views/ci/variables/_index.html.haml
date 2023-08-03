@@ -32,7 +32,5 @@
   environment_scope_link: help_page_path('ci/environments/index', anchor: 'limit-the-environment-scope-of-a-cicd-variable') } }
 
 - if !@group && @project.group
-  .settings-header.border-top.gl-mt-6
-    = render 'ci/group_variables/header'
-  .settings-content.pr-0
-    = render 'ci/group_variables/index'
+  = render 'ci/group_variables/header'
+  = render 'ci/group_variables/index'

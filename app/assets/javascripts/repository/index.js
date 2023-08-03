@@ -230,20 +230,12 @@ export default function setupVueRepositoryList() {
 
   const treeHistoryLinkEl = document.getElementById('js-tree-history-link');
   const { historyLink } = treeHistoryLinkEl.dataset;
-  let { isProjectOverview } = treeHistoryLinkEl.dataset;
-
-  const isProjectOverviewAfterEach = router.afterEach(() => {
-    isProjectOverview = false;
-    isProjectOverviewAfterEach();
-  });
 
   // eslint-disable-next-line no-new
   new Vue({
     el: treeHistoryLinkEl,
     router,
     render(h) {
-      if (parseBoolean(isProjectOverview) && !this.$route.params.path) return null;
-
       return h(
         GlButton,
         {
