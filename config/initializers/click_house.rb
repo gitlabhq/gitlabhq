@@ -26,6 +26,6 @@ ClickHouse::Client.configure do |config|
     }
 
     response = Gitlab::HTTP.post(url, options)
-    ClickHouse::Client::Response.new(response.body, response.code)
+    ClickHouse::Client::Response.new(response.body, response.code, response.headers)
   end
 end

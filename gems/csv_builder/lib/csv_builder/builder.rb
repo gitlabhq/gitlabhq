@@ -59,8 +59,10 @@ module CsvBuilder
         @collection.each_batch(order_hint: :created_at) do |relation|
           relation.preload(@associations_to_preload).order(:id).each(&block)
         end
-      else
+      elsif @collection.respond_to?(:find_each)
         @collection.find_each(&block)
+      else
+        @collection.each(&block)
       end
     end
 

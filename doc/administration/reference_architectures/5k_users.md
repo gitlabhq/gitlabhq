@@ -876,9 +876,6 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    # available database connections.
    patroni['postgresql']['max_wal_senders'] = 7
 
-   # Incoming recommended value for max connections is 500. See https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5691.
-   patroni['postgresql']['max_connections'] = 500
-
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
@@ -1006,8 +1003,6 @@ The following IPs are used as an example:
          password: '<pgbouncer_password_hash>'
       }
    }
-   # Incoming recommended value for max db connections is 150. See https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5691.
-   pgbouncer['max_db_connections'] = 150
 
    # Configure Consul agent
    consul['watchers'] = %w(postgresql)
@@ -1162,7 +1157,6 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
    # PostgreSQL configuration
    postgresql['listen_address'] = '0.0.0.0'
-   postgresql['max_connections'] = 500
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false

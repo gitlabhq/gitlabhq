@@ -2,11 +2,13 @@
 
 require 'csv'
 require 'tempfile'
+require 'zlib'
 
 require_relative "csv_builder/version"
 require_relative "csv_builder/builder"
 require_relative "csv_builder/single_batch"
 require_relative "csv_builder/stream"
+require_relative "csv_builder/gzip"
 
 # Generates CSV when given a collection and a mapping.
 #

@@ -17,6 +17,7 @@ const DEFAULT_PROPS = {
   isLocked: false,
   canLock: true,
   showForkSuggestion: false,
+  isUsingLfs: true,
 };
 
 const DEFAULT_INJECT = {
@@ -146,7 +147,7 @@ describe('BlobButtonGroup component', () => {
     createComponent();
 
     const { targetBranch, originalBranch } = DEFAULT_INJECT;
-    const { name, canPushCode, deletePath, emptyRepo } = DEFAULT_PROPS;
+    const { name, canPushCode, deletePath, emptyRepo, isUsingLfs } = DEFAULT_PROPS;
     const title = `Delete ${name}`;
 
     expect(findDeleteBlobModal().props()).toMatchObject({
@@ -157,6 +158,7 @@ describe('BlobButtonGroup component', () => {
       canPushCode,
       deletePath,
       emptyRepo,
+      isUsingLfs,
     });
   });
 });

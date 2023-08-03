@@ -36,7 +36,9 @@ module WebHooks
       # - and either:
       #   - disabled_until is nil (i.e. this was set by WebHook#fail!)
       #   - or disabled_until is in the future (i.e. this was set by WebHook#backoff!)
+      # - OR silent mode is enabled.
       scope :disabled, -> do
+        return all if Gitlab::SilentMode.enabled?
         return none unless auto_disabling_enabled?
 
         where(
@@ -52,7 +54,9 @@ module WebHooks
       # - OR we have exceeded the grace period and neither of the following is true:
       #   - disabled_until is nil (i.e. this was set by WebHook#fail!)
       #   - disabled_until is in the future (i.e. this was set by WebHook#backoff!)
+      # - AND silent mode is not enabled.
       scope :executable, -> do
+        return none if Gitlab::SilentMode.enabled?
         return all unless auto_disabling_enabled?
 
         where(

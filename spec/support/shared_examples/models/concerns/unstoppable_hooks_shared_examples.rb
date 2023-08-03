@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'a hook that does not get automatically disabled on failure' do
   describe '.executable/.disabled', :freeze_time do
-    let!(:executables) do
+    let!(:webhooks) do
       [
         [0, Time.current],
         [0, 1.minute.from_now],
@@ -29,8 +29,22 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
 
     it 'finds the correct set of project hooks' do
       expect(find_hooks).to all(be_executable)
-      expect(find_hooks.executable).to match_array executables
+      expect(find_hooks.executable).to match_array(webhooks)
       expect(find_hooks.disabled).to be_empty
+    end
+
+    context 'when silent mode is enabled' do
+      before do
+        stub_application_setting(silent_mode_enabled: true)
+      end
+
+      it 'causes no hooks to be considered executable' do
+        expect(find_hooks.executable).to be_empty
+      end
+
+      it 'causes all hooks to be considered disabled' do
+        expect(find_hooks.disabled).to match_array(webhooks)
+      end
     end
   end
 

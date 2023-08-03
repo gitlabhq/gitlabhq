@@ -9,13 +9,17 @@ import BoardApp from '~/boards/components/board_app.vue';
 import eventHub from '~/boards/eventhub';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
+import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { rawIssue, boardListsQueryResponse } from '../mock_data';
 
 describe('BoardApp', () => {
   let wrapper;
   let store;
+  let mockApollo;
+
+  const errorMessage = 'Failed to fetch lists';
   const boardListQueryHandler = jest.fn().mockResolvedValue(boardListsQueryResponse);
-  const mockApollo = createMockApollo([[boardListsQuery, boardListQueryHandler]]);
+  const boardListQueryHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
 
   Vue.use(Vuex);
   Vue.use(VueApollo);
@@ -33,7 +37,12 @@ describe('BoardApp', () => {
     });
   };
 
-  const createComponent = ({ isApolloBoard = false, issue = rawIssue } = {}) => {
+  const createComponent = ({
+    isApolloBoard = false,
+    issue = rawIssue,
+    handler = boardListQueryHandler,
+  } = {}) => {
+    mockApollo = createMockApollo([[boardListsQuery, handler]]);
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: activeBoardItemQuery,
       data: {
@@ -56,6 +65,10 @@ describe('BoardApp', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    cacheUpdates.setError = jest.fn();
+  });
 
   afterEach(() => {
     store = null;
@@ -103,6 +116,14 @@ describe('BoardApp', () => {
       await waitForPromises();
 
       expect(eventHub.$on).toHaveBeenCalledWith('updateBoard', wrapper.vm.refetchLists);
+    });
+
+    it('sets error on fetch lists failure', async () => {
+      createComponent({ isApolloBoard: true, handler: boardListQueryHandlerFailure });
+
+      await waitForPromises();
+
+      expect(cacheUpdates.setError).toHaveBeenCalled();
     });
   });
 });

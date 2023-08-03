@@ -2467,7 +2467,7 @@ class Project < ApplicationRecord
       break unless pages_enabled?
 
       variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
-      variables.append(key: 'CI_PAGES_URL', value: Gitlab::Pages::UrlBuilder.new(self).pages_url)
+      variables.append(key: 'CI_PAGES_URL', value: Gitlab::Pages::UrlBuilder.new(self).pages_url(with_unique_domain: true))
     end
   end
 

@@ -13,9 +13,12 @@ RSpec.shared_examples 'index validators' do |validator, expected_result|
   end
 
   let(:inconsistency_type) { validator.name }
+  let(:connection_class) { class_double(Class, name: 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter') }
 
   # rubocop:disable RSpec/VerifiedDoubleReference
-  let(:connection) { instance_double('connection', select_rows: database_indexes, current_schema: 'public') }
+  let(:connection) do
+    instance_double('connection', class: connection_class, select_rows: database_indexes, current_schema: 'public')
+  end
   # rubocop:enable RSpec/VerifiedDoubleReference
 
   let(:schema) { 'public' }

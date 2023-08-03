@@ -929,3 +929,13 @@ table.code {
     border-bottom: 0;
   }
 }
+
+.tooltip {
+  &.coverage {
+    left: -3px !important;
+  }
+
+  &.no-coverage {
+    left: -2px !important;
+  }
+}

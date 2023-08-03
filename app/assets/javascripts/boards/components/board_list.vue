@@ -3,7 +3,7 @@ import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { mapActions, mapState } from 'vuex';
 import { STATUS_CLOSED } from '~/issues/constants';
-import { sprintf, __ } from '~/locale';
+import { sprintf, __, s__ } from '~/locale';
 import { defaultSortableOptions } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Tracking from '~/tracking';
@@ -122,6 +122,12 @@ export default {
       context: {
         isSingleRequest: true,
       },
+      error(error) {
+        setError({
+          error,
+          message: s__('Boards|An error occurred while fetching a list. Please try again.'),
+        });
+      },
     },
     toList: {
       query() {
@@ -142,8 +148,16 @@ export default {
       context: {
         isSingleRequest: true,
       },
-      error() {
-        // handle error
+      error(error) {
+        setError({
+          error,
+          message: sprintf(
+            s__('Boards|An error occurred while moving the %{issuableType}. Please try again.'),
+            {
+              issuableType: this.isEpicBoard ? 'epic' : 'issue',
+            },
+          ),
+        });
       },
     },
   },
@@ -442,8 +456,16 @@ export default {
             },
           },
         });
-      } catch {
-        // handle error
+      } catch (error) {
+        setError({
+          error,
+          message: sprintf(
+            s__('Boards|An error occurred while moving the %{issuableType}. Please try again.'),
+            {
+              issuableType: this.isEpicBoard ? 'epic' : 'issue',
+            },
+          ),
+        });
       }
     },
     updateCacheAfterMovingItem({ issuableMoveList, fromListId, toListId, newIndex, cache }) {
@@ -494,52 +516,64 @@ export default {
         });
       }
     },
-    moveToPosition(positionInList, oldIndex, item) {
-      this.$apollo.mutate({
-        mutation: listIssuablesQueries[this.issuableType].moveMutation,
-        variables: {
-          ...moveItemVariables({
-            iid: item.iid,
-            epicId: item.id,
-            fromListId: this.currentList.id,
-            toListId: this.currentList.id,
-            isIssue: !this.isEpicBoard,
-            boardId: this.boardId,
-            itemToMove: item,
-          }),
-          positionInList,
-          withColor: this.isEpicBoard && this.glFeatures.epicColorHighlight,
-        },
-        optimisticResponse: {
-          issuableMoveList: {
-            issuable: item,
-            errors: [],
+    async moveToPosition(positionInList, oldIndex, item) {
+      try {
+        await this.$apollo.mutate({
+          mutation: listIssuablesQueries[this.issuableType].moveMutation,
+          variables: {
+            ...moveItemVariables({
+              iid: item.iid,
+              epicId: item.id,
+              fromListId: this.currentList.id,
+              toListId: this.currentList.id,
+              isIssue: !this.isEpicBoard,
+              boardId: this.boardId,
+              itemToMove: item,
+            }),
+            positionInList,
+            withColor: this.isEpicBoard && this.glFeatures.epicColorHighlight,
           },
-        },
-        update: (cache, { data: { issuableMoveList } }) => {
-          const { issuable } = issuableMoveList;
-          removeItemFromList({
-            query: listIssuablesQueries[this.issuableType].query,
-            variables: { ...this.listQueryVariables, id: this.currentList.id },
-            boardType: this.boardType,
-            id: issuable.id,
-            issuableType: this.issuableType,
-            cache,
-          });
-          if (positionInList === 0 || this.listItemsCount <= this.boardListItems.length) {
-            const newIndex = positionInList === 0 ? 0 : this.boardListItems.length - 1;
-            addItemToList({
+          optimisticResponse: {
+            issuableMoveList: {
+              issuable: item,
+              errors: [],
+            },
+          },
+          update: (cache, { data: { issuableMoveList } }) => {
+            const { issuable } = issuableMoveList;
+            removeItemFromList({
               query: listIssuablesQueries[this.issuableType].query,
               variables: { ...this.listQueryVariables, id: this.currentList.id },
-              issuable,
-              newIndex,
               boardType: this.boardType,
+              id: issuable.id,
               issuableType: this.issuableType,
               cache,
             });
-          }
-        },
-      });
+            if (positionInList === 0 || this.listItemsCount <= this.boardListItems.length) {
+              const newIndex = positionInList === 0 ? 0 : this.boardListItems.length - 1;
+              addItemToList({
+                query: listIssuablesQueries[this.issuableType].query,
+                variables: { ...this.listQueryVariables, id: this.currentList.id },
+                issuable,
+                newIndex,
+                boardType: this.boardType,
+                issuableType: this.issuableType,
+                cache,
+              });
+            }
+          },
+        });
+      } catch (error) {
+        setError({
+          error,
+          message: sprintf(
+            s__('Boards|An error occurred while moving the %{issuableType}. Please try again.'),
+            {
+              issuableType: this.isEpicBoard ? 'epic' : 'issue',
+            },
+          ),
+        });
+      }
     },
     async addListItem(input) {
       this.toggleForm();
@@ -583,7 +617,7 @@ export default {
       } catch (error) {
         setError({
           message: sprintf(
-            __('An error occurred while creating the %{issuableType}. Please try again.'),
+            s__('Boards|An error occurred while creating the %{issuableType}. Please try again.'),
             {
               issuableType: this.isEpicBoard ? 'epic' : 'issue',
             },

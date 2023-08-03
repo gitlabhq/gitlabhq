@@ -9,6 +9,7 @@ import groupBoardsQuery from '~/boards/graphql/group_boards.query.graphql';
 import projectBoardsQuery from '~/boards/graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '~/boards/graphql/group_recent_boards.query.graphql';
 import projectRecentBoardsQuery from '~/boards/graphql/project_recent_boards.query.graphql';
+import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -37,7 +38,6 @@ describe('BoardsSelector', () => {
   const createStore = () => {
     store = new Vuex.Store({
       actions: {
-        setError: jest.fn(),
         setBoardConfig: jest.fn(),
       },
       state: {
@@ -77,16 +77,19 @@ describe('BoardsSelector', () => {
     .fn()
     .mockResolvedValue(mockEmptyProjectRecentBoardsResponse);
 
+  const boardsHandlerFailure = jest.fn().mockRejectedValue(new Error('error'));
+
   const createComponent = ({
     projectBoardsQueryHandler = projectBoardsQueryHandlerSuccess,
     projectRecentBoardsQueryHandler = projectRecentBoardsQueryHandlerSuccess,
+    groupBoardsQueryHandler = groupBoardsQueryHandlerSuccess,
     isGroupBoard = false,
     isProjectBoard = false,
     provide = {},
   } = {}) => {
     fakeApollo = createMockApollo([
       [projectBoardsQuery, projectBoardsQueryHandler],
-      [groupBoardsQuery, groupBoardsQueryHandlerSuccess],
+      [groupBoardsQuery, groupBoardsQueryHandler],
       [projectRecentBoardsQuery, projectRecentBoardsQueryHandler],
       [groupRecentBoardsQuery, groupRecentBoardsQueryHandlerSuccess],
     ]);
@@ -114,6 +117,10 @@ describe('BoardsSelector', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    cacheUpdates.setError = jest.fn();
+  });
 
   afterEach(() => {
     fakeApollo = null;
@@ -245,6 +252,29 @@ describe('BoardsSelector', () => {
 
       expect(queryHandler).toHaveBeenCalled();
       expect(notCalledHandler).not.toHaveBeenCalled();
+    });
+
+    it.each`
+      boardType
+      ${WORKSPACE_GROUP}
+      ${WORKSPACE_PROJECT}
+    `('sets error when fetching $boardType boards fails', async ({ boardType }) => {
+      createStore();
+      createComponent({
+        isGroupBoard: boardType === WORKSPACE_GROUP,
+        isProjectBoard: boardType === WORKSPACE_PROJECT,
+        projectBoardsQueryHandler: boardsHandlerFailure,
+        groupBoardsQueryHandler: boardsHandlerFailure,
+      });
+
+      await nextTick();
+
+      // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
+      findDropdown().vm.$emit('show');
+
+      await waitForPromises();
+
+      expect(cacheUpdates.setError).toHaveBeenCalled();
     });
   });
 

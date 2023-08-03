@@ -24,13 +24,6 @@ RSpec.describe 'ClickHouse::Client', feature_category: :database do
       expect(databases).not_to be_empty
     end
 
-    it 'returns data from the DB via `select` method' do
-      result = ClickHouse::Client.select("SELECT 1 AS value", :main)
-
-      # returns JSON if successful. Otherwise error
-      expect(result).to eq([{ 'value' => 1 }])
-    end
-
     it 'does not return data via `execute` method' do
       result = ClickHouse::Client.execute("SELECT 1 AS value", :main)
 

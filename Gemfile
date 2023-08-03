@@ -404,7 +404,7 @@ group :development, :test do
   gem 'parser', '~> 3.2', '>= 3.2.2.3'
   gem 'pry-byebug'
   gem 'pry-rails', '~> 0.3.9'
-  gem 'pry-shell', '~> 0.6.3'
+  gem 'pry-shell', '~> 0.6.1'
 
   gem 'awesome_print', require: false
 

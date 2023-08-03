@@ -31,7 +31,7 @@ printf "${Color_Off}"
 
 printf "${BBlue}Running Remote Development backend specs${Color_Off}\n\n"
 
-bin/spring rspec -r spec_helper \
+bin/rspec -r spec_helper \
 $(find . -path '**/remote_development/**/*_spec.rb') \
 ee/spec/graphql/types/query_type_spec.rb \
 ee/spec/graphql/types/subscription_type_spec.rb \

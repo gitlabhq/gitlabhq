@@ -346,7 +346,7 @@ module Gitlab
     module PauseControl
       module Strategies
         class CustomStrategy < Base
-          def enabled?
+          def should_pause?
             ApplicationSetting.current.elasticsearch_pause_indexing?
           end
         end

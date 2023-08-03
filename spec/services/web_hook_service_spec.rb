@@ -295,6 +295,20 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
       expect(WebMock).not_to have_requested(:post, stubbed_hostname(project_hook.url))
     end
 
+    context 'when silent mode is enabled' do
+      before do
+        stub_application_setting(silent_mode_enabled: true)
+      end
+
+      it 'blocks and logs an error' do
+        stub_full_request(project_hook.url, method: :post)
+
+        expect(Gitlab::AuthLogger).to receive(:error).with(include(message: 'GitLab is in silent mode'))
+        expect(service_instance.execute).to be_error
+        expect(WebMock).not_to have_requested(:post, stubbed_hostname(project_hook.url))
+      end
+    end
+
     it 'handles exceptions' do
       exceptions = Gitlab::HTTP::HTTP_ERRORS + [
         Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError
@@ -728,6 +742,19 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             'meta.root_namespace' => project.root_namespace.full_path
           )
         )
+
+        service_instance.async_execute
+      end
+    end
+
+    context 'when silent mode is enabled' do
+      before do
+        stub_application_setting(silent_mode_enabled: true)
+      end
+
+      it 'does not queue a worker and logs an error' do
+        expect(WebHookWorker).not_to receive(:perform_async)
+        expect(Gitlab::AuthLogger).to receive(:error).with(include(message: 'GitLab is in silent mode'))
 
         service_instance.async_execute
       end

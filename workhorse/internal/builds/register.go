@@ -2,6 +2,7 @@ package builds
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -55,7 +56,7 @@ var (
 
 type largeBodyError struct{ error }
 
-type WatchKeyHandler func(key, value string, timeout time.Duration) (redis.WatchKeyStatus, error)
+type WatchKeyHandler func(ctx context.Context, key, value string, timeout time.Duration) (redis.WatchKeyStatus, error)
 
 type runnerRequest struct {
 	Token      string `json:"token,omitempty"`
@@ -102,11 +103,11 @@ func proxyRegisterRequest(h http.Handler, w http.ResponseWriter, r *http.Request
 	h.ServeHTTP(w, r)
 }
 
-func watchForRunnerChange(watchHandler WatchKeyHandler, token, lastUpdate string, duration time.Duration) (redis.WatchKeyStatus, error) {
+func watchForRunnerChange(ctx context.Context, watchHandler WatchKeyHandler, token, lastUpdate string, duration time.Duration) (redis.WatchKeyStatus, error) {
 	registerHandlerOpenAtWatching.Inc()
 	defer registerHandlerOpenAtWatching.Dec()
 
-	return watchHandler(runnerBuildQueue+token, lastUpdate, duration)
+	return watchHandler(ctx, runnerBuildQueue+token, lastUpdate, duration)
 }
 
 func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDuration time.Duration) http.Handler {
@@ -140,7 +141,7 @@ func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDurati
 			return
 		}
 
-		result, err := watchForRunnerChange(watchHandler, runnerRequest.Token,
+		result, err := watchForRunnerChange(r.Context(), watchHandler, runnerRequest.Token,
 			runnerRequest.LastUpdate, pollingDuration)
 		if err != nil {
 			registerHandlerWatchErrors.Inc()

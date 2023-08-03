@@ -2,6 +2,7 @@ package builds
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"io"
 	"net/http"
@@ -71,7 +72,7 @@ func TestRegisterHandlerMissingData(t *testing.T) {
 func expectWatcherToBeExecuted(t *testing.T, watchKeyStatus redis.WatchKeyStatus, watchKeyError error,
 	httpStatus int, msgAndArgs ...interface{}) {
 	executed := false
-	watchKeyHandler := func(key, value string, timeout time.Duration) (redis.WatchKeyStatus, error) {
+	watchKeyHandler := func(ctx context.Context, key, value string, timeout time.Duration) (redis.WatchKeyStatus, error) {
 		executed = true
 		return watchKeyStatus, watchKeyError
 	}

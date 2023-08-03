@@ -378,4 +378,11 @@ If you're receiving multiple webhook requests, the webhook might have timed out.
 
 GitLab expects a response in [10 seconds](../../../user/gitlab_com/index.md#other-limits). On self-managed GitLab instances, you can [change the webhook timeout limit](../../../administration/instance_limits.md#webhook-timeout).
 
-If a webhook is not triggered, the webhook might be [automatically disabled](#failing-webhooks).
+### Webhook is not triggered
+
+> Webhooks not triggered in Silent Mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) in GitLab 16.3.
+
+If a webhook is not triggered, check that:
+
+- The webhook was not [automatically disabled](#failing-webhooks).
+- The GitLab instance is not in [Silent Mode](../../../administration/silent_mode/index.md).

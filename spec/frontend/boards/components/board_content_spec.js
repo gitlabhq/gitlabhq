@@ -1,7 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
 
@@ -10,6 +10,7 @@ import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
+import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
@@ -36,6 +37,8 @@ describe('BoardContent', () => {
   let mockApollo;
 
   const updateListHandler = jest.fn().mockResolvedValue(updateBoardListResponse);
+  const errorMessage = 'Failed to update list';
+  const updateListHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
 
   const defaultState = {
     isShowingEpicsSwimlanes: false,
@@ -60,8 +63,9 @@ describe('BoardContent', () => {
     issuableType = 'issue',
     isIssueBoard = true,
     isEpicBoard = false,
+    handler = updateListHandler,
   } = {}) => {
-    mockApollo = createMockApollo([[updateBoardListMutation, updateListHandler]]);
+    mockApollo = createMockApollo([[updateBoardListMutation, handler]]);
     const listQueryVariables = { isProject: true };
 
     mockApollo.clients.defaultClient.writeQuery({
@@ -107,6 +111,11 @@ describe('BoardContent', () => {
   const findBoardColumns = () => wrapper.findAllComponents(BoardColumn);
   const findBoardAddNewColumn = () => wrapper.findComponent(BoardAddNewColumn);
   const findDraggable = () => wrapper.findComponent(Draggable);
+  const findError = () => wrapper.findComponent(GlAlert);
+
+  beforeEach(() => {
+    cacheUpdates.setError = jest.fn();
+  });
 
   describe('default', () => {
     beforeEach(() => {
@@ -123,7 +132,7 @@ describe('BoardContent', () => {
 
     it('does not display EpicsSwimlanes component', () => {
       expect(wrapper.findComponent(EpicsSwimlanes).exists()).toBe(false);
-      expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+      expect(findError().exists()).toBe(false);
     });
 
     it('sets delay and delayOnTouchOnly attributes on board list', () => {
@@ -169,6 +178,18 @@ describe('BoardContent', () => {
   });
 
   describe('when Apollo boards FF is on', () => {
+    const moveList = () => {
+      const movableListsOrder = [mockLists[0].id, mockLists[1].id];
+
+      findDraggable().vm.$emit('end', {
+        item: { dataset: { listId: mockLists[0].id, draggableItemType: DraggableItemTypes.list } },
+        newIndex: 1,
+        to: {
+          children: movableListsOrder.map((listId) => ({ dataset: { listId } })),
+        },
+      });
+    };
+
     beforeEach(async () => {
       createComponent({ isApolloBoard: true });
       await waitForPromises();
@@ -183,18 +204,37 @@ describe('BoardContent', () => {
     });
 
     it('reorders lists', async () => {
-      const movableListsOrder = [mockLists[0].id, mockLists[1].id];
-
-      findDraggable().vm.$emit('end', {
-        item: { dataset: { listId: mockLists[0].id, draggableItemType: DraggableItemTypes.list } },
-        newIndex: 1,
-        to: {
-          children: movableListsOrder.map((listId) => ({ dataset: { listId } })),
-        },
-      });
+      moveList();
       await waitForPromises();
 
       expect(updateListHandler).toHaveBeenCalled();
+    });
+
+    it('sets error on reorder lists failure', async () => {
+      createComponent({ isApolloBoard: true, handler: updateListHandlerFailure });
+
+      moveList();
+      await waitForPromises();
+
+      expect(cacheUpdates.setError).toHaveBeenCalled();
+    });
+
+    describe('when error is passed', () => {
+      beforeEach(async () => {
+        createComponent({ isApolloBoard: true, props: { apolloError: 'Error' } });
+        await waitForPromises();
+      });
+
+      it('displays error banner', () => {
+        expect(findError().exists()).toBe(true);
+      });
+
+      it('dismisses error', async () => {
+        findError().vm.$emit('dismiss');
+        await nextTick();
+
+        expect(cacheUpdates.setError).toHaveBeenCalledWith({ message: null, captureError: false });
+      });
     });
   });
 

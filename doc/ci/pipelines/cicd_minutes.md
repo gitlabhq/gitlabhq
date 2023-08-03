@@ -152,7 +152,7 @@ For example, with a GitLab SaaS Premium license:
 If you use `13,000` compute minutes during the month, the next month your additional compute minutes become
 `2,000`. If you use `9,000` compute minutes during the month, your additional compute minutes remain the same.
 
-If you bought additional compute minutes while on a trial subscription, those compute minutes are available after the trial ends or you upgrade to a paid plan.
+Additional compute minutes bought on a trial subscription are available after the trial ends or upgrading to a paid plan.
 
 You can find pricing for additional compute minutes on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).

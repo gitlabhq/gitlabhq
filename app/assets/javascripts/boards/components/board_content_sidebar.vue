@@ -5,7 +5,7 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdown_widget.vue';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
-import { __, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { INCIDENT } from '~/boards/constants';
@@ -18,6 +18,7 @@ import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severit
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
+import { setError } from '../graphql/cache_updates';
 
 export default {
   components: {
@@ -93,6 +94,12 @@ export default {
       },
       skip() {
         return !this.isApolloBoard;
+      },
+      error(error) {
+        setError({
+          error,
+          message: s__('Boards|An error occurred while selecting the card. Please try again.'),
+        });
       },
     },
   },

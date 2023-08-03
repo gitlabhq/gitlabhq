@@ -3,11 +3,12 @@
 module ClickHouse
   module Client
     class Response
-      attr_reader :body
+      attr_reader :body, :headers
 
-      def initialize(body, http_status_code)
+      def initialize(body, http_status_code, headers = {})
         @body = body
         @http_status_code = http_status_code
+        @headers = headers
       end
 
       def success?

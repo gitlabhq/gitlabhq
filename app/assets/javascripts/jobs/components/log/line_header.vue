@@ -1,5 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
+import { getLocationHash } from '~/lib/utils/url_utility';
 import DurationBadge from './duration_badge.vue';
 import LineNumber from './line_number.vue';
 
@@ -32,6 +33,12 @@ export default {
     iconName() {
       return this.isClosed ? 'chevron-lg-right' : 'chevron-lg-down';
     },
+    applyHighlight() {
+      const hash = getLocationHash();
+      const lineToMatch = `L${this.line.lineNumber + 1}`;
+
+      return hash === lineToMatch;
+    },
   },
   methods: {
     handleOnClick() {
@@ -44,6 +51,7 @@ export default {
 <template>
   <div
     class="log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start"
+    :class="{ 'gl-bg-gray-700': applyHighlight }"
     role="button"
     @click="handleOnClick"
   >

@@ -11,9 +11,12 @@ RSpec.shared_examples 'trigger validators' do |validator, expected_result|
   let(:database_name) { 'main' }
   let(:schema) { 'public' }
   let(:database) { Gitlab::Schema::Validation::Sources::Database.new(connection) }
+  let(:connection_class) { class_double(Class, name: 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter') }
 
   # rubocop:disable RSpec/VerifiedDoubleReference
-  let(:connection) { instance_double('connection', select_rows: database_triggers, current_schema: 'public') }
+  let(:connection) do
+    instance_double('connection', class: connection_class, select_rows: database_triggers, current_schema: 'public')
+  end
   # rubocop:enable RSpec/VerifiedDoubleReference
 
   let(:database_triggers) do

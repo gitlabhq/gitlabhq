@@ -15,16 +15,21 @@ module Users
 
       return unless ::Gitlab::CurrentSettings.current_application_settings.deactivate_dormant_users
 
-      deactivate_users(User.dormant)
-      deactivate_users(User.with_no_activity)
+      admin_bot = User.admin_bot
+      return unless admin_bot
+
+      deactivate_users(User.dormant, admin_bot)
+      deactivate_users(User.with_no_activity, admin_bot)
     end
 
     private
 
-    def deactivate_users(scope)
+    def deactivate_users(scope, admin_bot)
       with_context(caller_id: self.class.name.to_s) do
         scope.each_batch do |batch|
-          batch.each(&:deactivate)
+          batch.each do |user|
+            Users::DeactivateService.new(admin_bot).execute(user)
+          end
         end
       end
     end

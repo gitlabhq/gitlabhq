@@ -233,7 +233,9 @@ export default {
       const { createMergeRequestIn, forkProject } = this.userPermissions;
       const { canModifyBlob } = this.blobInfo;
 
-      return this.isLoggedIn && !canModifyBlob && createMergeRequestIn && forkProject;
+      return (
+        this.isLoggedIn && !this.isUsingLfs && !canModifyBlob && createMergeRequestIn && forkProject
+      );
     },
     forkPath() {
       const forkPaths = {
@@ -406,6 +408,7 @@ export default {
             :is-locked="Boolean(pathLockedByUser)"
             :can-lock="canLock"
             :show-fork-suggestion="showForkSuggestion"
+            :is-using-lfs="isUsingLfs"
             @fork="setForkTarget('view')"
           />
         </template>

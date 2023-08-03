@@ -30,6 +30,7 @@ import {
   toggleCollapsedMutations,
 } from 'ee_else_ce/boards/constants';
 import eventHub from '../eventhub';
+import { setError } from '../graphql/cache_updates';
 import ItemCount from './item_count.vue';
 
 export default {
@@ -39,6 +40,9 @@ export default {
     listSettings: s__('Boards|Edit list settings'),
     expand: s__('Boards|Expand'),
     collapse: s__('Boards|Collapse'),
+    fetchError: s__(
+      "Boards|An error occurred while fetching list's information. Please try again.",
+    ),
   },
   components: {
     GlButton,
@@ -206,6 +210,12 @@ export default {
       context: {
         isSingleRequest: true,
       },
+      error(error) {
+        setError({
+          error,
+          message: this.$options.i18n.fetchError,
+        });
+      },
     },
   },
   created() {
@@ -293,8 +303,11 @@ export default {
               },
             },
           });
-        } catch {
-          this.$emit('error');
+        } catch (error) {
+          setError({
+            error,
+            message: s__('Boards|An error occurred while updating the list. Please try again.'),
+          });
         }
       } else {
         this.updateList({ listId: this.list.id, collapsed });

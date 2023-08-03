@@ -10,6 +10,13 @@ RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :seat_cost
     let_it_be(:inactive) { create(:user, last_activity_on: nil, created_at: User::MINIMUM_DAYS_CREATED.days.ago.to_date) }
     let_it_be(:inactive_recently_created) { create(:user, last_activity_on: nil, created_at: (User::MINIMUM_DAYS_CREATED - 1).days.ago.to_date) }
 
+    let(:admin_bot) { create(:user, :admin_bot) }
+    let(:deactivation_service) { instance_spy(Users::DeactivateService) }
+
+    before do
+      allow(Users::DeactivateService).to receive(:new).and_return(deactivation_service)
+    end
+
     subject(:worker) { described_class.new }
 
     it 'does not run for SaaS', :saas do
@@ -17,8 +24,7 @@ RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :seat_cost
 
       worker.perform
 
-      expect(User.dormant.count).to eq(1)
-      expect(User.with_no_activity.count).to eq(1)
+      expect(deactivation_service).not_to have_received(:execute)
     end
 
     context 'when automatic deactivation of dormant users is enabled' do
@@ -29,29 +35,33 @@ RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :seat_cost
       it 'deactivates dormant users' do
         worker.perform
 
-        expect(User.dormant.count).to eq(0)
-        expect(User.with_no_activity.count).to eq(0)
+        expect(deactivation_service).to have_received(:execute).twice
       end
 
       where(:user_type, :expected_state) do
-        :human             | 'deactivated'
-        :support_bot       | 'active'
-        :alert_bot         | 'active'
+        :human | 'deactivated'
+        :support_bot | 'active'
+        :alert_bot | 'active'
         :visual_review_bot | 'active'
-        :service_user      | 'deactivated'
-        :ghost             | 'active'
-        :project_bot       | 'active'
-        :migration_bot     | 'active'
-        :security_bot      | 'active'
-        :automation_bot    | 'active'
+        :service_user | 'deactivated'
+        :ghost | 'active'
+        :project_bot | 'active'
+        :migration_bot | 'active'
+        :security_bot | 'active'
+        :automation_bot | 'active'
       end
+
       with_them do
         it 'deactivates certain user types' do
           user = create(:user, user_type: user_type, state: :active, last_activity_on: Gitlab::CurrentSettings.deactivate_dormant_users_period.days.ago.to_date)
 
           worker.perform
 
-          expect(user.reload.state).to eq(expected_state)
+          if expected_state == 'deactivated'
+            expect(deactivation_service).to have_received(:execute).with(user)
+          else
+            expect(deactivation_service).not_to have_received(:execute).with(user)
+          end
         end
       end
 
@@ -61,22 +71,14 @@ RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :seat_cost
 
         worker.perform
 
-        expect(human_user.reload.state).to eq('blocked')
-        expect(service_user.reload.state).to eq('blocked')
+        expect(deactivation_service).not_to have_received(:execute).with(human_user)
+        expect(deactivation_service).not_to have_received(:execute).with(service_user)
       end
 
       it 'does not deactivate recently created users' do
         worker.perform
 
-        expect(inactive_recently_created.reload.state).to eq('active')
-      end
-
-      it 'triggers update of highest user role for deactivated users', :clean_gitlab_redis_shared_state do
-        [dormant, inactive].each do |user|
-          expect(UpdateHighestRoleWorker).to receive(:perform_in).with(anything, user.id)
-        end
-
-        worker.perform
+        expect(deactivation_service).not_to have_received(:execute).with(inactive_recently_created)
       end
     end
 
@@ -88,8 +90,7 @@ RSpec.describe Users::DeactivateDormantUsersWorker, feature_category: :seat_cost
       it 'does nothing' do
         worker.perform
 
-        expect(User.dormant.count).to eq(1)
-        expect(User.with_no_activity.count).to eq(1)
+        expect(deactivation_service).not_to have_received(:execute)
       end
     end
   end

@@ -326,6 +326,7 @@ export default {
         </div>
         <div
           :title="$options.coverageStateLeft(props).text"
+          :data-tooltip-custom-class="$options.coverageStateLeft(props).class"
           :class="[
             $options.parallelViewLeftLineType(props),
             $options.coverageStateLeft(props).class,
@@ -466,6 +467,7 @@ export default {
         </div>
         <div
           :title="$options.coverageStateRight(props).text"
+          :data-tooltip-custom-class="$options.coverageStateRight(props).class"
           :class="[
             props.line.right.type,
             $options.coverageStateRight(props).class,

@@ -24,12 +24,16 @@ import groupBoardsQuery from '../graphql/group_boards.query.graphql';
 import projectBoardsQuery from '../graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '../graphql/group_recent_boards.query.graphql';
 import projectRecentBoardsQuery from '../graphql/project_recent_boards.query.graphql';
+import { setError } from '../graphql/cache_updates';
 import { fullBoardId } from '../boards_util';
 
 const MIN_BOARDS_TO_VIEW_RECENT = 10;
 
 export default {
   name: 'BoardsSelector',
+  i18n: {
+    fetchBoardsError: s__('Boards|An error occurred while fetching boards. Please try again.'),
+  },
   components: {
     BoardForm,
     GlLoadingIcon,
@@ -143,7 +147,7 @@ export default {
     eventHub.$off('showBoardModal', this.showPage);
   },
   methods: {
-    ...mapActions(['setError', 'fetchBoard', 'unsetActiveId']),
+    ...mapActions(['fetchBoard', 'unsetActiveId']),
     fullBoardId(boardId) {
       return fullBoardId(boardId);
     },
@@ -179,6 +183,12 @@ export default {
         watchLoading: (isLoading) => {
           this.loadingBoards = isLoading;
         },
+        error(error) {
+          setError({
+            error,
+            message: this.$options.i18n.fetchBoardsError,
+          });
+        },
       });
 
       this.loadRecentBoards();
@@ -192,6 +202,14 @@ export default {
         update: (data) => this.boardUpdate(data, 'recentIssueBoards'),
         watchLoading: (isLoading) => {
           this.loadingRecentBoards = isLoading;
+        },
+        error(error) {
+          setError({
+            error,
+            message: s__(
+              'Boards|An error occurred while fetching recent boards. Please try again.',
+            ),
+          });
         },
       });
     },
@@ -266,9 +284,6 @@ export default {
         updateHistory({ url: `${this.boardBaseUrl}/${boardId}` });
       }
     },
-  },
-  i18n: {
-    errorFetchingBoard: s__('Board|An error occurred while fetching the board, please try again.'),
   },
 };
 </script>

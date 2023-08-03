@@ -7300,6 +7300,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#pages_variables' do
+    let(:group) { build(:group, path: 'group') }
+    let(:project) { build(:project, path: 'project', namespace: group) }
+
+    it 'returns the pages variables' do
+      expect(project.pages_variables.to_hash).to eq({
+        'CI_PAGES_DOMAIN' => 'example.com',
+        'CI_PAGES_URL' => 'http://group.example.com/project'
+      })
+    end
+
+    it 'returns the pages variables' do
+      build(
+        :project_setting,
+        project: project,
+        pages_unique_domain_enabled: true,
+        pages_unique_domain: 'unique-domain'
+      )
+
+      expect(project.pages_variables.to_hash).to eq({
+        'CI_PAGES_DOMAIN' => 'example.com',
+        'CI_PAGES_URL' => 'http://unique-domain.example.com'
+      })
+    end
+  end
+
   describe '#closest_setting' do
     shared_examples_for 'fetching closest setting' do
       let!(:namespace) { create(:namespace) }

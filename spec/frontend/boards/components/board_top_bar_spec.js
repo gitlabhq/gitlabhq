@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
@@ -11,6 +12,7 @@ import ConfigToggle from '~/boards/components/config_toggle.vue';
 import IssueBoardFilteredSearch from '~/boards/components/issue_board_filtered_search.vue';
 import NewBoardButton from '~/boards/components/new_board_button.vue';
 import ToggleFocus from '~/boards/components/toggle_focus.vue';
+import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 
 import groupBoardQuery from '~/boards/graphql/group_board.query.graphql';
@@ -32,12 +34,18 @@ describe('BoardTopBar', () => {
 
   const projectBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockProjectBoardResponse);
   const groupBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockGroupBoardResponse);
+  const errorMessage = 'Failed to fetch board';
+  const boardQueryHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
 
-  const createComponent = ({ provide = {} } = {}) => {
+  const createComponent = ({
+    provide = {},
+    projectBoardQueryHandler = projectBoardQueryHandlerSuccess,
+    groupBoardQueryHandler = groupBoardQueryHandlerSuccess,
+  } = {}) => {
     const store = createStore();
     mockApollo = createMockApollo([
-      [projectBoardQuery, projectBoardQueryHandlerSuccess],
-      [groupBoardQuery, groupBoardQueryHandlerSuccess],
+      [projectBoardQuery, projectBoardQueryHandler],
+      [groupBoardQuery, groupBoardQueryHandler],
     ]);
 
     wrapper = shallowMount(BoardTopBar, {
@@ -64,6 +72,10 @@ describe('BoardTopBar', () => {
       stubs: { IssueBoardFilteredSearch },
     });
   };
+
+  beforeEach(() => {
+    cacheUpdates.setError = jest.fn();
+  });
 
   afterEach(() => {
     mockApollo = null;
@@ -133,6 +145,26 @@ describe('BoardTopBar', () => {
 
       expect(queryHandler).toHaveBeenCalled();
       expect(notCalledHandler).not.toHaveBeenCalled();
+    });
+
+    it.each`
+      boardType
+      ${WORKSPACE_GROUP}
+      ${WORKSPACE_PROJECT}
+    `('sets error when $boardType board query fails', async ({ boardType }) => {
+      createComponent({
+        provide: {
+          boardType,
+          isProjectBoard: boardType === WORKSPACE_PROJECT,
+          isGroupBoard: boardType === WORKSPACE_GROUP,
+          isApolloBoard: true,
+        },
+        groupBoardQueryHandler: boardQueryHandlerFailure,
+        projectBoardQueryHandler: boardQueryHandlerFailure,
+      });
+
+      await waitForPromises();
+      expect(cacheUpdates.setError).toHaveBeenCalled();
     });
   });
 });

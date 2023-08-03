@@ -4942,9 +4942,6 @@ msgstr ""
 msgid "An error occurred while checking group path. Please refresh and try again."
 msgstr ""
 
-msgid "An error occurred while creating the %{issuableType}. Please try again."
-msgstr ""
-
 msgid "An error occurred while creating the issue. Please try again."
 msgstr ""
 
@@ -7809,6 +7806,12 @@ msgstr ""
 msgid "Blame for binary files is not supported."
 msgstr ""
 
+msgid "BlobViewer|If you delete the file, it will be removed from the branch %{branch}."
+msgstr ""
+
+msgid "BlobViewer|This file will still take up space in your LFS storage. %{linkStart}How do I remove tracked objects from Git LFS?%{linkEnd}"
+msgstr ""
+
 msgid "BlobViewer|View on %{environmentName}"
 msgstr ""
 
@@ -7972,6 +7975,9 @@ msgid_plural "Boards|+ %{displayedIssuablesCount} more %{issuableType}s"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Boards|An error occurred while creating the %{issuableType}. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while creating the epic. Please try again."
 msgstr ""
 
@@ -7981,10 +7987,25 @@ msgstr ""
 msgid "Boards|An error occurred while creating the list. Please try again."
 msgstr ""
 
+msgid "Boards|An error occurred while deleting the list. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching a list. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching board details. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching board. Please try again."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching boards. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching child groups. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching epics. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while fetching group projects. Please try again."
@@ -7996,7 +8017,25 @@ msgstr ""
 msgid "Boards|An error occurred while fetching issues. Please reload the page."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching issues. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching iterations. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching labels. Please reload the page."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching labels. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching list's information. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching milestones. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching recent boards. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while fetching the board epics. Please reload the page."
@@ -8014,7 +8053,16 @@ msgstr ""
 msgid "Boards|An error occurred while fetching the board. Please reload the page."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching unassigned issues. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching users. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while generating lists. Please reload the page."
+msgstr ""
+
+msgid "Boards|An error occurred while moving the %{issuableType}. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while moving the epic. Please try again."
@@ -8023,10 +8071,19 @@ msgstr ""
 msgid "Boards|An error occurred while moving the issue. Please try again."
 msgstr ""
 
+msgid "Boards|An error occurred while moving the list. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while removing the list. Please try again."
 msgstr ""
 
+msgid "Boards|An error occurred while selecting the card. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while updating the board list. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while updating the list. Please try again."
 msgstr ""
 
 msgid "Boards|Blocked by %{blockedByCount} %{issuableType}"
@@ -8074,9 +8131,6 @@ msgid "Boards|View all blocking %{issuableType}s"
 msgstr ""
 
 msgid "Boards|View scope"
-msgstr ""
-
-msgid "Board|An error occurred while fetching the board, please try again."
 msgstr ""
 
 msgid "Board|Are you sure you want to delete this board?"
@@ -8647,9 +8701,6 @@ msgid "BulkImport|Be aware of %{linkStart}visibility rules%{linkEnd} when import
 msgstr ""
 
 msgid "BulkImport|Destination"
-msgstr ""
-
-msgid "BulkImport|Direct Transfer maximum download file size (MiB)"
 msgstr ""
 
 msgid "BulkImport|Direct transfer maximum download file size (MB)"
@@ -12840,6 +12891,9 @@ msgid "Continue to the next step"
 msgstr ""
 
 msgid "Continue with overages"
+msgstr ""
+
+msgid "Continue…"
 msgstr ""
 
 msgid "Continuous Integration and Deployment"
@@ -23918,9 +23972,6 @@ msgstr ""
 msgid "Import|Maximum import remote file size (MB)"
 msgstr ""
 
-msgid "Import|Maximum import remote file size (MiB)"
-msgstr ""
-
 msgid "Import|Maximum remote file size for imports from external object storages. For example, AWS S3."
 msgstr ""
 
@@ -25774,6 +25825,9 @@ msgid "Issue summary"
 msgstr ""
 
 msgid "Issue title"
+msgstr ""
+
+msgid "Issue type"
 msgstr ""
 
 msgid "Issue types"
@@ -33581,6 +33635,9 @@ msgid "PerformanceBar|Backend"
 msgstr ""
 
 msgid "PerformanceBar|Bullet notifications"
+msgstr ""
+
+msgid "PerformanceBar|ClickHouse queries"
 msgstr ""
 
 msgid "PerformanceBar|DOM Content Loaded"
@@ -46712,6 +46769,9 @@ msgid "The file has been successfully created."
 msgstr ""
 
 msgid "The file has been successfully deleted."
+msgstr ""
+
+msgid "The file you're about to delete is tracked by LFS"
 msgstr ""
 
 msgid "The finding is not a vulnerability because it is part of a test or is test data."

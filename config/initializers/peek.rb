@@ -18,6 +18,7 @@ Peek.into Peek::Views::Elasticsearch
 Peek.into Peek::Views::Zoekt
 Peek.into Peek::Views::Rugged
 Peek.into Peek::Views::ExternalHttp
+Peek.into Peek::Views::ClickHouse
 Peek.into Peek::Views::BulletDetailed if defined?(Bullet)
 Peek.into Peek::Views::Memory
 

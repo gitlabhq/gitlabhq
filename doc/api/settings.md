@@ -84,6 +84,8 @@ Example response:
   "terms": "Hello world!",
   "performance_bar_allowed_group_id": 42,
   "user_show_add_ssh_key_message": true,
+  "allow_account_deletion": true,
+  "updating_name_disabled_for_users": false,
   "local_markdown_version": 0,
   "allow_local_requests_from_hooks_and_services": true,
   "allow_local_requests_from_web_hooks_and_services": true,
@@ -228,6 +230,7 @@ Example response:
   "asset_proxy_enabled": true,
   "asset_proxy_url": "https://assets.example.com",
   "asset_proxy_allowlist": ["example.com", "*.example.com", "your-instance.com"],
+  "globally_allowed_ips": "",
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "allow_local_requests_from_hooks_and_services": true,
   "allow_local_requests_from_web_hooks_and_services": true,
@@ -299,7 +302,10 @@ listed in the descriptions of the relevant settings.
 | `admin_mode`                             | boolean          | no                                   | Require administrators to enable Admin Mode by re-authenticating for administrative tasks. |
 | `admin_notification_email`                | string           | no                                   | Deprecated: Use `abuse_notification_email` instead. If set, [abuse reports](../administration/review_abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area. |
 | `abuse_notification_email`                | string           | no                                   | If set, [abuse reports](../administration/review_abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area. |
+| `notify_on_unknown_sign_in`              | boolean          | no                                   | Enable sending notification if sign in from unknown IP address happens. |
 | `after_sign_out_path`                    | string           | no                                   | Where to redirect users after logout. |
+| `email_restrictions_enabled`             | boolean          | no                                   | Enable restriction for sign-up by email. |
+| `email_restrictions`                     | string           | required by: `email_restrictions_enabled`  | Regular expression that is checked against the email used during registration. |
 | `after_sign_up_text`                     | string           | no                                   | Text shown to the user after signing up. |
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for Akismet spam protection. |
 | `akismet_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `akismet_api_key`) Enable or disable Akismet spam protection. |
@@ -331,6 +337,8 @@ listed in the descriptions of the relevant settings.
 | `container_registry_expiration_policies_worker_capacity`  | integer          | no                  | Number of workers for [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
 | `package_registry_cleanup_policies_worker_capacity`  | integer          | no                  | Number of workers assigned to the packages cleanup policies. |
+| `updating_name_disabled_for_users`       | boolean          | no                                   | [Disable user profile name changes](../administration/settings/account_and_limit_settings.md#disable-user-profile-name-changes). |
+| `allow_account_deletion`                 | boolean          | no                                   | Enable [users to delete their accounts](../administration/settings/account_and_limit_settings.md#prevent-users-from-deleting-their-accounts). |
 | `deactivate_dormant_users`               | boolean          | no                                   | Enable [automatic deactivation of dormant users](../administration/moderate_users.md#automatically-deactivate-dormant-users). |
 | `deactivate_dormant_users_period`        | integer          | no                                   | Length of time (in days) after which a user is considered dormant. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336747) in GitLab 15.3. |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
@@ -392,6 +400,7 @@ listed in the descriptions of the relevant settings.
 | `email_additional_text` **(PREMIUM)**    | string           | no                                   | Additional text added to the bottom of every email for legal/auditing/compliance reasons. |
 | `email_author_in_body`                   | boolean          | no                                   | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead. |
 | `email_confirmation_setting`             | string           | no                                   | Specifies whether users must confirm their email before sign in. Possible values are `off`, `soft`, and `hard`. |
+| `custom_http_clone_url_root`             | string           | no                                   | Set a custom Git clone URL for HTTP(S). |
 | `enabled_git_access_protocol`            | string           | no                                   | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols. |
 | `enforce_namespace_storage_limit`        | boolean          | no                                   | Enabling this permits enforcement of namespace storage limits. |
 | `enforce_terms`                          | boolean          | no                                   | (**If enabled, requires:** `terms`) Enforce application ToS to all users. |
@@ -405,8 +414,11 @@ listed in the descriptions of the relevant settings.
 | `external_pipeline_validation_service_url` | string         | no                                   | URL to use for pipeline validation requests. |
 | `external_pipeline_validation_service_token` | string       | no                                   | Optional. Token to include as the `X-Gitlab-Token` header in requests to the URL in `external_pipeline_validation_service_url`. |
 | `external_pipeline_validation_service_timeout` | integer    | no                                   | How long to wait for a response from the pipeline validation service. Assumes `OK` if it times out. |
+| `static_objects_external_storage_url`        | string         | no                                   | URL to an external storage for repository static objects. |
+| `static_objects_external_storage_auth_token` | string         | required by: `static_objects_external_storage_url`   | Authentication token for the external storage linked in `static_objects_external_storage_url`. |
 | `file_template_project_id` **(PREMIUM)**  | integer          | no                                   | The ID of a project to load custom file templates from. |
 | `first_day_of_week`                       | integer          | no                                   | Start day of the week for calendar views and date pickers. Valid values are `0` (default) for Sunday, `1` for Monday, and `6` for Saturday. |
+| `globally_allowed_ips`                   | string           | no                                   | Comma-separated list of IP addresses and CIDRs always allowed for inbound traffic. For example, `1.1.1.1, 2.2.2.0/24`. |
 | `geo_node_allowed_ips` **(PREMIUM)**     | string           | yes                                  | Comma-separated list of IPs and CIDRs of allowed secondary nodes. For example, `1.1.1.1, 2.2.2.0/24`. |
 | `geo_status_timeout` **(PREMIUM)**       | integer          | no                                   | The amount of seconds after which a request to get a secondary node status times out. |
 | `git_two_factor_session_expiry` **(PREMIUM)** | integer     | no                                   | Maximum duration (in minutes) of a session for Git operations when 2FA is enabled. |
@@ -446,7 +458,7 @@ listed in the descriptions of the relevant settings.
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB. |
 | `max_export_size`                        | integer          | no                                   | Maximum export size in MB. 0 for unlimited. Default = 0 (unlimited). |
 | `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited). [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8. |
-| `max_import_size`                        | integer          | no                                   | Maximum remote file size for imports from external object storages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
+| `max_import_remote_file_size`            | integer          | no                                   | Maximum remote file size for imports from external object storages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB. |
 | `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                                   | Maximum allowable lifetime for access tokens in days. When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked.|
 | `max_ssh_key_lifetime` **(ULTIMATE SELF)** | integer        | no                                   | Maximum allowable lifetime for SSH keys in days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6. |
@@ -471,6 +483,7 @@ listed in the descriptions of the relevant settings.
 | `pages_domain_verification_enabled`       | boolean          | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
 | `password_authentication_enabled_for_git` | boolean         | no                                   | Enable authentication for Git over HTTP(S) via a GitLab account password. Default is `true`. |
 | `password_authentication_enabled_for_web` | boolean         | no                                   | Enable authentication for the web interface via a GitLab account password. Default is `true`. |
+| `minimum_password_length` **(PREMIUM)**     | integer       | no                                   | Indicates whether passwords require a minimum length. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85763) in GitLab 15.1. |
 | `password_number_required` **(PREMIUM)**    | boolean       | no                                   | Indicates whether passwords require at least one number. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85763) in GitLab 15.1. |
 | `password_symbol_required` **(PREMIUM)**    | boolean       | no                                   | Indicates whether passwords require at least one symbol character. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85763) in GitLab 15.1. |
 | `password_uppercase_required` **(PREMIUM)** | boolean       | no                                   | Indicates whether passwords require at least one uppercase letter. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85763) in GitLab 15.1. |
@@ -480,6 +493,11 @@ listed in the descriptions of the relevant settings.
 | `performance_bar_enabled`                | boolean          | no                                   | (Deprecated: Pass `performance_bar_allowed_group_path: nil` instead) Allow enabling the performance bar. |
 | `personal_access_token_prefix`            | string           | no                                   | Prefix for all generated personal access tokens. |
 | `pipeline_limit_per_project_user_sha`    | integer          | no                                   | Maximum number of pipeline creation requests per minute per user and commit. Disabled by default. |
+| `gitpod_enabled`                         | boolean          | no                                   | (**If enabled, requires:** `gitpod_url`) Enable [Gitpod integration](../integration/gitpod.md). Default is `false`. |
+| `gitpod_url`                             | boolean          | required by: `gitpod_enabled`        | The Gitpod instance URL for integration. |
+| `kroki_enabled`                          | boolean          | no                                   | (**If enabled, requires:** `kroki_url`) Enable [Kroki integration](../administration/integration/kroki.md). Default is `false`. |
+| `kroki_url`                              | boolean          | required by: `kroki_enabled`         | The Kroki instance URL for integration. |
+| `kroki_formats`                          | object           | no                                   | Additional formats supported by the Kroki instance. Possible values are: <code>bpmn: (true|false)</code>, <code>blockdiag: (true|false)</code> and <code>excalidraw: (true|false)</code> |
 | `plantuml_enabled`                       | boolean          | no                                   | (**If enabled, requires:** `plantuml_url`) Enable [PlantUML integration](../administration/integration/plantuml.md). Default is `false`. |
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
@@ -487,6 +505,9 @@ listed in the descriptions of the relevant settings.
 | `projects_api_rate_limit_unauthenticated`      | integer          | no                                   | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283) in GitLab 15.10. Max number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](projects.md#list-all-projects). Default: 400. To disable throttling set to 0.|
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
+| `disable_overriding_approvers_per_merge_request` | boolean          | no                                   | Prevent editing approval rules in projects and merge requests |
+| `prevent_merge_requests_author_approval`         | boolean          | no                                   | Prevent approval by author |
+| `prevent_merge_requests_committers_approval`     | boolean          | no                                   | Prevent editing approval rules in projects and merge requests |
 | `push_event_activities_limit`            | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which a [bulk push event is created](../administration/settings/push_event_activities_limit.md). Setting to `0` does not disable throttling. |
 | `push_event_hooks_limit`                 | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. |
 | `rate_limiting_response_text`            | string           | no                                   | When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. 'Retry later' is sent if this is blank. |
@@ -495,6 +516,7 @@ listed in the descriptions of the relevant settings.
 | `search_rate_limit`                      | integer          | no                                   | Max number of requests per minute for performing a search while authenticated. Default: 30. To disable throttling set to 0.|
 | `search_rate_limit_unauthenticated`      | integer          | no                                   | Max number of requests per minute for performing a search while unauthenticated. Default: 10. To disable throttling set to 0.|
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`) Enable reCAPTCHA. |
+| `login_recaptcha_protection_enabled`     | boolean          | no                                   | Enable reCAPTCHA for login. |
 | `recaptcha_private_key`                  | string           | required by: `recaptcha_enabled`     | Private key for reCAPTCHA. |
 | `recaptcha_site_key`                     | string           | required by: `recaptcha_enabled`     | Site key for reCAPTCHA. |
 | `receive_max_input_size`                 | integer          | no                                   | Maximum push size (MB). |
@@ -511,6 +533,9 @@ listed in the descriptions of the relevant settings.
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |
 | `shared_runners_minutes` **(PREMIUM)**   | integer          | required by: `shared_runners_enabled` | Set the maximum number of compute minutes that a group can use on shared runners per month. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |
+| `runner_token_expiration_interval`         | integer           | no                                    | Set the expiration time (in seconds) of authentication tokens of newly registered instance runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](../ci/runners/configure_runners.md#automatically-rotate-authentication-tokens). |
+| `group_runner_token_expiration_interval`   | integer           | no                                    | Set the expiration time (in seconds) of authentication tokens of newly registered group runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](../ci/runners/configure_runners.md#automatically-rotate-authentication-tokens). |
+| `project_runner_token_expiration_interval` | integer           | no                                    | Set the expiration time (in seconds) of authentication tokens of newly registered project runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](../ci/runners/configure_runners.md#automatically-rotate-authentication-tokens). |
 | `sidekiq_job_limiter_mode` | string | no | `track` or `compress`. Sets the behavior for [Sidekiq job size limits](../administration/settings/sidekiq_job_limits.md). Default: 'compress'. |
 | `sidekiq_job_limiter_compression_threshold_bytes` | integer | no | The threshold in bytes at which Sidekiq jobs are compressed before being stored in Redis. Default: 100,000 bytes (100 KB). |
 | `sidekiq_job_limiter_limit_bytes` | integer | no | The threshold in bytes at which Sidekiq jobs are rejected. Default: 0 bytes (doesn't reject any job). |

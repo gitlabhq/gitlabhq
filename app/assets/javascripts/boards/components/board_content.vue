@@ -5,6 +5,7 @@ import produce from 'immer';
 import Draggable from 'vuedraggable';
 import { mapState, mapActions } from 'vuex';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
+import { s__ } from '~/locale';
 import { defaultSortableOptions } from '~/sortable/constants';
 import {
   DraggableItemTypes,
@@ -13,6 +14,7 @@ import {
   updateListQueries,
 } from 'ee_else_ce/boards/constants';
 import { calculateNewPosition } from 'ee_else_ce/boards/boards_util';
+import { setError } from '../graphql/cache_updates';
 import BoardColumn from './board_column.vue';
 
 export default {
@@ -122,7 +124,14 @@ export default {
         this.highlightedLists = this.highlightedLists.filter((id) => id !== listId);
       }, flashAnimationDuration);
     },
-    updateListPosition({
+    dismissError() {
+      if (this.isApolloBoard) {
+        setError({ message: null, captureError: false });
+      } else {
+        this.unsetError();
+      }
+    },
+    async updateListPosition({
       item: {
         dataset: { listId: movedListId, draggableItemType },
       },
@@ -153,7 +162,7 @@ export default {
       const targetPosition = this.boardListsById[displacedListId].position;
 
       try {
-        this.$apollo.mutate({
+        await this.$apollo.mutate({
           mutation: updateListQueries[this.issuableType].mutation,
           variables: {
             listId: movedListId,
@@ -195,8 +204,11 @@ export default {
             },
           },
         });
-      } catch {
-        // handle error
+      } catch (error) {
+        setError({
+          error,
+          message: s__('Boards|An error occurred while moving the list. Please try again.'),
+        });
       }
     },
   },
@@ -209,7 +221,7 @@ export default {
     data-qa-selector="boards_list"
     class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-min-h-0"
   >
-    <gl-alert v-if="errorToDisplay" variant="danger" :dismissible="true" @dismiss="unsetError">
+    <gl-alert v-if="errorToDisplay" variant="danger" :dismissible="true" @dismiss="dismissError">
       {{ errorToDisplay }}
     </gl-alert>
     <component

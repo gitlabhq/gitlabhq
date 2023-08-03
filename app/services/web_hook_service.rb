@@ -57,6 +57,11 @@ class WebHookService
   end
 
   def execute
+    if Gitlab::SilentMode.enabled?
+      log_silent_mode_enabled
+      return ServiceResponse.error(message: 'Silent mode enabled')
+    end
+
     return ServiceResponse.error(message: 'Hook disabled') if disabled?
 
     if recursion_blocked?
@@ -98,6 +103,7 @@ class WebHookService
 
   def async_execute
     Gitlab::ApplicationContext.with_context(hook.application_context) do
+      break log_silent_mode_enabled if Gitlab::SilentMode.enabled?
       break log_rate_limited if rate_limit!
       break log_recursion_blocked if recursion_blocked?
 
@@ -235,6 +241,10 @@ class WebHookService
       'Recursive webhook blocked from executing',
       recursion_detection: ::Gitlab::WebHooks::RecursionDetection.to_log(hook)
     )
+  end
+
+  def log_silent_mode_enabled
+    log_auth_error('GitLab is in silent mode')
   end
 
   def log_auth_error(message, params = {})

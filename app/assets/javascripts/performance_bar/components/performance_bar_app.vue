@@ -84,6 +84,11 @@ export default {
       keys: ['request', 'body'],
     },
     {
+      metric: 'ch',
+      header: s__('PerformanceBar|ClickHouse queries'),
+      keys: ['sql', 'database', 'statistics'],
+    },
+    {
       metric: 'external-http',
       title: 'external',
       header: s__('PerformanceBar|External Http calls'),

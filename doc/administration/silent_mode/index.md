@@ -67,7 +67,11 @@ Incoming emails still raise issues, but the users who sent the emails to [Servic
 
 ### Webhooks
 
-[Project and group webhooks](../../user/project/integrations/webhooks.md), and [system hooks](../system_hooks.md) are suppressed. The relevant Sidekiq jobs fail 4 times and then disappear, while Silent Mode is enabled. [Issue 393639](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) discusses preventing the Sidekiq jobs from running in the first place.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) in GitLab 16.3.
+
+[Project and group webhooks](../../user/project/integrations/webhooks.md) and [system hooks](../system_hooks.md) are suppressed.
+
+In GitLab 16.2 and earlier, webhooks were triggered when Silent Mode was enabled, but the [webhook HTTP request was blocked](#outbound-http-requests).
 
 Triggering webhook tests via the UI results in HTTP status 500 responses.
 

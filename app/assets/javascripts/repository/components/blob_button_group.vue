@@ -76,6 +76,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isUsingLfs: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     replaceModalTitle() {
@@ -148,6 +153,7 @@ export default {
       :can-push-code="canPushCode"
       :can-push-to-branch="canPushToBranch"
       :empty-repo="emptyRepo"
+      :is-using-lfs="isUsingLfs"
     />
   </div>
 </template>

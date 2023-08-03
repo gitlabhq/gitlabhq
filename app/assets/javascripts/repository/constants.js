@@ -83,6 +83,8 @@ export const DEFAULT_BLOB_INFO = {
   },
 };
 
+export const JSON_LANGUAGE = 'json';
+export const OPENAPI_FILE_TYPE = 'openapi';
 export const TEXT_FILE_TYPE = 'text';
 
 export const LFS_STORAGE = 'lfs';

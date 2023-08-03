@@ -28,8 +28,12 @@ require_relative 'validation/validators/different_definition_triggers'
 require_relative 'validation/validators/extra_triggers'
 require_relative 'validation/validators/missing_triggers'
 
+require_relative 'validation/sources/connection_adapters/base'
+require_relative 'validation/sources/connection_adapters/active_record_adapter'
+require_relative 'validation/sources/connection_adapters/pg_adapter'
 require_relative 'validation/sources/structure_sql'
 require_relative 'validation/sources/database'
+require_relative 'validation/sources/connection'
 
 require_relative 'validation/schema_objects/base'
 require_relative 'validation/schema_objects/column'

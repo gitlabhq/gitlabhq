@@ -1,0 +1,23 @@
+---
+key_path: counts_weekly.batched_background_migration_failed_jobs_metric
+description: Count the number of failed jobs per batched background migration
+product_section: enablement
+product_stage: data_stores
+product_group: database
+value_type: number
+status: active
+milestone: "16.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126165
+time_frame: 7d
+data_source: database
+data_category: optional
+instrumentation_class: BatchedBackgroundMigrationFailedJobsMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+value_json_schema: "config/metrics/objects_schemas/batched_background_migration_failed_jobs_metric.json"
