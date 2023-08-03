@@ -165,6 +165,7 @@ You can also ask follow-up questions.
 This is an experimental feature and we're continuously extending the capabilities and reliability of the chat.
 
 1. In the lower-left corner, select the Help icon.
+   The [new left sidebar must be enabled](../tutorials/left_sidebar/index.md#enable-the-new-left-sidebar).
 1. Select **Ask in GitLab Duo Chat**. A drawer opens on the right side of your screen.
 1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
 1. You can ask a follow-up question.

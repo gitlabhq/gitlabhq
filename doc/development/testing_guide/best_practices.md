@@ -910,6 +910,9 @@ so we need to set some guidelines for their use going forward:
 
 ### Common test setup
 
+NOTE:
+`before_all` does not work with the `:delete` strategy. For more information, see [issue 420379](https://gitlab.com/gitlab-org/gitlab/-/issues/420379).
+
 In some cases, there is no need to recreate the same object for tests
 again for each example. For example, a project and a guest of that project
 are needed to test issues on the same project, so one project and user are enough for the entire file.
