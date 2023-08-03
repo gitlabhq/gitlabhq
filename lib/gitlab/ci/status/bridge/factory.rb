@@ -9,6 +9,7 @@ module Gitlab
             [[Status::Bridge::Retryable],
              [Status::Bridge::Failed],
              [Status::Bridge::Manual],
+             [Status::Bridge::WaitingForApproval],
              [Status::Bridge::WaitingForResource],
              [Status::Bridge::Play],
              [Status::Bridge::Action],

@@ -273,7 +273,7 @@ end
 
 class ProjectCreator
   def self.execute
-    ActiveRecord::Base.transaction do
+    ApplicationRecord.transaction do
       name = SecureRandom.alphanumeric
       project = Project.create!(name: name)
       Repository.create!(project: project, name: name)

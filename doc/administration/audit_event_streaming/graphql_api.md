@@ -170,8 +170,8 @@ by [listing all the custom HTTP headers](#list-streaming-destinations) for the g
 
 ```graphql
 mutation {
-  externalAuditEventDestinationUpdate(input: { 
-    id:"gid://gitlab/AuditEvents::ExternalAuditEventDestination/1", 
+  externalAuditEventDestinationUpdate(input: {
+    id:"gid://gitlab/AuditEvents::ExternalAuditEventDestination/1",
     destinationUrl: "https://www.new-domain.com/webhook",
     name: "destination-name"} ) {
     errors
@@ -285,7 +285,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-You can remove a list of event type filters using the `auditEventsStreamingDestinationEventsRemove` query type:
+You can remove a list of event type filters using the `auditEventsStreamingDestinationEventsRemove` mutation type:
 
 ```graphql
 mutation {
@@ -545,6 +545,7 @@ query {
           value
         }
       }
+      eventTypeFilters
     }
   }
 }
@@ -568,7 +569,7 @@ by [listing all the external destinations](#list-streaming-destinations-1) for t
 
 ```graphql
 mutation {
-  instanceExternalAuditEventDestinationUpdate(input: { 
+  instanceExternalAuditEventDestinationUpdate(input: {
     id: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1",
     destinationUrl: "https://www.new-domain.com/webhook",
     name: "destination-name"}) {
@@ -647,3 +648,60 @@ mutation {
 ```
 
 The header is deleted if the returned `errors` object is empty.
+
+### Event type filters
+
+> Event type filters API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10868) in GitLab 16.2.
+
+When this feature is enabled for an instance, you can use an API to permit users to filter streamed audit events per destination.
+If the feature is enabled with no filters, the destination receives all audit events.
+
+A streaming destination that has an event type filter set has a **filtered** (**{filter}**) label.
+
+#### Use the API to add an event type filter
+
+Prerequisites:
+
+- You must have the Administrator access for the instance.
+
+You can add a list of event type filters using the `auditEventsStreamingDestinationInstanceEventsAdd` mutation:
+
+```graphql
+mutation {
+    auditEventsStreamingDestinationInstanceEventsAdd(input: {
+        destinationId: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1",
+        eventTypeFilters: ["list of event type filters"]}){
+        errors
+        eventTypeFilters
+    }
+}
+```
+
+Event type filters are added if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
+#### Use the API to remove an event type filter
+
+Prerequisites:
+
+- You must have the Administrator access for the instance.
+
+You can remove a list of event type filters using the `auditEventsStreamingDestinationInstanceEventsRemove` mutation:
+
+```graphql
+mutation {
+    auditEventsStreamingDestinationInstanceEventsRemove(input: {
+    destinationId: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1",
+    eventTypeFilters: ["list of event type filters"]
+  }){
+    errors
+  }
+}
+```
+
+Event type filters are removed if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.

@@ -155,6 +155,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
           "_test_gitlab_shared_items" => :gitlab_shared,
           "_test_gitlab_geo_items" => :gitlab_geo,
           "detached_partitions" => :gitlab_shared,
+          "postgres_foreign_keys" => :gitlab_shared,
           "postgres_partitions" => :gitlab_shared
         }
       )

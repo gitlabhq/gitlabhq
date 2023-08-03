@@ -328,6 +328,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   - Versions containing fix: GitLab 16.1.3 and later.
 - Geo: A [bug](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841) in the built-in `pg-upgrade` tool prevents upgrading the bundled PostgreSQL database to version 13. This leaves the secondary site in a broken state, and prevents upgrading the Geo installation to GitLab 16.x ([PostgreSQL 12 support has removed in 16.0](deprecations.md#postgresql-12-deprecated) and later releases). This occurs on secondary sites using the bundled PostgreSQL software, running both the secondary main Rails database and tracking database on the same node. There is a manual [workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841#workaround) for those impacted until a fix is backported to 15.11.
   - Impacted versions: GitLab versions 15.2 - 15.11
+  - Versions containing fix: 15.11.12 and later.
   - Version 16.0 and later are not impacted. Note, 15.11 is a mandatory upgrade stop on the way to 16.0.
 
 ### 15.11.0
@@ -337,7 +338,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
   - Versions containing fix: GitLab 16.1.3 and later.
 - Geo: A [bug](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841) in the built-in `pg-upgrade` tool prevents upgrading the bundled PostgreSQL database to version 13. This leaves the secondary site in a broken state, and prevents upgrading the Geo installation to GitLab 16.x ([PostgreSQL 12 support has removed in 16.0](deprecations.md#postgresql-12-deprecated) and later releases). This occurs on secondary sites using the bundled PostgreSQL software, running both the secondary main Rails database and tracking database on the same node. There is a manual [workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841#workaround) for those impacted until a fix is backported to 15.11.
-  - Impacted versions: GitLab versions 15.2 - 15.11
+  - Impacted versions: GitLab versions 15.2 - 15.11.11.
+  - Versions containing fix: 15.11.12 and later.
   - Version 16.0 and later are not impacted. Note, 15.11 is a mandatory upgrade stop on the way to 16.0.
 
 ### 15.11.x
