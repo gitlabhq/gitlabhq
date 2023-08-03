@@ -58,6 +58,21 @@ module VerifiesWithEmail
     end
   end
 
+  def update_email
+    return unless user = find_verification_user
+
+    log_verification(user, :email_update_requested)
+    result = Users::EmailVerification::UpdateEmailService.new(user: user).execute(email: email_params[:email])
+
+    if result[:status] == :success
+      send_verification_instructions(user)
+    else
+      handle_verification_failure(user, result[:reason], result[:message])
+    end
+
+    render json: result
+  end
+
   def successful_verification
     session.delete(:verification_user_id)
     @redirect_url = after_sign_in_path_for(current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -88,7 +103,8 @@ module VerifiesWithEmail
   def send_verification_instructions_email(user, token)
     return unless user.can?(:receive_notifications)
 
-    Notify.verification_instructions_email(user.email, token: token).deliver_later
+    email = verification_email(user)
+    Notify.verification_instructions_email(email, token: token).deliver_later
 
     log_verification(user, :instructions_sent)
   end
@@ -129,6 +145,8 @@ module VerifiesWithEmail
   end
 
   def handle_verification_success(user)
+    user.confirm if unconfirmed_verification_email?(user)
+    user.email_reset_offered_at = Time.current if user.email_reset_offered_at.nil?
     user.unlock_access!
     log_verification(user, :successful)
 
@@ -155,6 +173,10 @@ module VerifiesWithEmail
 
   def verification_params
     params.require(:user).permit(:verification_token)
+  end
+
+  def email_params
+    params.require(:user).permit(:email)
   end
 
   def log_verification(user, event, reason = nil)

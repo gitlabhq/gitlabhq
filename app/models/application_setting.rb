@@ -416,6 +416,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
     allow_nil: false
 
+  validates :protected_paths_for_get_request,
+    length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
+    allow_nil: false
+
   validates :push_event_hooks_limit,
     numericality: { greater_than_or_equal_to: 0 }
 

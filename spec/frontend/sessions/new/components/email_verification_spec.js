@@ -6,11 +6,13 @@ import { s__ } from '~/locale';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import EmailVerification from '~/sessions/new/components/email_verification.vue';
+import UpdateEmail from '~/sessions/new/components/update_email.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   I18N_EMAIL_EMPTY_CODE,
   I18N_EMAIL_INVALID_CODE,
   I18N_GENERIC_ERROR,
+  I18N_UPDATE_EMAIL,
   I18N_RESEND_LINK,
   I18N_EMAIL_RESEND_SUCCESS,
 } from '~/sessions/new/constants';
@@ -29,18 +31,22 @@ describe('EmailVerification', () => {
     obfuscatedEmail: 'al**@g*****.com',
     verifyPath: '/users/sign_in',
     resendPath: '/users/resend_verification_code',
+    isOfferEmailReset: true,
+    updateEmailPath: '/users/update_email',
   };
 
-  const createComponent = () => {
+  const createComponent = (props = {}) => {
     wrapper = mountExtended(EmailVerification, {
-      propsData: defaultPropsData,
+      propsData: { ...defaultPropsData, ...props },
     });
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findCodeInput = () => wrapper.findComponent(GlFormInput);
+  const findUpdateEmail = () => wrapper.findComponent(UpdateEmail);
   const findSubmitButton = () => wrapper.find('[type="submit"]');
   const findResendLink = () => wrapper.findByText(I18N_RESEND_LINK);
+  const findUpdateEmailLink = () => wrapper.findByText(I18N_UPDATE_EMAIL);
   const enterCode = (code) => findCodeInput().setValue(code);
   const submitForm = () => findForm().trigger('submit');
 
@@ -200,6 +206,46 @@ describe('EmailVerification', () => {
 
       expect(createAlert).toHaveBeenCalledWith(alertObject);
       expect(findCodeInput().element.value).toBe('');
+    });
+  });
+
+  describe('updating the email', () => {
+    it('contains the link to show the update email form', () => {
+      expect(findUpdateEmailLink().exists()).toBe(true);
+    });
+
+    describe('when the isOfferEmailReset property is set to false', () => {
+      beforeEach(() => {
+        createComponent({ isOfferEmailReset: false });
+      });
+
+      it('does not contain the link to show the update email form', () => {
+        expect(findUpdateEmailLink().exists()).toBe(false);
+      });
+    });
+
+    it('shows the UpdateEmail component when clicking the link', async () => {
+      expect(findUpdateEmail().exists()).toBe(false);
+
+      await findUpdateEmailLink().trigger('click');
+
+      expect(findUpdateEmail().exists()).toBe(true);
+    });
+
+    describe('when the UpdateEmail component triggers verifyToken', () => {
+      const newEmail = 'new@ema.il';
+
+      beforeEach(async () => {
+        enterCode('123');
+        await findUpdateEmailLink().trigger('click');
+        findUpdateEmail().vm.$emit('verifyToken', newEmail);
+      });
+
+      it('hides the UpdateEmail component, shows the updated email address and resets the form', () => {
+        expect(findUpdateEmail().exists()).toBe(false);
+        expect(wrapper.text()).toContain(newEmail);
+        expect(findCodeInput().element.value).toBe('');
+      });
     });
   });
 });

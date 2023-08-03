@@ -86,6 +86,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(['/example'] * 101).for(:protected_paths) }
     it { is_expected.not_to allow_value(nil).for(:protected_paths) }
     it { is_expected.to allow_value([]).for(:protected_paths) }
+    it { is_expected.to allow_value(['/example'] * 100).for(:protected_paths_for_get_request) }
+    it { is_expected.not_to allow_value(['/example'] * 101).for(:protected_paths_for_get_request) }
+    it { is_expected.not_to allow_value(nil).for(:protected_paths_for_get_request) }
+    it { is_expected.to allow_value([]).for(:protected_paths_for_get_request) }
 
     it { is_expected.to allow_value(3).for(:push_event_hooks_limit) }
     it { is_expected.not_to allow_value('three').for(:push_event_hooks_limit) }

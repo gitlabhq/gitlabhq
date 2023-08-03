@@ -105,7 +105,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         username: user.username,
         avatar_url: user.avatar_url,
         has_link_to_profile: helper.current_user_menu?(:profile),
-        link_to_profile: user_url(user),
+        link_to_profile: user_path(user),
         status: {
           can_update: helper.can?(user, :update_user_status, user),
           busy: user.status&.busy?,
@@ -138,7 +138,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         gitlab_com_and_canary: Gitlab.com_and_canary?,
         canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
         pinned_items: %w[foo bar],
-        update_pins_url: pins_url,
+        update_pins_url: pins_path,
         shortcut_links: [
           {
             title: _('Milestones'),

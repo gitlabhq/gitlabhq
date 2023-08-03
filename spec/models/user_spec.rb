@@ -124,6 +124,9 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to delegate_method(:organization).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:organization=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:email_reset_offered_at).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_reset_offered_at=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do

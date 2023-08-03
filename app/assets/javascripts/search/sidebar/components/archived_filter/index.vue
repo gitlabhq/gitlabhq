@@ -2,6 +2,7 @@
 import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import Tracking from '~/tracking';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 import { archivedFilterData, TRACKING_NAMESPACE, TRACKING_LABEL_CHECKBOX } from './data';
 
@@ -15,11 +16,12 @@ export default {
     ...mapState(['urlQuery']),
     selectedFilter: {
       get() {
-        return [Boolean(this.urlQuery?.include_archived)];
+        return [parseBoolean(this.urlQuery?.include_archived)];
       },
-      set([value = '']) {
-        this.setQuery({ key: archivedFilterData.filterParam, value: `${value}` });
-        this.trackSelectCheckbox(value);
+      set(value) {
+        const newValue = value?.pop() ?? false;
+        this.setQuery({ key: archivedFilterData.filterParam, value: newValue?.toString() });
+        this.trackSelectCheckbox(newValue);
       },
     },
   },

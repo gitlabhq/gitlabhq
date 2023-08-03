@@ -57,7 +57,7 @@ GitLab access your repositories:
 1. Select **Generate Token**.
 1. Copy the token hash.
 1. Go back to GitLab and provide the token to the Gitea importer.
-1. Select **List Your Gitea Repositories** and wait while GitLab reads
+1. Select **List your Gitea repositories** and wait while GitLab reads
    your repositories' information. After it's done, GitLab displays the importer
    page to select the repositories to import.
 

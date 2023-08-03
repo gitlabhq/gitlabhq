@@ -6,15 +6,6 @@ description: 'Cells: GraphQL'
 
 <!-- vale gitlab.FutureTense = NO -->
 
-DISCLAIMER:
-This page may contain information related to upcoming products, features and
-functionality. It is important to note that the information presented is for
-informational purposes only, so please do not rely on the information for
-purchasing or planning purposes. Just like with all projects, the items
-mentioned on the page are subject to change or delay, and the development,
-release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
-
 This document is a work-in-progress and represents a very early state of the
 Cells design. Significant aspects are not documented, though we expect to add
 them in the future. This is one possible architecture for Cells, and we intend to
@@ -25,9 +16,8 @@ we can document the reasons for not choosing this approach.
 # Cells: GraphQL
 
 GitLab extensively uses GraphQL to perform efficient data query operations.
-GraphQL due to it's nature is not directly routable. The way how GitLab uses
-it calls the `/api/graphql` endpoint, and only query or mutation of body request
-might define where the data can be accessed.
+GraphQL due to it's nature is not directly routable.
+The way GitLab uses it calls the `/api/graphql` endpoint, and only the query or mutation of the body request might define where the data can be accessed.
 
 ## 1. Definition
 
@@ -35,21 +25,19 @@ might define where the data can be accessed.
 
 ## 3. Proposal
 
-There are at least two main ways to implement GraphQL in Cells architecture.
+There are at least two main ways to implement GraphQL in a Cells architecture.
 
 ### 3.1. GraphQL routable by endpoint
 
 Change `/api/graphql` to `/api/organization/<organization>/graphql`.
 
-- This breaks all existing usages of `/api/graphql` endpoint
-  since the API URI is changed.
+- This breaks all existing usages of `/api/graphql` endpoint because the API URI is changed.
 
 ### 3.2. GraphQL routable by body
 
 As part of router parse GraphQL body to find a routable entity, like `project`.
 
-- This still makes the GraphQL query be executed only in context of a given Cell
-  and not allowing the data to be merged.
+- This still makes the GraphQL query be executed only in context of a given Cell and not allowing the data to be merged.
 
 ```json
 # Good example
@@ -71,11 +59,9 @@ As part of router parse GraphQL body to find a routable entity, like `project`.
 
 ### 3.3. Merging GraphQL Proxy
 
-Implement as part of router GraphQL Proxy which can parse body
-and merge results from many Cells.
+Implement as part of router GraphQL Proxy which can parse body and merge results from many Cells.
 
-- This might make pagination hard to achieve, or we might assume that
-  we execute many queries of which results are merged across all Cells.
+- This might make pagination hard to achieve, or we might assume that we execute many queries of which results are merged across all Cells.
 
 ```json
 {

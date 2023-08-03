@@ -1,0 +1,8 @@
+---
+name: keep_merge_commits_for_approvals
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127744
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419921
+milestone: '16.3'
+type: development
+group: group::code review
+default_enabled: false

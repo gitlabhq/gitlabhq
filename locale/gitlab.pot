@@ -21374,10 +21374,10 @@ msgstr ""
 msgid "Gitaly|Address"
 msgstr ""
 
-msgid "Gitea Host URL"
+msgid "Gitea host URL"
 msgstr ""
 
-msgid "Gitea Import"
+msgid "Gitea import"
 msgstr ""
 
 msgid "GithubImporter|%{noteable_type} comment %{note_id}"
@@ -23429,6 +23429,12 @@ msgstr ""
 msgid "IdentityVerification|%{linkStart}Enter a new phone number%{linkEnd}"
 msgstr ""
 
+msgid "IdentityVerification|A code has already been sent to this email address. Check your spam folder or enter another email address."
+msgstr ""
+
+msgid "IdentityVerification|A new code has been sent to your updated email address."
+msgstr ""
+
 msgid "IdentityVerification|A new code has been sent."
 msgstr ""
 
@@ -23448,6 +23454,9 @@ msgid "IdentityVerification|Didn't receive a code?"
 msgstr ""
 
 msgid "IdentityVerification|Didn't receive a code? %{linkStart}Send a new code%{linkEnd}"
+msgstr ""
+
+msgid "IdentityVerification|Email update is only offered once."
 msgstr ""
 
 msgid "IdentityVerification|Enter a code."
@@ -23504,6 +23513,9 @@ msgstr ""
 msgid "IdentityVerification|Please enter a valid code"
 msgstr ""
 
+msgid "IdentityVerification|Please enter a valid email address."
+msgstr ""
+
 msgid "IdentityVerification|Resend code"
 msgstr ""
 
@@ -23532,6 +23544,9 @@ msgid "IdentityVerification|The code is incorrect. Enter it again, or send a new
 msgstr ""
 
 msgid "IdentityVerification|There was a problem with the credit card details you entered. Use a different credit card and try again."
+msgstr ""
+
+msgid "IdentityVerification|Update email"
 msgstr ""
 
 msgid "IdentityVerification|Verification code"
@@ -23766,9 +23781,6 @@ msgstr[1] ""
 msgid "Import CSV"
 msgstr ""
 
-msgid "Import Projects from Gitea"
-msgstr ""
-
 msgid "Import an exported GitLab project"
 msgstr ""
 
@@ -23824,6 +23836,9 @@ msgid "Import projects from FogBugz"
 msgstr ""
 
 msgid "Import projects from GitLab.com"
+msgstr ""
+
+msgid "Import projects from Gitea"
 msgstr ""
 
 msgid "Import repositories from Bitbucket Server"
@@ -28017,9 +28032,6 @@ msgstr ""
 msgid "List"
 msgstr ""
 
-msgid "List Your Gitea Repositories"
-msgstr ""
-
 msgid "List available repositories"
 msgstr ""
 
@@ -28048,6 +28060,9 @@ msgid "List view"
 msgstr ""
 
 msgid "List your Bitbucket Server repositories"
+msgstr ""
+
+msgid "List your Gitea repositories"
 msgstr ""
 
 msgid "Load more"
@@ -32543,6 +32558,9 @@ msgstr ""
 msgid "Only members of this group can access the wiki."
 msgstr ""
 
+msgid "Only one security policy bot is allowed per project"
+msgstr ""
+
 msgid "Only one source is required but both were provided"
 msgstr ""
 
@@ -33728,6 +33746,9 @@ msgid "Personal Access Token"
 msgstr ""
 
 msgid "Personal Access Token prefix"
+msgstr ""
+
+msgid "Personal access token"
 msgstr ""
 
 msgid "Personal project creation is not allowed. Please contact your administrator with questions"
@@ -48663,7 +48684,7 @@ msgstr ""
 msgid "To get started, click the link below to confirm your account."
 msgstr ""
 
-msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal_token}."
+msgid "To get started, please enter your Gitea host URL and a %{link_to_personal_token}."
 msgstr ""
 
 msgid "To get started, use the link below to confirm your account."

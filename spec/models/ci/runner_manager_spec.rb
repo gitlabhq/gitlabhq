@@ -331,4 +331,21 @@ RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model 
                           .and change { runner_manager.reload.read_attribute(:executor_type) }
     end
   end
+
+  describe '#builds' do
+    let_it_be(:runner_manager) { create(:ci_runner_machine) }
+
+    subject(:builds) { runner_manager.builds }
+
+    it { is_expected.to be_empty }
+
+    context 'with an existing build' do
+      let!(:build) { create(:ci_build) }
+      let!(:runner_machine_build) do
+        create(:ci_runner_machine_build, runner_manager: runner_manager, build: build)
+      end
+
+      it { is_expected.to contain_exactly build }
+    end
+  end
 end

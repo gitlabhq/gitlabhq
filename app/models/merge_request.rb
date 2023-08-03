@@ -656,8 +656,8 @@ class MergeRequest < ApplicationRecord
     [:assignees, :reviewers] + super
   end
 
-  def committers
-    @committers ||= commits.committers
+  def committers(with_merge_commits: false)
+    @committers ||= commits.committers(with_merge_commits: with_merge_commits)
   end
 
   # Verifies if title has changed not taking into account Draft prefix

@@ -112,6 +112,8 @@ Depending on your role, you can also use the following methods to manage or redu
 - [Reduce repository size](project/repository/reducing_the_repo_size_using_git.md).
 - [Reduce container registry storage](packages/container_registry/reduce_container_registry_storage.md).
 - [Reduce wiki repository size](../administration/wikis/index.md#reduce-wiki-repository-size).
+- [Manage artifact expiration period](../ci/yaml/index.md#artifactsexpire_in).
+- [Reduce build artifact storage](../ci/jobs/job_artifacts.md#delete-job-log-and-artifacts).
 
 ## Manage your transfer usage
 

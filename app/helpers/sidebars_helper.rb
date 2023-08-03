@@ -74,7 +74,7 @@ module SidebarsHelper
       username: user.username,
       avatar_url: user.avatar_url,
       has_link_to_profile: current_user_menu?(:profile),
-      link_to_profile: user_url(user),
+      link_to_profile: user_path(user),
       logo_url: current_appearance&.header_logo_path,
       status: user_status_menu_data(user),
       settings: {
@@ -103,7 +103,7 @@ module SidebarsHelper
       current_context: super_sidebar_current_context(project: project, group: group),
       context_switcher_links: context_switcher_links,
       pinned_items: user.pinned_nav_items[panel_type] || super_sidebar_default_pins(panel_type),
-      update_pins_url: pins_url,
+      update_pins_url: pins_path,
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
       shortcut_links: shortcut_links(user, project: project)

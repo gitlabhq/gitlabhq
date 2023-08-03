@@ -2283,7 +2283,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 
 | Service Node Group  | Nodes | Configuration           | GCP             | AWS          | Min Allocatable CPUs and Memory |
 |---------------------|-------|-------------------------|-----------------|--------------|---------------------------------|
-| Webservice          | 16    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | `m5.8xlarge` | 510 vCPU, 472 GB memory         |
+| Webservice          | 16    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | `c5.9xlarge` | 510 vCPU, 472 GB memory         |
 | Sidekiq             | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 15.5 vCPU, 50 GB memory         |
 | Supporting services | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 7.75 vCPU, 25 GB memory         |
 

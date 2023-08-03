@@ -53,4 +53,20 @@ describe('ArchivedFilter', () => {
       expect(findH5().text()).toBe(archivedFilterData.headerLabel);
     });
   });
+
+  describe.each`
+    include_archived | checkboxState
+    ${''}            | ${'false'}
+    ${'false'}       | ${'false'}
+    ${'true'}        | ${'true'}
+    ${'sdfsdf'}      | ${'false'}
+  `('selectedFilter', ({ include_archived, checkboxState }) => {
+    beforeEach(() => {
+      createComponent({ urlQuery: { include_archived } });
+    });
+
+    it('renders the component', () => {
+      expect(findCheckboxFilter().attributes('checked')).toBe(checkboxState);
+    });
+  });
 });

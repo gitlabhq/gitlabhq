@@ -1869,16 +1869,25 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#committers' do
-    it 'returns all the committers of every commit in the merge request' do
-      users = subject.commits.without_merge_commits.map(&:committer_email).uniq.map do |email|
-        create(:user, email: email)
-      end
+    let(:commits) { double }
+    let(:committers) { double }
 
-      expect(subject.committers).to match_array(users)
+    context 'when not given with_merge_commits' do
+      it 'calls committers on the commits object with the expected param' do
+        expect(subject).to receive(:commits).and_return(commits)
+        expect(commits).to receive(:committers).with(with_merge_commits: false).and_return(committers)
+
+        expect(subject.committers).to eq(committers)
+      end
     end
 
-    it 'returns an empty array if no committer is associated with a user' do
-      expect(subject.committers).to be_empty
+    context 'when given with_merge_commits true' do
+      it 'calls committers on the commits object with the expected param' do
+        expect(subject).to receive(:commits).and_return(commits)
+        expect(commits).to receive(:committers).with(with_merge_commits: true).and_return(committers)
+
+        expect(subject.committers(with_merge_commits: true)).to eq(committers)
+      end
     end
   end
 
