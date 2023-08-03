@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create', :reliable, product_group: :code_review do
-    context 'with merge request batch suggestions' do
+    describe 'Merge request batch suggestions' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'suggestions_project'

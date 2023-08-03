@@ -8,7 +8,7 @@ module Ci
     class ProjectScopeLink < Ci::ApplicationRecord
       self.table_name = 'ci_job_token_project_scope_links'
 
-      PROJECT_LINK_DIRECTIONAL_LIMIT = 100
+      PROJECT_LINK_DIRECTIONAL_LIMIT = 200
 
       belongs_to :source_project, class_name: 'Project'
       # the project added to the scope's allowlist

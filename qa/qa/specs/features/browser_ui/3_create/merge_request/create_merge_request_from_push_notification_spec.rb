@@ -2,7 +2,8 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Create a new merge request from the event notification after a push', product_group: :code_review do
+    describe 'Create a new merge request from the event notification after a push', :reliable,
+      product_group: :code_review do
       let(:branch_name) { "merge-request-test-#{SecureRandom.hex(8)}" }
       let(:title) { "Merge from push event notification test #{SecureRandom.hex(8)}" }
       let(:project) do

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Namespaces::ProjectNamespace, type: :model do
   describe 'relationships' do
-    it { is_expected.to have_one(:project).with_foreign_key(:project_namespace_id).inverse_of(:project_namespace) }
+    it { is_expected.to have_one(:project).inverse_of(:project_namespace) }
 
     specify do
       project = create(:project)
@@ -30,6 +30,81 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model do
 
       expect { project_namespace.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect { project.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe '.create_from_project!' do
+    context 'when namespace does not exist' do
+      it 'new project_namespace is not saved' do
+        expect_any_instance_of(described_class) do |instance|
+          expect(instance).not_to receive(:save!)
+        end
+
+        project = Project.new(namespace: nil)
+        described_class.create_from_project!(project)
+      end
+    end
+
+    context 'for new record when namespace exists' do
+      let(:project) { build(:project) }
+      let(:project_namespace) { project.project_namespace }
+
+      it 'syncs the project attributes to project namespace' do
+        project_name = 'project 1 name'
+        project.name = project_name
+
+        described_class.create_from_project!(project)
+        expect(project.project_namespace.name).to eq(project_name)
+      end
+
+      context 'when project has an unsaved project namespace' do
+        it 'saves the same project namespace' do
+          described_class.create_from_project!(project)
+
+          expect(project_namespace).to be_persisted
+        end
+      end
+    end
+  end
+
+  describe '#sync_attributes_from_project' do
+    context 'with existing project' do
+      let(:project) { create(:project) }
+      let(:project_namespace) { project.project_namespace }
+      let(:project_new_namespace) { create(:namespace) }
+      let(:project_new_path) { 'project-new-path' }
+      let(:project_new_name) { project_new_path.titleize }
+      let(:project_new_visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
+      let(:project_shared_runners_enabled) { !project.shared_runners_enabled }
+
+      before do
+        project.name = project_new_name
+        project.path = project_new_path
+        project.visibility_level = project_new_visibility_level
+        project.namespace = project_new_namespace
+        project.shared_runners_enabled = project_shared_runners_enabled
+      end
+
+      it 'syncs the relevant keys from the project' do
+        project_namespace.sync_attributes_from_project(project)
+
+        expect(project_namespace.name).to eq(project_new_name)
+        expect(project_namespace.path).to eq(project_new_path)
+        expect(project_namespace.visibility_level).to eq(project_new_visibility_level)
+        expect(project_namespace.namespace).to eq(project_new_namespace)
+        expect(project_namespace.namespace_id).to eq(project_new_namespace.id)
+        expect(project_namespace.shared_runners_enabled).to eq(project_shared_runners_enabled)
+      end
+    end
+
+    it 'syncs visibility_level if project is new' do
+      project = build(:project)
+      project_namespace = project.project_namespace
+      project_namespace.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+
+      project_namespace.sync_attributes_from_project(project)
+
+      expect(project_namespace.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
   end
 end

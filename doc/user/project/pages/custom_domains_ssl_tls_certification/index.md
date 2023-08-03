@@ -291,6 +291,33 @@ To enable this setting:
 If you use Cloudflare CDN in front of GitLab Pages, make sure to set the SSL connection setting to
 `full` instead of `flexible`. For more details, see the [Cloudflare CDN directions](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).
 
+## Edit a custom domain
+
+You can edit a custom domain to:
+
+- View the custom domain.
+- View the DNS record to add.
+- View the TXT verification entry.
+- Retry verification.
+- Edit the certificate settings.
+
+To edit a custom domain:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Deploy > Pages**.
+1. Next to the domain name, select **Edit**.
+
+## Delete a custom domain
+
+After a custom domain is deleted, the domain is no longer verified in GitLab and cannot be used with GitLab Pages.
+
+To delete and remove a custom domain:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Deploy > Pages**.
+1. Next to the domain name, select **Remove**.
+1. When prompted, select **Remove domain**.
+
 ## Troubleshooting
 
 ### Domain verification

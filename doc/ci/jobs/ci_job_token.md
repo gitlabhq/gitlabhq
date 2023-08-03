@@ -136,7 +136,7 @@ Prerequisite:
 
 - You must have at least the Maintainer role in the current project. If the allowed project
   is internal or private, you must have at least the Guest role in that project.
-- You must not have more than 100 projects added to the allowlist.
+- You must not have more than 200 projects added to the allowlist.
 
 To add a project:
 
@@ -178,7 +178,7 @@ If project `B` is public or internal, you do not need to add
 
 Prerequisite:
 
-- You must not have more than 100 projects added to the token's scope.
+- You must not have more than 200 projects added to the token's scope.
 
 To configure the job token scope:
 

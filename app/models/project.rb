@@ -167,7 +167,7 @@ class Project < ApplicationRecord
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
-  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id'
+  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
@@ -3446,7 +3446,7 @@ class Project < ApplicationRecord
     # create project_namespace when project is created
     build_project_namespace if project_namespace_creation_enabled?
 
-    sync_attributes(project_namespace) if sync_project_namespace?
+    project_namespace.sync_attributes_from_project(self) if sync_project_namespace?
   end
 
   def project_namespace_creation_enabled?
@@ -3455,27 +3455,6 @@ class Project < ApplicationRecord
 
   def sync_project_namespace?
     (changes.keys & %w(name path namespace_id namespace visibility_level shared_runners_enabled)).any? && project_namespace.present?
-  end
-
-  def sync_attributes(project_namespace)
-    attributes_to_sync = changes.slice(*%w(name path namespace_id namespace visibility_level shared_runners_enabled))
-                           .transform_values { |val| val[1] }
-
-    # if visibility_level is not set explicitly for project, it defaults to 0,
-    # but for namespace visibility_level defaults to 20,
-    # so it gets out of sync right away if we do not set it explicitly when creating the project namespace
-    attributes_to_sync['visibility_level'] ||= visibility_level if new_record?
-
-    # when a project is associated with a group while the group is created we need to ensure we associate the new
-    # group with the project namespace as well.
-    # E.g.
-    # project = create(:project) <- project is saved
-    # create(:group, projects: [project]) <- associate project with a group that is not yet created.
-    if attributes_to_sync.has_key?('namespace_id') && attributes_to_sync['namespace_id'].blank? && namespace.present?
-      attributes_to_sync['parent'] = namespace
-    end
-
-    project_namespace.assign_attributes(attributes_to_sync)
   end
 
   def reload_project_namespace_details

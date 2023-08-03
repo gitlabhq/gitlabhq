@@ -134,6 +134,15 @@ You then see:
 - The domains' status of **Verified** or **Unverified**.
 - The project where the domain has been configured.
 
+### Manage domains in group
+
+To edit or remove a domain:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. Select **Settings > Domain Verification**.
+1. When viewing **Domain Verification**, select the project listed next to the relevant domain.
+1. Edit or remove a domain following the relevant [GitLab Pages custom domains](../project/pages/custom_domains_ssl_tls_certification/index.md) instructions.
+
 ## Manage enterprise users in a namespace
 
 A top-level Owner of a namespace on a paid plan can retrieve information about and

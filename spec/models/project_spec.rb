@@ -19,7 +19,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
-    it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id') }
+    it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id').inverse_of(:project) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
@@ -634,8 +634,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     it 'validates the visibility' do
-      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_as_fork).and_call_original
-      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).and_call_original
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_as_fork).twice.and_call_original
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).twice.and_call_original
 
       create(:project)
     end

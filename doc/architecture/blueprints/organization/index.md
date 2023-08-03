@@ -34,7 +34,7 @@ Organizations solve the following problems:
 1. Allows integration with Cells. Isolating Organizations makes it possible to allocate and distribute them across different Cells.
 1. Removes the need to define hierarchies. An Organization is a container that could be filled with whatever hierarchy/entity set makes sense (Organization, top-level Groups, etc.)
 1. Enables centralized control of user profiles. With an Organization-specific user profile, administrators can control the user's role in a company, enforce user emails, or show a graphical indicator that a user as part of the Organization. An example could be adding a "GitLab employee" stamp on comments.
-1. Organizations bring an on-premise-like experience to SaaS (GitLab.com). The Organization admin will have access to instance-equivalent Admin Area settings with most of the configuration controlled on Organization level.
+1. Organizations bring an on-premise-like experience to SaaS (GitLab.com). The Organization admin will have access to instance-equivalent Admin Area settings with most of the configuration controlled at the Organization level.
 
 ## Motivation
 
@@ -93,7 +93,7 @@ From an initial [data exploration](https://gitlab.com/gitlab-data/analytics/-/is
   - Most top-level Groups that are matched to organizations with more than one top-level Group are assumed to be intended to be combined into a single organization (82%).
   - Most top-level Groups that are matched to organizations with more than one top-level Group are using only a single pricing tier (59%).
 - Most of the current top-level Groups are set to public visibility (85%).
-- Less than 0.5% of top-level Groups share Groups with another top-level Group. However, this means we could potentially break 76,000 links between top-level Groups by introducing the Organization.
+- Less than 0.5% of top-level Groups share Groups with another top-level Group. However, this means we could potentially break 76,000 existing links between top-level Groups by introducing the Organization.
 
 Based on this analysis we expect to see similar behavior when rolling out Organizations.
 
@@ -143,7 +143,7 @@ Users are visible across all Organizations. This allows Users to move between Or
 
 1. Becoming an Enterprise User of an Organization. Bringing Enterprise Users to the Organization level is planned post MVC. For the Organization MVC Enterprise Users will remain at the top-level Group.
 
-The creator of an Organization automatically becomes the Organization Owner.
+The creator of an Organization automatically becomes the Organization Owner. It is not necessary to become a User of a specific Organization to comment on or create public issues, for example. All existing Users can create and comment on all public issues.
 
 ##### When can Users see an Organization?
 
@@ -236,19 +236,18 @@ Organizations will have an Owner role. Compared to Users, they can perform the f
 
 | Action | Owner | User |
 | ------ | ------ | ----- |
-| View Organization settings | :white_check_mark: | :x: |
-| Edit Organization settings | :white_check_mark: | :x: |
-| Delete Organization | :white_check_mark: | :x: |
-| Remove Users | :white_check_mark: | :x: |
-| View Organization front page | :white_check_mark: | :white_check_mark: |
-| View Groups overview | :white_check_mark: | :white_check_mark:* |
-| View Projects overview | :white_check_mark: | :white_check_mark:* |
-| View Users overview | :white_check_mark: | :white_check_mark:** |
-| Transfer top-level Group into Organization if Owner of both | :white_check_mark: | :x: |
+| View Organization settings | ✓ |  |
+| Edit Organization settings | ✓ |  |
+| Delete Organization | ✓ |  |
+| Remove Users | ✓ |  |
+| View Organization front page | ✓ | ✓ |
+| View Groups overview | ✓ | ✓ (1) |
+| View Projects overview | ✓ | ✓ (1) |
+| View Users overview | ✓ | ✓ (2) |
+| Transfer top-level Group into Organization if Owner of both | ✓ |  |
 
-*... can only see what they have access to
-
-**... can only see Users from groups and projects they have access to
+(1) Users can only see what they have access to.
+(2) Users can only see Users from Groups and Projects they have access to.
 
 [Roles](../../../user/permissions.md) at the Group and Project level remain as they currently are.
 
@@ -258,39 +257,45 @@ Today only Users, Projects, Namespaces and container images are considered routa
 
 ### Impact of the Organization on Other Features
 
-We want a minimal amount of infrequently written tables in the shared database. If we have high write volume or large amounts of data in the shared database then this can become a single bottleneck for scaling and we lose the horizontal scalability objective of Cells.
+We want a minimal amount of infrequently written tables in the shared database. If we have high write volume or large amounts of data in the shared database then this can become a single bottleneck for scaling and we lose the horizontal scalability objective of Cells. With isolation being one of the main requirements to make Cells work, this means that existing features will mostly be scoped to an Organization rather than work across Organizations. One exception to this are Users, which are stored in the cluster-wide shared database. For a deeper exploration of the impact on select features, see the [list of features impacted by Cells](../cells/index.md#impacted-features).
 
 ## Iteration Plan
 
 The following iteration plan outlines how we intend to arrive at the Organization MVC. We are following the guidelines for [Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
 
-### Iteration 1: Organization Prototype (FY24Q2)
+### Iteration 1: Organization Prototype (FY24Q3)
 
-In iteration 1, we introduce the concept of an Organization as a way to group top-level Groups together. Support for Organizations does not require any [Cells](../cells/index.md) work, but having them will make all subsequent iterations of Cells simpler. The goal of iteration 1 will be to generate a prototype that can be used by GitLab teams to test moving functionality to the Organization. It contains everything that is necessary to move an Organization to a Cell:
+In iteration 1, we introduce the concept of an Organization as a way to group top-level Groups together. Support for Organizations does not require any [Cells](../cells/index.md) work, but having them will make all subsequent iterations of Cells simpler. The goal of iteration 1 will be to generate a prototype that can be used by GitLab teams to test basic functionality within an Organization. The prototype contains the following functionality:
 
-- The Organization can be named, has an ID and an avatar.
+- A new Organization can be created.
+- The Organization contains a name, ID, description and avatar.
+- The creator of the Organization is assigned as the Organization Owner.
+- Groups can be created in an Organization. Groups are listed in the Groups overview. Every Organization User can access the Groups overview and see the Groups they have access to.
+- Projects can be created in a Group. Projects are listed in the Projects overview. Every Organization User can access the Projects overview and see the Projects they have access to.
 - Both Enterprise and Non-Enterprise Users can be part of an Organization.
 - Enterprise Users are still managed by top-level Groups.
 - A User can be part of multiple Organizations.
-- A single Organization Owner can be assigned.
-- Groups can be created in an Organization. Groups are listed in the Groups overview.
-- Projects can be created in a Group. Projects are listed in the Projects overview.
-
-### Iteration 2: Organization MVC Experiment (FY24Q3)
-
-In iteration 2, an Organization MVC Experiment will be released. We will test the functionality with a select set of customers and improve the MVC based on these learnings. Users will be able to build an Organization on top of their existing top-level Group.
-
-- The Organization has a description.
-- Organizations can be deleted.
 - Users can navigate between the different Organizations they are part of.
+- Any User within or outside of an Organization can be invited to Groups and Projects contained by the Organization.
+
+### Iteration 2: Organization MVC Experiment (FY24Q4)
+
+In iteration 2, an Organization MVC Experiment will be released. We will test the functionality with a select set of customers and improve the MVC based on these learnings. The MVC Experiment contains the following functionality:
+
+- Users are listed in the User overview. Every Organization User can access the User overview and see Users that are part of the Groups and Projects they have access to.
+- Organizations can be deleted.
+- Forking across Organizations will be defined.
 
 ### Iteration 3: Organization MVC Beta (FY24Q4)
 
-In iteration 3, the Organization MVC Beta will be released.
+In iteration 3, the Organization MVC Beta will be released. Users will be able to transfer existing top-level Groups into an Organization.
 
 - Multiple Organization Owners can be assigned.
+- Organization avatars can be changed in the Organization settings.
 - Organization Owners can create, edit and delete Groups from the Groups overview.
 - Organization Owners can create, edit and delete Projects from the Projects overview.
+- Top-level Groups can be transferred into an Organization.
+- The Organization URL path can be changed.
 
 ### Iteration 4: Organization MVC GA (FY25Q1)
 
@@ -300,6 +305,7 @@ In iteration 4, the Organization MVC will be rolled out.
 
 After the initial rollout of Organizations, the following functionality will be added to address customer needs relating to their implementation of GitLab:
 
+1. [Organizations can invite Users](https://gitlab.com/gitlab-org/gitlab/-/issues/420166).
 1. Internal visibility will be made available on Organizations that are part of GitLab.com.
 1. Restrict inviting Users outside of the Organization.
 1. Enterprise Users will be made available at the Organization level.

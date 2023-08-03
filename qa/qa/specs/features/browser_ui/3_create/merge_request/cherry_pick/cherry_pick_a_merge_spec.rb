@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Cherry picking from a merge request', product_group: :code_review do
+    describe 'Cherry picking from a merge request', :reliable, product_group: :code_review do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project'

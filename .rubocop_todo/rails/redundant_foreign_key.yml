@@ -27,7 +27,6 @@ Rails/RedundantForeignKey:
     - 'app/models/merge_request.rb'
     - 'app/models/merge_request/metrics.rb'
     - 'app/models/namespace.rb'
-    - 'app/models/namespaces/project_namespace.rb'
     - 'app/models/packages/debian/publication.rb'
     - 'app/models/project.rb'
     - 'app/models/resource_state_event.rb'

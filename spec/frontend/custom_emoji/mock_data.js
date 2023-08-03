@@ -6,3 +6,19 @@ export const CUSTOM_EMOJI = [
     createdAt: 'created-at',
   },
 ];
+
+export const CREATED_CUSTOM_EMOJI = {
+  data: {
+    createCustomEmoji: {
+      errors: [],
+    },
+  },
+};
+
+export const CREATED_CUSTOM_EMOJI_WITH_ERROR = {
+  data: {
+    createCustomEmoji: {
+      errors: ['Test error'],
+    },
+  },
+};

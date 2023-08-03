@@ -100,6 +100,10 @@ FactoryBot.define do
       project.set_runners_token(evaluator.runners_token) if evaluator.runners_token.present?
     end
 
+    to_create do |project|
+      project.project_namespace.save! if project.valid?
+    end
+
     after(:create) do |project, evaluator|
       # Normally the class Projects::CreateService is used for creating
       # projects, and this class takes care of making sure the owner and current
