@@ -7,6 +7,7 @@ import {
   EVENT_TYPE_PUSHED,
   EVENT_TYPE_PRIVATE,
   EVENT_TYPE_MERGED,
+  EVENT_TYPE_CLOSED,
   PUSH_EVENT_REF_TYPE_BRANCH,
   PUSH_EVENT_REF_TYPE_TAG,
   EVENT_TYPE_CREATED,
@@ -21,6 +22,15 @@ import {
 } from '~/contribution_events/constants';
 
 const findEventByAction = (action) => () => events.find((event) => event.action === action);
+const findEventByActionAndTargetType = (action, targetType) => () =>
+  events.find((event) => event.action === action && event.target?.type === targetType);
+const findEventByActionAndIssueType = (action, issueType) => () =>
+  events.find(
+    (event) =>
+      event.action === action &&
+      event.target?.type === TARGET_TYPE_WORK_ITEM &&
+      event.target.issue_type === issueType,
+  );
 
 export const eventApproved = findEventByAction(EVENT_TYPE_APPROVED);
 
@@ -62,15 +72,10 @@ export const eventPrivate = () => ({ ...events[0], action: EVENT_TYPE_PRIVATE })
 
 export const eventCreated = findEventByAction(EVENT_TYPE_CREATED);
 
-export const findCreatedEvent = (targetType) => () =>
-  events.find((event) => event.action === EVENT_TYPE_CREATED && event.target?.type === targetType);
-export const findWorkItemCreatedEvent = (issueType) => () =>
-  events.find(
-    (event) =>
-      event.action === EVENT_TYPE_CREATED &&
-      event.target?.type === TARGET_TYPE_WORK_ITEM &&
-      event.target.issue_type === issueType,
-  );
+export const findCreatedEvent = (targetType) =>
+  findEventByActionAndTargetType(EVENT_TYPE_CREATED, targetType);
+export const findWorkItemCreatedEvent = (issueType) =>
+  findEventByActionAndIssueType(EVENT_TYPE_CREATED, issueType);
 
 export const eventProjectCreated = findCreatedEvent(undefined);
 export const eventMilestoneCreated = findCreatedEvent(TARGET_TYPE_MILESTONE);
@@ -80,3 +85,18 @@ export const eventWikiPageCreated = findCreatedEvent(TARGET_TYPE_WIKI);
 export const eventDesignCreated = findCreatedEvent(TARGET_TYPE_DESIGN);
 export const eventTaskCreated = findWorkItemCreatedEvent(WORK_ITEM_ISSUE_TYPE_TASK);
 export const eventIncidentCreated = findWorkItemCreatedEvent(WORK_ITEM_ISSUE_TYPE_INCIDENT);
+
+export const eventClosed = findEventByAction(EVENT_TYPE_CLOSED);
+
+export const findClosedEvent = (targetType) =>
+  findEventByActionAndTargetType(EVENT_TYPE_CREATED, targetType);
+export const findWorkItemClosedEvent = (issueType) =>
+  findEventByActionAndIssueType(EVENT_TYPE_CLOSED, issueType);
+
+export const eventMilestoneClosed = findClosedEvent(TARGET_TYPE_MILESTONE);
+export const eventIssueClosed = findClosedEvent(TARGET_TYPE_ISSUE);
+export const eventMergeRequestClosed = findClosedEvent(TARGET_TYPE_MERGE_REQUEST);
+export const eventWikiPageClosed = findClosedEvent(TARGET_TYPE_WIKI);
+export const eventDesignClosed = findClosedEvent(TARGET_TYPE_DESIGN);
+export const eventTaskClosed = findWorkItemClosedEvent(WORK_ITEM_ISSUE_TYPE_TASK);
+export const eventIncidentClosed = findWorkItemClosedEvent(WORK_ITEM_ISSUE_TYPE_INCIDENT);

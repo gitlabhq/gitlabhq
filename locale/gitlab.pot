@@ -7108,10 +7108,16 @@ msgstr ""
 msgid "BackgroundMigrations|Started at"
 msgstr ""
 
+msgid "Badge"
+msgstr ""
+
 msgid "Badges"
 msgstr ""
 
 msgid "Badges|Add badge"
+msgstr ""
+
+msgid "Badges|Add new badge"
 msgstr ""
 
 msgid "Badges|Adding the badge failed, please check the entered URLs and try again."
@@ -7130,6 +7136,9 @@ msgid "Badges|Delete badge?"
 msgstr ""
 
 msgid "Badges|Deleting the badge failed, please try again."
+msgstr ""
+
+msgid "Badges|Edit badge"
 msgstr ""
 
 msgid "Badges|Enter a valid URL"
@@ -7174,10 +7183,10 @@ msgstr ""
 msgid "Badges|The badge was deleted."
 msgstr ""
 
-msgid "Badges|This group has no badges"
+msgid "Badges|This group has no badges, start by creating a new one above."
 msgstr ""
 
-msgid "Badges|This project has no badges"
+msgid "Badges|This project has no badges, start by creating a new one above."
 msgstr ""
 
 msgid "Badges|You are going to delete this badge. Deleted badges %{strongStart}cannot%{strongEnd} be restored."
@@ -8190,6 +8199,9 @@ msgstr ""
 msgid "Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
 msgstr ""
 
+msgid "Branch Rules"
+msgstr ""
+
 msgid "Branch already exists"
 msgstr ""
 
@@ -8295,9 +8307,6 @@ msgstr ""
 msgid "BranchRules|Create wildcard: %{searchTerm}"
 msgstr ""
 
-msgid "BranchRules|Details"
-msgstr ""
-
 msgid "BranchRules|Does not allow force push"
 msgstr ""
 
@@ -8365,6 +8374,9 @@ msgid "BranchRules|To create a branch rule, you first need to create a protected
 msgstr ""
 
 msgid "BranchRules|Users"
+msgstr ""
+
+msgid "BranchRules|View details"
 msgstr ""
 
 msgid "BranchRules|default"
@@ -13011,6 +13023,39 @@ msgid "ContributionEvent|Added design %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
 msgid "ContributionEvent|Approved merge request %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed Epic %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed incident %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed issue %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed key result %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed merge request %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed milestone %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed objective %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed requirement %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed resource."
+msgstr ""
+
+msgid "ContributionEvent|Closed task %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Closed test case %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
 msgid "ContributionEvent|Created project %{resourceParentLink}."

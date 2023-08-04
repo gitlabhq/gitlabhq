@@ -34,9 +34,16 @@ RSpec.shared_context 'with user contribution events' do
   # closed
   let_it_be(:closed_issue_event) { create(:event, :closed, author: user, project: project, target: issue) }
   let_it_be(:closed_milestone_event) { create(:event, :closed, author: user, project: project, target: milestone) }
-  let_it_be(:closed_incident_event) { create(:event, :closed, author: user, project: project, target: incident) }
   let_it_be(:closed_merge_request_event) do
     create(:event, :closed, author: user, project: project, target: merge_request)
+  end
+
+  let_it_be(:closed_task_event) do
+    create(:event, :closed, :for_work_item, author: user, project: project, target: task)
+  end
+
+  let_it_be(:closed_incident_event) do
+    create(:event, :closed, :for_work_item, author: user, project: project, target: incident)
   end
 
   # commented

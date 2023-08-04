@@ -6,7 +6,7 @@ import { getAccessLevels } from '../../../utils';
 export const i18n = {
   defaultLabel: s__('BranchRules|default'),
   protectedLabel: s__('BranchRules|protected'),
-  detailsButtonLabel: s__('BranchRules|Details'),
+  detailsButtonLabel: s__('BranchRules|View details'),
   allowForcePush: s__('BranchRules|Allowed to force push'),
   codeOwnerApprovalRequired: s__('BranchRules|Requires CODEOWNERS approval'),
   statusChecks: s__('BranchRules|%{total} status %{subject}'),
@@ -153,28 +153,36 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-border-b gl-pt-5 gl-pb-5 gl-display-flex gl-justify-content-space-between"
-    data-qa-selector="branch_content"
-    :data-qa-branch-name="name"
-  >
-    <div>
-      <strong class="gl-font-monospace">{{ name }}</strong>
-
-      <gl-badge v-if="isDefault" variant="info" size="sm" class="gl-ml-2">{{
-        $options.i18n.defaultLabel
-      }}</gl-badge>
-
-      <gl-badge v-if="isProtected" variant="success" size="sm" class="gl-ml-2">{{
-        $options.i18n.protectedLabel
-      }}</gl-badge>
-
-      <ul v-if="hasApprovalDetails" class="gl-pl-6 gl-mt-2 gl-mb-0 gl-text-gray-500">
-        <li v-for="(detail, index) in approvalDetails" :key="index">{{ detail }}</li>
-      </ul>
-    </div>
-    <gl-button class="gl-align-self-start" data-qa-selector="details_button" :href="detailsPath">
-      {{ $options.i18n.detailsButtonLabel }}</gl-button
+  <li>
+    <div
+      class="gl-display-flex gl-justify-content-space-between"
+      data-qa-selector="branch_content"
+      :data-qa-branch-name="name"
     >
-  </div>
+      <div>
+        <strong class="gl-font-monospace">{{ name }}</strong>
+
+        <gl-badge v-if="isDefault" variant="info" size="sm" class="gl-ml-2">{{
+          $options.i18n.defaultLabel
+        }}</gl-badge>
+
+        <gl-badge v-if="isProtected" variant="success" size="sm" class="gl-ml-2">{{
+          $options.i18n.protectedLabel
+        }}</gl-badge>
+
+        <ul v-if="hasApprovalDetails" class="gl-pl-6 gl-mt-2 gl-mb-0 gl-text-gray-500">
+          <li v-for="(detail, index) in approvalDetails" :key="index">{{ detail }}</li>
+        </ul>
+      </div>
+      <gl-button
+        class="gl-align-self-start"
+        category="tertiary"
+        size="small"
+        data-qa-selector="details_button"
+        :href="detailsPath"
+      >
+        {{ $options.i18n.detailsButtonLabel }}</gl-button
+      >
+    </div>
+  </li>
 </template>

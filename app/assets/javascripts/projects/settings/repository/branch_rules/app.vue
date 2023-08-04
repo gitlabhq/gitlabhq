@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlModal, GlModalDirective, GlCard, GlIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import { expandSection } from '~/settings_panels';
@@ -14,6 +14,8 @@ export default {
     BranchRule,
     GlButton,
     GlModal,
+    GlCard,
+    GlIcon,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -55,29 +57,47 @@ export default {
 </script>
 
 <template>
-  <div class="settings-content gl-mb-0">
-    <branch-rule
-      v-for="(rule, index) in branchRules"
-      :key="`${rule.name}-${index}`"
-      :name="rule.name"
-      :is-default="rule.isDefault"
-      :branch-protection="rule.branchProtection"
-      :status-checks-total="rule.externalStatusChecks ? rule.externalStatusChecks.nodes.length : 0"
-      :approval-rules-total="rule.approvalRules ? rule.approvalRules.nodes.length : 0"
-      :matching-branches-count="rule.matchingBranchesCount"
-    />
-
-    <div v-if="!branchRules.length" data-testid="empty">{{ $options.i18n.emptyState }}</div>
-
-    <gl-button
-      v-gl-modal="$options.modalId"
-      class="gl-mt-5"
-      data-qa-selector="add_branch_rule_button"
-      category="secondary"
-      variant="confirm"
-      >{{ $options.i18n.addBranchRule }}</gl-button
-    >
-
+  <gl-card
+    class="gl-new-card gl-overflow-hidden"
+    header-class="gl-new-card-header"
+    body-class="gl-new-card-body gl-px-0"
+  >
+    <template #header>
+      <div class="gl-new-card-title-wrapper" data-testid="title">
+        <h3 class="gl-new-card-title">
+          {{ __('Branch Rules') }}
+        </h3>
+        <div class="gl-new-card-count">
+          <gl-icon name="branch" class="gl-mr-2" />
+          {{ branchRules.length }}
+        </div>
+      </div>
+      <gl-button
+        v-gl-modal="$options.modalId"
+        size="small"
+        class="gl-ml-3"
+        data-qa-selector="add_branch_rule_button"
+        >{{ $options.i18n.addBranchRule }}</gl-button
+      >
+    </template>
+    <ul class="content-list">
+      <branch-rule
+        v-for="(rule, index) in branchRules"
+        :key="`${rule.name}-${index}`"
+        :name="rule.name"
+        :is-default="rule.isDefault"
+        :branch-protection="rule.branchProtection"
+        :status-checks-total="
+          rule.externalStatusChecks ? rule.externalStatusChecks.nodes.length : 0
+        "
+        :approval-rules-total="rule.approvalRules ? rule.approvalRules.nodes.length : 0"
+        :matching-branches-count="rule.matchingBranchesCount"
+        class="gl-px-5! gl-py-4!"
+      />
+      <div v-if="!branchRules.length" class="gl-new-card-empty gl-px-5 gl-py-4" data-testid="empty">
+        {{ $options.i18n.emptyState }}
+      </div>
+    </ul>
     <gl-modal
       :ref="$options.modalId"
       :modal-id="$options.modalId"
@@ -88,5 +108,5 @@ export default {
       <p>{{ $options.i18n.branchRuleModalDescription }}</p>
       <p>{{ $options.i18n.branchRuleModalContent }}</p>
     </gl-modal>
-  </div>
+  </gl-card>
 </template>

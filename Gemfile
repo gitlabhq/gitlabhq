@@ -133,6 +133,9 @@ gem 'apollo_upload_server', '~> 2.1.0'
 gem 'graphql-docs', '~> 2.1.0', group: [:development, :test]
 gem 'graphlient', '~> 0.5.0' # Used by BulkImport feature (group::import)
 
+# Generate Fake data
+gem 'ffaker', '~> 2.10'
+
 gem 'hashie', '~> 5.0.0'
 
 # Pagination
@@ -414,9 +417,6 @@ group :development, :test do
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.11.0'
-
-  # Generate Fake data
-  gem 'ffaker', '~> 2.10'
 
   gem 'spring', '~> 4.1.0'
   gem 'spring-commands-rspec', '~> 1.0.4'

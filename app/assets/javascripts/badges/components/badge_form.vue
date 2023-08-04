@@ -28,6 +28,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    inModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -119,16 +124,28 @@ export default {
         exampleUrl,
       });
     },
+    cancelButtonType() {
+      return this.isEditing ? 'button' : 'reset';
+    },
+    saveText() {
+      return this.isEditing ? s__('Badges|Save changes') : s__('Badges|Add badge');
+    },
+  },
+  mounted() {
+    // declared here to make it cancel-able
+    this.debouncedPreview = debounce(function search() {
+      this.renderBadge();
+    }, badgePreviewDelayInMilliseconds);
   },
   methods: {
     ...mapActions(['addBadge', 'renderBadge', 'saveBadge', 'stopEditing', 'updateBadgeInForm']),
-    debouncedPreview: debounce(function preview() {
-      this.renderBadge();
-    }, badgePreviewDelayInMilliseconds),
-    onCancel() {
-      this.stopEditing();
+    updatePreview() {
+      this.debouncedPreview();
     },
     onSubmit() {
+      this.debouncedPreview.cancel();
+      this.renderBadge();
+
       const form = this.$el;
       if (!form.checkValidity()) {
         this.wasValidated = true;
@@ -161,6 +178,7 @@ export default {
             variant: VARIANT_INFO,
           });
           this.wasValidated = false;
+          this.$emit('close-add-form');
         })
         .catch((error) => {
           createAlert({
@@ -171,6 +189,17 @@ export default {
           throw error;
         });
     },
+    closeForm() {
+      this.$refs.form.reset();
+      this.$emit('close-add-form');
+    },
+    handleCancel() {
+      if (this.isEditing) {
+        this.stopEditing();
+      } else {
+        this.closeForm();
+      }
+    },
   },
   safeHtmlConfig: { ALLOW_TAGS: ['a', 'code'] },
 };
@@ -178,6 +207,7 @@ export default {
 
 <template>
   <form
+    ref="form"
     :class="{ 'was-validated': wasValidated }"
     class="gl-mt-3 gl-mb-3 needs-validation"
     novalidate
@@ -197,7 +227,7 @@ export default {
         type="URL"
         class="form-control gl-form-input"
         required
-        @input="debouncedPreview"
+        @input="updatePreview"
       />
       <div class="invalid-feedback">{{ s__('Badges|Enter a valid URL') }}</div>
       <span class="form-text text-muted">{{ badgeLinkUrlExample }}</span>
@@ -213,7 +243,7 @@ export default {
         type="URL"
         class="form-control gl-form-input"
         required
-        @input="debouncedPreview"
+        @input="updatePreview"
       />
       <div class="invalid-feedback">{{ s__('Badges|Enter a valid URL') }}</div>
       <span class="form-text text-muted">{{ badgeImageUrlExample }}</span>
@@ -235,29 +265,23 @@ export default {
       </p>
     </div>
 
-    <div v-if="isEditing" class="row-content-block">
-      <gl-button class="btn-cancel gl-mr-4" data-testid="cancelEditing" @click="onCancel">
-        {{ __('Cancel') }}
-      </gl-button>
-      <gl-button
-        :loading="isSaving"
-        type="submit"
-        variant="confirm"
-        category="primary"
-        data-testid="saveEditing"
-      >
-        {{ s__('Badges|Save changes') }}
-      </gl-button>
-    </div>
-    <div v-else class="form-group">
+    <div v-if="!inModal" class="form-group" data-testid="action-buttons">
       <gl-button
         :loading="isSaving"
         type="submit"
         variant="confirm"
         category="primary"
         data-qa-selector="add_badge_button"
+        class="gl-mr-3"
       >
-        {{ s__('Badges|Add badge') }}
+        {{ saveText }}
+      </gl-button>
+      <gl-button
+        :type="cancelButtonType"
+        data-qa-selector="cancel_badge_button"
+        @click="handleCancel"
+      >
+        {{ __('Cancel') }}
       </gl-button>
     </div>
   </form>

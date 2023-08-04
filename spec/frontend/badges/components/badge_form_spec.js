@@ -49,7 +49,7 @@ describe('BadgeForm component', () => {
   it('stops editing when cancel button is clicked', async () => {
     createComponent({ isEditing: true });
 
-    const cancelButton = wrapper.find('.row-content-block button');
+    const cancelButton = wrapper.findAll('[data-testid="action-buttons"] button').at(1);
 
     await cancelButton.trigger('click');
 
@@ -143,13 +143,13 @@ describe('BadgeForm component', () => {
   describe('if isEditing is false', () => {
     const props = { isEditing: false };
 
-    it('renders one button', () => {
+    it('renders two buttons', () => {
       createComponent(props);
 
       expect(wrapper.find('.row-content-block').exists()).toBe(false);
-      const buttons = wrapper.findAll('.form-group:last-of-type button');
+      const buttons = wrapper.findAll('[data-testid="action-buttons"] button');
 
-      expect(buttons).toHaveLength(1);
+      expect(buttons).toHaveLength(2);
       const buttonAddWrapper = buttons.at(0);
 
       expect(buttonAddWrapper.isVisible()).toBe(true);
@@ -164,15 +164,15 @@ describe('BadgeForm component', () => {
 
     it('renders two buttons', () => {
       createComponent(props);
-      const buttons = wrapper.findAll('.row-content-block button');
+      const buttons = wrapper.findAll('[data-testid="action-buttons"] button');
 
       expect(buttons).toHaveLength(2);
 
-      const saveButton = buttons.at(1);
+      const saveButton = buttons.at(0);
       expect(saveButton.isVisible()).toBe(true);
       expect(saveButton.text()).toBe('Save changes');
 
-      const cancelButton = buttons.at(0);
+      const cancelButton = buttons.at(1);
       expect(cancelButton.isVisible()).toBe(true);
       expect(cancelButton.text()).toBe('Cancel');
     });

@@ -1,10 +1,10 @@
-import { GlModal } from '@gitlab/ui';
+import { GlCard, GlTable } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
-import BadgeList from '~/badges/components/badge_list.vue';
-import BadgeListRow from '~/badges/components/badge_list_row.vue';
 import BadgeSettings from '~/badges/components/badge_settings.vue';
+import BadgeList from '~/badges/components/badge_list.vue';
+import BadgeForm from '~/badges/components/badge_form.vue';
 import store from '~/badges/store';
 import { createDummyBadge } from '../dummy_badge';
 
@@ -22,8 +22,10 @@ describe('BadgeSettings component', () => {
     wrapper = shallowMount(BadgeSettings, {
       store,
       stubs: {
+        GlCard,
+        GlTable,
         'badge-list': BadgeList,
-        'badge-list-row': BadgeListRow,
+        'badge-form': BadgeForm,
       },
     });
   };
@@ -32,35 +34,35 @@ describe('BadgeSettings component', () => {
     createComponent();
   });
 
-  it('displays modal if button for deleting a badge is clicked', async () => {
-    const button = wrapper.find('[data-testid="delete-badge"]');
+  it('renders a header with the badge count', () => {
+    createComponent();
 
-    button.vm.$emit('click');
-    await nextTick();
+    const cardTitle = wrapper.find('.gl-new-card-title');
+    const cardCount = wrapper.find('.gl-new-card-count');
 
-    const modal = wrapper.findComponent(GlModal);
-    expect(modal.isVisible()).toBe(true);
+    expect(cardTitle.text()).toContain('Your badges');
+    expect(cardCount.text()).toContain('1');
   });
 
-  it('displays a form to add a badge', () => {
-    expect(wrapper.find('[data-testid="add-new-badge"]').isVisible()).toBe(true);
+  it('displays a table', () => {
+    expect(wrapper.findComponent(GlTable).isVisible()).toBe(true);
   });
 
-  it('displays badge list', () => {
+  it('renders badge add form', () => {
+    expect(wrapper.findComponent(BadgeForm).exists()).toBe(true);
+  });
+
+  it('renders badge list', () => {
     expect(wrapper.findComponent(BadgeList).isVisible()).toBe(true);
   });
 
   describe('when editing', () => {
     beforeEach(() => {
-      createComponent(true);
+      createComponent({ isEditing: true });
     });
 
     it('displays a form to edit a badge', () => {
       expect(wrapper.find('[data-testid="edit-badge"]').isVisible()).toBe(true);
-    });
-
-    it('displays no badge list', () => {
-      expect(wrapper.findComponent(BadgeList).isVisible()).toBe(false);
     });
   });
 });

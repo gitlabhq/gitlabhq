@@ -13,7 +13,7 @@ module QA
 
         view 'app/assets/javascripts/badges/components/badge_list.vue' do
           element :badge_list_content
-          element :badge_list_row
+          element :badge_list
         end
 
         view 'app/assets/javascripts/badges/components/badge.vue' do
@@ -38,7 +38,7 @@ module QA
 
         def has_badge?(badge_name)
           within_element(:badge_list_content) do
-            has_element?(:badge_list_row, badge_name: badge_name)
+            has_element?(:badge_list, badge_name: badge_name)
           end
         end
 
