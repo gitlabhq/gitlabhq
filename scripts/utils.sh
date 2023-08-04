@@ -416,3 +416,38 @@ function url_encode() {
     -e 's/}/%7d/g' \
     -e 's/~/%7e/g'
 }
+
+# Download the local gems in `gems` and `vendor/gems` folders from the API.
+#
+# This is useful if you need to run bundle install while not doing a git clone of the gitlab-org/gitlab repo.
+function download_local_gems() {
+  for folder_path in vendor/gems gems; do
+    local output="${folder_path}.tar.gz"
+
+    # From https://docs.gitlab.com/ee/api/repositories.html#get-file-archive:
+    #
+    #   This endpoint can be accessed without authentication if the repository is publicly accessible.
+    #   For GitLab.com users, this endpoint has a rate limit threshold of 5 requests per minute.
+    #
+    # We don't want to set a token for public repo (e.g. gitlab-org/gitlab), as 5 requests/minute can
+    # potentially be reached with many pipelines running in parallel.
+    local private_token_header=""
+    if [[ "${CI_PROJECT_VISIBILITY}" != "public" ]]; then
+      private_token_header="Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}"
+    fi
+
+    echo "Downloading ${folder_path}"
+
+    url=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/archive
+    curl -f \
+      --get \
+      --header "${private_token_header}" \
+      --output "${output}" \
+      --data-urlencode "sha=${CI_COMMIT_SHA}" \
+      --data-urlencode "path=${folder_path}" \
+      "${url}"
+
+    tar -zxf "${output}" --strip-component 1
+    rm "${output}"
+  done
+}

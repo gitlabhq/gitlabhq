@@ -243,7 +243,7 @@ function download_chart() {
 function base_config_changed() {
   if [ -z "${CI_MERGE_REQUEST_IID}" ]; then return; fi
 
-  curl "${CI_API_V4_URL}/projects/${CI_MERGE_REQUEST_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/changes" | jq '.changes | any(.old_path == "scripts/review_apps/base-config.yaml")'
+  curl "${CI_API_V4_URL}/projects/${CI_MERGE_REQUEST_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/changes" | jq --arg path "${GITLAB_REVIEW_APP_BASE_CONFIG_FILE}" '.changes | any(.old_path == $path)'
 }
 
 function parse_gitaly_image_tag() {
@@ -263,7 +263,7 @@ function deploy() {
   local base_config_file_ref="${CI_DEFAULT_BRANCH}"
 
   if [[ "$(base_config_changed)" == "true" ]]; then base_config_file_ref="${CI_COMMIT_SHA}"; fi
-  local base_config_file="${GITLAB_REPO_URL}/raw/${base_config_file_ref}/scripts/review_apps/base-config.yaml"
+  local base_config_file="${GITLAB_REPO_URL}/raw/${base_config_file_ref}/${GITLAB_REVIEW_APP_BASE_CONFIG_FILE}"
 
   echoinfo "Deploying ${release} to ${CI_ENVIRONMENT_URL} ..." true
 

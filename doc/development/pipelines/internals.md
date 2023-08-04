@@ -368,6 +368,8 @@ my-job:
 
 - This pattern does not work if a script relies on `git` to access the repository, because we don't have the repository without cloning or fetching.
 - The job using this pattern needs to have `curl` available.
+- If you need to run `bundle install` in the job (even using `BUNDLE_ONLY`), you need to download the gems that are stored in the `gitlab-org/gitlab` project.
+  - You can use the `download_local_gems` shell command for that purpose.
 
 #### Where is this pattern used?
 
@@ -387,5 +389,12 @@ my-job:
     - `scripts/review_apps/review-apps.sh`
     - `scripts/review_apps/seed-dast-test-data.sh`
     - `VERSION`
+  - `rspec:coverage` for:
+    - `config/bundler_setup.rb`
+    - `Gemfile.lock`
+    - `Gemfile`
+    - `scripts/merge-simplecov`
+    - `spec/simplecov_env_core.rb`
+    - `spec/simplecov_env.rb`
 
 Additionally, `scripts/utils.sh` is always downloaded from the API when this pattern is used (this file contains the code for `.fast-no-clone-job`).

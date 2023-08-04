@@ -212,10 +212,8 @@ To resolve the error, run `VACUUM` manually:
 
 ### GitLab database requirements
 
-The [database requirements](../../install/requirements.md#database) for GitLab include:
-
-- Support for MySQL was removed in [GitLab 12.1](../../update/index.md#1210).
-- Review and install the [required extension list](../../install/postgresql_extensions.md).
+See [database requirements](../../install/requirements.md#database) and review and install the
+[required extension list](../../install/postgresql_extensions.md).
 
 ### Serialization errors in the `production/sidekiq` log
 

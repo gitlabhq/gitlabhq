@@ -332,7 +332,7 @@ export default {
     base_path: 'blob_path',
     head_path: 'blob_path',
   },
-  codequality_reports_path: 'codequality_reports.json',
+  codequality_reports_path: '',
   codequality_help_path: 'code_quality.html',
   target_branch_path: '/root/acets-app/branches/main',
   source_branch_path: '/root/acets-app/branches/daaaa',

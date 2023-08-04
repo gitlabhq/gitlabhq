@@ -327,10 +327,6 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
-NOTE:
-If you get any errors concerning Rack attack, see the [13.1](index.md#custom-rack-attack-initializers)
-specific changes.
-
 ### 13. Update Gitaly
 
 If Gitaly is located on its own server, or you use Gitaly Cluster, see [Gitaly or Gitaly Cluster](zero_downtime.md#gitaly-or-gitaly-cluster)

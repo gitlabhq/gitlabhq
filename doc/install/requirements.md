@@ -68,7 +68,6 @@ process, such as PostgreSQL, which can have disastrous consequences.
 
 PostgreSQL is the only supported database, which is bundled with the Omnibus GitLab package.
 You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
-Support for MySQL was removed in [GitLab 12.1](../update/index.md#1210).
 
 ### PostgreSQL Requirements
 

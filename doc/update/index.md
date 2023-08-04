@@ -176,30 +176,21 @@ A *major* upgrade requires the following steps:
 Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
-For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/) maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). To share feedback and help improve the tool, create an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
+For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/)
+maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). To share
+feedback and help improve the tool, create an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
 
-Required upgrade stops are versions of GitLab that you must upgrade to before upgrading to later versions. Required upgrade stops allow required background
-migrations to finish.
+When upgrading:
 
-During GitLab 16.x, we are scheduling two or three required upgrade stops. We will give at least two milestones of notice when we
-schedule a required upgrade stop.
+1. Find where your version sits in the upgrade path:
 
-The first planned required upgrade stop is scheduled for GitLab 16.3. If nothing is introduced requiring an upgrade stop, GitLab 16.3 will be treated as a
-regular upgrade.
+   - GitLab 14: [`14.0.12`](#1400) > [`14.3.6`](#1430) > [`14.9.5`](#1490) > [`14.10.5`](#14100).
+   - GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [`15.11.x`](#15110).
+   - GitLab 16: [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
 
-Find where your version sits in the upgrade path below, and upgrade GitLab
-accordingly, while also consulting the
-[version-specific upgrade instructions](#version-specific-upgrading-instructions):
-
-- GitLab 8: `8.11.Z` > `8.12.0` > `8.17.7`
-- GitLab 9: `9.0.13` > `9.5.10`
-- GitLab 10: `10.0.7` > `10.8.7`
-- GitLab 11: `11.0.6` > [`11.11.8`](#1200)
-- GitLab 12: `12.0.12` > [`12.1.17`](#1210) > [`12.10.14`](#12100)
-- GitLab 13: `13.0.14` > [`13.1.11`](#1310) > [`13.8.8`](#1388) > [`13.12.15`](#13120)
-- GitLab 14: [`14.0.12`](#1400) > [`14.3.6`](#1430) > [`14.9.5`](#1490) > [`14.10.5`](#14100)
-- GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [`15.11.x`](#15110)
-- GitLab 16: [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+1. Check for [required upgrade stops](#required-upgrade-stops).
+1. Consult the [version-specific upgrade instructions](#version-specific-upgrading-instructions).
+1. Upgrade GitLab accordingly.
 
 NOTE:
 When not explicitly specified, upgrade GitLab to the latest available patch
@@ -208,6 +199,25 @@ This includes `major`.`minor` versions you must stop at on the upgrade path as t
 be fixes for issues relating to the upgrade process.
 Specifically around a [major version](#upgrading-to-a-new-major-version),
 crucial database schema and migration patches may be included in the latest patch releases.
+
+### Required upgrade stops
+
+Required upgrade stops are versions of GitLab that you must upgrade to before upgrading to later versions. Required
+upgrade stops allow required background migrations to finish.
+
+During GitLab 16.x, we are scheduling two or three required upgrade stops. We will give at least two milestones of
+notice when we schedule a required upgrade stop.
+
+The first planned required upgrade stop is scheduled for GitLab 16.3. If nothing is introduced requiring an upgrade stop,
+GitLab 16.3 will be treated as a regular upgrade.
+
+### Earlier GitLab versions
+
+For information on upgrading to earlier GitLab versions, see the [documentation archives](https://archives.docs.gitlab.com).
+The versions of the documentation in the archives contain version-specific information for even earlier versions of GitLab.
+
+For example, the [documentation for GitLab 15.11](https://archives.docs.gitlab.com/15.11/ee/update/#upgrade-paths)
+contains information on versions back to GitLab 12.
 
 ## Upgrading between editions
 
@@ -1393,8 +1403,6 @@ Other issues:
   **GitLab 13.2 or older** directly to 14.0, this is [unsupported](#upgrading-to-a-new-major-version).
   You should instead follow a [supported upgrade path](#upgrade-paths).
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
-- See [Custom Rack Attack initializers](#custom-rack-attack-initializers) if you persist your own custom Rack Attack
-  initializers during upgrades.
 
 #### Upgrading to later 14.Y releases
 
@@ -1405,263 +1413,6 @@ Other issues:
      - 14.1.0 or a later 14.1.Z patch release.
   1. [Batched background migrations must finish](background_migrations.md#batched-background-migrations)
      before you upgrade to a later version [and may take longer than usual](#1400).
-
-### 13.12.0
-
-- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
-
-- Check the GitLab database [has no references to legacy storage](../administration/raketasks/storage.md#on-legacy-storage).
-  The GitLab 14.0 pre-install check causes the package update to fail if unmigrated data exists:
-
-  ```plaintext
-  Checking for unmigrated data on legacy storage
-
-  Legacy storage is no longer supported. Please migrate your data to hashed storage.
-  ```
-
-### 13.11.0
-
-- Git 2.31.x and later is required. We recommend you use the
-  [Git version provided by Gitaly](../install/installation.md#git).
-
-- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
-
-- GitLab 13.11 includes a faulty background migration ([`RescheduleArtifactExpiryBackfillAgain`](https://gitlab.com/gitlab-org/gitlab/-/blob/ccc70031b843ff8cff1185988c2e472a521c2701/db/post_migrate/20210413132500_reschedule_artifact_expiry_backfill_again.rb))
-  that incorrectly sets the `expire_at` column in the `ci_job_artifacts` database table.
-  Incorrect `expire_at` values can potentially cause data loss.
-
-  To prevent this risk of data loss, you must remove the content of the `RescheduleArtifactExpiryBackfillAgain`
-  migration, which makes it a no-op migration. You can repeat the changes from the
-  [commit that makes the migration no-op in 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/blob/42c3dfc5a1c8181767bbb5c76e7c5fa6fefbbc2b/db/post_migrate/20210413132500_reschedule_artifact_expiry_backfill_again.rb).
-  For more information, see [how to disable a data migration](../development/database/deleting_migrations.md#how-to-disable-a-data-migration).
-
-### 13.10.0
-
-See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
-
-### 13.9.0
-
-- We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
-  that prevents upgrades to GitLab 13.9.0, 13.9.1, 13.9.2, and 13.9.3 when following the zero-downtime steps. It is necessary
-  to perform the following additional steps for the zero-downtime upgrade:
-
-  1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
-     execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
-     to drop the problematic triggers:
-
-     ```sql
-     drop trigger trigger_e40a6f1858e6 on application_settings;
-     drop trigger trigger_0d588df444c8 on application_settings;
-     drop trigger trigger_1572cbc9a15f on application_settings;
-     drop trigger trigger_22a39c5c25f3 on application_settings;
-     ```
-
-  1. Run the final migrations:
-
-     ```shell
-     sudo gitlab-rake db:migrate
-     ```
-
-  If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
-  encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you
-  see the following error:
-
-  ```shell
-  -- remove_column(:application_settings, :asset_proxy_whitelist)
-  rake aborted!
-  StandardError: An error has occurred, all later migrations canceled:
-  PG::DependentObjectsStillExist: ERROR: cannot drop column asset_proxy_whitelist of table application_settings because other objects depend on it
-  DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on column asset_proxy_whitelist of table application_settings
-  ```
-
-  To work around this bug, follow the previous steps to complete the upgrade.
-  More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
-
-- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
-
-- For GitLab Enterprise Edition customers, we noticed an issue when [subscription expiration is upcoming, and you create new subgroups and projects](https://gitlab.com/gitlab-org/gitlab/-/issues/322546). If you fall under that category and get 500 errors, you can work around this issue:
-
-  1. SSH into you GitLab server, and open a Rails console:
-
-     ```shell
-     sudo gitlab-rails console
-     ```
-
-  1. Disable the following features:
-
-     ```ruby
-     Feature.disable(:subscribable_subscription_banner)
-     Feature.disable(:subscribable_license_banner)
-     ```
-
-  1. Restart Puma or Unicorn:
-
-     ```shell
-     #For installations using Puma
-     sudo gitlab-ctl restart puma
-
-     #For installations using Unicorn
-     sudo gitlab-ctl restart unicorn
-     ```
-
-### 13.8.8
-
-GitLab 13.8 includes a background migration to address [an issue with duplicate service records](https://gitlab.com/gitlab-org/gitlab/-/issues/290008). If duplicate services are present, this background migration must complete before a unique index is applied to the services table, which was [introduced in GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52563). Upgrades from GitLab 13.8 and earlier to later versions must include an intermediate upgrade to GitLab 13.8.8 and [must wait until the background migrations complete](background_migrations.md) before proceeding.
-
-If duplicate services are still present, an upgrade to 13.9.x or later results in a failed upgrade with the following error:
-
-```console
-PG::UniqueViolation: ERROR:  could not create unique index "index_services_on_project_id_and_type_unique"
-DETAIL:  Key (project_id, type)=(NNN, ServiceName) is duplicated.
-```
-
-### 13.6.0
-
-Ruby 2.7.2 is required. GitLab does not start with Ruby 2.6.6 or older versions.
-
-The required Git version is Git v2.29 or later.
-
-GitLab 13.6 includes a
-[background migration `BackfillJiraTrackerDeploymentType2`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46368)
-that may remain stuck permanently in a **pending** state despite completion of work
-due to a bug.
-
-To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
-
-```ruby
-Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "BackfillJiraTrackerDeploymentType2").find_each do |job|
-  puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("BackfillJiraTrackerDeploymentType2", job.arguments)
-end
-```
-
-### 13.4.0
-
-GitLab 13.4.0 includes a background migration to [move all remaining repositories in legacy storage to hashed storage](../administration/raketasks/storage.md#migrate-to-hashed-storage). There are [known issues with this migration](https://gitlab.com/gitlab-org/gitlab/-/issues/259605) which are fixed in GitLab 13.5.4 and later. If possible, skip 13.4.0 and upgrade to 13.5.4 or later instead. The migration can take quite a while to run, depending on how many repositories must be moved. Be sure to check that all background migrations have completed before upgrading further.
-
-### 13.3.0
-
-The recommended Git version is Git v2.28. The minimum required version of Git
-v2.24 remains the same.
-
-### 13.2.0
-
-GitLab installations that have multiple web nodes must be
-[upgraded to 13.1](#1310) before upgrading to 13.2 (and later) due to a
-breaking change in Rails that can result in authorization issues.
-
-GitLab 13.2.0 [remediates](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35492) an [email verification bypass](https://about.gitlab.com/releases/2020/05/27/security-release-13-0-1-released/).
-After upgrading, if some of your users are unexpectedly encountering 404 or 422 errors when signing in,
-or "blocked" messages when using the command line,
-their accounts may have been un-confirmed.
-In that case, ask them to check their email for a re-confirmation link.
-For more information, see our discussion of [Email confirmation issues](../user/upgrade_email_bypass.md).
-
-GitLab 13.2.0 relies on the `btree_gist` extension for PostgreSQL. For installations with an externally managed PostgreSQL setup, make sure to
-[install the extension manually](https://www.postgresql.org/docs/11/sql-createextension.html) before upgrading GitLab if the database user for GitLab
-is not a superuser. This is not necessary for installations using a GitLab managed PostgreSQL database.
-
-### 13.1.0
-
-In 13.1.0, you must upgrade to either:
-
-- At least Git v2.24 (previously, the minimum required version was Git v2.22).
-- The recommended Git v2.26.
-
-Failure to do so results in internal errors in the Gitaly service in some RPCs due
-to the use of the new `--end-of-options` Git flag.
-
-Additionally, in GitLab 13.1.0, the version of
-[Rails was upgraded from 6.0.3 to 6.0.3.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33454).
-The Rails upgrade included a change to CSRF token generation which is
-not backwards-compatible - GitLab servers with the new Rails version
-generate CSRF tokens that are not recognizable by GitLab servers
-with the older Rails version - which could cause non-GET requests to
-fail for [multi-node GitLab installations](zero_downtime.md#multi-node--ha-deployment).
-
-So, if you are using multiple Rails servers and specifically upgrading from 13.0,
-all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later:
-
-1. Ensure all GitLab web nodes are running GitLab 13.1.Z.
-1. Enable the `global_csrf_token` feature flag to enable new
-   method of CSRF token generation:
-
-   ```ruby
-   Feature.enable(:global_csrf_token)
-   ```
-
-1. Only then, continue to upgrade to later versions of GitLab.
-
-#### Custom Rack Attack initializers
-
-From GitLab 13.1, custom Rack Attack initializers (`config/initializers/rack_attack.rb`) are replaced with initializers
-supplied with GitLab during upgrades. You should use these GitLab-supplied initializers.
-
-If you persist your own Rack Attack initializers between upgrades, you might
-[get `500` errors](https://gitlab.com/gitlab-org/gitlab/-/issues/334681) when [upgrading to GitLab 14.0 and later](#1400).
-
-For **self-compiled (source) installations**, the Rack Attack initializer on GitLab
-was renamed from [`config/initializers/rack_attack_new.rb` to `config/initializers/rack_attack.rb`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33072).
-The rename was part of [deprecating Rack Attack throttles on Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4750).
-
-If `rack_attack.rb` has been created on your installation, consider creating a backup before updating:
-
-```shell
-cd /home/git/gitlab
-cp config/initializers/rack_attack.rb config/initializers/rack_attack_backup.rb
-```
-
-### 12.10.0
-
-- The final patch release (12.10.14)
-  [has a regression affecting maven package uploads](https://about.gitlab.com/releases/2020/07/06/critical-security-release-gitlab-13-1-3-released/#maven-package-upload-broken-in-121014).
-  If you use this feature and must stay on 12.10 while preparing to upgrade to 13.0:
-
-  - Upgrade to 12.10.13 instead.
-  - Upgrade to 13.0.14 as soon as possible.
-
-- [GitLab 13.0 requires PostgreSQL 11](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab).
-
-  - 12.10 is the final release that shipped with PostgreSQL 9.6, 10, and 11.
-  - You should make sure that your database is PostgreSQL 11 on GitLab 12.10 before upgrading to 13.0. This upgrade requires downtime.
-
-### 12.2.0
-
-In 12.2.0, we enabled Rails' authenticated cookie encryption. Old sessions are
-automatically upgraded.
-
-However, session cookie downgrades are not supported. So after upgrading to 12.2.0,
-any downgrades would result to all sessions being invalidated and users are logged out.
-
-### 12.1.0
-
-- If you are planning to upgrade from `12.0.Z` to `12.10.Z`, it is necessary to
-  perform an intermediary upgrade to `12.1.Z` before upgrading to `12.10.Z` to
-  avoid issues like [#215141](https://gitlab.com/gitlab-org/gitlab/-/issues/215141).
-
-- Support for MySQL was removed in GitLab 12.1. Existing users using GitLab with
-  MySQL/MariaDB should
-  [migrate to PostgreSQL](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.6.0-ee/doc/update/mysql_to_postgresql.md)
-  before upgrading.
-
-### 12.0.0
-
-In 12.0.0 we made various database related changes. These changes require that
-users first upgrade to the latest 11.11 patch release. After upgraded to 11.11.Z,
-users can upgrade to 12.0.Z. Failure to do so may result in database migrations
-not being applied, which could lead to application errors.
-
-It is also required that you upgrade to 12.0.Z before moving to a later version
-of 12.Y.
-
-Example 1: you are currently using GitLab 11.11.8, which is the latest patch
-release for 11.11.Z. You can upgrade as usual to 12.0.Z.
-
-Example 2: you are currently using a version of GitLab 10.Y. To upgrade, first
-upgrade to the last 10.Y release (10.8.7) then the last 11.Y release (11.11.8).
-After upgraded to 11.11.8 you can safely upgrade to 12.0.Z.
-
-See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
-for more information.
 
 ### User profile data loss bug in 15.9.x
 

@@ -1,0 +1,35 @@
+export const groups = [
+  {
+    id: 1,
+    fullName: 'Gitlab Org',
+    parent: null,
+    webUrl: 'http://127.0.0.1:3000/groups/gitlab-org',
+    descriptionHtml:
+      '<p data-sourcepos="1:1-1:64" dir="auto">Dolorem dolorem omnis impedit cupiditate pariatur officia velit. Fusce eget orci a ipsum tempus vehicula. Donec rhoncus ante sed lacus pharetra, vitae imperdiet felis lobortis. Donec maximus dapibus orci, sit amet euismod dolor rhoncus vel. In nec mauris nibh.</p>',
+    avatarUrl: null,
+    descendantGroupsCount: 1,
+    projectsCount: 1,
+    groupMembersCount: 2,
+    visibility: 'internal',
+    accessLevel: {
+      integerValue: 10,
+    },
+  },
+  {
+    id: 2,
+    fullName: 'Gitlab Org / test subgroup',
+    parent: {
+      id: 1,
+    },
+    webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/test-subgroup',
+    descriptionHtml: '',
+    avatarUrl: null,
+    descendantGroupsCount: 4,
+    projectsCount: 4,
+    groupMembersCount: 4,
+    visibility: 'private',
+    accessLevel: {
+      integerValue: 20,
+    },
+  },
+];
