@@ -60,7 +60,7 @@ gl-emoji {
 }
 
 .emoji-picker-category-active {
-  border-bottom-color: var(--gl-theme-accent, $theme-indigo-500);
+  border-bottom-color: $blue-500;
 }
 
 .emoji-picker .gl-dropdown-inner > :last-child {

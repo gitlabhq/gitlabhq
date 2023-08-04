@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Facebook OAuth 2.0 OmniAuth Provider **(FREE)**
+# Use Facebook as an OAuth 2.0 authentication provider **(FREE)**
 
 To enable the Facebook OmniAuth provider you must register your application with
 Facebook. Facebook generates an app ID and secret key for you to use.

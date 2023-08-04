@@ -14,7 +14,22 @@
       = s_("ProtectedTag|By default, protected tags restrict who can modify the tag.")
       = link_to s_("ProtectedTag|Learn more."), help_page_path("user/project/protected_tags", anchor: "who-can-modify-a-protected-tag")
 
-    - if can? current_user, :admin_project, @project
-      = yield :create_protected_tag
-
-    = yield :tag_list
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+      - c.with_header do
+        .gl-new-card-title-wrapper
+          %h3.gl-new-card-title
+            = _('Protected tags')
+          .gl-new-card-count
+            = sprite_icon('tag', css_class: 'gl-mr-2')
+            = @protected_tags_count
+        - if can? current_user, :admin_project, @project
+          .gl-new-card-actions
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content" }) do
+              = _('Add tag')
+      - c.with_body do
+        - if can? current_user, :admin_project, @project
+          .gl-new-card-add-form.gl-m-3.gl-mb-4.gl-display-none.js-toggle-content
+            %h4.gl-mt-0
+              = _('Protect a tag')
+            = yield :create_protected_tag
+        = yield :tag_list

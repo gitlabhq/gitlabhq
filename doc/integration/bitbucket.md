@@ -11,12 +11,12 @@ account credentials to sign in to GitLab. You can also import your projects from
 Bitbucket.org.
 
 - To use Bitbucket.org as an OmniAuth provider, follow the
-  [Bitbucket OmniAuth provider](#bitbucket-omniauth-provider) section.
+  [Bitbucket OmniAuth provider](#use-bitbucket-as-an-oauth-20-authentication-provider) section.
 - To import projects from Bitbucket, follow both the
-  [Bitbucket OmniAuth provider](#bitbucket-omniauth-provider) and
+  [Bitbucket OmniAuth provider](#use-bitbucket-as-an-oauth-20-authentication-provider) and
   [Bitbucket project import](#bitbucket-project-import) sections.
 
-## Bitbucket OmniAuth provider
+## Use Bitbucket as an OAuth 2.0 authentication provider
 
 To enable the Bitbucket OmniAuth provider you must register your application
 with Bitbucket.org. Bitbucket generates an application ID and secret key for

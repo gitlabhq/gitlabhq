@@ -2944,6 +2944,9 @@ msgstr ""
 msgid "Add suggestion to batch"
 msgstr ""
 
+msgid "Add tag"
+msgstr ""
+
 msgid "Add text to the sign-in page. Markdown enabled."
 msgstr ""
 
@@ -4804,7 +4807,7 @@ msgstr ""
 msgid "Allowed email domain restriction only permitted for top-level groups"
 msgstr ""
 
-msgid "Allowed to create:"
+msgid "Allowed to create"
 msgstr ""
 
 msgid "Allowed to delete projects"
@@ -34399,6 +34402,9 @@ msgstr ""
 msgid "Pipelines|Editor"
 msgstr ""
 
+msgid "Pipelines|Failed to update. Please reload page to update the list of artifacts."
+msgstr ""
+
 msgid "Pipelines|Follow these instructions to install GitLab Runner on macOS."
 msgstr ""
 
@@ -37810,6 +37816,9 @@ msgstr ""
 msgid "Protected paths"
 msgstr ""
 
+msgid "Protected tags"
+msgstr ""
+
 msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported."
 msgstr ""
 
@@ -37903,9 +37912,6 @@ msgstr ""
 msgid "ProtectedBranch|Protected branches"
 msgstr ""
 
-msgid "ProtectedBranch|Protected tags (%{tags_count})"
-msgstr ""
-
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
 msgstr ""
 
@@ -37916,6 +37922,9 @@ msgid "ProtectedBranch|Search protected tags"
 msgstr ""
 
 msgid "ProtectedBranch|Select tag or create wildcard"
+msgstr ""
+
+msgid "ProtectedBranch|Tag"
 msgstr ""
 
 msgid "ProtectedBranch|There are currently no protected branches, protect a branch with the form above."
@@ -46058,9 +46067,6 @@ msgid "Tag push events"
 msgstr ""
 
 msgid "Tag this commit."
-msgstr ""
-
-msgid "Tag:"
 msgstr ""
 
 msgid "Tagged this commit to %{tag_name} with \"%{message}\"."

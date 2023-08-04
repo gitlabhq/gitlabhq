@@ -5,10 +5,10 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Amazon Web Services Cognito **(FREE SELF)**
+# Use AWS Cognito as an OAuth 2.0 authentication provider **(FREE SELF)**
 
-Amazon Cognito lets you add user sign-up, sign-in, and access control to your GitLab instance.
-The following documentation enables Cognito as an OAuth 2.0 provider.
+Amazon Web Services (AWS) Cognito lets you add user sign-up, sign-in, and access control to your GitLab instance.
+The following documentation enables AWS Cognito as an OAuth 2.0 provider.
 
 ## Configure AWS Cognito
 

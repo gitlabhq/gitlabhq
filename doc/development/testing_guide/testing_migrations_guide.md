@@ -21,11 +21,15 @@ We don't enforce tests on post migrations that only perform schema changes.
 
 ## How does it work?
 
-Adding a `:migration` tag to a test signature enables some custom RSpec
+All specs in `(ee/)spec/migrations/` and `spec/lib/(ee/)background_migrations` are automatically
+tagged with the `:migration` RSpec tag. This tag enables some custom RSpec
 `before` and `after` hooks in our
 [`spec/support/migration.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/f81fa6ab1dd788b70ef44b85aaba1f31ffafae7d/spec/support/migration.rb)
 to run. If performing a migration against a database schema other than
-`:gitlab_main` (for example `:gitlab_ci`), then you must specify it as well: `migration: :gitlab_ci`. See [spec/migrations/change_public_projects_cost_factor_spec.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/migrations/change_public_projects_cost_factor_spec.rb#L6-6) for an example.
+`:gitlab_main` (for example `:gitlab_ci`), then you must explicitly specify it
+with an RSpec tag like: `migration: :gitlab_ci`. See
+[spec/migrations/change_public_projects_cost_factor_spec.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/migrations/change_public_projects_cost_factor_spec.rb#L6-6)
+for an example.
 
 A `before` hook reverts all migrations to the point that a migration
 under test is not yet migrated.

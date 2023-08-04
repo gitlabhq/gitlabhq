@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use GitHub as an authentication provider **(FREE SELF)**
+# Use GitHub as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 You can integrate your GitLab instance with GitHub.com and GitHub Enterprise.
 You can import projects from GitHub, or sign in to GitLab

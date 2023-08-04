@@ -22517,7 +22517,11 @@ CREATE TABLE sbom_occurrences (
     component_id bigint NOT NULL,
     uuid uuid NOT NULL,
     package_manager text,
-    CONSTRAINT check_3f2d2c7ffc CHECK ((char_length(package_manager) <= 255))
+    component_name text,
+    input_file_path text,
+    CONSTRAINT check_3f2d2c7ffc CHECK ((char_length(package_manager) <= 255)),
+    CONSTRAINT check_9b29021fa8 CHECK ((char_length(component_name) <= 255)),
+    CONSTRAINT check_bd1367d4c1 CHECK ((char_length(input_file_path) <= 255))
 );
 
 CREATE SEQUENCE sbom_occurrences_id_seq

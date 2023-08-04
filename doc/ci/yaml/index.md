@@ -291,8 +291,8 @@ include:
 
 **Additional details**:
 
-- All [nested includes](includes.md#use-nested-includes) execute without context as a public user,
-  so you can only include public projects or templates.
+- All [nested includes](includes.md#use-nested-includes) are executed without context as a public user,
+  so you can only include public projects or templates. No variables are available in the `include` section of nested includes.
 - Be careful when including a remote CI/CD configuration file. No pipelines or notifications
   trigger when external CI/CD configuration files change. From a security perspective,
   this is similar to pulling a third-party dependency.
@@ -330,8 +330,8 @@ include:
 
 **Additional details**:
 
-- All [nested includes](includes.md#use-nested-includes) are executed only with the permission of the user,
-  so it's possible to use `project`, `remote`, or `template` includes.
+- All [nested includes](includes.md#use-nested-includes) are executed without context as a public user,
+  so you can only include public projects or templates. No variables are available in the `include` section of nested includes.
 
 ### `stages`
 

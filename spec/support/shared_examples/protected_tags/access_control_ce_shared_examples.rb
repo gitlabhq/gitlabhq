@@ -4,6 +4,7 @@ RSpec.shared_examples "protected tags > access control > CE" do
   ProtectedRef::AccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected tags that #{access_type_name} can create" do
       visit project_protected_tags_path(project)
+      click_button('Add tag')
 
       set_protected_tag_name('master')
       set_allowed_to('create', access_type_name)
@@ -15,6 +16,7 @@ RSpec.shared_examples "protected tags > access control > CE" do
 
     it "allows updating protected tags so that #{access_type_name} can create them" do
       visit project_protected_tags_path(project)
+      click_button('Add tag')
 
       set_protected_tag_name('master')
       set_allowed_to('create', 'No one')

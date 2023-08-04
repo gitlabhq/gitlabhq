@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# OpenID Connect OmniAuth provider **(FREE SELF)**
+# Use OpenID Connect as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 GitLab can use [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)
 as an OmniAuth provider.

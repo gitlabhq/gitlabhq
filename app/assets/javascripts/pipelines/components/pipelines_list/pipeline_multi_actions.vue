@@ -16,6 +16,9 @@ import { TRACKING_CATEGORIES } from '../../constants';
 export const i18n = {
   downloadArtifacts: __('Download artifacts'),
   artifactsFetchErrorMessage: s__('Pipelines|Could not load artifacts.'),
+  artifactsFetchWarningMessage: s__(
+    'Pipelines|Failed to update. Please reload page to update the list of artifacts.',
+  ),
   emptyArtifactsMessage: __('No artifacts found'),
 };
 
@@ -52,6 +55,7 @@ export default {
       hasError: false,
       isLoading: false,
       searchQuery: '',
+      isNewPipeline: false,
     };
   },
   computed: {
@@ -64,13 +68,24 @@ export default {
         : this.artifacts;
     },
   },
+  watch: {
+    pipelineId() {
+      this.isNewPipeline = true;
+    },
+  },
   methods: {
     fetchArtifacts() {
       // refactor tracking based on action once this dropdown supports
       // actions other than artifacts
       this.track('click_artifacts_dropdown', { label: TRACKING_CATEGORIES.table });
 
+      // Preserve the last good list and present it if a request fails
+      const oldArtifacts = [...this.artifacts];
+      this.artifacts = [];
+
+      this.hasError = false;
       this.isLoading = true;
+
       // Replace the placeholder with the ID of the pipeline we are viewing
       const endpoint = this.artifactsEndpoint.replace(
         this.artifactsEndpointPlaceholder,
@@ -80,9 +95,13 @@ export default {
         .get(endpoint)
         .then(({ data }) => {
           this.artifacts = data.artifacts;
+          this.isNewPipeline = false;
         })
         .catch(() => {
           this.hasError = true;
+          if (!this.isNewPipeline) {
+            this.artifacts = oldArtifacts;
+          }
         })
         .finally(() => {
           this.isLoading = false;
@@ -108,10 +127,10 @@ export default {
     right
     lazy
     text-sr-only
-    @show.once="fetchArtifacts"
+    @show="fetchArtifacts"
     @shown="handleDropdownShown"
   >
-    <gl-alert v-if="hasError" variant="danger" :dismissible="false">
+    <gl-alert v-if="hasError && !hasArtifacts" variant="danger" :dismissible="false">
       {{ $options.i18n.artifactsFetchErrorMessage }}
     </gl-alert>
 
@@ -136,5 +155,18 @@ export default {
     >
       {{ artifact.name }}
     </gl-dropdown-item>
+
+    <template #footer>
+      <gl-dropdown-item
+        v-if="hasError && hasArtifacts"
+        class="gl-list-style-none"
+        disabled
+        data-testid="artifacts-fetch-warning"
+      >
+        <span class="gl-font-sm">
+          {{ $options.i18n.artifactsFetchWarningMessage }}
+        </span>
+      </gl-dropdown-item>
+    </template>
   </gl-dropdown>
 </template>

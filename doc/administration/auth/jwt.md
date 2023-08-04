@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# JWT OmniAuth provider **(FREE SELF)**
+# Use JWT as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 To enable the JWT OmniAuth provider, you must register your application with JWT.
 JWT provides you with a secret key for you to use.

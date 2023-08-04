@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Generic OAuth 2.0 provider **(FREE SELF)**
+# Use Generic OAuth2 gem as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 The [`omniauth-oauth2-generic` gem](https://gitlab.com/satorix/omniauth-oauth2-generic) allows single sign-on (SSO) between GitLab
 and your OAuth 2.0 provider, or any OAuth 2.0 provider compatible with this gem.

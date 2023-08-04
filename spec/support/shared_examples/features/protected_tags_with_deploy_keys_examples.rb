@@ -14,6 +14,7 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
 
       it "shows all dropdown sections in the 'Allowed to create' main dropdown, with only one deploy key" do
         visit project_protected_tags_path(project)
+        click_button('Add tag')
 
         find(".js-allowed-to-create").click
         wait_for_requests
@@ -31,6 +32,7 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
         create(:protected_tag, :no_one_can_create, project: project, name: 'v1.0.0')
 
         visit project_protected_tags_path(project)
+        click_button('Add tag')
 
         within(".js-protected-tag-edit-form") do
           find(".js-allowed-to-create").click
@@ -46,6 +48,7 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
     context 'when no deploy key can push' do
       it "just shows all sections but not deploy keys in the 'Allowed to create' dropdown" do
         visit project_protected_tags_path(project)
+        click_button('Add tag')
 
         find(".js-allowed-to-create").click
         wait_for_requests
