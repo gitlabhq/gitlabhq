@@ -31,8 +31,6 @@ module Gitlab
       TOP_LEVEL_DIR = 'config'
       TOP_LEVEL_DIR_EE = 'ee'
       DESCRIPTION_MIN_LENGTH = 50
-      KNOWN_EVENTS_PATH = 'lib/gitlab/usage_data_counters/known_events/common.yml'
-      KNOWN_EVENTS_PATH_EE = 'ee/lib/ee/gitlab/usage_data_counters/known_events/common.yml'
 
       DESCRIPTION_INQUIRY = %(
         Please describe in at least #{DESCRIPTION_MIN_LENGTH} characters
@@ -43,7 +41,7 @@ module Gitlab
 
       source_root File.expand_path('../../../../generator_templates/gitlab_internal_events', __dir__)
 
-      desc 'Generates metric definitions, event definition yml files and known events entries'
+      desc 'Generates metric definitions and event definition yml files'
 
       class_option :skip_namespace,
         hide: true
@@ -104,9 +102,6 @@ module Gitlab
               "events, and event attributes in the description"
             )
         end
-
-        # ToDo: Delete during https://gitlab.com/groups/gitlab-org/-/epics/9542 cleanup
-        append_file known_events_file_name, known_event_entry
       end
 
       private
@@ -194,12 +189,7 @@ module Gitlab
         path
       end
 
-      def known_events_file_name
-        (free? ? KNOWN_EVENTS_PATH : KNOWN_EVENTS_PATH_EE)
-      end
-
       def validate!
-        raise "Required file: #{known_events_file_name} does not exists." unless File.exist?(known_events_file_name)
         raise "An event '#{event}' already exists" if event_exists?
 
         validate_tiers!

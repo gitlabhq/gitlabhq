@@ -32789,6 +32789,9 @@ msgstr ""
 msgid "Organization|Organization overview"
 msgstr ""
 
+msgid "Organization|Search or filter list"
+msgstr ""
+
 msgid "Orphaned member"
 msgstr ""
 

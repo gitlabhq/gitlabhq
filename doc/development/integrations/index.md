@@ -156,7 +156,7 @@ module Integrations
 end
 ```
 
-### Customize the frontend form
+## Customize the frontend form
 
 The frontend form is generated dynamically based on metadata defined in the model.
 
@@ -182,26 +182,26 @@ This method should return an array of hashes for each field, where the keys can 
 | `help:`        | string  | false    |                              | A help text that displays below the form field.
 | `api_only:`    | boolean | false    | `false`                      | Specify if the field should only be available through the API, and excluded from the frontend form.
 
-#### Additional keys for `type: 'checkbox'`
+### Additional keys for `type: 'checkbox'`
 
 | Key               | Type   | Required | Default           | Description
 |:------------------|:-------|:---------|:------------------|:--
 | `checkbox_label:` | string | false    | Value of `title:` | A custom label that displays next to the checkbox.
 
-#### Additional keys for `type: 'select'`
+### Additional keys for `type: 'select'`
 
 | Key        | Type  | Required | Default | Description
 |:-----------|:------|:---------|:--------|:--
 | `choices:` | array | true     |         | A nested array of `[label, value]` tuples.
 
-#### Additional keys for `type: 'password'`
+### Additional keys for `type: 'password'`
 
 | Key                         | Type   | Required | Default           | Description
 |:----------------------------|:-------|:---------|:------------------|:--
 | `non_empty_password_title:` | string | false    | Value of `title:` | An alternative label that displays when a value is already stored.
 | `non_empty_password_help:`  | string | false    | Value of `help:`  | An alternative help text that displays when a value is already stored.
 
-#### Frontend form examples
+### Frontend form examples
 
 This example defines a required `url` field, and optional `username` and `password` fields:
 
@@ -236,7 +236,7 @@ module Integrations
 end
 ```
 
-### Expose the integration in the REST API
+## Expose the integration in the REST API
 
 To expose the integration in the [REST API](../../api/integrations.md):
 

@@ -52,6 +52,13 @@ export const SORT_DIRECTION = {
 
 export const FILTERED_SEARCH_TERM = 'filtered-search-term';
 
+export const TOKEN_EMPTY_SEARCH_TERM = {
+  type: FILTERED_SEARCH_TERM,
+  value: {
+    data: '',
+  },
+};
+
 export const TOKEN_TITLE_APPROVED_BY = __('Approved-By');
 export const TOKEN_TITLE_ASSIGNEE = s__('SearchToken|Assignee');
 export const TOKEN_TITLE_AUTHOR = __('Author');

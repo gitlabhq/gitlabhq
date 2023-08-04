@@ -130,20 +130,16 @@ which has a related schema in `/config/metrics/objects_schemas/topology_schema.j
 ### Metric `time_frame`
 
 A metric's time frame is calculated based on the `time_frame` field and the `data_source` of the metric.
-For `redis_hll` metrics, the type of aggregation is also taken into consideration. In this context, the term "aggregation" refers to [chosen events data storage interval](implement.md#add-new-events), and is **NOT** related to the Aggregated Metrics feature.
-For more information about the aggregation type of each feature, see the [`common.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml). Weeks run from Monday to Sunday.
 
-| data_source            | time_frame | aggregation    | Description                                     |
-|------------------------|------------|----------------|-------------------------------------------------|
-| any                    | `none`     | not applicable | A type of data that's not tracked over time, such as settings and configuration information |
-| `database`             | `all`      | not applicable | The whole time the metric has been active (all-time interval) |
-| `database`             | `7d`       | not applicable | 9 days ago to 2 days ago |
-| `database`             | `28d`      | not applicable | 30 days ago to 2 days ago |
-| `redis`                | `all`      | not applicable | The whole time the metric has been active (all-time interval) |
-| `redis_hll`            | `7d`       | `daily`        | Most recent 7 complete days |
-| `redis_hll`            | `7d`       | `weekly`       | Most recent complete week |
-| `redis_hll`            | `28d`      | `daily`        | Most recent 28 complete days |
-| `redis_hll`            | `28d`      | `weekly`       | Most recent 4 complete weeks |
+| data_source            | time_frame | Description                                     |
+|------------------------|------------|-------------------------------------------------|
+| any                    | `none`     | A type of data that's not tracked over time, such as settings and configuration information |
+| `database`             | `all`      | The whole time the metric has been active (all-time interval) |
+| `database`             | `7d`       | 9 days ago to 2 days ago |
+| `database`             | `28d`      | 30 days ago to 2 days ago |
+| `redis`                | `all`      | The whole time the metric has been active (all-time interval) |
+| `redis_hll`            | `7d`       | Most recent complete week |
+| `redis_hll`            | `28d`      | Most recent 4 complete weeks |
 
 ### Data category
 

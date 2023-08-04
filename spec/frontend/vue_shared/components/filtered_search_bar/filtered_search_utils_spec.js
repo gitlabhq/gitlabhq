@@ -301,6 +301,18 @@ describe('urlQueryToFilter', () => {
       },
       { filteredSearchTermKey: 'search', filterNamesAllowList: ['foo'] },
     ],
+    [
+      {
+        search: 'my terms',
+        foo: 'bar',
+        nop: 'xxx',
+      },
+      {
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
+        foo: { value: 'bar', operator: '=' },
+      },
+      { filteredSearchTermKey: 'search', filterNamesAllowList: ['foo'] },
+    ],
   ])(
     'gathers filter values %s into query object=%j when options %j',
     (query, result, options = undefined) => {

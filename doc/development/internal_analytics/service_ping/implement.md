@@ -323,25 +323,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
 ##### Add new events
 
-1. Define events in [`known_events`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/).
-
-   Example event:
-
-   ```yaml
-   - name: users_creating_epics
-     aggregation: weekly
-   ```
-
-   Keys:
-
-   - `name`: unique event name.
-
-     Name format for Redis HLL events `{hll_counters}_<name>`
-
-     Example names: `users_creating_epics`, `users_triggering_security_scans`.
-
-   - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
-     Aggregation on a `daily` basis does not pull more fine grained data.
+1. Add an event to the required metric ([see example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20230210200054_i_ee_code_review_merge_request_widget_license_compliance_expand_weekly.yml#L17-17)) or create a metric.
 
 1. Use one of the following methods to track the event:
 
@@ -446,7 +428,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd/) and [P
 
    - Using the JavaScript/Vue API helper, which calls the [`UsageData` API](#usagedata-api).
 
-     Example for an existing event already defined in [known events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/):
+     Example for an existing event already defined in [metric fields](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20220407125907_p_ci_templates_themekit_monthly.yml#L17-17):
 
      ```javascript
      import api from '~/api';
@@ -484,7 +466,6 @@ Next, get the unique events for the current week.
 
 We have the following recommendations for [adding new events](#add-new-events):
 
-- Event aggregation: weekly.
 - When adding new metrics, use a [feature flag](../../../operations/feature_flags.md) to control the impact.
 It's recommended to disable the new feature flag by default (set `default_enabled: false`).
 - Events can be triggered using the `UsageData` API, which helps when there are > 10 events per change
@@ -500,7 +481,7 @@ We can disable tracking completely by using the global flag:
 
 ##### Known events are added automatically in Service Data payload
 
-Service Ping adds all events [`known_events/*.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events) to Service Data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/db/schema.rb#L213).
+Service Ping adds all events to Service Data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/blob/main/db/schema.rb#L213).
 For each event we add metrics for the weekly and monthly time frames, and totals for each where applicable:
 
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#add-new-events) events and data for the last complete week for weekly [aggregation](#add-new-events) events.
@@ -538,8 +519,6 @@ Example:
 ```ruby
 # Redis Counters
 redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
-
-# Define events in common.yml https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml
 
 # Tracking events
 Gitlab::UsageDataCounters::HLLRedisCounter.track_event('users_expanding_vulnerabilities', values: visitor_id)
@@ -804,13 +783,7 @@ create metric YAML definition file following [Aggregated metric instrumentation 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
 
-To declare the aggregate of events collected with [Redis HLL Counters](#redis-hll-counters),
-you must fulfill the following requirements:
-
-1. All events listed at `events` attribute must come from
-   [`known_events/*.yml`](#known-events-are-added-automatically-in-service-data-payload) files.
-1. All events listed at `events` attribute must have the same `aggregation` attribute.
-1. `time_frame` does not include `all` value, which is unavailable for Redis sourced aggregated metrics.
+To declare the aggregate of events collected with [Redis HLL Counters](#redis-hll-counters), make sure `time_frame` does not include the `all` value, which is unavailable for Redis-sourced aggregated metrics.
 
 While it is possible to aggregate EE-only events together with events that occur in all GitLab editions, it's important to remember that doing so may produce high variance between data collected from EE and CE GitLab instances.
 

@@ -1,4 +1,4 @@
-import { isEmpty, uniqWith, isEqual } from 'lodash';
+import { isEmpty, uniqWith, isEqual, isString } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { queryToObject } from '~/lib/utils/url_utility';
 
@@ -159,7 +159,7 @@ function filteredSearchTermValue(value) {
  * '?myFilterName=foo'
  * gets translated into:
  * { myFilterName: { value: 'foo', operator: '=' } }
- * @param  {String} query URL query string, e.g. from `window.location.search`
+ * @param  {String|Object} query URL query string or object, e.g. from `window.location.search` or `this.$route.query`
  * @param  {Object} options
  * @param  {Object} options
  * @param  {String} [options.filteredSearchTermKey] if set, a FILTERED_SEARCH_TERM filter is created to this parameter. `'search'` is suggested
@@ -167,7 +167,7 @@ function filteredSearchTermValue(value) {
  * @return {Object} filter object with filter names and their values
  */
 export function urlQueryToFilter(query = '', { filteredSearchTermKey, filterNamesAllowList } = {}) {
-  const filters = queryToObject(query, { gatherArrays: true });
+  const filters = isString(query) ? queryToObject(query, { gatherArrays: true }) : query;
   return Object.keys(filters).reduce((memo, key) => {
     const value = filters[key];
     if (!value) {

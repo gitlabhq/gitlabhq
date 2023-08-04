@@ -57,8 +57,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
   before do
     stub_const("#{described_class}::TOP_LEVEL_DIR_EE", ee_temp_dir)
     stub_const("#{described_class}::TOP_LEVEL_DIR", temp_dir)
-    stub_const("#{described_class}::KNOWN_EVENTS_PATH", tmpfile.path)
-    stub_const("#{described_class}::KNOWN_EVENTS_PATH_EE", tmpfile.path)
     # Stub version so that `milestone` key remains constant between releases to prevent flakiness.
     stub_const('Gitlab::VERSION', '13.9.0')
 
@@ -132,7 +130,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     end
 
     context 'with duplicated event' do
-      context 'in known_events files' do
+      context 'in known_events' do
         before do
           allow(::Gitlab::UsageDataCounters::HLLRedisCounter)
             .to receive(:known_event?).with(event).and_return(true)
@@ -282,34 +280,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
         expect(YAML.safe_load(File.read(metric_definition_path_7d))).to eq(metric_definition_7d)
         expect(YAML.safe_load(File.read(metric_definition_path_28d))).to eq(metric_definition_28d)
-      end
-    end
-  end
-
-  describe 'Creating known event entry' do
-    let(:time_frames) { %w[7d 28d] }
-    let(:expected_known_events) { [{ "name" => event }] }
-
-    it 'creates a metric definition file using the template' do
-      described_class.new([], options).invoke_all
-
-      expect(YAML.safe_load(File.read(tmpfile.path))).to match_array(expected_known_events)
-    end
-
-    context 'for ultimate only feature' do
-      let(:ee_tmpfile) { Tempfile.new('test-metadata') }
-
-      after do
-        FileUtils.rm_rf(ee_tmpfile)
-      end
-
-      it 'creates a metric definition file using the template' do
-        stub_const("#{described_class}::KNOWN_EVENTS_PATH_EE", ee_tmpfile.path)
-
-        described_class.new([], options.merge(tiers: %w[ultimate])).invoke_all
-
-        expect(YAML.safe_load(File.read(tmpfile.path))).to be nil
-        expect(YAML.safe_load(File.read(ee_tmpfile.path))).to match_array(expected_known_events)
       end
     end
   end
