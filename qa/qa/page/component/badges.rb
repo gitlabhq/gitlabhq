@@ -4,6 +4,10 @@ module QA
   module Page
     module Component
       class Badges < Page::Base
+        view 'app/assets/javascripts/badges/components/badge_settings.vue' do
+          element 'show-badge-add-form'
+        end
+
         view 'app/assets/javascripts/badges/components/badge_form.vue' do
           element :badge_name_field
           element :badge_link_url_field
@@ -18,6 +22,10 @@ module QA
 
         view 'app/assets/javascripts/badges/components/badge.vue' do
           element :badge_image_link
+        end
+
+        def show_badge_add_form
+          click_element 'show-badge-add-form'
         end
 
         def fill_name(name)
@@ -38,7 +46,7 @@ module QA
 
         def has_badge?(badge_name)
           within_element(:badge_list_content) do
-            has_element?(:badge_list, badge_name: badge_name)
+            has_element?(:badge_list, text: badge_name)
           end
         end
 

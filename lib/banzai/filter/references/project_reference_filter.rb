@@ -58,6 +58,7 @@ module Banzai
         # corresponding Project objects.
         def projects_hash
           @projects ||= Project.eager_load(:route, namespace: [:route])
+                               .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
                                .where_full_path_in(projects)
                                .index_by(&:full_path)
                                .transform_keys(&:downcase)

@@ -105,18 +105,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:job) { build }
   end
 
-  describe '.manual_actions' do
-    let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }
-    let!(:manual_but_succeeded) { create(:ci_build, :manual, status: :success, pipeline: pipeline) }
-    let!(:manual_action) { create(:ci_build, :manual, pipeline: pipeline) }
-
-    subject { described_class.manual_actions }
-
-    it { is_expected.to include(manual_action) }
-    it { is_expected.to include(manual_but_succeeded) }
-    it { is_expected.not_to include(manual_but_created) }
-  end
-
   describe '.ref_protected' do
     subject { described_class.ref_protected }
 
@@ -2004,29 +1992,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'saves the presence of expose_as into build metadata' do
         expect(build.metadata).to have_exposed_artifacts
-      end
-    end
-  end
-
-  describe '#other_manual_actions' do
-    let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
-    let!(:other_build) { create(:ci_build, :manual, pipeline: pipeline, name: 'other action') }
-
-    subject { build.other_manual_actions }
-
-    before do
-      project.add_developer(user)
-    end
-
-    it 'returns other actions' do
-      is_expected.to contain_exactly(other_build)
-    end
-
-    context 'when build is retried' do
-      let!(:new_build) { Ci::RetryJobService.new(project, user).execute(build)[:job] }
-
-      it 'does not return any of them' do
-        is_expected.not_to include(build, new_build)
       end
     end
   end

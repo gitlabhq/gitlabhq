@@ -23,6 +23,7 @@ module Gitlab
             with_paths = MigrationClasses::Route.arel_table[:path]
                            .matches_any(path_patterns)
             namespaces.joins(:route).where(with_paths)
+              .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
           end
 
           def rename_namespace(namespace)
@@ -45,6 +46,7 @@ module Gitlab
             reverts_for_type('namespace') do |path_before_rename, current_path|
               matches_path = MigrationClasses::Route.arel_table[:path].matches(current_path)
               namespace = MigrationClasses::Namespace.joins(:route)
+                            .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
                             .find_by(matches_path)&.becomes(MigrationClasses::Namespace) # rubocop: disable Cop/AvoidBecomes
 
               if namespace

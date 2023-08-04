@@ -184,6 +184,7 @@ class Group < Namespace
     ids_by_full_path = Route
       .for_routable_type(Namespace.name)
       .where('LOWER(routes.path) IN (?)', paths.map(&:downcase))
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
       .select(:namespace_id)
 
     Group.from_union([by_id(ids), by_id(ids_by_full_path), where('LOWER(path) IN (?)', paths.map(&:downcase))])

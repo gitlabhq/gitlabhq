@@ -3,14 +3,24 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
+import UrlSync from '~/vue_shared/components/url_sync.vue';
+import {
+  queryToFilterObj,
+  filterObjToQuery,
+  filterObjToFilterToken,
+  filterTokensToFilterObj,
+} from '../utils';
 import TracingEmptyState from './tracing_empty_state.vue';
 import TracingTableList from './tracing_table_list.vue';
+import FilteredSearch from './tracing_list_filtered_search.vue';
 
 export default {
   components: {
     GlLoadingIcon,
     TracingTableList,
     TracingEmptyState,
+    FilteredSearch,
+    UrlSync,
   },
   props: {
     observabilityClient: {
@@ -27,9 +37,18 @@ export default {
        */
       tracingEnabled: null,
       traces: [],
+      filters: queryToFilterObj(window.location.search),
     };
   },
-  created() {
+  computed: {
+    query() {
+      return filterObjToQuery(this.filters);
+    },
+    initialFilterValue() {
+      return filterObjToFilterToken(this.filters);
+    },
+  },
+  async created() {
     this.checkEnabled();
   },
   methods: {
@@ -62,10 +81,10 @@ export default {
         this.loading = false;
       }
     },
-    async fetchTraces() {
+    async fetchTraces(filters = null) {
       this.loading = true;
       try {
-        const traces = await this.observabilityClient.fetchTraces();
+        const traces = await this.observabilityClient.fetchTraces(filters);
         this.traces = traces;
       } catch (e) {
         createAlert({
@@ -78,6 +97,12 @@ export default {
     selectTrace(trace) {
       visitUrl(joinPaths(window.location.pathname, trace.trace_id));
     },
+    handleFilters(filterTokens) {
+      this.filters = filterTokensToFilterObj(filterTokens);
+      // TODO Pass filters to API https://gitlab.com/gitlab-org/opstrace/opstrace/-/work_items/2299
+      const filtersParams = {};
+      this.fetchTraces(filtersParams);
+    },
   },
 };
 </script>
@@ -89,14 +114,14 @@ export default {
     </div>
 
     <template v-else-if="tracingEnabled !== null">
-      <tracing-empty-state v-if="tracingEnabled === false" :enable-tracing="enableTracing" />
+      <tracing-empty-state v-if="tracingEnabled === false" @enable-tracing="enableTracing" />
 
-      <tracing-table-list
-        v-else
-        :traces="traces"
-        @reload="fetchTraces"
-        @trace-selected="selectTrace"
-      />
+      <template v-else>
+        <filtered-search :initial-filters="initialFilterValue" @submit="handleFilters" />
+        <url-sync :query="query" />
+
+        <tracing-table-list :traces="traces" @reload="fetchTraces" @trace-selected="selectTrace" />
+      </template>
     </template>
   </div>
 </template>

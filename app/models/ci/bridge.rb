@@ -3,7 +3,6 @@
 module Ci
   class Bridge < Ci::Processable
     include Ci::Contextable
-    include Ci::Metadatable
     include Ci::Deployable
     include Importable
     include AfterCommitQueue

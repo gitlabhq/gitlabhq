@@ -62,7 +62,6 @@ export default {
     <h4 class="gl-display-block gl-md-display-none! gl-my-5">{{ $options.i18n.title }}</h4>
 
     <gl-table
-      class="gl-mt-5"
       :items="traces"
       :fields="$options.fields"
       show-empty

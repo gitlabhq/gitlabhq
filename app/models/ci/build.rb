@@ -3,7 +3,6 @@
 module Ci
   class Build < Ci::Processable
     prepend Ci::BulkInsertableTags
-    include Ci::Metadatable
     include Ci::Contextable
     include Ci::Deployable
     include TokenAuthenticatable
@@ -158,16 +157,9 @@ module Ci
         .includes(:metadata, :job_artifacts_metadata)
     end
 
-    scope :with_project_and_metadata, -> do
-      if Feature.enabled?(:non_public_artifacts, type: :development)
-        joins(:metadata).includes(:metadata).preload(:project)
-      end
-    end
-
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }
     scope :with_pipeline_locked_artifacts, -> { joins(:pipeline).where('pipeline.locked': Ci::Pipeline.lockeds[:artifacts_locked]) }
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }
-    scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
     scope :scheduled_actions, -> { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
     scope :ref_protected, -> { where(protected: true) }
     scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where("#{quoted_table_name}.id = #{Ci::BuildTraceChunk.quoted_table_name}.build_id").select(1)) }
@@ -385,10 +377,6 @@ module Ci
       Gitlab::Ci::Status::Build::Factory
         .new(present, current_user)
         .fabricate!
-    end
-
-    def other_manual_actions
-      pipeline.manual_actions.reject { |action| action.name == name }
     end
 
     def other_scheduled_actions

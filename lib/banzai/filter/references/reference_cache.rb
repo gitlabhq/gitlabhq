@@ -108,8 +108,10 @@ module Banzai
           klass = parent_type.to_s.camelize.constantize
           result = klass.where_full_path_in(paths)
           return result if parent_type == :group
+          return unless parent_type == :project
 
-          result.includes(namespace: :route) if parent_type == :project
+          result.includes(namespace: :route)
+            .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
         end
 
         # Returns projects for the given paths.

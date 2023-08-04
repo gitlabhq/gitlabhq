@@ -108,25 +108,6 @@ RSpec.describe NotesFinder do
       end
     end
 
-    context 'on archived projects' do
-      let_it_be(:project) { create(:project, :archived) }
-      let_it_be(:note) { create(:note, project: project) }
-
-      subject { described_class.new(user, project: project, hide_notes_from_archived_project: hide).execute }
-
-      context 'when params hide_notes_from_archived_project is true' do
-        let(:hide) { true }
-
-        it { is_expected.to be_empty }
-      end
-
-      context 'when params hide_notes_from_archived_project is nil' do
-        let(:hide) { nil }
-
-        it { is_expected.to match_array([note]) }
-      end
-    end
-
     context 'for notes on public issue in public project' do
       let_it_be(:public_project) { create(:project, :public) }
       let_it_be(:guest_member) { create(:user) }

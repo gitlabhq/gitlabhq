@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
 
   describe 'delegations' do
     subject { described_class.new }
@@ -501,6 +501,63 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
           end
         end
       end
+    end
+  end
+
+  describe '.manual_actions' do
+    shared_examples_for 'manual actions for a job' do
+      let!(:manual_but_created) { create(factory_type, :manual, status: :created, pipeline: pipeline) }
+      let!(:manual_but_succeeded) { create(factory_type, :manual, status: :success, pipeline: pipeline) }
+      let!(:manual_action) { create(factory_type, :manual, pipeline: pipeline) }
+
+      subject { described_class.manual_actions }
+
+      it { is_expected.to include(manual_action) }
+      it { is_expected.to include(manual_but_succeeded) }
+      it { is_expected.not_to include(manual_but_created) }
+    end
+
+    it_behaves_like 'manual actions for a job' do
+      let(:factory_type) { :ci_build }
+    end
+
+    it_behaves_like 'manual actions for a job' do
+      let(:factory_type) { :ci_bridge }
+    end
+  end
+
+  describe '#other_manual_actions' do
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    shared_examples_for 'other manual actions for a job' do
+      let(:job) { create(factory_type, :manual, pipeline: pipeline, project: project) }
+      let!(:other_job) { create(factory_type, :manual, pipeline: pipeline, project: project, name: 'other action') }
+
+      subject { job.other_manual_actions }
+
+      it 'returns other actions' do
+        is_expected.to contain_exactly(other_job)
+      end
+
+      context 'when job is retried' do
+        let!(:new_job) { Ci::RetryJobService.new(project, user).execute(job)[:job] }
+
+        it 'does not return any of them' do
+          is_expected.not_to include(job, new_job)
+        end
+      end
+    end
+
+    it_behaves_like 'other manual actions for a job' do
+      let(:factory_type) { :ci_build }
+    end
+
+    it_behaves_like 'other manual actions for a job' do
+      let(:factory_type) { :ci_bridge }
     end
   end
 end

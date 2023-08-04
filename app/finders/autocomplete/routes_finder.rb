@@ -30,9 +30,11 @@ module Autocomplete
 
     class NamespacesOnly < self
       def routables
-        return Namespace.without_project_namespaces if current_user.can_admin_all_resources?
-
-        current_user.namespaces
+        if current_user.can_admin_all_resources?
+          Namespace.without_project_namespaces
+        else
+          current_user.namespaces
+        end.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
       end
     end
 

@@ -234,6 +234,7 @@ class Namespace < ApplicationRecord
       if include_parents
         without_project_namespaces
           .where(id: Route.for_routable_type(Namespace.name)
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
             .fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]],
               use_minimum_char_limit: use_minimum_char_limit)
             .select(:source_id))

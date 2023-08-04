@@ -16507,6 +16507,18 @@ Returns [`AddOnPurchase`](#addonpurchase).
 | ---- | ---- | ----------- |
 | <a id="groupaddonpurchaseaddonname"></a>`addOnName` | [`String!`](#string) | AddOn name. |
 
+##### `Group.autocompleteUsers`
+
+Search users for autocompletion.
+
+Returns [`[AutocompletedUser!]`](#autocompleteduser).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupautocompleteuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or public email. |
+
 ##### `Group.billableMembersCount`
 
 Number of billable users in the group.

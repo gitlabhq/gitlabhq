@@ -44,7 +44,7 @@ RSpec.shared_examples 'group and project packages query' do
       post_graphql(query, current_user: current_user)
     end
 
-    it_behaves_like 'a working graphql query'
+    it_behaves_like 'a working graphql query that returns data'
 
     it 'returns packages successfully' do
       expect(package_names).to contain_exactly(
@@ -84,11 +84,7 @@ RSpec.shared_examples 'group and project packages query' do
       post_graphql(query, current_user: current_user)
     end
 
-    it_behaves_like 'a working graphql query'
-
-    it 'returns nil' do
-      expect(packages).to be_nil
-    end
+    it_behaves_like 'a working graphql query that returns no data'
   end
 
   context 'when the user is not authenticated' do
@@ -96,11 +92,7 @@ RSpec.shared_examples 'group and project packages query' do
       post_graphql(query)
     end
 
-    it_behaves_like 'a working graphql query'
-
-    it 'returns nil' do
-      expect(packages).to be_nil
-    end
+    it_behaves_like 'a working graphql query that returns no data'
   end
 
   describe 'sorting and pagination' do

@@ -49225,7 +49225,34 @@ msgstr ""
 msgid "Tracing|Failed to load traces."
 msgstr ""
 
+msgid "Tracing|Filter Traces"
+msgstr ""
+
 msgid "Tracing|Get started with Tracing"
+msgstr ""
+
+msgid "Tracing|Last 1 hour"
+msgstr ""
+
+msgid "Tracing|Last 1 minute"
+msgstr ""
+
+msgid "Tracing|Last 14 days"
+msgstr ""
+
+msgid "Tracing|Last 15 minutes"
+msgstr ""
+
+msgid "Tracing|Last 24 hours"
+msgstr ""
+
+msgid "Tracing|Last 30 days"
+msgstr ""
+
+msgid "Tracing|Last 30 minutes"
+msgstr ""
+
+msgid "Tracing|Last 7 days"
 msgstr ""
 
 msgid "Tracing|Monitor your applications with GitLab Distributed Tracing."
@@ -49240,7 +49267,19 @@ msgstr ""
 msgid "Tracing|Service"
 msgstr ""
 
+msgid "Tracing|Time range"
+msgstr ""
+
+msgid "Tracing|Trace ID"
+msgstr ""
+
 msgid "Tracing|Traces"
+msgstr ""
+
+msgid "Tracing|longer than"
+msgstr ""
+
+msgid "Tracing|shorter than"
 msgstr ""
 
 msgid "Track groups of issues that share a theme, across projects and milestones"

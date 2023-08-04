@@ -49,6 +49,10 @@ FactoryBot.define do
       status { 'created' }
     end
 
+    trait :running do
+      status { 'running' }
+    end
+
     trait :started do
       started_at { '2013-10-29 09:51:28 CET' }
     end

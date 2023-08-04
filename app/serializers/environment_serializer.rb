@@ -94,7 +94,7 @@ class EnvironmentSerializer < BaseSerializer
         pipeline: {
           manual_actions: [:metadata, :deployment],
           scheduled_actions: [:metadata],
-          latest_successful_builds: []
+          latest_successful_jobs: []
         },
         project: project_associations
       }

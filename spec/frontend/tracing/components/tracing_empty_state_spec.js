@@ -8,12 +8,7 @@ describe('TracingEmptyState', () => {
   const findEnableButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => {
-    wrapper = shallowMountExtended(TracingEmptyState, {
-      propsData: {
-        enableTracing: jest.fn(),
-      },
-      stubs: { GlButton },
-    });
+    wrapper = shallowMountExtended(TracingEmptyState);
   });
 
   it('renders the component properly', () => {
@@ -36,9 +31,9 @@ describe('TracingEmptyState', () => {
     expect(enableButton.text()).toBe('Enable');
   });
 
-  it('calls enableTracing method when enable button is clicked', () => {
+  it('emits enable-tracing when enable button is clicked', () => {
     findEnableButton().vm.$emit('click');
 
-    expect(wrapper.props().enableTracing).toHaveBeenCalled();
+    expect(wrapper.emitted('enable-tracing')).toHaveLength(1);
   });
 });

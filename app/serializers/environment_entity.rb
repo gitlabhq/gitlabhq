@@ -4,7 +4,7 @@ class EnvironmentEntity < Grape::Entity
   include RequestAwareEntity
 
   UNNECESSARY_ENTRIES_FOR_UPCOMING_DEPLOYMENT =
-    %i[manual_actions scheduled_actions playable_build cluster].freeze
+    %i[manual_actions scheduled_actions playable_job cluster].freeze
 
   expose :id
 

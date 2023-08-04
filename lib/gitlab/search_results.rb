@@ -184,6 +184,7 @@ module Gitlab
 
       unless default_project_filter
         issues = issues.in_projects(project_ids_relation)
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
       end
 
       apply_sort(issues, scope: 'issues')

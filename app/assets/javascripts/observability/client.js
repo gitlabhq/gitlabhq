@@ -49,7 +49,7 @@ export function buildClient({ provisioningUrl, tracingUrl }) {
   return {
     enableTraces: () => enableTraces(provisioningUrl),
     isTracingEnabled: () => isTracingEnabled(provisioningUrl),
-    fetchTraces: () => fetchTraces(tracingUrl),
+    fetchTraces: (filters) => fetchTraces(tracingUrl, filters),
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
   };
 }

@@ -6,6 +6,7 @@ module Ci
   class Processable < ::CommitStatus
     include Gitlab::Utils::StrongMemoize
     include FromUnion
+    include Ci::Metadatable
     extend ::Gitlab::Utils::Override
 
     has_one :resource, class_name: 'Ci::Resource', foreign_key: 'build_id', inverse_of: :processable
@@ -16,6 +17,7 @@ module Ci
     accepts_nested_attributes_for :needs
 
     scope :preload_needs, -> { preload(:needs) }
+    scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
 
     scope :with_needs, -> (names = nil) do
       needs = Ci::BuildNeed.scoped_build.select(1)
@@ -136,6 +138,10 @@ module Ci
 
     def action?
       raise NotImplementedError
+    end
+
+    def other_manual_actions
+      pipeline.manual_actions.reject { |action| action.name == name }
     end
 
     def when

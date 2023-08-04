@@ -331,9 +331,9 @@ class Environment < ApplicationRecord
   end
 
   def cancel_deployment_jobs!
-    active_deployments.builds.each do |build|
-      Gitlab::OptimisticLocking.retry_lock(build, name: 'environment_cancel_deployment_jobs') do |build|
-        build.cancel! if build&.cancelable?
+    active_deployments.jobs.each do |job|
+      Gitlab::OptimisticLocking.retry_lock(job, name: 'environment_cancel_deployment_jobs') do |job|
+        job.cancel! if job&.cancelable?
       end
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, environment_id: id, deployment_id: deployment.id)
@@ -355,8 +355,12 @@ class Environment < ApplicationRecord
       Gitlab::OptimisticLocking.retry_lock(
         stop_action,
         name: 'environment_stop_with_actions'
-      ) do |build|
-        actions << build.play(current_user)
+      ) do |job|
+        actions << job.play(current_user)
+      rescue StateMachines::InvalidTransition
+        # Ci::PlayBuildService rescues an error of StateMachines::InvalidTransition and fall back to retry. However,
+        # Ci::PlayBridgeService doesn't rescue it, so we're ignoring the error if it's not playable.
+        # We should fix this inconsistency in https://gitlab.com/gitlab-org/gitlab/-/issues/420855.
       end
     end
 

@@ -19,6 +19,7 @@ class ProcessCommitWorker
   weight 3
   idempotent!
   loggable_arguments 2, 3
+  deduplicate :until_executed, feature_flag: :deduplicate_process_commit_worker
 
   # project_id - The ID of the project this commit belongs to.
   # user_id - The ID of the user that pushed the commit.

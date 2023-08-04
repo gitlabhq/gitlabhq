@@ -268,6 +268,11 @@ module Types
           alpha: { milestone: '16.3' },
           resolver: ::Resolvers::Namespaces::WorkItemsResolver
 
+    field :autocomplete_users,
+          null: true,
+          resolver: Resolvers::AutocompleteUsersResolver,
+          description: 'Search users for autocompletion'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

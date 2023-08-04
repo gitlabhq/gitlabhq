@@ -124,7 +124,7 @@ RSpec.shared_examples 'a deployable job' do
         it 'does not change deployment status and tracks an error' do
           expect(Gitlab::ErrorTracking)
             .to receive(:track_exception).with(
-              instance_of(Deployment::StatusSyncError), deployment_id: deployment.id, build_id: job.id)
+              instance_of(Deployment::StatusSyncError), deployment_id: deployment.id, job_id: job.id)
 
           with_cross_database_modification_prevented do
             expect { subject }.not_to change { deployment.reload.status }

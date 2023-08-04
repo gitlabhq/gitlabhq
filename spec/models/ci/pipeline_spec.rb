@@ -110,14 +110,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
-    describe '#latest_successful_builds' do
-      it 'has a one to many relationship with its latest successful builds' do
+    describe '#latest_successful_jobs' do
+      it 'has a one to many relationship with its latest successful jobs' do
         _old_build = create(:ci_build, :retried, pipeline: pipeline)
         _expired_build = create(:ci_build, :expired, pipeline: pipeline)
-        _failed_builds = create_list(:ci_build, 2, :failed, pipeline: pipeline)
-        successful_builds = create_list(:ci_build, 2, :success, pipeline: pipeline)
+        _failed_jobs = [create(:ci_build, :failed, pipeline: pipeline),
+                        create(:ci_bridge, :failed, pipeline: pipeline)]
+        successful_jobs = [create(:ci_build, :success, pipeline: pipeline),
+                           create(:ci_bridge, :success, pipeline: pipeline)]
 
-        expect(pipeline.latest_successful_builds).to contain_exactly(successful_builds.first, successful_builds.second)
+        expect(pipeline.latest_successful_jobs).to contain_exactly(successful_jobs.first, successful_jobs.second)
       end
     end
 

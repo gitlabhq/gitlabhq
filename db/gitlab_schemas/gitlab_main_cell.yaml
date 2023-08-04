@@ -12,3 +12,6 @@ allow_cross_transactions:
   - gitlab_main_clusterwide
 allow_cross_foreign_keys:
   - gitlab_main
+  # Temporarily allow FKs between clusterwide and cell schemas
+  # This is to be removed once we remove all FKs between those
+  - gitlab_main_clusterwide

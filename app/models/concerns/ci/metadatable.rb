@@ -24,6 +24,12 @@ module Ci
       delegate :id_tokens, to: :metadata, allow_nil: true
 
       before_validation :ensure_metadata, on: :create
+
+      scope :with_project_and_metadata, -> do
+        if Feature.enabled?(:non_public_artifacts, type: :development)
+          joins(:metadata).includes(:metadata).preload(:project)
+        end
+      end
     end
 
     def has_exposed_artifacts?

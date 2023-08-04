@@ -35,25 +35,31 @@ module Gitlab
       end
 
       def update_namespace_id(batch_column, non_orphaned_namespace_routes, sub_batch_size)
-        non_orphaned_namespace_routes.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
-          batch_metrics.time_operation(:fix_missing_namespace_id) do
-            ApplicationRecord.connection.execute <<~SQL
-              WITH route_and_ns(route_id, namespace_id) AS #{::Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
-                #{sub_batch.to_sql}
-              )
-              UPDATE routes
-              SET namespace_id = route_and_ns.namespace_id
-              FROM route_and_ns
-              WHERE id = route_and_ns.route_id
-            SQL
+        Gitlab::Database.allow_cross_joins_across_databases(
+          url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046") do
+          non_orphaned_namespace_routes.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
+            batch_metrics.time_operation(:fix_missing_namespace_id) do
+              ApplicationRecord.connection.execute <<~SQL
+                WITH route_and_ns(route_id, namespace_id) AS #{::Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
+                  #{sub_batch.to_sql}
+                )
+                UPDATE routes
+                SET namespace_id = route_and_ns.namespace_id
+                FROM route_and_ns
+                WHERE id = route_and_ns.route_id
+              SQL
+            end
           end
         end
       end
 
       def cleanup_relations(batch_column, orphaned_namespace_routes, pause_ms, sub_batch_size)
-        orphaned_namespace_routes.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
-          batch_metrics.time_operation(:cleanup_orphaned_routes) do
-            sub_batch.delete_all
+        Gitlab::Database.allow_cross_joins_across_databases(
+          url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046") do
+          orphaned_namespace_routes.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
+            batch_metrics.time_operation(:cleanup_orphaned_routes) do
+              sub_batch.delete_all
+            end
           end
         end
       end

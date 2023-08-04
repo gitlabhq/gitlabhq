@@ -15,17 +15,6 @@ export default {
     GlEmptyState,
     GlButton,
   },
-  props: {
-    enableTracing: {
-      type: Function,
-      required: true,
-    },
-  },
-  methods: {
-    onEnabledClicked() {
-      this.enableTracing();
-    },
-  },
 };
 </script>
 
@@ -38,7 +27,7 @@ export default {
     </template>
 
     <template #actions>
-      <gl-button variant="confirm" class="gl-mx-2 gl-mb-3" @click="onEnabledClicked">
+      <gl-button variant="confirm" class="gl-mx-2 gl-mb-3" @click="$emit('enable-tracing')">
         {{ $options.i18n.enableButtonText }}
       </gl-button>
     </template>

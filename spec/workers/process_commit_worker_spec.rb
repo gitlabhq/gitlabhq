@@ -9,6 +9,11 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
   let(:issue) { create(:issue, project: project, author: user) }
   let(:commit) { project.commit }
 
+  it "is deduplicated" do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+    expect(described_class.get_deduplication_options).to include(feature_flag: :deduplicate_process_commit_worker)
+  end
+
   describe '#perform' do
     it 'does not process the commit when the project does not exist' do
       expect(worker).not_to receive(:close_issues)

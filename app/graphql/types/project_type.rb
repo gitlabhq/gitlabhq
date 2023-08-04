@@ -625,7 +625,7 @@ module Types
 
     field :autocomplete_users,
       null: true,
-      resolver: Resolvers::Projects::AutocompleteUsersResolver,
+      resolver: Resolvers::AutocompleteUsersResolver,
       description: 'Search users for autocompletion'
 
     def timelog_categories
