@@ -6912,6 +6912,7 @@ Input type: `UserAddOnAssignmentRemoveInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentremoveaddonpurchase"></a>`addOnPurchase` | [`AddOnPurchase`](#addonpurchase) | AddOnPurchase state after mutation. |
 | <a id="mutationuseraddonassignmentremoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationuseraddonassignmentremoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 

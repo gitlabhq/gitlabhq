@@ -228,9 +228,6 @@ Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
   If it's not given, the `IN` operator optimization only makes the `ORDER BY` columns available to
   the end-user and not the full database row.
 
-  If it's not given, the `IN` operator optimization only makes the `ORDER BY` columns available to
-  the end-user and not the full database row.
-
 The following database index on the `issues` table must be present
 to make the query execute efficiently:
 

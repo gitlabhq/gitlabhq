@@ -10,6 +10,16 @@ RSpec.shared_examples 'a working graphql query' do
   end
 end
 
+RSpec.shared_examples 'a working graphql query that returns no data' do
+  include GraphqlHelpers
+
+  it_behaves_like 'a working graphql query'
+
+  it 'contains no data' do
+    expect(graphql_data.compact).to be_empty
+  end
+end
+
 RSpec.shared_examples 'a working graphql query that returns data' do
   include GraphqlHelpers
 

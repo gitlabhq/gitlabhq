@@ -842,7 +842,7 @@ Example of response
 
 NOTE:
 You can't delete archived jobs with the API, but you can
-[delete job artifacts and logs from jobs completed before a specific date](../administration/job_artifacts.md#delete-job-artifacts-and-logs-from-jobs-completed-before-a-specific-date)
+[delete job artifacts and logs from jobs completed before a specific date](../administration/job_artifacts_troubleshooting.md#delete-job-artifacts-and-logs-from-jobs-completed-before-a-specific-date)
 
 ## Run a job
 

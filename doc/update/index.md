@@ -280,6 +280,11 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   See the [configuration workarounds](https://gitlab.com/gitlab-org/gitlab/-/issues/419485#workarounds)
   for more details.
 - Git 2.41.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../install/installation.md#git).
+- New job artifacts are not replicated if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
+  16.2.3, 16.3.0, and later.
+  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
+  - If you deployed an affected version, after upgrading to a fixed GitLab version, follow [these instructions](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)
+    to resync the affected job artifacts.
 
 ### 16.1.0
 
@@ -302,6 +307,11 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   - Impacted versions: GitLab versions 16.1.x.
   - Versions containing fix: GitLab 16.2.0 and later.
 - For self-compiled installations: You must remove any settings related to Puma worker killer from the `puma.rb` configuration file, since those have been [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
+- New job artifacts are not replicated if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
+  16.2.3, 16.3.0, and later.
+  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
+  - If you deployed an affected version, after upgrading to a fixed GitLab version, follow [these instructions](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)
+    to resync the affected job artifacts.
 
 ### 16.0.0
 
