@@ -354,6 +354,62 @@ Prerequisites:
 By default, child OKRs are ordered by creation date.
 To reorder them, drag them around.
 
+## Confidential OKRs
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
+
+Confidential OKRs are [OKRs](index.md) visible only to members of a project with
+[sufficient permissions](#who-can-see-confidential-okrs).
+You can use confidential OKRs to keep security vulnerabilities private or prevent surprises from
+leaking out.
+
+### Make an OKR confidential
+
+By default, OKRs are public.
+You can make an OKR confidential when you create or edit it.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- A **confidential objective** can have only confidential
+  [child objectives or key results](#child-objectives-and-key-results):
+  - To make an objective confidential: If it has any child objectives or key results, you must first
+    make all of them confidential or remove them.
+  - To make an objective non-confidential: If it has any child objectives or key results, you must
+    first make all of them non-confidential or remove them.
+  - To add child objectives or key results to a confidential objective, you must first make them
+    confidential.
+
+#### In a new OKR
+
+When you create a new objective, a checkbox right below the text area is available to mark the
+OKR as confidential.
+
+Check that box and select **Create objective** or **Create key result** to create the OKR.
+
+#### In an existing OKR
+
+To change the confidentiality of an existing OKR:
+
+1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result).
+1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Turn on confidentiality**.
+
+### Who can see confidential OKRs
+
+When an OKR is made confidential, only users with at least the Reporter role for the project have
+access to the OKR.
+Users with Guest or [Minimal](permissions.md#users-with-minimal-access) roles can't access
+the OKR even if they were actively participating before the change.
+
+However, a user with the **Guest role** can create confidential OKRs, but can only view the ones
+that they created themselves.
+
+Users with the Guest role or non-members can read the confidential issue if they are assigned to the issue.
+When a Guest user or non-member is unassigned from a confidential issue, they can no longer view it.
+
+Confidential OKRs are hidden in search results for users without the necessary permissions.
+
 ## Two-column layout
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.

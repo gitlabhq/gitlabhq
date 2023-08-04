@@ -50,7 +50,9 @@ Example response:
 
 ## Patch a project's CI/CD job token access settings
 
-Patch the [**Allow access to this project with a CI_JOB_TOKEN** setting](../ci/jobs/ci_job_token.md#disable-the-job-token-scope-allowlist) (job token scope) of a project.
+> **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+
+Patch the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#disable-the-job-token-scope-allowlist) (job token scope) of a project.
 
 ```plaintext
 PATCH /projects/:id/job_token_scope

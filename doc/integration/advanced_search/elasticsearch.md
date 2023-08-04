@@ -549,6 +549,20 @@ Sometimes, you might want to abandon the unfinished reindex job and resume the i
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
 
+## Index integrity
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112369) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `search_index_integrity`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/392981) in GitLab 16.0.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/392981) in GitLab 16.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `search_index_integrity`.
+On GitLab.com, this feature is available.
+
+Index integrity detects and fixes missing repository data.
+This feature is automatically used when code searches
+scoped to a group or project return no results.
+
 ## Advanced search migrations
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.

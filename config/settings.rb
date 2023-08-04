@@ -5,6 +5,8 @@ require_relative '../lib/gitlab_settings'
 file = ENV.fetch('GITLAB_CONFIG') { Rails.root.join('config/gitlab.yml') }
 section = ENV.fetch('GITLAB_ENV') { Rails.env }
 
+GITLAB_INSTANCE_UUID_NOT_SET = 'uuid-not-set'
+
 Settings = GitlabSettings.load(file, section) do
   def gitlab_on_standard_port?
     on_standard_port?(gitlab)
@@ -212,7 +214,7 @@ Settings = GitlabSettings.load(file, section) do
   # these pings. The sidekiq job handles temporary http failures.
   def cron_for_service_ping
     # Set a default UUID for the case when the UUID hasn't been initialized.
-    uuid = Gitlab::CurrentSettings.uuid || 'uuid-not-set'
+    uuid = Gitlab::CurrentSettings.uuid || GITLAB_INSTANCE_UUID_NOT_SET
 
     minute = Digest::SHA256.hexdigest(uuid + 'minute').to_i(16) % 60
     hour = Digest::SHA256.hexdigest(uuid + 'hour').to_i(16) % 24

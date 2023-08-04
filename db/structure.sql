@@ -17834,7 +17834,8 @@ CREATE TABLE labels (
     description_html text,
     type character varying,
     group_id integer,
-    cached_markdown_version integer
+    cached_markdown_version integer,
+    lock_on_merge boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE labels_id_seq

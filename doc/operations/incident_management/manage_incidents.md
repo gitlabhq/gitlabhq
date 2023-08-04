@@ -245,7 +245,7 @@ To configure the setting:
 1. Select the **Automatically close associated incident** checkbox.
 1. Select **Save changes**.
 
-When GitLab receives a recovery alert, it closes the associated incident.
+When GitLab receives a [recovery alert](integrations.md#recovery-alerts), it closes the associated incident.
 This action is recorded as a system note on the incident indicating that it
 was closed automatically by the GitLab Alert bot.
 

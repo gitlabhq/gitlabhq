@@ -210,6 +210,27 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+#### `Search::Elastic::MigrationReindexBasedOnSchemaVersion`
+
+Reindexes all documents in the index that stores the specified document type and updates `schema_version`.
+
+Requires the `DOCUMENT_TYPE` and `NEW_SCHEMA_VERSION` constants.
+The index mapping must have a `schema_version` integer field in a `YYMM` format.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Search::Elastic::MigrationReindexBasedOnSchemaVersion
+
+  batched!
+  batch_size 9_000
+  throttle_delay 1.minute
+
+  DOCUMENT_TYPE = WorkItem
+  NEW_SCHEMA_VERSION = 23_08
+  UPDATE_BATCH_SIZE = 100
+end
+```
+
 #### `Elastic::MigrationHelper`
 
 Contains methods you can use when a migration doesn't fit the previous examples.

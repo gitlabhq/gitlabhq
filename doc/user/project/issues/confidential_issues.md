@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Confidential issues **(FREE)**
 
 Confidential issues are [issues](index.md) visible only to members of a project with
-[sufficient permissions](#permissions-and-access-to-confidential-issues).
+[sufficient permissions](#who-can-see-confidential-issues).
 Confidential issues can be used by open source projects and companies alike to
 keep security vulnerabilities private or prevent surprises from leaking out.
 
@@ -51,6 +51,14 @@ for the project have access to the issue.
 Users with Guest or [Minimal](../../permissions.md#users-with-minimal-access) roles can't access
 the issue even if they were actively participating before the change.
 
+However, a user with the **Guest role** can create confidential issues, but can only view the ones
+that they created themselves.
+
+Users with the Guest role or non-members can read the confidential issue if they are assigned to the issue.
+When a Guest user or non-member is unassigned from a confidential issue, they can no longer view it.
+
+Confidential issues are hidden in search results for users without the necessary permissions.
+
 ## Confidential issue indicators
 
 Confidential issues are visually different from regular issues in a few ways.
@@ -59,7 +67,7 @@ next to the issues that are marked as confidential:
 
 ![Confidential issues index page](img/confidential_issues_index_page.png)
 
-If you don't have [enough permissions](#permissions-and-access-to-confidential-issues),
+If you don't have [enough permissions](#who-can-see-confidential-issues),
 you cannot see confidential issues at all.
 
 Likewise, while inside the issue, you can see the confidential (**{eye-slash}**) icon right next to
@@ -86,27 +94,6 @@ system note in the issue's comments:
 
 Although you can create confidential issues (and make existing issues confidential) in a public project, you cannot make confidential merge requests.
 Learn how to create [merge requests for confidential issues](../merge_requests/confidential.md) that prevent leaks of private data.
-
-## Permissions and access to confidential issues
-
-Access to confidential issues is by one of two routes. The general rule
-is that confidential issues are visible only to members of a project with at
-least the **Reporter role**.
-
-However, a user with the **Guest role** can create
-confidential issues, but can only view the ones that they created themselves.
-
-Users with the Guest role or non-members can read the confidential issue if they are assigned to the issue.
-When a Guest user or non-member is unassigned from a confidential issue,
-they can no longer view it.
-
-Confidential issues are hidden in search results for unprivileged users.
-For example, here's what a user with the Maintainer role and the Guest role
-sees in the project's search results:
-
-| Maintainer role | Guest role |
-|:----------------|:-----------|
-| ![Confidential issues search by maintainer](img/confidential_issues_search_master.png) | ![Confidential issues search by guest](img/confidential_issues_search_guest.png) |
 
 ## Related topics
 

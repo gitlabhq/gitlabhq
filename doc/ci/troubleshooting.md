@@ -330,6 +330,8 @@ start a new pipeline to use the new configuration.
 
 ### Unable to pull image from another project
 
+> **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+
 When a runner tries to pull an image from a private project, the job could fail with the following error:
 
 ```shell
@@ -338,7 +340,7 @@ WARNING: Failed to pull image with policy "always": Error response from daemon: 
 
 This error can happen if the following are both true:
 
-- The **Allow access to this project with a CI_JOB_TOKEN** option is enabled in the private project
+- The **Limit access _to_ this project** option is enabled in the private project
   hosting the image.
 - The job attempting to fetch the image is running for a project that is not listed in
   the private project's allowlist.

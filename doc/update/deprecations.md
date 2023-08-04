@@ -1376,6 +1376,8 @@ In 17.0, we plan to remove the **Limit** setting completely, and set the **Allow
 
 To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or later can enable the **Allow access** setting now and add the other projects. It will not be possible to disable the setting in 17.0 or later.
 
+In 16.3, the names of these settings were changed to clarify their meanings: the deprecated **Limit CI_JOB_TOKEN access** setting is now called **Limit access _from_ this project**, and the newer **Allow access to this project with a CI_JOB_TOKEN** setting is now called **Limit access _to_ this project**.
+
 </div>
 
 <div class="deprecation breaking-change" data-milestone="16.0">

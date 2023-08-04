@@ -197,10 +197,10 @@ module WorkerAttributes
       !!get_class_attribute(:big_payload)
     end
 
-    def defer_on_database_health_signal(gitlab_schema, delay_by = DEFAULT_DEFER_DELAY, tables = [])
+    def defer_on_database_health_signal(gitlab_schema, tables = [], delay_by = DEFAULT_DEFER_DELAY)
       set_class_attribute(
         :database_health_check_attrs,
-        { gitlab_schema: gitlab_schema, delay_by: delay_by, tables: tables }
+        { gitlab_schema: gitlab_schema, tables: tables, delay_by: delay_by }
       )
     end
 

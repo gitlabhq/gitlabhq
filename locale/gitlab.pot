@@ -8993,9 +8993,6 @@ msgstr ""
 msgid "CICD|Allow CI job tokens from the following projects to access this project"
 msgstr ""
 
-msgid "CICD|Allow access to this project with a CI_JOB_TOKEN"
-msgstr ""
-
 msgid "CICD|Auto DevOps"
 msgstr ""
 
@@ -9032,13 +9029,16 @@ msgstr ""
 msgid "CICD|Limit"
 msgstr ""
 
-msgid "CICD|Limit CI_JOB_TOKEN access"
+msgid "CICD|Limit access %{italicStart}from%{italicEnd} this project (Deprecated)"
 msgstr ""
 
-msgid "CICD|Manage which projects can use their CI_JOB_TOKEN to access this project. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
+msgid "CICD|Limit access %{italicStart}to%{italicEnd} this project"
 msgstr ""
 
-msgid "CICD|Select the projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
+msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "CICD|Prevent access to this project from other project CI/CD job tokens, unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "CICD|The %{boldStart}Limit CI_JOB_TOKEN%{boldEnd} scope is deprecated and will be removed the 17.0 milestone. Configure the %{boldStart}CI_JOB_TOKEN%{boldEnd} allowlist instead. %{linkStart}How do I do this?%{linkEnd}"

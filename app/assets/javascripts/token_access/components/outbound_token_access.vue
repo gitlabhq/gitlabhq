@@ -23,9 +23,11 @@ import TokenProjectsTable from './token_projects_table.vue';
 // Note: This component will be removed in 17.0, as the outbound access token is getting deprecated
 export default {
   i18n: {
-    toggleLabelTitle: s__('CICD|Limit CI_JOB_TOKEN access'),
+    toggleLabelTitle: s__(
+      'CICD|Limit access %{italicStart}from%{italicEnd} this project (Deprecated)',
+    ),
     toggleHelpText: s__(
-      `CICD|Select the projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
+      `CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
     ),
     cardHeaderTitle: s__('CICD|Add an existing project to the scope'),
     settingDisabledMessage: s__(
@@ -246,6 +248,13 @@ export default {
         :disabled="disableTokenToggle"
         @change="updateCIJobTokenScope"
       >
+        <template #label>
+          <gl-sprintf :message="$options.i18n.toggleLabelTitle">
+            <template #italic="{ content }">
+              <i>{{ content }}</i>
+            </template>
+          </gl-sprintf>
+        </template>
         <template #help>
           <gl-sprintf :message="$options.i18n.toggleHelpText">
             <template #link="{ content }">

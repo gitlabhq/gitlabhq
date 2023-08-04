@@ -21,9 +21,9 @@ import TokenProjectsTable from './token_projects_table.vue';
 
 export default {
   i18n: {
-    toggleLabelTitle: s__('CICD|Allow access to this project with a CI_JOB_TOKEN'),
+    toggleLabelTitle: s__('CICD|Limit access %{italicStart}to%{italicEnd} this project'),
     toggleHelpText: s__(
-      `CICD|Manage which projects can use their CI_JOB_TOKEN to access this project. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
+      `CICD|Prevent access to this project from other project CI/CD job tokens, unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
     ),
     cardHeaderTitle: s__(
       'CICD|Allow CI job tokens from the following projects to access this project',
@@ -209,6 +209,13 @@ export default {
         :label="$options.i18n.toggleLabelTitle"
         @change="updateCIJobTokenScope"
       >
+        <template #label>
+          <gl-sprintf :message="$options.i18n.toggleLabelTitle">
+            <template #italic="{ content }">
+              <i>{{ content }}</i>
+            </template>
+          </gl-sprintf>
+        </template>
         <template #help>
           <gl-sprintf :message="$options.i18n.toggleHelpText">
             <template #link="{ content }">

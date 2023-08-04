@@ -115,7 +115,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
     end
 
     context 'with worker opted for database health check' do
-      let(:health_signal_attrs) { { gitlab_schema: :gitlab_main, delay: 1.minute, tables: [:users] } }
+      let(:health_signal_attrs) { { gitlab_schema: :gitlab_main, tables: [:users], delay: 1.minute } }
 
       around do |example|
         with_sidekiq_server_middleware do |chain|

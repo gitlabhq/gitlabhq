@@ -135,7 +135,7 @@ Sidekiq workers are deferred by two ways,
         sidekiq_options retry: 3
         include ChaosQueue
 
-        defer_on_database_health_signal :gitlab_main, 1.minute, [:users]
+        defer_on_database_health_signal :gitlab_main, [:users], 1.minute
 
         def perform(duration_s)
           Gitlab::Chaos.sleep(duration_s)
