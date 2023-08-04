@@ -3,10 +3,14 @@ gl-emoji {
   display: inline-flex;
   vertical-align: baseline;
   font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  font-size: 1.2em;
+  line-height: 1;
 
   img {
     width: 1.2em;
     height: 1.2em;
+    position: relative;
+    top: 0.25em;
   }
 }
 

@@ -25,7 +25,7 @@ This table shows the features available with the Jira DVCS connector and the Git
 | Sync merge requests | **{check-circle}** Yes | **{check-circle}** Yes |
 | Sync branches       | **{check-circle}** Yes | **{check-circle}** Yes |
 | Sync commits        | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync existing data  | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync existing data  | **{check-circle}** Yes | **{check-circle}** Yes (partial) <sup>1</sup>|
 | Sync builds         | **{dotted-circle}** No | **{check-circle}** Yes |
 | Sync deployments    | **{dotted-circle}** No | **{check-circle}** Yes |
 | Sync feature flags  | **{dotted-circle}** No | **{check-circle}** Yes |
@@ -33,6 +33,8 @@ This table shows the features available with the Jira DVCS connector and the Git
 | Create branches     | **{dotted-circle}** No | **{check-circle}** Yes (GitLab SaaS only) |
 | Create merge request from branch | **{check-circle}** Yes | **{check-circle}** Yes |
 | Create branch from Jira issue | **{dotted-circle}** No | **{check-circle}** Yes ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66032) in GitLab 14.2) |
+
+1. See [GitLab data synced to Jira](connect-app.md#gitlab-data-synced-to-jira).
 
 ## Connected projects in GitLab
 

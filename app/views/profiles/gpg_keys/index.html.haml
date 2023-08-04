@@ -22,7 +22,7 @@
           = @gpg_keys.count
       .gl-new-card-actions
         = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content #{hide_class}" }) do
-          = _('Add a GPG key')
+          = _('Add new key')
     - c.with_body do
       .gl-new-card-add-form.gl-m-3.js-toggle-content{ class: add_form_class }
         %h4.gl-mt-0

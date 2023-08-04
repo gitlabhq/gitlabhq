@@ -67,7 +67,7 @@ To use merge request pipelines:
 
 ## Use `rules` to add jobs
 
-You can use the [`rules`](../yaml/index.md#rules) keyword to configure jobs to run in
+Use the [`rules`](../yaml/index.md#rules) keyword to configure jobs to run in
 merge request pipelines. For example:
 
 ```yaml
@@ -97,8 +97,9 @@ job2:
 
 ## Use `only` to add jobs
 
-You can use the [`only`](../yaml/index.md#onlyrefs--exceptrefs) keyword with `merge_requests`
-to configure jobs to run in merge request pipelines.
+[`rules`](#use-rules-to-add-jobs) is the preferred method, but you can also use
+the [`only`](../yaml/index.md#onlyrefs--exceptrefs) keyword with `merge_requests`
+to configure jobs to run in merge request pipelines. For example:
 
 ```yaml
 job1:

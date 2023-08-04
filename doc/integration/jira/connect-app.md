@@ -10,6 +10,8 @@ With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/
 
 You can use the GitLab for Jira Cloud app to link top-level groups or subgroups. It's not possible to directly link projects or personal namespaces.
 
+To set up the GitLab for Jira Cloud app:
+
 - **For GitLab.com**:
   - [Install the GitLab for Jira Cloud app](#install-the-gitlab-for-jira-cloud-app).
 - **For self-managed GitLab**, do one of the following:
@@ -17,6 +19,21 @@ You can use the GitLab for Jira Cloud app to link top-level groups or subgroups.
   - [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
 If you use Jira Data Center or Jira Server, use the [Jira DVCS connector](dvcs/index.md) developed and maintained by Atlassian.
+
+## GitLab data synced to Jira
+
+After you link a group, the following GitLab data is synced to Jira for all projects in that group when you [mention a Jira issue ID](development_panel.md#information-displayed-in-the-development-panel):
+
+- Existing project data (before you linked the group):
+  - The last 400 merge requests
+  - The last 400 branches and the last commit to each of those branches (GitLab 15.11 and later)
+- New project data (after you linked the group):
+  - Merge requests
+  - Branches
+  - Commits
+  - Builds
+  - Deployments
+  - Feature flags
 
 ## Install the GitLab for Jira Cloud app **(FREE SAAS)**
 
@@ -63,12 +80,6 @@ To configure the GitLab for Jira Cloud app:
 After you link to a GitLab group, data is synced to Jira for all projects in that group.
 The initial data sync happens in batches of 20 projects per minute.
 For groups with many projects, the data sync for some projects is delayed.
-
-The following data is synced:
-
-- New and existing merge requests.
-- New branches and commits.
-- Existing branches and commits (GitLab 15.11 and later). You must delete and add any namespaces that were added to the GitLab for Jira Cloud app in GitLab 15.10 and earlier.
 
 ## Update the GitLab for Jira Cloud app
 

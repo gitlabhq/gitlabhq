@@ -42,11 +42,7 @@ Prerequisite:
    gitlab_rails['ci_secure_files_enabled'] = false
    ```
 
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 **For self-compiled installations**
 
@@ -73,12 +69,7 @@ are stored locally, follow the steps below.
    gitlab_rails['ci_secure_files_storage_path'] = "/mnt/storage/ci_secure_files"
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation)
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 **For self-compiled installations**
 
@@ -149,14 +140,8 @@ See [the available connection settings for different providers](object_storage.m
    }
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation)
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. [Migrate any existing local states to the object storage](#migrate-to-object-storage).
 
 **For self-compiled installations**
 
@@ -176,7 +161,7 @@ See [the available connection settings for different providers](object_storage.m
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
+1. [Migrate any existing local states to the object storage](#migrate-to-object-storage).
 
 ### Migrate to object storage
 

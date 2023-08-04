@@ -12,10 +12,6 @@ module Gitlab
       end
 
       def git_diff_prefix
-        /\A@@( -\d+,\d+ \+\d+,\d+ )@@/
-      end
-
-      def generate_commit_message_git_diff_prefix
         /\A@@( -\d+,\d+ \+\d+(,\d+)? )@@/
       end
     end

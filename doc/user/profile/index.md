@@ -57,6 +57,7 @@ To add new email to your account:
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Emails**.
+1. Select **Add new email**.
 1. In the **Email** text box, enter the new email.
 1. Select **Add email address**.
 1. Verify your email address with the verification email received.

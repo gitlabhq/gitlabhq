@@ -53,6 +53,7 @@ module ActiveRecord
       def recursive(*args)
         @scope.with_values += args
         @scope.recursive_value = true
+        @scope.extend(Gitlab::Database::ReadOnlyRelation)
         @scope
       end
     end

@@ -15,7 +15,7 @@ RSpec.describe 'Profile > GPG Keys', feature_category: :user_profile do
     end
 
     it 'saves the new key' do
-      click_button('Add a GPG key')
+      click_button('Add new key')
       fill_in('Key', with: GpgHelpers::User2.public_key)
       click_button('Add key')
 
@@ -25,7 +25,7 @@ RSpec.describe 'Profile > GPG Keys', feature_category: :user_profile do
     end
 
     it 'with multiple subkeys' do
-      click_button('Add a GPG key')
+      click_button('Add new key')
       fill_in('Key', with: GpgHelpers::User3.public_key)
       click_button('Add key')
 

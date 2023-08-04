@@ -41,6 +41,7 @@ To create a comment template for future use:
 1. On the left sidebar, select your avatar.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** (**{comment-lines}**).
+1. Select **Add new**.
 1. Provide a **Name** for your comment template.
 1. Enter the **Content** of your reply. You can use any formatting you use in
    other GitLab text areas.

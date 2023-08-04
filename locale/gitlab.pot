@@ -12203,6 +12203,9 @@ msgstr ""
 msgid "ComplianceReport|Update result"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|At least two approvals"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Have a valid rule that prevents author approved merge requests"
 msgstr ""
 
@@ -12216,9 +12219,6 @@ msgid "ComplianceStandardsAdherence|Prevent authors as approvers"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Prevent committers as approvers"
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|Two approvals"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|View details"
