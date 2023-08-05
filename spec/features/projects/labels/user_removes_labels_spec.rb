@@ -30,7 +30,7 @@ RSpec.describe "User removes labels", feature_category: :team_planning do
 
       first(:link, "Delete label").click
 
-      expect(page).to have_content("Label was removed").and have_no_content(label.title)
+      expect(page).to have_content("#{label.title} was removed").and have_no_content("#{label.title}</span>")
     end
   end
 

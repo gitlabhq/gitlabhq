@@ -117,7 +117,7 @@ RSpec.describe 'admin issues labels', feature_category: :team_planning do
         click_link 'Delete label'
       end
 
-      expect(page).to have_content('Label was removed')
+      expect(page).to have_content("#{bug_label.title} was removed").and have_no_content("#{bug_label.title}</span>")
     end
   end
 end

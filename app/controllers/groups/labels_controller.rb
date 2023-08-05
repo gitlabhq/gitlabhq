@@ -65,7 +65,9 @@ class Groups::LabelsController < Groups::ApplicationController
 
   def destroy
     @label.destroy
-    redirect_to group_labels_path(@group), status: :found, notice: "#{@label.name} deleted permanently"
+
+    redirect_to group_labels_path(@group), status: :found,
+      notice: format(_('%{label_name} was removed'), label_name: @label.name)
   end
 
   protected

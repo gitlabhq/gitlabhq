@@ -82,7 +82,8 @@ class Projects::LabelsController < Projects::ApplicationController
     @label.destroy
     @labels = find_labels
 
-    redirect_to project_labels_path(@project), status: :found, notice: 'Label was removed'
+    redirect_to project_labels_path(@project), status: :found,
+      notice: format(_('%{label_name} was removed'), label_name: @label.name)
   end
 
   def remove_priority

@@ -874,6 +874,9 @@ msgstr ""
 msgid "%{label_for_message} unavailable"
 msgstr ""
 
+msgid "%{label_name} was removed"
+msgstr ""
+
 msgid "%{lessThan} 1 hour"
 msgstr ""
 
@@ -27306,9 +27309,6 @@ msgid "Label priority"
 msgstr ""
 
 msgid "Label was created"
-msgstr ""
-
-msgid "Label was removed"
 msgstr ""
 
 msgid "Label was successfully updated."

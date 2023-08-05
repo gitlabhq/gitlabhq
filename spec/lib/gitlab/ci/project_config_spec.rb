@@ -45,9 +45,9 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
 
     before do
       allow(project.repository)
-        .to receive(:gitlab_ci_yml_for)
+        .to receive(:blob_at)
         .with(sha, ci_config_path)
-        .and_return('the-content')
+        .and_return(instance_double(Blob, empty?: false))
     end
 
     it 'returns root config including the local custom file' do
@@ -122,9 +122,9 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
 
     before do
       allow(project.repository)
-        .to receive(:gitlab_ci_yml_for)
+        .to receive(:blob_at)
         .with(sha, '.gitlab-ci.yml')
-        .and_return('the-content')
+        .and_return(instance_double(Blob, empty?: false))
     end
 
     it 'returns root config including the canonical CI config file' do

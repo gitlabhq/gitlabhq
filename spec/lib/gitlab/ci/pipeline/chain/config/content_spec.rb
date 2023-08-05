@@ -42,9 +42,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
 
       before do
         expect(project.repository)
-          .to receive(:gitlab_ci_yml_for)
+          .to receive(:blob_at)
           .with(pipeline.sha, ci_config_path)
-          .and_return('the-content')
+          .and_return(instance_double(Blob, empty?: false))
       end
 
       it 'builds root config including the local custom file' do
@@ -132,9 +132,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
 
       before do
         expect(project.repository)
-          .to receive(:gitlab_ci_yml_for)
+          .to receive(:blob_at)
           .with(pipeline.sha, '.gitlab-ci.yml')
-          .and_return('the-content')
+          .and_return(instance_double(Blob, empty?: false))
       end
 
       it 'builds root config including the canonical CI config file' do
