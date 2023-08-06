@@ -148,3 +148,7 @@
 .gl-mb-n8 {
   margin-bottom: -$gl-spacing-scale-8;
 }
+
+.gl-hover-border-gray-100:hover {
+  border-color: $gray-100;
+}

@@ -1,12 +1,11 @@
 <script>
-import { GlButton, GlCollapse, GlCard, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import FailedJobsList from './failed_jobs_list.vue';
 
 export default {
   components: {
     GlButton,
-    GlCollapse,
     GlCard,
     GlIcon,
     GlLink,
@@ -49,7 +48,7 @@ export default {
       return this.isExpanded ? '' : 'gl-display-none';
     },
     failedJobsCountText() {
-      return sprintf(this.$options.i18n.showFailedJobs, { count: this.currentFailedJobsCount });
+      return sprintf(this.$options.i18n.failedJobsLabel, { count: this.currentFailedJobsCount });
     },
     iconName() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
@@ -76,19 +75,25 @@ export default {
       'Pipelines|You will see a maximum of 100 jobs in this list. To view all failed jobs, %{linkStart}go to the details page%{linkEnd} of this pipeline.',
     ),
     additionalInfoTitle: __('Limitation on this view'),
-    showFailedJobs: __('Show failed jobs (%{count})'),
+    failedJobsLabel: __('Failed jobs (%{count})'),
   },
 };
 </script>
 <template>
   <gl-card
     class="gl-new-card"
-    header-class="gl-new-card-header"
+    :class="{ 'gl-border-white gl-hover-border-gray-100': !isExpanded }"
+    header-class="gl-new-card-header gl-px-3 gl-py-3"
     body-class="gl-new-card-body"
+    data-testid="failed-jobs-card"
     :aria-expanded="isExpanded.toString()"
   >
     <template #header>
-      <gl-button variant="link" class="gl-text-gray-600!" @click="toggleWidget">
+      <gl-button
+        variant="link"
+        class="gl-text-gray-700! gl-font-weight-semibold"
+        @click="toggleWidget"
+      >
         <gl-icon :name="iconName" />
         {{ failedJobsCountText }}
         <gl-icon :id="popoverId" name="information-o" class="gl-ml-2" />
@@ -104,15 +109,13 @@ export default {
         </gl-popover>
       </gl-button>
     </template>
-    <gl-collapse v-model="isExpanded">
-      <failed-jobs-list
-        v-if="isExpanded"
-        :failed-jobs-count="failedJobsCount"
-        :is-pipeline-active="isPipelineActive"
-        :pipeline-iid="pipelineIid"
-        :project-path="projectPath"
-        @failed-jobs-count="setFailedJobsCount"
-      />
-    </gl-collapse>
+    <failed-jobs-list
+      v-if="isExpanded"
+      :failed-jobs-count="failedJobsCount"
+      :is-pipeline-active="isPipelineActive"
+      :pipeline-iid="pipelineIid"
+      :project-path="projectPath"
+      @failed-jobs-count="setFailedJobsCount"
+    />
   </gl-card>
 </template>

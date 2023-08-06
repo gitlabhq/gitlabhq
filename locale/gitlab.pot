@@ -19309,6 +19309,9 @@ msgid_plural "Failed jobs"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Failed jobs (%{count})"
+msgstr ""
+
 msgid "Failed on"
 msgstr ""
 
@@ -43702,9 +43705,6 @@ msgid "Show complete raw log"
 msgstr ""
 
 msgid "Show details"
-msgstr ""
-
-msgid "Show failed jobs (%{count})"
 msgstr ""
 
 msgid "Show file browser (or press F)"

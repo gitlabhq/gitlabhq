@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCollapse, GlIcon, GlLink, GlTooltip } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLink, GlTooltip } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -12,7 +12,6 @@ export default {
   components: {
     CiIcon,
     GlButton,
-    GlCollapse,
     GlIcon,
     GlLink,
     GlTooltip,
@@ -42,9 +41,6 @@ export default {
     },
     isBridgeJob() {
       return this.job.kind === BRIDGE_KIND;
-    },
-    isVisibleId() {
-      return `log-${this.isJobLogVisible ? 'is-visible' : 'is-hidden'}`;
     },
     jobChevronName() {
       return this.isJobLogVisible ? 'chevron-down' : 'chevron-right';
@@ -158,14 +154,12 @@ export default {
         </span>
       </div>
     </div>
-    <div class="row">
-      <gl-collapse :visible="isJobLogVisible" class="gl-w-full">
-        <pre
-          v-safe-html="jobTrace"
-          class="gl-bg-gray-900 gl-text-white"
-          :data-testid="isVisibleId"
-        ></pre>
-      </gl-collapse>
+    <div v-if="isJobLogVisible" class="row">
+      <pre
+        v-safe-html="jobTrace"
+        class="gl-bg-gray-900 gl-text-white gl-w-full"
+        data-testid="job-log"
+      ></pre>
     </div>
   </div>
 </template>

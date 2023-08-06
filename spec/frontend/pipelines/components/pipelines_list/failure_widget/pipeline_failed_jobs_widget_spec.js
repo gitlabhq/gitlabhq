@@ -34,6 +34,7 @@ describe('PipelineFailedJobsWidget component', () => {
     });
   };
 
+  const findFailedJobsCard = () => wrapper.findByTestId('failed-jobs-card');
   const findFailedJobsButton = () => wrapper.findComponent(GlButton);
   const findFailedJobsList = () => wrapper.findAllComponents(FailedJobsList);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
@@ -46,7 +47,7 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('renders the show failed jobs button with a count of 0', () => {
       expect(findFailedJobsButton().exists()).toBe(true);
-      expect(findFailedJobsButton().text()).toBe('Show failed jobs (0)');
+      expect(findFailedJobsButton().text()).toBe('Failed jobs (0)');
     });
   });
 
@@ -57,9 +58,7 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('renders the show failed jobs button with correct count', () => {
       expect(findFailedJobsButton().exists()).toBe(true);
-      expect(findFailedJobsButton().text()).toBe(
-        `Show failed jobs (${defaultProps.failedJobsCount})`,
-      );
+      expect(findFailedJobsButton().text()).toBe(`Failed jobs (${defaultProps.failedJobsCount})`);
     });
 
     it('renders the info icon', () => {
@@ -83,6 +82,24 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('renders the failed jobs widget', () => {
       expect(findFailedJobsList().exists()).toBe(true);
+    });
+
+    it('removes the CSS border classes', () => {
+      expect(findFailedJobsCard().attributes('class')).not.toContain(
+        'gl-border-white gl-hover-border-gray-100',
+      );
+    });
+  });
+
+  describe('when the job details are not expanded', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('has the CSS border classes', () => {
+      expect(findFailedJobsCard().attributes('class')).toContain(
+        'gl-border-white gl-hover-border-gray-100',
+      );
     });
   });
 
