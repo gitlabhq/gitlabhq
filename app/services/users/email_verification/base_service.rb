@@ -21,7 +21,7 @@ module Users
       end
 
       def digest
-        Devise.token_generator.digest(User, user.email, token)
+        Devise.token_generator.digest(User, user.email.downcase.strip, token)
       end
     end
   end

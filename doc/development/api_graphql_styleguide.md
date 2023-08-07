@@ -2045,8 +2045,8 @@ full stack:
 - An [argument's `default_value`](https://graphql-ruby.org/fields/arguments.html) applies correctly.
 - Objects resolve successfully, and there are no N+1 issues.
 
-When adding a query, you can use the `a working graphql query` shared example to test if the query
-renders valid results.
+When adding a query, you can use the `a working graphql query that returns data` and
+`a working graphql query that returns no data` shared examples to test if the query renders valid results.
 
 You can construct a query including all available fields using the `GraphqlHelpers#all_graphql_fields_for`
 helper. This makes it more straightforward to add a test rendering all possible fields for a query.
