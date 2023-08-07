@@ -914,3 +914,10 @@ export const k8sNamespacesMock = [
   { metadata: { name: 'default' } },
   { metadata: { name: 'agent' } },
 ];
+
+export const fluxKustomizationsMock = [
+  {
+    status: 'True',
+    type: 'Ready',
+  },
+];

@@ -67,6 +67,7 @@ module Ci
           .for_ref(pipeline.ref)
           .where_not_sha(project.commit(pipeline.ref).try(:id))
           .where("created_at < ?", pipeline.created_at)
+          .for_status(CommitStatus::AVAILABLE_STATUSES)
           .ci_sources
 
         scope = scope.id_in(ids) if ids.present?

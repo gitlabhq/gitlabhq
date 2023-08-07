@@ -10,6 +10,8 @@ export default (containerId = 'update-shared-runners-form') => {
     groupName,
     groupIsEmpty,
     sharedRunnersSetting,
+    parentName,
+    parentSettingsPath,
     parentSharedRunnersSetting,
     runnerEnabledValue,
     runnerDisabledValue,
@@ -23,10 +25,14 @@ export default (containerId = 'update-shared-runners-form') => {
       groupName,
       groupIsEmpty: parseBoolean(groupIsEmpty),
       sharedRunnersSetting,
-      parentSharedRunnersSetting,
+
       runnerEnabledValue,
       runnerDisabledValue,
       runnerAllowOverrideValue,
+
+      parentName,
+      parentSettingsPath,
+      parentSharedRunnersSetting,
     },
     render(createElement) {
       return createElement(UpdateSharedRunnersForm);

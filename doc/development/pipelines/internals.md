@@ -305,63 +305,79 @@ You can skip a job `git clone`/`git fetch` by adding the following pattern to a 
 
 #### Scenario 1: no `before_script` is defined in the job
 
+This applies to the parent sections the job extends from as well.
+
 You can just extend the `.fast-no-clone-job`:
 
+**Before:**
+
 ```yaml
-  extends:
-    - .fast-no-clone-job
-  variables:
-    FILES_TO_DOWNLOAD: >
-      scripts/rspec_helpers.sh
-      scripts/slack
+  # Note: No `extends:` is present in the job
+  a-job:
+    script:
+      - source scripts/rspec_helpers.sh scripts/slack
+      - echo "No need for a git clone!"
 ```
 
-#### Scenario 2: a `before_script` block is already defined in the job
-
-You have to include the `.fast-no-clone-job` via a `!reference` as well:
+**After:**
 
 ```yaml
-  extends:
-    - .fast-no-clone-job
-  variables:
-    FILES_TO_DOWNLOAD: >
-      scripts/rspec_helpers.sh
-      scripts/slack
-  before_script:
-    - !reference [".fast-no-clone-job", before_script]
-    - # [...]
+  # Note: No `extends:` is present in the job
+  a-job:
+    extends:
+      - .fast-no-clone-job
+    variables:
+      FILES_TO_DOWNLOAD: >
+        scripts/rspec_helpers.sh
+        scripts/slack
+    script:
+      - source scripts/rspec_helpers.sh scripts/slack
+      - echo "No need for a git clone!"
 ```
 
-- The job sets the `GIT_STRATEGY` to `none`.
-- The files are downloaded from current project, on the current `CI_COMMIT_SHA`
-- We use the `PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE` to fetch files from the repository (particularly important if we are in a private project)
+#### Scenario 2: a `before_script` block is already defined in the job (or in jobs it extends)
 
-Below is an example on how to convert a job using this pattern:
+For this scenario, you have to:
+
+1. Extend the `.fast-no-clone-job` as in the first scenario (this will merge the `FILES_TO_DOWNLOAD` variable with the other variables)
+1. Make sure the `before_script` section from `.fast-no-clone-job` is referenced in the `before_script` we use for this job.
+
+**Before:**
 
 ```yaml
-# Before
-my-job:
-  image: ruby
-  stage: prepare
-  script: # This job requires two files to function
-    - source ./scripts/rspec_helpers.sh
-    - source ./scripts/slack
-    - echo "The files were successfully sourced!"
+  .base-job:
+    before_script:
+      echo "Hello from .base-job"
 
-# After
-my-job:
-  extends:
-    - .fast-no-clone-job
-  image: ruby
-  stage: prepare
-  variables:
-    FILES_TO_DOWNLOAD: >
-      scripts/rspec_helpers.sh
-      scripts/slack
-  script: # This job requires two files to function
-    - source ./scripts/rspec_helpers.sh
-    - source ./scripts/slack
-    - echo "The files were successfully sourced!"
+  a-job:
+    extends:
+      - .base-job
+    script:
+      - source scripts/rspec_helpers.sh scripts/slack
+      - echo "No need for a git clone!"
+```
+
+**After:**
+
+```yaml
+  .base-job:
+    before_script:
+      echo "Hello from .base-job"
+
+  a-job:
+    extends:
+      - .base-job
+      - .fast-no-clone-job
+    variables:
+      FILES_TO_DOWNLOAD: >
+        scripts/rspec_helpers.sh
+        scripts/slack
+    before_script:
+      - !reference [".fast-no-clone-job", before_script]
+      - !reference [".base-job", before_script]
+    script:
+      - source scripts/rspec_helpers.sh scripts/slack
+      - echo "No need for a git clone!"
 ```
 
 #### Caveats

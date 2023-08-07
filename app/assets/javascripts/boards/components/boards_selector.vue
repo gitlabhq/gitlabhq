@@ -94,8 +94,11 @@ export default {
     parentType() {
       return this.boardType;
     },
-    boardQuery() {
+    issueBoardsQuery() {
       return this.isGroupBoard ? groupBoardsQuery : projectBoardsQuery;
+    },
+    boardsQuery() {
+      return this.issueBoardsQuery;
     },
     loading() {
       return this.loadingRecentBoards || this.loadingBoards;
@@ -161,7 +164,7 @@ export default {
       if (!data?.[this.parentType]) {
         return [];
       }
-      return data[this.parentType][boardType].edges.map(({ node }) => ({
+      return data[this.parentType][boardType].nodes.map((node) => ({
         id: getIdFromGraphQLId(node.id),
         name: node.name,
       }));
@@ -178,7 +181,7 @@ export default {
         variables() {
           return { fullPath: this.fullPath };
         },
-        query: this.boardQuery,
+        query: this.boardsQuery,
         update: (data) => this.boardUpdate(data, 'boards'),
         watchLoading: (isLoading) => {
           this.loadingBoards = isLoading;
@@ -217,19 +220,19 @@ export default {
       const { defaultClient: store } = this.$apollo.provider.clients;
 
       const sourceData = store.readQuery({
-        query: this.boardQuery,
+        query: this.boardsQuery,
         variables: { fullPath: this.fullPath },
       });
 
       const newData = produce(sourceData, (draftState) => {
-        draftState[this.parentType].boards.edges = [
-          ...draftState[this.parentType].boards.edges,
-          { node: board },
+        draftState[this.parentType].boards.nodes = [
+          ...draftState[this.parentType].boards.nodes,
+          { ...board },
         ];
       });
 
       store.writeQuery({
-        query: this.boardQuery,
+        query: this.boardsQuery,
         variables: { fullPath: this.fullPath },
         data: newData,
       });

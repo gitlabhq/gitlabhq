@@ -8,6 +8,7 @@ import { defaultSortableOptions } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Tracking from '~/tracking';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
+import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
@@ -49,6 +50,7 @@ export default {
   mixins: [Tracking.mixin(), glFeatureFlagMixin()],
   inject: [
     'isEpicBoard',
+    'isIssueBoard',
     'isGroupBoard',
     'disabled',
     'fullPath',
@@ -578,6 +580,7 @@ export default {
     async addListItem(input) {
       this.toggleForm();
       this.addItemToListInProgress = true;
+      let issuable;
       try {
         await this.$apollo.mutate({
           mutation: listIssuablesQueries[this.issuableType].createMutation,
@@ -586,7 +589,7 @@ export default {
             withColor: this.isEpicBoard && this.glFeatures.epicColorHighlight,
           },
           update: (cache, { data: { createIssuable } }) => {
-            const { issuable } = createIssuable;
+            issuable = createIssuable.issuable;
             addItemToList({
               query: listIssuablesQueries[this.issuableType].query,
               variables: { ...this.listQueryVariables, id: this.currentList.id },
@@ -626,6 +629,13 @@ export default {
         });
       } finally {
         this.addItemToListInProgress = false;
+        this.$apollo.mutate({
+          mutation: setActiveBoardItemMutation,
+          variables: {
+            boardItem: issuable,
+            isIssue: this.isIssueBoard,
+          },
+        });
       }
     },
   },

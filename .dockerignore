@@ -1,82 +1,60 @@
 # `build_from_dir` can't find Dockerfile when `.dockerignore` is "*"
 # See https://github.com/swipely/docker-api/issues/484
-# Ignore all folders except the following files we need to build the QA image:
-# - ./config/initializers/0_inject_enterprise_edition_module.rb
-# - ./config/feature_flags
-# - ./ee/config/feature_flags
-# - ./ee/app/models/license.rb
-# - ./lib/gitlab_edition.rb
-# - ./lib/gitlab/utils.rb
-# - ./qa/
-# - ./INSTALLATION_TYPE
-# - ./VERSION
-
+# Ignore all folders except the one listed at the bottom of this file.
 /.git/
 /app/
 /bin/
 /builds/
 /changelogs/
-/config/environments/
-/config/helpers/
-/config/knative/
-/config/locales/
-/config/prometheus/
-/config/routes/
+/config/
+/coverage/
 /danger/
+/data/
 /db/
 /doc/
-/docker/
-/ee/bin/
-/ee/changelogs/
-/ee/config/events/
-/ee/config/metrics/
-/ee/config/routes/
-/ee/db/
-/ee/fixtures/
-/ee/lib/
-/ee/locale/
-/ee/spec/
+/ee/
+/file_hooks/
 /fixtures/
-/templates/
-/lint/
-/lib/api/
-/lib/assets/
-/lib/backup/
-/lib/banzai/
-/lib/bitbucket/
-/lib/server/
-/lib/constraints/
-/lib/registry/
-/lib/policy/
-/lib/feature/
-/lib/generators/
-/lib/gitaly/
-/lib/api/
-/lib/token/
-/lib/mattermost/
-/lib/teams/
-/lib/storage/
-/lib/auth/
-/lib/peek/
-/lib/prometheus/
-/lib/quality/
-/lib/rouge/
-/lib/flaky/
-/lib/zip/
-/lib/sentry/
-/lib/serializers/
-/lib/support/
-/lib/check/
-/lib/tasks/
+/gems/
+/generator_templates/
+/glfm_specification/
+/haml_lint/
+/jh/
+/lib/
 /locale/
 /log/
-/modules/
+/metrics_server/
 /node_modules/
-/plugins/
+/patches/
 /public/
+/qa/
 /rubocop/
 /scripts/
 /shared/
+/sidekiq_cluster/
 /spec/
-/symbol/
+/storybook/
 /tmp/
+/tooling/
+/vendor/
+/workhorse/
+
+!/config/initializers/0_inject_enterprise_edition_module.rb
+!/config/feature_flags/
+!/config/bundler_setup.rb
+!/lib/gitlab_edition.rb
+!/lib/gitlab/utils.rb
+!/spec/support/fast_quarantine.rb
+!/tooling/lib/tooling/fast_quarantine.rb
+!/INSTALLATION_TYPE
+!/VERSION
+!/gems/
+!/qa/
+!/vendor/gems/
+
+!/ee/app/models/license.rb
+!/ee/config/feature_flags/
+
+!/jh/qa/
+!/jh/lib/
+!/jh/config/feature_flags/

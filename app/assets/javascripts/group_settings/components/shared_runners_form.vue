@@ -1,5 +1,5 @@
 <script>
-import { GlToggle, GlAlert } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf, GlToggle } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { updateGroup } from '~/api/groups_api';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -14,19 +14,29 @@ import {
 
 export default {
   components: {
-    GlToggle,
     GlAlert,
+    GlLink,
+    GlSprintf,
+    GlToggle,
   },
-  inject: [
-    'groupId',
-    'groupName',
-    'groupIsEmpty',
-    'sharedRunnersSetting',
-    'parentSharedRunnersSetting',
-    'runnerEnabledValue',
-    'runnerDisabledValue',
-    'runnerAllowOverrideValue',
-  ],
+  inject: {
+    groupId: {},
+    groupName: {},
+    groupIsEmpty: {},
+    sharedRunnersSetting: {},
+
+    runnerEnabledValue: {},
+    runnerDisabledValue: {},
+    runnerAllowOverrideValue: {},
+
+    // Parent group, only present in sub-groups
+
+    parentSharedRunnersSetting: { default: null },
+
+    // Available when user can admin parent
+    parentName: { default: null },
+    parentSettingsPath: { default: null },
+  },
   data() {
     return {
       isLoading: false,
@@ -47,6 +57,9 @@ export default {
     },
     overrideToggleValue() {
       return this.value === this.runnerAllowOverrideValue;
+    },
+    isParentAvailable() {
+      return this.parentSettingsPath && this.parentName;
     },
   },
   methods: {
@@ -109,26 +122,28 @@ export default {
     <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mb-5">
       {{ error }}
     </gl-alert>
-
-    <gl-alert
-      v-if="isSharedRunnersToggleDisabled"
-      variant="warning"
-      :dismissible="false"
-      class="gl-mb-5"
-    >
-      {{ __('Shared runners are disabled for the parent group') }}
-    </gl-alert>
-
     <section class="gl-mb-5">
       <gl-toggle
         :value="sharedRunnersToggleValue"
         :is-loading="isLoading"
         :disabled="isSharedRunnersToggleDisabled"
         :label="__('Enable shared runners for this group')"
-        :help="__('Enable shared runners for all projects and subgroups in this group.')"
+        :description="__('Enable shared runners for all projects and subgroups in this group.')"
         data-testid="shared-runners-toggle"
         @change="onSharedRunnersToggle"
-      />
+      >
+        <template v-if="isSharedRunnersToggleDisabled" #help>
+          {{ s__('Runners|Shared runners are disabled.') }}
+          <gl-sprintf
+            v-if="isParentAvailable"
+            :message="s__('Runners|Go to %{groupLink} to enable them.')"
+          >
+            <template #groupLink>
+              <gl-link :href="parentSettingsPath">{{ parentName }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
+      </gl-toggle>
     </section>
 
     <section class="gl-mb-5">
@@ -137,10 +152,24 @@ export default {
         :is-loading="isLoading"
         :disabled="isOverrideToggleDisabled"
         :label="__('Allow projects and subgroups to override the group setting')"
-        :help="__('Allows projects or subgroups in this group to override the global setting.')"
+        :description="
+          __('Allows projects or subgroups in this group to override the global setting.')
+        "
         data-testid="override-runners-toggle"
         @change="onOverrideToggle"
-      />
+      >
+        <template v-if="isSharedRunnersToggleDisabled" #help>
+          {{ s__('Runners|Shared runners are disabled.') }}
+          <gl-sprintf
+            v-if="isParentAvailable"
+            :message="s__('Runners|Go to %{groupLink} to enable them.')"
+          >
+            <template #groupLink>
+              <gl-link :href="parentSettingsPath">{{ parentName }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
+      </gl-toggle>
     </section>
   </div>
 </template>

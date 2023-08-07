@@ -2,7 +2,11 @@ import MockAdapter from 'axios-mock-adapter';
 import { CoreV1Api, AppsV1Api, BatchV1Api } from '@gitlab/cluster-client';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
+  HTTP_STATUS_UNAUTHORIZED,
+} from '~/lib/utils/http_status';
 import { resolvers } from '~/environments/graphql/resolvers';
 import environmentToRollback from '~/environments/graphql/queries/environment_to_rollback.query.graphql';
 import environmentToDelete from '~/environments/graphql/queries/environment_to_delete.query.graphql';
@@ -22,6 +26,7 @@ import {
   k8sPodsMock,
   k8sServicesMock,
   k8sNamespacesMock,
+  fluxKustomizationsMock,
 } from './mock_data';
 
 const ENDPOINT = `${TEST_HOST}/environments`;
@@ -39,6 +44,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     },
   };
   const namespace = 'default';
+  const environmentName = 'my-environment';
 
   beforeEach(() => {
     mockResolvers = resolvers(ENDPOINT);
@@ -365,6 +371,74 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       },
     );
   });
+  describe('fluxKustomizationStatus', () => {
+    const endpoint = `${configuration.basePath}/apis/kustomize.toolkit.fluxcd.io/v1beta1/namespaces/${namespace}/kustomizations/${environmentName}`;
+
+    it('should request Flux Kustomizations via the Kubernetes API', async () => {
+      mock
+        .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
+        .reply(HTTP_STATUS_OK, {
+          status: { conditions: fluxKustomizationsMock },
+        });
+
+      const fluxKustomizationStatus = await mockResolvers.Query.fluxKustomizationStatus(null, {
+        configuration,
+        namespace,
+        environmentName,
+      });
+
+      expect(fluxKustomizationStatus).toEqual(fluxKustomizationsMock);
+    });
+    it('should throw an error if the API call fails', async () => {
+      const apiError = 'Invalid credentials';
+      mock
+        .onGet(endpoint, { withCredentials: true, headers: configuration.base })
+        .reply(HTTP_STATUS_UNAUTHORIZED, { message: apiError });
+
+      const fluxKustomizationsError = mockResolvers.Query.fluxKustomizationStatus(null, {
+        configuration,
+        namespace,
+        environmentName,
+      });
+
+      await expect(fluxKustomizationsError).rejects.toThrow(apiError);
+    });
+  });
+
+  describe('fluxHelmReleaseStatus', () => {
+    const endpoint = `${configuration.basePath}/apis/helm.toolkit.fluxcd.io/v2beta1/namespaces/${namespace}/helmreleases/${environmentName}`;
+
+    it('should request Flux Helm Releases via the Kubernetes API', async () => {
+      mock
+        .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
+        .reply(HTTP_STATUS_OK, {
+          status: { conditions: fluxKustomizationsMock },
+        });
+
+      const fluxHelmReleaseStatus = await mockResolvers.Query.fluxHelmReleaseStatus(null, {
+        configuration,
+        namespace,
+        environmentName,
+      });
+
+      expect(fluxHelmReleaseStatus).toEqual(fluxKustomizationsMock);
+    });
+    it('should throw an error if the API call fails', async () => {
+      const apiError = 'Invalid credentials';
+      mock
+        .onGet(endpoint, { withCredentials: true, headers: configuration.base })
+        .reply(HTTP_STATUS_UNAUTHORIZED, { message: apiError });
+
+      const fluxHelmReleasesError = mockResolvers.Query.fluxHelmReleaseStatus(null, {
+        configuration,
+        namespace,
+        environmentName,
+      });
+
+      await expect(fluxHelmReleasesError).rejects.toThrow(apiError);
+    });
+  });
+
   describe('stopEnvironmentREST', () => {
     it('should post to the stop environment path', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);

@@ -76,16 +76,29 @@ module Ci
     end
 
     def group_shared_runners_settings_data(group)
-      {
+      data = {
         group_id: group.id,
         group_name: group.name,
         group_is_empty: (group.projects.empty? && group.children.empty?).to_s,
         shared_runners_setting: group.shared_runners_setting,
-        parent_shared_runners_setting: group.parent&.shared_runners_setting,
+
         runner_enabled_value: Namespace::SR_ENABLED,
         runner_disabled_value: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
-        runner_allow_override_value: Namespace::SR_DISABLED_AND_OVERRIDABLE
+        runner_allow_override_value: Namespace::SR_DISABLED_AND_OVERRIDABLE,
+
+        parent_shared_runners_setting: group.parent&.shared_runners_setting,
+        parent_name: nil,
+        parent_settings_path: nil
       }
+
+      if group.parent && can?(current_user, :admin_group, group.parent)
+        data.merge!({
+          parent_name: group.parent.name,
+          parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'js-runner-settings')
+        })
+      end
+
+      data
     end
 
     def group_runners_data_attributes(group)

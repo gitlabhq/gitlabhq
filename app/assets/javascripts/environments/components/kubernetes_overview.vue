@@ -24,6 +24,10 @@ export default {
       required: true,
       type: Object,
     },
+    environmentName: {
+      required: true,
+      type: String,
+    },
     namespace: {
       required: false,
       type: String,
@@ -96,7 +100,12 @@ export default {
     </p>
     <gl-collapse :visible="isVisible" class="gl-md-pl-7 gl-md-pr-5 gl-mt-4">
       <template v-if="isVisible">
-        <kubernetes-status-bar :cluster-health-status="clusterHealthStatus" class="gl-mb-4" />
+        <kubernetes-status-bar
+          :cluster-health-status="clusterHealthStatus"
+          :configuration="k8sAccessConfiguration"
+          :namespace="namespace"
+          :environment-name="environmentName"
+          class="gl-mb-3" />
         <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-5" />
 
         <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mb-5">

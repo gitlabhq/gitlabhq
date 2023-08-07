@@ -6,12 +6,13 @@ import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info
 import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
 import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
 import KubernetesStatusBar from '~/environments/components/kubernetes_status_bar.vue';
-import { agent, kubernetesNamespace } from './graphql/mock_data';
+import { agent, kubernetesNamespace, resolvedEnvironment } from './graphql/mock_data';
 import { mockKasTunnelUrl } from './mock_data';
 
 const propsData = {
   clusterAgent: agent,
   namespace: kubernetesNamespace,
+  environmentName: resolvedEnvironment.name,
 };
 
 const provide = {
@@ -110,7 +111,12 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it('renders kubernetes status bar', () => {
-      expect(findKubernetesStatusBar().exists()).toBe(true);
+      expect(findKubernetesStatusBar().props()).toEqual({
+        clusterHealthStatus: 'success',
+        configuration,
+        namespace: kubernetesNamespace,
+        environmentName: resolvedEnvironment.name,
+      });
     });
   });
 

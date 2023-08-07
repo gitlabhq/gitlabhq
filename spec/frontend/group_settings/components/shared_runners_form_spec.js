@@ -1,5 +1,6 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { s__, sprintf } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -17,6 +18,9 @@ const RUNNER_ENABLED_VALUE = 'enabled';
 const RUNNER_DISABLED_VALUE = 'disabled_and_unoverridable';
 const RUNNER_ALLOW_OVERRIDE_VALUE = 'disabled_and_overridable';
 
+const mockParentName = 'My group';
+const mockParentSettingsPath = '/groups/my-group/-/settings/ci_cd';
+
 describe('group_settings/components/shared_runners_form', () => {
   let wrapper;
 
@@ -27,20 +31,19 @@ describe('group_settings/components/shared_runners_form', () => {
         groupName: GROUP_NAME,
         groupIsEmpty: false,
         sharedRunnersSetting: RUNNER_ENABLED_VALUE,
-        parentSharedRunnersSetting: null,
+
         runnerEnabledValue: RUNNER_ENABLED_VALUE,
         runnerDisabledValue: RUNNER_DISABLED_VALUE,
         runnerAllowOverrideValue: RUNNER_ALLOW_OVERRIDE_VALUE,
         ...provide,
       },
+      stubs: {
+        GlSprintf,
+      },
     });
   };
 
-  const findAlert = (variant) =>
-    wrapper
-      .findAllComponents(GlAlert)
-      .filter((w) => w.props('variant') === variant)
-      .at(0);
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findSharedRunnersToggle = () => wrapper.findByTestId('shared-runners-toggle');
   const findOverrideToggle = () => wrapper.findByTestId('override-runners-toggle');
   const getSharedRunnersSetting = () => {
@@ -86,17 +89,37 @@ describe('group_settings/components/shared_runners_form', () => {
     });
   });
 
-  describe('When parent group disabled shared runners', () => {
-    it('toggles are disabled', () => {
+  describe.each`
+    provide                                                                       | case                         | isParentLinkExpected
+    ${{ parentName: mockParentName, parentSettingsPath: mockParentSettingsPath }} | ${'can configure parent'}    | ${true}
+    ${{}}                                                                         | ${'cannot configure parent'} | ${false}
+  `('When parent group disabled shared runners and $case', ({ provide, isParentLinkExpected }) => {
+    beforeEach(() => {
       createComponent({
         sharedRunnersSetting: RUNNER_DISABLED_VALUE,
         parentSharedRunnersSetting: RUNNER_DISABLED_VALUE,
+        ...provide,
       });
-
-      expect(findSharedRunnersToggle().props('disabled')).toBe(true);
-      expect(findOverrideToggle().props('disabled')).toBe(true);
-      expect(findAlert('warning').exists()).toBe(true);
     });
+
+    it.each([findSharedRunnersToggle, findOverrideToggle])(
+      'toggle %# is disabled',
+      (findToggle) => {
+        expect(findToggle().props('disabled')).toBe(true);
+        expect(findToggle().text()).toContain(s__('Runners|Shared runners are disabled.'));
+
+        if (isParentLinkExpected) {
+          expect(findToggle().text()).toContain(
+            sprintf(s__('Runners|Go to %{groupLink} to enable them.'), {
+              groupLink: mockParentName,
+            }),
+          );
+          const link = findToggle().findComponent(GlLink);
+          expect(link.text()).toBe(mockParentName);
+          expect(link.attributes('href')).toBe(mockParentSettingsPath);
+        }
+      },
+    );
   });
 
   describe('loading state', () => {
@@ -240,7 +263,7 @@ describe('group_settings/components/shared_runners_form', () => {
     });
 
     it('error should be shown', () => {
-      expect(findAlert('danger').text()).toBe(message);
+      expect(findAlert().text()).toBe(message);
     });
   });
 });

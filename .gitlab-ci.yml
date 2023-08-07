@@ -163,7 +163,7 @@ variables:
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
   RSPEC_FAIL_FAST_THRESHOLD: 20
-  RSPEC_FAST_QUARANTINE_LOCAL_PATH: rspec/fast_quarantine-gitlab.txt
+  RSPEC_FAST_QUARANTINE_PATH: rspec/fast_quarantine-gitlab.txt
   RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-foss-impact.gitlab-ci.yml.erb
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt

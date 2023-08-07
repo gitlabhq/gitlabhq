@@ -29,7 +29,7 @@ export default {
       return this.canAdminList ? s__('Boards|Edit board') : s__('Boards|View scope');
     },
     tooltipTitle() {
-      return this.hasScope ? __("This board's scope is reduced") : '';
+      return this.hasScope || this.boardHasScope ? __("This board's scope is reduced") : '';
     },
   },
   methods: {

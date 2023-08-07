@@ -21,6 +21,7 @@ import {
 } from './mock_data';
 
 const projectPath = 'root/my-repo';
+const testProjectPath = 'root/test';
 const message = 'An error occurred';
 const error = new Error(message);
 
@@ -53,10 +54,11 @@ describe('TokenAccess component', () => {
 
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAddProjectBtn = () => wrapper.findByRole('button', { name: 'Add project' });
+  const findAddProjectBtn = () => wrapper.findByTestId('add-project-btn');
   const findCancelBtn = () => wrapper.findByRole('button', { name: 'Cancel' });
   const findProjectInput = () => wrapper.findComponent(GlFormInput);
   const findRemoveProjectBtn = () => wrapper.findByRole('button', { name: 'Remove access' });
+  const findToggleFormBtn = () => wrapper.findByTestId('toggle-form-btn');
   const findTokenDisabledAlert = () => wrapper.findComponent(GlAlert);
 
   const createMockApolloProvider = (requestHandlers) => {
@@ -69,11 +71,6 @@ describe('TokenAccess component', () => {
         fullPath: projectPath,
       },
       apolloProvider: createMockApolloProvider(requestHandlers),
-      data() {
-        return {
-          targetProjectPath: 'root/test',
-        };
-      },
     });
   };
 
@@ -222,11 +219,13 @@ describe('TokenAccess component', () => {
 
       await waitForPromises();
 
+      await findToggleFormBtn().trigger('click');
+      await findProjectInput().vm.$emit('input', testProjectPath);
       findAddProjectBtn().trigger('click');
 
       expect(inboundAddProjectSuccessResponseHandler).toHaveBeenCalledWith({
         projectPath,
-        targetProjectPath: 'root/test',
+        targetProjectPath: testProjectPath,
       });
     });
 
@@ -242,6 +241,8 @@ describe('TokenAccess component', () => {
 
       await waitForPromises();
 
+      await findToggleFormBtn().trigger('click');
+      await findProjectInput().vm.$emit('input', testProjectPath);
       findAddProjectBtn().trigger('click');
 
       await waitForPromises();
@@ -249,7 +250,7 @@ describe('TokenAccess component', () => {
       expect(createAlert).toHaveBeenCalledWith({ message });
     });
 
-    it('clicking cancel clears target path', async () => {
+    it('clicking cancel hides the form and clears the target path', async () => {
       createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
@@ -260,9 +261,17 @@ describe('TokenAccess component', () => {
 
       await waitForPromises();
 
-      expect(findProjectInput().element.value).toBe('root/test');
+      await findToggleFormBtn().trigger('click');
+
+      expect(findProjectInput().exists()).toBe(true);
+
+      await findProjectInput().vm.$emit('input', testProjectPath);
 
       await findCancelBtn().trigger('click');
+
+      expect(findProjectInput().exists()).toBe(false);
+
+      await findToggleFormBtn().trigger('click');
 
       expect(findProjectInput().element.value).toBe('');
     });

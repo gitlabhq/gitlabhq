@@ -16277,6 +16277,12 @@ msgstr ""
 msgid "Deployment|Triggerer"
 msgstr ""
 
+msgid "Deployment|Unavailable"
+msgstr ""
+
+msgid "Deployment|Unknown"
+msgstr ""
+
 msgid "Deployment|Waiting"
 msgstr ""
 
@@ -18273,6 +18279,12 @@ msgstr ""
 msgid "Environment|Ports"
 msgstr ""
 
+msgid "Environment|Reconciled"
+msgstr ""
+
+msgid "Environment|Reconciling"
+msgstr ""
+
 msgid "Environment|ReplicaSets"
 msgstr ""
 
@@ -18282,6 +18294,9 @@ msgstr ""
 msgid "Environment|Services"
 msgstr ""
 
+msgid "Environment|Stalled"
+msgstr ""
+
 msgid "Environment|StatefulSets"
 msgstr ""
 
@@ -18289,6 +18304,9 @@ msgid "Environment|Succeeded"
 msgstr ""
 
 msgid "Environment|Summary"
+msgstr ""
+
+msgid "Environment|Sync status"
 msgstr ""
 
 msgid "Environment|There was an error connecting to the cluster agent."
@@ -40428,6 +40446,9 @@ msgstr ""
 msgid "Runners|GitLab Runner must be installed before you can register a runner. %{linkStart}How do I install GitLab Runner?%{linkEnd}"
 msgstr ""
 
+msgid "Runners|Go to %{groupLink} to enable them."
+msgstr ""
+
 msgid "Runners|Go to runners page"
 msgstr ""
 
@@ -40793,6 +40814,9 @@ msgid "Runners|Select your preferred runner, then choose the capacity for the ru
 msgstr ""
 
 msgid "Runners|Shared runners are disabled in the group settings"
+msgstr ""
+
+msgid "Runners|Shared runners are disabled."
 msgstr ""
 
 msgid "Runners|Shared runners will be disabled for all projects and subgroups in this group. If you proceed, you must manually re-enable shared runners in the settings of each project and subgroup."
@@ -43594,9 +43618,6 @@ msgid "Shared projects"
 msgstr ""
 
 msgid "Shared runners"
-msgstr ""
-
-msgid "Shared runners are disabled for the parent group"
 msgstr ""
 
 msgid "Shared runners details"

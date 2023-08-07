@@ -106,7 +106,7 @@
       = _("Token Access")
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _("Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects.")
   .settings-content
     = render 'ci/token_access/index'

@@ -6,8 +6,8 @@ import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
 import eventHub from '~/boards/eventhub';
-import { listsQuery } from 'ee_else_ce/boards/constants';
-import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
+import { listsQuery, FilterFields } from 'ee_else_ce/boards/constants';
+import { formatBoardLists, filterVariables, FiltersInfo } from 'ee_else_ce/boards/boards_util';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import errorQuery from '../graphql/client/error.query.graphql';
 import { setError } from '../graphql/cache_updates';
@@ -137,7 +137,12 @@ export default {
     setFilters(filters) {
       const filterParams = { ...filters };
       if (filterParams.groupBy) delete filterParams.groupBy;
-      this.filterParams = filterParams;
+      this.filterParams = filterVariables({
+        filters: filterParams,
+        issuableType: this.issuableType,
+        filterInfo: FiltersInfo,
+        filterFields: FilterFields,
+      });
     },
   },
 };

@@ -1,0 +1,14 @@
+query getFluxHelmKustomizationStatusQuery(
+  $configuration: LocalConfiguration
+  $namespace: String
+  $environmentName: String
+) {
+  fluxKustomizationStatus(
+    configuration: $configuration
+    namespace: $namespace
+    environmentName: $environmentName
+  ) @client {
+    status
+    type
+  }
+}

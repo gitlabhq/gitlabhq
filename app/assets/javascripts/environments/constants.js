@@ -104,6 +104,42 @@ export const HEALTH_BADGES = {
   },
 };
 
+export const SYNC_STATUS_BADGES = {
+  reconciled: {
+    variant: 'success',
+    icon: 'status_success',
+    text: s__('Environment|Reconciled'),
+  },
+  reconciling: {
+    variant: 'info',
+    icon: 'status_running',
+    text: s__('Environment|Reconciling'),
+  },
+  stalled: {
+    variant: 'warning',
+    icon: 'status_pending',
+    text: s__('Environment|Stalled'),
+  },
+  failed: {
+    variant: 'danger',
+    icon: 'status_failed',
+    text: s__('Deployment|Failed'),
+  },
+  unknown: {
+    variant: 'neutral',
+    icon: 'status_notfound',
+    text: s__('Deployment|Unknown'),
+  },
+  unavailable: {
+    variant: 'muted',
+    icon: 'status_notfound',
+    text: s__('Deployment|Unavailable'),
+  },
+};
+
+export const STATUS_TRUE = 'True';
+export const STATUS_FALSE = 'False';
+
 export const PHASE_RUNNING = 'Running';
 export const PHASE_PENDING = 'Pending';
 export const PHASE_SUCCEEDED = 'Succeeded';

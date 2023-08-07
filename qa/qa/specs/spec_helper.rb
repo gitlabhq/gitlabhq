@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
-require_relative '../../qa'
 require 'active_support/testing/time_helpers'
+
+require_relative '../../qa'
+
+# Require shared test tooling from Rails test suite
+require_relative '../../../spec/support/fast_quarantine'
 
 QA::Specs::QaDeprecationToolkitEnv.configure!
 

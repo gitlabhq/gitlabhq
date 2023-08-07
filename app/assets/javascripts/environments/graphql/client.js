@@ -9,6 +9,8 @@ import k8sPodsQuery from './queries/k8s_pods.query.graphql';
 import k8sServicesQuery from './queries/k8s_services.query.graphql';
 import k8sWorkloadsQuery from './queries/k8s_workloads.query.graphql';
 import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
+import fluxKustomizationStatusQuery from './queries/flux_kustomization_status.query.graphql';
+import fluxHelmReleaseStatusQuery from './queries/flux_helm_release_status.query.graphql';
 import { resolvers } from './resolvers';
 import typeDefs from './typedefs.graphql';
 
@@ -170,6 +172,21 @@ export const apolloProvider = (endpoint) => {
       },
     },
   });
+  cache.writeQuery({
+    query: fluxKustomizationStatusQuery,
+    data: {
+      status: '',
+      type: '',
+    },
+  });
+  cache.writeQuery({
+    query: fluxHelmReleaseStatusQuery,
+    data: {
+      status: '',
+      type: '',
+    },
+  });
+
   return new VueApollo({
     defaultClient,
   });

@@ -64,6 +64,10 @@
   rules:
     - when: always
 
+.rules:download-fast-quarantine-report:
+  rules:
+    - when: always
+
 # ------------------------------------------
 # Test
 # ------------------------------------------

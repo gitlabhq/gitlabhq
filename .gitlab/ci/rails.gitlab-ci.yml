@@ -548,9 +548,6 @@ rspec:flaky-tests-report:
     - .rails:rules:flaky-tests-report
   stage: post-test
   needs: !reference ["rspec:coverage", "needs"]
-  variables:
-    SKIPPED_TESTS_REPORT_PATH: rspec/skipped_tests_report.txt
-    RETRIED_TESTS_REPORT_PATH: rspec/flaky/retried_tests_report.txt
   before_script:
     - source scripts/utils.sh
     - source scripts/rspec_helpers.sh

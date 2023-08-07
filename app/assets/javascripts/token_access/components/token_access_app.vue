@@ -12,7 +12,7 @@ export default {
 </script>
 <template>
   <div>
-    <inbound-token-access class="gl-pb-5" />
-    <outbound-token-access class="gl-py-5" />
+    <inbound-token-access />
+    <outbound-token-access />
   </div>
 </template>

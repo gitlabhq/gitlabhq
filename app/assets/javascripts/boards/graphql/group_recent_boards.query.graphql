@@ -2,11 +2,9 @@ query group_recent_boards($fullPath: ID!) {
   group(fullPath: $fullPath) {
     id
     recentIssueBoards {
-      edges {
-        node {
-          id
-          name
-        }
+      nodes {
+        id
+        name
       }
     }
   }

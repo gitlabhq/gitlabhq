@@ -3,8 +3,8 @@ import {
   GlAlert,
   GlButton,
   GlCard,
-  GlFormInput,
   GlLink,
+  GlIcon,
   GlLoadingIcon,
   GlSprintf,
   GlToggle,
@@ -71,8 +71,8 @@ export default {
     GlAlert,
     GlButton,
     GlCard,
-    GlFormInput,
     GlLink,
+    GlIcon,
     GlLoadingIcon,
     GlSprintf,
     GlToggle,
@@ -221,7 +221,7 @@ export default {
     <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
     <template v-else>
       <gl-alert
-        class="gl-mb-3"
+        class="gl-mt-5 gl-mb-3"
         variant="warning"
         :dismissible="false"
         :show-icon="false"
@@ -268,30 +268,29 @@ export default {
       </gl-toggle>
 
       <div>
-        <gl-card class="gl-mt-5 gl-mb-3">
+        <gl-card
+          class="gl-new-card"
+          header-class="gl-new-card-header"
+          body-class="gl-new-card-body gl-px-0"
+        >
           <template #header>
-            <h5 class="gl-my-0">{{ $options.i18n.cardHeaderTitle }}</h5>
+            <div class="gl-new-card-title-wrapper">
+              <h5 class="gl-new-card-title">{{ $options.i18n.cardHeaderTitle }}</h5>
+              <span class="gl-new-card-count">
+                <gl-icon name="project" class="gl-mr-2" />
+                {{ projects.length }}
+              </span>
+            </div>
+            <div class="gl-new-card-actions">
+              <gl-button size="small" disabled>{{ $options.i18n.addProject }}</gl-button>
+            </div>
           </template>
-          <template #default>
-            <gl-form-input
-              v-model="targetProjectPath"
-              :disabled="true"
-              :placeholder="$options.i18n.addProjectPlaceholder"
-              data-testid="project-path-input"
-            />
-          </template>
-          <template #footer>
-            <gl-button variant="confirm" :disabled="isProjectPathEmpty" @click="addProject">
-              {{ $options.i18n.addProject }}
-            </gl-button>
-            <gl-button @click="clearTargetProjectPath">{{ $options.i18n.cancel }}</gl-button>
-          </template>
+          <token-projects-table
+            :projects="projects"
+            :table-fields="$options.fields"
+            @removeProject="removeProject"
+          />
         </gl-card>
-        <token-projects-table
-          :projects="projects"
-          :table-fields="$options.fields"
-          @removeProject="removeProject"
-        />
       </div>
     </template>
   </div>

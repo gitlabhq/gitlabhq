@@ -180,8 +180,8 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
 
     subject(:import) { target_project.team.import(source_project, current_user) }
 
-    it 'matches the imported members', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419394' do
-      is_expected.to match(imported_members)
+    it 'matches the imported members' do
+      is_expected.to match_array(imported_members)
     end
 
     it 'target project includes source member with the same access' do

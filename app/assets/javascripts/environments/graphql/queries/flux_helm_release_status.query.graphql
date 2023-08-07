@@ -1,0 +1,14 @@
+query getFluxHelmReleaseStatusQuery(
+  $configuration: LocalConfiguration
+  $namespace: String
+  $environmentName: String
+) {
+  fluxHelmReleaseStatus(
+    configuration: $configuration
+    namespace: $namespace
+    environmentName: $environmentName
+  ) @client {
+    status
+    type
+  }
+}

@@ -412,6 +412,7 @@ module Ci
 
       joins(:pipeline_metadata).where(name_column.eq(name))
     end
+    scope :for_status, -> (status) { where(status: status) }
     scope :created_after, -> (time) { where(arel_table[:created_at].gt(time)) }
     scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }

@@ -167,6 +167,11 @@ type LocalK8sNamespaces {
   metadata: k8sNamespaceMetadata
 }
 
+type LocalFluxResourceStatus {
+  status: String
+  type: String
+}
+
 extend type Query {
   environmentApp(page: Int, scope: String): LocalEnvironmentApp
   folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
@@ -179,6 +184,16 @@ extend type Query {
   k8sPods(configuration: LocalConfiguration, namespace: String): [LocalK8sPods]
   k8sServices(configuration: LocalConfiguration): [LocalK8sServices]
   k8sWorkloads(configuration: LocalConfiguration, namespace: String): LocalK8sWorkloads
+  fluxKustomizationStatus(
+    configuration: LocalConfiguration
+    namespace: String
+    environmentName: String
+  ): LocalFluxResourceStatus
+  fluxHelmReleaseStatus(
+    configuration: LocalConfiguration
+    namespace: String
+    environmentName: String
+  ): LocalFluxResourceStatus
 }
 
 extend type Mutation {

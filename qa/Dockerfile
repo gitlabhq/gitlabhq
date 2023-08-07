@@ -49,6 +49,8 @@ COPY ./config/initializers/0_inject_enterprise_edition_module.rb /home/gitlab/co
 COPY ./config/feature_flags /home/gitlab/config/feature_flags
 COPY ./config/bundler_setup.rb /home/gitlab/config/
 COPY ./lib/gitlab_edition.rb /home/gitlab/lib/
+COPY ./spec/support/fast_quarantine.rb /home/gitlab/spec/support/
+COPY ./tooling/lib/tooling/fast_quarantine.rb /home/gitlab/tooling/lib/tooling/
 COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
 
 COPY ./qa /home/gitlab/qa

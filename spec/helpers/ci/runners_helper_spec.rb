@@ -115,12 +115,19 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
       }
     end
 
+    before do
+      allow(helper).to receive(:can?).with(user, :admin_group, parent).and_return(true)
+    end
+
     it 'returns group data for top level group' do
       result = {
         group_id: parent.id,
         group_name: parent.name,
         group_is_empty: 'false',
         shared_runners_setting: Namespace::SR_ENABLED,
+
+        parent_name: nil,
+        parent_settings_path: nil,
         parent_shared_runners_setting: nil
       }.merge(runner_constants)
 
@@ -133,7 +140,27 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
         group_name: group.name,
         group_is_empty: 'true',
         shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
-        parent_shared_runners_setting: Namespace::SR_ENABLED
+
+        parent_shared_runners_setting: Namespace::SR_ENABLED,
+        parent_name: parent.name,
+        parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'js-runner-settings')
+      }.merge(runner_constants)
+
+      expect(helper.group_shared_runners_settings_data(group)).to eq result
+    end
+
+    it 'returns groups data for child group with no access to parent' do
+      allow(helper).to receive(:can?).with(user, :admin_group, parent).and_return(false)
+
+      result = {
+        group_id: group.id,
+        group_name: group.name,
+        group_is_empty: 'true',
+        shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
+
+        parent_shared_runners_setting: Namespace::SR_ENABLED,
+        parent_name: nil,
+        parent_settings_path: nil
       }.merge(runner_constants)
 
       expect(helper.group_shared_runners_settings_data(group)).to eq result
@@ -145,7 +172,10 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
         group_name: group_with_project.name,
         group_is_empty: 'false',
         shared_runners_setting: Namespace::SR_ENABLED,
-        parent_shared_runners_setting: Namespace::SR_ENABLED
+
+        parent_shared_runners_setting: Namespace::SR_ENABLED,
+        parent_name: parent.name,
+        parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'js-runner-settings')
       }.merge(runner_constants)
 
       expect(helper.group_shared_runners_settings_data(group_with_project)).to eq result

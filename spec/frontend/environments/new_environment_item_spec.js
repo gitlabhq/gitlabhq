@@ -534,7 +534,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
   });
 
   describe('kubernetes overview', () => {
-    it('should request agent data when the environment is visible if the feature flag is enabled', async () => {
+    it('should request agent data when the environment is visible', async () => {
       wrapper = createWrapper({
         propsData: { environment: resolvedEnvironment },
         apolloProvider: createApolloProvider(agent),
@@ -578,6 +578,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       expect(findKubernetesOverview().props()).toMatchObject({
         clusterAgent: agent,
+        environmentName: resolvedEnvironment.name,
       });
     });
 
@@ -595,8 +596,9 @@ describe('~/environments/components/new_environment_item.vue', () => {
       await expandCollapsedSection();
       await waitForPromises();
 
-      expect(findKubernetesOverview().props()).toMatchObject({
+      expect(findKubernetesOverview().props()).toEqual({
         clusterAgent: agent,
+        environmentName: resolvedEnvironment.name,
         namespace: 'default',
       });
     });

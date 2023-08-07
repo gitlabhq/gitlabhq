@@ -372,7 +372,11 @@ export default {
         </gl-sprintf>
       </div>
       <div v-if="clusterAgent" :class="$options.kubernetesOverviewClasses">
-        <kubernetes-overview :cluster-agent="clusterAgent" :namespace="kubernetesNamespace" />
+        <kubernetes-overview
+          :cluster-agent="clusterAgent"
+          :namespace="kubernetesNamespace"
+          :environment-name="environment.name"
+        />
       </div>
       <div v-if="rolloutStatus" :class="$options.deployBoardClasses">
         <deploy-board-wrapper

@@ -16,6 +16,11 @@ import environmentToChangeCanaryQuery from './queries/environment_to_change_cana
 import isEnvironmentStoppingQuery from './queries/is_environment_stopping.query.graphql';
 import pageInfoQuery from './queries/page_info.query.graphql';
 
+const helmReleasesResourceType = 'helmreleases';
+const kustomizationsResourceType = 'kustomizations';
+const helmReleasesApiVersion = 'helm.toolkit.fluxcd.io/v2beta1';
+const kustomizationsApiVersion = 'kustomize.toolkit.fluxcd.io/v1beta1';
+
 const buildErrors = (errors = []) => ({
   errors,
   __typename: 'LocalEnvironmentErrors',
@@ -76,6 +81,30 @@ const mapWorkloadItems = (items, kind) => {
 const handleClusterError = (err) => {
   const error = err?.response?.data?.message ? new Error(err.response.data.message) : err;
   throw error;
+};
+
+const buildFluxResourceUrl = ({
+  basePath,
+  namespace,
+  apiVersion,
+  resourceType,
+  environmentName,
+}) => {
+  return `${basePath}/apis/${apiVersion}/namespaces/${namespace}/${resourceType}/${environmentName}`;
+};
+
+const getFluxResourceStatus = (configuration, url) => {
+  const { headers } = configuration.baseOptions;
+  const withCredentials = true;
+
+  return axios
+    .get(url, { withCredentials, headers })
+    .then((res) => {
+      return res?.data?.status?.conditions || [];
+    })
+    .catch((err) => {
+      handleClusterError(err);
+    });
 };
 
 export const resolvers = (endpoint) => ({
@@ -222,6 +251,26 @@ export const resolvers = (endpoint) => ({
           const error = err?.response?.data?.reason || err;
           throw new Error(humanizeClusterErrors(error));
         });
+    },
+    fluxKustomizationStatus(_, { configuration, namespace, environmentName }) {
+      const url = buildFluxResourceUrl({
+        basePath: configuration.basePath,
+        resourceType: kustomizationsResourceType,
+        apiVersion: kustomizationsApiVersion,
+        namespace,
+        environmentName,
+      });
+      return getFluxResourceStatus(configuration, url);
+    },
+    fluxHelmReleaseStatus(_, { configuration, namespace, environmentName }) {
+      const url = buildFluxResourceUrl({
+        basePath: configuration.basePath,
+        resourceType: helmReleasesResourceType,
+        apiVersion: helmReleasesApiVersion,
+        namespace,
+        environmentName,
+      });
+      return getFluxResourceStatus(configuration, url);
     },
   },
   Mutation: {

@@ -35,6 +35,11 @@ download-knapsack-report:
     - .download-knapsack-report
     - .rules:download-knapsack
 
+download-fast-quarantine-report:
+  extends:
+    - .download-fast-quarantine-report
+    - .rules:download-fast-quarantine-report
+
 cache-gems:
   extends:
     - .qa-install

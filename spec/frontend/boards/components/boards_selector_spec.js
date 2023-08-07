@@ -180,8 +180,7 @@ describe('BoardsSelector', () => {
 
         it('shows only matching boards when filtering', async () => {
           const filterTerm = 'board1';
-          const expectedCount = boards.filter((board) => board.node.name.includes(filterTerm))
-            .length;
+          const expectedCount = boards.filter((board) => board.name.includes(filterTerm)).length;
 
           fillSearchBox(filterTerm);
 

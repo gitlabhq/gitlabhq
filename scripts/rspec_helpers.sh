@@ -13,9 +13,9 @@ function retrieve_tests_metadata() {
       echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
   fi
 
-  if [[ ! -f "${RSPEC_FAST_QUARANTINE_LOCAL_PATH}" ]]; then
-    curl --location -o "${RSPEC_FAST_QUARANTINE_LOCAL_PATH}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_LOCAL_PATH}" ||
-      echo "" > "${RSPEC_FAST_QUARANTINE_LOCAL_PATH}"
+  if [[ ! -f "${RSPEC_FAST_QUARANTINE_PATH}" ]]; then
+    curl --location -o "${RSPEC_FAST_QUARANTINE_PATH}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_PATH}" ||
+      echo "" > "${RSPEC_FAST_QUARANTINE_PATH}"
   fi
 }
 
@@ -179,7 +179,7 @@ function debug_rspec_variables() {
   echoinfo "FLAKY_RSPEC_SUITE_REPORT_PATH: ${FLAKY_RSPEC_SUITE_REPORT_PATH:-}"
   echoinfo "FLAKY_RSPEC_REPORT_PATH: ${FLAKY_RSPEC_REPORT_PATH:-}"
   echoinfo "NEW_FLAKY_RSPEC_REPORT_PATH: ${NEW_FLAKY_RSPEC_REPORT_PATH:-}"
-  echoinfo "SKIPPED_TESTS_REPORT_PATH: ${SKIPPED_TESTS_REPORT_PATH:-}"
+  echoinfo "RSPEC_SKIPPED_TESTS_REPORT_PATH: ${RSPEC_SKIPPED_TESTS_REPORT_PATH:-}"
 
   echoinfo "CRYSTALBALL: ${CRYSTALBALL:-}"
 
@@ -258,7 +258,6 @@ function rspec_paralellized_job() {
   export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
   export FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}all_${report_name}_report.json"
   export NEW_FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}new_${report_name}_report.json"
-  export SKIPPED_TESTS_REPORT_PATH="rspec/skipped_tests_${report_name}.txt"
 
   if [[ -d "ee/" ]]; then
     export KNAPSACK_GENERATE_REPORT="true"
@@ -302,13 +301,10 @@ function retry_failed_rspec_examples() {
   # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
   local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})
   local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg13 1/24' would become 'rspec_unit_pg13_1_24'
-  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
+  echoinfo "RSPEC_RETRIED_TESTS_REPORT_PATH: ${RSPEC_RETRIED_TESTS_REPORT_PATH:-}"
 
-  export RETRIED_TESTS_REPORT_PATH="${rspec_flaky_folder_path}retried_tests_${report_name}_report.txt"
-  echoinfo "RETRIED_TESTS_REPORT_PATH: ${RETRIED_TESTS_REPORT_PATH}"
-
-  echo "${CI_JOB_URL}" > "${RETRIED_TESTS_REPORT_PATH}"
-  echo $failed_examples >> "${RETRIED_TESTS_REPORT_PATH}"
+  echo "${CI_JOB_URL}" > "${RSPEC_RETRIED_TESTS_REPORT_PATH:-}"
+  echo $failed_examples >> "${RSPEC_RETRIED_TESTS_REPORT_PATH:-}"
 
   echoinfo "Retrying the failing examples in a new RSpec process..."
 
@@ -357,7 +353,7 @@ function warn_on_successfully_retried_test {
     # include the root path in the regexp to eliminate false positives
     changed_file="^\./$changed_file"
 
-    if grep -q "$changed_file" "$RETRIED_TESTS_REPORT_PATH"; then
+    if grep -q "${changed_file}" "${RSPEC_RETRIED_TESTS_REPORT_PATH}"; then
       echoinfo "Flaky test '$changed_file' was found in the list of files changed by this MR."
       echoinfo "Exiting with code $SUCCESSFULLY_RETRIED_TEST_EXIT_CODE."
       exit $SUCCESSFULLY_RETRIED_TEST_EXIT_CODE
@@ -454,22 +450,20 @@ function cleanup_individual_job_reports() {
   rm -rf ${knapsack_folder_path:-unknown_folder}rspec*.json \
     ${rspec_flaky_folder_path:-unknown_folder}all_*.json \
     ${rspec_flaky_folder_path:-unknown_folder}new_*.json \
-    ${rspec_flaky_folder_path:-unknown_folder}skipped_flaky_tests_*_report.txt \
-    ${rspec_flaky_folder_path:-unknown_folder}retried_tests_*_report.txt \
+    rspec/skipped_flaky_tests_*_report.txt \
+    rspec/retried_tests_*_report.txt \
     ${RSPEC_LAST_RUN_RESULTS_FILE:-unknown_folder} \
     ${RSPEC_PROFILING_FOLDER_PATH:-unknown_folder}/**/*
   rmdir ${RSPEC_PROFILING_FOLDER_PAT:-unknown_folder} || true
 }
 
 function generate_flaky_tests_reports() {
-  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
-
   debug_rspec_variables
 
-  mkdir -p ${rspec_flaky_folder_path}
+  mkdir -p rspec/
 
-  find ${rspec_flaky_folder_path} -type f -name 'skipped_tests_*.txt' -exec cat {} + >> "${SKIPPED_TESTS_REPORT_PATH}"
-  find ${rspec_flaky_folder_path} -type f -name 'retried_tests_*_report.txt' -exec cat {} + >> "${RETRIED_TESTS_REPORT_PATH}"
+  find rspec/ -type f -name 'skipped_tests-*.txt' -exec cat {} + >> "rspec/skipped_tests_report.txt"
+  find rspec/ -type f -name 'retried_tests-*.txt' -exec cat {} + >> "rspec/retried_tests_report.txt"
 
   cleanup_individual_job_reports
 }
