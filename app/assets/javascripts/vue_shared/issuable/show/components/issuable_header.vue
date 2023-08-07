@@ -192,7 +192,7 @@ export default {
       >
       <gl-button
         icon="chevron-double-lg-left"
-        class="gutter-toggle gl-display-block gl-sm-display-none!"
+        class="gl-ml-auto gl-display-block gl-sm-display-none!"
         :aria-label="__('Expand sidebar')"
         @click="handleRightSidebarToggleClick"
       />

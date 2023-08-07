@@ -315,6 +315,30 @@ union = Gitlab::SQL::Union.new([projects, more_projects, ...])
 Project.from("(#{union.to_sql}) projects")
 ```
 
+The `FromUnion` model concern provides a more convenient method to produce the same result as above:
+
+```ruby
+class Project
+  include FromUnion
+  ...
+end
+
+Project.from_union(projects, more_projects, ...)
+```
+
+`UNION` is common through the codebase, but it's also possible to use the other SQL set operators of `EXCEPT` and `INTERSECT`:
+
+```ruby
+class Project
+  include FromIntersect
+  include FromExcept
+  ...
+end
+
+intersected = Project.from_intersect(all_projects, project_set_1, project_set_2)
+excepted = Project.from_except(all_projects, project_set_1, project_set_2)
+```
+
 ### Uneven columns in the `UNION` sub-queries
 
 When the `UNION` query has uneven columns in the `SELECT` clauses, the database returns an error.
@@ -479,8 +503,8 @@ Simple usage of the `.upsert` method:
 BuildTrace.upsert(
   {
     build_id: build_id,
-    title: title 
-  }, 
+    title: title
+  },
   unique_by: :build_id
 )
 ```

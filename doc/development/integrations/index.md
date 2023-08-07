@@ -123,6 +123,23 @@ module Integrations
 end
 ```
 
+### Security enhancement features
+
+#### Masking channel values
+
+Integrations that [inherit from `Integrations::BaseChatNotification`](#define-the-integration) can hide the
+values of their channel input fields. Integrations should hide these values whenever the
+fields contain sensitive information such as auth tokens.
+
+By default, `#mask_configurable_channels?` returns `false`. To mask the channel values, override the `#mask_configurable_channels?` method in the integration to return `true`:
+
+```ruby
+override :mask_configurable_channels?
+def mask_configurable_channels?
+  true
+end
+```
+
 ## Define configuration test
 
 Optionally, you can define a configuration test of an integration's settings. The test is executed from the integration form's **Test** button, and results are returned to the user.

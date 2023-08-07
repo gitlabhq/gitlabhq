@@ -326,3 +326,33 @@ Alternatively, add the `User.Read.All` application permission.
 
 Read [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user)
 for information on how existing GitLab users can connect to their new Azure AD accounts.
+
+## Troubleshooting
+
+### User sign in banner message: Extern UID has already been taken
+
+When signing in, you might get an error that states `Extern UID has already been taken`.
+
+To resolve this, use the [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session) to check if there is an existing user tied to the account:
+
+1. Find the `extern_uid`:
+
+   ```ruby
+   id = Identity.where(extern_uid: '<extern_uid>')
+   ```
+
+1. Print the content to find the username attached to that `extern_uid`:
+
+   ```ruby
+   pp id
+   ```
+
+If the `extern_uid` is attached to an account, you can use the username to sign in.
+
+If the `extern_uid` is not attached to any username, this might be because of a deletion error resulting in a ghost record.
+
+Run the following command to delete the identity to release the `extern uid`:
+
+```ruby
+ Identity.find('<id>').delete
+```

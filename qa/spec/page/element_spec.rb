@@ -1,17 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Page::Element do
-  describe '#selector' do
-    it 'transforms element name into QA-specific selector' do
-      expect(described_class.new(:sign_in_button).selector)
-        .to eq 'qa-sign-in-button'
-    end
-  end
-
   describe '#selector_css' do
     it 'transforms element name into QA-specific clickable css selector' do
       expect(described_class.new(:sign_in_button).selector_css)
-        .to include('.qa-sign-in-button')
+        .to eq('[data-testid="sign_in_button"],[data-qa-selector="sign_in_button"]')
     end
   end
 
@@ -42,10 +35,6 @@ RSpec.describe QA::Page::Element do
   context 'when pattern is not provided' do
     subject { described_class.new(:some_name) }
 
-    it 'matches when QA specific selector is present' do
-      expect(subject.matches?('some qa-some-name selector')).to be true
-    end
-
     it 'does not match if QA selector is not there' do
       expect(subject.matches?('some_name selector')).to be false
     end
@@ -53,15 +42,18 @@ RSpec.describe QA::Page::Element do
     it 'matches when element name is specified' do
       expect(subject.matches?('data:{qa:{selector:"some_name"}}')).to be true
     end
+
+    it 'matches when element name is specified (single quotes)' do
+      expect(subject.matches?("data:{qa:{selector:'some_name'}}")).to be true
+    end
   end
 
   describe 'attributes' do
     context 'element with no args' do
       subject { described_class.new(:something) }
 
-      it 'defaults pattern to #selector' do
-        expect(subject.attributes[:pattern]).to eq 'qa-something'
-        expect(subject.attributes[:pattern]).to eq subject.selector
+      it 'has no attribute[pattern]' do
+        expect(subject.attributes[:pattern]).to be(nil)
       end
 
       it 'is not required by default' do
@@ -84,11 +76,6 @@ RSpec.describe QA::Page::Element do
     context 'element with requirement; no pattern' do
       subject { described_class.new(:something, required: true) }
 
-      it 'has an attribute[pattern] of the selector' do
-        expect(subject.attributes[:pattern]).to eq 'qa-something'
-        expect(subject.attributes[:pattern]).to eq subject.selector
-      end
-
       it 'is required' do
         expect(subject.required?).to be true
       end
@@ -103,10 +90,6 @@ RSpec.describe QA::Page::Element do
 
       it 'is required' do
         expect(subject.required?).to be true
-      end
-
-      it 'has a selector of the name' do
-        expect(subject.selector).to eq 'qa-something'
       end
     end
   end
@@ -126,17 +109,19 @@ RSpec.describe QA::Page::Element do
       let(:element) { described_class.new(:my_element, index: 3, another_match: 'something') }
       let(:required_element) { described_class.new(:my_element, required: true, index: 3) }
 
-      it 'matches on additional data-qa properties' do
-        expect(element.selector_css).to include(%q([data-qa-selector="my_element"][data-qa-index="3"]))
+      it 'matches on additional data-qa properties translating snake_case to kebab-case' do
+        expect(element.selector_css)
+          .to include('[data-testid="my_element"][data-qa-index="3"][data-qa-another-match="something"]')
+        expect(element.selector_css)
+          .to include('[data-qa-selector="my_element"][data-qa-index="3"][data-qa-another-match="something"]')
       end
 
       it 'doesnt conflict with element requirement' do
+        expect(element).not_to be_required
+        expect(element.selector_css).not_to include(%q(data-qa-required))
+
         expect(required_element).to be_required
         expect(required_element.selector_css).not_to include(%q(data-qa-required))
-      end
-
-      it 'translates snake_case to kebab-case' do
-        expect(element.selector_css).to include(%q(data-qa-another-match))
       end
     end
   end

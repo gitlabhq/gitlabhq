@@ -201,7 +201,8 @@ by a reviewer before passing it to a maintainer as described in the
    on the line of code in question with the SQL queries so they can give their advice.
 1. User-facing changes include both visual changes (regardless of how minor),
    and changes to the rendered DOM which impact how a screen reader may announce
-   the content.
+   the content. Groups that do not have dedicated Product
+   Designers do not require a Product Designer to approve feature changes, unless the changes are community contributions.
 1. End-to-end changes include all files in the `qa` directory.
 
 #### Acceptance checklist

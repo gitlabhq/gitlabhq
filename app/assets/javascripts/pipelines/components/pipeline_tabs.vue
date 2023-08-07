@@ -1,12 +1,14 @@
 <script>
 import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
 import { __ } from '~/locale';
+import Tracking from '~/tracking';
 import {
   failedJobsTabName,
   jobsTabName,
   needsTabName,
   pipelineTabName,
   testReportTabName,
+  TRACKING_CATEGORIES,
 } from '../constants';
 
 export default {
@@ -31,6 +33,7 @@ export default {
     GlTab,
     GlTabs,
   },
+  mixins: [Tracking.mixin()],
   inject: ['defaultTabValue', 'failedJobsCount', 'totalJobCount', 'testsCount'],
   data() {
     return {
@@ -55,6 +58,16 @@ export default {
       if (this.isActive(tabName)) return;
 
       this.$router.push({ name: tabName });
+    },
+    failedJobsTabClick() {
+      this.track('click_tab', { label: TRACKING_CATEGORIES.failed });
+
+      this.navigateTo(this.$options.tabNames.failures);
+    },
+    testsTabClick() {
+      this.track('click_tab', { label: TRACKING_CATEGORIES.tests });
+
+      this.navigateTo(this.$options.tabNames.tests);
     },
   },
 };
@@ -100,7 +113,7 @@ export default {
       :active="isActive($options.tabNames.failures)"
       data-testid="failed-jobs-tab"
       lazy
-      @click="navigateTo($options.tabNames.failures)"
+      @click="failedJobsTabClick"
     >
       <template #title>
         <span class="gl-mr-2">{{ $options.i18n.tabs.failedJobsTitle }}</span>
@@ -112,7 +125,7 @@ export default {
       :active="isActive($options.tabNames.tests)"
       data-testid="tests-tab"
       lazy
-      @click="navigateTo($options.tabNames.tests)"
+      @click="testsTabClick"
     >
       <template #title>
         <span class="gl-mr-2">{{ $options.i18n.tabs.testsTitle }}</span>

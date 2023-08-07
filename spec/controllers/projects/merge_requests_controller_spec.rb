@@ -658,21 +658,17 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         let(:message) { 'My custom squash commit message' }
 
         it 'passes the same message to SquashService', :sidekiq_inline do
-          params = { squash: '1',
-                     squash_commit_message: message,
-                     sha: merge_request.diff_head_sha }
-          expected_squash_params = { squash_commit_message: message,
-                                     sha: merge_request.diff_head_sha,
-                                     merge_request: merge_request }
-
-          expect_next_instance_of(MergeRequests::SquashService, project: project, current_user: user, params: expected_squash_params) do |squash_service|
+          expect_next_instance_of(MergeRequests::SquashService,
+            merge_request: merge_request,
+            current_user: user,
+            commit_message: message) do |squash_service|
             expect(squash_service).to receive(:execute).and_return({
               status: :success,
               squash_sha: SecureRandom.hex(20)
             })
           end
 
-          merge_with_sha(params)
+          merge_with_sha(squash: '1', squash_commit_message: message, sha: merge_request.diff_head_sha)
         end
       end
 

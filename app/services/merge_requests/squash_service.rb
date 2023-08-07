@@ -1,7 +1,17 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class SquashService < MergeRequests::BaseService
+  class SquashService
+    include BaseServiceUtility
+    include MergeRequests::ErrorLogger
+
+    def initialize(merge_request:, current_user:, commit_message:)
+      @merge_request = merge_request
+      @target_project = merge_request.target_project
+      @current_user = current_user
+      @commit_message = commit_message
+    end
+
     def execute
       # If performing a squash would result in no change, then
       # immediately return a success message without performing a squash
@@ -15,6 +25,8 @@ module MergeRequests
     end
 
     private
+
+    attr_reader :merge_request, :target_project, :current_user, :commit_message
 
     def squash!
       squash_sha = repository.squash(current_user, merge_request, message)
@@ -34,12 +46,8 @@ module MergeRequests
       target_project.repository
     end
 
-    def merge_request
-      params[:merge_request]
-    end
-
     def message
-      params[:squash_commit_message].presence || merge_request.default_squash_commit_message(user: current_user)
+      commit_message.presence || merge_request.default_squash_commit_message(user: current_user)
     end
   end
 end

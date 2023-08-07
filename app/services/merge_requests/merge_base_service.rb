@@ -60,8 +60,11 @@ module MergeRequests
     end
 
     def squash_sha!
-      params[:merge_request] = merge_request
-      squash_result = ::MergeRequests::SquashService.new(project: project, current_user: current_user, params: params).execute
+      squash_result = ::MergeRequests::SquashService.new(
+        merge_request: merge_request,
+        current_user: current_user,
+        commit_message: params[:squash_commit_message]
+      ).execute
 
       case squash_result[:status]
       when :success

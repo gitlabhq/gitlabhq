@@ -438,8 +438,9 @@ function download_local_gems() {
 
     echo "Downloading ${folder_path}"
 
-    url=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/archive
+    url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/archive"
     curl -f \
+      --create-dirs \
       --get \
       --header "${private_token_header}" \
       --output "${output}" \
