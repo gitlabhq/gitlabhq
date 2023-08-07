@@ -17,6 +17,7 @@ function createComponent(propsData = {}) {
       customEmojis: CUSTOM_EMOJI,
       pageInfo: {},
       count: CUSTOM_EMOJI.length,
+      userPermissions: { createCustomEmoji: true },
       ...propsData,
     },
   });
@@ -27,6 +28,21 @@ describe('Custom emoji settings list component', () => {
     createComponent();
 
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  describe('user permissions', () => {
+    it.each`
+      createCustomEmoji | visible
+      ${true}           | ${true}
+      ${false}          | ${false}
+    `(
+      'renders create new button if createCustomEmoji is $createCustomEmoji',
+      ({ createCustomEmoji, visible }) => {
+        createComponent({ userPermissions: { createCustomEmoji } });
+
+        expect(wrapper.findByTestId('action-primary').exists()).toBe(visible);
+      },
+    );
   });
 
   describe('pagination', () => {

@@ -205,7 +205,7 @@ To upload the payload manually:
 1. Select **Download payload**.
 1. Save the JSON file.
 1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).
-1. Select **Choose file** and choose the file from p5.
+1. Select **Choose file**, then select the JSON file that contains the downloaded payload.
 1. Select **Upload**.
 
 The uploaded file is encrypted and sent using secure HTTPS protocol. HTTPS creates a secure

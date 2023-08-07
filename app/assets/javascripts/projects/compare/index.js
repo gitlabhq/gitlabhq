@@ -16,7 +16,7 @@ export default function init() {
     createMrPath,
     sourceProject,
     targetProject,
-    projectsFrom,
+    targetProjectsPath,
   } = el.dataset;
 
   return new Vue({
@@ -35,9 +35,9 @@ export default function init() {
           projectCompareIndexPath,
           projectMergeRequestPath,
           createMrPath,
+          targetProjectsPath,
           sourceProject: JSON.parse(sourceProject),
           targetProject: JSON.parse(targetProject),
-          projects: JSON.parse(projectsFrom),
         },
       });
     },

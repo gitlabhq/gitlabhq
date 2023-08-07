@@ -49,6 +49,9 @@ module QA
         end
 
         def choose_namespace(namespace)
+          # The current group is the default, we use end_with? in case we want to select the top level group
+          return if find_element(:select_namespace_dropdown).text.end_with?(namespace)
+
           click_element :select_namespace_dropdown
           fill_element :select_namespace_dropdown_search_field, namespace
           select_item(namespace, css: '.gl-dropdown-item')

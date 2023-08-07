@@ -1,11 +1,18 @@
 import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import RepoDropdown from '~/projects/compare/components/repo_dropdown.vue';
-import { revisionCardDefaultProps as defaultProps } from './mock_data';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/alert';
+import { revisionCardDefaultProps as defaultProps, targetProjects } from './mock_data';
 
+jest.mock('~/alert');
 describe('RepoDropdown component', () => {
   let wrapper;
+  let axiosMock;
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(RepoDropdown, {
@@ -15,12 +22,20 @@ describe('RepoDropdown component', () => {
       },
       stubs: {
         GlCollapsibleListbox,
-        GlListboxItem,
       },
     });
   };
 
+  beforeEach(() => {
+    axiosMock = new AxiosMockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
+  });
+
   const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findGlCollapsibleListboxItems = () => wrapper.findAllComponents(GlListboxItem);
   const findHiddenInput = () => wrapper.find('input[type="hidden"]');
 
   describe('Source Revision', () => {
@@ -34,7 +49,7 @@ describe('RepoDropdown component', () => {
 
     it('displays the project name in the disabled dropdown', () => {
       expect(findGlCollapsibleListbox().props('toggleText')).toBe(
-        defaultProps.selectedProject.name,
+        defaultProps.selectedProject.text,
       );
       expect(findGlCollapsibleListbox().props('disabled')).toBe(true);
     });
@@ -47,15 +62,15 @@ describe('RepoDropdown component', () => {
   });
 
   describe('Target Revision', () => {
-    beforeEach(() => {
-      const projects = [
-        {
-          name: 'some-to-name',
-          id: '1',
-        },
-      ];
+    beforeEach(async () => {
+      axiosMock.onGet(defaultProps.endpoint).reply(HTTP_STATUS_OK, targetProjects);
 
-      createComponent({ paramsName: 'from', projects });
+      createComponent({ paramsName: 'from' });
+      await waitForPromises();
+    });
+
+    it('fetches target projects on created hook', () => {
+      expect(findGlCollapsibleListboxItems()).toHaveLength(targetProjects.length);
     });
 
     it('set hidden input of the selected project', () => {
@@ -64,26 +79,52 @@ describe('RepoDropdown component', () => {
 
     it('displays matching project name of the source revision initially in the dropdown', () => {
       expect(findGlCollapsibleListbox().props('toggleText')).toBe(
-        defaultProps.selectedProject.name,
+        defaultProps.selectedProject.text,
       );
     });
 
-    it('updates the hidden input value when dropdown item is selected', () => {
-      const repoId = '1';
+    it('updates the hidden input value when dropdown item is selected', async () => {
+      const repoId = '6';
       findGlCollapsibleListbox().vm.$emit('select', repoId);
+      await nextTick();
       expect(findHiddenInput().attributes('value')).toBe(repoId);
     });
 
     it('emits `selectProject` event when another target project is selected', async () => {
-      const repoId = '1';
+      const repoId = '6';
       findGlCollapsibleListbox().vm.$emit('select', repoId);
 
       await nextTick();
+      expect(wrapper.emitted('selectProject')).toEqual([
+        [
+          {
+            direction: 'from',
+            project: {
+              text: 'flightjs/Flight',
+              value: '6',
+            },
+          },
+        ],
+      ]);
+    });
 
-      expect(wrapper.emitted('selectProject')[0][0]).toEqual({
-        direction: 'from',
-        project: { id: '1', name: 'some-to-name' },
-      });
+    it('searches projects', async () => {
+      findGlCollapsibleListbox().vm.$emit('search', 'test');
+
+      jest.advanceTimersByTime(500);
+      await waitForPromises();
+
+      expect(axiosMock.history.get[1].params).toEqual({ search: 'test' });
+    });
+  });
+  describe('On request failure', () => {
+    it('shows alert', async () => {
+      axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
+
+      createComponent({ paramsName: 'from' });
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 });

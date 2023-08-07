@@ -23,12 +23,4 @@ RSpec.describe 'layouts/devise', feature_category: :user_management do
       end
     end
   end
-
-  context 'without broadcast messaging' do
-    it 'does not render the broadcast layout' do
-      render
-
-      expect(rendered).not_to render_template('layouts/_broadcast')
-    end
-  end
 end

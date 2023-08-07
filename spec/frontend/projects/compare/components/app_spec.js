@@ -104,7 +104,7 @@ describe('CompareApp component', () => {
 
   it('sets the selected project when the "selectProject" event is emitted', async () => {
     const project = {
-      name: 'some-to-name',
+      text: 'some-to-name',
       id: '1',
     };
 

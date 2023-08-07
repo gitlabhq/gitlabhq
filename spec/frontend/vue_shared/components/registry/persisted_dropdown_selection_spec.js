@@ -1,5 +1,5 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import component from '~/vue_shared/components/registry/persisted_dropdown_selection.vue';
@@ -16,7 +16,7 @@ describe('Persisted dropdown selection', () => {
   };
 
   function createComponent({ props = {}, data = {} } = {}) {
-    wrapper = shallowMount(component, {
+    wrapper = mount(component, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -28,8 +28,10 @@ describe('Persisted dropdown selection', () => {
   }
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findGlListboxItems = () => wrapper.findAllComponents(GlListboxItem);
+  const findGlListboxToggleText = () =>
+    findGlCollapsibleListbox().find('.gl-new-dropdown-button-text');
 
   describe('local storage sync', () => {
     it('uses the local storage sync component with the correct props', () => {
@@ -63,20 +65,22 @@ describe('Persisted dropdown selection', () => {
     it('has a dropdown component', () => {
       createComponent();
 
-      expect(findDropdown().exists()).toBe(true);
+      expect(findGlCollapsibleListbox().exists()).toBe(true);
     });
 
     describe('dropdown text', () => {
       it('when no selection shows the first', () => {
         createComponent();
 
-        expect(findDropdown().props('text')).toBe('Maven');
+        expect(findGlListboxToggleText().text()).toBe('Maven');
       });
 
-      it('when an option is selected, shows that option label', () => {
-        createComponent({ data: { selected: defaultProps.options[1].value } });
+      it('when an option is selected, shows that option label', async () => {
+        createComponent();
+        findGlCollapsibleListbox().vm.$emit('select', defaultProps.options[1].value);
+        await nextTick();
 
-        expect(findDropdown().props('text')).toBe('Gradle');
+        expect(findGlListboxToggleText().text()).toBe('Gradle');
       });
     });
 
@@ -84,34 +88,20 @@ describe('Persisted dropdown selection', () => {
       it('has one item for each option', () => {
         createComponent();
 
-        expect(findDropdownItems()).toHaveLength(defaultProps.options.length);
-      });
-
-      it('binds the correct props', () => {
-        createComponent({ data: { selected: defaultProps.options[0].value } });
-
-        expect(findDropdownItems().at(0).props()).toMatchObject({
-          isChecked: true,
-          isCheckItem: true,
-        });
-
-        expect(findDropdownItems().at(1).props()).toMatchObject({
-          isChecked: false,
-          isCheckItem: true,
-        });
+        expect(findGlListboxItems()).toHaveLength(defaultProps.options.length);
       });
 
       it('on click updates the data and emits event', async () => {
-        createComponent({ data: { selected: defaultProps.options[0].value } });
-        expect(findDropdownItems().at(0).props('isChecked')).toBe(true);
+        createComponent();
+        const selectedItem = 'gradle';
 
-        findDropdownItems().at(1).vm.$emit('click');
+        expect(findGlCollapsibleListbox().props('selected')).toBe('maven');
 
+        findGlCollapsibleListbox().vm.$emit('select', selectedItem);
         await nextTick();
 
-        expect(wrapper.emitted('change')).toStrictEqual([['gradle']]);
-        expect(findDropdownItems().at(0).props('isChecked')).toBe(false);
-        expect(findDropdownItems().at(1).props('isChecked')).toBe(true);
+        expect(wrapper.emitted('change').at(-1)).toStrictEqual([selectedItem]);
+        expect(findGlCollapsibleListbox().props('selected')).toBe(selectedItem);
       });
     });
   });

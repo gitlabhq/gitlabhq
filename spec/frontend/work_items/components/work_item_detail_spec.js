@@ -24,6 +24,7 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
@@ -88,6 +89,7 @@ describe('WorkItemDetail component', () => {
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
   const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
   const findWorkItemStateToggleButton = () => wrapper.findComponent(WorkItemStateToggleButton);
+  const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
   const createComponent = ({
     isModal = false,
@@ -422,8 +424,8 @@ describe('WorkItemDetail component', () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
-      expect(findWorkItemType().exists()).toBe(true);
-      expect(findWorkItemType().text()).toBe('Task #1');
+      expect(findWorkItemTypeIcon().props('showText')).toBe(true);
+      expect(findWorkItemType().text()).toBe('#1');
     });
 
     describe('with parent', () => {
@@ -475,8 +477,8 @@ describe('WorkItemDetail component', () => {
       });
 
       it('shows work item type and iid', () => {
-        const { iid, workItemType } = workItemQueryResponse.data.workspace.workItems.nodes[0];
-        expect(findParent().text()).toContain(`${workItemType.name} #${iid}`);
+        const { iid } = workItemQueryResponse.data.workspace.workItems.nodes[0];
+        expect(findParent().text()).toContain(`#${iid}`);
       });
     });
   });

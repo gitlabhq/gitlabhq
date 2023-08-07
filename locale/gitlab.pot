@@ -12176,7 +12176,7 @@ msgstr ""
 msgid "ComplianceReport|No projects found that match filters"
 msgstr ""
 
-msgid "ComplianceReport|No standards adherences found"
+msgid "ComplianceReport|No projects with standards adherence checks found"
 msgstr ""
 
 msgid "ComplianceReport|No violations found"
@@ -34162,6 +34162,9 @@ msgstr ""
 msgid "PipelineSchedules|Next Run"
 msgstr ""
 
+msgid "PipelineSchedules|No pipeline schedules"
+msgstr ""
+
 msgid "PipelineSchedules|None"
 msgstr ""
 
@@ -53052,6 +53055,9 @@ msgid "WorkItem|Iteration"
 msgstr ""
 
 msgid "WorkItem|Key Result"
+msgstr ""
+
+msgid "WorkItem|Key result"
 msgstr ""
 
 msgid "WorkItem|Mark as done"

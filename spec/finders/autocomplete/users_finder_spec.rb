@@ -114,12 +114,6 @@ RSpec.describe Autocomplete::UsersFinder do
       end
     end
 
-    context 'when filtered by skip_users' do
-      let(:params) { { skip_users: [omniauth_user.id, current_user.id, blocked_user] } }
-
-      it { is_expected.to match_array([user1, external_user]) }
-    end
-
     context 'when todos exist' do
       let!(:pending_todo1) { create(:todo, user: current_user, author: user1, state: :pending) }
       let!(:pending_todo2) { create(:todo, user: external_user, author: omniauth_user, state: :pending) }

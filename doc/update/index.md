@@ -281,62 +281,9 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
-### 16.2.0
+### GitLab 16
 
-- Legacy LDAP configuration settings may cause
-  [`NoMethodError: undefined method 'devise' for User:Class` errors](https://gitlab.com/gitlab-org/gitlab/-/issues/419485).
-  This error occurs if you have TLS options (such as `ca_file`) not specified
-  in the `tls_options` hash, or use the legacy `gitlab_rails['ldap_host']` option.
-  See the [configuration workarounds](https://gitlab.com/gitlab-org/gitlab/-/issues/419485#workarounds)
-  for more details.
-- Git 2.41.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../install/installation.md#git).
-- New job artifacts are not replicated if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
-  16.2.3, 16.3.0, and later.
-  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
-  - If you deployed an affected version, after upgrading to a fixed GitLab version, follow [these instructions](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)
-    to resync the affected job artifacts.
-
-### 16.1.0
-
-- A `MigrateHumanUserType` background migration will be finalized with
-    the `FinalizeUserTypeMigration` migration.
-    GitLab 16.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
-    [migrate `user_type` values from `NULL` to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849). This
-    migration may take multiple days to complete on larger GitLab instances. Make sure the migration
-    has completed successfully before upgrading to 16.1.0.
-- A `BackfillPreparedAtMergeRequests` background migration will be finalized with
-  the `FinalizeBackFillPreparedAtMergeRequests` post-deploy migration.
-  GitLab 15.10.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
-  [backfill `prepared_at` values on the `merge_requests` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865). This
-  migration may take multiple days to complete on larger GitLab instances. Make sure the migration
-  has completed successfully before upgrading to 16.1.0.
-- Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
-  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
-  - Versions containing fix: GitLab 16.1.3 and later.
-- Geo: Since the migration of project designs to SSF, [missing design repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/414279). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these design repositories. You could be impacted by this issue even if you have not imported projects.
-  - Impacted versions: GitLab versions 16.1.x.
-  - Versions containing fix: GitLab 16.2.0 and later.
-- For self-compiled installations: You must remove any settings related to Puma worker killer from the `puma.rb` configuration file, since those have been [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
-- New job artifacts are not replicated if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
-  16.2.3, 16.3.0, and later.
-  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
-  - If you deployed an affected version, after upgrading to a fixed GitLab version, follow [these instructions](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)
-    to resync the affected job artifacts.
-
-### 16.0.0
-
-- Sidekiq crashes if there are non-ASCII characters in the `/etc/gitlab/gitlab.rb` file. You can fix this
-  by following the workaround in [issue 412767](https://gitlab.com/gitlab-org/gitlab/-/issues/412767#note_1404507549).
-- Sidekiq jobs are only routed to `default` and `mailers` queues by default, and as a result,
-  every Sidekiq process also listens to those queues to ensure all jobs are processed across
-  all queues. This behavior does not apply if you have configured the [routing rules](../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
-- Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
-  [throw errors on startup](../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
-- Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
-  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
-  - Versions containing fix: GitLab 16.1.3 and later.
-- Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
-  - This change applies to installation methods with Linux packages (Omnibus GitLab), GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
+Before upgrading, see [GitLab 16 changes](versions/gitlab_16_changes.md).
 
 ### 15.11.1
 

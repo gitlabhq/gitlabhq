@@ -1,5 +1,5 @@
 <script>
-import { GlTableLite } from '@gitlab/ui';
+import { GlTable } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import PipelineScheduleActions from './cells/pipeline_schedule_actions.vue';
 import PipelineScheduleLastPipeline from './cells/pipeline_schedule_last_pipeline.vue';
@@ -8,6 +8,9 @@ import PipelineScheduleOwner from './cells/pipeline_schedule_owner.vue';
 import PipelineScheduleTarget from './cells/pipeline_schedule_target.vue';
 
 export default {
+  i18n: {
+    emptyText: s__('PipelineSchedules|No pipeline schedules'),
+  },
   fields: [
     {
       key: 'description',
@@ -47,7 +50,7 @@ export default {
     },
   ],
   components: {
-    GlTableLite,
+    GlTable,
     PipelineScheduleActions,
     PipelineScheduleLastPipeline,
     PipelineScheduleNextRun,
@@ -68,10 +71,12 @@ export default {
 </script>
 
 <template>
-  <gl-table-lite
+  <gl-table
     :fields="$options.fields"
     :items="schedules"
     :tbody-tr-attr="{ 'data-testid': 'pipeline-schedule-table-row' }"
+    :empty-text="$options.i18n.emptyText"
+    show-empty
     stacked="md"
   >
     <template #table-colgroup="{ fields }">
@@ -109,5 +114,5 @@ export default {
         @playPipelineSchedule="$emit('playPipelineSchedule', $event)"
       />
     </template>
-  </gl-table-lite>
+  </gl-table>
 </template>

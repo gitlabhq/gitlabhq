@@ -32,13 +32,18 @@ export default {
     },
   },
   computed: {
+    workItemTypeUppercase() {
+      return this.workItemType.toUpperCase().split(' ').join('_');
+    },
     iconName() {
       return (
-        this.workItemIconName || WORK_ITEMS_TYPE_MAP[this.workItemType]?.icon || 'issue-type-issue'
+        this.workItemIconName ||
+        WORK_ITEMS_TYPE_MAP[this.workItemTypeUppercase]?.icon ||
+        'issue-type-issue'
       );
     },
     workItemTypeName() {
-      return WORK_ITEMS_TYPE_MAP[this.workItemType]?.name;
+      return WORK_ITEMS_TYPE_MAP[this.workItemTypeUppercase]?.name;
     },
     workItemTooltipTitle() {
       return this.showTooltipOnHover ? this.workItemTypeName : '';

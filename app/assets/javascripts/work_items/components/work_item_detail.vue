@@ -172,7 +172,7 @@ export default {
       return this.workItem.workItemType?.id;
     },
     workItemBreadcrumbReference() {
-      return this.workItemType ? `${this.workItemType} #${this.workItem.iid}` : '';
+      return this.workItemType ? `#${this.workItem.iid}` : '';
     },
     canUpdate() {
       return this.workItem?.userPermissions?.updateWorkItem;
@@ -421,7 +421,8 @@ export default {
             >
               <work-item-type-icon
                 :work-item-icon-name="workItemIconName"
-                :work-item-type="workItemType && workItemType.toUpperCase()"
+                :work-item-type="workItemType"
+                show-text
               />
               {{ workItemBreadcrumbReference }}
             </li>
@@ -433,7 +434,8 @@ export default {
           >
             <work-item-type-icon
               :work-item-icon-name="workItemIconName"
-              :work-item-type="workItemType && workItemType.toUpperCase()"
+              :work-item-type="workItemType"
+              show-text
             />
             {{ workItemBreadcrumbReference }}
           </div>

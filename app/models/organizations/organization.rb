@@ -37,6 +37,10 @@ module Organizations
       path
     end
 
+    def user?(user)
+      users.exists?(user.id)
+    end
+
     private
 
     def check_if_default_organization

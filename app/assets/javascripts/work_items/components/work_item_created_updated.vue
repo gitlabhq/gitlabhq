@@ -3,6 +3,7 @@ import { GlAvatarLink, GlSprintf } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
 export default {
@@ -11,6 +12,7 @@ export default {
     GlSprintf,
     TimeAgoTooltip,
     WorkItemStateBadge,
+    WorkItemTypeIcon,
   },
   inject: ['fullPath'],
   props: {
@@ -36,6 +38,12 @@ export default {
     workItemState() {
       return this.workItem?.state;
     },
+    workItemType() {
+      return this.workItem?.workItemType?.name;
+    },
+    workItemIconName() {
+      return this.workItem?.workItemType?.iconName;
+    },
   },
   apollo: {
     workItem: {
@@ -58,10 +66,16 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-3">
+  <div class="gl-mb-3 gl-text-gray-700">
     <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
+    <work-item-type-icon
+      class="gl-vertical-align-middle gl-mr-0!"
+      :work-item-icon-name="workItemIconName"
+      :work-item-type="workItemType"
+      show-text
+    />
     <span data-testid="work-item-created" class="gl-vertical-align-middle">
-      <gl-sprintf v-if="author.name" :message="__('Created %{timeAgo} by %{author}')">
+      <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
         <template #timeAgo>
           <time-ago-tooltip :time="createdAt" />
         </template>
@@ -76,7 +90,7 @@ export default {
           </gl-avatar-link>
         </template>
       </gl-sprintf>
-      <gl-sprintf v-else-if="createdAt" :message="__('Created %{timeAgo}')">
+      <gl-sprintf v-else-if="createdAt" :message="__('created %{timeAgo}')">
         <template #timeAgo>
           <time-ago-tooltip :time="createdAt" />
         </template>
@@ -85,7 +99,7 @@ export default {
 
     <span
       v-if="updatedAt"
-      class="gl-ml-5 gl-display-none gl-sm-display-inline-block"
+      class="gl-ml-5 gl-display-none gl-sm-display-inline-block gl-vertical-align-middle"
       data-testid="work-item-updated"
     >
       <gl-sprintf :message="__('Updated %{timeAgo}')">

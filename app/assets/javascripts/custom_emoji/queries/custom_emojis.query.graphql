@@ -3,6 +3,9 @@
 query getCustomEmojis($groupPath: ID!, $after: String = "", $before: String = "") {
   group(fullPath: $groupPath) {
     id
+    userPermissions {
+      createCustomEmoji
+    }
     customEmoji(after: $after, before: $before) {
       count
       pageInfo {

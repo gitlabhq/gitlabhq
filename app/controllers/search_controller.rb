@@ -111,7 +111,7 @@ class SearchController < ApplicationController
   end
 
   def autocomplete
-    term = params[:term]
+    term = params.require(:term)
 
     @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?

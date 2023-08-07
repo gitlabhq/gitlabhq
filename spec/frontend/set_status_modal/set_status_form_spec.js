@@ -186,7 +186,7 @@ describe('SetStatusForm', () => {
     it('emits `clear-status-after-click`', async () => {
       await createComponent();
 
-      await wrapper.findByTestId('thirtyMinutes').trigger('click');
+      await wrapper.findByTestId('listbox-item-thirtyMinutes').trigger('click');
 
       expect(wrapper.emitted('clear-status-after-click')).toEqual([[thirtyMinutes]]);
     });

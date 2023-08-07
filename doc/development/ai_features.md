@@ -498,7 +498,7 @@ query {
 ```
 
 This cache is especially useful for chat functionality. For other services,
-caching is disabled. (It can be enabled for a service by using `skip_cache: false`
+caching is disabled. (It can be enabled for a service by using `cache_response: true`
 option.)
 
 Caching has following limitations:

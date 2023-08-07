@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
-import createDefaultClient from '~/lib/graphql';
+import defaultClient from './graphql_client';
 import routes from './routes';
 import App from './components/app.vue';
 
@@ -14,7 +14,7 @@ export const initCustomEmojis = () => {
   if (!el) return;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
+    defaultClient,
   });
   const router = new VueRouter({
     base: el.dataset.basePath,

@@ -146,7 +146,7 @@ export default {
       </gl-dropdown-section-header>
       <gl-dropdown-item
         v-for="branch in branches"
-        :key="branch"
+        :key="`${branch}-branch`"
         is-check-item
         :is-checked="selectedRevision === branch"
         data-testid="branches-dropdown-item"
@@ -159,7 +159,7 @@ export default {
       </gl-dropdown-section-header>
       <gl-dropdown-item
         v-for="tag in tags"
-        :key="tag"
+        :key="`${tag}-tag`"
         is-check-item
         :is-checked="selectedRevision === tag"
         data-testid="tags-dropdown-item"

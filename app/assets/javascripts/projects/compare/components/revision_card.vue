@@ -25,8 +25,8 @@ export default {
       required: false,
       default: null,
     },
-    projects: {
-      type: Array,
+    endpoint: {
+      type: String,
       required: false,
       default: null,
     },
@@ -47,7 +47,7 @@ export default {
       <repo-dropdown
         class="gl-sm-w-half"
         :params-name="paramsName"
-        :projects="projects"
+        :endpoint="endpoint"
         :selected-project="selectedProject"
         v-on="$listeners"
       />

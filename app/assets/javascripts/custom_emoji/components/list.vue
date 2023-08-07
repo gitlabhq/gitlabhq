@@ -31,6 +31,23 @@ export default {
       type: Number,
       required: true,
     },
+    userPermissions: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    primaryAction() {
+      if (!this.userPermissions.createCustomEmoji) return undefined;
+
+      return {
+        text: __('New custom emoji'),
+        attributes: {
+          variant: 'info',
+          to: '/new',
+        },
+      };
+    },
   },
   methods: {
     prevPage() {
@@ -45,13 +62,6 @@ export default {
     },
     formatDate(date) {
       return formatDate(date, 'mmmm d, yyyy');
-    },
-  },
-  primaryAction: {
-    text: __('New custom emoji'),
-    attributes: {
-      variant: 'info',
-      to: '/new',
     },
   },
   fields: [
@@ -89,7 +99,7 @@ export default {
   <div>
     <gl-loading-icon v-if="loading" size="lg" />
     <template v-else>
-      <gl-tabs content-class="gl-pt-0" :action-primary="$options.primaryAction">
+      <gl-tabs content-class="gl-pt-0" :action-primary="primaryAction">
         <gl-tab>
           <template #title>
             {{ __('Emoji') }}

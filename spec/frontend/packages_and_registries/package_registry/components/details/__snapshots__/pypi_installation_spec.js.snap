@@ -13,47 +13,134 @@ exports[`PypiInstallation renders all the messages 1`] = `
      
     <div>
       <div
-        class="dropdown b-dropdown gl-dropdown btn-group"
-        id="__BVID__27"
-        lazy=""
+        class="gl-new-dropdown"
       >
-        <!---->
         <button
-          aria-expanded="false"
-          aria-haspopup="menu"
-          class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
-          id="__BVID__27__BV_toggle_"
+          aria-controls="base-dropdown-10"
+          aria-haspopup="listbox"
+          aria-labelledby="dropdown-toggle-btn-8"
+          class="btn btn-default btn-md gl-button gl-new-dropdown-toggle"
+          data-testid="base-dropdown-toggle"
+          id="dropdown-toggle-btn-8"
+          listeners="[object Object]"
           type="button"
         >
           <!---->
            
           <!---->
-           
+            
           <span
-            class="gl-dropdown-button-text"
+            class="gl-button-text"
           >
-            Show PyPi commands
+            <span
+              class="gl-new-dropdown-button-text"
+            >
+              
+        Show PyPi commands
+      
+            </span>
+             
+            <svg
+              aria-hidden="true"
+              class="gl-button-icon gl-new-dropdown-chevron gl-icon s16"
+              data-testid="chevron-down-icon"
+              role="img"
+            >
+              <use
+                href="file-mock#chevron-down"
+              />
+            </svg>
           </span>
-           
-          <svg
-            aria-hidden="true"
-            class="gl-button-icon dropdown-chevron gl-icon s16"
-            data-testid="chevron-down-icon"
-            role="img"
-          >
-            <use
-              href="file-mock#chevron-down"
-            />
-          </svg>
         </button>
-        <ul
-          aria-labelledby="__BVID__27__BV_toggle_"
-          class="dropdown-menu"
-          role="menu"
-          tabindex="-1"
+         
+        <div
+          class="gl-new-dropdown-panel gl-w-31!"
+          data-testid="base-dropdown-menu"
+          id="base-dropdown-10"
         >
-          <!---->
-        </ul>
+          <div
+            class="gl-new-dropdown-inner"
+          >
+             
+            <!---->
+             
+            <!---->
+             
+            <ul
+              aria-labelledby="dropdown-toggle-btn-8"
+              class="gl-new-dropdown-contents gl-new-dropdown-contents-with-scrim-overlay gl-new-dropdown-contents"
+              id="listbox-9"
+              role="listbox"
+              tabindex="-1"
+            >
+              <li
+                aria-hidden="true"
+                class="top-scrim-wrapper"
+                data-testid="top-scrim"
+              >
+                <div
+                  class="top-scrim top-scrim-light"
+                />
+              </li>
+               
+              <li
+                aria-hidden="true"
+              />
+               
+              <li
+                aria-selected="true"
+                class="gl-new-dropdown-item"
+                data-testid="listbox-item-pypi"
+                role="option"
+                tabindex="-1"
+              >
+                <span
+                  class="gl-new-dropdown-item-content gl-bg-gray-50!"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="gl-icon s16 gl-new-dropdown-item-check-icon gl-mt-3 gl-align-self-start"
+                    data-testid="dropdown-item-checkbox"
+                    role="img"
+                  >
+                    <use
+                      href="file-mock#mobile-issue-close"
+                    />
+                  </svg>
+                   
+                  <span
+                    class="gl-new-dropdown-item-text-wrapper"
+                  >
+                    
+            Show PyPi commands
+          
+                  </span>
+                </span>
+              </li>
+               
+              <!---->
+               
+              <!---->
+               
+              <li
+                aria-hidden="true"
+              />
+               
+              <li
+                aria-hidden="true"
+                class="bottom-scrim-wrapper"
+                data-testid="bottom-scrim"
+              >
+                <div
+                  class="bottom-scrim"
+                />
+              </li>
+            </ul>
+             
+            <!---->
+             
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -80,7 +167,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
         id="installation-pip-command"
       >
         <label
-          for="instruction-input_5"
+          for="instruction-input_11"
         >
           Pip Command
         </label>
@@ -94,7 +181,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
             <input
               class="form-control gl-font-monospace"
               data-testid="instruction-input"
-              id="instruction-input_5"
+              id="instruction-input_11"
               readonly="readonly"
               type="text"
             />
@@ -109,7 +196,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
                 class="btn input-group-text btn-default btn-md gl-button btn-default-secondary btn-icon"
                 data-clipboard-handle-tooltip="false"
                 data-clipboard-text="pip install @gitlab-org/package-15 --index-url http://__token__:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple"
-                id="clipboard-button-6"
+                id="clipboard-button-12"
                 title="Copy Pip command"
                 type="button"
               >

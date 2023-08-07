@@ -19,6 +19,7 @@ export default {
       result({ data }) {
         const pageInfo = data.group?.customEmoji?.pageInfo;
         this.count = data.group?.customEmoji?.count;
+        this.userPermissions = data.group?.userPermissions;
 
         if (pageInfo) {
           this.pageInfo = pageInfo;
@@ -40,6 +41,7 @@ export default {
       count: 0,
       pageInfo: {},
       pagination: {},
+      userPermissions: {},
     };
   },
   methods: {
@@ -59,6 +61,7 @@ export default {
     :loading="$apollo.queries.customEmojis.loading"
     :page-info="pageInfo"
     :custom-emojis="customEmojis"
+    :user-permissions="userPermissions"
     @input="changePage"
   />
 </template>

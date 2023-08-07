@@ -16,7 +16,7 @@ module PackagesHelper
   end
 
   def package_registry_project_url(project_id, registry_type = :maven)
-    project_api_path = expose_path(api_v4_projects_path(id: project_id))
+    project_api_path = api_v4_projects_path(id: project_id)
     package_registry_project_path = "#{project_api_path}/packages/#{registry_type}"
     expose_url(package_registry_project_path)
   end

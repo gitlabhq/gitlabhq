@@ -159,7 +159,7 @@ export const WORK_ITEMS_TYPE_MAP = {
   },
   [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {
     icon: `issue-type-keyresult`,
-    name: s__('WorkItem|Key Result'),
+    name: s__('WorkItem|Key result'),
     value: WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   },
 };

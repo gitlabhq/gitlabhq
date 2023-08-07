@@ -3,12 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe 'cross-database foreign keys' do
-  # Since we don't expect to have any cross-database foreign keys
-  # this is empty. If we will have an entry like
-  # `ci_daily_build_group_report_results.project_id`
-  # should be added.
-  let(:allowed_cross_database_foreign_keys) do
-    %w[].freeze
+  # While we are building out Cells, we will be moving tables from gitlab_main schema
+  # to either gitlab_main_clusterwide schema or gitlab_main_cell schema.
+  # During this transition phase, cross database foreign keys need
+  # to be temporarily allowed to exist, until we can work on converting these columns to loose foreign keys.
+  # The issue corresponding to the loose foreign key conversion
+  # should be added as a comment along with the name of the column.
+  let!(:allowed_cross_database_foreign_keys) do
+    [
+      'routes.namespace_id',                   # https://gitlab.com/gitlab-org/gitlab/-/issues/420869
+      'user_details.enterprise_group_id',      # https://gitlab.com/gitlab-org/gitlab/-/issues/420868
+      'user_details.provisioned_by_group_id'   # https://gitlab.com/gitlab-org/gitlab/-/issues/420868
+    ]
   end
 
   def foreign_keys_for(table_name)

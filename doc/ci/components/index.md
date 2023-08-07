@@ -339,7 +339,7 @@ We recommend adopting at least the `MAJOR.MINOR` format.
 
 For example: `2.1`, `1.0.0`, `1.0.0-alpha`, `2.1.3`, `3.0.0-rc.1`.
 
-## CI/CD Catalog
+## CI/CD Catalog **(PREMIUM)**
 
 The CI/CD Catalog is a list of [components repositories](#components-repository),
 each containing resources that you can add to your CI/CD pipelines.

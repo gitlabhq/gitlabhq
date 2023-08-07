@@ -71,8 +71,8 @@ export default {
       type: Object,
       required: true,
     },
-    projects: {
-      type: Array,
+    targetProjectsPath: {
+      type: String,
       required: true,
     },
     straight: {
@@ -83,7 +83,6 @@ export default {
   data() {
     return {
       from: {
-        projects: this.projects,
         selectedProject: this.targetProject,
         revision: this.paramsFrom,
         refsProjectPath: this.targetProjectRefsPath,
@@ -101,7 +100,7 @@ export default {
       this.$refs.form.submit();
     },
     onSelectProject({ direction, project }) {
-      const refsPath = joinPaths(gon.relative_url_root || '', `/${project.name}`, '/refs');
+      const refsPath = joinPaths(gon.relative_url_root || '', `/${project.text}`, '/refs');
       // direction is either 'from' or 'to'
       this[direction].refsProjectPath = refsPath;
       this[direction].selectedProject = project;
@@ -149,8 +148,8 @@ export default {
         :refs-project-path="to.refsProjectPath"
         :revision-text="$options.i18n.source"
         params-name="to"
+        :endpoint="targetProjectsPath"
         :params-branch="to.revision"
-        :projects="to.projects"
         :selected-project="to.selectedProject"
         @selectProject="onSelectProject"
         @selectRevision="onSelectRevision"
@@ -179,6 +178,7 @@ export default {
         :params-branch="from.revision"
         :projects="from.projects"
         :selected-project="from.selectedProject"
+        :endpoint="targetProjectsPath"
         @selectProject="onSelectProject"
         @selectRevision="onSelectRevision"
       />
