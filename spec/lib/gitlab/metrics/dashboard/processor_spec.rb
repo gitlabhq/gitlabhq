@@ -12,9 +12,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
   describe 'process' do
     let(:sequence) do
       [
-        Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-        Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
-        Gitlab::Metrics::Dashboard::Stages::CustomMetricsDetailsInserter,
         Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter,
         Gitlab::Metrics::Dashboard::Stages::UrlValidator
       ]
@@ -29,90 +26,11 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
       end
     end
 
-    it 'includes boolean to indicate if panel group has custom metrics' do
-      expect(dashboard[:panel_groups]).to all(include( { has_custom_metrics: boolean } ))
-    end
-
     context 'when the dashboard is not present' do
       let(:dashboard_yml) { nil }
 
       it 'returns nil' do
         expect(dashboard).to be_nil
-      end
-    end
-
-    context 'when dashboard config corresponds to common metrics' do
-      let!(:common_metric) { create(:prometheus_metric, :common, identifier: 'metric_a1') }
-
-      it 'inserts metric ids into the config' do
-        target_metric = all_metrics.find { |metric| metric[:id] == 'metric_a1' }
-
-        expect(target_metric).to include(:metric_id)
-        expect(target_metric[:metric_id]).to eq(common_metric.id)
-      end
-    end
-
-    context 'when the project has associated metrics' do
-      let!(:project_response_metric) { create(:prometheus_metric, project: project, group: :response) }
-      let!(:project_system_metric) { create(:prometheus_metric, project: project, group: :system) }
-      let!(:project_business_metric) { create(:prometheus_metric, project: project, group: :business) }
-
-      it 'includes project-specific metrics' do
-        expect(all_metrics).to include get_metric_details(project_system_metric)
-        expect(all_metrics).to include get_metric_details(project_response_metric)
-        expect(all_metrics).to include get_metric_details(project_business_metric)
-      end
-
-      it 'display groups and panels in the order they are defined' do
-        expected_metrics_order = [
-          'metric_b',
-          'metric_a2',
-          'metric_a1',
-          project_business_metric.id,
-          project_response_metric.id,
-          project_system_metric.id
-        ]
-        actual_metrics_order = all_metrics.map { |m| m[:id] || m[:metric_id] }
-
-        expect(actual_metrics_order).to eq expected_metrics_order
-      end
-
-      context 'when the project has multiple metrics in the same group' do
-        let!(:project_response_metric) { create(:prometheus_metric, project: project, group: :response) }
-        let!(:project_response_metric_2) { create(:prometheus_metric, project: project, group: :response) }
-
-        it 'includes multiple metrics' do
-          expect(all_metrics).to include get_metric_details(project_response_metric)
-          expect(all_metrics).to include get_metric_details(project_response_metric_2)
-        end
-      end
-
-      context 'when the dashboard should not include project metrics' do
-        let(:sequence) do
-          [
-            Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter
-          ]
-        end
-
-        let(:dashboard) { described_class.new(*process_params).process }
-
-        it 'includes only dashboard metrics' do
-          metrics = all_metrics.map { |m| m[:id] }
-
-          expect(metrics.length).to be(3)
-          expect(metrics).to eq %w(metric_b metric_a2 metric_a1)
-        end
-      end
-    end
-
-    context 'when there are no alerts' do
-      let!(:persisted_metric) { create(:prometheus_metric, :common, identifier: 'metric_a1') }
-
-      it 'does not insert an alert_path' do
-        target_metric = all_metrics.find { |metric| metric[:metric_id] == persisted_metric.id }
-
-        expect(target_metric).to be_a Hash
-        expect(target_metric).not_to include(:alert_path)
       end
     end
 
@@ -134,12 +52,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
       let(:dashboard_yml) { { panel_groups: [{}] } }
 
       it_behaves_like 'errors with message', 'Each "panel_group" must define an array :panels'
-    end
-
-    context 'when the dashboard contains a panel which is missing metrics' do
-      let(:dashboard_yml) { { panel_groups: [{ panels: [{}] }] } }
-
-      it_behaves_like 'errors with message', 'Each "panel" must define an array :metrics'
     end
   end
 

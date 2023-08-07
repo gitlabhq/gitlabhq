@@ -117,6 +117,11 @@ module API
       def required_permission
         :read_package
       end
+
+      def format_filename(package)
+        return "#{params[:package_filename]}.#{params[:format]}" if Feature.disabled?(:nuget_normalized_version, project_or_group) || package.version == params[:package_version]
+        return "#{params[:package_filename].sub(params[:package_version], package.version)}.#{params[:format]}" if package.normalized_nuget_version == params[:package_version]
+      end
     end
 
     params do
@@ -175,8 +180,9 @@ module API
               requires :package_filename, type: String, desc: 'The NuGet package filename', regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.1.3.0.17.nupkg' }
             end
             get '*package_version/*package_filename', format: [:nupkg, :snupkg], urgency: :low do
-              filename = "#{params[:package_filename]}.#{params[:format]}"
-              package_file = ::Packages::PackageFileFinder.new(find_package(params[:package_name], params[:package_version]), filename, with_file_name_like: true)
+              package = find_package(params[:package_name], params[:package_version])
+              filename = format_filename(package)
+              package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: true)
                                                           .execute
 
               not_found!('Package') unless package_file

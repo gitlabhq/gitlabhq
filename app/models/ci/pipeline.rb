@@ -964,11 +964,15 @@ module Ci
       Ci::Bridge.latest.where(pipeline: self_and_project_descendants)
     end
 
+    def jobs_in_self_and_project_descendants
+      Ci::Processable.latest.where(pipeline: self_and_project_descendants)
+    end
+
     def environments_in_self_and_project_descendants(deployment_status: nil)
       # We limit to 100 unique environments for application safety.
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
       expanded_environment_names =
-        builds_in_self_and_project_descendants.joins(:metadata)
+        jobs_in_self_and_project_descendants.joins(:metadata)
                                       .where.not(Ci::BuildMetadata.table_name => { expanded_environment_name: nil })
                                       .distinct("#{Ci::BuildMetadata.quoted_table_name}.expanded_environment_name")
                                       .limit(100)

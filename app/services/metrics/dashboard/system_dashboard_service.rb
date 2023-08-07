@@ -12,9 +12,6 @@ module Metrics
       DASHBOARD_VERSION = 'ce9ae27d2913f637de851d61099bc4151583eae68b1386a2176339ef6e653223'
 
       SEQUENCE = [
-        STAGES::CommonMetricsInserter,
-        STAGES::CustomMetricsInserter,
-        STAGES::CustomMetricsDetailsInserter,
         STAGES::PanelIdsInserter
       ].freeze
 

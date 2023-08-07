@@ -20726,7 +20726,7 @@ msgstr ""
 msgid "Geo|Last event ID from primary"
 msgstr ""
 
-msgid "Geo|Last event ID processed by cursor"
+msgid "Geo|Last event ID processed"
 msgstr ""
 
 msgid "Geo|Last repository check run"

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::PackageFinder do
+RSpec.describe Packages::Nuget::PackageFinder, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, namespace: subgroup) }
   let_it_be_with_refind(:package1) { create(:nuget_package, project: project) }
-  let_it_be(:package2) { create(:nuget_package, name: package1.name, version: '2.0.0-ABC', project: project) }
+  let_it_be(:package2) { create(:nuget_package, :with_metadatum, name: package1.name, version: '2.0.0+ABC', project: project) }
   let_it_be(:package3) { create(:nuget_package, name: 'Another.Dummy.Package', project: project) }
   let_it_be(:other_package_1) { create(:nuget_package, name: package1.name, version: package1.version) }
   let_it_be(:other_package_2) { create(:nuget_package, name: package1.name, version: package2.version) }
@@ -15,9 +15,18 @@ RSpec.describe Packages::Nuget::PackageFinder do
   let(:package_name) { package1.name }
   let(:package_version) { nil }
   let(:limit) { 50 }
+  let(:client_version) { nil }
 
   describe '#execute!' do
-    subject { described_class.new(user, target, package_name: package_name, package_version: package_version, limit: limit).execute }
+    subject { described_class.new(user, target, package_name: package_name, package_version: package_version, limit: limit, client_version: client_version).execute }
+
+    shared_examples 'calling with_nuget_version_or_normalized_version scope' do |with_normalized:|
+      it 'calls with_nuget_version_or_normalized_version scope with the correct arguments' do
+        expect(::Packages::Package).to receive(:with_nuget_version_or_normalized_version).with(package_version, with_normalized: with_normalized).and_call_original
+
+        subject
+      end
+    end
 
     shared_examples 'handling all the conditions' do
       it { is_expected.to match_array([package1, package2]) }
@@ -43,13 +52,13 @@ RSpec.describe Packages::Nuget::PackageFinder do
       end
 
       context 'with valid version' do
-        let(:package_version) { '2.0.0-ABC' }
+        let(:package_version) { '2.0.0+ABC' }
 
         it { is_expected.to match_array([package2]) }
       end
 
       context 'with varying case version' do
-        let(:package_version) { '2.0.0-abC' }
+        let(:package_version) { '2.0.0+abC' }
 
         it { is_expected.to match_array([package2]) }
       end
@@ -58,6 +67,16 @@ RSpec.describe Packages::Nuget::PackageFinder do
         let(:package_version) { 'foobar' }
 
         it { is_expected.to be_empty }
+      end
+
+      context 'with normalized version' do
+        let(:package_version) { '2.0.0' }
+
+        before do
+          package2.nuget_metadatum.update_column(:normalized_version, package_version)
+        end
+
+        it { is_expected.to match_array([package2]) }
       end
 
       context 'with limit hit' do
@@ -76,22 +95,34 @@ RSpec.describe Packages::Nuget::PackageFinder do
         it { is_expected.to match_array([package1, package2]) }
       end
 
-      context 'with prefix wildcard' do
-        let(:package_name) { "%#{package1.name[3..]}" }
+      context 'with client version less than 3' do
+        let(:package_version) { '2.0.0+abc' }
+        let(:client_version) { '2.8.6' }
 
-        it { is_expected.to match_array([package1, package2]) }
+        it_behaves_like 'calling with_nuget_version_or_normalized_version scope', with_normalized: false
       end
 
-      context 'with suffix wildcard' do
-        let(:package_name) { "#{package1.name[0..-3]}%" }
+      context 'with client version greater than or equal to 3' do
+        let(:package_version) { '2.0.0+abc' }
+        let(:client_version) { '3.5' }
 
-        it { is_expected.to match_array([package1, package2]) }
+        it_behaves_like 'calling with_nuget_version_or_normalized_version scope', with_normalized: true
       end
 
-      context 'with surrounding wildcards' do
-        let(:package_name) { "%#{package1.name[3..-3]}%" }
+      context 'with no client version' do
+        let(:package_version) { '2.0.0+abc' }
 
-        it { is_expected.to match_array([package1, package2]) }
+        it_behaves_like 'calling with_nuget_version_or_normalized_version scope', with_normalized: true
+      end
+
+      context 'when nuget_normalized_version feature flag is disabled' do
+        let(:package_version) { '2.0.0+abc' }
+
+        before do
+          stub_feature_flags(nuget_normalized_version: false)
+        end
+
+        it_behaves_like 'calling with_nuget_version_or_normalized_version scope', with_normalized: false
       end
     end
 
@@ -127,6 +158,13 @@ RSpec.describe Packages::Nuget::PackageFinder do
 
     context 'with nil' do
       let(:target) { nil }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when package name is blank' do
+      let(:target) { project }
+      let(:package_name) { nil }
 
       it { is_expected.to be_empty }
     end

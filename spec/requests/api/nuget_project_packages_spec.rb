@@ -133,7 +133,7 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/projects/:id/packages/nuget/download/*package_name/*package_version/*package_filename' do
-    let_it_be(:package) { create(:nuget_package, :with_symbol_package, project: project, name: package_name) }
+    let_it_be(:package) { create(:nuget_package, :with_symbol_package, :with_metadatum, project: project, name: package_name, version: '0.1') }
 
     let(:format) { 'nupkg' }
     let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.name}.#{package.version}.#{format}" }

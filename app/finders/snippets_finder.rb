@@ -67,17 +67,16 @@ class SnippetsFinder < UnionFinder
     return Snippet.none if project.nil? && params[:project].present?
     return Snippet.none if project && !project.feature_available?(:snippets, current_user)
 
-    items = init_collection
-    items = by_ids(items)
-    items = items.with_optional_visibility(visibility_from_scope)
-    items = by_created_at(items)
-
-    items.order_by(sort_param)
+    snippets = all_snippets
+    snippets = by_ids(snippets)
+    snippets = snippets.with_optional_visibility(visibility_from_scope)
+    snippets = by_created_at(snippets)
+    snippets.order_by(sort_param)
   end
 
   private
 
-  def init_collection
+  def all_snippets
     if explore?
       snippets_for_explore
     elsif only_personal?
@@ -182,10 +181,10 @@ class SnippetsFinder < UnionFinder
     end
   end
 
-  def by_ids(items)
-    return items unless params[:ids].present?
+  def by_ids(snippets)
+    return snippets unless params[:ids].present?
 
-    items.id_in(params[:ids])
+    snippets.id_in(params[:ids])
   end
 
   def author

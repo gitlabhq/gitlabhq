@@ -976,6 +976,35 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to match_array([nuget_package]) }
     end
 
+    describe '.with_case_insensitive_name' do
+      let_it_be(:nuget_package) { create(:nuget_package, name: 'TestPackage') }
+
+      subject { described_class.with_case_insensitive_name('testpackage') }
+
+      it { is_expected.to match_array([nuget_package]) }
+    end
+
+    describe '.with_nuget_version_or_normalized_version' do
+      let_it_be(:nuget_package) { create(:nuget_package, :with_metadatum, version: '1.0.7+r3456') }
+
+      before do
+        nuget_package.nuget_metadatum.update_column(:normalized_version, '1.0.7')
+      end
+
+      subject { described_class.with_nuget_version_or_normalized_version(version, with_normalized: with_normalized) }
+
+      where(:version, :with_normalized, :expected) do
+        '1.0.7'       | true  | [ref(:nuget_package)]
+        '1.0.7'       | false | []
+        '1.0.7+r3456' | true  | [ref(:nuget_package)]
+        '1.0.7+r3456' | false | [ref(:nuget_package)]
+      end
+
+      with_them do
+        it { is_expected.to match_array(expected) }
+      end
+    end
+
     context 'status scopes' do
       let_it_be(:default_package) { create(:maven_package, :default) }
       let_it_be(:hidden_package) { create(:maven_package, :hidden) }
@@ -1430,6 +1459,19 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
       it { is_expected.to eq(normalized_name) }
     end
+  end
+
+  describe '#normalized_nuget_version' do
+    let_it_be(:package) { create(:nuget_package, :with_metadatum, version: '1.0') }
+    let(:normalized_version) { '1.0.0' }
+
+    subject { package.normalized_nuget_version }
+
+    before do
+      package.nuget_metadatum.update_column(:normalized_version, normalized_version)
+    end
+
+    it { is_expected.to eq(normalized_version) }
   end
 
   describe "#publish_creation_event" do

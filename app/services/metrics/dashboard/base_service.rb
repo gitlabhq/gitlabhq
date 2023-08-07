@@ -9,7 +9,6 @@ module Metrics
 
       STAGES = ::Gitlab::Metrics::Dashboard::Stages
       SEQUENCE = [
-        STAGES::CommonMetricsInserter,
         STAGES::PanelIdsInserter,
         STAGES::TrackPanelType,
         STAGES::UrlValidator
@@ -128,8 +127,6 @@ module Metrics
         }
       end
 
-      # If @sequence is [STAGES::CommonMetricsInserter, STAGES::CustomMetricsInserter],
-      # this function will output `CommonMetricsInserter-CustomMetricsInserter`.
       def sequence_string
         sequence.map { |stage_class| stage_class.to_s.split('::').last }.join('-')
       end

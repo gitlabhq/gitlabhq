@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Packages::Nuget::Metadatum < ApplicationRecord
+  include Packages::Nuget::VersionNormalizable
+
   MAX_AUTHORS_LENGTH = 255
   MAX_DESCRIPTION_LENGTH = 4000
   MAX_URL_LENGTH = 255
@@ -13,8 +15,14 @@ class Packages::Nuget::Metadatum < ApplicationRecord
   validates :icon_url, public_url: { allow_blank: true }, length: { maximum: MAX_URL_LENGTH }
   validates :authors, presence: true, length: { maximum: MAX_AUTHORS_LENGTH }
   validates :description, presence: true, length: { maximum: MAX_DESCRIPTION_LENGTH }
+  validates :normalized_version, presence: true,
+    if: -> { Feature.enabled?(:nuget_normalized_version, package&.project) }
 
   validate :ensure_nuget_package_type
+
+  delegate :version, to: :package, prefix: true
+
+  scope :normalized_version_in, ->(version) { where(normalized_version: version.downcase) }
 
   private
 

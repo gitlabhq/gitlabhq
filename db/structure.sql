@@ -19988,6 +19988,8 @@ CREATE TABLE packages_nuget_metadata (
     icon_url text,
     authors text,
     description text,
+    normalized_version text,
+    CONSTRAINT check_9973c0cc33 CHECK ((char_length(normalized_version) <= 255)),
     CONSTRAINT check_d39a5fe9ee CHECK ((char_length(description) <= 4000)),
     CONSTRAINT check_e2fc129ebd CHECK ((char_length(authors) <= 255)),
     CONSTRAINT packages_nuget_metadata_icon_url_constraint CHECK ((char_length(icon_url) <= 255)),
@@ -30284,6 +30286,8 @@ CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON pac
 
 CREATE INDEX idx_packages_debian_project_component_files_on_architecture_id ON packages_debian_project_component_files USING btree (architecture_id);
 
+CREATE INDEX idx_packages_nuget_metadata_on_pkg_id_and_normalized_version ON packages_nuget_metadata USING btree (package_id, normalized_version);
+
 CREATE INDEX idx_packages_on_project_id_name_id_version_when_installable_npm ON packages_packages USING btree (project_id, name, id, version) WHERE ((package_type = 2) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_generic ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 7) AND (status <> 4));
@@ -32613,6 +32617,8 @@ CREATE INDEX index_packages_packages_on_id_and_created_at ON packages_packages U
 CREATE INDEX index_packages_packages_on_name_trigram ON packages_packages USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_packages_packages_on_project_id_and_created_at ON packages_packages USING btree (project_id, created_at);
+
+CREATE INDEX index_packages_packages_on_project_id_and_lower_name ON packages_packages USING btree (project_id, lower((name)::text)) WHERE (package_type = 4);
 
 CREATE INDEX index_packages_packages_on_project_id_and_lower_version ON packages_packages USING btree (project_id, lower((version)::text)) WHERE (package_type = 4);
 

@@ -44,6 +44,7 @@ module API
         authenticate!
 
         filter_params = declared_params(include_missing: false).merge(author: current_user)
+
         present paginate(SnippetsFinder.new(current_user, filter_params).execute), with: Entities::Snippet, current_user: current_user
       end
 
@@ -66,6 +67,7 @@ module API
         authenticate!
 
         filter_params = declared_params(include_missing: false).merge(only_personal: true)
+
         present paginate(SnippetsFinder.new(nil, filter_params).execute), with: Entities::PersonalSnippet, current_user: current_user
       end
 

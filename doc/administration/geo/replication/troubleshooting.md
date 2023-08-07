@@ -163,7 +163,7 @@ http://secondary.example.com/
                          Sync Settings: Full
               Database replication lag: 0 seconds
        Last event ID seen from primary: 12345 (about 2 minutes ago)
-     Last event ID processed by cursor: 12345 (about 2 minutes ago)
+               Last event ID processed: 12345 (about 2 minutes ago)
                 Last status report was: 1 minute ago
 ```
 

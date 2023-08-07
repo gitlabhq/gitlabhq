@@ -327,6 +327,33 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
         expect(response.media_type).to eq('application/octet-stream')
       end
     end
+
+    context 'with normalized package version' do
+      let(:normalized_version) { '0.1.0' }
+      let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package.name}/#{normalized_version}/#{package.name}.#{package.version}.#{format}" }
+
+      before do
+        package.nuget_metadatum.update_column(:normalized_version, normalized_version)
+      end
+
+      it_behaves_like 'returning response status', status
+
+      it 'returns a valid package archive' do
+        subject
+
+        expect(response.media_type).to eq('application/octet-stream')
+      end
+
+      it_behaves_like 'bumping the package last downloaded at field'
+
+      context 'when nuget_normalized_version feature flag is disabled' do
+        before do
+          stub_feature_flags(nuget_normalized_version: false)
+        end
+
+        it_behaves_like 'returning response status', :not_found
+      end
+    end
   end
 end
 

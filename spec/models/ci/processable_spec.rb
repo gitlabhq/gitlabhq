@@ -31,7 +31,8 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
       let_it_be_with_refind(:processable) do
         create(:ci_bridge, :success,
-          pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', stage_id: stage.id)
+          pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', stage_id: stage.id,
+          environment: 'production')
       end
 
       let(:clone_accessors) { ::Ci::Bridge.clone_accessors }

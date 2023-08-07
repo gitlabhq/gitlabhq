@@ -124,6 +124,22 @@ class Packages::Package < ApplicationRecord
     where('LOWER(version) = ?', version.downcase)
   end
 
+  scope :with_case_insensitive_name, ->(name) do
+    where(arel_table[:name].lower.eq(name.downcase))
+  end
+
+  scope :with_nuget_version_or_normalized_version, ->(version, with_normalized: true) do
+    relation = with_case_insensitive_version(version)
+
+    return relation unless with_normalized
+
+    relation
+      .left_joins(:nuget_metadatum)
+      .or(
+        merge(Packages::Nuget::Metadatum.normalized_version_in(version))
+      )
+  end
+
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
@@ -366,6 +382,12 @@ class Packages::Package < ApplicationRecord
     return name unless pypi?
 
     name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/o, '-').downcase
+  end
+
+  def normalized_nuget_version
+    return unless nuget?
+
+    nuget_metadatum&.normalized_version
   end
 
   def publish_creation_event
