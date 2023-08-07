@@ -174,7 +174,7 @@ RSpec.describe 'User adds pages domain', :js, feature_category: :pages do
         expect(domain.key).to be_nil
       end
 
-      it 'shows the DNS ALIAS record' do
+      it 'shows the DNS ALIAS record', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419686' do
         visit project_pages_path(project)
 
         within('#content-body') { click_link 'Edit' }

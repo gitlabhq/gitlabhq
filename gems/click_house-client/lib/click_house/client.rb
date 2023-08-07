@@ -28,17 +28,7 @@ module ClickHouse
 
     # Executes a SELECT database query
     def self.select(query, database, configuration = self.configuration)
-      db = lookup_database(configuration, database)
-
-      ActiveSupport::Notifications.instrument('sql.click_house', { query: query, database: database }) do |instrument|
-        response = configuration.http_post_proc.call(
-          db.uri.to_s,
-          db.headers,
-          "#{query} FORMAT JSON" # always return JSON
-        )
-
-        raise DatabaseError, response.body unless response.success?
-
+      instrumented_execute(query, database, configuration) do |response, instrument|
         parsed_response = configuration.json_parser.parse(response.body)
 
         instrument[:statistics] = parsed_response['statistics']&.symbolize_keys
@@ -49,17 +39,7 @@ module ClickHouse
 
     # Executes any kinds of database query without returning any data (INSERT, DELETE)
     def self.execute(query, database, configuration = self.configuration)
-      db = lookup_database(configuration, database)
-
-      ActiveSupport::Notifications.instrument('sql.click_house', { query: query, database: database }) do |instrument|
-        response = configuration.http_post_proc.call(
-          db.uri.to_s,
-          db.headers,
-          query
-        )
-
-        raise DatabaseError, response.body unless response.success?
-
+      instrumented_execute(query, database, configuration) do |response, instrument|
         if response.headers['x-clickhouse-summary']
           instrument[:statistics] =
             Gitlab::Json.parse(response.headers['x-clickhouse-summary']).symbolize_keys
@@ -72,6 +52,22 @@ module ClickHouse
     private_class_method def self.lookup_database(configuration, database)
       configuration.databases[database].tap do |db|
         raise ConfigurationError, "The database '#{database}' is not configured" unless db
+      end
+    end
+
+    private_class_method def self.instrumented_execute(query, database, configuration)
+      db = lookup_database(configuration, database)
+
+      ActiveSupport::Notifications.instrument('sql.click_house', { query: query, database: database }) do |instrument|
+        response = configuration.http_post_proc.call(
+          db.uri.to_s,
+          db.headers,
+          query
+        )
+
+        raise DatabaseError, response.body unless response.success?
+
+        yield response, instrument
       end
     end
   end

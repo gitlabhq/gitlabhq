@@ -17,13 +17,15 @@ RSpec.describe ClickHouse::Client::Database do
 
   describe '#uri' do
     it 'builds the correct URL' do
-      expect(database.uri.to_s).to eq('http://localhost:3333?database=test_db&join_use_nulls=1')
+      expect(database.uri.to_s).to eq('http://localhost:3333?database=test_db&enable_http_compression=1&join_use_nulls=1')
     end
   end
 
   describe '#headers' do
     it 'returns the correct headers' do
       expect(database.headers).to eq({
+        "Content-Encoding" => "gzip",
+        "X-ClickHouse-Format" => "JSON",
         'X-ClickHouse-User' => 'user',
         'X-ClickHouse-Key' => 'pass'
       })

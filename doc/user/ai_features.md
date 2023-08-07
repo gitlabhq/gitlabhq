@@ -49,6 +49,16 @@ The following feature is in Beta:
 [Experiment](../policy/experiment-beta-support.md#experiment) AI features require
 [Experiment features to be enabled](group/manage.md#enable-experiment-features) as well as [third-party AI services to be enabled](group/manage.md#enable-third-party-ai-features).
 
+The following features are in Experiment:
+
+- [Fill in merge request templates](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates)
+- [Summarize merge request changes](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes)
+- [Summarize my merge request review](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review)
+- [Suggested merge or squash commit message](project/merge_requests/ai_in_merge_requests.md#suggested-merge-or-squash-commit-message)
+- [Generate suggested tests in merge requests](project/merge_requests/ai_in_merge_requests.md#generate-suggested-tests-in-merge-requests)
+
+The rest of the features described on this page are also in the Experiment phase.
+
 ### Explain Selected Code in the Web UI **(ULTIMATE SAAS)**
 
 > Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
@@ -176,66 +186,6 @@ Or, you can add a comment in the [feedback issue](https://gitlab.com/gitlab-org/
 
 NOTE:
 Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.
-
-### Summarize merge request changes **(ULTIMATE SAAS)**
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
-
-This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
-
-These summaries are automatically generated. They are available on the merge request page in the **Merge request summaries** dialog, the To-Do list, and in email notifications.
-
-Provide feedback on this experimental feature in [issue 408726](https://gitlab.com/gitlab-org/gitlab/-/issues/408726).
-
-**Data usage**: When using this quick action, the diff of changes between the source branch's head and the target branch is sent to the large language model.
-
-### Summarize my merge request review **(ULTIMATE SAAS)**
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
-
-This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
-
-When you've completed your review of a merge request and are ready to [submit your review](project/merge_requests/reviews/index.md#submit-a-review), you can have a summary generated for you.
-
-To generate the summary:
-
-1. When you are ready to submit your review, select **Finish review**.
-1. Select **AI Actions** (**{tanuki}**).
-1. Select **Summarize my code review**.
-
-The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
-
-Provide feedback on this experimental feature in [issue 408991](https://gitlab.com/gitlab-org/gitlab/-/issues/408991).
-
-**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
-
-- Draft comment's text
-- File path of the commented files
-
-### Generate suggested tests in merge requests **(ULTIMATE SAAS)**
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
-
-This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
-
-In a merge request, you can get a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
-
-View a [click-through demo](https://go.gitlab.com/Xfp0l4).
-
-To generate a test suggestion:
-
-1. In a merge request, select the **Changes** tab.
-1. On the header for the file, in the upper-right corner, select **Options** (**{ellipsis_v}**).
-1. Select **Suggest test cases**.
-
-The test suggestion is generated in a sidebar. You can copy the suggestion to your editor and use it as the start of your tests.
-
-Feedback on this experimental feature can be provided in [issue 408995](https://gitlab.com/gitlab-org/gitlab/-/issues/408995).
-
-**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
-
-- Contents of the file
-- The filename
 
 ### Summarize issue discussions **(ULTIMATE SAAS)**
 

@@ -11512,7 +11512,7 @@ msgstr ""
 msgid "CodeSuggestions|Enable Code Suggestions"
 msgstr ""
 
-msgid "CodeSuggestions|Get code suggestions as you write code in your IDE. %{link_start}Learn more.%{link_end}"
+msgid "CodeSuggestions|Get code suggestions as you write code in your IDE. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "CodeSuggestions|Projects in this group can use Code Suggestions"

@@ -21,7 +21,7 @@ ClickHouse::Client.configure do |config|
   config.http_post_proc = ->(url, headers, body) do
     options = {
       headers: headers,
-      body: body,
+      body: ActiveSupport::Gzip.compress(body),
       allow_local_requests: Rails.env.development? || Rails.env.test?
     }
 
