@@ -8,6 +8,7 @@ import initCopyAsGFM from './markdown/copy_as_gfm';
 import './quick_submit';
 import './requires_input';
 import initPageShortcuts from './shortcuts';
+import { initToastMessages } from './toasts';
 import './toggler_behavior';
 import './preview_markdown';
 
@@ -20,6 +21,8 @@ initCopyToClipboard();
 
 initPageShortcuts();
 initCollapseSidebarOnWindowResize();
+
+initToastMessages();
 
 window.requestIdleCallback(
   () => {

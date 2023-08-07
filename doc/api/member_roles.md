@@ -8,6 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96996) in GitLab 15.4. [Deployed behind the `customizable_roles` flag](../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
+> - [Read vulnerability added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114734) in GitLab 16.0.
+> - [Admin vulnerability added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) in GitLab 16.1.
+> - [Read dependency added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) in GitLab 16.3.
+> - [Name and description fields added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
 
 ## List all member roles of a group
 
@@ -23,13 +27,17 @@ GET /groups/:id/member_roles
 
 If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
 
-| Attribute                | Type     | Description           |
-|:-------------------------|:---------|:----------------------|
+| Attribute                | Type    | Description           |
+|:-------------------------|:--------|:----------------------|
 | `[].id`                  | integer | The ID of the member role. |
+| `[].name`                | string  | The name of the member role. |
+| `[].description`         | string  | The description of the member role. |
 | `[].group_id`            | integer | The ID of the group that the member role belongs to. |
-| `[].base_access_level`   | integer | Base access level for member role. |
-| `[].read_code`           | boolean | Permission to read code. |
+| `[].base_access_level`   | integer | Base access level for member role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
+| `[].admin_vulnerability` | boolean | Permission to admin project vulnerabilities. |
+| `[].read_code`           | boolean | Permission to read project code. |
 | `[].read_dependency`     | boolean | Permission to read project dependencies. |
+| `[].read_vulnerability`  | boolean | Permission to read project vulnerabilities. |
 
 Example request:
 
@@ -43,15 +51,25 @@ Example response:
 [
   {
     "id": 2,
+    "name": "Custom + code",
+    "description: "Custom guest that can read code",
     "group_id": 84,
     "base_access_level": 10,
-    "read_code": true
+    "admin_vulnerability": false,
+    "read_code": true,
+    "read_dependency": false,
+    "read_vulnerability": false
   },
   {
     "id": 3,
+    "name": "Guest + security",
+    "description: "Custom guest that read and admin security entities",
     "group_id": 84,
     "base_access_level": 10,
-    "read_code": false
+    "admin_vulnerability": true,
+    "read_code": false,
+    "read_dependency": true,
+    "read_vulnerability": true
   }
 ]
 ```
@@ -66,27 +84,35 @@ POST /groups/:id/member_roles
 
 To add a member role to a group, the group must be at root-level (have no parent group).
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `base_access_level` | integer | yes   | Base access level for configured role. |
-| `read_code` | boolean | no | Permission to read code.  |
-| `read_dependency` | boolean | no | Permission to read project dependencies.  |
+| Attribute | Type                | Required | Description |
+| --------- | ------------------- | -------- | ----------- |
+| `id`      | integer/string      | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `name`         | string         | yes      | The name of the member role. |
+| `description`  | string         | no       | The description of the member role. |
+| `base_access_level` | integer   | yes      | Base access level for configured role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
+| `admin_vulnerability` | boolean | no       | Permission to admin project vulnerabilities. |
+| `read_code`           | boolean | no       | Permission to read project code. |
+| `read_dependency`     | boolean | no       | Permission to read project dependencies. |
+| `read_vulnerability`  | boolean | no       | Permission to read project vulnerabilities. |
 
 If successful, returns [`201`](rest/index.md#status-codes) and the following attributes:
 
 | Attribute                | Type     | Description           |
 |:-------------------------|:---------|:----------------------|
 | `id`                     | integer | The ID of the member role. |
+| `name`                   | string  | The name of the member role. |
+| `description`            | string  | The description of the member role. |
 | `group_id`               | integer | The ID of the group that the member role belongs to. |
 | `base_access_level`      | integer | Base access level for member role. |
-| `read_code`              | boolean | Permission to read code. |
+| `admin_vulnerability`    | boolean | Permission to admin project vulnerabilities. |
+| `read_code`              | boolean | Permission to read project code. |
 | `read_dependency`        | boolean | Permission to read project dependencies. |
+| `read_vulnerability`     | boolean | Permission to read project vulnerabilities. |
 
 Example request:
 
 ```shell
- curl --request POST --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"base_access_level" : 10, "read_code" : true}' "https://example.gitlab.com/api/v4/groups/:id/member_roles"
+ curl --request POST --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"name" : "Custom guest", "base_access_level" : 10, "read_code" : true}' "https://example.gitlab.com/api/v4/groups/:id/member_roles"
 ```
 
 Example response:
@@ -94,10 +120,14 @@ Example response:
 ```json
 {
   "id": 3,
+  "name": "Custom guest",
+  "description": null,
   "group_id": 84,
   "base_access_level": 10,
+  "admin_vulnerability": false,
   "read_code": true,
-  "read_dependency": false
+  "read_dependency": false,
+  "read_vulnerability": false
 }
 ```
 

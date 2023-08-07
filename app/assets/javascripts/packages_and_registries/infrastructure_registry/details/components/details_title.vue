@@ -29,11 +29,6 @@ export default {
       return numberToHumanSize(this.packageFiles.reduce((acc, p) => acc + p.size, 0));
     },
   },
-  methods: {
-    dynamicSlotName(index) {
-      return `metadata-tag${index}`;
-    },
-  },
 };
 </script>
 

@@ -13,7 +13,7 @@ See some of these settings on the [instance configuration page](https://gitlab.c
 
 ## Unconfirmed user deletion
 
-GitLab.com has the [`unconfirmed_users_delete_after_days`](../../administration/moderate_users.md#automatically-delete-unconfirmed-users) setting set to seven days.
+GitLab.com has the [`unconfirmed_users_delete_after_days`](../../administration/moderate_users.md#automatically-delete-unconfirmed-users) setting set to one day.
 
 ## Password requirements
 

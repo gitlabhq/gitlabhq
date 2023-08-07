@@ -38,17 +38,15 @@ export default {
       metadataSlots: [],
     };
   },
-  mounted() {
-    this.recalculateMetadataSlots();
-  },
-  updated() {
+  created() {
     this.recalculateMetadataSlots();
   },
   methods: {
     recalculateMetadataSlots() {
       const METADATA_PREFIX = 'metadata-';
-      // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
-      const metadataSlots = Object.keys(this.$slots).filter((k) => k.startsWith(METADATA_PREFIX));
+      const metadataSlots = Object.keys(this.$scopedSlots).filter((k) =>
+        k.startsWith(METADATA_PREFIX),
+      );
 
       if (!isEqual(metadataSlots, this.metadataSlots)) {
         this.metadataSlots = metadataSlots;
@@ -77,9 +75,7 @@ export default {
             </h2>
 
             <div
-              v-if="
-                $slots['sub-header'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
-              "
+              v-if="$scopedSlots['sub-header']"
               class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-3"
             >
               <slot name="sub-header"></slot>
@@ -110,8 +106,7 @@ export default {
           </template>
         </div>
       </div>
-      <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-      <div v-if="$slots['right-actions']" class="gl-mt-3">
+      <div v-if="$scopedSlots['right-actions']" class="gl-mt-3">
         <slot name="right-actions"></slot>
       </div>
     </div>

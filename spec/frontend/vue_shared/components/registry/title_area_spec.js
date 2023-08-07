@@ -6,16 +6,12 @@ import component from '~/vue_shared/components/registry/title_area.vue';
 describe('title area', () => {
   let wrapper;
 
-  const DYNAMIC_SLOT = 'metadata-dynamic-slot';
-
   const findSubHeaderSlot = () => wrapper.findByTestId('sub-header');
   const findRightActionsSlot = () => wrapper.findByTestId('right-actions');
   const findMetadataSlot = (name) => wrapper.findByTestId(name);
   const findTitle = () => wrapper.findByTestId('title');
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findInfoMessages = () => wrapper.findAllByTestId('info-message');
-  const findDynamicSlot = () => wrapper.findByTestId(DYNAMIC_SLOT);
-  const findSlotOrderElements = () => wrapper.findAll('[slot-test]');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const mountComponent = ({ propsData = { title: 'foo' }, slots } = {}) => {
@@ -129,50 +125,6 @@ describe('title area', () => {
       await nextTick();
 
       expect(findSkeletonLoader().exists()).toBe(true);
-    });
-  });
-
-  describe('dynamic slots', () => {
-    const createDynamicSlot = () => {
-      return wrapper.vm.$createElement('div', {
-        attrs: {
-          'data-testid': DYNAMIC_SLOT,
-          'slot-test': true,
-        },
-      });
-    };
-
-    it('shows dynamic slots', async () => {
-      mountComponent();
-      // we manually add a new slot to simulate dynamic slots being evaluated after the initial mount
-      wrapper.vm.$slots[DYNAMIC_SLOT] = createDynamicSlot();
-
-      // updating the slots like we do on line 141 does not cause the updated lifecycle-hook to be triggered
-      wrapper.vm.$forceUpdate();
-      await nextTick();
-
-      expect(findDynamicSlot().exists()).toBe(true);
-    });
-
-    it('preserve the order of the slots', async () => {
-      mountComponent({
-        slots: {
-          'metadata-foo': '<div slot-test data-testid="metadata-foo"></div>',
-        },
-      });
-
-      // rewrite slot putting dynamic slot as first
-      wrapper.vm.$slots = {
-        'metadata-dynamic-slot': createDynamicSlot(),
-        'metadata-foo': wrapper.vm.$slots['metadata-foo'],
-      };
-
-      // updating the slots like we do on line 159 does not cause the updated lifecycle-hook to be triggered
-      wrapper.vm.$forceUpdate();
-      await nextTick();
-
-      expect(findSlotOrderElements().at(0).attributes('data-testid')).toBe(DYNAMIC_SLOT);
-      expect(findSlotOrderElements().at(1).attributes('data-testid')).toBe('metadata-foo');
     });
   });
 

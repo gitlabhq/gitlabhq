@@ -166,7 +166,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
         .with_pagination(request, response)
-        .represent(@pipelines),
+        .represent(@pipelines, preload: true),
       count: {
         all: @pipelines.count
       }

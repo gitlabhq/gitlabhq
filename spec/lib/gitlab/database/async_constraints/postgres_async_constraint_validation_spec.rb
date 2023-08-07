@@ -80,12 +80,16 @@ RSpec.describe Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValida
     it { expect(described_class.constraint_type_exists?).to be_truthy }
 
     it 'always asks the database' do
-      control = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) do
+      control1 = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) do
         described_class.constraint_type_exists?
       end
 
-      expect(control.count).to be >= 1
-      expect { described_class.constraint_type_exists? }.to issue_same_number_of_queries_as(control)
+      control2 = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) do
+        described_class.constraint_type_exists?
+      end
+
+      expect(control1.count).to eq(1)
+      expect(control2.count).to eq(1)
     end
   end
 
