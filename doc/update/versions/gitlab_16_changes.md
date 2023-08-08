@@ -11,7 +11,7 @@ Ensure you review these instructions and any specific instructions for your inst
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 7.0](https://docs.gitlab.com/charts/releases/7_0.html).
 
-## GitLab 16.2.0
+## 16.2.0
 
 - Legacy LDAP configuration settings may cause
   [`NoMethodError: undefined method 'devise' for User:Class` errors](https://gitlab.com/gitlab-org/gitlab/-/issues/419485).
@@ -41,7 +41,7 @@ Specific information applies to Linux package installations:
   If your instance has Redis HA with Sentinel, follow the upgrade steps mentioned in
   [Zero Downtime documentation](../zero_downtime.md#redis-ha-using-sentinel).
 
-## GitLab 16.1.0
+## 16.1.0
 
 - A `MigrateHumanUserType` background migration will be finalized with
     the `FinalizeUserTypeMigration` migration.
@@ -85,7 +85,7 @@ Specific information applies to installations using Geo:
   - Impacted versions: GitLab versions 16.1.x.
   - Versions containing fix: GitLab 16.2.0 and later.
 
-## GitLab 16.0.0
+## 16.0.0
 
 - Sidekiq crashes if there are non-ASCII characters in the `/etc/gitlab/gitlab.rb` file. You can fix this
   by following the workaround in [issue 412767](https://gitlab.com/gitlab-org/gitlab/-/issues/412767#note_1404507549).

@@ -54,18 +54,9 @@ module Gitlab
 
       def validate_promote_to(type)
         return error_msg(:not_found, action: 'promote') unless type && supports_promote_to?(type.name)
+        return if current_user.can?(:"create_#{type.base_type}", quick_action_target)
 
-        unless current_user.can?(:"create_#{type.base_type}", quick_action_target)
-          return error_msg(:forbidden, action: 'promote')
-        end
-
-        validate_hierarchy
-      end
-
-      def validate_hierarchy
-        return unless current_type.task? && quick_action_target.parent_link
-
-        error_msg(:hierarchy, action: 'promote')
+        error_msg(:forbidden, action: 'promote')
       end
 
       def current_type
@@ -88,8 +79,7 @@ module Gitlab
         message = {
           not_found: 'Provided type is not supported',
           same_type: 'Types are the same',
-          forbidden: 'You have insufficient permissions',
-          hierarchy: 'A task cannot be promoted when a parent issue is present'
+          forbidden: 'You have insufficient permissions'
         }.freeze
 
         format(_("Failed to %{action} this work item: %{reason}."), { action: action, reason: message[reason] })

@@ -14086,6 +14086,8 @@ Represents finding.
 | ---- | ---- | ----------- |
 | <a id="comparedsecurityreportfindingdescription"></a>`description` | [`String`](#string) | Description of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingfoundbypipelineiid"></a>`foundByPipelineIid` | [`String`](#string) | IID of the pipeline. |
+| <a id="comparedsecurityreportfindingidentifiers"></a>`identifiers` **{warning-solid}** | [`[VulnerabilityIdentifier!]`](#vulnerabilityidentifier) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Identifiers of the vulnerability finding. Returns `null` if `sast_reports_in_inline_diff` feature flag is disabled. |
+| <a id="comparedsecurityreportfindinglocation"></a>`location` **{warning-solid}** | [`VulnerabilityLocation`](#vulnerabilitylocation) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Location of the vulnerability finding. Returns `null` if `sast_reports_in_inline_diff` feature flag is disabled. |
 | <a id="comparedsecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
 | <a id="comparedsecurityreportfindingtitle"></a>`title` | [`String`](#string) | Title of the vulnerability finding. |

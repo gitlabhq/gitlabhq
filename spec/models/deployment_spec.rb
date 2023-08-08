@@ -1308,14 +1308,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           it_behaves_like 'synchronizing deployment' do
             let(:expected_deployment_status) { 'blocked' }
           end
-
-          context 'when track_manual_deployments feature flag is disabled' do
-            before do
-              stub_feature_flags(track_manual_deployments: false)
-            end
-
-            it_behaves_like 'ignoring job'
-          end
         end
 
         context 'with running job' do
@@ -1354,14 +1346,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           it_behaves_like 'gracefully handling error' do
             let(:error_message) { %{Status cannot transition via \"block\"} }
           end
-
-          context 'when track_manual_deployments feature flag is disabled' do
-            before do
-              stub_feature_flags(track_manual_deployments: false)
-            end
-
-            it_behaves_like 'ignoring job'
-          end
         end
 
         context 'with running job' do
@@ -1399,14 +1383,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
           it_behaves_like 'gracefully handling error' do
             let(:error_message) { %{Status cannot transition via \"block\"} }
-          end
-
-          context 'when track_manual_deployments feature flag is disabled' do
-            before do
-              stub_feature_flags(track_manual_deployments: false)
-            end
-
-            it_behaves_like 'ignoring job'
           end
         end
 

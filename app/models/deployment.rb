@@ -79,11 +79,6 @@ class Deployment < ApplicationRecord
       transition skipped: :created
     end
 
-    # Deprecated. To be removed when we remove `track_manual_deployments` feature flag.
-    event :unblock do
-      transition blocked: :created
-    end
-
     event :succeed do
       transition any - [:success] => :success
     end
@@ -405,10 +400,7 @@ class Deployment < ApplicationRecord
 
   def sync_status_with(job)
     job_status = job.status
-
-    if ::Feature.enabled?(:track_manual_deployments, job.project)
-      job_status = 'blocked' if job_status == 'manual' # rubocop:disable Style/SoleNestedConditional
-    end
+    job_status = 'blocked' if job_status == 'manual'
 
     return false unless ::Deployment.statuses.include?(job_status)
     return false if job_status == self.status
