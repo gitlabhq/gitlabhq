@@ -13,10 +13,13 @@
     = header_message
 
     - if show_super_sidebar? # TODO: Move this CSS to a better place
-      :css
-        body {
-          --header-height: 0px;
-        }
+      - if current_user
+        :css
+          body {
+            --header-height: 0px;
+          }
+      - else
+        = render partial: "layouts/header/super_sidebar_logged_out"
     - else
       = render partial: "layouts/header/default", locals: { project: @project, group: @group }
     = render 'layouts/page', sidebar: sidebar, nav: nav

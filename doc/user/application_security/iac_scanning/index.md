@@ -28,7 +28,7 @@ GitLab IaC Scanning analyzers don't support running on Windows or on any CPU arc
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
-is **not** `19.03.0`. See [troubleshooting information](../sast/index.md#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
+is **not** `19.03.0`. See [troubleshooting information](../sast/troubleshooting.md#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
 ## Supported languages and frameworks
 

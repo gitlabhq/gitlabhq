@@ -28251,6 +28251,9 @@ msgstr ""
 msgid "LoggedOutMarketingHeader|About GitLab"
 msgstr ""
 
+msgid "LoggedOutMarketingHeader|Contact Sales"
+msgstr ""
+
 msgid "LoggedOutMarketingHeader|Explore GitLab"
 msgstr ""
 
@@ -28276,6 +28279,9 @@ msgid "LoggedOutMarketingHeader|Pricing"
 msgstr ""
 
 msgid "LoggedOutMarketingHeader|Talk to an expert"
+msgstr ""
+
+msgid "LoggedOutMarketingHeader|Why GitLab"
 msgstr ""
 
 msgid "Login with smartcard"

@@ -317,7 +317,7 @@ module ApplicationHelper
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << 'with-top-bar' if show_super_sidebar? && !@hide_top_bar
     class_names << system_message_class
-    class_names << 'logged-out-marketing-header' if !current_user && ::Gitlab.com?
+    class_names << 'logged-out-marketing-header' if !current_user && ::Gitlab.com? && !show_super_sidebar?
 
     class_names
   end

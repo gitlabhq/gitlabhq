@@ -1,0 +1,47 @@
+%header.navbar.navbar-gitlab.super-sidebar-logged-out{ data: { testid: 'navbar' } }
+  %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
+  .container-fluid
+    .header-content.gl-displax-flex
+      .title-container.gl-display-flex.gl-align-items-stretch.gl-pt-0.gl-mr-3
+        = render 'layouts/header/title'
+
+        %ul.nav.navbar-sub-nav.gl-align-items-center.gl-display-flex.gl-flex-direction-row.gl-flex-grow-1
+          - if Gitlab.com?
+            %li.nav-item.dropdown.gl-mr-3.gl-md-display-none
+              %button{ type: "button", data: { toggle: "dropdown" } }
+                %span.gl-sr-only
+                  = _('Menu')
+                = sprite_icon('hamburger', size: 16)
+              .dropdown-menu
+                %ul
+                  %li
+                    = link_to Gitlab::Utils.append_path(promo_url, 'why-gitlab') do
+                      = s_('LoggedOutMarketingHeader|Why GitLab')
+                  %li
+                    = link_to Gitlab::Utils.append_path(promo_url, 'pricing') do
+                      = s_('LoggedOutMarketingHeader|Pricing')
+                  %li
+                    = link_to Gitlab::Utils.append_path(promo_url, 'sales') do
+                      = s_('LoggedOutMarketingHeader|Contact Sales')
+                  %li
+                    = link_to _("Explore"), explore_root_path
+            %li.nav-item.gl-mr-3.gl-display-none.gl-md-display-inline-block
+              = link_to Gitlab::Utils.append_path(promo_url, 'why-gitlab') do
+                = s_('LoggedOutMarketingHeader|Why GitLab')
+            %li.nav-item.gl-mr-3.gl-display-none.gl-md-display-inline-block
+              = link_to Gitlab::Utils.append_path(promo_url, 'pricing') do
+                = s_('LoggedOutMarketingHeader|Pricing')
+            %li.nav-item.gl-mr-3.gl-display-none.gl-md-display-inline-block
+              = link_to Gitlab::Utils.append_path(promo_url, 'sales') do
+                = s_('LoggedOutMarketingHeader|Contact Sales')
+          %li.nav-item{ class: ('gl-display-none gl-md-display-inline-block' if Gitlab.com?) }
+            = link_to _("Explore"), explore_root_path, class: ''
+
+      - if header_link?(:sign_in)
+        %ul.nav.navbar-nav.gl-align-items-center.gl-justify-content-end.gl-flex-direction-row
+          %li.nav-item.gl-mr-3
+            = link_to _('Sign in'), new_session_path(:user, redirect_to_referer: 'yes')
+          - if allow_signup?
+            %li
+              = render Pajamas::ButtonComponent.new(href: new_user_registration_path, variant: :confirm) do
+                = _('Register')

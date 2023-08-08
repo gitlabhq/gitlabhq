@@ -23,6 +23,8 @@ end
 
 Redis::Client.prepend(Gitlab::Instrumentation::RedisInterceptor)
 Redis::Cluster::NodeLoader.prepend(Gitlab::Patch::NodeLoader)
+Redis::Cluster::SlotLoader.prepend(Gitlab::Patch::SlotLoader)
+Redis::Cluster::CommandLoader.prepend(Gitlab::Patch::CommandLoader)
 Redis::Cluster.prepend(Gitlab::Patch::RedisCluster)
 
 # Make sure we initialize a Redis connection pool before multi-threaded

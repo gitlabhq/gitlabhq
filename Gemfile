@@ -358,7 +358,7 @@ gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation'
 
 gem 'premailer-rails', '~> 1.10.3'
 
-gem 'gitlab-labkit', '~> 0.33.0'
+gem 'gitlab-labkit', '~> 0.34.0'
 gem 'thrift', '>= 0.16.0'
 
 # I18n

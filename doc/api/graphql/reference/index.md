@@ -20679,6 +20679,7 @@ Represents a product analytics dashboard visualization.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="productanalyticsdashboardvisualizationdata"></a>`data` | [`JSON!`](#json) | Data of the visualization. |
+| <a id="productanalyticsdashboardvisualizationerrors"></a>`errors` | [`[String!]`](#string) | Validation errors in the visualization. |
 | <a id="productanalyticsdashboardvisualizationoptions"></a>`options` | [`JSON!`](#json) | Options of the visualization. |
 | <a id="productanalyticsdashboardvisualizationslug"></a>`slug` | [`String!`](#string) | Slug of the visualization. |
 | <a id="productanalyticsdashboardvisualizationtype"></a>`type` | [`String!`](#string) | Type of the visualization. |

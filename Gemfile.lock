@@ -654,13 +654,13 @@ GEM
       fog-core (= 2.1.0)
       fog-json (~> 1.2.0)
       mime-types
-    gitlab-labkit (0.33.0)
+    gitlab-labkit (0.34.0)
       actionpack (>= 5.0.0, < 8.0.0)
       activesupport (>= 5.0.0, < 8.0.0)
       grpc (>= 1.37)
       jaeger-client (~> 1.1.0)
       opentracing (~> 0.4)
-      pg_query (~> 4.2.1)
+      pg_query (~> 4.2.3)
       redis (> 3.0.0, < 6.0.0)
     gitlab-license (2.3.0)
     gitlab-mail_room (0.0.23)
@@ -1190,7 +1190,7 @@ GEM
     peek (1.1.0)
       railties (>= 4.0.0)
     pg (1.5.3)
-    pg_query (4.2.1)
+    pg_query (4.2.3)
       google-protobuf (>= 3.22.3)
     plist (3.6.0)
     png_quantizator (0.2.1)
@@ -1813,7 +1813,7 @@ DEPENDENCIES
   gitlab-dangerfiles (~> 3.13.0)
   gitlab-experiment (~> 0.7.1)
   gitlab-fog-azure-rm (~> 1.8.0)
-  gitlab-labkit (~> 0.33.0)
+  gitlab-labkit (~> 0.34.0)
   gitlab-license (~> 2.3)
   gitlab-mail_room (~> 0.0.23)
   gitlab-markup (~> 1.9.0)
@@ -2038,4 +2038,4 @@ DEPENDENCIES
   yajl-ruby (~> 1.4.3)
 
 BUNDLED WITH
-   2.4.17
+   2.4.18
