@@ -118,7 +118,7 @@
         = _("Secure Files")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded ? _('Collapse') : _('Expand')
-      %p
+      %p.gl-text-secondary.gl-mb-0
         = _("Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
         = link_to _('Learn more'), help_page_path('ci/secure_files/index'), target: '_blank', rel: 'noopener noreferrer'
     .settings-content

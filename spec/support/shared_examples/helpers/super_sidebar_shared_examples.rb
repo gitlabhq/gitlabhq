@@ -32,4 +32,6 @@ RSpec.shared_examples 'logged-out super-sidebar context' do
   it_behaves_like 'shared super sidebar context'
 
   it { is_expected.to include({ is_logged_in: false }) }
+
+  it { expect(subject[:context_switcher_links]).to be_an(Array) }
 end

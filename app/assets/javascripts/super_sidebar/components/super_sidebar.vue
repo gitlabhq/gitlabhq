@@ -140,7 +140,6 @@ export default {
           <context-switcher
             v-if="sidebarData.is_logged_in"
             ref="context-switcher"
-            :persistent-links="sidebarData.context_switcher_links"
             :username="sidebarData.username"
             :projects-path="sidebarData.projects_path"
             :groups-path="sidebarData.groups_path"

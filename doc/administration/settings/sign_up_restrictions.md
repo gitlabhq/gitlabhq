@@ -64,7 +64,7 @@ A [user cap](#user-cap) can also be used to enforce approvals for new users.
 You can send confirmation emails during sign up and require that users confirm
 their email address before they are allowed to sign in.
 
-For example, to enforce confirmation of the email address used for new sign ups:
+To enforce confirmation of the email address used for new sign ups:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
@@ -75,7 +75,7 @@ For example, to enforce confirmation of the email address used for new sign ups:
 The following settings are available:
 
 - **Hard** - Send a confirmation email during sign up. New users must confirm their email address before they can log in.
-- **Soft** - Send a confirmation email during sign up. New users can log in immediately, but must confirm their email in three days. Unconfirmed accounts are deleted.
+- **Soft** - Send a confirmation email during sign up. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
 - **Off** - New users can sign up without confirming their email address.
 
 ## User cap

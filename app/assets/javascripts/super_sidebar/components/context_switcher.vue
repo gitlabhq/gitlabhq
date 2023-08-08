@@ -64,11 +64,8 @@ export default {
     ProjectsList,
     GroupsList,
   },
+  inject: ['contextSwitcherLinks'],
   props: {
-    persistentLinks: {
-      type: Array,
-      required: true,
-    },
     username: {
       type: String,
       required: true,
@@ -185,7 +182,7 @@ export default {
             class="gl-border-b gl-border-gray-50 gl-px-0 gl-py-2"
           >
             <nav-item
-              v-for="item in persistentLinks"
+              v-for="item in contextSwitcherLinks"
               :key="item.link"
               :item="item"
               :link-classes="{ [item.link_classes]: item.link_classes }"

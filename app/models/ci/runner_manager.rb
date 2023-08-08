@@ -49,6 +49,8 @@ module Ci
       where(runner_id: runner_id)
     end
 
+    scope :order_id_desc, -> { order(id: :desc) }
+
     def self.online_contact_time_deadline
       Ci::Runner.online_contact_time_deadline
     end

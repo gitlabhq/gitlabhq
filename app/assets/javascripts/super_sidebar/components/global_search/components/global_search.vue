@@ -361,12 +361,11 @@ export default {
           @updated="highlightFirstCommand"
         />
 
+        <global-search-default-items v-else-if="showDefaultItems" />
+
         <template v-else>
-          <global-search-default-items v-if="showDefaultItems" />
-          <template v-else>
-            <global-search-scoped-items v-if="showScopedSearchItems" />
-            <global-search-autocomplete-items />
-          </template>
+          <global-search-scoped-items v-if="showScopedSearchItems" />
+          <global-search-autocomplete-items />
         </template>
       </div>
       <template v-if="searchContext">

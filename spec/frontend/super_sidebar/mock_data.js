@@ -71,6 +71,10 @@ export const mergeRequestMenuGroup = [
   },
 ];
 
+export const contextSwitcherLinks = [
+  { title: 'Explore', link: '/explore', icon: 'compass', link_classes: 'persistent-link-class' },
+];
+
 export const sidebarData = {
   is_logged_in: true,
   current_menu_items: [],
@@ -104,7 +108,7 @@ export const sidebarData = {
   gitlab_version_check: { severity: 'success' },
   gitlab_com_and_canary: false,
   canary_toggle_com_url: 'https://next.gitlab.com',
-  context_switcher_links: [],
+  context_switcher_links: contextSwitcherLinks,
   search: {
     search_path: '/search',
   },

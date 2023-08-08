@@ -374,8 +374,14 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     describe 'context switcher persistent links' do
       let_it_be(:public_link) do
         [
-          { title: s_('Navigation|Your work'), link: '/', icon: 'work' },
           { title: s_('Navigation|Explore'), link: '/explore', icon: 'compass' }
+        ]
+      end
+
+      let_it_be(:public_links_for_user) do
+        [
+          { title: s_('Navigation|Your work'), link: '/', icon: 'work' },
+          *public_link
         ]
       end
 
@@ -396,9 +402,17 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
       end
 
-      context 'when user is not an admin' do
-        it 'returns only the public links' do
+      context 'when user is not logged in' do
+        let(:user) { nil }
+
+        it 'returns only the public links for an anonymous user' do
           expect(subject[:context_switcher_links]).to eq(public_link)
+        end
+      end
+
+      context 'when user is not an admin' do
+        it 'returns only the public links for a user' do
+          expect(subject[:context_switcher_links]).to eq(public_links_for_user)
         end
       end
 
@@ -420,7 +434,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
             it 'returns public links, admin area and leave admin mode links' do
               expect(subject[:context_switcher_links]).to eq([
-                *public_link,
+                *public_links_for_user,
                 admin_area_link,
                 leave_admin_mode_link
               ])
@@ -430,7 +444,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           context 'when admin mode is off' do
             it 'returns public links and enter admin mode link' do
               expect(subject[:context_switcher_links]).to eq([
-                *public_link,
+                *public_links_for_user,
                 enter_admin_mode_link
               ])
             end
@@ -444,7 +458,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
           it 'returns public links and admin area link' do
             expect(subject[:context_switcher_links]).to eq([
-              *public_link,
+              *public_links_for_user,
               admin_area_link
             ])
           end

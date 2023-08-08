@@ -6,6 +6,7 @@ export const AUTOCOMPLETE_ERROR_MESSAGE = s__(
 
 export const ALL_GITLAB = __('All GitLab');
 export const SEARCH_GITLAB = s__('GlobalSearch|Search GitLab');
+export const PLACES = s__('GlobalSearch|Places');
 
 export const SEARCH_DESCRIBED_BY_DEFAULT = s__(
   'GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list.',

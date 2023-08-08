@@ -84,6 +84,7 @@ export const initSuperSidebar = () => {
   const projectBlobPath = commandPaletteData.project_blob_url;
   const commandPaletteCommands = sidebarData.create_new_menu_groups || [];
   const commandPaletteLinks = convertObjectPropsToCamelCase(sidebarData.current_menu_items || []);
+  const contextSwitcherLinks = sidebarData.context_switcher_links;
 
   const { searchPath, issuesPath, mrPath, autocompletePath, searchContext } = searchData;
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
@@ -99,6 +100,7 @@ export const initSuperSidebar = () => {
       ...getTrialStatusWidgetData(sidebarData),
       commandPaletteCommands,
       commandPaletteLinks,
+      contextSwitcherLinks,
       autocompletePath,
       searchContext,
       projectFilesPath,

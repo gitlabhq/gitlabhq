@@ -687,6 +687,10 @@ For example, a reference like `#123+s` is rendered as
 
 URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+s` are also expanded.
 
+To update the rendered references if the assignee, milestone, or health status changed,
+edit the comment or description and save it.
+For more information, see issue [420807](https://gitlab.com/gitlab-org/gitlab/-/issues/420807).
+
 ### Embedding metrics
 
 Metric charts can be embedded in GitLab Flavored Markdown. Read

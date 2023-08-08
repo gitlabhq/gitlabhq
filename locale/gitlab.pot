@@ -21659,6 +21659,9 @@ msgstr ""
 msgid "GlobalSearch|No labels found"
 msgstr ""
 
+msgid "GlobalSearch|Places"
+msgstr ""
+
 msgid "GlobalSearch|Project"
 msgstr ""
 

@@ -11,9 +11,14 @@ This page contains information about the settings that are used on GitLab.com, a
 
 See some of these settings on the [instance configuration page](https://gitlab.com/help/instance_configuration) of GitLab.com.
 
-## Unconfirmed user deletion
+## Email confirmation
 
-GitLab.com has the [`unconfirmed_users_delete_after_days`](../../administration/moderate_users.md#automatically-delete-unconfirmed-users) setting set to one day.
+GitLab.com has the:
+
+- [`email_confirmation_setting`](../../administration/settings/sign_up_restrictions.md#confirm-user-email)
+  setting set to **Hard**.
+- [`unconfirmed_users_delete_after_days`](../../administration/moderate_users.md#automatically-delete-unconfirmed-users)
+  setting set to one day.
 
 ## Password requirements
 

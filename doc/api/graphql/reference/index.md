@@ -15922,12 +15922,22 @@ Representing an event.
 | <a id="eventid"></a>`id` | [`ID!`](#id) | ID of the event. |
 | <a id="eventupdatedat"></a>`updatedAt` | [`Time!`](#time) | When this event was updated. |
 
+### `ExplainVulnerabilityPresubmissionCheckResults`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="explainvulnerabilitypresubmissioncheckresultspotentialsecretsincode"></a>`potentialSecretsInCode` | [`Boolean!`](#boolean) | This flag is true if we think there might be a secret in the code that would be sent in the LLM prompt. |
+| <a id="explainvulnerabilitypresubmissioncheckresultssecretdetectionresult"></a>`secretDetectionResult` | [`Boolean!`](#boolean) | This flag is true if the vulnerability being explained is specifically a secret detection vulnerability. |
+
 ### `ExplainVulnerabilityPrompt`
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="explainvulnerabilitypromptpresubmissionchecks"></a>`presubmissionChecks` | [`ExplainVulnerabilityPresubmissionCheckResults!`](#explainvulnerabilitypresubmissioncheckresults) | An object containing booleans. Each booolean indicates the result of a presubmission check: `true` for passed, and `false` for failed. |
 | <a id="explainvulnerabilitypromptpromptwithcode"></a>`promptWithCode` | [`String`](#string) | AI text prompt generated using the vulnerability's information, including the vulnerable code. |
 | <a id="explainvulnerabilitypromptpromptwithoutcode"></a>`promptWithoutCode` | [`String`](#string) | AI text prompt generated using the vulnerability's information, excluding the vulnerable code. |
 

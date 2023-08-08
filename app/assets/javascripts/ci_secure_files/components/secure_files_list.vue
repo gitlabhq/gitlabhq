@@ -2,6 +2,7 @@
 import {
   GlAlert,
   GlButton,
+  GlCard,
   GlIcon,
   GlLoadingIcon,
   GlModal,
@@ -24,6 +25,7 @@ export default {
   components: {
     GlAlert,
     GlButton,
+    GlCard,
     GlIcon,
     GlLoadingIcon,
     GlModal,
@@ -42,6 +44,7 @@ export default {
   inject: ['projectId', 'admin', 'fileSizeLimit'],
   DEFAULT_PER_PAGE,
   i18n: {
+    title: __('Files'),
     deleteLabel: __('Delete File'),
     uploadLabel: __('Upload File'),
     uploadingLabel: __('Uploading...'),
@@ -89,7 +92,8 @@ export default {
     },
     {
       key: 'actions',
-      label: '',
+      label: __('Actions'),
+      thClass: 'gl-text-right',
       tdClass: 'gl-text-right gl-vertical-align-middle!',
     },
   ],
@@ -184,78 +188,95 @@ export default {
 
 <template>
   <div>
-    <div class="ci-secure-files-table">
+    <div>
       <gl-alert v-if="error" variant="danger" class="gl-mt-6" @dismiss="error = null">
         {{ errorMessage }}
       </gl-alert>
 
-      <gl-table
-        :busy="loading"
-        :fields="fields"
-        :items="projectSecureFiles"
-        tbody-tr-class="js-ci-secure-files-row"
-        data-qa-selector="ci_secure_files_table_content"
-        sort-by="key"
-        sort-direction="asc"
-        stacked="lg"
-        table-class="text-secondary"
-        show-empty
-        sort-icon-left
-        no-sort-reset
-        :empty-text="$options.i18n.noFilesMessage"
+      <gl-card
+        class="gl-new-card"
+        header-class="gl-new-card-header"
+        body-class="gl-new-card-body gl-px-0"
       >
-        <template #table-busy>
-          <gl-loading-icon size="lg" class="gl-my-5" />
+        <template #header>
+          <div class="gl-new-card-title-wrapper">
+            <h5 class="gl-new-card-title gl-my-0">
+              {{ $options.i18n.title }}
+              <span class="gl-new-card-count">
+                <gl-icon name="document" class="gl-mr-2" />
+                {{ projectSecureFiles.length }}
+              </span>
+            </h5>
+          </div>
+          <div class="gl-new-card-actions">
+            <gl-button v-if="admin" size="small" @click="loadFileSelector">
+              <span v-if="uploading">
+                <gl-loading-icon class="gl-my-5" inline />
+                {{ $options.i18n.uploadingLabel }}
+              </span>
+              <span v-else>
+                <gl-icon name="upload" class="gl-mr-2" /> {{ $options.i18n.uploadLabel }}
+              </span>
+            </gl-button>
+            <input
+              id="file-upload"
+              ref="fileUpload"
+              type="file"
+              class="hidden"
+              data-qa-selector="file_upload_field"
+              @change="uploadSecureFile"
+            />
+          </div>
         </template>
 
-        <template #cell(name)="{ item }">
-          {{ item.name }}
-        </template>
+        <gl-table
+          :busy="loading"
+          :fields="fields"
+          :items="projectSecureFiles"
+          tbody-tr-class="js-ci-secure-files-row"
+          sort-by="key"
+          sort-direction="asc"
+          stacked="md"
+          table-class="text-secondary"
+          show-empty
+          sort-icon-left
+          no-sort-reset
+          :empty-text="$options.i18n.noFilesMessage"
+        >
+          <template #table-busy>
+            <gl-loading-icon size="lg" class="gl-my-5" />
+          </template>
 
-        <template #cell(created_at)="{ item }">
-          <timeago-tooltip :time="item.created_at" />
-        </template>
+          <template #cell(name)="{ item }">
+            {{ item.name }}
+          </template>
 
-        <template #cell(actions)="{ item }">
-          <metadata-button
-            :secure-file="item"
-            :admin="admin"
-            modal-id="$options.metadataModalId"
-            @selectSecureFile="updateMetadataSecureFile"
-          />
-          <gl-button
-            v-if="admin"
-            v-gl-modal="$options.deleteModalId"
-            v-gl-tooltip.hover.top="$options.i18n.deleteLabel"
-            category="secondary"
-            variant="danger"
-            icon="remove"
-            :aria-label="$options.i18n.deleteLabel"
-            data-testid="delete-button"
-            @click="setDeleteModalData(item)"
-          />
-        </template>
-      </gl-table>
-    </div>
+          <template #cell(created_at)="{ item }">
+            <timeago-tooltip :time="item.created_at" />
+          </template>
 
-    <div class="gl-display-flex gl-mt-5">
-      <gl-button v-if="admin" variant="confirm" @click="loadFileSelector">
-        <span v-if="uploading">
-          <gl-loading-icon class="gl-my-5" inline />
-          {{ $options.i18n.uploadingLabel }}
-        </span>
-        <span v-else>
-          <gl-icon name="upload" class="gl-mr-2" /> {{ $options.i18n.uploadLabel }}
-        </span>
-      </gl-button>
-      <input
-        id="file-upload"
-        ref="fileUpload"
-        type="file"
-        class="hidden"
-        data-qa-selector="file_upload_field"
-        @change="uploadSecureFile"
-      />
+          <template #cell(actions)="{ item }">
+            <metadata-button
+              :secure-file="item"
+              :admin="admin"
+              modal-id="$options.metadataModalId"
+              @selectSecureFile="updateMetadataSecureFile"
+            />
+            <gl-button
+              v-if="admin"
+              v-gl-modal="$options.deleteModalId"
+              v-gl-tooltip.hover.top="$options.i18n.deleteLabel"
+              size="small"
+              category="tertiary"
+              variant="default"
+              icon="remove"
+              :aria-label="$options.i18n.deleteLabel"
+              data-testid="delete-button"
+              @click="setDeleteModalData(item)"
+            />
+          </template>
+        </gl-table>
+      </gl-card>
     </div>
 
     <gl-pagination
@@ -266,6 +287,7 @@ export default {
       :next-text="$options.i18n.pagination.next"
       :prev-text="$options.i18n.pagination.prev"
       align="center"
+      class="gl-mt-5"
     />
 
     <gl-modal

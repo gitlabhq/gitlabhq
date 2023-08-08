@@ -53,6 +53,7 @@ module SidebarsHelper
   def super_sidebar_logged_out_context(panel:, panel_type:) # rubocop:disable Metrics/AbcSize
     {
       is_logged_in: false,
+      context_switcher_links: context_switcher_links,
       current_menu_items: panel.super_sidebar_menu_items,
       current_context_header: panel.super_sidebar_context_header,
       support_path: support_url,
@@ -101,7 +102,6 @@ module SidebarsHelper
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
       current_context: super_sidebar_current_context(project: project, group: group),
-      context_switcher_links: context_switcher_links,
       pinned_items: user.pinned_nav_items[panel_type] || super_sidebar_default_pins(panel_type),
       update_pins_url: pins_path,
       is_impersonating: impersonating?,
@@ -344,8 +344,7 @@ module SidebarsHelper
 
   def context_switcher_links
     links = [
-      # We should probably not return "You work" when used is not logged-in
-      { title: s_('Navigation|Your work'), link: root_path, icon: 'work' },
+      ({ title: s_('Navigation|Your work'), link: root_path, icon: 'work' } if current_user),
       { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' }
     ]
 
@@ -381,7 +380,7 @@ module SidebarsHelper
     end
     # rubocop: enable Cop/UserAdmin
 
-    links
+    links.compact
   end
 
   def impersonating?

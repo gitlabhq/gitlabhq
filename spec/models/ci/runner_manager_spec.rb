@@ -112,6 +112,16 @@ RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model 
     end
   end
 
+  describe '.order_id_desc' do
+    subject(:scope) { described_class.order_id_desc }
+
+    let_it_be(:runner_manager1) { create(:ci_runner_machine) }
+    let_it_be(:runner_manager2) { create(:ci_runner_machine) }
+
+    specify { expect(described_class.all).to eq([runner_manager1, runner_manager2]) }
+    it { is_expected.to eq([runner_manager2, runner_manager1]) }
+  end
+
   describe '#status', :freeze_time do
     let(:runner_manager) { build(:ci_runner_machine, created_at: 8.days.ago) }
 

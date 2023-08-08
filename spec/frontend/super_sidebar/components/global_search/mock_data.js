@@ -62,6 +62,24 @@ export const MOCK_SEARCH_CONTEXT = {
   group_metadata: {},
 };
 
+export const MOCK_GROUP_SEARCH_CONTEXT = {
+  ...MOCK_SEARCH_CONTEXT,
+  group: MOCK_GROUP,
+  group_metadata: {
+    issues_path: `${MOCK_GROUP.path}/issues`,
+    mr_path: `${MOCK_GROUP.path}/merge_requests`,
+  },
+};
+
+export const MOCK_PROJECT_SEARCH_CONTEXT = {
+  ...MOCK_GROUP_SEARCH_CONTEXT,
+  project: MOCK_PROJECT,
+  project_metadata: {
+    issues_path: `${MOCK_PROJECT.path}/issues`,
+    mr_path: `${MOCK_PROJECT.path}/merge_requests`,
+  },
+};
+
 export const MOCK_DEFAULT_SEARCH_OPTIONS = [
   {
     text: MSG_ISSUES_ASSIGNED_TO_ME,
