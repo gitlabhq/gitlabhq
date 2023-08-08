@@ -121,7 +121,6 @@ Rails/Pluck:
     - 'lib/gitlab/metrics/dashboard/stages/custom_metrics_details_inserter.rb'
     - 'lib/gitlab/sidekiq_config/cli_methods.rb'
     - 'lib/gitlab/sql/pattern.rb'
-    - 'lib/gitlab/usage/metrics/name_suggestion.rb'
     - 'lib/gitlab/usage_data_counters/hll_redis_counter.rb'
     - 'lib/gitlab/zentao/client.rb'
     - 'lib/tasks/gitlab/info.rake'

@@ -24,6 +24,57 @@ change its status to **Resolved**. This ensures that if it is accidentally reint
 merge, it is reported again as a new record. To change the status of multiple vulnerabilities, use
 the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#activity-filter).
 
+## Explaining a vulnerability (Beta) **(ULTIMATE SAAS)**
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - Promoted to [Beta](../../../policy/experiment-beta-support.md#beta) status in 16.2.
+
+GitLab can help you with a vulnerability by using a large language model to:
+
+- Summarize the vulnerability.
+- Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
+- Provide a suggested mitigation.
+
+![Explain this vulnerability](img/explain_this_vulnerability_beta_v16_3.png)
+
+On GitLab.com this feature is available. By default, it is powered by Google's `text-bison-001`
+model. In the event of degraded performance with that model, the feature instead uses Anthropic's
+`claude` model.
+
+We cannot guarantee that the large language model produces results that are correct. Use the
+explanation with caution.
+
+### Data shared with third-party AI APIs
+
+The following data is shared with third-party AI APIs:
+
+- Vulnerability title (which might contain the filename, depending on which scanner is used).
+- Vulnerability identifiers.
+- Code block, but only if the "Send code with prompt" checkbox is selected (single and multi-line as instructed by the vulnerability
+  record).
+- Filename.
+
+### Explain a vulnerability
+
+Use the explain this vulnerability feature to better understand a vulnerability and its possible
+mitigation.
+
+Prerequisites:
+
+- You must have the GitLab Ultimate subscription tier.
+- You must be a member of the project.
+- The vulnerability must be a SAST finding.
+
+To explain the vulnerability:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Security and Compliance > Vulnerability report**.
+1. In the **Tool** dropdown list, select **SAST**.
+1. Select the SAST vulnerability you want explained.
+1. At the bottom of the vulnerability's page, select **Try it out**.
+
+The response is shown on the right side of the page.
+
 ## Vulnerability status values
 
 A vulnerability's status can be:

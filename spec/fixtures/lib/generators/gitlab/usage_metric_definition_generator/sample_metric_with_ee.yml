@@ -1,6 +1,5 @@
 ---
 key_path: counts_weekly.test_metric
-name: test metric name
 description:
 product_section:
 product_stage:

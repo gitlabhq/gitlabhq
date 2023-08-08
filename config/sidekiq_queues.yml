@@ -611,6 +611,8 @@
   - 1
 - - system_access_group_saml_microsoft_group_sync
   - 1
+- - system_access_saml_microsoft_group_sync
+  - 1
 - - system_hook_push
   - 1
 - - tasks_to_be_done_create

@@ -187,7 +187,7 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.180.1'
+gem 'aws-sdk-core', '~> 3.180.2'
 gem 'aws-sdk-cloudformation', '~> 1'
 gem 'aws-sdk-s3', '~> 1.132.0'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
@@ -220,7 +220,7 @@ gem 'diffy', '~> 3.4'
 gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
-gem 'rack', '~> 2.2.7'
+gem 'rack', '~> 2.2.8'
 # https://github.com/zombocom/rack-timeout/blob/master/README.md#rails-apps-manually
 gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base'
 
@@ -342,7 +342,7 @@ gem 'base32', '~> 0.3.0'
 gem 'gitlab-license', '~> 2.3'
 
 # Protect against bruteforcing
-gem 'rack-attack', '~> 6.6.1'
+gem 'rack-attack', '~> 6.7.0'
 
 # Sentry integration
 gem 'sentry-raven', '~> 3.1'

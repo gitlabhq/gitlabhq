@@ -10714,6 +10714,30 @@ The edge type for [`PipelineSecurityReportFinding`](#pipelinesecurityreportfindi
 | <a id="pipelinesecurityreportfindingedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelinesecurityreportfindingedgenode"></a>`node` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | The item at the end of the edge. |
 
+#### `PipelineTriggerConnection`
+
+The connection type for [`PipelineTrigger`](#pipelinetrigger).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinetriggerconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="pipelinetriggerconnectionedges"></a>`edges` | [`[PipelineTriggerEdge]`](#pipelinetriggeredge) | A list of edges. |
+| <a id="pipelinetriggerconnectionnodes"></a>`nodes` | [`[PipelineTrigger]`](#pipelinetrigger) | A list of nodes. |
+| <a id="pipelinetriggerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PipelineTriggerEdge`
+
+The edge type for [`PipelineTrigger`](#pipelinetrigger).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinetriggeredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pipelinetriggeredgenode"></a>`node` | [`PipelineTrigger`](#pipelinetrigger) | The item at the end of the edge. |
+
 #### `ProductAnalyticsDashboardConnection`
 
 The connection type for [`ProductAnalyticsDashboard`](#productanalyticsdashboard).
@@ -20633,6 +20657,20 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | UUIDv5 digest based on the vulnerability's report type, primary identifier, location, fingerprint, project identifier. |
 | <a id="pipelinesecurityreportfindingvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability related to the security report finding. |
 
+### `PipelineTrigger`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinetriggercanaccessproject"></a>`canAccessProject` | [`Boolean!`](#boolean) | Indicates if the pipeline trigger token has access to the project. |
+| <a id="pipelinetriggerdescription"></a>`description` | [`String`](#string) | Description of the pipeline trigger token. |
+| <a id="pipelinetriggerhastokenexposed"></a>`hasTokenExposed` | [`Boolean!`](#boolean) | Indicates if the token is exposed. |
+| <a id="pipelinetriggerid"></a>`id` | [`ID!`](#id) | ID of the pipeline trigger token. |
+| <a id="pipelinetriggerlastused"></a>`lastUsed` | [`Time`](#time) | Timestamp of the last usage of the pipeline trigger token. |
+| <a id="pipelinetriggerowner"></a>`owner` | [`UserCore!`](#usercore) | Owner of the pipeline trigger token. |
+| <a id="pipelinetriggertoken"></a>`token` | [`String!`](#string) | Value of the pipeline trigger token. |
+
 ### `PreviewBillableUserChange`
 
 #### Fields
@@ -20748,6 +20786,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
+| <a id="projectpipelinetriggers"></a>`pipelineTriggers` **{warning-solid}** | [`PipelineTriggerConnection`](#pipelinetriggerconnection) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. List of pipeline trigger tokens. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
 | <a id="projectproductanalyticsinstrumentationkey"></a>`productAnalyticsInstrumentationKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Product Analytics instrumentation key assigned to the project. |
 | <a id="projectproductanalyticsstate"></a>`productAnalyticsState` **{warning-solid}** | [`ProductAnalyticsState`](#productanalyticsstate) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Current state of the product analytics stack for this project.Can only be called for one project in a single request. |

@@ -44,10 +44,6 @@ module Gitlab
             method(self.class.metric_operation).call(*data)
           end
 
-          def suggested_name
-            Gitlab::Usage::Metrics::NameSuggestion.for(:alt)
-          end
-
           private
 
           def data

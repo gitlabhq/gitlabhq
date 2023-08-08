@@ -87,14 +87,6 @@ module Gitlab
             to_sql
           end
 
-          def suggested_name
-            Gitlab::Usage::Metrics::NameSuggestion.for(
-              self.class.metric_operation,
-              relation: relation,
-              column: self.class.column
-            )
-          end
-
           private
 
           def start

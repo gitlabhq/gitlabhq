@@ -26,11 +26,10 @@ RSpec.describe Gitlab::UsageMetricDefinitionGenerator, :silence_stdout do
     # Stub version so that `milestone` key remains constant between releases to prevent flakiness.
     before do
       stub_const('Gitlab::VERSION', '13.9.0')
-      allow(::Gitlab::Usage::Metrics::NamesSuggestions::Generator).to receive(:generate).and_return('test metric name')
     end
 
     context 'without ee option' do
-      let(:sample_filename) { 'sample_metric_with_name_suggestions.yml' }
+      let(:sample_filename) { 'sample_metric.yml' }
       let(:metric_definition_path) { Dir.glob(File.join(temp_dir, 'metrics/counts_7d/*_test_metric.yml')).first }
 
       it 'creates a metric definition file using the template' do
@@ -88,16 +87,6 @@ RSpec.describe Gitlab::UsageMetricDefinitionGenerator, :silence_stdout do
       it 'raises an error' do
         expect { subject }.to raise_error(RuntimeError)
       end
-    end
-  end
-
-  describe 'Name suggestions' do
-    it 'adds name key to metric definition' do
-      expect(::Gitlab::Usage::Metrics::NamesSuggestions::Generator).to receive(:generate).and_return('some name')
-      described_class.new([key_path], { 'dir' => dir, 'class_name' => class_name }).invoke_all
-      metric_definition_path = Dir.glob(File.join(temp_dir, 'metrics/counts_7d/*_test_metric.yml')).first
-
-      expect(YAML.safe_load(File.read(metric_definition_path))).to include("name" => "some name")
     end
   end
 

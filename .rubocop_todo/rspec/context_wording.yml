@@ -2027,8 +2027,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/usage/metrics/aggregates/sources/postgres_hll_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/redis_hll_metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/redis_metric_spec.rb'
-    - 'spec/lib/gitlab/usage/metrics/name_suggestion_spec.rb'
-    - 'spec/lib/gitlab/usage/metrics/names_suggestions/generator_spec.rb'
     - 'spec/lib/gitlab/usage/service_ping/payload_keys_processor_spec.rb'
     - 'spec/lib/gitlab/usage/service_ping_report_spec.rb'
     - 'spec/lib/gitlab/usage_data/topology_spec.rb'

@@ -40,9 +40,10 @@ The following feature is Generally Available:
 [Beta features](../policy/experiment-beta-support.md#beta) do not require
 [Experiment features to be enabled](group/manage.md#enable-experiment-features).
 
-The following feature is in Beta:
+The following features are in Beta:
 
 - [Code Suggestions](project/repository/code_suggestions.md)
+- [Explain this vulnerability](application_security/vulnerabilities/index.md#explaining-a-vulnerability-beta)
 
 ## Experiment AI features
 
@@ -105,40 +106,6 @@ code in a merge request:
 1. Provide feedback about how satisfied you are with the explanation, so we can improve the results.
 
 ![How to use the Explain Code Experiment](img/explain_code_experiment.png)
-
-We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
-
-### Explain this Vulnerability in the Web UI **(ULTIMATE SAAS)**
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
-
-This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by Google AI.
-
-GitLab can help you with your vulnerability by using a large language model to:
-
-- Summarize the vulnerability.
-- Help developers and security analysts get started understanding the vulnerability, how it could be exploited, and how to fix it.
-- Provide a suggested mitigation.
-
-Prerequisites:
-
-- You must have the GitLab Ultimate subscription tier.
-- You must be a member of the project.
-- The vulnerability must be a SAST finding.
-
-To explain your vulnerability:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. On the left sidebar, select **Secure > Vulnerability report**.
-1. Find a SAST vulnerability.
-1. Open the vulnerability.
-1. Select **Try it out**.
-
-Review the drawer on the right-hand side of your screen.
-
-![How to use Explain this Vulnerability Experiment](img/explain_this_vulnerability.png)
-
-View a [click-through demo](https://go.gitlab.com/0qIe3O).
 
 We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 

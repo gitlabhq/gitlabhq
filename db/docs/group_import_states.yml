@@ -7,4 +7,4 @@ feature_categories:
 description: Used to store and track the group import status when using the Import/Export feature
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29588
 milestone: '13.0'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell

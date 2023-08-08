@@ -241,7 +241,7 @@ module QA
         end
 
         def open_file_tree
-          click_element(:file_tree_button) unless has_element?(:file_tree_container)
+          click_element(:file_tree_button) if has_no_element?(:file_tree_container, wait: 1)
         end
 
         def has_merge_button?

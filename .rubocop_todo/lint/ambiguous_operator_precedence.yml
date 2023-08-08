@@ -78,7 +78,6 @@ Lint/AmbiguousOperatorPrecedence:
     - 'lib/gitlab/relative_positioning.rb'
     - 'lib/gitlab/template_parser/parser.rb'
     - 'lib/gitlab/tree_summary.rb'
-    - 'lib/gitlab/usage/metrics/name_suggestion.rb'
     - 'lib/omni_auth/strategies/bitbucket.rb'
     - 'qa/qa/ee/page/project/secure/pipeline_security.rb'
     - 'qa/qa/resource/api_fabricator.rb'
