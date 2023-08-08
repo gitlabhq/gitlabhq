@@ -15,7 +15,7 @@
 
     .gl-new-card-actions
       = render Pajamas::ButtonComponent.new(size: :small, href: new_admin_application_path, button_options: { data: { qa_selector: 'new_application_button' } }) do
-        = _('New application')
+        = _('Add new application')
   - c.with_body do
     - if @applications.empty?
       %section.empty-state.gl-my-5.gl-text-center.gl-display-flex.gl-flex-direction-column

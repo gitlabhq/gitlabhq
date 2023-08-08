@@ -227,7 +227,6 @@ node than Sidekiq, follow the steps below.
 1. Edit `/etc/gitlab/gitlab.rb`, and configure the registry URL:
 
    ```ruby
-   registry_external_url 'https://registry.example.com'
    gitlab_rails['registry_api_url'] = "https://registry.example.com"
    ```
 

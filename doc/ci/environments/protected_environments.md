@@ -33,6 +33,7 @@ To protect an environment:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
+1. Select **Protect an environment**.
 1. From the **Environment** list, select the environment you want to protect.
 1. In the **Allowed to deploy** list, select the role, users, or groups you
    want to give deploy access to. Keep in mind that:

@@ -82,9 +82,11 @@ Now that our values have been defined, we can base our goals on these values and
 - Improve our pipelines speed
 - Build a better set of shared components with documentation
 
+We have detailed description on how we see GitLab frontend in the future in [Frontend Goals](frontend_goals.md) section
+
 ### Frontend onboarding course
 
-The [Frontend onboarding course](onboarding_course/index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.  
+The [Frontend onboarding course](onboarding_course/index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.
 
 ### Browser Support
 

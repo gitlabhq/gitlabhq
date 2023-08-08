@@ -9,5 +9,5 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/41518  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     These fields (`architectureName`, `ipAddress`, `platformName`, `revision`, `version`) are now deprecated from the [GraphQL `CiRunner`](https://docs.gitlab.com/ee/api/graphql/reference/#cirunner) type as they are duplicated with the introduction of runner managers grouped within a runner configuration.
-  end_of_support_milestone: "17.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
-  end_of_support_date: "2024-05-22"  # (optional) The date of the milestone release when support for this feature will end.
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_date:  # (optional) The date of the milestone release when support for this feature will end.

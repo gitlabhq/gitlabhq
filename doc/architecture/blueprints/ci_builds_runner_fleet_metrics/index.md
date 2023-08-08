@@ -61,7 +61,72 @@ The following customer problems should be solved when addressing this question. 
 
 #### Which runners have failures in the past hour?
 
-## Implementation plan
+## Implementation
 
-We're currently in the research stage, and working on the [Proof of Concept](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126863)
-around Clickhouse. You can follow [this epic](https://gitlab.com/groups/gitlab-org/-/epics/10682) for more up-to-date status.
+The current implementation plan is based on a
+[Proof of Concept](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126863).
+For an up to date status, see [epic 10682](https://gitlab.com/groups/gitlab-org/-/epics/10682).
+
+### Database selection
+
+In FY23, ClickHouse [was selected as GitLab standard datastore](https://about.gitlab.com/company/team/structure/working-groups/clickhouse-datastore/#context)
+for features with big data and insert-heavy requirements.
+So we have chosen it for our CI analytics as well.
+
+### Scope of data
+
+We're starting with the denormalized version of the `ci_builds` table in the main database,
+which will include fields from some other tables. For example, `ci_runners` and `ci_runner_machines`.
+
+[Immutability is a key constraint in ClickHouse](../../../development/database/clickhouse/index.md#how-it-differs-from-postgresql),
+so we only use `finished` builds.
+
+### Developing behind feature flags
+
+It's hard to fully test data ingestion and query performance in development/staging environments.
+That's why we plan to deliver those features to production behing feature flags and test the performance on real data.
+Feature flags for data ingestion and API's will be separate.
+
+### Data ingestion
+
+A background worker will push `ci_builds` sorted by `(finished_at, id)` from Posgres to ClickHouse.
+Every time the worker starts, it will find the most recently inserted build and continue from there.
+
+At some point we most likely will need to
+[parallelize this worker because of the number of processed builds](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126863#note_1494922639).
+
+We will start with most recent builds and will not upload all historical data.
+
+### "Raw data", materialized views and queries
+
+Ingested data will go to the "raw data" table in ClickHouse.
+This table will use `ReplacingMergeTree` engine to deduplicate rows in case data ingestion mechanism accidentally submits the same batch twice.
+
+Raw data can be used directly do execute queries, but most of the time we will create specialized materialized views
+using `AggregatingMergeTree` engine.
+This will allow us to read significantly less data when performing queries.
+
+### Limitations and open questions
+
+The topics below require further investigation.
+
+#### Efficient way of querying data for namespaces
+
+We start with the PoC available only for administrators,
+but very soon we will need to implement features on the group level.
+
+We can't just put denormalized "path" in the source table because it can be changed when groups or projects are moved.
+
+The simplest way of solving this is to always filter builds by `project_id`,
+but this may be inefficient and require reading a significant portion of all data because ClickHouse stores data in big batches.
+
+#### Keeping the database schema up to date
+
+Right now we don't have any mechanism equivalent to migrations we use for PostgreSQL.
+While developing our first features we will maintain database schema by hand and
+continue developing mechanisms for migrations.
+
+#### Re-uploading data after changing the schema
+
+If we need to modify database schema, old data maybe incomplete.
+In that case we can simply truncate the ClickHouse tables and reupload (part of) the data.

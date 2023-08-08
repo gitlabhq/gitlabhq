@@ -23,6 +23,8 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFilesBatch do
       expect(batch.artifact_files.count).to eq(2)
       expect(batch.lost_and_found.count).to eq(1)
       expect(batch.lost_and_found.first.artifact_id).to eq(orphan_artifact.id)
+      expect(File.exist?(job_artifact.file.path)).to be_truthy
+      expect(File.exist?(orphan_artifact.file.path)).to be_falsey
     end
   end
 

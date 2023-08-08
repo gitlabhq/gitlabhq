@@ -8,7 +8,7 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The `gitlab.kas.metrics.port` has been deprecated in favor of the new `gitlab.kas.observability.port` configuration field for the [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2839).
     This port is used for much more than just metrics, which warranted this change to avoid confusion in configuration.
-  end_of_support_milestone: "16.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
 
 
   # OTHER OPTIONAL FIELDS

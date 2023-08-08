@@ -146,7 +146,7 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
-          iid: this.iid,
+          iid: String(this.iid),
         };
       },
       update(data) {
@@ -289,7 +289,7 @@ export default {
           mutation: promoteToEpicMutation,
           variables: {
             input: {
-              iid: this.iid,
+              iid: String(this.iid),
               projectPath: this.projectPath,
             },
           },

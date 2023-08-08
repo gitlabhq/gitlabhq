@@ -298,6 +298,16 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_68d7b6653c7d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
+  NEW."source_pipeline_id_convert_to_bigint" := NEW."source_pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_7f3d66a7d7f5() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -14165,7 +14175,9 @@ CREATE TABLE ci_sources_pipelines (
     source_pipeline_id integer,
     source_job_id bigint,
     partition_id bigint NOT NULL,
-    source_partition_id bigint NOT NULL
+    source_partition_id bigint NOT NULL,
+    pipeline_id_convert_to_bigint bigint,
+    source_pipeline_id_convert_to_bigint bigint
 );
 
 CREATE SEQUENCE ci_sources_pipelines_id_seq
@@ -35780,6 +35792,8 @@ CREATE TRIGGER trigger_1a857e8db6cd BEFORE INSERT OR UPDATE ON vulnerability_occ
 CREATE TRIGGER trigger_1bd97da9c1a4 BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_1bd97da9c1a4();
 
 CREATE TRIGGER trigger_239c8032a8d6 BEFORE INSERT OR UPDATE ON ci_pipeline_chat_data FOR EACH ROW EXECUTE FUNCTION trigger_239c8032a8d6();
+
+CREATE TRIGGER trigger_68d7b6653c7d BEFORE INSERT OR UPDATE ON ci_sources_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_68d7b6653c7d();
 
 CREATE TRIGGER trigger_7f3d66a7d7f5 BEFORE INSERT OR UPDATE ON ci_pipeline_variables FOR EACH ROW EXECUTE FUNCTION trigger_7f3d66a7d7f5();
 

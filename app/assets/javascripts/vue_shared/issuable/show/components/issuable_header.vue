@@ -1,16 +1,7 @@
 <script>
-import {
-  GlIcon,
-  GlBadge,
-  GlButton,
-  GlSprintf,
-  GlTooltipDirective,
-  GlAvatarLink,
-  GlAvatarLabeled,
-} from '@gitlab/ui';
-
+import { GlIcon, GlBadge, GlButton, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { issuableStatusText, STATUS_OPEN } from '~/issues/constants';
+import { issuableStatusText, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { isExternal } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
@@ -23,8 +14,7 @@ export default {
     GlIcon,
     GlBadge,
     GlButton,
-    GlAvatarLink,
-    GlAvatarLabeled,
+    GlLink,
     GlSprintf,
     TimeAgoTooltip,
     WorkItemTypeIcon,
@@ -66,12 +56,22 @@ export default {
       required: false,
       default: false,
     },
-    taskCompletionStatus: {
-      type: Object,
+    isFirstContribution: {
+      type: Boolean,
       required: false,
-      default: null,
+      default: false,
+    },
+    isHidden: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     issuableType: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    serviceDeskReplyTo: {
       type: String,
       required: false,
       default: '',
@@ -80,6 +80,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    taskCompletionStatus: {
+      type: Object,
+      required: false,
+      default: null,
     },
     workspaceType: {
       type: String,
@@ -92,10 +97,30 @@ export default {
       return issuableStatusText[this.issuableState];
     },
     badgeVariant() {
-      return this.issuableState === STATUS_OPEN ? 'success' : 'info';
+      return this.issuableState === STATUS_OPEN || this.issuableState === STATUS_REOPENED
+        ? 'success'
+        : 'info';
+    },
+    blockedTooltip() {
+      return sprintf(__('This %{issuable} is locked. Only project members can comment.'), {
+        issuable: this.issuableType,
+      });
+    },
+    hiddenTooltip() {
+      return sprintf(__('This %{issuable} is hidden because its author has been banned'), {
+        issuable: this.issuableType,
+      });
+    },
+    shouldShowWorkItemTypeIcon() {
+      return this.showWorkItemTypeIcon && this.issuableType;
     },
     createdMessage() {
-      return this.showWorkItemTypeIcon
+      if (this.serviceDeskReplyTo) {
+        return this.shouldShowWorkItemTypeIcon
+          ? __('created %{timeAgo} by %{email} via %{author}')
+          : __('Created %{timeAgo} by %{email} via %{author}');
+      }
+      return this.shouldShowWorkItemTypeIcon
         ? __('created %{timeAgo} by %{author}')
         : __('Created %{timeAgo} by %{author}');
     },
@@ -103,7 +128,7 @@ export default {
       return getIdFromGraphQLId(`${this.author.id}`);
     },
     isAuthorExternal() {
-      return isExternal(this.author.webUrl);
+      return isExternal(this.author.webUrl ?? '');
     },
     taskStatusString() {
       const { count, completedCount } = this.taskCompletionStatus;
@@ -144,60 +169,80 @@ export default {
           <slot name="status-badge">{{ badgeText }}</slot>
         </span>
       </gl-badge>
-      <span v-if="blocked" class="issuable-warning-icon" data-testid="blocked">
-        <gl-icon name="lock" :aria-label="__('Blocked')" />
-      </span>
       <confidentiality-badge
         v-if="confidential"
         :issuable-type="issuableType"
         :workspace-type="workspaceType"
       />
-      <work-item-type-icon v-if="showWorkItemTypeIcon" :work-item-type="issuableType" show-text />
+      <span v-if="blocked" class="issuable-warning-icon">
+        <gl-icon
+          v-gl-tooltip.bottom
+          name="lock"
+          :title="blockedTooltip"
+          :aria-label="__('Blocked')"
+        />
+      </span>
+      <span v-if="isHidden" class="issuable-warning-icon">
+        <gl-icon
+          v-gl-tooltip.bottom
+          name="spam"
+          :title="hiddenTooltip"
+          :aria-label="__('Hidden')"
+        />
+      </span>
+      <work-item-type-icon
+        v-if="shouldShowWorkItemTypeIcon"
+        show-text
+        :work-item-type="issuableType.toUpperCase()"
+      />
       <gl-sprintf :message="createdMessage">
         <template #timeAgo>
           <time-ago-tooltip class="gl-mx-2" :time="createdAt" />
         </template>
+        <template #email>
+          {{ serviceDeskReplyTo }}
+        </template>
         <template #author>
-          <gl-avatar-link
-            :data-user-id="authorId"
-            :data-username="author.username"
-            :data-name="author.name"
+          <gl-link
+            class="gl-font-weight-bold gl-mx-2 js-user-link"
             :href="author.webUrl"
-            class="js-user-link gl-vertical-align-middle gl-mx-2"
+            :data-user-id="authorId"
           >
-            <gl-avatar-labeled
-              :size="24"
-              :src="author.avatarUrl"
-              :label="author.name"
-              :class="[
-                { 'gl-display-none': !isAuthorExternal },
-                'gl-sm-display-inline-flex gl-mx-1',
-              ]"
-            >
-              <template #meta>
-                <gl-icon v-if="isAuthorExternal" name="external-link" class="gl-ml-1" />
-              </template>
-            </gl-avatar-labeled>
+            <span :class="[{ 'gl-display-none': !isAuthorExternal }, 'gl-sm-display-inline']">
+              {{ author.name }}
+            </span>
+            <gl-icon
+              v-if="isAuthorExternal"
+              name="external-link"
+              :aria-label="__('external link')"
+            />
             <strong v-if="author.username" class="author gl-display-inline gl-sm-display-none!"
               >@{{ author.username }}</strong
             >
-          </gl-avatar-link>
+          </gl-link>
         </template>
       </gl-sprintf>
+      <gl-icon
+        v-if="isFirstContribution"
+        v-gl-tooltip
+        class="gl-mr-2"
+        name="first-contribution"
+        :title="__('1st contribution!')"
+        :aria-label="__('1st contribution!')"
+      />
       <span
         v-if="taskCompletionStatus && hasTasks"
-        data-testid="task-status"
         class="gl-display-none gl-md-display-block gl-lg-display-inline-block"
         >{{ taskStatusString }}</span
       >
       <gl-button
         icon="chevron-double-lg-left"
-        class="gl-ml-auto gl-display-block gl-sm-display-none!"
+        class="gl-ml-auto gl-display-block gl-sm-display-none! js-sidebar-toggle"
         :aria-label="__('Expand sidebar')"
         @click="handleRightSidebarToggleClick"
       />
     </div>
-    <div data-testid="header-actions" class="detail-page-header-actions gl-display-flex">
+    <div class="detail-page-header-actions gl-display-flex">
       <slot name="header-actions"></slot>
     </div>
   </div>

@@ -133,6 +133,7 @@ To add a new badge to a project:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
 1. Expand **Badges**.
+1. Select **Add badge**.
 1. Under **Link**, enter the URL that the badges should point to.
 1. Under **Badge image URL**, enter the URL of the image that should be displayed.
 1. Select **Add badge**.

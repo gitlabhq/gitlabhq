@@ -17,7 +17,7 @@
     - `--tag-list`
 
     This change is a breaking change. You should use an [authentication token](../ci/runners/register_runner.md) in the `gitlab-runner register` command instead.
-  end_of_support_milestone: "17.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url: https://docs.gitlab.com/runner/install/operator.html#install-the-kubernetes-operator  # (optional) This is a link to the current documentation page
   image_url:  # (optional) This is a link to a thumbnail image depicting the feature

@@ -15,6 +15,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
+import { WORK_ITEM_TYPE_VALUE_ISSUE } from '~/work_items/constants';
 import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
@@ -23,6 +24,8 @@ import Store from '../stores';
 import DescriptionComponent from './description.vue';
 import EditedComponent from './edited.vue';
 import FormComponent from './form.vue';
+import HeaderActions from './header_actions.vue';
+import IssueHeader from './issue_header.vue';
 import PinnedLinks from './pinned_links.vue';
 import TitleComponent from './title.vue';
 
@@ -32,6 +35,8 @@ export default {
     GlIcon,
     GlBadge,
     GlIntersectionObserver,
+    HeaderActions,
+    IssueHeader,
     TitleComponent,
     EditedComponent,
     FormComponent,
@@ -42,6 +47,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    author: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     endpoint: {
       required: true,
       type: String,
@@ -53,6 +63,11 @@ export default {
     canUpdate: {
       required: true,
       type: Boolean,
+    },
+    createdAt: {
+      type: String,
+      required: false,
+      default: '',
     },
     enableAutocomplete: {
       type: Boolean,
@@ -193,6 +208,36 @@ export default {
       required: false,
       default: null,
     },
+    duplicatedToIssueUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    movedToIssueUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    promotedToEpicUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    isFirstContribution: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    serviceDeskReplyTo: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    workItemType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     const store = new Store({
@@ -222,6 +267,9 @@ export default {
     },
   },
   computed: {
+    isIssue() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE;
+    },
     issuableTemplates() {
       return this.store.formState.issuableTemplates;
     },
@@ -509,7 +557,13 @@ export default {
         :can-update="canUpdate"
         :title-html="state.titleHtml"
         :title-text="state.titleText"
-      />
+      >
+        <template #actions>
+          <slot name="actions">
+            <header-actions v-if="isIssue" />
+          </slot>
+        </template>
+      </title-component>
 
       <gl-intersection-observer
         v-if="shouldShowStickyHeader"
@@ -566,6 +620,23 @@ export default {
           </div>
         </transition>
       </gl-intersection-observer>
+
+      <slot name="header">
+        <issue-header
+          v-if="isIssue"
+          :author="author"
+          :confidential="isConfidential"
+          :created-at="createdAt"
+          :duplicated-to-issue-url="duplicatedToIssueUrl"
+          :is-first-contribution="isFirstContribution"
+          :is-hidden="isHidden"
+          :is-locked="isLocked"
+          :issuable-state="issuableStatus"
+          :moved-to-issue-url="movedToIssueUrl"
+          :promoted-to-epic-url="promotedToEpicUrl"
+          :service-desk-reply-to="serviceDeskReplyTo"
+        />
+      </slot>
 
       <pinned-links
         :zoom-meeting-url="zoomMeetingUrl"

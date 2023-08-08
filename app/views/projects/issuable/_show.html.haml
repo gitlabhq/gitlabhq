@@ -7,5 +7,6 @@
 
 = render "projects/issues/service_desk/alert_moved_from_service_desk", issue: issuable
 
-= render 'shared/issue_type/details_header', issuable: issuable
+- if issuable.work_item_type&.incident?
+  = render 'shared/issue_type/details_header', issuable: issuable
 = render 'shared/issue_type/details_content', issuable: issuable, api_awards_path: api_awards_path

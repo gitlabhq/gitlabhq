@@ -63,7 +63,6 @@ export function initShow({ notesParams } = {}) {
     initRelatedIssues(TYPE_INCIDENT);
   } else {
     initIssueApp(issuableData, store);
-    initHeaderActions(store);
   }
 
   new Issue(); // eslint-disable-line no-new

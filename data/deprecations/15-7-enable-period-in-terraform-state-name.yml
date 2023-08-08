@@ -17,6 +17,6 @@
       1. Run your Terraform commands.
 
     To use the full state name, including the period, [migrate to the full state file](https://docs.gitlab.com/ee/user/infrastructure/iac/terraform_state.html#migrate-to-a-gitlab-managed-terraform-state).
-  end_of_support_milestone: 16.0
+  end_of_support_milestone:
   tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url: 'https://docs.gitlab.com/ee/user/infrastructure/iac/troubleshooting.html#troubleshooting-terraform-state'

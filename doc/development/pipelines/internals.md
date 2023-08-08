@@ -384,8 +384,10 @@ For this scenario, you have to:
 
 - This pattern does not work if a script relies on `git` to access the repository, because we don't have the repository without cloning or fetching.
 - The job using this pattern needs to have `curl` available.
-- If you need to run `bundle install` in the job (even using `BUNDLE_ONLY`), you need to download the gems that are stored in the `gitlab-org/gitlab` project.
-  - You can use the `download_local_gems` shell command for that purpose.
+- If you need to run `bundle install` in the job (even using `BUNDLE_ONLY`), you need to:
+  - Download the gems that are stored in the `gitlab-org/gitlab` project.
+    - You can use the `download_local_gems` shell command for that purpose.
+  - Include the `Gemfile`, `Gemfile.lock` and `Gemfile.checksum` (if applicable)
 
 #### Where is this pattern used?
 
@@ -407,6 +409,7 @@ For this scenario, you have to:
     - `VERSION`
   - `rspec:coverage` for:
     - `config/bundler_setup.rb`
+    - `Gemfile.checksum`
     - `Gemfile.lock`
     - `Gemfile`
     - `scripts/merge-simplecov`

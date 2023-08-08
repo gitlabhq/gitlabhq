@@ -9,8 +9,8 @@ description: Data Seeder test data harness created by the Test Data Working Grou
 
 GitLab Data Seeder (GDS) is a test data seeding harness, that can seed test data into a user or group namespace.
 
-The Data Seeder uses FactoryBot in the backend which makes maintenance extremely easy. When a Model is changed,
-FactoryBot will already be reflected to account for the change.
+The Data Seeder uses FactoryBot in the backend which makes maintenance straightforward. When a Model changes,
+FactoryBot already reflects the change.
 
 ## Docker Setup
 
@@ -40,7 +40,7 @@ Seeding Data for Administrator
 
 #### `:name`
 
-Where `:name` is the file name. (This will reflect relative `.rb`, `.yml`, or `.json` files located in `ee/db/seeds/data_seeder`, or absolute paths to seed files)
+Where `:name` is the filename. (This name reflects relative `.rb`, `.yml`, or `.json` files located in `ee/db/seeds/data_seeder`, or absolute paths to seed files.)
 
 #### `:namespace_id`
 
@@ -64,18 +64,18 @@ The Data Seeder uses FactoryBot definitions from `spec/factories` which ...
 Factories reside in `spec/factories/*` and are fixtures for Rails models found in `app/models/*`. For example, For a model named `app/models/issue.rb`, the factory will
 be named `spec/factories/issues.rb`. For a model named `app/models/project.rb`, the factory will be named `app/models/projects.rb`.
 
-There are currently three parsers that the GitLab Data Seeder supports. Ruby, YAML, and JSON.
+There are three parsers that the GitLab Data Seeder supports. Ruby, YAML, and JSON.
 
 ### Ruby
 
-All Ruby Seeds must define a `DataSeeder` class with a `#seed` instance method. You may structure your Ruby class as you wish. All FactoryBot [methods](https://www.rubydoc.info/gems/factory_bot/FactoryBot/Syntax/Methods) (`create`, `build`, `create_list`) will be included in the class automatically and may be called.
+All Ruby Seeds must define a `DataSeeder` class with a `#seed` instance method. You may structure your Ruby class as you wish. All FactoryBot [methods](https://www.rubydoc.info/gems/factory_bot/FactoryBot/Syntax/Methods) (`create`, `build`, `create_list`) are included in the class automatically and may be called.
 
-The `DataSeeder` class will have the following instance variables defined upon seeding:
+The `DataSeeder` class contains the following instance variables defined upon seeding:
 
 - `@seed_file` - The `File` object.
 - `@owner` - The owner of the seed data.
-- `@name` - The name of the seed. This will be the seed file name without the extension.
-- `@group` - The root group that all seeded data will be created under.
+- `@name` - The name of the seed. This is the seed filename without the extension.
+- `@group` - The root group that all seeded data is created under.
 
 ```ruby
 # frozen_string_literal: true
@@ -138,10 +138,10 @@ Given: `create(:iteration, :with_title, :current, title: 'My Iteration')`
 
 |||
 |:-|:-|
-| **:iteration** | This is the **Name** of the factory. The file name will be the plural form of this **Name** and reside under either `spec/factories/iterations.rb` or `ee/spec/factories/iterations.rb`. |
+| **:iteration** | This is the **Name** of the factory. The filename will be the plural form of this **Name** and reside under either `spec/factories/iterations.rb` or `ee/spec/factories/iterations.rb`. |
 | **:with_title** | This is a **Trait** of the factory. [See how it's defined](https://gitlab.com/gitlab-org/gitlab/-/blob/9c2a1f98483921dd006d70fdaed316e21fc5652f/ee/spec/factories/iterations.rb#L21-23). |
 | **:current** | This is a **Trait** of the factory. [See how it's defined](https://gitlab.com/gitlab-org/gitlab/-/blob/9c2a1f98483921dd006d70fdaed316e21fc5652f/ee/spec/factories/iterations.rb#L29-31). |
-| **title: 'My Iteration'** | This is an **Attribute** of the factory that will be passed to the Model for creation. |
+| **title: 'My Iteration'** | This is an **Attribute** of the factory that is passed to the Model for creation. |
 
 ### Examples
 
@@ -209,7 +209,7 @@ Examples of invalid IDs:
 
 #### ActiveRecord::AssociationTypeMismatch: Model expected, got ... which is an instance of String
 
-This is currently a limitation for the seeder.
+This is a limitation for the seeder.
 
 See the issue for [allowing parsing of raw Ruby objects](https://gitlab.com/gitlab-org/gitlab/-/issues/403079).
 
@@ -255,7 +255,7 @@ group_milestones:
 
 #### Quirks
 
-- You _must_ specify `group:` and have it be empty. This is because the Milestones factory will manipulate the factory in an `after(:build)`. If this is not present, the Milestone will not be associated properly with the Group.
+- You _must_ specify `group:` and have it be empty. This is because the Milestones factory manipulates the factory in an `after(:build)`. If this is not present, the Milestone cannot be associated properly with the Group.
 
 ### [Epics](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/factories/epics.rb)
 

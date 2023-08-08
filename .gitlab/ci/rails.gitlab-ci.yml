@@ -482,6 +482,7 @@ rspec:coverage:
     FILES_TO_DOWNLOAD: >
       config/bundler_setup.rb
       Gemfile
+      Gemfile.checksum
       Gemfile.lock
       scripts/merge-simplecov
       spec/simplecov_env_core.rb

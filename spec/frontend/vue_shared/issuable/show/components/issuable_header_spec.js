@@ -1,40 +1,55 @@
-import { GlButton, GlBadge, GlIcon, GlAvatarLabeled, GlAvatarLink, GlSprintf } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
+import { GlBadge, GlButton, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import {
+  STATUS_CLOSED,
+  STATUS_OPEN,
+  STATUS_REOPENED,
+  TYPE_ISSUE,
+  WORKSPACE_PROJECT,
+} from '~/issues/constants';
+import { __ } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
-import { mockIssuableShowProps, mockIssuable } from '../mock_data';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import { mockIssuable, mockIssuableShowProps } from '../mock_data';
 
 describe('IssuableHeader component', () => {
   let wrapper;
 
-  beforeEach(() => {
-    window.gon.gitlab_url = 'http://0.0.0.0';
-  });
-
-  const findBadge = () => wrapper.findComponent(GlBadge);
-  const findBlockedIcon = () => wrapper.findByTestId('blocked').findComponent(GlIcon);
-  const findButton = () => wrapper.findComponent(GlButton);
-  const findGlAvatarLink = () => wrapper.findComponent(GlAvatarLink);
-  const findHeaderActions = () => wrapper.findByTestId('header-actions');
-  const findTaskStatus = () => wrapper.findByTestId('task-status');
+  const findConfidentialityBadge = () => wrapper.findComponent(ConfidentialityBadge);
+  const findStatusBadge = () => wrapper.findComponent(GlBadge);
+  const findToggleButton = () => wrapper.findComponent(GlButton);
+  const findAuthorLink = () => wrapper.findComponent(GlLink);
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
+  const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
+  const findGlIconWithName = (name) =>
+    wrapper.findAllComponents(GlIcon).filter((component) => component.props('name') === name);
+  const findIcon = (name) =>
+    findGlIconWithName(name).exists() ? findGlIconWithName(name).at(0) : undefined;
+  const findBlockedIcon = () => findIcon('lock');
+  const findHiddenIcon = () => findIcon('spam');
+  const findExternalLinkIcon = () => findIcon('external-link');
+  const findFirstContributionIcon = () => findIcon('first-contribution');
+  const findComponentTooltip = (component) => getBinding(component.element, 'gl-tooltip');
 
   const createComponent = (props = {}, { stubs } = {}) => {
-    wrapper = shallowMountExtended(IssuableHeader, {
+    wrapper = shallowMount(IssuableHeader, {
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       propsData: {
         ...mockIssuable,
         ...mockIssuableShowProps,
+        issuableState: STATUS_OPEN,
         issuableType: TYPE_ISSUE,
         workspaceType: WORKSPACE_PROJECT,
         ...props,
       },
       slots: {
-        'status-badge': 'Open',
-        'header-actions': `
-        <button class="js-close">Close issuable</button>
-        <a class="js-new" href="/gitlab-org/gitlab-shell/-/issues/new">New issuable</a>
-      `,
+        'header-actions': `Header actions slot`,
       },
       stubs: {
         GlSprintf,
@@ -43,72 +58,175 @@ describe('IssuableHeader component', () => {
     });
   };
 
-  afterEach(() => {
-    resetHTMLFixture();
+  describe('status badge', () => {
+    describe('variant', () => {
+      it('is `success` when status is open', () => {
+        createComponent({ issuableState: STATUS_OPEN });
+
+        expect(findStatusBadge().props('variant')).toBe('success');
+      });
+
+      it('is `success` when status is reopened', () => {
+        createComponent({ issuableState: STATUS_REOPENED });
+
+        expect(findStatusBadge().props('variant')).toBe('success');
+      });
+
+      it('is `info` when status is closed', () => {
+        createComponent({ issuableState: STATUS_CLOSED });
+
+        expect(findStatusBadge().props('variant')).toBe('info');
+      });
+    });
+
+    describe('icon', () => {
+      it('renders when statusIcon prop exists', () => {
+        createComponent({ statusIcon: 'issues' });
+
+        expect(findStatusBadge().findComponent(GlIcon).props('name')).toBe('issues');
+      });
+
+      it('does not render when statusIcon prop does not exist', () => {
+        createComponent({ statusIcon: '' });
+
+        expect(findStatusBadge().findComponent(GlIcon).exists()).toBe(false);
+      });
+    });
+
+    it('renders status text', () => {
+      createComponent();
+
+      expect(findStatusBadge().text()).toBe(__('Open'));
+    });
   });
 
-  it('renders issuable status icon and text', () => {
-    createComponent();
-    const status = findBadge();
-    const statusIcon = status.findComponent(GlIcon);
+  describe('confidential badge', () => {
+    it('renders when issuable is confidential', () => {
+      createComponent({ confidential: true });
 
-    expect(status.text()).toBe('Open');
-    expect(statusIcon.props('name')).toBe(mockIssuableShowProps.statusIcon);
-    expect(statusIcon.attributes('class')).toBe(mockIssuableShowProps.statusIconClass);
+      expect(findConfidentialityBadge().props()).toEqual({
+        issuableType: 'issue',
+        workspaceType: 'project',
+      });
+    });
+
+    it('does not render when issuable is not confidential', () => {
+      createComponent({ confidential: false });
+
+      expect(findConfidentialityBadge().exists()).toBe(false);
+    });
   });
 
-  it('renders blocked icon when issuable is blocked', () => {
-    createComponent({ blocked: true });
+  describe('blocked icon', () => {
+    it('renders when issuable is blocked', () => {
+      createComponent({ blocked: true });
 
-    expect(findBlockedIcon().props('name')).toBe('lock');
+      expect(findBlockedIcon().props('ariaLabel')).toBe('Blocked');
+    });
+
+    it('has tooltip', () => {
+      createComponent({ blocked: true });
+
+      expect(findComponentTooltip(findBlockedIcon())).toBeDefined();
+      expect(findBlockedIcon().attributes('title')).toBe(
+        'This issue is locked. Only project members can comment.',
+      );
+    });
+
+    it('does not render when issuable is not blocked', () => {
+      createComponent({ blocked: false });
+
+      expect(findBlockedIcon()).toBeUndefined();
+    });
   });
 
-  it('renders confidential icon when issuable is confidential', () => {
-    createComponent({ confidential: true });
+  describe('hidden icon', () => {
+    it('renders when issuable is hidden', () => {
+      createComponent({ isHidden: true });
 
-    expect(wrapper.findComponent(ConfidentialityBadge).props()).toEqual({
-      issuableType: 'issue',
-      workspaceType: 'project',
+      expect(findHiddenIcon().props('ariaLabel')).toBe('Hidden');
+    });
+
+    it('has tooltip', () => {
+      createComponent({ isHidden: true });
+
+      expect(findComponentTooltip(findHiddenIcon())).toBeDefined();
+      expect(findHiddenIcon().attributes('title')).toBe(
+        'This issue is hidden because its author has been banned',
+      );
+    });
+
+    it('does not render when issuable is not hidden', () => {
+      createComponent({ isHidden: false });
+
+      expect(findHiddenIcon()).toBeUndefined();
+    });
+  });
+
+  describe('work item type icon', () => {
+    it('renders when showWorkItemTypeIcon=true and work item type exists', () => {
+      createComponent({ showWorkItemTypeIcon: true, issuableType: 'issue' });
+
+      expect(findWorkItemTypeIcon().props()).toMatchObject({
+        showText: true,
+        workItemType: 'ISSUE',
+      });
+    });
+
+    it('does not render when showWorkItemTypeIcon=false', () => {
+      createComponent({ showWorkItemTypeIcon: false });
+
+      expect(findWorkItemTypeIcon().exists()).toBe(false);
+    });
+  });
+
+  describe('timeago tooltip', () => {
+    it('renders', () => {
+      createComponent();
+
+      expect(findTimeAgoTooltip().props('time')).toBe('2020-06-29T13:52:56Z');
     });
   });
 
   describe('author', () => {
-    it('renders avatar', () => {
+    it('renders link', () => {
       createComponent();
-      const { username, name, webUrl, avatarUrl } = mockIssuable.author;
-      const avatar = findGlAvatarLink();
 
-      expect(avatar.attributes()).toMatchObject({
+      expect(findAuthorLink().text()).toContain('Administrator');
+      expect(findAuthorLink().attributes()).toMatchObject({
+        href: 'http://0.0.0.0:3000/root',
         'data-user-id': '1',
-        'data-username': username,
-        'data-name': name,
-        href: webUrl,
       });
-      expect(avatar.findComponent(GlAvatarLabeled).attributes()).toMatchObject({
-        size: '24',
-        src: avatarUrl,
-        label: name,
-      });
-      expect(avatar.findComponent(GlAvatarLabeled).findComponent(GlIcon).exists()).toBe(false);
+      expect(findAuthorLink().classes()).toContain('js-user-link');
     });
 
     describe('when author exists outside of GitLab', () => {
-      it("renders 'external-link' icon in avatar label", () => {
-        createComponent(
-          {
-            author: {
-              ...mockIssuable.author,
-              webUrl: 'https://jira.com/test-user/author.jpg',
-            },
-          },
-          {
-            stubs: { GlAvatarLabeled },
-          },
-        );
-        const icon = wrapper.findComponent(GlAvatarLabeled).findComponent(GlIcon);
+      it('renders external link icon', () => {
+        createComponent({ author: { webUrl: 'https://example.com/test-user' } });
 
-        expect(icon.props('name')).toBe('external-link');
+        expect(findExternalLinkIcon().props('ariaLabel')).toBe('external link');
       });
+    });
+  });
+
+  describe('first contribution icon', () => {
+    it('renders when isFirstContribution=true', () => {
+      createComponent({ isFirstContribution: true });
+
+      expect(findFirstContributionIcon().props('ariaLabel')).toBe('1st contribution!');
+    });
+
+    it('has tooltip', () => {
+      createComponent({ isFirstContribution: true });
+
+      expect(findComponentTooltip(findFirstContributionIcon())).toBeDefined();
+      expect(findFirstContributionIcon().attributes('title')).toBe('1st contribution!');
+    });
+
+    it('does not render when isFirstContribution=false', () => {
+      createComponent({ isFirstContribution: false });
+
+      expect(findFirstContributionIcon()).toBeUndefined();
     });
   });
 
@@ -116,22 +234,14 @@ describe('IssuableHeader component', () => {
     it('renders task status text when `taskCompletionStatus` prop is defined', () => {
       createComponent();
 
-      expect(findTaskStatus().text()).toContain('0 of 5 checklist items completed');
+      expect(wrapper.text()).toContain('0 of 5 checklist items completed');
     });
 
     it('does not render task status text when tasks count is 0', () => {
       createComponent({ taskCompletionStatus: { count: 0, completedCount: 0 } });
 
-      expect(findTaskStatus().exists()).toBe(false);
+      expect(wrapper.text()).not.toContain('checklist item');
     });
-  });
-
-  it('renders header actions', () => {
-    createComponent();
-    const headerActions = findHeaderActions();
-
-    expect(headerActions.find('button.js-close').exists()).toBe(true);
-    expect(headerActions.find('a.js-new').exists()).toBe(true);
   });
 
   describe('sidebar toggle button', () => {
@@ -140,13 +250,18 @@ describe('IssuableHeader component', () => {
       createComponent();
     });
 
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
     it('renders', () => {
-      expect(findButton().props('icon')).toBe('chevron-double-lg-left');
+      expect(findToggleButton().props('icon')).toBe('chevron-double-lg-left');
+      expect(findToggleButton().attributes('aria-label')).toBe('Expand sidebar');
     });
 
     describe('when clicked', () => {
       it('emits a "toggle" event', () => {
-        findButton().vm.$emit('click');
+        findToggleButton().vm.$emit('click');
 
         expect(wrapper.emitted('toggle')).toEqual([[]]);
       });
@@ -157,10 +272,18 @@ describe('IssuableHeader component', () => {
           .spyOn(toggleSidebarButton, 'dispatchEvent')
           .mockImplementation(jest.fn);
 
-        findButton().vm.$emit('click');
+        findToggleButton().vm.$emit('click');
 
         expect(dispatchEvent).toHaveBeenCalledWith(expect.objectContaining({ type: 'click' }));
       });
+    });
+  });
+
+  describe('header actions', () => {
+    it('renders slot', () => {
+      createComponent();
+
+      expect(wrapper.text()).toContain('Header actions slot');
     });
   });
 });

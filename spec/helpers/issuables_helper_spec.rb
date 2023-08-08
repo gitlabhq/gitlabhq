@@ -524,6 +524,64 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         end
       end
     end
+
+    describe '#duplicatedToIssueUrl' do
+      let(:issue) { create(:issue, author: user) }
+
+      before do
+        assign(:project, issue.project)
+      end
+
+      context 'when issue is duplicated' do
+        before do
+          allow(issue).to receive(:duplicated?).and_return(true)
+          allow(issue).to receive(:duplicated_to).and_return(issue)
+        end
+
+        it 'returns url' do
+          expect(helper.issuable_initial_data(issue)[:duplicatedToIssueUrl]).to be_truthy
+        end
+      end
+
+      context 'when issue is not duplicated' do
+        before do
+          allow(issue).to receive(:duplicated?).and_return(false)
+        end
+
+        it 'returns nil' do
+          expect(helper.issuable_initial_data(issue)[:duplicatedToIssueUrl]).to be_nil
+        end
+      end
+    end
+
+    describe '#movedToIssueUrl' do
+      let(:issue) { create(:issue, author: user) }
+
+      before do
+        assign(:project, issue.project)
+      end
+
+      context 'when issue is moved' do
+        before do
+          allow(issue).to receive(:moved?).and_return(true)
+          allow(issue).to receive(:moved_to).and_return(issue)
+        end
+
+        it 'returns url' do
+          expect(helper.issuable_initial_data(issue)[:movedToIssueUrl]).to be_truthy
+        end
+      end
+
+      context 'when issue is not moved' do
+        before do
+          allow(issue).to receive(:moved?).and_return(false)
+        end
+
+        it 'returns nil' do
+          expect(helper.issuable_initial_data(issue)[:movedToIssueUrl]).to be_nil
+        end
+      end
+    end
   end
 
   describe '#assignee_sidebar_data' do

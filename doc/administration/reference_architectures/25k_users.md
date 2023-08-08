@@ -1785,18 +1785,7 @@ Updates to example must be made at:
 -->
 
    ```ruby
-   # Avoid running unnecessary services on the Sidekiq server
-   gitaly['enable'] = false
-   postgresql['enable'] = false
-   redis['enable'] = false
-   nginx['enable'] = false
-   puma['enable'] = false
-   gitlab_workhorse['enable'] = false
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   grafana['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_kas['enable'] = false
+   roles ["sidekiq_role"]
 
    # External URL
    ## This should match the URL of the external load balancer

@@ -2,8 +2,8 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import errorTrackingStore from '~/error_tracking/store';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { TYPE_INCIDENT } from '~/issues/constants';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import IssueApp from './components/app.vue';
 import HeaderActions from './components/header_actions.vue';
@@ -97,12 +97,17 @@ export function initIssueApp(issueData, store) {
   }
 
   const { fullPath, registerPath, signInPath } = el.dataset;
+  const headerActionsData = convertObjectPropsToCamelCase(JSON.parse(el.dataset.headerActionsData));
 
   scrollToTargetOnResize();
 
-  bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
+  bootstrapApollo({ ...issueState, issueType: TYPE_ISSUE });
 
   const {
+    authorId,
+    authorName,
+    authorUsername,
+    authorWebUrl,
     canCreateIncident,
     hasIssueWeightsFeature,
     hasIterationsFeature,
@@ -121,6 +126,26 @@ export function initIssueApp(issueData, store) {
       signInPath,
       hasIssueWeightsFeature,
       hasIterationsFeature,
+      // for HeaderActions component
+      canCreateIssue: parseBoolean(headerActionsData.canCreateIssue),
+      canDestroyIssue: parseBoolean(headerActionsData.canDestroyIssue),
+      canPromoteToEpic: parseBoolean(headerActionsData.canPromoteToEpic),
+      canReopenIssue: parseBoolean(headerActionsData.canReopenIssue),
+      canReportSpam: parseBoolean(headerActionsData.canReportSpam),
+      canUpdateIssue: parseBoolean(headerActionsData.canUpdateIssue),
+      iid: headerActionsData.iid,
+      issuableId: headerActionsData.issuableId,
+      isIssueAuthor: parseBoolean(headerActionsData.isIssueAuthor),
+      issuePath: headerActionsData.issuePath,
+      issueType: headerActionsData.issueType,
+      newIssuePath: headerActionsData.newIssuePath,
+      projectPath: headerActionsData.projectPath,
+      projectId: headerActionsData.projectId,
+      reportAbusePath: headerActionsData.reportAbusePath,
+      reportedUserId: headerActionsData.reportedUserId,
+      reportedFromUrl: headerActionsData.reportedFromUrl,
+      submitAsSpamPath: headerActionsData.submitAsSpamPath,
+      issuableEmailAddress: headerActionsData.issuableEmailAddress,
     },
     computed: {
       ...mapGetters(['getNoteableData']),
@@ -129,6 +154,12 @@ export function initIssueApp(issueData, store) {
       return createElement(IssueApp, {
         props: {
           ...issueProps,
+          author: {
+            id: authorId,
+            name: authorName,
+            username: authorUsername,
+            webUrl: authorWebUrl,
+          },
           isConfidential: this.getNoteableData?.confidential,
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,

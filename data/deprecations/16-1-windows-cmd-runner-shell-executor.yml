@@ -9,5 +9,5 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414864 # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     In GitLab 11.11 the Windows Batch executor, the CMD shell was deprecated in GitLab Runner in favor of PowerShell. Since then, the CMD shell has continued to be supported in GitLab Runner. However this has resulted in additional complexity for both the engineering team and customers using the Runner on Windows. We plan to fully remove support for Windows CMD from GitLab Runner in 17.0. Customers should plan to use PowerShell when using the runner on Windows with the shell executor. Customers can provide feedback or ask questions in the removal issue, [issue 29479](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29479).
-  end_of_support_milestone: "17.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   end_of_support_date: "2024-05-22" # (optional) The date of the milestone release when support for this feature will end.
