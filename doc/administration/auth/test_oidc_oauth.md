@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Test OIDC/OAuth in GitLab **(FREE)**
+# Test OIDC/OAuth in GitLab **(FREE SELF)**
 
 To test OIDC/OAuth in GitLab, you must:
 

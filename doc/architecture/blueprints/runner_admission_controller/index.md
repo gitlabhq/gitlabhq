@@ -229,7 +229,7 @@ be rare in typical circumstances.
 
 ### Implementation Details
 
-1. [placeholder for steps required to code the admissions controller MVC]
+1. _placeholder for steps required to code the admissions controller MVC_
 
 ## Technical issues to resolve
 

@@ -128,7 +128,7 @@ module API
       end
 
       def two_factor_required_but_not_setup?(user)
-        verifier = Gitlab::Auth::TwoFactorAuthVerifier.new(user)
+        verifier = Gitlab::Auth::TwoFactorAuthVerifier.new(user, request)
 
         if verifier.two_factor_authentication_required? && verifier.current_user_needs_to_setup_two_factor?
           verifier.two_factor_grace_period_expired?

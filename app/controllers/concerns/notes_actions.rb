@@ -264,7 +264,7 @@ module NotesActions
   end
 
   def require_last_fetched_at_header!
-    return if request.headers['X-Last-Fetched-At'].present? || Feature.disabled?(:require_notes_last_fetched_at)
+    return if request.headers['X-Last-Fetched-At'].present?
 
     render json: { message: 'X-Last-Fetched-At header is required' }, status: :bad_request
   end

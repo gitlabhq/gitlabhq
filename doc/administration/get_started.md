@@ -4,7 +4,7 @@ stage: none
 group: Tutorials
 ---
 
-# Get started administering GitLab **(FREE)**
+# Get started administering GitLab **(FREE SELF)**
 
 Get started with GitLab administration. Configure your organization and its authentication, then secure, monitor,
 and back up GitLab.

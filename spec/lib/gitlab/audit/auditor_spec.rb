@@ -34,52 +34,24 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
       before do
         allow(Gitlab::Audit::Type::Definition).to receive(:defined?).and_call_original
         allow(Gitlab::Audit::Type::Definition).to receive(:defined?).with(name).and_return(false)
-        allow(Gitlab::AppLogger).to receive(:warn).and_return(app_logger)
       end
 
-      context 'when feature flag raise_error_for_missing_audit_event_yml is enabled' do
-        before do
-          stub_feature_flags(raise_error_for_missing_audit_event_yml: true)
-        end
+      it 'raises an error' do
+        expected_error = "Audit event type YML file is not defined for audit_operation. " \
+                         "Please read https://docs.gitlab.com/ee/development/audit_event_guide/" \
+                         "#how-to-instrument-new-audit-events for adding a new audit event"
 
-        it 'raises an error' do
-          expected_error = "Audit event type YML file is not defined for audit_operation. " \
-                           "Please read https://docs.gitlab.com/ee/development/audit_event_guide/" \
-                           "#how-to-instrument-new-audit-events for adding a new audit event"
-
-          expect { audit! }.to raise_error(StandardError, expected_error)
-        end
-      end
-
-      context 'when feature flag raise_error_for_missing_audit_event_yml is disabled' do
-        before do
-          stub_feature_flags(raise_error_for_missing_audit_event_yml: false)
-        end
-
-        it 'logs a warning when YAML is not defined' do
-          expected_warning = {
-            message: 'Logging audit events without an event type definition will be deprecated soon ' \
-                     '(https://docs.gitlab.com/ee/development/audit_event_guide/#event-type-definitions)',
-            event_type: name
-          }
-
-          audit!
-
-          expect(Gitlab::AppLogger).to have_received(:warn).with(expected_warning)
-        end
+        expect { audit! }.to raise_error(StandardError, expected_error)
       end
     end
 
     context 'when yaml definition is defined' do
       before do
         allow(Gitlab::Audit::Type::Definition).to receive(:defined?).and_return(true)
-        allow(Gitlab::AppLogger).to receive(:warn).and_return(app_logger)
       end
 
-      it 'does not log a warning when YAML is defined' do
-        audit!
-
-        expect(Gitlab::AppLogger).not_to have_received(:warn)
+      it 'does not raise an error' do
+        expect { audit! }.not_to raise_error
       end
     end
 

@@ -1,8 +1,0 @@
----
-name: require_notes_last_fetched_at
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127763
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419829
-milestone: '16.3'
-type: development
-group: group::project management
-default_enabled: false

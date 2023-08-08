@@ -56,9 +56,27 @@ update-gitaly-binaries-cache:
   artifacts:
     paths: []  # This job's purpose is only to update the cache.
 
+update-ruby-gems-coverage-cache-push:
+  extends:
+    - .ruby-gems-coverage-cache-push
+    - .shared:rules:update-cache
+  variables:
+    BUNDLE_WITHOUT: "" # This is to override the variable defined in .gitlab-ci.yml
+    BUNDLE_ONLY: "coverage"
+  script:
+    - source scripts/utils.sh
+    - bundle_install_script
+
+# Used in:
+#   - rspec:undercoverage
+#   - rspec:feature-flags
+#   - rspec:merge-auto-explain-logs
+#
+# TODO: Consider making rspec:coverage reuse this base job, or split into two base jobs.
 .coverage-base:
   extends:
     - .default-retry
+    # TODO: If applicable for all children jobs, delete/replace this cache with .ruby-gems-coverage-cache, as it is much smaller.
     - .coverage-cache
   before_script:
     - source scripts/utils.sh
@@ -446,7 +464,7 @@ rspec:artifact-collector ee:
 
 rspec:coverage:
   extends:
-    - .coverage-base
+    - .ruby-gems-coverage-cache
     - .fast-no-clone-job
     - .rails:rules:rspec-coverage
   stage: post-test
@@ -487,10 +505,12 @@ rspec:coverage:
       scripts/merge-simplecov
       spec/simplecov_env_core.rb
       spec/simplecov_env.rb
+    BUNDLE_WITHOUT: "" # This is to override the variable defined in .gitlab-ci.yml
+    BUNDLE_ONLY: "coverage"
   before_script:
     - !reference [".fast-no-clone-job", before_script]
     - run_timed_command "download_local_gems"
-    - !reference [".coverage-base", before_script]
+    - bundle_install_script
   script:
     - chmod u+x scripts/merge-simplecov # Not the right permissions when downloading the script via the API.
     - run_timed_command "bundle exec scripts/merge-simplecov"

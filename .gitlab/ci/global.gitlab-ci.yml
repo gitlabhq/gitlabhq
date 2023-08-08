@@ -36,7 +36,17 @@
 
 .ruby-gems-cache-push: &ruby-gems-cache-push
   <<: *ruby-gems-cache
-  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+  policy: push # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
+.ruby-coverage-gems-cache: &ruby-coverage-gems-cache
+  key: "ruby-coverage-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
+  paths:
+    - vendor/ruby/
+  policy: pull
+
+.ruby-coverage-gems-cache-push: &ruby-coverage-gems-cache-push
+  <<: *ruby-coverage-gems-cache
+  policy: push # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .gitaly-binaries-cache: &gitaly-binaries-cache
   key:
@@ -161,6 +171,15 @@
     - *ruby-gems-cache  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
     - *rubocop-cache-push
 
+.ruby-gems-coverage-cache:
+  cache:
+    - *ruby-coverage-gems-cache
+
+.ruby-gems-coverage-cache-push:
+  cache:
+    - *ruby-coverage-gems-cache-push
+
+# This cache should eventually be replaced by .ruby-gems-coverage-cache.
 .coverage-cache:
   cache:
     - *ruby-gems-cache

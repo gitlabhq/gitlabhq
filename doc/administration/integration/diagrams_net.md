@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Diagrams.net **(FREE)**
+# Diagrams.net **(FREE SELF)**
 
 With the [diagrams.net](https://www.diagrams.net/) integration, you can create and embed SVG diagrams in wikis.
 The diagram editor is available in both the plain text editor and the rich text editor.

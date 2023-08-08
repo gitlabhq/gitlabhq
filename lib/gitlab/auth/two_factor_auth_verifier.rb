@@ -3,10 +3,11 @@
 module Gitlab
   module Auth
     class TwoFactorAuthVerifier
-      attr_reader :current_user
+      attr_reader :current_user, :request
 
-      def initialize(current_user)
+      def initialize(current_user, request = nil)
         @current_user = current_user
+        @request = request
       end
 
       def two_factor_authentication_enforced?
@@ -14,6 +15,8 @@ module Gitlab
       end
 
       def two_factor_authentication_required?
+        return false if allow_2fa_bypass_for_provider
+
         Gitlab::CurrentSettings.require_two_factor_authentication? ||
           current_user&.require_two_factor_authentication_from_group?
       end
@@ -34,6 +37,12 @@ module Gitlab
         return false unless time
 
         two_factor_grace_period.hours.since(time) < Time.current
+      end
+
+      def allow_2fa_bypass_for_provider
+        return false if Feature.disabled?(:by_pass_two_factor_for_current_session)
+
+        request.session[:provider_2FA].present? if request
       end
     end
   end

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project integration management **(FREE)**
+# Project integration management **(FREE SELF)**
 
 Project integrations can be configured and enabled by project administrators. As a GitLab instance
 administrator, you can set default configuration parameters for a given integration that all projects

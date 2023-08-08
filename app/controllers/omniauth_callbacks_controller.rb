@@ -130,6 +130,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       link_identity(identity_linker)
       set_remember_me(current_user)
 
+      store_idp_two_factor_status(build_auth_user(auth_module::User).bypass_two_factor?)
+
       if identity_linker.changed?
         redirect_identity_linked
       elsif identity_linker.failed?
@@ -159,7 +161,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def build_auth_user(auth_user_class)
-    auth_user_class.new(oauth)
+    strong_memoize_with(:build_auth_user, auth_user_class) do
+      auth_user_class.new(oauth)
+    end
   end
 
   def sign_in_user_flow(auth_user_class)
@@ -179,11 +183,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       if user.two_factor_enabled? && !auth_user.bypass_two_factor?
         prompt_for_two_factor(user)
+        store_idp_two_factor_status(false)
       else
         if user.deactivated?
           user.activate
           flash[:notice] = _('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
         end
+
+        # session variable for storing bypass two-factor request from IDP
+        store_idp_two_factor_status(true)
 
         accept_pending_invitations(user: user) if new_user
         persist_accepted_terms_if_required(user) if new_user
@@ -322,6 +330,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # overridden in EE
   def sign_in_and_redirect_or_verify_identity(user, _, _)
     sign_in_and_redirect(user, event: :authentication)
+  end
+
+  def store_idp_two_factor_status(bypass_2fa)
+    if Feature.enabled?(:by_pass_two_factor_for_current_session)
+      session[:provider_2FA] = true if bypass_2fa
+    else
+      session.delete(:provider_2FA)
+    end
   end
 end
 

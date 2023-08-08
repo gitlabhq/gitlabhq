@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Markdown cache **(FREE)**
+# Markdown cache **(FREE SELF)**
 
 For performance reasons, GitLab caches the HTML version of Markdown text in fields such as:
 

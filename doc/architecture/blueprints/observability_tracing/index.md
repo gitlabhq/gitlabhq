@@ -135,7 +135,7 @@ All requests from GitLab.com will then include the GOB session cookie for observ
 
 The new UI will be built using the Pajamas Design System in accordance with GitLab UX design standards. The UI will interact with the GOB query service directly from vue.js (see architecture diagram above) by sending a fetch to the subdomain `observe.gitLab.com/v1/query` with `{withCredentials: true}`. See the Authentication and Authorization section above for more details on how this is enabled.
 
-[**TODO Figma UI designs and commentary**]
+**TODO Figma UI designs and commentary**
 
 ## Iterations
 

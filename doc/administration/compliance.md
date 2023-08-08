@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Compliance features **(FREE)**
+# Compliance features **(FREE SELF)**
 
 GitLab compliance features ensure your GitLab instance meets common compliance standards, and are available at various pricing tiers. For more information about compliance management, see the compliance
 management [solutions page](https://about.gitlab.com/solutions/compliance/).

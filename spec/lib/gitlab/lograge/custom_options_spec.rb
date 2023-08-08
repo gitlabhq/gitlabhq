@@ -60,6 +60,16 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
       expect(subject[:response_bytes]).to eq(1234)
     end
 
+    context 'with log_response_length disabled' do
+      before do
+        stub_feature_flags(log_response_length: false)
+      end
+
+      it 'does not add the response length' do
+        expect(subject).not_to include(:response_bytes)
+      end
+    end
+
     it 'adds Cloudflare headers' do
       expect(subject[:cf_ray]).to eq(event.payload[:cf_ray])
       expect(subject[:cf_request_id]).to eq(event.payload[:cf_request_id])

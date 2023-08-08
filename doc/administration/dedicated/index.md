@@ -233,6 +233,9 @@ Specify a comma separated list of IP addresses that can access your GitLab Dedic
 
 ### SAML
 
+NOTE:
+GitLab Dedicated supports a limited number of SAML parameters. Parameters not shown in the configuration below are unavailable for GitLab Dedicated tenant instances.
+
 Prerequisites:
 
 - You must configure the identity provider before sending the required data to GitLab.
@@ -240,10 +243,39 @@ Prerequisites:
 To activate SAML for your GitLab Dedicated instance:
 
 1. To make the necessary changes, include the desired [SAML configuration block](../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab application in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). At a minimum, GitLab needs the following information to enable SAML for your instance:
-   - Assertion consumer service URL
+   - IDP SSO Target URL
    - Certificate fingerprint or certificate
    - NameID format
    - SSO login button description
+
+   ```json
+   "saml": {
+     "attribute_statements": {
+         //optional
+     },
+     "enabled": true,
+     "groups_attribute": "",
+     "admin_groups": [
+       // optional
+     ],
+     "idp_cert_fingerprint": "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8", 
+     "idp_sso_target_url": "https://login.example.com/idp",
+     "label": "IDP Name", 
+     "name_identifier_format": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+     "security": {
+       // optional
+     },
+     "auditor_groups": [
+       // optional
+     ],
+     "external_groups": [
+       // optional
+     ],
+     "required_groups": [
+       // optional
+     ],
+   }
+   ```
 
 1. After GitLab deploys the SAML configuration to your instance, you are notified on your support ticket.
 1. To verify the SAML configuration is successful:
@@ -253,7 +285,7 @@ To activate SAML for your GitLab Dedicated instance:
 #### Request signing
 
 If [SAML request signing](../../integration/saml.md#sign-saml-authentication-requests-optional) is desired, a certificate must be obtained. This certificate can be self-signed which has the advantage of not having to prove ownership of an arbitrary Common Name (CN) to a public Certificate Authority (CA)).
-
+If you choose to enable SAML request signing, the manual steps below will need to be completed before you are able to use SAML, since it requires certificate signing to happen.
 To enable SAML request signing, indicate on your SAML [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) that you want request signing enabled. GitLab works with you on sending the Certificate Signing Request (CSR) for you to sign. Alternatively, the CSR can be signed with a public CA. After the certificate is signed, GitLab adds the certificate and its associated private key to the `security` section of the SAML configuration. Authentication requests from GitLab to your identity provider can then be signed.
 
 #### SAML groups

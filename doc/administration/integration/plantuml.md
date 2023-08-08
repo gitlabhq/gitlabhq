@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# PlantUML **(FREE)**
+# PlantUML **(FREE SELF)**
 
 With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
 This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
