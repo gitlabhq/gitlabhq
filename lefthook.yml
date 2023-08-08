@@ -98,6 +98,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{config/audit_events/types/*.yml,ee/config/audit_events/types/*yml}'
       run: bundle exec rake gitlab:audit_event_types:check_docs
+    rubocop:
+      tags: backend style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{rb,rake}'
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
 
   scripts:
     "merge_conflicts":

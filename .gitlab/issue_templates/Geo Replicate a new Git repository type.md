@@ -509,7 +509,6 @@ That's all of the required database changes.
     end
 
     include_examples 'a Geo framework registry'
-    include_examples 'a Geo verifiable registry'
   end
   ```
 

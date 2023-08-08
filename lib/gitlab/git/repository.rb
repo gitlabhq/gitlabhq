@@ -47,6 +47,8 @@ module Gitlab
 
       attr_reader :storage, :gl_repository, :gl_project_path, :container
 
+      delegate :list_all_blobs, to: :gitaly_blob_client
+
       # This remote name has to be stable for all types of repositories that
       # can join an object pool. If it's structure ever changes, a migration
       # has to be performed on the object pools to update the remote names.

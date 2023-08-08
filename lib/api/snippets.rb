@@ -71,6 +71,29 @@ module API
         present paginate(SnippetsFinder.new(nil, filter_params).execute), with: Entities::PersonalSnippet, current_user: current_user
       end
 
+      desc 'List all snippets current_user has access to' do
+        detail 'This feature was introduced in GitLab 16.3.'
+        success Entities::Snippet
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[snippets]
+        is_array true
+      end
+      params do
+        optional :created_after, type: DateTime, desc: 'Return snippets created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return snippets created before the specified time'
+
+        use :pagination
+      end
+      get 'all' do
+        authenticate!
+
+        filter_params = declared_params(include_missing: false).merge(all_available: true)
+
+        present paginate(SnippetsFinder.new(current_user, filter_params).execute), with: Entities::Snippet, current_user: current_user
+      end
+
       desc 'Get a single snippet' do
         detail 'This feature was introduced in GitLab 8.15.'
         success Entities::PersonalSnippet

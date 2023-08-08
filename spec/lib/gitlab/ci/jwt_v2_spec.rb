@@ -129,76 +129,20 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
         end
       end
 
-      describe 'ci_config_ref_uri' do
-        it 'joins project_config.url and pipeline.source_ref_path with @' do
-          expect(payload[:ci_config_ref_uri]).to eq('gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml' \
-                                                    '@refs/heads/auto-deploy-2020-03-19')
-        end
+      describe 'claims delegated to mapper' do
+        let(:ci_config_ref_uri) { 'ci_config_ref_uri' }
+        let(:ci_config_sha) { 'ci_config_sha' }
 
-        context 'when project config is nil' do
-          before do
-            allow(Gitlab::Ci::ProjectConfig).to receive(:new).and_return(nil)
+        it 'delegates claims to Gitlab::Ci::JwtV2::ClaimMapper' do
+          expect_next_instance_of(Gitlab::Ci::JwtV2::ClaimMapper, project_config, pipeline) do |mapper|
+            expect(mapper).to receive(:to_h).and_return({
+              ci_config_ref_uri: ci_config_ref_uri,
+              ci_config_sha: ci_config_sha
+            })
           end
 
-          it 'is nil' do
-            expect(payload[:ci_config_ref_uri]).to be_nil
-          end
-        end
-
-        context 'when ProjectConfig#url raises an error' do
-          before do
-            allow(project_config).to receive(:url).and_raise(RuntimeError)
-          end
-
-          it 'raises the same error' do
-            expect { payload }.to raise_error(RuntimeError)
-          end
-
-          context 'in production' do
-            before do
-              stub_rails_env('production')
-            end
-
-            it 'is nil' do
-              expect(payload[:ci_config_ref_uri]).to be_nil
-            end
-          end
-        end
-
-        context 'when config source is not repository' do
-          before do
-            allow(project_config).to receive(:source).and_return(:auto_devops_source)
-          end
-
-          it 'is nil' do
-            expect(payload[:ci_config_ref_uri]).to be_nil
-          end
-        end
-      end
-
-      describe 'ci_config_sha' do
-        it 'is the SHA of the pipeline' do
-          expect(payload[:ci_config_sha]).to eq(pipeline.sha)
-        end
-
-        context 'when project config is nil' do
-          before do
-            allow(Gitlab::Ci::ProjectConfig).to receive(:new).and_return(nil)
-          end
-
-          it 'is nil' do
-            expect(payload[:ci_config_sha]).to be_nil
-          end
-        end
-
-        context 'when config source is not repository' do
-          before do
-            allow(project_config).to receive(:source).and_return(:auto_devops_source)
-          end
-
-          it 'is nil' do
-            expect(payload[:ci_config_sha]).to be_nil
-          end
+          expect(payload[:ci_config_ref_uri]).to eq(ci_config_ref_uri)
+          expect(payload[:ci_config_sha]).to eq(ci_config_sha)
         end
       end
 

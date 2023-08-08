@@ -88,9 +88,6 @@ update-assets-compile-test-cache:
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
-  script:
-    - !reference [compile-test-assets, script]
-    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
 
 update-storybook-yarn-cache:

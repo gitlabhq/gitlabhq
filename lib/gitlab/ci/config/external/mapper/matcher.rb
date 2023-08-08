@@ -40,19 +40,14 @@ module Gitlab
             strong_memoize_attr :file_subkeys
 
             def file_classes
-              classes = [
+              [
                 External::File::Local,
                 External::File::Project,
                 External::File::Remote,
                 External::File::Template,
-                External::File::Artifact
+                External::File::Artifact,
+                External::File::Component
               ]
-
-              if Feature.enabled?(:ci_include_components, context.project&.root_namespace)
-                classes << External::File::Component
-              end
-
-              classes
             end
             strong_memoize_attr :file_classes
           end

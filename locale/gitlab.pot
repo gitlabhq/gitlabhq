@@ -14496,9 +14496,6 @@ msgstr ""
 msgid "DORA4Metrics|Failed to load YAML config from Project: %{fullPath}"
 msgstr ""
 
-msgid "DORA4Metrics|Failed to load charts"
-msgstr ""
-
 msgid "DORA4Metrics|Failed to load comparison chart for Namespace: %{fullPath}"
 msgstr ""
 
@@ -14613,6 +14610,12 @@ msgid "DORA4Metrics|Predicted number of deployments"
 msgstr ""
 
 msgid "DORA4Metrics|Show forecast"
+msgstr ""
+
+msgid "DORA4Metrics|Some metric charts failed to load"
+msgstr ""
+
+msgid "DORA4Metrics|Some metric comparisons failed to load"
 msgstr ""
 
 msgid "DORA4Metrics|Something went wrong while getting change failure rate data."
@@ -49446,6 +49449,15 @@ msgstr ""
 msgid "Trials|Day %{daysUsed}/%{duration}"
 msgstr ""
 
+msgid "Trials|Looking to do more with GitLab?"
+msgstr ""
+
+msgid "Trials|Upgrade your plan for more security features"
+msgstr ""
+
+msgid "Trials|With GitLab Ultimate you can detect and address vulnerabilities in your application."
+msgstr ""
+
 msgid "Trials|You can apply your trial to a new group or an existing group."
 msgstr ""
 
@@ -49453,6 +49465,9 @@ msgid "Trials|You've got %{daysRemaining} day remaining on GitLab %{planName}!"
 msgid_plural "Trials|You've got %{daysRemaining} days remaining on GitLab %{planName}!"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Trials|Your 30-day trial has ended"
+msgstr ""
 
 msgid "Trials|Your trial ends on %{boldStart}%{trialEndDate}%{boldEnd}. We hope you’re enjoying the features of GitLab %{planName}. To keep those features after your trial ends, you’ll need to buy a subscription. (You can also choose GitLab Premium if it meets your needs.)"
 msgstr ""

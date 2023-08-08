@@ -10,7 +10,7 @@ def validate_storages_config
   end
 
   Gitlab.config.repositories.storages.keys.each do |name|
-    unless /\A[a-zA-Z0-9\-_]+\z/.match?(name)
+    unless /\A[a-zA-Z0-9\-_.]+\z/.match?(name)
       storage_validation_error("\"#{name}\" is not a valid storage name")
     end
   end

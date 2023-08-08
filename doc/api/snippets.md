@@ -23,7 +23,7 @@ Valid values for snippet visibility levels are:
 | `internal` | Snippet is visible for any authenticated user except [external users](../administration/external_users.md).          |
 | `public`   | Snippet can be accessed without any authentication. |
 
-## List all snippets for a user
+## List all snippets for current user
 
 Get a list of the current user's snippets.
 
@@ -452,6 +452,103 @@ Example response:
         "raw_url": "http://example.com/snippets/49/raw",
         "visibility": "public"
     }
+]
+```
+
+## List all snippets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419640) in GitLab 16.3.
+
+List all snippets the current user has access to.
+Users with the Administrator or Auditor access levels can see all snippets
+(both personal and project).
+
+```plaintext
+GET /snippets/all
+```
+
+Parameters:
+
+| Attribute        | Type     | Required | Description                            |
+|------------------|----------|----------|----------------------------------------|
+| `created_after`  | datetime | no       | Return snippets created after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).  |
+| `created_before` | datetime | no       | Return snippets created before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `page`           | integer  | no       | Page to retrieve.                      |
+| `per_page`       | integer  | no       | Number of snippets to return per page. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/all?per_page=2&page=1"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 113,
+    "title": "Internal Project Snippet",
+    "description": null,
+    "visibility": "internal",
+    "author": {
+      "id": 17,
+      "username": "tim_kreiger",
+      "name": "Tim Kreiger",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/edaf55a9e363ea263e3b981d09e0f7f7?s=80&d=identicon",
+      "web_url": "http://example.com/tim_kreiger"
+    },
+    "created_at": "2023-08-03T10:21:02.480Z",
+    "updated_at": "2023-08-03T10:21:02.480Z",
+    "project_id": 35,
+    "web_url": "http://example.com/tim_kreiger/internal_project/-/snippets/113",
+    "raw_url": "http://example.com/tim_kreiger/internal_project/-/snippets/113/raw",
+    "file_name": "",
+    "files": []
+  },
+  {
+    "id": 112,
+    "title": "Private Personal Snippet",
+    "description": null,
+    "visibility": "private",
+    "author": {
+      "id": 1,
+      "username": "root",
+      "name": "Administrator",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/edaf55a9e363ea263e3b981d09e0f7f7?s=80&d=identicon",
+      "web_url": "http://example.com/root"
+    },
+    "created_at": "2023-08-03T10:20:59.994Z",
+    "updated_at": "2023-08-03T10:20:59.994Z",
+    "project_id": null,
+    "web_url": "http://example.com/-/snippets/112",
+    "raw_url": "http://example.com/-/snippets/112/raw",
+    "file_name": "",
+    "files": []
+  },
+  {
+    "id": 111,
+    "title": "Public Personal Snippet",
+    "description": null,
+    "visibility": "public",
+    "author": {
+      "id": 17,
+      "username": "tim_kreiger",
+      "name": "Tim Kreiger",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/edaf55a9e363ea263e3b981d09e0f7f7?s=80&d=identicon",
+      "web_url": "http://example.com/tim_kreiger"
+    },
+    "created_at": "2023-08-03T10:21:01.312Z",
+    "updated_at": "2023-08-03T10:21:01.312Z",
+    "project_id": null,
+    "web_url": "http://example.com/-/snippets/111",
+    "raw_url": "http://example.com/-/snippets/111/raw",
+    "file_name": "",
+    "files": []
+  },
 ]
 ```
 

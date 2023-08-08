@@ -67,14 +67,25 @@ class SnippetsFinder < UnionFinder
     return Snippet.none if project.nil? && params[:project].present?
     return Snippet.none if project && !project.feature_available?(:snippets, current_user)
 
-    snippets = all_snippets
-    snippets = by_ids(snippets)
-    snippets = snippets.with_optional_visibility(visibility_from_scope)
+    if return_all_available_and_permited?
+      snippets = all_snippets_for_admin
+    else
+      snippets = all_snippets
+      snippets = by_ids(snippets)
+      snippets = snippets.with_optional_visibility(visibility_from_scope)
+    end
+
     snippets = by_created_at(snippets)
     snippets.order_by(sort_param)
   end
 
   private
+
+  def return_all_available_and_permited?
+    # Currently limited to access_levels `admin` and `auditor`
+    # See policies/base_policy.rb files for specifics.
+    params[:all_available] && current_user&.can_read_all_resources?
+  end
 
   def all_snippets
     if explore?
@@ -118,6 +129,12 @@ class SnippetsFinder < UnionFinder
     end
 
     prepared_union(queries)
+  end
+
+  def all_snippets_for_admin
+    return Snippet.only_project_snippets if only_project?
+
+    Snippet.all
   end
 
   def snippets_for_a_single_project

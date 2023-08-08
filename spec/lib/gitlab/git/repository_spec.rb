@@ -2761,4 +2761,15 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect(repository.check_objects_exist(single_sha)).to eq({ single_sha => true })
     end
   end
+
+  describe '#list_all_blobs' do
+    subject { repository.list_all_blobs(expected_params) }
+
+    let(:expected_params) { { bytes_limit: 0, dynamic_timeout: nil, ignore_alternate_object_directories: true } }
+
+    it 'calls delegates to BlobService' do
+      expect(repository.gitaly_blob_client).to receive(:list_all_blobs).with(expected_params)
+      subject
+    end
+  end
 end

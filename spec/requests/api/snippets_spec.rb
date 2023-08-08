@@ -14,6 +14,7 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
   let_it_be(:internal_snippet)            { create(:personal_snippet, :repository, :internal, author: user) }
 
   let_it_be(:user_token) { create(:personal_access_token, user: user) }
+  let_it_be(:admin_token) { create(:personal_access_token, :admin_mode, user: admin, scopes: [:sudo, :api]) }
   let_it_be(:other_user_token) { create(:personal_access_token, user: other_user) }
   let_it_be(:project) do
     create_default(:project, :public).tap do |p|
@@ -133,6 +134,49 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
 
         expect(json_response.map { |snippet| snippet['id'] }).to contain_exactly(
           public_snippet_in_time_range.id)
+      end
+    end
+  end
+
+  describe 'GET /snippets/all' do
+    let(:path) { "/snippets/all" }
+
+    it_behaves_like "returns unauthorized when not authenticated"
+    it_behaves_like "returns filtered snippets for user"
+
+    context 'with additional snippets' do
+      let!(:hidden_snippet) { create(:personal_snippet, :repository, :private, author: other_user) }
+      let!(:viewable_snippet) { create(:personal_snippet, :repository, :internal, author: user) }
+
+      context 'and user is admin', :enable_admin_mode do
+        it 'returns all snippets' do
+          get api(path, personal_access_token: admin_token)
+
+          ids = json_response.map { |snippet| snippet['id'] }
+
+          expect(ids).to contain_exactly(
+            viewable_snippet.id,
+            hidden_snippet.id,
+            internal_snippet.id,
+            private_snippet.id,
+            public_snippet.id
+          )
+        end
+      end
+
+      context 'and user is not admin' do
+        it 'returns all internal and public snippets' do
+          get api(path, personal_access_token: user_token)
+
+          ids = json_response.map { |snippet| snippet['id'] }
+
+          expect(ids).to contain_exactly(
+            viewable_snippet.id,
+            internal_snippet.id,
+            private_snippet.id,
+            public_snippet.id
+          )
+        end
       end
     end
   end
@@ -453,10 +497,8 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
     end
 
     context "when admin" do
-      let_it_be(:token) { create(:personal_access_token, :admin_mode, user: admin, scopes: [:sudo]) }
-
       subject do
-        put api("/snippets/#{snippet.id}", personal_access_token: token), params: { visibility: 'private', sudo: user.id }
+        put api("/snippets/#{snippet.id}", personal_access_token: admin_token), params: { visibility: 'private', sudo: user.id }
       end
 
       context 'when sudo is defined' do
