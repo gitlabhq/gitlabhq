@@ -77,6 +77,7 @@ To view instance audit events:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1449) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/285441) in GitLab 13.7.
+> - Entity type `Gitlab::Audit::InstanceScope` for instance audit events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418185) in GitLab 16.2.
 
 You can export the current view (including filters) of your instance audit events as a CSV file. To export the instance
 audit events to CSV:
@@ -100,20 +101,20 @@ Data is encoded with:
 
 The first row contains the headers, which are listed in the following table along with a description of the values:
 
-| Column               | Description                                        |
-|:---------------------|:---------------------------------------------------|
-| **ID**               | Audit event `id`.                                  |
-| **Author ID**        | ID of the author.                                  |
-| **Author Name**      | Full name of the author.                           |
-| **Entity ID**        | ID of the scope.                                   |
-| **Entity Type**      | Type of the scope (`Project`, `Group`, or `User`). |
-| **Entity Path**      | Path of the scope.                                 |
-| **Target ID**        | ID of the target.                                  |
-| **Target Type**      | Type of the target.                                |
-| **Target Details**   | Details of the target.                             |
-| **Action**           | Description of the action.                         |
-| **IP Address**       | IP address of the author who performed the action. |
-| **Created At (UTC)** | Formatted as `YYYY-MM-DD HH:MM:SS`.                |
+| Column               | Description                                                        |
+|:---------------------|:-------------------------------------------------------------------|
+| **ID**               | Audit event `id`.                                                  |
+| **Author ID**        | ID of the author.                                                  |
+| **Author Name**      | Full name of the author.                                           |
+| **Entity ID**        | ID of the scope.                                                   |
+| **Entity Type**      | Type of the scope (`Project`, `Group`, `User`, or `Gitlab::Audit::InstanceScope`). |
+| **Entity Path**      | Path of the scope.                                                 |
+| **Target ID**        | ID of the target.                                                  |
+| **Target Type**      | Type of the target.                                                |
+| **Target Details**   | Details of the target.                                             |
+| **Action**           | Description of the action.                                         |
+| **IP Address**       | IP address of the author who performed the action.                 |
+| **Created At (UTC)** | Formatted as `YYYY-MM-DD HH:MM:SS`.                                |
 
 ## View sign-in events **(FREE)**
 

@@ -27,9 +27,7 @@ RSpec.describe 'getting Application Settings', feature_category: :continuous_int
       post_graphql(query, current_user: user)
     end
 
-    it_behaves_like 'a working graphql query'
-
-    specify { expect(settings_data).to be nil }
+    it_behaves_like 'a working graphql query that returns no data'
   end
 
   context 'with admin permissions' do
@@ -39,7 +37,7 @@ RSpec.describe 'getting Application Settings', feature_category: :continuous_int
       post_graphql(query, current_user: user)
     end
 
-    it_behaves_like 'a working graphql query'
+    it_behaves_like 'a working graphql query that returns data'
 
     it 'fetches the settings data' do
       # assert against hash to ensure no additional fields are exposed

@@ -23,7 +23,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
     it 'includes the project', :use_clean_rails_memory_store_caching, :request_store do
       post_graphql(query, current_user: current_user)
 
-      expect(graphql_data['project']).not_to be_nil
+      expect(graphql_data['project']).to include('id' => global_id_of(project).to_s)
     end
   end
 
@@ -35,10 +35,10 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
     it 'includes the project' do
       post_graphql(query, current_user: current_user)
 
-      expect(graphql_data['project']).not_to be_nil
+      expect(graphql_data['project']).to include('id' => global_id_of(project).to_s)
     end
 
-    it_behaves_like 'a working graphql query' do
+    it_behaves_like 'a working graphql query that returns data' do
       before do
         post_graphql(query, current_user: current_user)
       end
@@ -239,13 +239,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
   end
 
   context 'when the user does not have access to the project' do
-    it 'returns an empty field' do
-      post_graphql(query, current_user: current_user)
-
-      expect(graphql_data['project']).to be_nil
-    end
-
-    it_behaves_like 'a working graphql query' do
+    it_behaves_like 'a working graphql query that returns no data' do
       before do
         post_graphql(query, current_user: current_user)
       end

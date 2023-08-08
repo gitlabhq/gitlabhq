@@ -98,7 +98,12 @@ To work around this issue, ensure that the shared runner settings are consistent
 - If shared runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
 - If shared runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
 
-### Reset the runner registration token for a project
+### Reset the runner registration token for a project (deprecated)
+
+WARNING:
+The ability to pass a runner registration token, and support for certain configuration arguments was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. Authentication tokens
+should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 If you think that a registration token for a project was revealed, you should
 reset it. A registration token can be used to register another runner for the project.
@@ -106,27 +111,32 @@ That new runner may then be used to obtain the values of secret variables or to 
 
 To reset the registration token:
 
-1. Go to the project's **Settings > CI/CD**.
-1. Expand the **General pipelines settings** section.
-1. Find the **Runner token** form field and select **Reveal value**.
-1. Delete the value and save the form.
-1. After the page is refreshed, expand the **Runners settings** section
-   and check the registration token - it should be changed.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. To the right of **New project runner**, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Reset registration token**.
+1. Select **Reset token**.
 
-From now on the old token is no longer valid and does not register
-any new runners to the project. If you are using any tools to provision and
-register new runners, the tokens used in those tools should be updated to reflect the
-value of the new token.
+After you reset the registration token, it is no longer valid and does not register
+any new runners to the project. You should also update the registration token in tools
+you use to provision and register new values.
 
 ### Reset the runner authentication token
 
-If you think that an authentication token for a runner was revealed, you should
-reset it. An attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
+If an authentication token is revealed, an attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
 
-To reset the authentication token, [unregister the runner](https://docs.gitlab.com/runner/commands/#gitlab-runner-unregister)
-and then [register](https://docs.gitlab.com/runner/commands/#gitlab-runner-register) it again.
+To reset the authentication token:
 
-To verify that the previous authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
+1. Delete the runner:
+   - [Delete a shared runner](runners_scope.md#delete-shared-runners).
+   - [Delete a group runner](runners_scope.md#delete-a-group-runner).
+   - [Delete a project runner](runners_scope.md#delete-a-project-runner).
+1. Create a new runner so that it is assigned a new authentication token:
+   - [Create a shared runner](runners_scope.md#create-a-shared-runner-with-an-authentication-token).
+   - [Create a group runner](runners_scope.md#create-a-group-runner-with-an-authentication-token).
+   - [Create a project runner](runners_scope.md#create-a-project-runner-with-an-authentication-token).
+1. Optional. To verify that the previous authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
 
 ## Use tags to control which jobs a runner can run
 

@@ -117,7 +117,7 @@ export default {
     },
     toggleText() {
       return this.selected
-        ? this.allOptions.find((option) => option.value === this.selected).text
+        ? this.allOptions.find((option) => option.value === this.selected)?.text
         : this.defaultToggleText;
     },
   },

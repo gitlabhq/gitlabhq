@@ -18,18 +18,19 @@ To retrieve audit events using the API, you must [authenticate yourself](rest/in
 
 ### Retrieve all instance audit events
 
-> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11.
+> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11.
+> - Entity type `Gitlab::Audit::InstanceScope` for instance audit events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418185) in GitLab 16.2.
 
 ```plaintext
 GET /audit_events
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `created_after` | string | no | Return audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
-| `created_before` | string | no | Return audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
-| `entity_type` | string | no | Return audit events for the given entity type. Valid values are: `User`, `Group`, or `Project`. |
-| `entity_id` | integer | no | Return audit events for the given entity ID. Requires `entity_type` attribute to be present. |
+| Attribute | Type | Required | Description                                                                                                     |
+| --------- | ---- | -------- |-----------------------------------------------------------------------------------------------------------------|
+| `created_after` | string | no | Return audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)               |
+| `created_before` | string | no | Return audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)              |
+| `entity_type` | string | no | Return audit events for the given entity type. Valid values are: `User`, `Group`, `Project`, or `Gitlab::Audit::InstanceScope`. |
+| `entity_id` | integer | no | Return audit events for the given entity ID. Requires `entity_type` attribute to be present.                    |
 
 This endpoint supports both offset-based and [keyset-based](rest/index.md#keyset-based-pagination) pagination. You should use keyset-based
 pagination when requesting consecutive pages of results.
@@ -96,6 +97,30 @@ Example response:
       "entity_path": "Andreas"
     },
     "created_at": "2019-08-22T16:34:25.639Z"
+  },
+  {
+    "id": 4,
+    "author_id": 43,
+    "entity_id": 1,
+    "entity_type": "Gitlab::Audit::InstanceScope",
+    "details": {
+      "author_name": "Administrator",
+      "author_class": "User",
+      "target_id": 32,
+      "target_type": "AuditEvents::Streaming::InstanceHeader",
+      "target_details": "unknown",
+      "custom_message": "Created custom HTTP header with key X-arg.",
+      "ip_address": "127.0.0.1",
+      "entity_path": "gitlab_instance"
+    },
+    "ip_address": "127.0.0.1",
+    "author_name": "Administrator",
+    "entity_path": "gitlab_instance",
+    "target_details": "unknown",
+    "created_at": "2023-08-01T11:29:44.764Z",
+    "target_type": "AuditEvents::Streaming::InstanceHeader",
+    "target_id": 32,
+    "event_type": "audit_events_streaming_instance_headers_create"
   }
 ]
 ```
