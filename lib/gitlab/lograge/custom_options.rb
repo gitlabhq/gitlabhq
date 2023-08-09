@@ -36,6 +36,10 @@ module Gitlab
           payload[:feature_flag_states] = Feature.logged_states.map { |key, state| "#{key}:#{state ? 1 : 0}" }
         end
 
+        if Feature.disabled?(:log_response_length)
+          payload.delete(:response_bytes)
+        end
+
         payload
       end
     end

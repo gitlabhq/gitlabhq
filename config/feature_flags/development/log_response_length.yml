@@ -1,0 +1,8 @@
+---
+name: log_response_length
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91448
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366854
+milestone: '15.3'
+type: development
+group: group::tenant scale
+default_enabled: false

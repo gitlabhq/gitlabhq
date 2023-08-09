@@ -20,6 +20,14 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::ResponseLogger do
       it { expect(subject).to eq({ response_bytes: response1.bytesize + response2.bytesize }) }
     end
 
+    context 'with log_response_length disabled' do
+      before do
+        stub_feature_flags(log_response_length: false)
+      end
+
+      it { expect(subject).to eq({}) }
+    end
+
     context 'when response is a String' do
       let(:response) { response1 }
 
