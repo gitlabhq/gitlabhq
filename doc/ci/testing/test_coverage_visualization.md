@@ -19,7 +19,7 @@ MR is merged.
 
 ## How test coverage visualization works
 
-Collecting the coverage information is done via GitLab CI/CD's
+Collecting the coverage information is done by using the GitLab CI/CD
 [artifacts reports feature](../yaml/index.md#artifactsreports).
 You can specify one or more coverage reports to collect, including wildcard paths.
 GitLab then takes the coverage information in all the files and combines it
@@ -41,8 +41,7 @@ Other coverage analysis frameworks support the format out of the box, for exampl
 - [Coverage.py](https://coverage.readthedocs.io/en/coverage-5.0.4/cmd.html#xml-reporting) (Python)
 - [PHPUnit](https://github.com/sebastianbergmann/phpunit-documentation-english/blob/master/src/textui.rst#command-line-options) (PHP)
 
-Once configured, if you create a merge request that triggers a pipeline which collects
-coverage reports, the coverage is shown in the diff view. This includes reports
+After configuration, if your merge request triggers a pipeline that collects coverage reports, the coverage information is displayed in the diff view. This includes reports 
 from any job in any stage in the pipeline. The coverage displays for each line:
 
 - `covered` (green): lines which have been checked at least once by tests

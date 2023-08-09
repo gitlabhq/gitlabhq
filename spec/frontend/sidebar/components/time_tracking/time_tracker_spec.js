@@ -291,6 +291,68 @@ describe('Issuable Time Tracker', () => {
         },
       );
     });
+
+    describe('Set time estimate button', () => {
+      const findSetTimeEstimateButton = () => findByTestId('set-time-estimate-button');
+
+      it.each`
+        visibility       | canSetTimeEstimate
+        ${'not visible'} | ${false}
+        ${'visible'}     | ${true}
+      `(
+        'is $visibility when canSetTimeEstimate is $canSetTimeEstimate',
+        async ({ canSetTimeEstimate }) => {
+          wrapper = mountComponent({
+            props: {
+              initialTimeTracking: {
+                timeEstimate: 0,
+                totalTimeSpent: 0,
+                humanTimeEstimate: '',
+                humanTotalTimeSpent: '',
+              },
+              canSetTimeEstimate,
+            },
+          });
+          await nextTick();
+
+          expect(findSetTimeEstimateButton().exists()).toBe(canSetTimeEstimate);
+        },
+      );
+
+      it('shows a tooltip with `Set estimate` when the current estimate is 0', async () => {
+        wrapper = mountComponent({
+          props: {
+            initialTimeTracking: {
+              timeEstimate: 0,
+              totalTimeSpent: 0,
+              humanTimeEstimate: '',
+              humanTotalTimeSpent: '',
+            },
+            canSetTimeEstimate: true,
+          },
+        });
+        await nextTick();
+
+        expect(findSetTimeEstimateButton().attributes('title')).toBe('Set estimate');
+      });
+
+      it('shows a tooltip with `Edit estimate` when the current estimate is not 0', async () => {
+        wrapper = mountComponent({
+          props: {
+            initialTimeTracking: {
+              timeEstimate: 60,
+              totalTimeSpent: 0,
+              humanTimeEstimate: '1m',
+              humanTotalTimeSpent: '',
+            },
+            canSetTimeEstimate: true,
+          },
+        });
+        await nextTick();
+
+        expect(findSetTimeEstimateButton().attributes('title')).toBe('Edit estimate');
+      });
+    });
   });
 
   describe('Event listeners', () => {

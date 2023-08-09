@@ -58,7 +58,7 @@ The best results from Code Suggestions are expected [for languages the Google Ve
 - Swift
 - TypeScript
 
-## Supported code infrastructure interfaces
+### Supported code infrastructure interfaces
 
 Code Suggestions includes [Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_code_infrastructure_interfaces) support for the following infrastructure as code interfaces:
 
@@ -68,12 +68,36 @@ Code Suggestions includes [Google Vertex AI Codey APIs](https://cloud.google.com
 
 Suggestion quality for other languages and using natural language code comments to request completions may not yet result in high-quality suggestions.
 
+### Supported languages in IDEs
+
+Editor support for languages is documented in the following table.
+
+| Language                        | VS Code                                                                                                        | JetBrains IDEs               | Visual Studio | Neovim |
+|---------------------------------|----------------------------------------------------------------------------------------------------------------|------------------------------|---------------|--------|
+| C++                             | ✓                                                                                                              |                              | ✓             |        |
+| C#                              | ✓                                                                                                              | ✓                            | ✓             |        |
+| Go                              | ✓                                                                                                              | ✓ (IDEA Ultimate / GoLand)   |               |        |
+| Google SQL                      |                                                                                                                |                              |               |        |
+| Java                            | ✓                                                                                                              | ✓                            |               |        |
+| JavaScript                      | ✓                                                                                                              | ✓                            |               |        |
+| Kotlin                          | ✓                                                                                                              | ✓                            |               |        |
+| PHP                             | ✓                                                                                                              | ✓ (IDEA Ultimate)            |               |        |
+| Python                          | ✓                                                                                                              | ✓                            |               | ✓      |
+| Ruby                            | ✓                                                                                                              | ✓ (IDEA Ultimate / RubyMine) |               | ✓      |
+| Rust                            | ✓                                                                                                              | ✓                            |               |        |
+| Scala                           | ✓                                                                                                              | ✓                            |               |        |
+| Swift                           | ✓                                                                                                              | ✓                            |               |        |
+| TypeScript                      | ✓                                                                                                              | ✓                            |               |        |
+| Google Cloud CLI                |                                                                                                                |                              |               |        |
+| Kubernetes Resource Model (KRM) |                                                                                                                |                              |               |        |
+| Terraform                       | [`gitlab-org/gitlab-vscode-extension#826`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/826) |                              |               |        |
+
 ## Supported editor extensions
 
-Code Suggestions supports a variety of popular editors including: 
+Code Suggestions supports a variety of popular editors including:
 
 - VS Code, using [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-- [GitLab WebIDE (VS Code in the Cloud)](../../project/web_ide/index.md), with no additional configuration. 
+- [GitLab WebIDE (VS Code in the Cloud)](../../project/web_ide/index.md), with no additional configuration.
 - Microsoft Visual Studio, using the [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
 - JetBrains IDEs, using the [GitLab plugin](https://plugins.jetbrains.com/plugin/22325-gitlab).
 - Neovim, using the [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim).
@@ -83,7 +107,7 @@ is also in process.
 This improvement should result in:
 
 - Faster iteration and standardization of the IDE extensions.
-- The ability to use Code Suggestions even when an official editor extension isn't available. 
+- The ability to use Code Suggestions even when an official editor extension isn't available.
 
 ## Enable Code Suggestions on GitLab SaaS **(FREE SAAS)**
 
@@ -167,7 +191,7 @@ on self-managed instances. To request access:
    and tag your customer success manager.
 
 After GitLab has provisioned access to Code Suggestions for your instance,
-the users in your instance can now enable Code Suggestions. 
+the users in your instance can now enable Code Suggestions.
 
 ## Use Code Suggestions
 

@@ -48487,13 +48487,40 @@ msgstr ""
 msgid "TimeTracking|An error occurred while removing the timelog."
 msgstr ""
 
+msgid "TimeTracking|An error occurred while saving the time estimate."
+msgstr ""
+
 msgid "TimeTracking|Delete time spent"
+msgstr ""
+
+msgid "TimeTracking|Edit estimate"
+msgstr ""
+
+msgid "TimeTracking|Edit time estimate"
+msgstr ""
+
+msgid "TimeTracking|Enter time as a total duration (for example, 1mo 2w 3d 5h 10m), or specify hours and minutes (for example, 75:30)."
+msgstr ""
+
+msgid "TimeTracking|Estimate"
 msgstr ""
 
 msgid "TimeTracking|Estimated:"
 msgstr ""
 
+msgid "TimeTracking|How do I estimate and track time?"
+msgstr ""
+
 msgid "TimeTracking|Over by %{timeRemainingHumanReadable}"
+msgstr ""
+
+msgid "TimeTracking|Set estimate"
+msgstr ""
+
+msgid "TimeTracking|Set estimated time to complete this %{issuableTypeName}."
+msgstr ""
+
+msgid "TimeTracking|Set time estimate"
 msgstr ""
 
 msgid "TimeTracking|Spent"
@@ -53207,6 +53234,9 @@ msgid "WorkItem|Something went wrong when fetching tasks. Please refresh this pa
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
+msgstr ""
+
+msgid "WorkItem|Something went wrong when fetching work items. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when trying to add a child. Please try again."

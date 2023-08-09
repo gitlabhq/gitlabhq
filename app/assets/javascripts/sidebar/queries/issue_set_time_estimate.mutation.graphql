@@ -1,0 +1,10 @@
+mutation issueSetTimeEstimate($input: UpdateIssueInput!) {
+  issuableSetTimeEstimate: updateIssue(input: $input) {
+    errors
+    issuable: issue {
+      id
+      humanTimeEstimate
+      timeEstimate
+    }
+  }
+}

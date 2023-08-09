@@ -3304,3 +3304,63 @@ export const getTodosMutationResponse = (state) => {
     },
   };
 };
+
+export const groupWorkItemsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/3',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/58',
+            iid: '23',
+            author: {
+              id: 'gid://gitlab/User/9',
+              avatarUrl: 'author/avatar/url',
+              name: 'Arthur',
+              username: 'arthur',
+              webUrl: 'author/web/url',
+            },
+            closedAt: '',
+            confidential: true,
+            createdAt: '2020-01-23T12:34:56Z',
+            reference: 'javascriptjs/js#23',
+            state: 'OPEN',
+            title: 'a group level work item',
+            updatedAt: '',
+            webUrl: 'web/url',
+            widgets: [
+              {
+                __typename: 'WorkItemWidgetAssignees',
+                assignees: {
+                  nodes: mockAssignees,
+                },
+                type: 'ASSIGNEES',
+              },
+              {
+                __typename: 'WorkItemWidgetLabels',
+                allowsScopedLabels: false,
+                labels: {
+                  nodes: [
+                    {
+                      __typename: 'Label',
+                      id: 'gid://gitlab/Label/7',
+                      color: '#f00',
+                      description: '',
+                      title: 'Label 7',
+                    },
+                  ],
+                },
+                type: 'LABELS',
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Issue',
+            },
+          },
+        ],
+      },
+    },
+  },
+};

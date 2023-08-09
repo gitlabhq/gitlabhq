@@ -6,7 +6,7 @@ import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdow
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import { __, s__, sprintf } from '~/locale';
-import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
+import SidebarTimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { INCIDENT } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -27,7 +27,7 @@ export default {
     SidebarAssigneesWidget,
     SidebarDateWidget,
     SidebarConfidentialityWidget,
-    BoardSidebarTimeTracker,
+    SidebarTimeTracker,
     SidebarLabelsWidget,
     SidebarSubscriptionsWidget,
     SidebarDropdownWidget,
@@ -73,6 +73,9 @@ export default {
       default: false,
     },
     isApolloBoard: {
+      default: false,
+    },
+    timeTrackingLimitToHours: {
       default: false,
     },
   },
@@ -257,7 +260,15 @@ export default {
             data-testid="iteration-edit"
           />
         </div>
-        <board-sidebar-time-tracker />
+        <sidebar-time-tracker
+          :can-add-time-entries="canUpdate"
+          :can-set-time-estimate="canUpdate"
+          :full-path="projectPathForActiveIssue"
+          :issuable-id="activeBoardIssuable.id"
+          :issuable-iid="activeBoardIssuable.iid"
+          :limit-to-hours="timeTrackingLimitToHours"
+          :show-collapsed="false"
+        />
         <sidebar-date-widget
           :iid="activeBoardIssuable.iid"
           :full-path="projectPathForActiveIssue"

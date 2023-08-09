@@ -9,13 +9,8 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
-
-import {
-  i18n,
-  I18N_WORK_ITEM_ERROR_FETCHING_LABELS,
-  TRACKING_CATEGORY_SHOW,
-  WIDGET_TYPE_LABELS,
-} from '../constants';
+import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS, TRACKING_CATEGORY_SHOW } from '../constants';
+import { isLabelsWidget } from '../utils';
 
 function isTokenSelectorElement(el) {
   return (
@@ -127,7 +122,7 @@ export default {
       return this.$apollo.queries.searchLabels.loading;
     },
     labelsWidget() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
+      return this.workItem?.widgets?.find(isLabelsWidget);
     },
     labels() {
       return this.labelsWidget?.labels?.nodes || [];

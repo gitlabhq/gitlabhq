@@ -18,8 +18,9 @@ import TimeTrackingCollapsedState from './collapsed_state.vue';
 import TimeTrackingComparisonPane from './comparison_pane.vue';
 import TimeTrackingReport from './report.vue';
 import TimeTrackingSpentOnlyPane from './spent_only_pane.vue';
-import { CREATE_TIMELOG_MODAL_ID } from './constants';
+import { CREATE_TIMELOG_MODAL_ID, SET_TIME_ESTIMATE_MODAL_ID } from './constants';
 import CreateTimelogForm from './create_timelog_form.vue';
+import SetTimeEstimateForm from './set_time_estimate_form.vue';
 
 export default {
   name: 'IssuableTimeTracker',
@@ -38,6 +39,7 @@ export default {
     TimeTrackingComparisonPane,
     TimeTrackingReport,
     CreateTimelogForm,
+    SetTimeEstimateForm,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -93,6 +95,11 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    canSetTimeEstimate: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -181,6 +188,11 @@ export default {
     timeTrackingIconName() {
       return this.showHelpState ? 'close' : 'question-o';
     },
+    timeEstimateTooltip() {
+      return this.hasTimeEstimate
+        ? s__('TimeTracking|Edit estimate')
+        : s__('TimeTracking|Set estimate');
+    },
   },
   watch: {
     /**
@@ -203,6 +215,7 @@ export default {
       this.$root.$emit(BV_SHOW_MODAL, CREATE_TIMELOG_MODAL_ID);
     },
   },
+  setTimeEstimateModalId: SET_TIME_ESTIMATE_MODAL_ID,
 };
 </script>
 
@@ -223,18 +236,31 @@ export default {
     >
       {{ __('Time tracking') }}
       <gl-loading-icon v-if="isTimeTrackingInfoLoading" size="sm" class="gl-ml-2" inline />
-      <gl-button
-        v-if="canAddTimeEntries"
-        v-gl-tooltip.left
-        category="tertiary"
-        size="small"
-        class="gl-ml-auto"
-        data-testid="add-time-entry-button"
-        :title="__('Add time entry')"
-        @click="openRegisterTimeSpentModal()"
-      >
-        <gl-icon name="plus" class="gl-text-gray-900!" />
-      </gl-button>
+      <div v-if="canSetTimeEstimate || canAddTimeEntries" class="gl-ml-auto gl-display-flex">
+        <gl-button
+          v-if="canSetTimeEstimate"
+          v-gl-modal="$options.setTimeEstimateModalId"
+          v-gl-tooltip.top
+          category="tertiary"
+          size="small"
+          data-testid="set-time-estimate-button"
+          :title="timeEstimateTooltip"
+          :aria-label="timeEstimateTooltip"
+        >
+          <gl-icon name="timer" class="gl-text-gray-900!" />
+        </gl-button>
+        <gl-button
+          v-if="canAddTimeEntries"
+          v-gl-tooltip.top
+          category="tertiary"
+          size="small"
+          data-testid="add-time-entry-button"
+          :title="__('Add time entry')"
+          @click="openRegisterTimeSpentModal()"
+        >
+          <gl-icon name="plus" class="gl-text-gray-900!" />
+        </gl-button>
+      </div>
     </div>
     <div v-if="!isTimeTrackingInfoLoading" class="hide-collapsed">
       <div v-if="showEstimateOnlyState" data-testid="estimateOnlyPane">
@@ -255,10 +281,11 @@ export default {
         :time-estimate-human-readable="humanTimeEstimate"
         :limit-to-hours="limitToHours"
       />
-      <template v-if="isTimeReportSupported">
+      <div v-if="isTimeReportSupported">
         <gl-link
           v-if="hasTotalTimeSpent"
           v-gl-modal="'time-tracking-report'"
+          class="gl-text-black-normal"
           data-testid="reportLink"
           href="#"
         >
@@ -272,8 +299,13 @@ export default {
         >
           <time-tracking-report :limit-to-hours="limitToHours" :issuable-id="issuableId" />
         </gl-modal>
-      </template>
+      </div>
       <create-timelog-form :issuable-id="issuableId" />
+      <set-time-estimate-form
+        :full-path="fullPath"
+        :issuable-iid="issuableIid"
+        :time-tracking="timeTracking"
+      />
     </div>
   </div>
 </template>

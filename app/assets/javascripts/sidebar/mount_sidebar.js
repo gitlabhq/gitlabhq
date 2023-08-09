@@ -545,6 +545,7 @@ function mountSidebarTimeTracking() {
     issuableType,
     timeTrackingLimitToHours,
     canCreateTimelogs,
+    editable,
   } = getSidebarOptions();
 
   if (!el) {
@@ -564,6 +565,7 @@ function mountSidebarTimeTracking() {
           issuableIid: iid.toString(),
           limitToHours: timeTrackingLimitToHours,
           canAddTimeEntries: canCreateTimelogs,
+          canSetTimeEstimate: parseBoolean(editable),
         },
       }),
   });

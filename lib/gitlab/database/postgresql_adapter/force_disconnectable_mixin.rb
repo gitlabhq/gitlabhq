@@ -11,6 +11,8 @@ module Gitlab
         end
 
         def force_disconnect_if_old!
+          return if Rails.env.test? && transaction_open?
+
           if force_disconnect_timer.expired?
             disconnect!
             reset_force_disconnect_timer!

@@ -1,4 +1,8 @@
-import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
+import { WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_HIERARCHY, WIDGET_TYPE_LABELS } from './constants';
+
+export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
+
+export const isLabelsWidget = (widget) => widget.type === WIDGET_TYPE_LABELS;
 
 export const findHierarchyWidgets = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
