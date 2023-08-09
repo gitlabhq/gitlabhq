@@ -31,8 +31,8 @@ export default {
   mounted() {
     window.addEventListener('message', this.messageHandler);
 
-    // TODO Remove once backend work done - just for testing
-    // https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2270
+    // TODO: Improve local GDK dev experience with tracing https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2308
+    // Uncomment the lines below to to test this locally
     // setTimeout(() => {
     //   this.messageHandler({
     //     data: { type: 'AUTH_COMPLETION', status: 'success' },

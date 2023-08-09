@@ -7,8 +7,8 @@ import {
   toggleQueryPollingByVisibility,
 } from '~/pipelines/components/graph/utils';
 import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getLinkedPipelinesQuery from '~/pipelines/graphql/queries/get_linked_pipelines.query.graphql';
 import getPipelineStagesQuery from '~/pipelines/graphql/queries/get_pipeline_stages.query.graphql';

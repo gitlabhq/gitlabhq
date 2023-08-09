@@ -147,19 +147,18 @@
       = f.gitlab_ui_checkbox_component :time_display_relative,
         s_('Preferences|Use relative times'),
         help_text: s_('Preferences|For example: 30 minutes ago.')
-  - if Feature.enabled?(:disable_follow_users, @user)
-    .settings-section.js-preferences-form.js-search-settings-section#enabled_following
-      .settings-sticky-header
-        .settings-sticky-header-inner
-          %h4.gl-my-0
-            = s_('Preferences|Enable follow users feature')
-      %p.gl-text-secondary
-        = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
-        = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/profile/index', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
-      .form-group
-        = f.gitlab_ui_checkbox_component :enabled_following,
-        s_('Preferences|Enable follow users')
+  .settings-section.js-preferences-form.js-search-settings-section#enabled_following
+    .settings-sticky-header
+      .settings-sticky-header-inner
+        %h4.gl-my-0
+          = s_('Preferences|Enable follow users feature')
+    %p.gl-text-secondary
+      = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
+      = succeed '.' do
+        = link_to _('Learn more'), help_page_path('user/profile/index', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
+    .form-group
+      = f.gitlab_ui_checkbox_component :enabled_following,
+      s_('Preferences|Enable follow users')
   = render_if_exists 'profiles/preferences/code_suggestions_settings', form: f
   = render_if_exists 'profiles/preferences/zoekt_settings', form: f
 

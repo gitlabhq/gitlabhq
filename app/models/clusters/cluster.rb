@@ -45,7 +45,6 @@ module Clusters
     end
 
     has_many :kubernetes_namespaces
-    has_many :metrics_dashboard_annotations, class_name: 'Metrics::Dashboard::Annotation', inverse_of: :cluster
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :provider_aws, update_only: true

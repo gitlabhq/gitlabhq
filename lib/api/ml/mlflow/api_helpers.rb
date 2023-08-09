@@ -46,7 +46,7 @@ module API
           )
           path = path.delete_suffix('/package_version')
 
-          "#{request.base_url}#{path}"
+          expose_url(path)
         end
       end
     end

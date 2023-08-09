@@ -10018,6 +10018,29 @@ The edge type for [`LicenseHistoryEntry`](#licensehistoryentry).
 | <a id="licensehistoryentryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="licensehistoryentryedgenode"></a>`node` | [`LicenseHistoryEntry`](#licensehistoryentry) | The item at the end of the edge. |
 
+#### `LinkedWorkItemTypeConnection`
+
+The connection type for [`LinkedWorkItemType`](#linkedworkitemtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="linkedworkitemtypeconnectionedges"></a>`edges` | [`[LinkedWorkItemTypeEdge]`](#linkedworkitemtypeedge) | A list of edges. |
+| <a id="linkedworkitemtypeconnectionnodes"></a>`nodes` | [`[LinkedWorkItemType]`](#linkedworkitemtype) | A list of nodes. |
+| <a id="linkedworkitemtypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `LinkedWorkItemTypeEdge`
+
+The edge type for [`LinkedWorkItemType`](#linkedworkitemtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="linkedworkitemtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="linkedworkitemtypeedgenode"></a>`node` | [`LinkedWorkItemType`](#linkedworkitemtype) | The item at the end of the edge. |
+
 #### `MemberInterfaceConnection`
 
 The connection type for [`MemberInterface`](#memberinterface).
@@ -13724,6 +13747,7 @@ CI/CD variables for a project.
 ##### `CiRunner.jobCount`
 
 Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist).
+`jobCount` is an optimized version of `jobs { count }`, and can be requested for multiple runners on the same request.
 
 Returns [`Int`](#int).
 
@@ -18215,6 +18239,18 @@ Represents an entry from the Cloud License history.
 | <a id="licensehistoryentrystartsat"></a>`startsAt` | [`Date`](#date) | Date when the license started. |
 | <a id="licensehistoryentrytype"></a>`type` | [`String!`](#string) | Type of the license. |
 | <a id="licensehistoryentryusersinlicensecount"></a>`usersInLicenseCount` | [`Int`](#int) | Number of paid users in the license. |
+
+### `LinkedWorkItemType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="linkedworkitemtypelinkcreatedat"></a>`linkCreatedAt` | [`Time!`](#time) | Timestamp the link was created. |
+| <a id="linkedworkitemtypelinkid"></a>`linkId` | [`WorkItemsRelatedWorkItemLinkID!`](#workitemsrelatedworkitemlinkid) | Global ID of the link. |
+| <a id="linkedworkitemtypelinktype"></a>`linkType` | [`String!`](#string) | Type of link. |
+| <a id="linkedworkitemtypelinkupdatedat"></a>`linkUpdatedAt` | [`Time!`](#time) | Timestamp the link was updated. |
+| <a id="linkedworkitemtypeworkitem"></a>`workItem` | [`WorkItem!`](#workitem) | Linked work item. |
 
 ### `Location`
 
@@ -25231,6 +25267,17 @@ Represents the labels widget.
 | <a id="workitemwidgetlabelslabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels assigned to the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgetlabelstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetLinkedItems`
+
+Represents the linked items widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetlinkeditemslinkeditems"></a>`linkedItems` **{warning-solid}** | [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Linked items for the work item. Returns `null`if `linked_work_items` feature flag is disabled. |
+| <a id="workitemwidgetlinkeditemstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetMilestone`
 
 Represents a milestone widget.
@@ -27897,6 +27944,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypehierarchy"></a>`HIERARCHY` | Hierarchy widget. |
 | <a id="workitemwidgettypeiteration"></a>`ITERATION` | Iteration widget. |
 | <a id="workitemwidgettypelabels"></a>`LABELS` | Labels widget. |
+| <a id="workitemwidgettypelinked_items"></a>`LINKED_ITEMS` | Linked Items widget. |
 | <a id="workitemwidgettypemilestone"></a>`MILESTONE` | Milestone widget. |
 | <a id="workitemwidgettypenotes"></a>`NOTES` | Notes widget. |
 | <a id="workitemwidgettypenotifications"></a>`NOTIFICATIONS` | Notifications widget. |
@@ -28647,6 +28695,12 @@ An example `WorkItemID` is: `"gid://gitlab/WorkItem/1"`.
 
 While we transition from Issues into Work Items this type will temporarily support
 `IssueID` like: `"gid://gitlab/Issue/1"`. This behavior will be removed without notice in the future.
+
+### `WorkItemsRelatedWorkItemLinkID`
+
+A `WorkItemsRelatedWorkItemLinkID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsRelatedWorkItemLinkID` is: `"gid://gitlab/WorkItems::RelatedWorkItemLink/1"`.
 
 ### `WorkItemsTypeID`
 
@@ -29420,6 +29474,7 @@ Implementations:
 - [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy)
 - [`WorkItemWidgetIteration`](#workitemwidgetiteration)
 - [`WorkItemWidgetLabels`](#workitemwidgetlabels)
+- [`WorkItemWidgetLinkedItems`](#workitemwidgetlinkeditems)
 - [`WorkItemWidgetMilestone`](#workitemwidgetmilestone)
 - [`WorkItemWidgetNotes`](#workitemwidgetnotes)
 - [`WorkItemWidgetNotifications`](#workitemwidgetnotifications)

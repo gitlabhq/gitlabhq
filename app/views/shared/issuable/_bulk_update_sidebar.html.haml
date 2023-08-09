@@ -44,6 +44,10 @@
         .js-subscriptions-dropdown
       - if is_issue
         .block
+          .title
+            = _('Confidentiality')
+          .js-confidentiality-dropdown
+        .block
           .js-move-issues{ data: move_data }
 
       = hidden_field_tag "update[issuable_ids]", []

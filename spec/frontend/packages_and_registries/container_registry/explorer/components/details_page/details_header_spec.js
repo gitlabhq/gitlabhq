@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlIcon, GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -38,9 +38,9 @@ describe('Details Header', () => {
   const findTitle = () => wrapper.findByTestId('title');
   const findTagsCount = () => wrapper.findByTestId('tags-count');
   const findCleanup = () => wrapper.findByTestId('cleanup');
-  const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
+  const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
-  const findMenu = () => wrapper.findComponent(GlDropdown);
+  const findMenu = () => wrapper.findComponent(GlDisclosureDropdown);
   const findSize = () => wrapper.findByTestId('image-size');
 
   const mountComponent = ({
@@ -57,10 +57,6 @@ describe('Details Header', () => {
       propsData,
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
-      },
-      stubs: {
-        GlDropdown,
-        GlDropdownItem,
       },
     });
   };
@@ -126,35 +122,36 @@ describe('Details Header', () => {
       },
     );
 
-    describe('delete button', () => {
-      it('exists', () => {
-        mountComponent();
+    it('has the correct props', () => {
+      mountComponent();
 
+      expect(findMenu().props()).toMatchObject({
+        category: 'tertiary',
+        icon: 'ellipsis_v',
+        placement: 'right',
+        textSrOnly: true,
+        noCaret: true,
+        toggleText: 'More actions',
+      });
+    });
+
+    describe('delete item', () => {
+      beforeEach(() => {
+        mountComponent();
+      });
+
+      it('exists', () => {
         expect(findDeleteButton().exists()).toBe(true);
       });
 
       it('has the correct text', () => {
-        mountComponent();
-
         expect(findDeleteButton().text()).toBe('Delete image repository');
       });
 
-      it('has the correct props', () => {
-        mountComponent();
-
-        expect(findDeleteButton().attributes()).toMatchObject(
-          expect.objectContaining({
-            variant: 'danger',
-          }),
-        );
-      });
-
       it('emits the correct event', () => {
-        mountComponent();
+        findDeleteButton().vm.$emit('action');
 
-        findDeleteButton().vm.$emit('click');
-
-        expect(wrapper.emitted('delete')).toEqual([[]]);
+        expect(wrapper.emitted('delete')).toHaveLength(1);
       });
     });
   });

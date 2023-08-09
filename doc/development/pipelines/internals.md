@@ -409,9 +409,9 @@ For this scenario, you have to:
     - `VERSION`
   - `rspec:coverage` for:
     - `config/bundler_setup.rb`
+    - `Gemfile`
     - `Gemfile.checksum`
     - `Gemfile.lock`
-    - `Gemfile`
     - `scripts/merge-simplecov`
     - `spec/simplecov_env_core.rb`
     - `spec/simplecov_env.rb`

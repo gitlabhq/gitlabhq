@@ -263,18 +263,18 @@ describe('Commit box pipeline mini graph', () => {
 
   describe('feature flag behavior', () => {
     it.each`
-      state    | provide                                 | showPipelineMiniGraph | showGraphqlPipelineMiniGraph
-      ${true}  | ${{ ciGraphqlPipelineMiniGraph: true }} | ${false}              | ${true}
-      ${false} | ${{}}                                   | ${true}               | ${false}
+      state    | showLegacyPipelineMiniGraph | showPipelineMiniGraph
+      ${true}  | ${false}                    | ${true}
+      ${false} | ${true}                     | ${false}
     `(
       'renders the correct component when the feature flag is set to $state',
-      async ({ provide, showPipelineMiniGraph, showGraphqlPipelineMiniGraph }) => {
-        createComponent(provide);
+      async ({ state, showLegacyPipelineMiniGraph, showPipelineMiniGraph }) => {
+        createComponent({ ciGraphqlPipelineMiniGraph: state });
 
         await waitForPromises();
 
-        expect(findLegacyPipelineMiniGraph().exists()).toBe(showPipelineMiniGraph);
-        expect(findPipelineMiniGraph().exists()).toBe(showGraphqlPipelineMiniGraph);
+        expect(findLegacyPipelineMiniGraph().exists()).toBe(showLegacyPipelineMiniGraph);
+        expect(findPipelineMiniGraph().exists()).toBe(showPipelineMiniGraph);
       },
     );
 

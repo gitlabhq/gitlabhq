@@ -9,7 +9,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   let_it_be(:user) { create(:user, :public_email) }
   let_it_be(:namespace) { create_default(:namespace).freeze }
-  let_it_be(:project) { create_default(:project, :repository).freeze }
+  let_it_be_with_refind(:project) { create_default(:project, :repository).freeze }
 
   it 'paginates 15 pipelines per page' do
     expect(described_class.default_per_page).to eq(15)
@@ -2280,7 +2280,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#modified_paths' do
-    let(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
 
     context 'when old and new revisions are set' do
       before do

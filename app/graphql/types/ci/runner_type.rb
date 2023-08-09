@@ -59,7 +59,9 @@ module Types
             deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
             description: 'IP address of the runner.'
       field :job_count, GraphQL::Types::Int, null: true,
-            description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist).",
+            description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to " \
+                         "indicate that more items exist).\n`jobCount` is an optimized version of `jobs { count }`, " \
+                         "and can be requested for multiple runners on the same request.",
             resolver: ::Resolvers::Ci::RunnerJobCountResolver
       field :job_execution_status,
             Types::Ci::RunnerJobExecutionStatusEnum,

@@ -11,13 +11,13 @@ import {
   filterObjToQuery,
   filterObjToFilterToken,
   filterTokensToFilterObj,
-} from '~/tracing/utils';
+} from '~/tracing/filters';
 import FilteredSearch from '~/tracing/components/tracing_list_filtered_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
 jest.mock('~/alert');
-jest.mock('~/tracing/utils');
+jest.mock('~/tracing/filters');
 
 describe('TracingList', () => {
   let wrapper;
@@ -145,6 +145,14 @@ describe('TracingList', () => {
       expect(filterTokensToFilterObj).toHaveBeenCalledWith(mockFilters);
       expect(filterObjToQuery).toHaveBeenCalledWith(mockUpdatedFilterObj);
       expect(findUrlSync().props('query')).toBe(mockUpdatedQuery);
+    });
+
+    it('fetches traces with filters', () => {
+      expect(observabilityClientMock.fetchTraces).toHaveBeenCalledWith(mockFilterObj);
+
+      findFilteredSearch().vm.$emit('submit', {});
+
+      expect(observabilityClientMock.fetchTraces).toHaveBeenLastCalledWith(mockUpdatedFilterObj);
     });
   });
 

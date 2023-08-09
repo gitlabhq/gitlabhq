@@ -4,7 +4,8 @@ import PipelineStages from './pipeline_stages.vue';
 import LinkedPipelinesMiniList from './linked_pipelines_mini_list.vue';
 /**
  * Renders the pipeline mini graph.
- * Once all apps that use this component are updated to GraphQL, we will rename this file to `pipeline_mini_graph_wrapper.vue`
+ * TODO: After all apps have updated to GraphQL data and use the `pipeline_mini_graph.vue` file as an entry,
+ * we should rename this file to `pipeline_mini_graph_wrapper.vue`
  */
 export default {
   components: {
@@ -20,6 +21,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    isGraphql: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     isMergeTrain: {
       type: Boolean,
@@ -70,6 +76,7 @@ export default {
       data-testid="upstream-arrow-icon"
     />
     <pipeline-stages
+      :is-graphql="isGraphql"
       :is-merge-train="isMergeTrain"
       :stages="stages"
       :update-dropdown="updateDropdown"

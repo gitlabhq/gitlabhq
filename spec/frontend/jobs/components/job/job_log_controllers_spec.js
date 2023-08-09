@@ -21,7 +21,6 @@ describe('Job log controllers', () => {
 
   const defaultProps = {
     rawPath: '/raw',
-    erasePath: '/erase',
     size: 511952,
     isScrollTopDisabled: false,
     isScrollBottomDisabled: false,

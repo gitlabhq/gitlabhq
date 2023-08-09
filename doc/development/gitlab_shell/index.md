@@ -28,6 +28,15 @@ and support:
 - The current stable version.
 - The previous two major versions.
 
+### Versions
+
+There are two version files relevent to GitLab Shell:
+
+- [Stable version](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/VERSION)
+- [Version deployed in GitLab SaaS](https://gitlab.com/gitlab-org/gitlab/-/blob/master/GITLAB_SHELL_VERSION) 
+
+GitLab team members can also monitor the `#announcements` internal Slack channel.
+
 ## How GitLab Shell works
 
 When you access the GitLab server over SSH, GitLab Shell then:

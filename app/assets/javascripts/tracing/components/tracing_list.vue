@@ -9,7 +9,7 @@ import {
   filterObjToQuery,
   filterObjToFilterToken,
   filterTokensToFilterObj,
-} from '../utils';
+} from '../filters';
 import TracingEmptyState from './tracing_empty_state.vue';
 import TracingTableList from './tracing_table_list.vue';
 import FilteredSearch from './tracing_list_filtered_search.vue';
@@ -81,10 +81,10 @@ export default {
         this.loading = false;
       }
     },
-    async fetchTraces(filters = null) {
+    async fetchTraces() {
       this.loading = true;
       try {
-        const traces = await this.observabilityClient.fetchTraces(filters);
+        const traces = await this.observabilityClient.fetchTraces(this.filters);
         this.traces = traces;
       } catch (e) {
         createAlert({
@@ -99,9 +99,7 @@ export default {
     },
     handleFilters(filterTokens) {
       this.filters = filterTokensToFilterObj(filterTokens);
-      // TODO Pass filters to API https://gitlab.com/gitlab-org/opstrace/opstrace/-/work_items/2299
-      const filtersParams = {};
-      this.fetchTraces(filtersParams);
+      this.fetchTraces();
     },
   },
 };

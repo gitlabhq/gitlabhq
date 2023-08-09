@@ -9395,6 +9395,9 @@ msgstr ""
 msgid "Change branches"
 msgstr ""
 
+msgid "Change confidentiality"
+msgstr ""
+
 msgid "Change label"
 msgstr ""
 
@@ -12642,6 +12645,9 @@ msgstr ""
 msgid "ContainerRegistry|Created %{time}"
 msgstr ""
 
+msgid "ContainerRegistry|Delete image repository"
+msgstr ""
+
 msgid "ContainerRegistry|Delete image repository?"
 msgstr ""
 
@@ -15501,9 +15507,6 @@ msgid "Delete identity"
 msgstr ""
 
 msgid "Delete image"
-msgstr ""
-
-msgid "Delete image repository"
 msgstr ""
 
 msgid "Delete internal note"
@@ -28196,9 +28199,6 @@ msgstr ""
 msgid "Loading the GitLab IDE"
 msgstr ""
 
-msgid "Loading, please wait."
-msgstr ""
-
 msgid "Loading..."
 msgstr ""
 
@@ -29661,27 +29661,6 @@ msgid "Metrics and profiling"
 msgstr ""
 
 msgid "Metrics:"
-msgstr ""
-
-msgid "MetricsDashboardAnnotation|Annotation can't belong to both a cluster and an environment at the same time"
-msgstr ""
-
-msgid "MetricsDashboardAnnotation|Annotation has not been deleted"
-msgstr ""
-
-msgid "MetricsDashboardAnnotation|Annotation must belong to a cluster or an environment"
-msgstr ""
-
-msgid "MetricsDashboardAnnotation|Dashboard with requested path can not be found"
-msgstr ""
-
-msgid "MetricsDashboardAnnotation|You are not authorized to create annotation for selected cluster"
-msgstr ""
-
-msgid "MetricsDashboardAnnotation|You are not authorized to create annotation for selected environment"
-msgstr ""
-
-msgid "MetricsDashboardAnnotation|You are not authorized to delete this annotation"
 msgstr ""
 
 msgid "MetricsDashboardAnnotation|can't be before starting_at time"
@@ -34762,6 +34741,9 @@ msgid "Pipeline|Pipelines"
 msgstr ""
 
 msgid "Pipeline|Raw text search is not currently supported. Please use the available search tokens."
+msgstr ""
+
+msgid "Pipeline|Run again"
 msgstr ""
 
 msgid "Pipeline|Run for branch name or tag"
@@ -43056,6 +43038,9 @@ msgstr ""
 msgid "Select color"
 msgstr ""
 
+msgid "Select confidentiality"
+msgstr ""
+
 msgid "Select default branch"
 msgstr ""
 
@@ -47491,6 +47476,9 @@ msgstr ""
 msgid "There was a problem fetching the latest pipeline status."
 msgstr ""
 
+msgid "There was a problem fetching the pipeline stage."
+msgstr ""
+
 msgid "There was a problem fetching the pipeline stages."
 msgstr ""
 
@@ -49299,6 +49287,9 @@ msgstr ""
 msgid "Tracing|Duration"
 msgstr ""
 
+msgid "Tracing|Duration (ms)"
+msgstr ""
+
 msgid "Tracing|Enable"
 msgstr ""
 
@@ -49353,10 +49344,10 @@ msgstr ""
 msgid "Tracing|Operation"
 msgstr ""
 
-msgid "Tracing|Service"
+msgid "Tracing|Period"
 msgstr ""
 
-msgid "Tracing|Time range"
+msgid "Tracing|Service"
 msgstr ""
 
 msgid "Tracing|Trace ID"

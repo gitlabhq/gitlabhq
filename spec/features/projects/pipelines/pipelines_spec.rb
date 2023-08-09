@@ -559,7 +559,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             find(dropdown_selector).click
 
             within('.js-builds-dropdown-list') do
-              build_element = page.find('.mini-pipeline-graph-dropdown-item')
+              build_element = page.find('.pipeline-job-item')
               expect(build_element['title']).to eq('build - failed - (unknown failure)')
             end
           end

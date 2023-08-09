@@ -6,31 +6,31 @@ import {
   OPERATORS_IS_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
-  TIME_RANGE_FILTER_TOKEN_TYPE,
+  PERIOD_FILTER_TOKEN_TYPE,
   SERVICE_NAME_FILTER_TOKEN_TYPE,
   OPERATION_FILTER_TOKEN_TYPE,
   TRACE_ID_FILTER_TOKEN_TYPE,
-  DURATION_FILTER_TOKEN_TYPE,
-} from '../constants';
+  DURATION_MS_FILTER_TOKEN_TYPE,
+} from '../filters';
 
 export default {
   availableTokens: [
     {
-      title: s__('Tracing|Time range'),
+      title: s__('Tracing|Period'),
       icon: 'clock',
-      type: TIME_RANGE_FILTER_TOKEN_TYPE,
+      type: PERIOD_FILTER_TOKEN_TYPE,
       token: GlFilteredSearchToken,
       operators: OPERATORS_IS,
       unique: true,
       options: [
-        { value: 'last1m', title: s__('Tracing|Last 1 minute') },
-        { value: 'last15m', title: s__('Tracing|Last 15 minutes') },
-        { value: 'last30m', title: s__('Tracing|Last 30 minutes') },
-        { value: 'last1h', title: s__('Tracing|Last 1 hour') },
-        { value: 'last24h', title: s__('Tracing|Last 24 hours') },
-        { value: 'last7d', title: s__('Tracing|Last 7 days') },
-        { value: 'last14d', title: s__('Tracing|Last 14 days') },
-        { value: 'last30d', title: s__('Tracing|Last 30 days') },
+        { value: '1m', title: s__('Tracing|Last 1 minute') },
+        { value: '15m', title: s__('Tracing|Last 15 minutes') },
+        { value: '30m', title: s__('Tracing|Last 30 minutes') },
+        { value: '1h', title: s__('Tracing|Last 1 hour') },
+        { value: '24h', title: s__('Tracing|Last 24 hours') },
+        { value: '7d', title: s__('Tracing|Last 7 days') },
+        { value: '14d', title: s__('Tracing|Last 14 days') },
+        { value: '30d', title: s__('Tracing|Last 30 days') },
       ],
     },
     {
@@ -52,8 +52,8 @@ export default {
       operators: OPERATORS_IS_NOT,
     },
     {
-      title: s__('Tracing|Duration'),
-      type: DURATION_FILTER_TOKEN_TYPE,
+      title: s__('Tracing|Duration (ms)'),
+      type: DURATION_MS_FILTER_TOKEN_TYPE,
       token: GlFilteredSearchToken,
       operators: [
         { value: '>', description: s__('Tracing|longer than') },

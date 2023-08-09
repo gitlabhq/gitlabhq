@@ -5,11 +5,5 @@ FactoryBot.define do
     description { "Dashbaord annoation description" }
     dashboard_path { "custom_dashbaord.yml" }
     starting_at { Time.current }
-    environment
-
-    trait :with_cluster do
-      cluster
-      environment { nil }
-    end
   end
 end

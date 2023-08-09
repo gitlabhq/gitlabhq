@@ -539,6 +539,79 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           )
         end
       end
+
+      describe 'linked items widget' do
+        let_it_be(:related_item1) { create(:work_item, project: project) }
+        let_it_be(:related_item2) { create(:work_item, project: project) }
+        let_it_be(:related_item3) { create(:work_item) }
+        let_it_be(:link1) { create(:work_item_link, source: work_item, target: related_item1, link_type: 'relates_to') }
+        let_it_be(:link2) { create(:work_item_link, source: work_item, target: related_item2, link_type: 'relates_to') }
+        let_it_be(:link3) { create(:work_item_link, source: work_item, target: related_item3, link_type: 'relates_to') }
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetLinkedItems {
+                linkedItems {
+                  nodes {
+                    linkId
+                    linkType
+                    linkCreatedAt
+                    linkUpdatedAt
+                    workItem {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'widgets' => include(
+              hash_including(
+                'type' => 'LINKED_ITEMS',
+                'linkedItems' => { 'nodes' => match_array(
+                  [
+                    hash_including(
+                      'linkId' => link1.to_gid.to_s, 'linkType' => 'relates_to',
+                      'linkCreatedAt' => link1.created_at.iso8601, 'linkUpdatedAt' => link1.updated_at.iso8601,
+                      'workItem' => { 'id' => related_item1.to_gid.to_s }
+                    ),
+                    hash_including(
+                      'linkId' => link2.to_gid.to_s, 'linkType' => 'relates_to',
+                      'linkCreatedAt' => link2.created_at.iso8601, 'linkUpdatedAt' => link2.updated_at.iso8601,
+                      'workItem' => { 'id' => related_item2.to_gid.to_s }
+                    )
+                  ]
+                ) }
+              )
+            )
+          )
+        end
+
+        context 'when `linked_work_items` feature flag is disabled' do
+          before do
+            stub_feature_flags(linked_work_items: false)
+            post_graphql(query, current_user: current_user)
+          end
+
+          it 'returns empty result' do
+            expect(work_item_data).to include(
+              'widgets' => include(
+                hash_including(
+                  'type' => 'LINKED_ITEMS',
+                  'linkedItems' => { "nodes" => [] }
+                )
+              )
+            )
+          end
+        end
+      end
     end
 
     describe 'notes widget' do

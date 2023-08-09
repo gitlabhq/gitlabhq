@@ -33641,6 +33641,8 @@ CREATE UNIQUE INDEX index_user_synced_attributes_metadata_on_user_id ON user_syn
 
 CREATE INDEX index_users_for_active_billable_users ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND (user_type = ANY (ARRAY[0, 6, 4, 13])) AND (user_type = ANY (ARRAY[0, 4, 5])));
 
+CREATE INDEX index_users_for_auditors ON users USING btree (id) WHERE (auditor IS TRUE);
+
 CREATE INDEX index_users_on_accepted_term_id ON users USING btree (accepted_term_id);
 
 CREATE INDEX index_users_on_admin ON users USING btree (admin);

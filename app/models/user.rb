@@ -1766,13 +1766,7 @@ class User < MainClusterwide::ApplicationRecord
   def following_users_allowed?(user)
     return false if self.id == user.id
 
-    following_users_enabled? && user.following_users_enabled?
-  end
-
-  def following_users_enabled?
-    return true unless ::Feature.enabled?(:disable_follow_users, self)
-
-    enabled_following
+    enabled_following && user.enabled_following
   end
 
   def forkable_namespaces

@@ -380,7 +380,6 @@ Lint/UnusedBlockArgument:
     - 'spec/services/snippets/update_service_spec.rb'
     - 'spec/spec_helper.rb'
     - 'spec/support/atlassian/jira_connect/schemata.rb'
-    - 'spec/support/database/prevent_cross_database_modification.rb'
     - 'spec/support/graphql/subscriptions/action_cable/mock_action_cable.rb'
     - 'spec/support/helpers/cycle_analytics_helpers.rb'
     - 'spec/support/helpers/docs_screenshot_helpers.rb'

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :source_code_management do
   let(:project) { create(:project, :public, :repository) }
 
-  context 'when commit has pipelines' do
+  context 'when commit has pipelines and feature flag is enabled' do
     let(:pipeline) do
       create(
         :ci_pipeline,
@@ -19,6 +19,33 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
     let(:build) { create(:ci_build, pipeline: pipeline, status: :running) }
 
     before do
+      build.run
+      visit project_commit_path(project, project.commit.id)
+      wait_for_requests
+    end
+
+    it 'displays the graphql pipeline stage' do
+      expect(page).to have_selector('[data-testid="pipeline-stage"]')
+
+      build.drop
+    end
+  end
+
+  context 'when commit has pipelines and feature flag is disabled' do
+    let(:pipeline) do
+      create(
+        :ci_pipeline,
+        status: :running,
+        project: project,
+        ref: project.default_branch,
+        sha: project.commit.sha
+      )
+    end
+
+    let(:build) { create(:ci_build, pipeline: pipeline, status: :running) }
+
+    before do
+      stub_feature_flags(ci_graphql_pipeline_mini_graph: false)
       build.run
       visit project_commit_path(project, project.commit.id)
       wait_for_requests

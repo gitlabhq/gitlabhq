@@ -2236,7 +2236,6 @@
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-record-queries
-    - <<: *if-default-branch-refs
 
 .rails:rules:default-branch-schedule-nightly--code-backstage-default-rules:
   rules:

@@ -21,7 +21,8 @@ module Gitlab
           test_reports: 'Test reports',
           notifications: 'Notifications',
           current_user_todos: "Current user todos",
-          award_emoji: 'Award emoji'
+          award_emoji: 'Award emoji',
+          linked_items: 'Linked items'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -38,7 +39,8 @@ module Gitlab
             :health_status,
             :notifications,
             :current_user_todos,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ],
           incident: [
             :assignees,
@@ -47,14 +49,16 @@ module Gitlab
             :notes,
             :notifications,
             :current_user_todos,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ],
           test_case: [
             :description,
             :notes,
             :notifications,
             :current_user_todos,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ],
           requirement: [
             :description,
@@ -64,7 +68,8 @@ module Gitlab
             :test_reports,
             :notifications,
             :current_user_todos,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ],
           task: [
             :assignees,
@@ -78,7 +83,8 @@ module Gitlab
             :weight,
             :notifications,
             :current_user_todos,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ],
           objective: [
             :assignees,
@@ -91,7 +97,8 @@ module Gitlab
             :progress,
             :notifications,
             :current_user_todos,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ],
           key_result: [
             :assignees,
@@ -104,7 +111,8 @@ module Gitlab
             :progress,
             :notifications,
             :current_user_todos,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ],
           epic: [
             :assignees,
@@ -116,7 +124,8 @@ module Gitlab
             :health_status,
             :status,
             :notifications,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ]
         }.freeze
 

@@ -5,13 +5,12 @@ import {
   processFilters,
 } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
-import {
-  TIME_RANGE_FILTER_TOKEN_TYPE,
-  SERVICE_NAME_FILTER_TOKEN_TYPE,
-  OPERATION_FILTER_TOKEN_TYPE,
-  TRACE_ID_FILTER_TOKEN_TYPE,
-  DURATION_FILTER_TOKEN_TYPE,
-} from './constants';
+
+export const PERIOD_FILTER_TOKEN_TYPE = 'period';
+export const SERVICE_NAME_FILTER_TOKEN_TYPE = 'service-name';
+export const OPERATION_FILTER_TOKEN_TYPE = 'operation';
+export const TRACE_ID_FILTER_TOKEN_TYPE = 'trace-id';
+export const DURATION_MS_FILTER_TOKEN_TYPE = 'duration-ms';
 
 export function queryToFilterObj(url) {
   const filter = urlQueryToFilter(url, {
@@ -28,19 +27,19 @@ export function queryToFilterObj(url) {
     ],
   });
   const {
-    time_range: timeRange = null,
+    period = null,
     service = null,
     operation = null,
     trace_id: traceId = null,
-    duration = null,
+    durationMs = null,
   } = filter;
   const search = filter[FILTERED_SEARCH_TERM];
   return {
-    timeRange,
+    period,
     service,
     operation,
     traceId,
-    duration,
+    durationMs,
     search,
   };
 }
@@ -48,11 +47,11 @@ export function queryToFilterObj(url) {
 export function filterObjToQuery(filters) {
   return filterToQueryObject(
     {
-      time_range: filters.timeRange,
+      period: filters.period,
       service: filters.serviceName,
       operation: filters.operation,
       trace_id: filters.traceId,
-      duration: filters.duration,
+      durationMs: filters.durationMs,
       [FILTERED_SEARCH_TERM]: filters.search,
     },
     {
@@ -61,12 +60,12 @@ export function filterObjToQuery(filters) {
         {
           operator: '>',
           prefix: 'gt',
-          applyOnlyToKey: 'duration',
+          applyOnlyToKey: 'durationMs',
         },
         {
           operator: '<',
           prefix: 'lt',
-          applyOnlyToKey: 'duration',
+          applyOnlyToKey: 'durationMs',
         },
       ],
     },
@@ -75,11 +74,11 @@ export function filterObjToQuery(filters) {
 
 export function filterObjToFilterToken(filters) {
   return prepareTokens({
-    [TIME_RANGE_FILTER_TOKEN_TYPE]: filters.timeRange,
+    [PERIOD_FILTER_TOKEN_TYPE]: filters.period,
     [SERVICE_NAME_FILTER_TOKEN_TYPE]: filters.serviceName,
     [OPERATION_FILTER_TOKEN_TYPE]: filters.operation,
     [TRACE_ID_FILTER_TOKEN_TYPE]: filters.traceId,
-    [DURATION_FILTER_TOKEN_TYPE]: filters.duration,
+    [DURATION_MS_FILTER_TOKEN_TYPE]: filters.durationMs,
     [FILTERED_SEARCH_TERM]: filters.search,
   });
 }
@@ -87,19 +86,19 @@ export function filterObjToFilterToken(filters) {
 export function filterTokensToFilterObj(tokens) {
   const {
     [SERVICE_NAME_FILTER_TOKEN_TYPE]: serviceName,
-    [TIME_RANGE_FILTER_TOKEN_TYPE]: timeRange,
+    [PERIOD_FILTER_TOKEN_TYPE]: period,
     [OPERATION_FILTER_TOKEN_TYPE]: operation,
     [TRACE_ID_FILTER_TOKEN_TYPE]: traceId,
-    [DURATION_FILTER_TOKEN_TYPE]: duration,
+    [DURATION_MS_FILTER_TOKEN_TYPE]: durationMs,
     [FILTERED_SEARCH_TERM]: search,
   } = processFilters(tokens);
 
   return {
     serviceName,
-    timeRange,
+    period,
     operation,
     traceId,
-    duration,
+    durationMs,
     search,
   };
 }

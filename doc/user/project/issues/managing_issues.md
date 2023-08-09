@@ -71,6 +71,7 @@ When bulk editing issues in a project, you can edit the following attributes:
 - [Health status](#health-status)
 - [Notification](../../profile/notifications.md) subscription
 - [Iteration](../../group/iterations/index.md)
+- [Confidentiality](confidential_issues.md)
 
 ### Bulk edit issues from a group **(PREMIUM)**
 

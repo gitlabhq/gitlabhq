@@ -362,6 +362,10 @@ The username must be `oauth2`, not your username:
 https://oauth2:<your_access_token>@gitlab.example.com/project_path/project_name.git
 ```
 
+Alternatively, you can use a [Git credential helper](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)
+to authenticate to GitLab with OAuth. This handles OAuth token refresh
+automatically.
+
 ## Retrieve the token information
 
 To verify the details of a token, use the `token/info` endpoint provided by the

@@ -13,6 +13,8 @@ export const ICONS = {
   TAG: 'tag',
   MR: 'git-merge',
   BRANCH: 'branch',
+  RETRY: 'retry',
+  SUCCESS: 'success',
 };
 
 export const TestStatus = {

@@ -203,15 +203,6 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
         expect(user.enabled_following).to eq(false)
       end
 
-      it 'does not remove followers/followees if feature flag is off' do
-        stub_feature_flags(disable_follow_users: false)
-
-        expect do
-          update_user(user, enabled_following: false)
-        end.to not_change { user.followed_users.count }
-                                                   .and not_change { user.following_users.count }
-      end
-
       context 'when there is more followers/followees then batch limit' do
         before do
           stub_env('BATCH_SIZE', 1)

@@ -39,6 +39,11 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
     response
   end
 
+  before do
+    allow(Gitlab::Application.routes).to receive(:default_url_options)
+      .and_return(protocol: 'http', host: 'www.example.com', script_name: '')
+  end
+
   RSpec.shared_examples 'MLflow|run_id param error cases' do
     context 'when run id is not passed' do
       let(:params) { {} }
@@ -160,6 +165,17 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
             { 'key' => candidate.metadata[1].name,  'value' => candidate.metadata[1].value }
           ]
         })
+    end
+
+    context 'with a relative root URL' do
+      before do
+        allow(Gitlab::Application.routes).to receive(:default_url_options)
+          .and_return(protocol: 'http', host: 'www.example.com', script_name: '/gitlab/root')
+      end
+
+      it 'gets a run including a valid artifact_uri' do
+        expect(json_response['run']['info']['artifact_uri']).to eql("http://www.example.com/gitlab/root/api/v4/projects/#{project_id}/packages/generic/ml_experiment_#{experiment.iid}/#{candidate.iid}/")
+      end
     end
 
     describe 'Error States' do

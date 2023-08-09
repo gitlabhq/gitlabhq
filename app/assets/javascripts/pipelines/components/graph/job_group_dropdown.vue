@@ -99,7 +99,7 @@ export default {
               :dropdown-length="group.size"
               :job="job"
               :type="$options.jobItemTypes.singleJob"
-              css-class-job-name="mini-pipeline-graph-dropdown-item"
+              css-class-job-name="pipeline-job-item"
               @pipelineActionRequestComplete="pipelineActionRequestComplete"
             />
           </li>

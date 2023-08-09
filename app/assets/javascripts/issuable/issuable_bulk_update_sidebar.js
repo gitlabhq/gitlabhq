@@ -4,6 +4,7 @@ import issuableEventHub from '~/issues/list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
 import {
   mountAssigneesDropdown,
+  mountConfidentialityDropdown,
   mountMilestoneDropdown,
   mountMoveIssuesButton,
   mountStatusDropdown,
@@ -65,6 +66,7 @@ export default class IssuableBulkUpdateSidebar {
     mountStatusDropdown();
     mountSubscriptionsDropdown();
     mountAssigneesDropdown();
+    mountConfidentialityDropdown();
 
     // Checking IS_EE and using ee_else_ce is odd, but we do it here to satisfy
     // the import/no-unresolved lint rule when FOSS_ONLY=1, even though at

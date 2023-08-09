@@ -894,6 +894,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc_2)
   end
 
+  def linked_work_items_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:linked_work_items)
+  end
+
   def usage_quotas_enabled?
     ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
   end

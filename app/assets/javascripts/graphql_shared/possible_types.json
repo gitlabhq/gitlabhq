@@ -181,6 +181,7 @@
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",
     "WorkItemWidgetLabels",
+    "WorkItemWidgetLinkedItems",
     "WorkItemWidgetMilestone",
     "WorkItemWidgetNotes",
     "WorkItemWidgetNotifications",

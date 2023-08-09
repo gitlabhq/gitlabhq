@@ -54,19 +54,7 @@ RSpec.describe API::Entities::User do
         it_behaves_like 'exposes relationship'
       end
 
-      context 'when current user can read user profile and disable_follow_users is switched off' do
-        let(:can_read_user_profile) { true }
-
-        before do
-          stub_feature_flags(disable_follow_users: false)
-          user.enabled_following = false
-          user.save!
-        end
-
-        it_behaves_like 'exposes relationship'
-      end
-
-      context 'when current user can read user profile, disable_follow_users is switched on and user disabled it for themself' do
+      context 'when current user can read user profile and user disabled it for themself' do
         let(:can_read_user_profile) { true }
 
         before do
@@ -77,7 +65,7 @@ RSpec.describe API::Entities::User do
         it_behaves_like 'does not expose relationship'
       end
 
-      context 'when current user can read user profile, disable_follow_users is switched on and current user disabled it for themself' do
+      context 'when current user can read user profile and current user disabled it for themself' do
         let(:can_read_user_profile) { true }
 
         before do

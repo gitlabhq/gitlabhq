@@ -4079,32 +4079,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.following?(followee)).to be_falsey
     end
-
-    context 'when disable_follow_users feature flag is off' do
-      before do
-        stub_feature_flags(disable_follow_users: false)
-      end
-
-      it 'follows user even if user disabled following' do
-        user = create(:user)
-        user.enabled_following = false
-
-        followee = create(:user)
-
-        expect(user.follow(followee)).to be_truthy
-        expect(user.following?(followee)).to be_truthy
-      end
-
-      it 'follows user even if followee user disabled following' do
-        user = create(:user)
-
-        followee = create(:user)
-        followee.enabled_following = false
-
-        expect(user.follow(followee)).to be_truthy
-        expect(user.following?(followee)).to be_truthy
-      end
-    end
   end
 
   describe '#unfollow' do
@@ -4151,15 +4125,11 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:user) { create(:user) }
     let_it_be(:followee) { create(:user) }
 
-    where(:user_enabled_following, :followee_enabled_following, :feature_flag_status, :result) do
-      true  | true  | false | true
-      true  | false | false | true
-      true  | true  | true  | true
-      true  | false | true  | false
-      false | true  | false | true
-      false | true  | true  | false
-      false | false | false | true
-      false | false | true  | false
+    where(:user_enabled_following, :followee_enabled_following, :result) do
+      true  | true  | true
+      true  | false | false
+      false | true  | false
+      false | false | false
     end
 
     with_them do
@@ -4167,7 +4137,6 @@ RSpec.describe User, feature_category: :user_profile do
         user.enabled_following = user_enabled_following
         followee.enabled_following = followee_enabled_following
         followee.save!
-        stub_feature_flags(disable_follow_users: feature_flag_status)
       end
 
       it { expect(user.following_users_allowed?(followee)).to eq result }

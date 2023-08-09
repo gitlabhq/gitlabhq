@@ -6,7 +6,7 @@ import TracingListFilteredSearch from '~/tracing/components/tracing_list_filtere
 describe('TracingListFilteredSearch', () => {
   let wrapper;
   const initialFilters = [
-    { type: 'time_range', value: 'last1h' },
+    { type: 'period', value: '1h' },
     { type: 'service_name', value: 'example-service' },
   ];
   beforeEach(() => {
@@ -26,8 +26,13 @@ describe('TracingListFilteredSearch', () => {
   });
 
   it('emits submit event on filtered search submit', () => {
-    wrapper.findComponent(GlFilteredSearch).vm.$emit('submit', { filters: [] });
+    wrapper
+      .findComponent(GlFilteredSearch)
+      .vm.$emit('submit', { filters: [{ type: 'period', value: '1h' }] });
+
     expect(wrapper.emitted('submit')).toHaveLength(1);
-    expect(wrapper.emitted('submit')[0][0]).toEqual({ filters: [] });
+    expect(wrapper.emitted('submit')[0][0]).toEqual({
+      filters: [{ type: 'period', value: '1h' }],
+    });
   });
 });

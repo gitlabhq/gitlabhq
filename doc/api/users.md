@@ -131,6 +131,7 @@ GET /users?without_project_bots=true
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 > - The `scim_identities` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324247) in GitLab 16.1.
+> - The `auditors` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418023) in GitLab 16.2.
 
 ```plaintext
 GET /users
@@ -145,6 +146,7 @@ You can use all [parameters available for everyone](#for-non-administrator-users
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
 | `admins`           | boolean | no       | Return only administrators. Default is `false`                                 |
+| `auditors`  **(PREMIUM)** | boolean | no       | Return only auditor users. Default is `false`. If not included, it returns all users.  |
 | `saml_provider_id` **(PREMIUM)** | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. |
 | `skip_ldap` **(PREMIUM)** | boolean | no     | Skip LDAP users. |
 

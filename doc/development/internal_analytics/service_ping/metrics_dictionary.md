@@ -32,7 +32,6 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | Field               | Required | Additional information                                         |
 |---------------------|----------|----------------------------------------------------------------|
 | `key_path`          | yes      | JSON key path for the metric, location in Service Ping payload.  |
-| `name` (deprecated)  | no       | Metric name suggestion. Does not have any impact on the Service Ping payload, only serves as documentation. |
 | `description`       | yes      |                                                                |
 | `product_section`   | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml). |
 | `product_stage`     | yes       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
@@ -70,42 +69,6 @@ We recommend to add the metric in one of the top-level keys:
 NOTE:
 We can't control what the metric's `key_path` is, because some of them are generated dynamically in `usage_data.rb`.
 For example, see [Redis HLL metrics](implement.md#redis-hll-counters).
-
-### Metric name (deprecated)
-
-WARNING:
-This feature was deprecated in GitLab 16.1
-and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/411602) in 16.2.
-
-To improve metric discoverability by a wider audience, each metric with
-instrumentation added at an appointed `key_path` receives a `name` attribute
-filled with the name suggestion, corresponding to the metric `data_source` and instrumentation.
-Metric name suggestions can contain two types of elements:
-
-1. **User input prompts**: enclosed by angle brackets (`< >`), these pieces should be replaced or
-   removed when you create a metrics YAML file.
-1. **Fixed suggestion**: plaintext parts generated according to well-defined algorithms.
-   They are based on underlying instrumentation, and must not be changed.
-
-For a metric name to be valid, it must not include any prompt, and fixed suggestions
-must not be changed.
-
-#### Generate a metric name suggestion (deprecated)
-
-WARNING:
-This feature was deprecated in GitLab 16.1
-and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/411602) in 16.2.
-
-The metric YAML generator can suggest a metric name for you.
-To generate a metric name suggestion, first instrument the metric at the provided `key_path`.
-Then, generate the metric's YAML definition and
-return to the instrumentation and update it.
-
-1. Add the metric instrumentation class to `lib/gitlab/usage/metrics/instrumentations/`.
-1. Add the metric logic in the instrumentation class.
-1. Run the [metrics YAML generator](metrics_dictionary.md#create-a-new-metric-definition).
-1. Use the metric name suggestion to select a suitable metric name.
-1. Update the metric's YAML definition with the correct `key_path`.
 
 ### Metric statuses
 
@@ -152,69 +115,6 @@ We use the following categories to classify a metric:
 
 An aggregate metric is a metric that is the sum of two or more child metrics. Service Ping uses the data category of
 the aggregate metric to determine whether or not the data is included in the reported Service Ping payload.
-
-### Metric name suggestion examples (deprecated)
-
-WARNING:
-This feature was deprecated in GitLab 16.1
-and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/411602) in 16.2.
-
-#### Metric with `data_source: database`
-
-For a metric instrumented with SQL:
-
-```sql
-SELECT COUNT(DISTINCT user_id) FROM clusters WHERE clusters.management_project_id IS NOT NULL
-```
-
-- **Suggested name**: `count_distinct_user_id_from_<adjective describing: '(clusters.management_project_id IS NOT NULL)'>_clusters`
-- **Prompt**: `<adjective describing: '(clusters.management_project_id IS NOT NULL)'>`
-  should be replaced with an adjective that best represents filter conditions, such as `project_management`
-- **Final metric name**: For example, `count_distinct_user_id_from_project_management_clusters`
-
-For metric instrumented with SQL:
-
-```sql
-SELECT COUNT(DISTINCT clusters.user_id)
-FROM clusters_applications_helm
-INNER JOIN clusters ON clusters.id = clusters_applications_helm.cluster_id
-WHERE clusters_applications_helm.status IN (3, 5)
-```
-
-- **Suggested name**: `count_distinct_user_id_from_<adjective describing: '(clusters_applications_helm.status IN (3, 5))'>_clusters_<with>_<adjective describing: '(clusters_applications_helm.status IN (3, 5))'>_clusters_applications_helm`
-- **Prompt**: `<adjective describing: '(clusters_applications_helm.status IN (3, 5))'>`
-  should be replaced with an adjective that best represents filter conditions
-- **Final metric name**: `count_distinct_user_id_from_clusters_with_available_clusters_applications_helm`
-
-In the previous example, the prompt is irrelevant, and user can remove it. The second
-occurrence corresponds with the `available` scope defined in `Clusters::Concerns::ApplicationStatus`.
-It can be used as the right adjective to replace prompt.
-
-The `<with>` represents a suggested conjunction for the suggested name of the joined relation.
-The person documenting the metric can use it by either:
-
-- Removing the surrounding `<>`.
-- Using a different conjunction, such as `having` or `including`.
-
-#### Metric with `data_source: redis` or `redis_hll`
-
-For metrics instrumented with a Redis-based counter, the suggested name includes
-only the single prompt to be replaced by the person working with metrics YAML.
-
-- **Prompt**: `<please fill metric name, suggested format is: {subject}_{verb}{ing|ed}_{object} eg: users_creating_epics or merge_requests_viewed_in_single_file_mode>`
-- **Final metric name**: We suggest the metric name should follow the format of
-  `{subject}_{verb}{ing|ed}_{object}`, such as `user_creating_epics`, `users_triggering_security_scans`,
-  or `merge_requests_viewed_in_single_file_mode`
-
-#### Metric with `data_source: prometheus` or `system`
-
-For metrics instrumented with Prometheus or coming from the operating system,
-the suggested name includes only the single prompt by person working with metrics YAML.
-
-- **Prompt**: `<please fill metric name>`
-- **Final metric name**: Due to the variety of cases that can apply to this kind of metric,
-  no naming convention exists. Each person instrumenting a metric should use their
-  best judgment to come up with a descriptive name.
 
 ### Example YAML metric definition
 

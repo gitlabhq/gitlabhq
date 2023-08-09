@@ -139,6 +139,7 @@ export default {
     <legacy-pipeline-mini-graph
       v-else
       data-testid="pipeline-mini-graph"
+      is-graphql
       :downstream-pipelines="downstreamPipelines"
       :is-merge-train="isMergeTrain"
       :pipeline-path="pipelinePath"
