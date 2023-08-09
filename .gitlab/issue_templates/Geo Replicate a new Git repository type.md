@@ -430,7 +430,6 @@ That's all of the required database changes.
     let(:model_record) { build(:cool_widget) }
 
     include_examples 'a repository replicator'
-    include_examples 'a verifiable replicator'
   end
   ```
 

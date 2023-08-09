@@ -85,6 +85,8 @@ RSpec.describe ::Integrations::Field, feature_category: :integrations do
             eq :text
           when :is_secret
             eq false
+          when :if
+            be true
           else
             be_nil
           end
@@ -182,5 +184,10 @@ RSpec.describe ::Integrations::Field, feature_category: :integrations do
 
       it { is_expected.not_to be_secret }
     end
+  end
+
+  describe '#key?' do
+    it { is_expected.to be_key(:type) }
+    it { is_expected.not_to be_key(:foo) }
   end
 end

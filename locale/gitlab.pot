@@ -17087,6 +17087,9 @@ msgstr ""
 msgid "DomainVerification|To verify ownership of your domain, add the above key to a TXT record within your DNS configuration within seven days. %{link_to_help}"
 msgstr ""
 
+msgid "Domains"
+msgstr ""
+
 msgid "Don't have a group?"
 msgstr ""
 
@@ -44806,9 +44809,6 @@ msgstr ""
 msgid "Source IP"
 msgstr ""
 
-msgid "Source Project"
-msgstr ""
-
 msgid "Source branch"
 msgstr ""
 
@@ -44831,6 +44831,9 @@ msgid "Source code (%{fileExtension})"
 msgstr ""
 
 msgid "Source is not available"
+msgstr ""
+
+msgid "Source project"
 msgstr ""
 
 msgid "Source project cannot be found."
@@ -51440,6 +51443,9 @@ msgid "VerificationReminder|Your account has been validated"
 msgstr ""
 
 msgid "VerificationReminder|You’ll now be able to take advantage of free compute minutes on shared runners."
+msgstr ""
+
+msgid "Verifications status"
 msgstr ""
 
 msgid "Verified"

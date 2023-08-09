@@ -836,8 +836,8 @@ RSpec.describe Integration, feature_category: :integrations do
     end
 
     shared_examples '#api_field_names' do
-      it 'filters out secret fields' do
-        safe_fields = %w[some_safe_field safe_field url trojan_gift api_only_field]
+      it 'filters out secret fields and conditional fields' do
+        safe_fields = %w[some_safe_field safe_field url trojan_gift api_only_field enabled_field]
 
         expect(fake_integration.new).to have_attributes(
           api_field_names: match_array(safe_fields)
@@ -848,6 +848,11 @@ RSpec.describe Integration, feature_category: :integrations do
     shared_examples '#form_fields' do
       it 'filters out API only fields' do
         expect(fake_integration.new.form_fields.pluck(:name)).not_to include('api_only_field')
+      end
+
+      it 'filters conditionals fields' do
+        expect(fake_integration.new.form_fields.pluck(:name)).to include('enabled_field')
+        expect(fake_integration.new.form_fields.pluck(:name)).not_to include('disabled_field', 'disabled_field_2')
       end
     end
 
@@ -870,7 +875,10 @@ RSpec.describe Integration, feature_category: :integrations do
               { name: 'url' },
               { name: 'trojan_horse', type: :password },
               { name: 'trojan_gift', type: :text },
-              { name: 'api_only_field', api_only: true }
+              { name: 'api_only_field', api_only: true },
+              { name: 'enabled_field', if: true },
+              { name: 'disabled_field', if: false },
+              { name: 'disabled_field_2', if: nil }
             ].shuffle
           end
         end
@@ -899,6 +907,9 @@ RSpec.describe Integration, feature_category: :integrations do
           field :trojan_horse, type: :password
           field :trojan_gift, type: :text
           field :api_only_field, api_only: true
+          field :enabled_field, if: -> { true }
+          field :disabled_field, if: -> { false }
+          field :disabled_field_2, if: -> { nil }
         end
       end
 

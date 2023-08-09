@@ -155,14 +155,16 @@ For a quick overview, items that are exported include:
 - Labels
 - Milestones
 - Snippets
+- Releases
 - Time tracking and other project entities
 - Design management files and data
 - LFS objects
 - Issue boards
-- Pipelines history
+- CI/CD pipelines and pipeline schedules
+- Protected branches and tags
 - Push rules
 - Emoji reactions
-- Group members as long as the user has the Maintainer role in the
+- Project and inherited group members, as long as the user has the Maintainer role in the
   exported project's group or is an administrator
 
 ### Items that are not exported

@@ -745,10 +745,56 @@ The correct encoding for the query parameter would be:
 2017-10-17T23:11:13.000%2B05:30
 ```
 
-## Clients
+## Third-party clients
 
-Many unofficial GitLab API Clients are available for most of the popular programming
-languages. For a complete list, see the [GitLab website](https://about.gitlab.com/partners/technology-partners/#api-clients).
+You can integrate third-party API client libraries with GitLab. The following libraries are maintained by community members and not officially supported by GitLab.
+Report bugs and feature proposals to the respective projects.
+
+For questions about these integrations, use the [GitLab community forum](https://forum.gitlab.com/).
+
+### `C#`
+
+- [`GitLabApiClient`](https://github.com/nmklotas/GitLabApiClient)
+
+### Go
+
+- [`go-gitlab`](https://github.com/xanzy/go-gitlab)
+
+### Haskell
+
+- [`gitlab-haskell`](http://hackage.haskell.org/package/gitlab-haskell)
+
+### Java
+
+- [`gitlab4j-api`](https://github.com/gmessner/gitlab4j-api)
+- [`java-gitlab-api`](https://github.com/timols/java-gitlab-api)
+
+### Node.js
+
+- [`gitlab-yaac`](https://www.npmjs.com/package/gitlab-yaac)
+- [`backbone-gitlab`](https://github.com/oreillymedia/backbone-gitlab)
+
+### Perl
+
+- [`GitLab::API::v4`](https://metacpan.org/pod/GitLab::API::v4)
+
+### PHP
+
+- [`php-gitlab-api`](https://github.com/GitLabPHP/Client)
+
+### Python
+
+- [`python-gitlab`](https://github.com/python-gitlab/python-gitlab)
+  - Blog post: [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/2023/02/01/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/)
+- [`libsaas_gitlab`](https://gitlab.com/bor-sh-infrastructure/libsaas_gitlab)
+
+### Ruby
+
+- [Ruby wrapper and CLI for the GitLab REST API](https://github.com/NARKOZ/gitlab)
+
+### Swift
+
+- [`RxGitLabKit`](https://github.com/Qase/RxGitLabKit)
 
 ## Rate limits
 

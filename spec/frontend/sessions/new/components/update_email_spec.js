@@ -14,17 +14,13 @@ import {
   FAILURE_RESPONSE,
 } from '~/sessions/new/constants';
 
-const validEmailAddress = 'valid@ema.il';
-const invalidEmailAddress = 'invalid@ema.il';
+const validEmailAddress = 'foo+bar@ema.il';
+const invalidEmailAddress = 'invalid@ema@il';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
-}));
-jest.mock('~/lib/utils/forms', () => ({
-  ...jest.requireActual('~/lib/utils/forms'),
-  isEmail: jest.fn().mockImplementation((email) => email === validEmailAddress),
 }));
 
 describe('EmailVerification', () => {

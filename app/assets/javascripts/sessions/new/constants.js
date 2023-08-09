@@ -22,5 +22,6 @@ export const I18N_UPDATE_EMAIL_SUCCESS = s__(
 );
 
 export const VERIFICATION_CODE_REGEX = /^\d{6}$/;
+export const EMAIL_REGEXP = /^[^@\s]+@[^@\s]+$/; // Taken from DeviseEmailValidator
 export const SUCCESS_RESPONSE = 'success';
 export const FAILURE_RESPONSE = 'failure';
