@@ -535,6 +535,10 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     shared_examples 'merge automatically command' do
       let(:project) { repository_project }
 
+      before do
+        stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
+      end
+
       it 'runs merge command if content contains /merge and returns merge message' do
         _, updates, message = service.execute(content, issuable)
 

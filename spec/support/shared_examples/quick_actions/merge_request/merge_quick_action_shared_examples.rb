@@ -36,6 +36,8 @@ RSpec.shared_examples 'merge quick action' do
           create(:ci_pipeline, :detached_merge_request_pipeline,
             project: project, merge_request: merge_request)
           merge_request.update_head_pipeline
+
+          stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
         end
 
         it 'schedules to merge the MR' do

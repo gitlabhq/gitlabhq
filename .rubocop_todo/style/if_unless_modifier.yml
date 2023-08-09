@@ -905,7 +905,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/sanitizers/svg.rb'
     - 'lib/gitlab/search/params.rb'
     - 'lib/gitlab/search_context.rb'
-    - 'lib/gitlab/search_results.rb'
     - 'lib/gitlab/sidekiq_config.rb'
     - 'lib/gitlab/sidekiq_config/cli_methods.rb'
     - 'lib/gitlab/sidekiq_config/worker_router.rb'

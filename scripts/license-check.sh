@@ -18,6 +18,10 @@ set -euo pipefail
 
 PROJECT_PATH=${1:-`pwd`}
 
+function restore_git_state() {
+  git checkout -q Gemfile Gemfile.lock
+}
+
 echo "Using project path ${PROJECT_PATH}"
 
 GEMFILE_DIFF=`git diff Gemfile Gemfile.lock`
@@ -27,7 +31,7 @@ if [ ! -z "$GEMFILE_DIFF" ]; then
   exit 1
 fi
 
+trap restore_git_state EXIT
+
 BUNDLE_DEPLOYMENT=false BUNDLE_FROZEN=false bundle lock --add-platform `ruby -e "puts RUBY_PLATFORM"`
 bundle exec license_finder --decisions-file config/dependency_decisions.yml --project-path ${PROJECT_PATH}
-
-git checkout -q Gemfile Gemfile.lock

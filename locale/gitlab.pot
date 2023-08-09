@@ -1921,6 +1921,9 @@ msgstr ""
 msgid "AI| %{link_start}What are Experiment features?%{link_end}"
 msgstr ""
 
+msgid "AI|%{tool} is %{transition} an answer"
+msgstr ""
+
 msgid "AI|AI generated explanations will appear here."
 msgstr ""
 
@@ -1969,7 +1972,7 @@ msgstr ""
 msgid "AI|Generate issue description"
 msgstr ""
 
-msgid "AI|GitLab Duo is %{transition} an answer"
+msgid "AI|GitLab Duo"
 msgstr ""
 
 msgid "AI|Helpful"
@@ -3370,9 +3373,6 @@ msgstr ""
 msgid "AdminSettings|CI/CD limits"
 msgstr ""
 
-msgid "AdminSettings|Clickhouse URL"
-msgstr ""
-
 msgid "AdminSettings|Collector host"
 msgstr ""
 
@@ -3389,9 +3389,6 @@ msgid "AdminSettings|Configure when inactive projects should be automatically de
 msgstr ""
 
 msgid "AdminSettings|Cube API URL"
-msgstr ""
-
-msgid "AdminSettings|Cube API key"
 msgstr ""
 
 msgid "AdminSettings|Delete inactive projects"
@@ -3568,9 +3565,6 @@ msgstr ""
 msgid "AdminSettings|Preview payload"
 msgstr ""
 
-msgid "AdminSettings|Product analytics configurator connection string"
-msgstr ""
-
 msgid "AdminSettings|Project export"
 msgstr ""
 
@@ -3661,9 +3655,6 @@ msgstr ""
 msgid "AdminSettings|The URL of your Cube instance."
 msgstr ""
 
-msgid "AdminSettings|The connection string of your product analytics configurator instance for Snowplow configuration."
-msgstr ""
-
 msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects."
 msgstr ""
 
@@ -3701,12 +3692,6 @@ msgid "AdminSettings|Use AWS OpenSearch Service with IAM credentials"
 msgstr ""
 
 msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
-msgstr ""
-
-msgid "AdminSettings|Used to connect Snowplow to the Clickhouse instance."
-msgstr ""
-
-msgid "AdminSettings|Used to retrieve dashboard data from the Cube instance."
 msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
@@ -35580,6 +35565,9 @@ msgstr ""
 msgid "ProductAnalytics|Click Events"
 msgstr ""
 
+msgid "ProductAnalytics|Clickhouse URL"
+msgstr ""
+
 msgid "ProductAnalytics|Compares all events against each other"
 msgstr ""
 
@@ -35595,10 +35583,16 @@ msgstr ""
 msgid "ProductAnalytics|Compares page views of all pages against each other"
 msgstr ""
 
+msgid "ProductAnalytics|Connection string"
+msgstr ""
+
 msgid "ProductAnalytics|Create a visualization"
 msgstr ""
 
 msgid "ProductAnalytics|Creating your product analytics instance..."
+msgstr ""
+
+msgid "ProductAnalytics|Cube API key"
 msgstr ""
 
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
@@ -35691,6 +35685,9 @@ msgstr ""
 msgid "ProductAnalytics|Set up to track how your product is performing and optimize your product and development processes."
 msgstr ""
 
+msgid "ProductAnalytics|The connection string for your Snowplow configurator instance."
+msgstr ""
+
 msgid "ProductAnalytics|The host to send all tracking events to"
 msgstr ""
 
@@ -35710,6 +35707,12 @@ msgid "ProductAnalytics|Track specific features"
 msgstr ""
 
 msgid "ProductAnalytics|Unique Users"
+msgstr ""
+
+msgid "ProductAnalytics|Used to connect Snowplow to the Clickhouse instance."
+msgstr ""
+
+msgid "ProductAnalytics|Used to retrieve dashboard data from the Cube instance."
 msgstr ""
 
 msgid "ProductAnalytics|User Sessions"
@@ -36774,9 +36777,6 @@ msgstr ""
 msgid "ProjectSettings|Choose your merge method, options, checks, and squash options."
 msgstr ""
 
-msgid "ProjectSettings|Clickhouse URL"
-msgstr ""
-
 msgid "ProjectSettings|Collector host"
 msgstr ""
 
@@ -36796,9 +36796,6 @@ msgid "ProjectSettings|Container registry"
 msgstr ""
 
 msgid "ProjectSettings|Cube API URL"
-msgstr ""
-
-msgid "ProjectSettings|Cube API key"
 msgstr ""
 
 msgid "ProjectSettings|Custom dashboard projects"
@@ -36999,9 +36996,6 @@ msgstr ""
 msgid "ProjectSettings|Product analytics"
 msgstr ""
 
-msgid "ProjectSettings|Product analytics configurator connection string"
-msgstr ""
-
 msgid "ProjectSettings|Project visibility"
 msgstr ""
 
@@ -37104,9 +37098,6 @@ msgstr ""
 msgid "ProjectSettings|The commit message used when squashing commits."
 msgstr ""
 
-msgid "ProjectSettings|The connection string of your product analytics configurator instance for Snowplow configuration."
-msgstr ""
-
 msgid "ProjectSettings|The default target project for merge requests created in this fork project."
 msgstr ""
 
@@ -37147,12 +37138,6 @@ msgid "ProjectSettings|Upstream project"
 msgstr ""
 
 msgid "ProjectSettings|Used for every new merge request."
-msgstr ""
-
-msgid "ProjectSettings|Used to connect Snowplow to the Clickhouse instance."
-msgstr ""
-
-msgid "ProjectSettings|Used to retrieve dashboard data from the Cube instance."
 msgstr ""
 
 msgid "ProjectSettings|Users can copy the repository to a new project."
@@ -48859,6 +48844,9 @@ msgstr ""
 msgid "To manage seats for all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
 msgstr ""
 
+msgid "To minimize the impact of storage limits to Free top-level groups, for a limited time, GitLab is offering a %{promotion_link_start}one-time 70 percent discount%{link_end} off the list price for %{offer_availability_link_start}qualifying top-level groups%{link_end} when you purchase a new, one year subscription of GitLab Premium SaaS. This offer is valid until 2023-10-31."
+msgstr ""
+
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr ""
 
@@ -50333,7 +50321,7 @@ msgstr ""
 msgid "UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images."
 msgstr ""
 
-msgid "UsageQuota|Group settings &gt; Usage quotas"
+msgid "UsageQuota|Group settings %{gt} Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Included in %{planName} subscription"
@@ -50435,7 +50423,7 @@ msgstr ""
 msgid "UsageQuota|The %{strong_start}%{context_name}%{strong_end} project will be affected by this. "
 msgstr ""
 
-msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. Group owners can view namespace storage usage and purchase more from %{strong_start}%{usage_quotas_nav_instruction}%{strong_end}. %{docs_link_start}How can I manage my storage?%{link_end}."
+msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. Group owners can view namespace storage usage and purchase more from %{strong_start}%{usage_quotas_nav_instruction}%{strong_end}. %{docs_link_start}How can I manage my storage%{link_end}?"
 msgstr ""
 
 msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. View and manage your usage from %{strong_start}%{usage_quotas_nav_instruction}%{strong_end}. %{docs_link_start}Learn more%{link_end} about how to reduce your storage."
@@ -50501,7 +50489,7 @@ msgstr ""
 msgid "UsageQuota|Usage of resources across your projects"
 msgstr ""
 
-msgid "UsageQuota|User settings &gt; Usage quotas"
+msgid "UsageQuota|User settings %{gt} Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Wiki content."
@@ -54286,7 +54274,7 @@ msgstr ""
 msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To ensure that your group does not become read-only, you should contact a user with the Owner role for this group to upgrade to a paid tier, or manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}."
 msgstr ""
 
-msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. You should reduce the number of users or upgrade to a paid tier %{strong_start}before%{strong_end} you manage your storage usage. Otherwise, your Free top-level group will become read-only immediately because the 5-user limit applies. For more information, see our %{faq_link_start}FAQ%{link_end}."
+msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. You should reduce the number of users or upgrade to a paid tier %{strong_start}before%{strong_end} you manage your storage usage. Otherwise, your Free top-level group will become read-only immediately because the 5-user limit applies. For more information, see our %{faq_link_start}FAQ%{link_end}.%{br_tag}%{br_tag}To minimize the impact of storage limits to Free top-level groups, for a limited time, GitLab is offering a %{promotion_link_start}one-time 70 percent discount%{link_end} off the list price for %{offer_availability_link_start}qualifying top-level groups%{link_end} when you purchase a new, one year subscription of GitLab Premium SaaS. This offer is valid until 2023-10-31."
 msgstr ""
 
 msgid "Your GPG keys"

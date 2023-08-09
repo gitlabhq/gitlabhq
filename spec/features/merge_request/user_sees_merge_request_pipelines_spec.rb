@@ -28,6 +28,10 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
   let(:expected_detached_mr_tag) { 'merge request' }
 
   before do
+    # rubocop:disable RSpec/AvoidConditionalStatements
+    stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
+    # rubocop:enable RSpec/AvoidConditionalStatements
+
     stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_yaml_file(YAML.dump(config))
     project.add_maintainer(user)

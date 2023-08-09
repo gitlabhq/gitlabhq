@@ -50,6 +50,10 @@ module Approvable
     approvals.where(user: user).any?
   end
 
+  def approved?
+    approvals.present?
+  end
+
   def eligible_for_approval_by?(user)
     user.present? && !approved_by?(user) && user.can?(:approve_merge_request, self)
   end

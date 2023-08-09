@@ -506,7 +506,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/repository_set_cache.rb'
     - 'lib/gitlab/safe_request_loader.rb'
     - 'lib/gitlab/sanitizers/exif.rb'
-    - 'lib/gitlab/search_results.rb'
     - 'lib/gitlab/setup_helper.rb'
     - 'lib/gitlab/sidekiq_logging/json_formatter.rb'
     - 'lib/gitlab/sidekiq_logging/structured_logger.rb'

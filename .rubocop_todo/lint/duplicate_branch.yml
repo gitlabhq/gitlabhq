@@ -27,7 +27,6 @@ Lint/DuplicateBranch:
     - 'lib/gitlab/ci/yaml_processor.rb'
     - 'lib/gitlab/database/load_balancing/load_balancer.rb'
     - 'lib/gitlab/import_export/project/relation_factory.rb'
-    - 'lib/gitlab/search_results.rb'
     - 'lib/mattermost/session.rb'
     - 'lib/sidebars/groups/menus/settings_menu.rb'
     - 'qa/qa/resource/pipeline.rb'

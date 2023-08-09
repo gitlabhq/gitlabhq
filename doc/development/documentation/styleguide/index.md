@@ -428,7 +428,7 @@ Do not use these punctuation characters:
 
 ### Placeholder text
 
-You might want to provide a command or configuration that
+In a code block, you might want to provide a command or configuration that
 uses specific values.
 
 In these cases, use [`<` and `>`](https://en.wikipedia.org/wiki/Usage_message#Pattern)
@@ -438,6 +438,13 @@ For example:
 
 ```shell
 cp <your_source_directory> <your_destination_directory>
+```
+
+If the placeholder is not in a code block, use [`<` and `>`] and wrap the placeholder
+in a single backtick. For example:
+
+```plaintext
+Select **Grant admin consent for `<application_name>`**.
 ```
 
 ### Keyboard commands

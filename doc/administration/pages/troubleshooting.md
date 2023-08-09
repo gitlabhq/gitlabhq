@@ -212,8 +212,13 @@ Once added, reconfigure with `sudo gitlab-ctl reconfigure` and restart GitLab wi
 
 You may see this error if `pages_external_url` was updated at some point of time. Verify the following:
 
-1. The **Callback URL**/Redirect URI in the GitLab Pages [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
-is using the protocol (HTTP or HTTPS) that `pages_external_url` is configured to use.
+1. Check the [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
+
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **Admin Area**.
+   1. Select **Applications** and then **Add new application**.
+   1. Ensure the **Callback URL/Redirect URI** is using the protocol (HTTP or HTTPS) that 
+      `pages_external_url` is configured to use.
 1. The domain and path components of `Redirect URI` are valid: they should look like `projects.<pages_external_url>/auth`.
 
 ## 500 error `cannot serve from disk`

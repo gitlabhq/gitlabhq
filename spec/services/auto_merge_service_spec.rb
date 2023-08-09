@@ -73,6 +73,8 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
                                             project: merge_request.source_project)
 
       merge_request.update_head_pipeline
+
+      stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
     end
 
     it 'returns preferred strategy', if: Gitlab.ee? do
@@ -146,6 +148,10 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
 
     context 'when strategy is not specified' do
       let(:strategy) {}
+
+      before do
+        stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
+      end
 
       it 'chooses the most preferred strategy', if: Gitlab.ee? do
         is_expected.to eq(:merge_when_checks_pass)

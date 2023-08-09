@@ -5,8 +5,6 @@ module API
     include Gitlab::Utils::StrongMemoize
     include PaginationParams
 
-    PIPELINE_COLUMNS = %i[id iid project_id sha ref status source created_at updated_at user_id].freeze
-
     before do
       authorize_packages_access!(user_project)
     end
@@ -110,7 +108,7 @@ module API
           package.build_infos.without_empty_pipelines,
           paginator_params: { per_page: declared_params[:per_page], cursor: declared_params[:cursor] }
         ) do |results|
-          ::Ci::Pipeline.id_in(results.map(&:pipeline_id)).select(PIPELINE_COLUMNS).order_id_desc
+          ::Packages::PipelinesFinder.new(results.map(&:pipeline_id)).execute
         end
 
         present pipelines, with: ::API::Entities::Package::Pipeline, user: current_user

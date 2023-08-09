@@ -33,8 +33,8 @@ if ([ "${CI_PROJECT_NAME}" = "gitlab" ] && [ "${FOSS_ONLY}" != "1" ]) || ([ "${C
   ASSETS_IMAGE_NAME="gitlab-assets-ee"
 fi
 
-# Generate this image for https://jihulab.com/gitlab-cn/gitlab and https://gitlab.com/gitlab-jh/jh-team/gitlab
-if ([ "${CI_PROJECT_NAMESPACE}" = "gitlab-cn" ] || [ "${CI_PROJECT_NAMESPACE}" = "gitlab-jh" ]); then
+# Generate this image for https://jihulab.com/gitlab-cn/gitlab
+if [ "${CI_PROJECT_NAMESPACE}" = "gitlab-cn" ]; then
   ASSETS_IMAGE_NAME="gitlab-assets-jh"
 fi
 

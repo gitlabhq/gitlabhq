@@ -192,6 +192,11 @@ module Types
     field :total_time_spent, GraphQL::Types::Int, null: false,
                                                   description: 'Total time reported as spent on the merge request.'
 
+    field :approved, GraphQL::Types::Boolean,
+          method: :approved?,
+          null: false, calls_gitaly: true,
+          description: 'Indicates if the merge request has all the required approvals.'
+
     field :approved_by, Types::UserType.connection_type, null: true,
                                                          description: 'Users who approved the merge request.', method: :approved_by_users
     field :auto_merge_strategy, GraphQL::Types::String, null: true,

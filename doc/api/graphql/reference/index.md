@@ -18300,7 +18300,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestapprovalstate"></a>`approvalState` | [`MergeRequestApprovalState!`](#mergerequestapprovalstate) | Information relating to rules that must be satisfied to merge this merge request. |
 | <a id="mergerequestapprovalsleft"></a>`approvalsLeft` | [`Int`](#int) | Number of approvals left. |
 | <a id="mergerequestapprovalsrequired"></a>`approvalsRequired` | [`Int`](#int) | Number of approvals required. |
-| <a id="mergerequestapproved"></a>`approved` | [`Boolean!`](#boolean) | Indicates if the merge request has all the required approvals. Returns true if no required approvals are configured. |
+| <a id="mergerequestapproved"></a>`approved` | [`Boolean!`](#boolean) | Indicates if the merge request has all the required approvals. |
 | <a id="mergerequestapprovedby"></a>`approvedBy` | [`UserCoreConnection`](#usercoreconnection) | Users who approved the merge request. (see [Connections](#connections)) |
 | <a id="mergerequestassignees"></a>`assignees` | [`MergeRequestAssigneeConnection`](#mergerequestassigneeconnection) | Assignees of the merge request. (see [Connections](#connections)) |
 | <a id="mergerequestauthor"></a>`author` | [`MergeRequestAuthor`](#mergerequestauthor) | User who created this merge request. |

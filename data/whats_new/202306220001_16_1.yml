@@ -59,8 +59,8 @@
 
     [Learn more](https://about.gitlab.com/dedicated/) about GitLab Dedicated today.
   stage: Platforms
-  self-managed: true
-  gitlab-com: false
+  self-managed: false
+  gitlab-com: true
   available_in: [Ultimate]
   documentation_link: https://docs.gitlab.com/ee/subscriptions/gitlab_dedicated/
   image_url: https://about.gitlab.com/images/16_1/gitlab-dedicated.png

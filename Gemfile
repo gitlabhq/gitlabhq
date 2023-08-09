@@ -43,7 +43,7 @@ gem 'pg', '~> 1.5.3'
 
 gem 'neighbor', '~> 0.2.3'
 
-gem 'rugged', '~> 1.5'
+gem 'rugged', '~> 1.6'
 gem 'grape-path-helpers', '~> 1.7.1'
 
 gem 'faraday', '~> 1.0'

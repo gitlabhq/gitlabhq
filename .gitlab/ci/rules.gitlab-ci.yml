@@ -604,6 +604,18 @@
   - "scripts/glfm/**/*"
   - "scripts/lib/glfm/**/*"
 
+# Certain components require the base e2e GDK image to be rebuilt if they change
+.gdk-component-patterns: &gdk-component-patterns
+  - qa/gdk/**/*
+  - Gemfile.lock
+  - yarn.lock
+  - workhorse/**/*
+  - VERSION
+  - GITLAB_WORKHORSE_VERSION
+  - GITLAB_METRICS_EXPORTER_VERSION
+  - GITLAB_SHELL_VERSION
+  - GITALY_SERVER_VERSION
+
 ##################
 # Conditions set #
 ##################
@@ -905,15 +917,7 @@
     - <<: *if-merge-request
       variables:
         BUILD_GDK_BASE: "true"
-      changes:
-        - qa/gdk/**/*
-        - Gemfile.lock
-        - yarn.lock
-        - workhorse/**/*
-        - VERSION
-        - GITLAB_METRICS_EXPORTER_VERSION
-        - GITLAB_SHELL_VERSION
-        - GITALY_SERVER_VERSION
+      changes: *gdk-component-patterns
     # The rest are included to be consistent with .qa:rules:e2e:test-on-gdk
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
@@ -1431,6 +1435,9 @@
       changes: *setup-test-env-patterns
       allow_failure: true
     - <<: *if-merge-request
+      # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
+      changes: *gdk-component-patterns
+    - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
@@ -1566,6 +1573,9 @@
       variables:
         USE_OLD_RUBY_VERSION: 'false'
         CACHE_EDITION: 'GITLAB_RUBY3_1'
+    - <<: *if-merge-request
+      # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
+      changes: *gdk-component-patterns
     - <<: *if-merge-request
       changes: *dependency-patterns
     - <<: *if-merge-request-labels-run-all-e2e

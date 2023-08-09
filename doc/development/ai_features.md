@@ -52,6 +52,9 @@ All AI features are experimental.
 
 ## Test AI features locally
 
+NOTE:
+Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
+
 1. Enable the required general feature flags:
 
    ```ruby
@@ -74,6 +77,9 @@ All AI features are experimental.
 
 ### Set up the embedding database
 
+NOTE:
+Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
+
 For features that use the embedding database, additional setup is needed.
 
 1. Enable [pgvector](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
@@ -87,6 +93,9 @@ For features that use the embedding database, additional setup is needed.
 1. Run database migrations to create the embedding database
 
 ### Set up GitLab Duo Chat
+
+NOTE:
+Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
 
 1. [Enable Anthropic API features](#configure-anthropic-access).
 1. [Enable OpenAI support](#configure-openai-access).
@@ -202,7 +211,7 @@ tail -f log/llm.log
 
 In order to obtain a GCP service key for local development, please follow the steps below:
 
-- Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request). At this time, access to any endpoints outside of `text-bison` or `chat-bison` must be made through the group environment.
+- Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request). 
 - In the GCP console, go to `IAM & Admin` > `Service Accounts` and click on the "Create new service account" button
 - Name the service account something specific to what you're using it for. Select Create and Continue. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
 - Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account.
