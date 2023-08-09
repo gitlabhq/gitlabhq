@@ -30201,6 +30201,8 @@ CREATE INDEX i_compliance_violations_on_project_id_severity_and_id ON merge_requ
 
 CREATE INDEX i_compliance_violations_on_project_id_title_and_id ON merge_requests_compliance_violations USING btree (target_project_id, title, id);
 
+CREATE INDEX i_custom_email_verifications_on_triggered_at_and_state_started ON service_desk_custom_email_verifications USING btree (triggered_at) WHERE (state = 0);
+
 CREATE INDEX i_dast_pre_scan_verification_steps_on_pre_scan_verification_id ON dast_pre_scan_verification_steps USING btree (dast_pre_scan_verification_id);
 
 CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags USING btree (dast_profile_id);

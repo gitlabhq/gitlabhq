@@ -16,6 +16,9 @@ query getCustomEmojis($groupPath: ID!, $after: String = "", $before: String = ""
         name
         url
         createdAt
+        userPermissions {
+          deleteCustomEmoji
+        }
       }
     }
   }

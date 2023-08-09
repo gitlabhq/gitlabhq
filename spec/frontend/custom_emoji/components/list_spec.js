@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import List from '~/custom_emoji/components/list.vue';
+import DeleteItem from '~/custom_emoji/components/delete_item.vue';
 import { CUSTOM_EMOJI } from '../mock_data';
 
 jest.mock('~/lib/utils/datetime/date_format_utility', () => ({
@@ -57,5 +58,22 @@ describe('Custom emoji settings list component', () => {
 
       expect(wrapper.emitted('input')[0]).toEqual([emits]);
     });
+  });
+
+  describe('delete button', () => {
+    it.each`
+      deleteCustomEmoji | rendersText          | renders
+      ${true}           | ${'renders'}         | ${true}
+      ${false}          | ${'does not render'} | ${false}
+    `(
+      '$rendersText delete button when deleteCustomEmoji is $deleteCustomEmoji',
+      ({ deleteCustomEmoji, renders }) => {
+        createComponent({
+          customEmojis: [{ ...CUSTOM_EMOJI[0], userPermissions: { deleteCustomEmoji } }],
+        });
+
+        expect(wrapper.findComponent(DeleteItem).exists()).toBe(renders);
+      },
+    );
   });
 });

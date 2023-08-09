@@ -10,21 +10,31 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. On GitLab.com, this feature is available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`.
+On GitLab.com, this feature is available.
+The feature is not ready for production use.
 
 WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
+This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
 
-You can use [workspaces](index.md) to create and manage isolated development environments for your GitLab projects. Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project.
+You can use [workspaces](index.md) to create and manage isolated development environments for your GitLab projects.
+Each workspace includes its own set of dependencies, libraries, and tools,
+which you can customize to meet the specific needs of each project.
 
 ## Set up a workspace
 
 ### Prerequisites
 
-- Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports. See the [supported Kubernetes versions](../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features).
+- Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports.
+  See the [supported Kubernetes versions](../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features).
 - Ensure autoscaling for the Kubernetes cluster is enabled.
-- In the Kubernetes cluster, verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/) is defined so that volumes can be dynamically provisioned for each workspace.
-- In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`) and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
+- In the Kubernetes cluster, verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
+  is defined so that volumes can be dynamically provisioned for each workspace.
+- In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`)
+  and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and
+  `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
 - In the Kubernetes cluster, [install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
 - In the Kubernetes cluster, [install the GitLab agent for Kubernetes](../clusters/agent/install/index.md).
 - Configure remote development settings for the GitLab agent with this snippet and update `dns_zone` as needed:
@@ -35,11 +45,13 @@ You can use [workspaces](index.md) to create and manage isolated development env
     dns_zone: "workspaces.example.dev"
   ```
 
-  You can use any agent defined under the root group of your project, provided that remote development is properly configured for that agent.
+  You can use any agent defined under the root group of your project,
+  provided that remote development is properly configured for that agent.
 - You must have at least the Developer role in the root group.
 - In each public project you want to use this feature for, create a [devfile](index.md#devfile):
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project
-  1. In the root directory of your project, create a file named `.devfile.yaml`. You can use one of the [example configurations](index.md#example-configurations).
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. In the root directory of your project, create a file named `.devfile.yaml`.
+     You can use one of the [example configurations](index.md#example-configurations).
 - Ensure the container images used in the devfile support [arbitrary user IDs](index.md#arbitrary-user-ids).
 
 ### Create a workspace
@@ -50,12 +62,15 @@ To create a workspace:
 1. Select **Your work**.
 1. Select **Workspaces**.
 1. Select **New workspace**.
-1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites). You can only create workspaces for public projects.
+1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites).
+   You can only create workspaces for public projects.
 1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
-1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates. This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
+1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates.
+   This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
 1. Select **Create workspace**.
 
-The workspace might take a few minutes to start. To open the workspace, under **Preview**, select the workspace.
+The workspace might take a few minutes to start.
+To open the workspace, under **Preview**, select the workspace.
 You also have access to the terminal and can install any necessary dependencies.
 
 ## Connect to a workspace with SSH
@@ -75,7 +90,8 @@ To connect to a workspace with an SSH client:
 
 1. For the password, enter your personal access token with at least the `read_api` scope.
 
-When you connect to `gitlab-workspaces-proxy` through the TCP load balancer, `gitlab-workspaces-proxy` examines the username (workspace name) and interacts with GitLab to verify:
+When you connect to `gitlab-workspaces-proxy` through the TCP load balancer,
+`gitlab-workspaces-proxy` examines the username (workspace name) and interacts with GitLab to verify:
 
 - The personal access token
 - User access to the workspace
@@ -86,7 +102,8 @@ Prerequisite:
 
 - You must have an SSH host key for client verification.
 
-SSH is now enabled by default in [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy). To set up `gitlab-workspaces-proxy` with the GitLab Helm chart:
+SSH is now enabled by default in [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy).
+To set up `gitlab-workspaces-proxy` with the GitLab Helm chart:
 
 1. Run this command:
 
@@ -159,7 +176,8 @@ USER gitlab-workspaces
 
 ## Disable remote development in the GitLab agent for Kubernetes
 
-You can stop the `remote_development` module of the GitLab agent for Kubernetes from communicating with GitLab. To disable remote development in the GitLab agent configuration, set this property:
+You can stop the `remote_development` module of the GitLab agent for Kubernetes from communicating with GitLab.
+To disable remote development in the GitLab agent configuration, set this property:
 
 ```yaml
 remote_development:
@@ -167,3 +185,23 @@ remote_development:
 ```
 
 If you already have running workspaces, an administrator must manually delete these workspaces in Kubernetes.
+
+## Related topics
+
+- [Quickstart guide for GitLab remote development workspaces](https://go.gitlab.com/AVKFvy)
+- [Set up your infrastructure for on-demand, cloud-based development environments in GitLab](https://go.gitlab.com/dp75xo)
+
+## Troubleshooting
+
+### `Failed to renew lease` when creating a workspace
+
+You might not be able to create a workspace due to a known issue in the GitLab agent for Kubernetes.
+The following error message might appear in the agent's log:
+
+```plaintext
+{"level":"info","time":"2023-01-01T00:00:00.000Z","msg":"failed to renew lease gitlab-agent-remote-dev-dev/agent-123XX-lock: timed out waiting for the condition\n","agent_id":XXXX}
+```
+
+This issue occurs when an agent instance cannot renew its leadership lease, which results
+in the shutdown of leader-only modules including the `remote_development` module.
+To resolve this issue, restart the agent instance.

@@ -978,6 +978,18 @@ module Gitlab
         end
       end
 
+      def rebase_to_ref(user, source_sha:, target_ref:, first_parent_ref:, expected_old_oid: "")
+        wrapped_gitaly_errors do
+          gitaly_operation_client.user_rebase_to_ref(
+            user,
+            source_sha: source_sha,
+            target_ref: target_ref,
+            first_parent_ref: first_parent_ref,
+            expected_old_oid: expected_old_oid
+          )
+        end
+      end
+
       def squash(user, start_sha:, end_sha:, author:, message:)
         wrapped_gitaly_errors do
           gitaly_operation_client.user_squash(user, start_sha, end_sha, author, message)

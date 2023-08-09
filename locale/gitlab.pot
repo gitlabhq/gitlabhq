@@ -15491,6 +15491,9 @@ msgstr ""
 msgid "Delete corpus"
 msgstr ""
 
+msgid "Delete custom emoji"
+msgstr ""
+
 msgid "Delete deploy key"
 msgstr ""
 
@@ -19419,6 +19422,9 @@ msgid "Failed to create resources"
 msgstr ""
 
 msgid "Failed to create wiki"
+msgstr ""
+
+msgid "Failed to delete custom emoji. Please try again."
 msgstr ""
 
 msgid "Failed to deploy to"
@@ -39095,9 +39101,6 @@ msgstr ""
 msgid "Remove user from project"
 msgstr ""
 
-msgid "Remove..."
-msgstr ""
-
 msgid "Removed"
 msgstr ""
 
@@ -45154,7 +45157,7 @@ msgstr ""
 msgid "StatusCheck|Apply this status check to all branches or a specific protected branch."
 msgstr ""
 
-msgid "StatusCheck|Check for a status response in merge requests. %{link_start}Learn more%{link_end}."
+msgid "StatusCheck|Check for a status response in merge requests. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "StatusCheck|Examples: QA, Security."

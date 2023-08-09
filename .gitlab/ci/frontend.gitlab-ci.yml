@@ -31,6 +31,10 @@
     - assets_compile_script
     - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
 
+.update-cache-base:
+  after_script:
+    - yarn patch-package --reverse  # To avoid caching patched modules
+
 compile-production-assets:
   extends:
     - .compile-assets-base
@@ -47,8 +51,6 @@ compile-production-assets:
       - public/assets/
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
-  after_script:
-    - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
 
 compile-production-assets as-if-foss:
   extends:
@@ -77,6 +79,7 @@ compile-test-assets as-if-foss:
 update-assets-compile-production-cache:
   extends:
     - compile-production-assets
+    - .update-cache-base
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
@@ -85,6 +88,7 @@ update-assets-compile-production-cache:
 update-assets-compile-test-cache:
   extends:
     - compile-test-assets
+    - .update-cache-base
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
@@ -94,6 +98,7 @@ update-storybook-yarn-cache:
   extends:
     - .default-retry
     - .default-utils-before_script
+    - .update-cache-base
     - .storybook-yarn-cache-push
     - .shared:rules:update-cache
   stage: prepare

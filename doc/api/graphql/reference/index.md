@@ -25336,7 +25336,10 @@ Represents a progress widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemwidgetprogresscurrentvalue"></a>`currentValue` | [`Int`](#int) | Current value of the work item. |
+| <a id="workitemwidgetprogressendvalue"></a>`endValue` | [`Int`](#int) | End value of the work item. |
 | <a id="workitemwidgetprogressprogress"></a>`progress` | [`Int`](#int) | Progress of the work item. |
+| <a id="workitemwidgetprogressstartvalue"></a>`startValue` | [`Int`](#int) | Start value of the work item. |
 | <a id="workitemwidgetprogresstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 | <a id="workitemwidgetprogressupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last progress update. |
 
@@ -25906,6 +25909,7 @@ Name of the check for the compliance standard.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="compliancestandardsadherencechecknameat_least_two_approvals"></a>`AT_LEAST_TWO_APPROVALS` | At least two approvals. |
 | <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_author"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_AUTHOR` | Prevent approval by merge request author. |
 | <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_committers"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_COMMITTERS` | Prevent approval by merge request committers. |
 
@@ -30308,6 +30312,8 @@ A time-frame defined as a closed inclusive range of two dates.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetprogressinputcurrentvalue"></a>`currentValue` | [`Int!`](#int) | Current progress value of the work item. |
+| <a id="workitemwidgetprogressinputendvalue"></a>`endValue` | [`Int`](#int) | End value of the work item. |
+| <a id="workitemwidgetprogressinputstartvalue"></a>`startValue` | [`Int`](#int) | Start value of the work item. |
 
 ### `WorkItemWidgetStartAndDueDateUpdateInput`
 

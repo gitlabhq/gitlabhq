@@ -95,6 +95,7 @@ export default {
       :target="`#${$options.toggleId}`"
       placement="bottom"
       container="#super-sidebar"
+      noninteractive
     >
       {{ $options.i18n.createNew }}
     </gl-tooltip>

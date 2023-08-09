@@ -26,7 +26,7 @@ export default {
 
 <template>
   <a
-    v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.homepage"
+    v-gl-tooltip:super-sidebar.hover.noninteractive.bottom.ds500="$options.i18n.homepage"
     class="brand-logo"
     :href="rootPath"
     :title="$options.i18n.homepage"

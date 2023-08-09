@@ -3,7 +3,7 @@ import { GlAvatarsInline } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
-import WorkItemLinkChildMetadata from '~/work_items/components/work_item_links/work_item_link_child_metadata.vue';
+import WorkItemLinkChildMetadata from '~/work_items/components/shared/work_item_link_child_metadata.vue';
 
 import { workItemObjectiveMetadataWidgets } from '../../mock_data';
 

@@ -1,7 +1,7 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import WorkItemLinksMenu from '~/work_items/components/work_item_links/work_item_links_menu.vue';
+import WorkItemLinksMenu from '~/work_items/components/shared/work_item_links_menu.vue';
 
 describe('WorkItemLinksMenu', () => {
   let wrapper;

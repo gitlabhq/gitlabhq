@@ -33,24 +33,23 @@ System:         Ubuntu 20.04
 Proxy:          no
 Current User:   git
 Using RVM:      no
-Ruby Version:   2.6.6p146
-Gem Version:    2.7.10
-Bundler Version:1.17.3
-Rake Version:   12.3.3
-Redis Version:  5.0.9
-Git Version:    2.27.0
-Sidekiq Version:5.2.9
+Ruby Version:   2.7.6p219
+Gem Version:    3.1.6
+Bundler Version:2.3.15
+Rake Version:   13.0.6
+Redis Version:  6.2.7
+Sidekiq Version:6.4.2
 Go Version:     unknown
 
 GitLab information
-Version:        13.2.2-ee
-Revision:       618883a1f9d
+Version:        15.5.5-ee
+Revision:       5f5109f142d
 Directory:      /opt/gitlab/embedded/service/gitlab-rails
 DB Adapter:     PostgreSQL
-DB Version:     11.7
-URL:            http://gitlab.example.com
-HTTP Clone URL: http://gitlab.example.com/some-group/some-project.git
-SSH Clone URL:  git@gitlab.example.com:some-group/some-project.git
+DB Version:     13.8
+URL:            https://app.gitaly.gcp.gitlabsandbox.net
+HTTP Clone URL: https://app.gitaly.gcp.gitlabsandbox.net/some-group/some-project.git
+SSH Clone URL:  git@app.gitaly.gcp.gitlabsandbox.net:some-group/some-project.git
 Elasticsearch:  no
 Geo:            no
 Using LDAP:     no
@@ -58,10 +57,20 @@ Using Omniauth: yes
 Omniauth Providers:
 
 GitLab Shell
-Version:    13.3.0
+Version:        14.12.0
 Repository storage paths:
-- default:  /var/opt/gitlab/git-data/repositories
-GitLab Shell path:      /opt/gitlab/embedded/service/gitlab-shell
+- default:      /var/opt/gitlab/git-data/repositories
+- gitaly:       /var/opt/gitlab/git-data/repositories
+GitLab Shell path:              /opt/gitlab/embedded/service/gitlab-shell
+
+
+Gitaly
+- default Address:      unix:/var/opt/gitlab/gitaly/gitaly.socket
+- default Version:      15.5.5
+- default Git Version:  2.37.1.gl1
+- gitaly Address:       tcp://10.128.20.6:2305
+- gitaly Version:       15.5.5
+- gitaly Git Version:   2.37.1.gl1
 ```
 
 ## Show GitLab license information **(PREMIUM SELF)**

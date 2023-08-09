@@ -3,6 +3,7 @@
 import { GlLoadingIcon, GlTableLite, GlTabs, GlTab, GlBadge, GlKeysetPagination } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
+import DeleteItem from './delete_item.vue';
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
     GlTab,
     GlBadge,
     GlKeysetPagination,
+    DeleteItem,
   },
   props: {
     loading: {
@@ -124,7 +126,13 @@ export default {
                 data-unicode-version="custom"
               />
             </template>
-            <template #cell(action)> </template>
+            <template #cell(action)="data">
+              <delete-item
+                v-if="data.item.userPermissions.deleteCustomEmoji"
+                :key="data.item.name"
+                :emoji="data.item"
+              />
+            </template>
             <template #cell(created_at)="data">
               {{ formatDate(data.item.createdAt) }}
             </template>

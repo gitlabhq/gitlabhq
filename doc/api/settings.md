@@ -294,6 +294,7 @@ Example responses: **(PREMIUM SELF)**
 
 > - Fields `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106963) in GitLab 15.8. Use `housekeeping_optimize_repository_period` instead.
 > - Parameters `sign_in_text` and `help_text` were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124461) in GitLab 16.2. Use `description` parameter in the [Appearance API](../api/appearance.md) instead.
+> - Parameter `allow_account_deletion` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412411) in GitLab 16.1.
 
 In general, all settings are optional. Certain settings though, if enabled,
 require other settings to be set to function properly. These requirements are
@@ -311,9 +312,10 @@ listed in the descriptions of the relevant settings.
 | `after_sign_up_text`                     | string           | no                                   | Text shown to the user after signing up. |
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for Akismet spam protection. |
 | `akismet_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `akismet_api_key`) Enable or disable Akismet spam protection. |
-| `allow_group_owners_to_manage_ldap` **(PREMIUM)**  | boolean | no                                  | Set to `true` to allow group owners to manage LDAP. |
-| `allow_local_requests_from_hooks_and_services`     | boolean | no                                  | (Deprecated: Use `allow_local_requests_from_web_hooks_and_services` instead) Allow requests to the local network from webhooks and integrations. |
-| `allow_local_requests_from_system_hooks`           | boolean | no                                  | Allow requests to the local network from system hooks. |
+| `allow_account_deletion` **(PREMIUM)** | boolean | no                                   | Set to `true` to allow users to delete their accounts. |
+| `allow_group_owners_to_manage_ldap` **(PREMIUM)** | boolean | no                                   | Set to `true` to allow group owners to manage LDAP. |
+| `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | (Deprecated: Use `allow_local_requests_from_web_hooks_and_services` instead) Allow requests to the local network from webhooks and integrations. |
+| `allow_local_requests_from_system_hooks` | boolean          | no                                   | Allow requests to the local network from system hooks. |
 | `allow_local_requests_from_web_hooks_and_services` | boolean | no                                  | Allow requests to the local network from webhooks and integrations. |
 | `allow_runner_registration_token`        | boolean          | no                                   | Allow using a registration token to create a runner. Defaults to `true`. |
 | `archive_builds_in_human_readable`       | string           | no                                   | Set the duration for which the jobs are considered as old and expired. After that time passes, the jobs are archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>. |

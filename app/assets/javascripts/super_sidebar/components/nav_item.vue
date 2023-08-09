@@ -168,7 +168,7 @@ export default {
         </gl-badge>
         <gl-button
           v-if="isPinnable && !isPinned"
-          v-gl-tooltip.right.viewport="$options.i18n.pinItem"
+          v-gl-tooltip.noninteractive.ds500.right.viewport="$options.i18n.pinItem"
           size="small"
           category="tertiary"
           icon="thumbtack"
@@ -177,7 +177,7 @@ export default {
         />
         <gl-button
           v-else-if="isPinnable && isPinned"
-          v-gl-tooltip.right.viewport="$options.i18n.unpinItem"
+          v-gl-tooltip.noninteractive.ds500.right.viewport="$options.i18n.unpinItem"
           size="small"
           category="tertiary"
           :aria-label="$options.i18n.unpinItem"
