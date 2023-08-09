@@ -234,7 +234,7 @@ clear Redis' cache. To do this, run:
 Sometimes during version upgrades you might end up with some wrong CSS or
 missing some icons. In that case, try to precompile the assets again.
 
-This Rake task only applies to source installations. [Read more](../../update/package/index.md#missing-asset-files)
+This Rake task only applies to self-compiled installations. [Read more](../../update/package/index.md#missing-asset-files)
 about troubleshooting this problem when running the Linux package.
 The guidance for Linux package might be applicable for Kubernetes and Docker
 deployments of GitLab, though in general, container-based installations

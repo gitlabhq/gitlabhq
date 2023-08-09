@@ -5,6 +5,7 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import createSavedReplyMutation from '../queries/create_saved_reply.mutation.graphql';
 import updateSavedReplyMutation from '../queries/update_saved_reply.mutation.graphql';
 
@@ -17,6 +18,7 @@ export default {
     GlAlert,
     MarkdownField,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     id: {
       type: String,
@@ -91,6 +93,7 @@ export default {
               this.$emit('saved');
               this.updateCommentTemplate = { name: '', content: '' };
               this.showValidation = false;
+              this.track_event('i_code_review_saved_replies_create');
             }
           },
         })

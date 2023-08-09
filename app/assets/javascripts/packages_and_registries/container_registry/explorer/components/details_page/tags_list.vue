@@ -6,6 +6,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
+import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -27,6 +28,7 @@ import {
 import getContainerRepositoryTagsQuery from '../../graphql/queries/get_container_repository_tags.query.graphql';
 import deleteContainerRepositoryTagsMutation from '../../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import DeleteModal from '../delete_modal.vue';
+import { getPageParams, getNextPageParams, getPreviousPageParams } from '../../utils';
 import TagsListRow from './tags_list_row.vue';
 
 export default {
@@ -37,6 +39,7 @@ export default {
     TagsListRow,
     TagsLoader,
     RegistryList,
+    PersistedPagination,
     PersistedSearch,
   },
   mixins: [Tracking.mixin()],
@@ -62,7 +65,7 @@ export default {
       required: false,
     },
   },
-  searchConfig: { NAME_SORT_FIELD },
+  sortableFields: [NAME_SORT_FIELD],
   i18n: {
     REMOVE_TAGS_BUTTON_TITLE,
     TAGS_LIST_TITLE,
@@ -87,7 +90,7 @@ export default {
       containerRepository: {},
       filters: {},
       itemsToBeDeleted: [],
-      mutationLoading: false,
+      isDeleteInProgress: false,
       sort: null,
       pageParams: {},
     };
@@ -121,7 +124,7 @@ export default {
       return (
         this.isImageLoading ||
         this.$apollo.queries.containerRepository.loading ||
-        this.mutationLoading ||
+        this.isDeleteInProgress ||
         !this.sort
       );
     },
@@ -153,7 +156,7 @@ export default {
     async handleDeleteTag() {
       this.track('confirm_delete');
       const { itemsToBeDeleted } = this;
-      this.mutationLoading = true;
+      this.isDeleteInProgress = true;
       try {
         const { data } = await this.$apollo.mutate({
           mutation: deleteContainerRepositoryTagsMutation,
@@ -180,24 +183,17 @@ export default {
       } catch (e) {
         this.$emit('delete', itemsToBeDeleted.length === 1 ? ALERT_DANGER_TAG : ALERT_DANGER_TAGS);
       } finally {
-        this.mutationLoading = false;
+        this.isDeleteInProgress = false;
       }
     },
     fetchNextPage() {
-      this.pageParams = {
-        after: this.tagsPageInfo?.endCursor,
-        first: GRAPHQL_PAGE_SIZE,
-      };
+      this.pageParams = getNextPageParams(this.tagsPageInfo?.endCursor);
     },
     fetchPreviousPage() {
-      this.pageParams = {
-        first: null,
-        before: this.tagsPageInfo?.startCursor,
-        last: GRAPHQL_PAGE_SIZE,
-      };
+      this.pageParams = getPreviousPageParams(this.tagsPageInfo?.startCursor);
     },
-    handleSearchUpdate({ sort, filters }) {
-      this.pageParams = {};
+    handleSearchUpdate({ sort, filters, pageInfo }) {
+      this.pageParams = getPageParams(pageInfo);
       this.sort = sort;
 
       const parsed = {
@@ -224,10 +220,8 @@ export default {
   <div>
     <persisted-search
       class="gl-mb-5"
-      :sortable-fields="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
-        $options.searchConfig.NAME_SORT_FIELD,
-      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-      :default-order="$options.searchConfig.NAME_SORT_FIELD.orderBy"
+      :sortable-fields="$options.sortableFields"
+      :default-order="$options.sortableFields[0].orderBy"
       default-sort="asc"
       @update="handleSearchUpdate"
     />
@@ -244,11 +238,8 @@ export default {
         <registry-list
           :hidden-delete="hideBulkDelete"
           :title="listTitle"
-          :pagination="tagsPageInfo"
           :items="tags"
           id-property="name"
-          @prev-page="fetchPreviousPage"
-          @next-page="fetchNextPage"
           @delete="deleteTags"
         >
           <template #default="{ selectItem, isSelected, item, first }">
@@ -272,5 +263,14 @@ export default {
         />
       </template>
     </template>
+
+    <div v-if="!isDeleteInProgress" class="gl-display-flex gl-justify-content-center">
+      <persisted-pagination
+        class="gl-mt-3"
+        :pagination="tagsPageInfo"
+        @prev="fetchPreviousPage"
+        @next="fetchNextPage"
+      />
+    </div>
   </div>
 </template>

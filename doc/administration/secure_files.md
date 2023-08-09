@@ -100,7 +100,7 @@ Adding support is proposed in [issue 414673](https://gitlab.com/gitlab-org/gitla
 
 The following settings are:
 
-- Nested under `ci_secure_files:` and then `object_store:` on source installations.
+- Nested under `ci_secure_files:` and then `object_store:` on self-compiled installations.
 - Prefixed by `ci_secure_files_object_store_` on Linux package installations.
 
 | Setting | Description | Default |

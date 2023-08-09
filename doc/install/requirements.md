@@ -14,7 +14,7 @@ This page includes information about the minimum requirements you need to instal
 
 The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *guideline* you should have at least as much free space as all your repositories combined take up.
 
-The Omnibus GitLab package requires about 2.5 GB of storage space for installation.
+The Linux package requires about 2.5 GB of storage space for installation.
 
 If you want to be flexible about growing your hard drive space in the future consider mounting it using [logical volume management (LVM)](https://en.wikipedia.org/wiki/Logical_volume_management) so you can add more hard drives when you need them.
 
@@ -66,7 +66,7 @@ process, such as PostgreSQL, which can have disastrous consequences.
 
 ## Database
 
-PostgreSQL is the only supported database, which is bundled with the Omnibus GitLab package.
+PostgreSQL is the only supported database, which is bundled with the Linux package.
 You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
 
 ### PostgreSQL Requirements
@@ -106,10 +106,9 @@ Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.git
 #### Additional requirements for GitLab Geo
 
 If you're using [GitLab Geo](../administration/geo/index.md), we strongly
-recommend running Omnibus GitLab-managed instances, as we actively develop and
-test based on those. We try to be compatible with most external (not managed by
-Omnibus GitLab) databases (for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)),
-but we can't guarantee compatibility.
+recommend running instances installed by using the Linux package, as we actively develop and
+test based on those. We try to be compatible with most external (not managed by a Linux package installation) databases
+(for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)), but we can't guarantee compatibility.
 
 #### Operating system locale compatibility and silent index corruption
 

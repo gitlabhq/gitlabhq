@@ -38,19 +38,23 @@ use another column for that information.)
 
 All integrations are created automatically for every project you have.
 To avoid getting this error, you must remove all records with the type set to
-`GithubService` from your database:
+`GithubService` from your database.
 
-- **Omnibus Installation**
+::Tabs
 
-  ```shell
-  sudo gitlab-rails runner "Integration.where(type: ['GithubService']).delete_all"
-  ```
+:::TabTitle Linux package (Omnibus)
 
-- **Source Installation**
+```shell
+sudo gitlab-rails runner "Integration.where(type: ['GithubService']).delete_all"
+```
 
-  ```shell
-  bundle exec rails runner "Integration.where(type: ['GithubService']).delete_all" production
-  ```
+:::TabTitle Self-compiled (source)
+
+```shell
+bundle exec rails runner "Integration.where(type: ['GithubService']).delete_all" production
+```
+
+::EndTabs
 
 NOTE:
 If you are running `GitLab =< v13.0` you must also remove `JenkinsDeprecatedService` records
@@ -74,25 +78,25 @@ back to EE and restore the behavior if you leave it alone.
 After performing the above mentioned steps, you are now ready to downgrade your
 GitLab installation to the Community Edition.
 
-- **Omnibus Installation**
+Remember to follow the correct [update guides](../update/index.md) to make sure all dependencies are up to date.
 
-  To downgrade an Omnibus installation, it is sufficient to install the Community
-  Edition package on top of the currently installed one. You can do this manually,
-  by directly [downloading the package](https://packages.gitlab.com/gitlab/gitlab-ce)
-  you need, or by adding our CE package repository and following the
-  [CE installation instructions](https://about.gitlab.com/install/?version=ce).
+### Linux package installations
 
-- **Source Installation**
+To downgrade a Linux package installation, you can install the Community Edition package on top of
+the currently installed one. You can do this manually, by either:
 
-  To downgrade a source installation, you must replace the current remote of
-  your GitLab installation with the Community Edition's remote. After that, you
-  can fetch the latest changes, and checkout the latest stable branch:
+- Directly [downloading the package](https://packages.gitlab.com/gitlab/gitlab-ce).
+- Adding our CE package repository and following the  [CE installation instructions](https://about.gitlab.com/install/?version=ce).
 
-  ```shell
-  git remote set-url origin git@gitlab.com:gitlab-org/gitlab-foss.git
-  git fetch --all
-  git checkout 8-x-stable
-  ```
+### Self-compiled installations
 
-Remember to follow the correct [update guides](../update/index.md) to make
-sure all dependencies are up to date.
+To downgrade a self-compiled installation:
+
+1. Replace the current remote of your GitLab installation with the Community Edition remote.
+1. Fetch the latest changes, and check out the latest stable branch:
+
+   ```shell
+   git remote set-url origin git@gitlab.com:gitlab-org/gitlab-foss.git
+   git fetch --all
+   git checkout 8-x-stable
+   ```

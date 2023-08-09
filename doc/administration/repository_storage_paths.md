@@ -87,7 +87,7 @@ moving things between mount points, and problems can occur.
 
 Ideally, `/home/git` is the mount point, so things remain inside the same mount point. Linux package
 installations guarantee this because they don't specify the full repository path but instead
-the parent path, but source installations do not.
+the parent path, but self-compiled installations do not.
 
 ### Example configuration
 

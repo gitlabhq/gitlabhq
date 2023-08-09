@@ -44,7 +44,7 @@ sudo chmod 0600 /etc/http.keytab
 #### Installations from source
 
 NOTE:
-For source installations, make sure the `kerberos` gem group
+For self-compiled installations, make sure the `kerberos` gem group
 [has been installed](../install/installation.md#install-gems).
 
 1. Edit the `kerberos` section of [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example) to enable Kerberos ticket-based
@@ -247,7 +247,21 @@ NOTE:
 username and password is passed interactively or through a credentials manager. It fails to fall back when the username and password is passed as part of the URL instead. For example,
 this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token](../ci/jobs/ci_job_token.md).
 
-**For source installations with HTTPS**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['kerberos_use_dedicated_port'] = true
+   gitlab_rails['kerberos_port'] = 8443
+   gitlab_rails['kerberos_https'] = true
+   ```
+
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+:::TabTitle Self-compiled (source) with HTTPS
 
 1. Edit the NGINX configuration file for GitLab
    (for example, `/etc/nginx/sites-available/gitlab-ssl`) and configure NGINX to
@@ -276,17 +290,7 @@ this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token
 
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) and NGINX for the changes to take effect.
 
-**For Omnibus package installations**
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['kerberos_use_dedicated_port'] = true
-   gitlab_rails['kerberos_port'] = 8443
-   gitlab_rails['kerberos_https'] = true
-   ```
-
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+::EndTabs
 
 After this change, Git remote URLs have to be updated to
 `https://gitlab.example.com:8443/mygroup/myproject.git` to use

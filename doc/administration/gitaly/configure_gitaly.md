@@ -1453,7 +1453,7 @@ following keys (in this example, to disable the `hasDotgit` consistency check):
   }
   ```
 
-For source installs, edit the Gitaly configuration (`gitaly.toml`) to do the
+For self-compiled installations, edit the Gitaly configuration (`gitaly.toml`) to do the
 equivalent:
 
 ```toml

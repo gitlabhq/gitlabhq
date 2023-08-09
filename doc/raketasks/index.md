@@ -11,8 +11,8 @@ processes.
 
 You can perform GitLab Rake tasks by using:
 
-- `gitlab-rake <raketask>` for [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html) and [GitLab Helm chart](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) installations.
-- `bundle exec rake <raketask>` for [source](../install/installation.md) installations.
+- `gitlab-rake <raketask>` for [Linux package](https://docs.gitlab.com/omnibus/index.html) and [GitLab Helm chart](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) installations.
+- `bundle exec rake <raketask>` for [self-compiled](../install/installation.md) installations.
 
 ## Available Rake tasks
 

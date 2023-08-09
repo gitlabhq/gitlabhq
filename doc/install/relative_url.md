@@ -11,7 +11,7 @@ this is not possible due to a variety of reasons. In that case, GitLab can also
 be installed under a relative URL, for example `https://example.com/gitlab`.
 
 This document describes how to run GitLab under a relative URL for installations
-from source. If you are using an Omnibus package,
+from source. If you are using an official Linux package,
 [the steps are different](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab). Use this guide along with the
 [installation guide](installation.md) if you are installing GitLab for the
 first time.

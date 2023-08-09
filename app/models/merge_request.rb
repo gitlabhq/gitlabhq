@@ -984,6 +984,18 @@ class MergeRequest < ApplicationRecord
     branch_merge_base_commit.try(:sha)
   end
 
+  def existing_mrs_targeting_same_branch
+    similar_mrs = target_project
+        .merge_requests
+        .where(source_branch: source_branch, target_branch: target_branch)
+        .where(source_project: source_project)
+        .opened
+
+    similar_mrs = similar_mrs.id_not_in(id) if persisted?
+
+    similar_mrs
+  end
+
   def validate_branches
     return unless target_project && source_project
 
@@ -995,23 +1007,22 @@ class MergeRequest < ApplicationRecord
     [:source_branch, :target_branch].each { |attr| validate_branch_name(attr) }
 
     if opened?
-      similar_mrs = target_project
-        .merge_requests
-        .where(source_branch: source_branch, target_branch: target_branch)
-        .where(source_project_id: source_project&.id)
-        .opened
+      conflicting_mr = existing_mrs_targeting_same_branch.first
 
-      similar_mrs = similar_mrs.where.not(id: id) if persisted?
-
-      conflict = similar_mrs.first
-
-      if conflict.present?
+      if conflicting_mr
         errors.add(
           :validate_branches,
-          "Another open merge request already exists for this source branch: #{conflict.to_reference}"
+          conflicting_mr_message(conflicting_mr)
         )
       end
     end
+  end
+
+  def conflicting_mr_message(conflicting_mr)
+    format(
+      _("Another open merge request already exists for this source branch: %{conflicting_mr_reference}"),
+      conflicting_mr_reference: conflicting_mr.to_reference
+    )
   end
 
   def validate_branch_name(attr)

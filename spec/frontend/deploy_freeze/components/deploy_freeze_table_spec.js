@@ -45,7 +45,9 @@ describe('Deploy freeze table', () => {
     it('displays empty', () => {
       expect(findEmptyFreezePeriods().exists()).toBe(true);
       expect(findEmptyFreezePeriods().text()).toBe(
-        'No deploy freezes exist for this project. To add one, select Add deploy freeze',
+        `No deploy freezes exist for this project. To add one, select 
+            Add deploy freeze
+           above.`,
       );
     });
 

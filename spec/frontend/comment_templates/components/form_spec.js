@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import createdSavedReplyResponse from 'test_fixtures/graphql/comment_templates/create_saved_reply.mutation.graphql.json';
 import createdSavedReplyErrorResponse from 'test_fixtures/graphql/comment_templates/create_saved_reply_with_errors.mutation.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Form from '~/comment_templates/components/form.vue';
 import createSavedReplyMutation from '~/comment_templates/queries/create_saved_reply.mutation.graphql';
@@ -52,6 +53,12 @@ const findSubmitBtn = () => wrapper.find('[data-testid="comment-template-form-su
 
 describe('Comment templates form component', () => {
   describe('creates comment template', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
+    });
+
     it('calls apollo mutation', async () => {
       wrapper = createComponent();
 
@@ -66,6 +73,11 @@ describe('Comment templates form component', () => {
         content: 'Test content',
         name: 'Test',
       });
+      expect(trackingSpy).toHaveBeenCalledWith(
+        expect.any(String),
+        'i_code_review_saved_replies_create',
+        expect.any(Object),
+      );
     });
 
     it('does not submit when form validation fails', async () => {

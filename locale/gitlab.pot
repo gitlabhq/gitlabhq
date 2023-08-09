@@ -5552,6 +5552,9 @@ msgstr ""
 msgid "Another issue tracker is already in use. Only one issue tracker service can be active at a time"
 msgstr ""
 
+msgid "Another open merge request already exists for this source branch: %{conflicting_mr_reference}"
+msgstr ""
+
 msgid "Another third-party wiki is already in use. Only one third-party wiki integration can be active at a time"
 msgstr ""
 
@@ -15381,7 +15384,7 @@ msgstr ""
 msgid "DefaultBranchProtection|Protected against pushes"
 msgstr ""
 
-msgid "Define a custom deploy freeze pattern with %{cronSyntaxStart}cron syntax%{cronSyntaxEnd}"
+msgid "Define a custom deploy freeze pattern with %{cronSyntaxStart}cron syntax%{cronSyntaxEnd}."
 msgstr ""
 
 msgid "Define a custom pattern with cron syntax"
@@ -15909,9 +15912,6 @@ msgstr ""
 msgid "DeployFreeze|Add deploy freeze"
 msgstr ""
 
-msgid "DeployFreeze|Delete"
-msgstr ""
-
 msgid "DeployFreeze|Delete deploy freeze?"
 msgstr ""
 
@@ -15921,7 +15921,7 @@ msgstr ""
 msgid "DeployFreeze|Deploy freeze from %{start} to %{end} in %{timezone} will be removed. Are you sure?"
 msgstr ""
 
-msgid "DeployFreeze|Edit"
+msgid "DeployFreeze|Deploy freezes"
 msgstr ""
 
 msgid "DeployFreeze|Freeze end"
@@ -15930,7 +15930,7 @@ msgstr ""
 msgid "DeployFreeze|Freeze start"
 msgstr ""
 
-msgid "DeployFreeze|No deploy freezes exist for this project. To add one, select %{strongStart}Add deploy freeze%{strongEnd}"
+msgid "DeployFreeze|No deploy freezes exist for this project. To add one, select %{strongStart}Add deploy freeze%{strongEnd} above."
 msgstr ""
 
 msgid "DeployFreeze|Specify deploy freezes using %{cron_syntax_link_start}cron syntax%{cron_syntax_link_end}."
@@ -35857,6 +35857,9 @@ msgid "Profiles|Add key"
 msgstr ""
 
 msgid "Profiles|Add new email"
+msgstr ""
+
+msgid "Profiles|Add new mirror repository"
 msgstr ""
 
 msgid "Profiles|An error occurred while updating your username, please try again."

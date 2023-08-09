@@ -41,7 +41,7 @@ databases. Some examples:
 To migrate existing data from the `main` database to the `ci` database, you can
 copy the database across.
 
-### Existing source installation
+### Existing self-compiled installation
 
 1. Stop GitLab, except for PostgreSQL:
 

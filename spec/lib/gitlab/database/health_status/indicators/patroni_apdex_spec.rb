@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::PatroniApdex, :aggreg
     let(:database_apdex_sli_query_ci) { 'Apdex query for ci' }
     let(:database_apdex_slo_main) { 0.99 }
     let(:database_apdex_slo_ci) { 0.95 }
-    let(:database_apdex_settings) do
+    let(:prometheus_alert_db_indicators_settings) do
       {
         prometheus_api_url: prometheus_url,
         apdex_sli_query: {
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::PatroniApdex, :aggreg
     subject(:evaluate) { described_class.new(context).evaluate }
 
     before do
-      stub_application_setting(database_apdex_settings: database_apdex_settings)
+      stub_application_setting(prometheus_alert_db_indicators_settings: prometheus_alert_db_indicators_settings)
 
       allow(Gitlab::PrometheusClient).to receive(:new).with(*prometheus_config).and_return(prometheus_client)
       allow(prometheus_client).to receive(:ready?).and_return(client_ready)
@@ -69,8 +69,8 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::PatroniApdex, :aggreg
           expect(evaluate.reason).to include('indicator disabled')
         end
 
-        context 'without database_apdex_settings' do
-          let(:database_apdex_settings) { nil }
+        context 'without prometheus_alert_db_indicators_settings' do
+          let(:prometheus_alert_db_indicators_settings) { nil }
 
           it 'returns Unknown signal' do
             expect(evaluate).to be_a(Gitlab::Database::HealthStatus::Signals::Unknown)

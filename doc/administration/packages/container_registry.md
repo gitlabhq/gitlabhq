@@ -1671,7 +1671,7 @@ For Linux package installations:
 
 :::TabTitle Self-compiled (source)
 
-For source installations, locate your `registry` binary and temporarily replace it with the one
+Locate your `registry` binary and temporarily replace it with the one
 obtained from `v3.0.0-gitlab`, as explained for Linux package installations.
 Make sure to start by backing up the original registry binary, and restore it after performing the
 [images upgrade](#images-upgrade) steps.

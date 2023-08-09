@@ -339,7 +339,7 @@ export default {
         </template>
       </template>
 
-      <div class="gl-display-flex gl-justify-content-center">
+      <div v-if="!mutationLoading" class="gl-display-flex gl-justify-content-center">
         <persisted-pagination
           class="gl-mt-3"
           :pagination="pageInfo"

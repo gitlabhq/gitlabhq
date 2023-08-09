@@ -26,7 +26,7 @@ Depending on the installation method and your GitLab version, there are multiple
 official ways to upgrade GitLab:
 
 - [Linux packages (Omnibus GitLab)](#linux-packages-omnibus-gitlab)
-- [Source installations](#installation-from-source)
+- [Self-compiled installations](#self-compiled-installation)
 - [Docker installations](#installation-using-docker)
 - [Kubernetes (Helm) installations](#installation-using-helm)
 
@@ -39,7 +39,7 @@ repositories.
 There are also instructions when you want to
 [upgrade to a specific version](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
-### Installation from source
+### Self-compiled installation
 
 - [Upgrading Community Edition and Enterprise Edition from source](upgrading_from_source.md) -
   The guidelines for upgrading Community Edition and Enterprise Edition from source.
@@ -114,20 +114,24 @@ This section is only applicable if you have enabled the [Elasticsearch integrati
 Major releases require all [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
 to be finished from the most recent minor release in your current version
 before the major version upgrade. You can find pending migrations by
-running the following command:
+running the following command.
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 ```shell
 sudo gitlab-rake gitlab:elastic:list_pending_migrations
 ```
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 ```
+
+::EndTabs
 
 ### What do you do if your advanced search migrations are stuck?
 
@@ -491,8 +495,8 @@ For more information, see [issue 415724](https://gitlab.com/gitlab-org/gitlab/-/
 
   For example, previously:
 
-  - Omnibus GitLab default (`sidekiq['max_concurrency']`): 50
-  - From source installation default: 50
+  - Linux package installation default (`sidekiq['max_concurrency']`): 50
+  - Self-compiled installation default: 50
   - Helm chart default (`gitlab.sidekiq.concurrency`): 25
 
   Reference architectures still use a default of 10 as this is set specifically
@@ -1017,7 +1021,7 @@ that may remain stuck permanently in a **pending** state.
 ### 14.5.0
 
 - When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
-are using a source install, update paths to these binaries in your [systemd unit files](upgrading_from_source.md#configure-systemd-units)
+are using a self-compiled installation, update paths to these binaries in your [systemd unit files](upgrading_from_source.md#configure-systemd-units)
 or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [following the documentation](upgrading_from_source.md).
 
 - Connections between Workhorse and Gitaly use the Gitaly `backchannel` protocol by default. If you deployed a gRPC proxy between Workhorse and Gitaly,
@@ -1380,7 +1384,7 @@ It is not then required to upgrade to 15.9.3 or later for this issue.
 ### Gitaly: Omnibus GitLab configuration structure change
 
 Gitaly configuration structure in Omnibus GitLab [changes](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) in GitLab 16.0 to be consistent with the Gitaly configuration
-structure used in source installs.
+structure used in self-compiled installations.
 
 As a result of this change, a single hash under `gitaly['configuration']` holds most Gitaly
 configuration. Some `gitaly['..']` configuration options will continue to be used by Omnibus GitLab 16.0 and later:
@@ -1542,7 +1546,7 @@ gitaly['configuration'] = {
 ### Praefect: Omnibus GitLab configuration structure change
 
 Praefect configuration structure in Omnibus GitLab [changes](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) in GitLab 16.0 to be consistent with the Praefect configuration
-structure used in source installs.
+structure used in self-compiled installations.
 
 As a result of this change, a single hash under `praefect['configuration']` holds most Praefect
 configuration. Some `praefect['..']` configuration options will continue to be used by Omnibus GitLab 16.0 and later:

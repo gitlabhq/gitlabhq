@@ -14,7 +14,7 @@ GitLab administrators can manage the GitLab CI/CD configuration for their instan
 GitLab CI/CD is enabled by default in all new projects on an instance. You can set
 CI/CD to be disabled by default in new projects by modifying the settings in:
 
-- `gitlab.yml` for source installations.
+- `gitlab.yml` for self-compiled installations.
 - `gitlab.rb` for Linux package installations.
 
 Existing projects that already had CI/CD enabled are unchanged. Also, this setting only changes

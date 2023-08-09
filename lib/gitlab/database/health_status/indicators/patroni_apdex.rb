@@ -40,7 +40,7 @@ module Gitlab
           end
 
           def fetch_connection_error_message
-            return 'Patroni Apdex Settings not configured' unless database_apdex_settings.present?
+            return 'Patroni Apdex Settings not configured' unless prometheus_alert_db_indicators_settings.present?
             return 'Prometheus client is not ready' unless client.ready?
             return 'Apdex SLI query is not configured' unless apdex_sli_query
             return 'Apdex SLO is not configured' unless apdex_slo
@@ -48,28 +48,30 @@ module Gitlab
 
           def client
             @client ||= Gitlab::PrometheusClient.new(
-              database_apdex_settings[:prometheus_api_url],
+              prometheus_alert_db_indicators_settings[:prometheus_api_url],
               allow_local_requests: true,
               verify: true
             )
           end
 
-          def database_apdex_settings
-            @database_apdex_settings ||= Gitlab::CurrentSettings.database_apdex_settings&.with_indifferent_access
+          def prometheus_alert_db_indicators_settings
+            @prometheus_alert_db_indicators_settings ||= Gitlab::CurrentSettings
+              .prometheus_alert_db_indicators_settings
+              &.with_indifferent_access
           end
 
           def apdex_sli_query
             {
-              gitlab_main: database_apdex_settings[:apdex_sli_query][:main],
-              gitlab_ci: database_apdex_settings[:apdex_sli_query][:ci]
+              gitlab_main: prometheus_alert_db_indicators_settings[:apdex_sli_query][:main],
+              gitlab_ci: prometheus_alert_db_indicators_settings[:apdex_sli_query][:ci]
             }.fetch(gitlab_schema)
           end
           strong_memoize_attr :apdex_sli_query
 
           def apdex_slo
             {
-              gitlab_main: database_apdex_settings[:apdex_slo][:main],
-              gitlab_ci: database_apdex_settings[:apdex_slo][:ci]
+              gitlab_main: prometheus_alert_db_indicators_settings[:apdex_slo][:main],
+              gitlab_ci: prometheus_alert_db_indicators_settings[:apdex_slo][:ci]
             }.fetch(gitlab_schema)
           end
           strong_memoize_attr :apdex_slo

@@ -73,7 +73,7 @@
       = _("Pipeline triggers")
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _("Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions.")
       = link_to _('Learn more.'), help_page_path('ci/triggers/index'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content

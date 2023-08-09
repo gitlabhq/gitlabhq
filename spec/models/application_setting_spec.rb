@@ -33,7 +33,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     let(:ftp)   { 'ftp://example.com' }
     let(:javascript) { 'javascript:alert(window.opener.document.location)' }
 
-    let_it_be(:valid_database_apdex_settings) do
+    let_it_be(:valid_prometheus_alert_db_indicators_settings) do
       {
         prometheus_api_url: 'Prometheus URL',
         apdex_sli_query: {
@@ -260,9 +260,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value(true, false).for(:gitlab_dedicated_instance) }
     it { is_expected.not_to allow_value(nil).for(:gitlab_dedicated_instance) }
 
-    it { is_expected.not_to allow_value(random: :value).for(:database_apdex_settings) }
-    it { is_expected.to allow_value(nil).for(:database_apdex_settings) }
-    it { is_expected.to allow_value(valid_database_apdex_settings).for(:database_apdex_settings) }
+    it { is_expected.not_to allow_value(random: :value).for(:prometheus_alert_db_indicators_settings) }
+    it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
+    it { is_expected.to allow_value(valid_prometheus_alert_db_indicators_settings).for(:prometheus_alert_db_indicators_settings) }
 
     it { is_expected.to allow_value([true, false]).for(:silent_mode_enabled) }
     it { is_expected.not_to allow_value(nil).for(:silent_mode_enabled) }

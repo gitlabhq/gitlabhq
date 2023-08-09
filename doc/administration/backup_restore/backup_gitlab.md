@@ -950,8 +950,8 @@ Because file system performance may affect overall GitLab performance,
 
 Don't set the following configuration keys to the same path:
 
-- `gitlab_rails['backup_path']` (`backup.path` for source installations).
-- `gitlab_rails['backup_upload_connection'].local_root` (`backup.upload.connection.local_root` for source installations).
+- `gitlab_rails['backup_path']` (`backup.path` for self-compiled installations).
+- `gitlab_rails['backup_upload_connection'].local_root` (`backup.upload.connection.local_root` for self-compiled installations).
 
 The `backup_path` configuration key sets the local location of the backup file. The `upload` configuration key is
 intended for use when the backup file is uploaded to a separate server, perhaps for archival purposes.

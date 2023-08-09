@@ -19,47 +19,6 @@ A workspace is a virtual sandbox environment for your code in GitLab. You can us
 
 Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project. Workspaces use the AMD64 architecture.
 
-## Set up a workspace
-
-### Prerequisites
-
-- Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports. See the [supported Kubernetes versions](../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features).
-- Ensure autoscaling for the Kubernetes cluster is enabled.
-- In the Kubernetes cluster, verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/) is defined so that volumes can be dynamically provisioned for each workspace.
-- In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`) and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
-- In the Kubernetes cluster, [install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
-- In the Kubernetes cluster, [install the GitLab agent for Kubernetes](../clusters/agent/install/index.md).
-- Configure remote development settings for the GitLab agent with this snippet and update `dns_zone` as needed:
-
-  ```yaml
-  remote_development:
-    enabled: true
-    dns_zone: "workspaces.example.dev"
-  ```
-
-  You can use any agent defined under the root group of your project, provided that remote development is properly configured for that agent.
-- You must have at least the Developer role in the root group.
-- In each public project you want to use this feature for, create a [devfile](#devfile):
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project
-  1. In the root directory of your project, create a file named `.devfile.yaml`. You can use one of the [example configurations](#example-configurations).
-- Ensure the container images used in the devfile support [arbitrary user IDs](#arbitrary-user-ids).
-
-### Create a workspace
-
-To create a workspace:
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Your work**.
-1. Select **Workspaces**.
-1. Select **New workspace**.
-1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites). You can only create workspaces for public projects.
-1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
-1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates. This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
-1. Select **Create workspace**.
-
-The workspace might take a few minutes to start. To open the workspace, under **Preview**, select the workspace.
-You also have access to the terminal and can install any necessary dependencies.
-
 ## Workspaces and projects
 
 Workspaces are scoped to a project. When you create a workspace, you must:
@@ -93,7 +52,7 @@ When you delete a project, agent, user, or token associated with a workspace:
 
 To clean up orphaned resources, an administrator must manually delete the workspace in Kubernetes.
 
-For more information about our plans to change the current behavior, see [issue 414384](https://gitlab.com/gitlab-org/gitlab/-/issues/414384).
+[Issue 414384](https://gitlab.com/gitlab-org/gitlab/-/issues/414384) proposes to change this behavior.
 
 ## Devfile
 
@@ -177,17 +136,6 @@ When you stop a workspace, the compute resources for that workspace are scaled d
 
 To delete the provisioned volume, you must terminate the workspace.
 
-## Disable remote development in the GitLab agent for Kubernetes
-
-You can stop the `remote_development` module of the GitLab agent for Kubernetes from communicating with GitLab. To disable remote development in the GitLab agent configuration, set this property:
-
-```yaml
-remote_development:
-  enabled: false
-```
-
-If you already have running workspaces, an administrator must manually delete these workspaces in Kubernetes.
-
 ## Arbitrary user IDs
 
 You can provide your own container image, which can run as any Linux user ID. It's not possible for GitLab to predict the Linux user ID for a container image.
@@ -204,8 +152,6 @@ For more information, see the [OpenShift documentation](https://docs.openshift.c
 - [GitLab workspaces demo](https://go.gitlab.com/qtu66q)
 
 ## Troubleshooting
-
-When working with workspaces, you might encounter the following issues.
 
 ### `Failed to renew lease` when creating a workspace
 

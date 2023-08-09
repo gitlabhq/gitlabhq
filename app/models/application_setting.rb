@@ -40,6 +40,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     vertex_project
   ], remove_with: '16.3', remove_after: '2023-07-22'
   ignore_column :dashboard_notification_limit, remove_with: '16.5', remove_after: '2023-08-22'
+  ignore_column :database_apdex_settings, remove_with: '16.4', remove_after: '2023-08-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -733,7 +734,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :inactive_projects_send_warning_email_after_months,
     numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
-  validates :database_apdex_settings, json_schema: { filename: 'application_setting_database_apdex_settings' }, allow_nil: true
+  validates :prometheus_alert_db_indicators_settings, json_schema: { filename: 'application_setting_prometheus_alert_db_indicators_settings' }, allow_nil: true
 
   validates :namespace_aggregation_schedule_lease_duration_in_seconds,
     numericality: { only_integer: true, greater_than: 0 }

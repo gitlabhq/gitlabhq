@@ -228,7 +228,7 @@ describe('List Page', () => {
       expect(findPersistedPagination().props('pagination')).toEqual({});
     });
 
-    it('cli commands is not visible', () => {
+    it('cli commands are not visible', () => {
       mountComponent();
 
       expect(findCliCommands().exists()).toBe(false);
@@ -243,11 +243,42 @@ describe('List Page', () => {
     });
   });
 
+  describe('when mutation is loading', () => {
+    beforeEach(async () => {
+      mountComponent();
+      fireFirstSortUpdate();
+      await waitForApolloRequestRender();
+      findImageList().vm.$emit('delete', deletedContainerRepository);
+      findDeleteModal().vm.$emit('confirmDelete');
+      findDeleteImage().vm.$emit('start');
+    });
+
+    it('shows the skeleton loader', () => {
+      expect(findSkeletonLoader().exists()).toBe(true);
+    });
+
+    it('imagesList is not visible', () => {
+      expect(findImageList().exists()).toBe(false);
+    });
+
+    it('pagination is hidden', () => {
+      expect(findPersistedPagination().exists()).toBe(false);
+    });
+
+    it('cli commands are not visible', () => {
+      expect(findCliCommands().exists()).toBe(false);
+    });
+
+    it('title has the metadataLoading props set to true', () => {
+      expect(findRegistryHeader().props('metadataLoading')).toBe(true);
+    });
+  });
+
   describe('list is empty', () => {
     describe('project page', () => {
       const resolver = jest.fn().mockResolvedValue(graphQLEmptyImageListMock);
 
-      it('cli commands is not visible', async () => {
+      it('cli commands are not visible', async () => {
         mountComponent({ resolver });
 
         await waitForApolloRequestRender();
@@ -279,7 +310,7 @@ describe('List Page', () => {
         expect(findGroupEmptyState().exists()).toBe(true);
       });
 
-      it('cli commands is not visible', async () => {
+      it('cli commands are not visible', async () => {
         mountComponent({ resolver, config });
 
         await waitForApolloRequestRender();

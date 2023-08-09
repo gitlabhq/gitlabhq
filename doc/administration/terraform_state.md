@@ -14,7 +14,7 @@ files. The files are encrypted before being stored. This feature is enabled by d
 The storage location of these files defaults to:
 
 - `/var/opt/gitlab/gitlab-rails/shared/terraform_state` for Linux package installations.
-- `/home/git/gitlab/shared/terraform_state` for source installations.
+- `/home/git/gitlab/shared/terraform_state` for self-compiled installations.
 
 These locations can be configured using the options described below.
 

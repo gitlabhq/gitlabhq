@@ -5,7 +5,11 @@
 - add_page_specific_style 'page_bundles/ci_status'
 - add_page_specific_style 'page_bundles/merge_request'
 
-- if @merge_request.can_be_created && !params[:change_branches]
+- conflicting_mr = @merge_request.existing_mrs_targeting_same_branch.first
+
+- if @merge_request.can_be_created && !params[:change_branches] && !conflicting_mr
   = render 'new_submit'
 - else
+  - if conflicting_mr
+    - flash[:alert] = @merge_request.conflicting_mr_message(conflicting_mr)
   = render 'new_compare'

@@ -24,10 +24,10 @@ export default {
     static: true,
     lazy: true,
   },
-  translations: {
+  i18n: {
     cronPlaceholder: '* * * * *',
     cronSyntaxInstructions: __(
-      'Define a custom deploy freeze pattern with %{cronSyntaxStart}cron syntax%{cronSyntaxEnd}',
+      'Define a custom deploy freeze pattern with %{cronSyntaxStart}cron syntax%{cronSyntaxEnd}.',
     ),
     addTitle: __('Add deploy freeze'),
     editTitle: __('Edit deploy freeze'),
@@ -81,9 +81,7 @@ export default {
       return Boolean(this.selectedId);
     },
     modalTitle() {
-      return this.isEditing
-        ? this.$options.translations.editTitle
-        : this.$options.translations.addTitle;
+      return this.isEditing ? this.$options.i18n.editTitle : this.$options.i18n.addTitle;
     },
   },
   methods: {
@@ -104,6 +102,13 @@ export default {
         this.addFreezePeriod();
       }
     },
+    focusFirstInput() {
+      if (this.$refs.freezeStartCron) {
+        setTimeout(() => {
+          this.$refs.freezeStartCron?.$el?.focus();
+        }, 250);
+      }
+    },
   },
 };
 </script>
@@ -115,9 +120,10 @@ export default {
     :action-primary="addDeployFreezeButton"
     @primary="submit"
     @canceled="resetModalHandler"
+    @change="focusFirstInput"
   >
     <p>
-      <gl-sprintf :message="$options.translations.cronSyntaxInstructions">
+      <gl-sprintf :message="$options.i18n.cronSyntaxInstructions">
         <template #cronSyntax="{ content }">
           <gl-link href="https://crontab.guru/" target="_blank">{{ content }}</gl-link>
         </template>
@@ -132,11 +138,13 @@ export default {
     >
       <gl-form-input
         id="deploy-freeze-start"
+        ref="freezeStartCron"
         v-model="freezeStartCron"
         class="gl-font-monospace!"
         data-qa-selector="deploy_freeze_start_field"
-        :placeholder="$options.translations.cronPlaceholder"
+        :placeholder="$options.i18n.cronPlaceholder"
         :state="freezeStartCronState"
+        autofocus
         trim
       />
     </gl-form-group>
@@ -152,7 +160,7 @@ export default {
         v-model="freezeEndCron"
         class="gl-font-monospace!"
         data-qa-selector="deploy_freeze_end_field"
-        :placeholder="$options.translations.cronPlaceholder"
+        :placeholder="$options.i18n.cronPlaceholder"
         :state="freezeEndCronState"
         trim
       />

@@ -13,7 +13,7 @@ or use one of the following methods.
 
 | Installation method                                            | Description | When to choose |
 |----------------------------------------------------------------|-------------|----------------|
-| [Linux package](https://docs.gitlab.com/omnibus/installation/) | The official deb/rpm packages (also known as Omnibus GitLab). The package has GitLab and dependent components, including PostgreSQL, Redis, and Sidekiq. | Use if you want the most mature, scalable method. This version is also used on GitLab.com. <br>- For additional flexibility and resilience, see the [reference architecture documentation](../administration/reference_architectures/index.md).<br>- Review the [system requirements](requirements.md).<br>- View the [list of supported Linux operating systems](../administration/package_information/supported_os.md#supported-operating-systems). |
+| [Linux package](https://docs.gitlab.com/omnibus/installation/) (previously known as Omnibus GitLab) | The official `deb` and `rpm` packages. The Linux package has GitLab and dependent components, including PostgreSQL, Redis, and Sidekiq. | Use if you want the most mature, scalable method. This version is also used on GitLab.com. <br>- For additional flexibility and resilience, see the [reference architecture documentation](../administration/reference_architectures/index.md).<br>- Review the [system requirements](requirements.md).<br>- View the [list of supported Linux operating systems](../administration/package_information/supported_os.md#supported-operating-systems). |
 | [Helm chart](https://docs.gitlab.com/charts/)                 | A chart for installing a cloud-native version of GitLab and its components on Kubernetes. | Use if your infrastructure is on Kubernetes and you're familiar with how it works. Management, observability, and some concepts are different than traditional deployments.<br/>- Administration and troubleshooting requires Kubernetes knowledge.<br/>- It can be more expensive for smaller installations. The default installation requires more resources than a single node Linux package deployment, because most services are deployed in a redundant fashion.<br/><br/>  |
 | [Docker](docker.md)              | The GitLab packages in a Docker container. | Use if you're familiar with Docker. |
 | [Source](installation.md)                                      | GitLab and its components from scratch. | Use if none of the previous methods are available for your platform. Can use for unsupported systems like \*BSD.|
@@ -31,8 +31,8 @@ or use one of the following methods.
 Installation of GitLab on these operating systems is possible, but not supported.
 See the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
 
-See [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported) for Omnibus installs page
-for a list of supported and unsupported OS versions as well as the last support GitLab version for that OS.
+See [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported)
+for a list of supported and unsupported OS versions for Linux package installations as well as the last support GitLab version for that OS.
 
 ## Microsoft Windows
 

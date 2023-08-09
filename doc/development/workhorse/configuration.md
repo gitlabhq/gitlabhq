@@ -189,7 +189,9 @@ You can also set the `GITLAB_WORKHORSE_SENTRY_ENVIRONMENT` environment variable 
 use the Sentry environment feature to separate staging, production and
 development.
 
-Omnibus GitLab (`/etc/gitlab/gitlab.rb`):
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 ```ruby
 gitlab_workhorse['env'] = {
@@ -198,12 +200,14 @@ gitlab_workhorse['env'] = {
 }
 ```
 
-Source installations (`/etc/default/gitlab`):
+:::TabTitle Self-compiled (source)
 
 ```plaintext
 export GITLAB_WORKHORSE_SENTRY_DSN='https://foobar'
 export GITLAB_WORKHORSE_SENTRY_ENVIRONMENT='production'
 ```
+
+::EndTabs
 
 ## Distributed tracing
 

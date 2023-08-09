@@ -110,10 +110,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     return render_404 unless @environment.available?
 
     stop_actions = @environment.stop_with_actions!(current_user)
+    job = stop_actions.first if stop_actions&.count == 1
 
     action_or_env_url =
-      if stop_actions&.count == 1
-        polymorphic_url([project, stop_actions.first])
+      if job.instance_of?(::Ci::Build)
+        polymorphic_url([project, job])
+      elsif job.instance_of?(::Ci::Bridge)
+        project_pipeline_url(project, job.pipeline_id)
       else
         project_environment_url(project, @environment)
       end

@@ -312,7 +312,7 @@ gitlab_rails['incoming_email_delete_after_delivery'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-Example for source installs:
+Example for self-compiled installations:
 
 ```yaml
 incoming_email:
@@ -404,7 +404,7 @@ gitlab_rails['incoming_email_delete_after_delivery'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-Example for source installs:
+Example for self-compiled installations:
 
 ```yaml
 incoming_email:
@@ -490,7 +490,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-Example for source installs:
+Example for self-compiled installations:
 
 ```yaml
 incoming_email:
@@ -558,7 +558,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-Example for source installs:
+Example for self-compiled installations:
 
 ```yaml
 incoming_email:
@@ -646,7 +646,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-This example for source installs assumes the mailbox `incoming@office365.example.com`:
+This example for self-compiled installations assumes the mailbox `incoming@office365.example.com`:
 
 ```yaml
 incoming_email:
@@ -707,7 +707,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-This example for source installs assumes the catch-all mailbox `incoming@office365.example.com`:
+This example for self-compiled installations assumes the catch-all mailbox `incoming@office365.example.com`:
 
 ```yaml
 incoming_email:
@@ -767,7 +767,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-This example for source installs assumes the dedicated email address `incoming@office365.example.com`:
+This example for self-compiled installations assumes the dedicated email address `incoming@office365.example.com`:
 
 ```yaml
 incoming_email:
@@ -865,7 +865,7 @@ gitlab_rails['incoming_email_inbox_options'] = {
 }
 ```
 
-The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
+The Microsoft Graph API is not yet supported in self-compiled installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
 
 ### Use encrypted credentials
 

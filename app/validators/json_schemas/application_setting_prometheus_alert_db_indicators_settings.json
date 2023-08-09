@@ -1,5 +1,5 @@
 {
-  "description": "Database Apdex Settings",
+  "description": "Prometheus Alert Based Db indicators Settings",
   "type": "object",
   "properties": {
     "prometheus_api_url": {

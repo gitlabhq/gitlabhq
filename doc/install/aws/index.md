@@ -24,9 +24,9 @@ The following are the currently available implementation patterns for GitLab whe
 
 [Provision GitLab Cloud Native Hybrid on AWS EKS (HA)](gitlab_hybrid_on_aws.md). This document includes instructions, patterns, and automation for installing GitLab Cloud Native Hybrid on AWS EKS. It also includes [Bill of Materials](https://en.wikipedia.org/wiki/Bill_of_materials) listings and links to Infrastructure as Code. GitLab Cloud Native Hybrid is the supported way to put as much of GitLab as possible into Kubernetes.
 
-### Patterns to Install Omnibus GitLab on AWS EC2 (HA)
+### Patterns to Install GitLab by using the Linux package on AWS EC2 (HA)
 
-[Omnibus GitLab on AWS EC2 (HA)](manual_install_aws.md) - instructions for installing GitLab on EC2 instances. Manual instructions to build a GitLab instance or create your own Infrastructure as Code (IaC).
+[Installing a GitLab POC on Amazon Web Services (AWS)](manual_install_aws.md) - instructions for installing GitLab on EC2 instances. Manual instructions to build a GitLab instance or create your own Infrastructure as Code (IaC).
 
 ### Patterns for EKS cluster provisioning
 
