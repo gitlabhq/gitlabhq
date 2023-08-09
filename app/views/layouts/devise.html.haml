@@ -7,6 +7,7 @@
     = header_message
     = render "layouts/init_client_detection_flags"
     - if Feature.enabled?(:restyle_login_page, @project)
+      = yield :sessions_broadcast
       .gl-h-full.borderless.gl-display-flex.gl-flex-wrap
         .container
           .content
@@ -36,6 +37,7 @@
         = render 'devise/shared/footer'
     - else
       = render "layouts/header/empty"
+      = yield :sessions_broadcast
       .gl-h-full.gl-display-flex.gl-flex-wrap
         .container
           .content

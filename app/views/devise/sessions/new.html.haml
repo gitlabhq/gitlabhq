@@ -1,7 +1,13 @@
 - page_title _("Sign in")
+
 - content_for :page_specific_javascripts do
   = render "layouts/google_tag_manager_head"
   = render "layouts/one_trust"
+
+- content_for :sessions_broadcast do
+  - unless Gitlab.com?
+    = render "layouts/broadcast"
+
 = render "layouts/google_tag_manager_body"
 
 #signin-container
