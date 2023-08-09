@@ -1,0 +1,22 @@
+query getOrganizationGroups {
+  organization @client {
+    id
+    groups {
+      nodes {
+        id
+        fullName
+        parent
+        webUrl
+        descriptionHtml
+        avatarUrl
+        descendantGroupsCount
+        projectsCount
+        groupMembersCount
+        visibility
+        accessLevel {
+          integerValue
+        }
+      }
+    }
+  }
+}

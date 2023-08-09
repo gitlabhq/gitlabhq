@@ -13,7 +13,7 @@ export const initReportAbuse = () => {
     name: 'ReportAbuseButtonRoot',
     provide: {
       reportAbusePath,
-      reportedUserId: parseInt(reportedUserId, 10),
+      reportedUserId: reportedUserId ? parseInt(reportedUserId, 10) : null,
       reportedFromUrl,
     },
     render(createElement) {

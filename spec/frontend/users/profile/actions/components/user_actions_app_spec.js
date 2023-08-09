@@ -1,6 +1,7 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserActionsApp from '~/users/profile/actions/components/user_actions_app.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 describe('User Actions App', () => {
   let wrapper;
@@ -40,6 +41,15 @@ describe('User Actions App', () => {
       });
       expect(findActions()).toHaveLength(2);
     });
+
+    it('should show items with report abuse', () => {
+      createWrapper({
+        rssSubscriptionPath: '/test/path',
+        reportedUserId: 1,
+        reportedFromUrl: '/report/path',
+      });
+      expect(findActions()).toHaveLength(3);
+    });
   });
 
   it('shows copy user id action', () => {
@@ -59,5 +69,22 @@ describe('User Actions App', () => {
     expect(rssLink.exists()).toBe(true);
     expect(rssLink.attributes('href')).toBe(testSubscriptionPath);
     expect(rssLink.text()).toBe('Subscribe');
+  });
+
+  it('shows report abuse action when reported user id was presented', () => {
+    const reportUrl = '/path/to/report';
+    const reportUserId = 1;
+    createWrapper({
+      rssSubscriptionPath: '/test/path',
+      reportedUserId: reportUserId,
+      reportedFromUrl: reportUrl,
+    });
+    const abuseCategorySelector = wrapper.findComponent(AbuseCategorySelector);
+    expect(abuseCategorySelector.exists()).toBe(true);
+    expect(abuseCategorySelector.props()).toEqual({
+      reportedUserId: reportUserId,
+      reportedFromUrl: reportUrl,
+      showDrawer: false,
+    });
   });
 });

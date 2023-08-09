@@ -7,18 +7,29 @@ export const initUserActionsApp = () => {
 
   if (!mountingEl) return false;
 
-  const { userId, rssSubscriptionPath } = mountingEl.dataset;
+  const {
+    userId,
+    rssSubscriptionPath,
+    reportAbusePath,
+    reportedUserId,
+    reportedFromUrl,
+  } = mountingEl.dataset;
 
   Vue.use(GlToast);
 
   return new Vue({
     el: mountingEl,
     name: 'UserActionsRoot',
+    provide: {
+      reportAbusePath,
+    },
     render(createElement) {
       return createElement(UserActionsApp, {
         props: {
           userId,
           rssSubscriptionPath,
+          reportedUserId: reportedUserId ? parseInt(reportedUserId, 10) : null,
+          reportedFromUrl,
         },
       });
     },

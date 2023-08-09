@@ -226,6 +226,24 @@ module UsersHelper
     end
   end
 
+  def user_profile_actions_data(user)
+    basic_actions_data = {
+      user_id: user.id
+    }
+
+    if can?(current_user, :read_user_profile, user)
+      basic_actions_data[:rss_subscription_path] = user_path(user, rss_url_options)
+    end
+
+    return basic_actions_data if !current_user || current_user == user
+
+    basic_actions_data.merge(
+      report_abuse_path: add_category_abuse_reports_path,
+      reported_user_id: user.id,
+      reported_from_url: user_url(user)
+    )
+  end
+
   private
 
   def admin_users_paths

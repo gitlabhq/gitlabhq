@@ -12,10 +12,17 @@ export default {
       "BetaBadge|A Beta feature is not production-ready, but is unlikely to change drastically before it's released. We encourage users to try Beta features and provide feedback.",
     ),
     listIntroduction: s__('BetaBadge|A Beta feature:'),
-    listItemStability: s__('BetaBadge|May have performance or stability issues.'),
+    listItemStability: s__('BetaBadge|May be unstable.'),
     listItemDataLoss: s__('BetaBadge|Should not cause data loss.'),
     listItemReasonableEffort: s__('BetaBadge|Is supported by a commercially reasonable effort.'),
     listItemNearCompletion: s__('BetaBadge|Is complete or near completion.'),
+  },
+  props: {
+    size: {
+      type: String,
+      required: false,
+      default: 'md',
+    },
   },
   methods: {
     target() {
@@ -35,7 +42,9 @@ export default {
 
 <template>
   <div>
-    <gl-badge ref="badge" class="gl-cursor-pointer">{{ $options.i18n.badgeLabel }}</gl-badge>
+    <gl-badge ref="badge" href="#" :size="size" variant="neutral" class="gl-cursor-pointer">{{
+      $options.i18n.badgeLabel
+    }}</gl-badge>
     <gl-popover
       triggers="hover focus click"
       :show-close-button="true"

@@ -1,6 +1,7 @@
 <script>
 import { GlCollapsibleListbox, GlTooltip, GlButton } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { InternalEvents } from '~/tracking';
 import savedRepliesQuery from './saved_replies.query.graphql';
 
 export default {
@@ -18,6 +19,7 @@ export default {
     GlButton,
     GlTooltip,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     newCommentTemplatePath: {
       type: String,
@@ -55,6 +57,7 @@ export default {
       const savedReply = this.savedReplies.find((r) => r.id === id);
       if (savedReply) {
         this.$emit('select', savedReply.content);
+        this.track_event('i_code_review_saved_replies_use');
       }
     },
   },

@@ -7351,7 +7351,7 @@ msgstr ""
 msgid "BetaBadge|Is supported by a commercially reasonable effort."
 msgstr ""
 
-msgid "BetaBadge|May have performance or stability issues."
+msgid "BetaBadge|May be unstable."
 msgstr ""
 
 msgid "BetaBadge|Should not cause data loss."
@@ -32792,6 +32792,9 @@ msgid "Ordered list"
 msgstr ""
 
 msgid "Organizations"
+msgstr ""
+
+msgid "Organization|An error occurred loading the groups. Please refresh the page to try again."
 msgstr ""
 
 msgid "Organization|An error occurred loading the projects. Please refresh the page to try again."

@@ -11,3 +11,9 @@ export const formatProjects = (projects) =>
       },
     },
   }));
+
+export const formatGroups = (groups) =>
+  groups.map(({ id, ...group }) => ({
+    ...group,
+    id: getIdFromGraphQLId(id),
+  }));

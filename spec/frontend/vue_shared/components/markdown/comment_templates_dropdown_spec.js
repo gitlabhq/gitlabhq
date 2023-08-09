@@ -1,6 +1,8 @@
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import savedRepliesResponse from 'test_fixtures/graphql/comment_templates/saved_replies.query.graphql.json';
+import { mockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -31,6 +33,10 @@ function createComponent(options = {}) {
   });
 }
 
+function findDropdownComponent() {
+  return wrapper.findComponent(GlCollapsibleListbox);
+}
+
 describe('Comment templates dropdown', () => {
   it('fetches data when dropdown gets opened', async () => {
     const mockApollo = createMockApolloProvider(savedRepliesResponse);
@@ -43,16 +49,42 @@ describe('Comment templates dropdown', () => {
     expect(savedRepliesResp).toHaveBeenCalled();
   });
 
-  it('adds emits a select event on selecting a comment', async () => {
-    const mockApollo = createMockApolloProvider(savedRepliesResponse);
-    wrapper = createComponent({ mockApollo });
+  describe('when selecting a comment', () => {
+    let trackingSpy;
+    let mockApollo;
 
-    wrapper.find('.js-comment-template-toggle').trigger('click');
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
+      mockApollo = createMockApolloProvider(savedRepliesResponse);
+      wrapper = createComponent({ mockApollo });
+    });
 
-    await waitForPromises();
+    it('emits a select event', async () => {
+      wrapper.find('.js-comment-template-toggle').trigger('click');
 
-    wrapper.find('.gl-new-dropdown-item').trigger('click');
+      await waitForPromises();
 
-    expect(wrapper.emitted().select[0]).toEqual(['Saved Reply Content']);
+      wrapper.find('.gl-new-dropdown-item').trigger('click');
+
+      expect(wrapper.emitted().select[0]).toEqual(['Saved Reply Content']);
+    });
+
+    it('tracks the usage of the saved comment', async () => {
+      const dropdown = findDropdownComponent();
+
+      dropdown.vm.$emit('shown');
+
+      await waitForPromises();
+
+      dropdown.vm.$emit('select', savedRepliesResponse.data.currentUser.savedReplies.nodes[0].id);
+
+      await waitForPromises();
+
+      expect(trackingSpy).toHaveBeenCalledWith(
+        expect.any(String),
+        'i_code_review_saved_replies_use',
+        expect.any(Object),
+      );
+    });
   });
 });

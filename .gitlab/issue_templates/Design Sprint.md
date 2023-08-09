@@ -6,7 +6,7 @@ Please refer to the [Remote Design Sprint Handbook page](https://about.gitlab.co
 
 ## Design Sprint Focus
 * [ ] Have you [determined that a Design Sprint is appropriate for this project](https://about.gitlab.com/handbook/product/ux/design-sprint/#when-to-opt-for-a-remote-design-sprint)?
-_What is the focus of the [Design Sprint](https://about.gitlab.com/handbook/product/product-processes/#design-sprint)? What problem area will you be solving for and who is the target user?_
+_What is the focus of the [Design Sprint](https://about.gitlab.com/handbook/product/product-processes/#remote-design-sprint)? What problem area will you be solving for and who is the target user?_
 
 ## Objectives
 _What is the objective(s) this Design Sprint will entail?_

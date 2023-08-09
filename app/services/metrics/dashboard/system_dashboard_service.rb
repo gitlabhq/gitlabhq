@@ -11,10 +11,6 @@ module Metrics
       # SHA256 hash of dashboard content
       DASHBOARD_VERSION = 'ce9ae27d2913f637de851d61099bc4151583eae68b1386a2176339ef6e653223'
 
-      SEQUENCE = [
-        STAGES::PanelIdsInserter
-      ].freeze
-
       class << self
         def all_dashboard_paths(_project)
           [{

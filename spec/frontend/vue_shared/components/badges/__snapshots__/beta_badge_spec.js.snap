@@ -4,9 +4,10 @@ exports[`Beta badge component renders the badge 1`] = `
 <div>
   <gl-badge-stub
     class="gl-cursor-pointer"
+    href="#"
     iconsize="md"
     size="md"
-    variant="muted"
+    variant="neutral"
   >
     Beta
   </gl-badge-stub>
@@ -33,7 +34,7 @@ exports[`Beta badge component renders the badge 1`] = `
       class="gl-pl-4"
     >
       <li>
-        May have performance or stability issues.
+        May be unstable.
       </li>
        
       <li>

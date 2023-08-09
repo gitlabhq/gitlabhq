@@ -9,10 +9,6 @@ module Metrics
       DASHBOARD_PATH = nil
       DASHBOARD_NAME = nil
 
-      SEQUENCE = [
-        STAGES::PanelIdsInserter
-      ].freeze
-
       class << self
         def valid_params?(params)
           matching_dashboard?(params[:dashboard_path])
@@ -51,10 +47,6 @@ module Metrics
         yml = File.read(Rails.root.join(dashboard_path))
 
         load_yaml(yml)
-      end
-
-      def sequence
-        self.class::SEQUENCE
       end
     end
   end

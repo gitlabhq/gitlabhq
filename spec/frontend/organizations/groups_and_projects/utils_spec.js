@@ -1,11 +1,11 @@
-import { formatProjects } from '~/organizations/groups_and_projects/utils';
+import { formatProjects, formatGroups } from '~/organizations/groups_and_projects/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { organizationProjects } from './mock_data';
+import { organizationProjects, organizationGroups } from './mock_data';
 
 describe('formatProjects', () => {
   it('correctly formats the projects', () => {
-    const [firstMockProject] = organizationProjects.projects.nodes;
-    const formattedProjects = formatProjects(organizationProjects.projects.nodes);
+    const [firstMockProject] = organizationProjects.nodes;
+    const formattedProjects = formatProjects(organizationProjects.nodes);
     const [firstFormattedProject] = formattedProjects;
 
     expect(firstFormattedProject).toMatchObject({
@@ -17,6 +17,17 @@ describe('formatProjects', () => {
         },
       },
     });
-    expect(formattedProjects.length).toBe(organizationProjects.projects.nodes.length);
+    expect(formattedProjects.length).toBe(organizationProjects.nodes.length);
+  });
+});
+
+describe('formatGroups', () => {
+  it('correctly formats the groups', () => {
+    const [firstMockGroup] = organizationGroups.nodes;
+    const formattedGroups = formatGroups(organizationGroups.nodes);
+    const [firstFormattedGroup] = formattedGroups;
+
+    expect(firstFormattedGroup.id).toBe(getIdFromGraphQLId(firstMockGroup.id));
+    expect(formattedGroups.length).toBe(organizationGroups.nodes.length);
   });
 });

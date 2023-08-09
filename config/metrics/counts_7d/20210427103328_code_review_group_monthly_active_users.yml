@@ -143,3 +143,4 @@ options:
     - 'i_code_review_merge_request_widget_security_reports_expand_warning'
     - 'i_code_review_merge_request_widget_security_reports_expand_failed'
     - 'i_code_review_saved_replies_create'
+    - 'i_code_review_saved_replies_use'
