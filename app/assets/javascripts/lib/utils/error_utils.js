@@ -1,0 +1,149 @@
+import { isEmpty, isString, isObject } from 'lodash';
+import { sprintf, __ } from '~/locale';
+
+export class ActiveModelError extends Error {
+  constructor(errorAttributeMap = {}, ...params) {
+    // Pass remaining arguments (including vendor specific ones) to parent constructor
+    super(...params);
+
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ActiveModelError);
+    }
+
+    this.name = 'ActiveModelError';
+    // Custom debugging information
+    this.errorAttributeMap = errorAttributeMap;
+  }
+}
+
+const DEFAULT_ERROR = {
+  message: __('Something went wrong. Please try again.'),
+  links: {},
+};
+
+/**
+ * @typedef {Object<ErrorAttribute,ErrorType[]>} ErrorAttributeMap - Map of attributes to error details
+ * @typedef {string} ErrorAttribute - the error attribute https://api.rubyonrails.org/v7.0.4.2/classes/ActiveModel/Error.html
+ * @typedef {string} ErrorType - the error type https://api.rubyonrails.org/v7.0.4.2/classes/ActiveModel/Error.html
+ *
+ * @example { "email": ["taken", ...] }
+ * // returns `${UNLINKED_ACCOUNT_ERROR}`, i.e. the `EMAIL_TAKEN_ERROR_TYPE` error message
+ *
+ * @param {ErrorAttributeMap} errorAttributeMap
+ * @param {Object} errorDictionary
+ * @returns {(null|string)} null or error message if found
+ */
+function getMessageFromType(errorAttributeMap = {}, errorDictionary = {}) {
+  if (!isObject(errorAttributeMap)) {
+    return null;
+  }
+
+  return Object.keys(errorAttributeMap).reduce((_, attribute) => {
+    const errorType = errorAttributeMap[attribute].find(
+      (type) => errorDictionary[`${attribute}:${type}`.toLowerCase()],
+    );
+    if (errorType) {
+      return errorDictionary[`${attribute}:${errorType}`.toLowerCase()];
+    }
+
+    return null;
+  }, null);
+}
+
+/**
+ * @example "Email has already been taken, Email is invalid"
+ * // returns `${UNLINKED_ACCOUNT_ERROR}`, i.e. the `EMAIL_TAKEN_ERROR_TYPE` error message
+ *
+ * @param {string} errorString
+ * @param {Object} errorDictionary
+ * @returns {(null|string)} null or error message if found
+ */
+function getMessageFromErrorString(errorString, errorDictionary = {}) {
+  if (isEmpty(errorString) || !isString(errorString)) {
+    return null;
+  }
+
+  const messages = errorString.split(', ');
+  const errorMessage = messages.find((message) => errorDictionary[message.toLowerCase()]);
+  if (errorMessage) {
+    return errorDictionary[errorMessage.toLowerCase()];
+  }
+
+  return {
+    message: errorString,
+    links: {},
+  };
+}
+
+/**
+ * Receives an Error and attempts to extract the `errorAttributeMap` in
+ * case it is an `ActiveModelError` and returns the message if it exists.
+ * If a match is not found it will attempt to map a message from the
+ * Error.message to be returned.
+ * Otherwise, it will return a general error message.
+ *
+ * @param {Error|String} systemError
+ * @param {Object} errorDictionary
+ * @param {Object} defaultError
+ * @returns error message
+ */
+export function mapSystemToFriendlyError(
+  systemError,
+  errorDictionary = {},
+  defaultError = DEFAULT_ERROR,
+) {
+  if (systemError instanceof String || typeof systemError === 'string') {
+    const messageFromErrorString = getMessageFromErrorString(systemError, errorDictionary);
+    if (messageFromErrorString) {
+      return messageFromErrorString;
+    }
+    return defaultError;
+  }
+
+  if (!(systemError instanceof Error)) {
+    return defaultError;
+  }
+
+  const { errorAttributeMap, message } = systemError;
+  const messageFromType = getMessageFromType(errorAttributeMap, errorDictionary);
+  if (messageFromType) {
+    return messageFromType;
+  }
+
+  const messageFromErrorString = getMessageFromErrorString(message, errorDictionary);
+  if (messageFromErrorString) {
+    return messageFromErrorString;
+  }
+
+  return defaultError;
+}
+
+function generateLinks(links) {
+  return Object.keys(links).reduce((allLinks, link) => {
+    /* eslint-disable-next-line @gitlab/require-i18n-strings */
+    const linkStart = `${link}Start`;
+    /* eslint-disable-next-line @gitlab/require-i18n-strings */
+    const linkEnd = `${link}End`;
+
+    return {
+      ...allLinks,
+      [linkStart]: `<a href="${links[link]}" target="_blank" rel="noopener noreferrer">`,
+      [linkEnd]: '</a>',
+    };
+  }, {});
+}
+
+export const generateHelpTextWithLinks = (error) => {
+  if (isString(error)) {
+    return error;
+  }
+
+  if (isEmpty(error)) {
+    /* eslint-disable-next-line @gitlab/require-i18n-strings */
+    throw new Error('The error cannot be empty.');
+  }
+
+  const links = generateLinks(error.links);
+  return sprintf(error.message, links, false);
+};

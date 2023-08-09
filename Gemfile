@@ -352,7 +352,7 @@ gem 'sentry-sidekiq', '~> 5.8.0'
 
 # PostgreSQL query parsing
 #
-gem 'pg_query', '~> 4.2.1'
+gem 'pg_query', '~> 4.2.3'
 
 gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation'
 

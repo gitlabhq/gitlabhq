@@ -15,7 +15,6 @@ This document describes how to:
 This document is intended for environments using:
 
 - [Linux package (Omnibus) and cloud-native hybrid reference architectures 3,000 users and up](../reference_architectures/index.md)
-- Highly-automated deployment tooling such as [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit)
 - [Amazon RDS](https://aws.amazon.com/rds/) for PostgreSQL data
 - [Amazon S3](https://aws.amazon.com/s3/) for object storage
 - [Object storage](../object_storage.md) to store everything possible, including [blobs](backup_gitlab.md#blobs) and [Container Registry](backup_gitlab.md#container-registry)
@@ -49,7 +48,7 @@ There is a feature proposal to add the ability to back up repositories directly 
 
   1. Spin up a VM with 8 vCPU and 7.2 GB memory. This node will be used to back up Git repositories. Note that
      [a Praefect node cannot be used to back up Git data](https://gitlab.com/gitlab-org/gitlab/-/issues/396343#note_1385950340).
-  1. Configure the node as another **GitLab Rails** node as defined in your [reference architecture](../reference_architectures/index.md). Use the [GitLab Environment Toolkit `gitlab_rails.yml` playbook](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/2.8.5/ansible/playbooks/gitlab_rails.yml). As with other GitLab Rails nodes, this node must have access to your main Postgres database as well as to Gitaly Cluster.
+  1. Configure the node as another **GitLab Rails** node as defined in your [reference architecture](../reference_architectures/index.md). As with other GitLab Rails nodes, this node must have access to your main Postgres database as well as to Gitaly Cluster.
 
 The backup node will copy all of the environment's Git data, so ensure that it has enough attached storage. For example, you need at least as much storage as one node in a Gitaly Cluster. Without Gitaly Cluster, you need at least as much storage as all Gitaly nodes. Keep in mind that Git repository backups can be significantly larger than Gitaly storage usage because forks are deduplicated in Gitaly but not in backups.
 
@@ -91,8 +90,9 @@ To back up the Git repositories:
 
 ### Configure backup of configuration files
 
-We strongly recommend using rigorous automation tools such as [Terraform](https://www.terraform.io/) and [Ansible](https://www.ansible.com/) to administer large GitLab environments. [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) is a good example. You may choose to build up your own deployment tool and use it as a reference.
+If your configuration and secrets are defined outside of your deployment and then deployed into it, then the implementation of the backup strategy depends on your specific setup and requirements. As an example, you can store secrets in [AWS Secret Manager](https://aws.amazon.com/secrets-manager/) with [replication to multiple regions](https://docs.aws.amazon.com/secretsmanager/latest/userguide/create-manage-multi-region-secrets.html) and configure a script to back up secrets automatically.
 
-Following this approach, your configuration files and secrets should already exist in secure, canonical locations outside of the production VMs or pods. This document does not cover backing up that data.
+If your configuration and secrets are only defined inside your deployment:
 
-As an example, you can store secrets in [AWS Secret Manager](https://aws.amazon.com/secrets-manager/) and pull them into your [Terraform configuration files](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/docs/environment_provision.md#terraform-data-sources). [AWS Secret Manager can be configured to replicate to multiple regions](https://docs.aws.amazon.com/secretsmanager/latest/userguide/create-manage-multi-region-secrets.html).
+1. [Storing configuration files](backup_gitlab.md#storing-configuration-files) describes how to extract configuration and secrets files.
+1. These files should be uploaded to a separate, more restrictive, object storage account.

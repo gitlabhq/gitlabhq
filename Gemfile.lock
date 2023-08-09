@@ -1935,7 +1935,7 @@ DEPENDENCIES
   parslet (~> 1.8)
   peek (~> 1.1)
   pg (~> 1.5.3)
-  pg_query (~> 4.2.1)
+  pg_query (~> 4.2.3)
   png_quantizator (~> 0.2.1)
   premailer-rails (~> 1.10.3)
   prometheus-client-mmap (~> 0.27)
