@@ -21,7 +21,7 @@ module WebIdeCSP
 
     default_src = Array(request.content_security_policy.directives['default-src'] || [])
     request.content_security_policy.directives['frame-src'] ||= default_src
-    request.content_security_policy.directives['frame-src'].concat([webpack_url, 'https://*.vscode-cdn.net/'])
+    request.content_security_policy.directives['frame-src'].concat([webpack_url, 'https://*.web-ide.gitlab-static.net/'])
 
     request.content_security_policy.directives['worker-src'] ||= default_src
     request.content_security_policy.directives['worker-src'].concat([webpack_url])

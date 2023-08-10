@@ -187,7 +187,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
       it 'updates the content security policy with the correct frame sources' do
         subject
 
-        expect(find_csp_directive('frame-src')).to include("http://www.example.com/assets/webpack/", "https://*.vscode-cdn.net/")
+        expect(find_csp_directive('frame-src')).to include("http://www.example.com/assets/webpack/", "https://*.web-ide.gitlab-static.net/")
         expect(find_csp_directive('worker-src')).to include("http://www.example.com/assets/webpack/")
       end
 
