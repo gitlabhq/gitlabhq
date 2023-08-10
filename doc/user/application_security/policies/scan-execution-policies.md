@@ -113,6 +113,11 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 > - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
 > - The `branch_type` field was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/413062) in GitLab 16.2.
+> - The security policy bot users were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394958) in GitLab 16.3 [with flags](../../../administration/feature_flags.md) named `scan_execution_group_bot_users` and `scan_execution_bot_users`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, security policy bot users are available. To hide the feature, an administrator can [disable the feature flags](../../../administration/feature_flags.md) named `scan_execution_group_bot_users` and `scan_execution_bot_users`.
+On GitLab.com, this feature is available.
 
 This rule enforces the defined actions and schedules a scan on the provided date/time.
 
@@ -126,6 +131,10 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
 1. You must specify only one of `branches`, `branch_type`, or `agents`.
+
+Scheduled scan pipelines are triggered by a security policy bot user that is a guest member of the project. Security policy bot users are automatically created when the security policy project is linked, and removed when the security policy project is unlinked.
+
+If the project does not have a security policy bot user, the scheduled scan pipeline is triggered by the user that modified the security policy project last.
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 

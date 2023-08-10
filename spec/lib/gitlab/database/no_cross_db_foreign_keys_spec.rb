@@ -12,10 +12,9 @@ RSpec.describe 'cross-database foreign keys' do
   let!(:allowed_cross_database_foreign_keys) do
     [
       'routes.namespace_id',                    # https://gitlab.com/gitlab-org/gitlab/-/issues/420869
-      'user_details.enterprise_group_id',       # https://gitlab.com/gitlab-org/gitlab/-/issues/420868
-      'user_details.provisioned_by_group_id',   # https://gitlab.com/gitlab-org/gitlab/-/issues/420868
       'group_import_states.user_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/421210
-      'user_group_callouts.user_id'             # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
+      'user_group_callouts.user_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
+      'group_import_states.user_id'             # https://gitlab.com/gitlab-org/gitlab/-/issues/421210
     ]
   end
 
