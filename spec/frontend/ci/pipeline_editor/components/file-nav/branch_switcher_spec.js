@@ -1,3 +1,5 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import {
   GlDropdown,
   GlDropdownItem,
@@ -5,8 +7,7 @@ import {
   GlLoadingIcon,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import VueApollo from 'vue-apollo';
+import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import BranchSwitcher from '~/ci/pipeline_editor/components/file_nav/branch_switcher.vue';
@@ -28,55 +29,14 @@ import {
   mockTotalSearchResults,
 } from '../../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
-
 describe('Pipeline editor branch switcher', () => {
   let wrapper;
   let mockApollo;
   let mockAvailableBranchQuery;
 
-  const createComponent = ({
-    currentBranch = mockDefaultBranch,
-    availableBranches = ['main'],
-    isQueryLoading = false,
-    mountFn = shallowMount,
-    options = {},
-    props = {},
-  } = {}) => {
-    wrapper = mountFn(BranchSwitcher, {
-      propsData: {
-        ...props,
-        paginationLimit: mockBranchPaginationLimit,
-      },
-      provide: {
-        projectFullPath: mockProjectFullPath,
-        totalBranches: mockTotalBranches,
-      },
-      mocks: {
-        $apollo: {
-          queries: {
-            availableBranches: {
-              loading: isQueryLoading,
-            },
-          },
-        },
-      },
-      data() {
-        return {
-          availableBranches,
-          currentBranch,
-        };
-      },
-      ...options,
-    });
-  };
+  Vue.use(VueApollo);
 
-  const createComponentWithApollo = ({
-    mountFn = shallowMount,
-    props = {},
-    availableBranches = ['main'],
-  } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     const handlers = [[getAvailableBranchesQuery, mockAvailableBranchQuery]];
     mockApollo = createMockApollo(handlers, resolvers);
 
@@ -106,16 +66,19 @@ describe('Pipeline editor branch switcher', () => {
       },
     });
 
-    createComponent({
-      mountFn,
-      props,
-      availableBranches,
-      options: {
-        localVue,
-        apolloProvider: mockApollo,
-        mocks: {},
+    wrapper = shallowMount(BranchSwitcher, {
+      propsData: {
+        ...props,
+        paginationLimit: mockBranchPaginationLimit,
       },
+      provide: {
+        projectFullPath: mockProjectFullPath,
+        totalBranches: mockTotalBranches,
+      },
+      apolloProvider: mockApollo,
     });
+
+    return waitForPromises();
   };
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
@@ -137,7 +100,7 @@ describe('Pipeline editor branch switcher', () => {
     expect(wrapper.emitted('showError')).toBeDefined();
     expect(wrapper.emitted('showError')[0]).toEqual([
       {
-        reasons: [wrapper.vm.$options.i18n.fetchError],
+        reasons: ['Unable to fetch branch list for this project.'],
         type: DEFAULT_FAILURE,
       },
     ]);
@@ -145,19 +108,26 @@ describe('Pipeline editor branch switcher', () => {
 
   describe('when querying for the first time', () => {
     beforeEach(() => {
-      createComponentWithApollo({ availableBranches: [] });
+      createComponent();
     });
 
     it('disables the dropdown', () => {
       expect(findDropdown().props('disabled')).toBe(true);
+    });
+
+    it('shows loading icon', () => {
+      expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 
   describe('after querying', () => {
     beforeEach(async () => {
       setAvailableBranchesMock(generateMockProjectBranches());
-      createComponentWithApollo({ mountFn: mount });
-      await waitForPromises();
+      await createComponent();
+    });
+
+    it('does not render the loading icon', () => {
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('renders search box', () => {
@@ -185,8 +155,7 @@ describe('Pipeline editor branch switcher', () => {
   describe('on fetch error', () => {
     beforeEach(async () => {
       setAvailableBranchesMock(new Error());
-      createComponentWithApollo({ availableBranches: [] });
-      await waitForPromises();
+      await createComponent();
     });
 
     it('does not render dropdown', () => {
@@ -202,8 +171,7 @@ describe('Pipeline editor branch switcher', () => {
     beforeEach(async () => {
       jest.spyOn(window.history, 'pushState').mockImplementation(() => {});
       setAvailableBranchesMock(generateMockProjectBranches());
-      createComponentWithApollo({ mountFn: mount });
-      await waitForPromises();
+      await createComponent();
     });
 
     it('updates session history when selecting a different branch', async () => {
@@ -251,7 +219,7 @@ describe('Pipeline editor branch switcher', () => {
 
     describe('with unsaved changes', () => {
       beforeEach(async () => {
-        createComponentWithApollo({ mountFn: mount, props: { hasUnsavedChanges: true } });
+        createComponent({ props: { hasUnsavedChanges: true } });
         await waitForPromises();
       });
 
@@ -270,8 +238,7 @@ describe('Pipeline editor branch switcher', () => {
   describe('when searching', () => {
     beforeEach(async () => {
       setAvailableBranchesMock(generateMockProjectBranches());
-      createComponentWithApollo({ mountFn: mount });
-      await waitForPromises();
+      await createComponent();
     });
 
     afterEach(() => {
@@ -355,23 +322,10 @@ describe('Pipeline editor branch switcher', () => {
     });
   });
 
-  describe('loading icon', () => {
-    it.each`
-      isQueryLoading | isRendered
-      ${true}        | ${true}
-      ${false}       | ${false}
-    `('checks if query is loading before rendering', ({ isQueryLoading, isRendered }) => {
-      createComponent({ isQueryLoading, mountFn: mount });
-
-      expect(findLoadingIcon().exists()).toBe(isRendered);
-    });
-  });
-
   describe('when scrolling to the bottom of the list', () => {
     beforeEach(async () => {
       setAvailableBranchesMock(generateMockProjectBranches());
-      createComponentWithApollo();
-      await waitForPromises();
+      await createComponent();
     });
 
     afterEach(() => {

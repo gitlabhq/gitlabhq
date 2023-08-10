@@ -358,7 +358,7 @@ To reorder them, drag them around.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
 
-Confidential OKRs are [OKRs](index.md) visible only to members of a project with
+Confidential OKRs are OKRs visible only to members of a project with
 [sufficient permissions](#who-can-see-confidential-okrs).
 You can use confidential OKRs to keep security vulnerabilities private or prevent surprises from
 leaking out.
@@ -405,10 +405,28 @@ the OKR even if they were actively participating before the change.
 However, a user with the **Guest role** can create confidential OKRs, but can only view the ones
 that they created themselves.
 
-Users with the Guest role or non-members can read the confidential issue if they are assigned to the issue.
-When a Guest user or non-member is unassigned from a confidential issue, they can no longer view it.
+Users with the Guest role or non-members can read the confidential OKR if they are assigned to the OKR.
+When a Guest user or non-member is unassigned from a confidential OKR, they can no longer view it.
 
 Confidential OKRs are hidden in search results for users without the necessary permissions.
+
+### Confidential OKR indicators
+
+Confidential OKRs are visually different from regular OKRs in a few ways.
+Wherever OKRs are listed, you can see the confidential (**{eye-slash}**) icon
+next to the OKRs that are marked as confidential.
+
+If you don't have [enough permissions](#who-can-see-confidential-okrs),
+you cannot see confidential OKRs at all.
+
+Likewise, while inside the OKR, you can see the confidential (**{eye-slash}**) icon right next to
+the breadcrumbs.
+
+Every change from regular to confidential and vice versa, is indicated by a
+system note in the OKR's comments, for example:
+
+> - **{eye-slash}** Jo Garcia made the issue confidential 5 minutes ago
+> - **{eye}** Jo Garcia made the issue visible to everyone just now
 
 ## Two-column layout
 

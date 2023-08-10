@@ -8,7 +8,6 @@ module Gitlab
 
       EventError = Class.new(StandardError)
       UnknownEvent = Class.new(EventError)
-      InvalidContext = Class.new(EventError)
 
       # Track event on entity_id
       # Increment a Redis HLL counter for unique event_name and entity_id
@@ -29,29 +28,13 @@ module Gitlab
           track(values, event_name, time: time)
         end
 
-        # Track unique events
-        #
-        # event_name - The event name.
-        # values - One or multiple values counted.
-        # context - Event context, plan level tracking.
-        # time - Time of the action, set to Time.current.
-        def track_event_in_context(event_name, values:, context:, time: Time.zone.now)
-          return if context.blank?
-          return unless context.in?(valid_context_list)
-
-          track(values, event_name, context: context, time: time)
-        end
-
         # Count unique events for a given time range.
         #
         # event_names - The list of the events to count.
         # start_date  - The start date of the time range.
         # end_date  - The end date of the time range.
-        # context - Event context, plan level tracking. Available if set when tracking.
-        def unique_events(event_names:, start_date:, end_date:, context: '')
-          count_unique_events(event_names: event_names, start_date: start_date, end_date: end_date, context: context) do
-            raise InvalidContext if context.present? && !context.in?(valid_context_list)
-          end
+        def unique_events(event_names:, start_date:, end_date:)
+          count_unique_events(event_names: event_names, start_date: start_date, end_date: end_date)
         end
 
         def known_event?(event_name)
@@ -68,7 +51,7 @@ module Gitlab
 
         private
 
-        def track(values, event_name, context: '', time: Time.zone.now)
+        def track(values, event_name, time: Time.zone.now)
           return unless ::ServicePing::ServicePingSettings.enabled?
 
           event = event_for(event_name)
@@ -77,7 +60,7 @@ module Gitlab
           return if event.blank?
           return unless Feature.enabled?(:redis_hll_tracking, type: :ops)
 
-          Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: values, expiry: KEY_EXPIRY_LENGTH)
+          Gitlab::Redis::HLL.add(key: redis_key(event, time), value: values, expiry: KEY_EXPIRY_LENGTH)
 
         rescue StandardError => e
           # Ignore any exceptions unless is dev or test env
@@ -85,27 +68,20 @@ module Gitlab
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         end
 
-        # The array of valid context on which we allow tracking
-        def valid_context_list
-          Plan.all_plans
-        end
-
-        def count_unique_events(event_names:, start_date:, end_date:, context: '')
+        def count_unique_events(event_names:, start_date:, end_date:)
           events = events_for(Array(event_names).map(&:to_s))
 
-          yield events if block_given?
-
-          keys = keys_for_aggregation(events: events, start_date: start_date, end_date: end_date, context: context)
+          keys = keys_for_aggregation(events: events, start_date: start_date, end_date: end_date)
 
           return FALLBACK unless keys.any?
 
           redis_usage_data { Gitlab::Redis::HLL.count(keys: keys) }
         end
 
-        def keys_for_aggregation(events:, start_date:, end_date:, context: '')
+        def keys_for_aggregation(events:, start_date:, end_date:)
           end_date = end_date.end_of_week - 1.week
           (start_date.to_date..end_date.to_date).map do |date|
-            events.map { |event| redis_key(event, date, context) }
+            events.map { |event| redis_key(event, date) }
           end.flatten.uniq
         end
 
@@ -134,20 +110,15 @@ module Gitlab
         end
 
         # Compose the key in order to store events daily or weekly
-        def redis_key(event, time, context = '')
+        def redis_key(event, time)
           raise UnknownEvent, "Unknown event #{event[:name]}" unless known_events_names.include?(event[:name].to_s)
 
           key = "{#{REDIS_SLOT}}_#{event[:name]}"
 
           year_week = time.strftime('%G-%V')
-          key = "#{key}-#{year_week}"
-
-          key = "#{context}_#{key}" if context.present?
-          key
+          "#{key}-#{year_week}"
         end
       end
     end
   end
 end
-
-Gitlab::UsageDataCounters::HLLRedisCounter.prepend_mod_with('Gitlab::UsageDataCounters::HLLRedisCounter')

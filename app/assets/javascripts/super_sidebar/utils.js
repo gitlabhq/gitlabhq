@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
 import { truncateNamespace } from '~/lib/utils/text_utility';
@@ -83,5 +84,32 @@ export const formatContextSwitcherItems = (items) =>
     avatar,
     link,
   }));
+
+export const getItemsFromLocalStorage = ({ storageKey, maxItems }) => {
+  if (!AccessorUtilities.canUseLocalStorage()) {
+    return [];
+  }
+
+  try {
+    const parsedCachedFrequentItems = JSON.parse(localStorage.getItem(storageKey));
+    return getTopFrequentItems(parsedCachedFrequentItems, maxItems);
+  } catch (e) {
+    Sentry.captureException(e);
+    return [];
+  }
+};
+
+export const removeItemFromLocalStorage = ({ storageKey, item }) => {
+  try {
+    const parsedCachedFrequentItems = JSON.parse(localStorage.getItem(storageKey));
+    const filteredItems = parsedCachedFrequentItems.filter((i) => i.id !== item.id);
+    localStorage.setItem(storageKey, JSON.stringify(filteredItems));
+
+    return filteredItems;
+  } catch (e) {
+    Sentry.captureException(e);
+    return [];
+  }
+};
 
 export const ariaCurrent = (isActive) => (isActive ? 'page' : null);

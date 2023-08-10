@@ -1,5 +1,5 @@
 # E2E tests pipeline loaded dynamically by script: scripts/generate-e2e-pipeline
-# For adding new tests, refer to: doc/development/testing_guide/end_to_end/package_and_test_pipeline.md
+# For adding new tests, refer to: doc/development/testing_guide/end_to_end/test_pipelines.md
 include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml

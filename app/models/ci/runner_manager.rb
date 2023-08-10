@@ -49,6 +49,17 @@ module Ci
       where(runner_id: runner_id)
     end
 
+    scope :with_running_builds, -> do
+      where('EXISTS(?)',
+        Ci::Build.select(1)
+          .joins(:runner_manager_build)
+          .running
+          .where("#{::Ci::Build.quoted_table_name}.runner_id = #{quoted_table_name}.runner_id")
+          .where("#{::Ci::RunnerManagerBuild.quoted_table_name}.runner_machine_id = #{quoted_table_name}.id")
+          .limit(1)
+      )
+    end
+
     scope :order_id_desc, -> { order(id: :desc) }
 
     def self.online_contact_time_deadline

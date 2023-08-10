@@ -2031,4 +2031,12 @@ RSpec.describe Issue, feature_category: :team_planning do
       expect { issue1.unsubscribe_email_participant(email) }.not_to change { issue2.issue_email_participants.count }
     end
   end
+
+  describe '#update_search_data!' do
+    it 'copies namespace_id to search data' do
+      issue = create(:issue)
+
+      expect(issue.search_data.namespace_id).to eq(issue.namespace_id)
+    end
+  end
 end

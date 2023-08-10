@@ -784,7 +784,7 @@ class Issue < ApplicationRecord
     # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126
     return unless project
 
-    Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
+    Issues::SearchData.upsert({ namespace_id: namespace_id, project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
   end
 
   def ensure_metrics!

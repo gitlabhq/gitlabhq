@@ -13887,6 +13887,7 @@ Returns [`CiRunnerStatus!`](#cirunnerstatus).
 | <a id="cirunnermanagerexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. |
 | <a id="cirunnermanagerid"></a>`id` | [`CiRunnerManagerID!`](#cirunnermanagerid) | ID of the runner manager. |
 | <a id="cirunnermanageripaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner manager. |
+| <a id="cirunnermanagerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Job execution status of the runner manager. |
 | <a id="cirunnermanagerplatformname"></a>`platformName` | [`String`](#string) | Platform provided by the runner manager. |
 | <a id="cirunnermanagerrevision"></a>`revision` | [`String`](#string) | Revision of the runner. |
 | <a id="cirunnermanagerrunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner configuration for the runner manager. |

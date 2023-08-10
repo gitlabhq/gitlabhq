@@ -1,0 +1,8 @@
+---
+name: loose_foreign_keys_batch_load_using_union
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128759
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/421422
+milestone: '16.3'
+type: development
+group: group::tenant scale
+default_enabled: false

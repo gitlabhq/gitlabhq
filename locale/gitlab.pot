@@ -19412,6 +19412,9 @@ msgstr ""
 msgid "Failed to create resources"
 msgstr ""
 
+msgid "Failed to create target branch rule"
+msgstr ""
+
 msgid "Failed to create wiki"
 msgstr ""
 
@@ -32783,9 +32786,6 @@ msgid "Optimize your workflow with CI/CD Pipelines"
 msgstr ""
 
 msgid "Optional"
-msgstr ""
-
-msgid "Optional parameter \"variables\" must be a Hash. Ex: variables[key1]=value1"
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
@@ -54036,6 +54036,9 @@ msgid "You have insufficient permissions to configure escalation policies for th
 msgstr ""
 
 msgid "You have insufficient permissions to create a Todo for this alert"
+msgstr ""
+
+msgid "You have insufficient permissions to create a target branch rule"
 msgstr ""
 
 msgid "You have insufficient permissions to create an HTTP integration for this project"

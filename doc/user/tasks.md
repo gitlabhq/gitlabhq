@@ -360,6 +360,75 @@ To copy the task's email address:
 1. Select **Plan > Issues**, then select your issue to view it.
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy task email address**.
 
+## Confidential tasks
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
+
+Confidential tasks are tasks visible only to members of a project with
+[sufficient permissions](#who-can-see-confidential-tasks).
+You can use confidential tasks to keep security vulnerabilities private or prevent surprises from
+leaking out.
+
+### Make a task confidential
+
+By default, tasks are public.
+You can make a task confidential when you create or edit it.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- If the task has a parent issue which is non-confidential, and you want to make the issue confidential,
+  you must first make all the child tasks confidential.
+  A [confidential issue](project/issues/confidential_issues.md) can have only confidential children.
+
+#### In a new task
+
+When you create a new task, a checkbox right below the text area is available to mark the
+task as confidential.
+
+Check that box and select **Create task**.
+
+#### In an existing task
+
+To change the confidentiality of an existing task:
+
+1. [Open the task](#view-tasks).
+1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Turn on confidentiality**.
+
+### Who can see confidential tasks
+
+When a task is made confidential, only users with at least the Reporter role for the project have
+access to the task.
+Users with Guest or [Minimal](permissions.md#users-with-minimal-access) roles can't access
+the task even if they were actively participating before the change.
+
+However, a user with the **Guest role** can create confidential tasks, but can only view the ones
+that they created themselves.
+
+Users with the Guest role or non-members can read the confidential task if they are assigned to the task.
+When a Guest user or non-member is unassigned from a confidential task, they can no longer view it.
+
+Confidential tasks are hidden in search results for users without the necessary permissions.
+
+### Confidential task indicators
+
+Confidential tasks are visually different from regular tasks in a few ways.
+Wherever tasks are listed, you can see the confidential (**{eye-slash}**) icon
+next to the tasks that are marked as confidential.
+
+If you don't have [enough permissions](#who-can-see-confidential-tasks),
+you cannot see confidential tasks at all.
+
+Likewise, while inside the task, you can see the confidential (**{eye-slash}**) icon right next to
+the breadcrumbs.
+
+Every change from regular to confidential and vice versa, is indicated by a
+system note in the task's comments, for example:
+
+> - **{eye-slash}** Jo Garcia made the issue confidential 5 minutes ago
+> - **{eye}** Jo Garcia made the issue visible to everyone just now
+
 ## Two-column layout
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.

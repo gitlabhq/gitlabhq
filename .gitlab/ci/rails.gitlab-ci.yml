@@ -465,11 +465,11 @@ rspec:artifact-collector ee:
 rspec:coverage:
   extends:
     - .ruby-gems-coverage-cache
-    - .fast-no-clone-job
     - .rails:rules:rspec-coverage
   stage: post-test
   needs:
-    - setup-test-env
+    - job: setup-test-env
+      artifacts: false
     # FOSS/EE jobs
     - job: rspec:artifact-collector unit
       optional: true
@@ -496,23 +496,14 @@ rspec:coverage:
     # Memory jobs
     - job: memory-on-boot
       optional: true
+      artifacts: false
   variables:
-    FILES_TO_DOWNLOAD: >
-      config/bundler_setup.rb
-      Gemfile
-      Gemfile.checksum
-      Gemfile.lock
-      scripts/merge-simplecov
-      spec/simplecov_env_core.rb
-      spec/simplecov_env.rb
     BUNDLE_WITHOUT: "" # This is to override the variable defined in .gitlab-ci.yml
     BUNDLE_ONLY: "coverage"
   before_script:
-    - !reference [".fast-no-clone-job", before_script]
-    - run_timed_command "download_local_gems"
+    - source scripts/utils.sh
     - bundle_install_script
   script:
-    - chmod u+x scripts/merge-simplecov # Not the right permissions when downloading the script via the API.
     - run_timed_command "bundle exec scripts/merge-simplecov"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:

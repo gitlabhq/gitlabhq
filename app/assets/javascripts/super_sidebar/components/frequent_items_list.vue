@@ -1,9 +1,11 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
-import AccessorUtilities from '~/lib/utils/accessor';
 import { __ } from '~/locale';
-import { getTopFrequentItems, formatContextSwitcherItems } from '../utils';
+import {
+  getItemsFromLocalStorage,
+  removeItemFromLocalStorage,
+  formatContextSwitcherItems,
+} from '../utils';
 import ItemsList from './items_list.vue';
 
 export default {
@@ -43,35 +45,21 @@ export default {
     },
   },
   created() {
-    this.getItemsFromLocalStorage();
+    this.cachedFrequentItems = formatContextSwitcherItems(
+      getItemsFromLocalStorage({
+        storageKey: this.storageKey,
+        maxItems: this.maxItems,
+      }),
+    );
   },
   methods: {
-    getItemsFromLocalStorage() {
-      if (!AccessorUtilities.canUseLocalStorage()) {
-        return;
-      }
-      try {
-        const parsedCachedFrequentItems = JSON.parse(localStorage.getItem(this.storageKey));
-        const topFrequentItems = getTopFrequentItems(parsedCachedFrequentItems, this.maxItems);
-        this.cachedFrequentItems = formatContextSwitcherItems(topFrequentItems);
-      } catch (e) {
-        Sentry.captureException(e);
-      }
-    },
     handleItemRemove(item) {
-      try {
-        // Remove item from local storage
-        const parsedCachedFrequentItems = JSON.parse(localStorage.getItem(this.storageKey));
-        localStorage.setItem(
-          this.storageKey,
-          JSON.stringify(parsedCachedFrequentItems.filter((i) => i.id !== item.id)),
-        );
+      removeItemFromLocalStorage({
+        storageKey: this.storageKey,
+        item,
+      });
 
-        // Update the list
-        this.cachedFrequentItems = this.cachedFrequentItems.filter((i) => i.id !== item.id);
-      } catch (e) {
-        Sentry.captureException(e);
-      }
+      this.cachedFrequentItems = this.cachedFrequentItems.filter((i) => i.id !== item.id);
     },
   },
   i18n: {

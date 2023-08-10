@@ -89,7 +89,7 @@ module Autocomplete
       if project
         project.authorized_users.union_with_user(author_id)
       elsif group
-        group.users_with_parents
+        ::Autocomplete::GroupUsersFinder.new(group: group).execute # rubocop: disable CodeReuse/Finder
       elsif current_user
         User.all
       else

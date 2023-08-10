@@ -112,6 +112,23 @@ RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model 
     end
   end
 
+  describe '.with_running_builds' do
+    subject(:scope) { described_class.with_running_builds }
+
+    let_it_be(:runner) { create(:ci_runner) }
+    let_it_be(:runner_manager1) { create(:ci_runner_machine, runner: runner) }
+    let_it_be(:runner_manager2) { create(:ci_runner_machine, runner: runner) }
+
+    before_all do
+      create(:ci_runner_machine_build, runner_manager: runner_manager1,
+        build: create(:ci_build, :success, runner: runner))
+      create(:ci_runner_machine_build, runner_manager: runner_manager2,
+        build: create(:ci_build, :running, runner: runner))
+    end
+
+    it { is_expected.to contain_exactly runner_manager2 }
+  end
+
   describe '.order_id_desc' do
     subject(:scope) { described_class.order_id_desc }
 

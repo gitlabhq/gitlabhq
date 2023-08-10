@@ -15,6 +15,13 @@ keep security vulnerabilities private or prevent surprises from leaking out.
 
 You can make an issue confidential when you create or edit an issue.
 
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- If the issue you want to make confidential has any child [tasks](../../tasks.md),
+  you must first make all the child tasks confidential.
+  A confidential issue can have only confidential children.
+
 ### In a new issue
 
 When you create a new issue, a checkbox right below the text area is available
@@ -62,10 +69,8 @@ Confidential issues are hidden in search results for users without the necessary
 ## Confidential issue indicators
 
 Confidential issues are visually different from regular issues in a few ways.
-In the issues index page view, you can see the confidential (**{eye-slash}**) icon
-next to the issues that are marked as confidential:
-
-![Confidential issues index page](img/confidential_issues_index_page.png)
+In the issues list and boards, you can see the confidential (**{eye-slash}**) icon
+next to issues marked as confidential.
 
 If you don't have [enough permissions](#who-can-see-confidential-issues),
 you cannot see confidential issues at all.
@@ -74,21 +79,13 @@ Likewise, while inside the issue, you can see the confidential (**{eye-slash}**)
 the issue number. There is also an indicator in the comment area that the
 issue you are commenting on is confidential.
 
-![Confidential issue page](img/confidential_issues_issue_page.png)
-
 There is also an indicator on the sidebar denoting confidentiality.
 
-| Confidential issue | Not confidential issue |
-| :-----------: | :----------: |
-| ![Sidebar confidential issue](img/sidebar_confidential_issue.png) | ![Sidebar not confidential issue](img/sidebar_not_confidential_issue.png) |
-
 Every change from regular to confidential and vice versa, is indicated by a
-system note in the issue's comments:
+system note in the issue's comments, for example:
 
-- **{eye-slash}** The issue is made confidential.
-- **{eye}** The issue is made public.
-
-![Confidential issues system notes](img/confidential_issues_system_notes_v15_4.png)
+> - **{eye-slash}** Jo Garcia made the issue confidential 5 minutes ago
+> - **{eye}** Jo Garcia made the issue visible to everyone just now
 
 ## Merge requests for confidential issues
 
