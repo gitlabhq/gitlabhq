@@ -36,6 +36,42 @@ in [Removed Items](../removed_items.md).
 
 The `Query` type contains the API's top-level entry points for all executable queries.
 
+### `Query.abuseReport`
+
+Find an abuse report.
+
+WARNING:
+**Introduced** in 16.3.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`AbuseReport`](#abusereport).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryabusereportid"></a>`id` | [`AbuseReportID!`](#abusereportid) | ID of the abuse report. |
+
+### `Query.abuseReportLabels`
+
+Abuse report labels.
+
+WARNING:
+**Introduced** in 16.3.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`LabelConnection`](#labelconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryabusereportlabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
+
 ### `Query.aiMessages`
 
 Find AI messages.
@@ -12232,6 +12268,16 @@ the table of fields for each object type.
 For more information, see
 [Object Types and Fields](https://graphql.org/learn/schema/#object-types-and-fields)
 on `graphql.org`.
+
+### `AbuseReport`
+
+An abuse report.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="abusereportlabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the abuse report. (see [Connections](#connections)) |
 
 ### `AccessLevel`
 
@@ -27969,6 +28015,12 @@ This schema includes custom scalar types for identifiers, with a specific type f
 each kind of object.
 
 For more information, read about [Scalar Types](https://graphql.org/learn/schema/#scalar-types) on `graphql.org`.
+
+### `AbuseReportID`
+
+A `AbuseReportID` is a global ID. It is encoded as a string.
+
+An example `AbuseReportID` is: `"gid://gitlab/AbuseReport/1"`.
 
 ### `AchievementsAchievementID`
 

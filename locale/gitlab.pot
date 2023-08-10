@@ -56194,6 +56194,9 @@ msgstr ""
 msgid "must be a valid syntax highlighting theme ID"
 msgstr ""
 
+msgid "must be a value between 0 and 1"
+msgstr ""
+
 msgid "must be after start"
 msgstr ""
 

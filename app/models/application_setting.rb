@@ -739,6 +739,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :namespace_aggregation_schedule_lease_duration_in_seconds,
     numericality: { only_integer: true, greater_than: 0 }
 
+  validates :sentry_clientside_traces_sample_rate,
+    presence: true,
+    numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1, message: N_('must be a value between 0 and 1') }
+
   validates :instance_level_code_suggestions_enabled,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }

@@ -43,6 +43,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         apdex_slo: {
           main: 0.99,
           ci: 0.98
+        },
+        wal_rate_sli_query: {
+          main: 'WAL rate query main',
+          ci: 'WAL rate query ci'
+        },
+        wal_rate_slo: {
+          main: 0.99,
+          ci: 0.98
         }
       }
     end
@@ -260,7 +268,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value(true, false).for(:gitlab_dedicated_instance) }
     it { is_expected.not_to allow_value(nil).for(:gitlab_dedicated_instance) }
 
-    it { is_expected.not_to allow_value(random: :value).for(:prometheus_alert_db_indicators_settings) }
+    it { is_expected.not_to allow_value(apdex_slo: '10').for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(valid_prometheus_alert_db_indicators_settings).for(:prometheus_alert_db_indicators_settings) }
 
@@ -1333,6 +1341,15 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value(10).for(:default_project_visibility) }
         it { is_expected.to allow_value(20).for(:default_group_visibility) }
         it { is_expected.to allow_value(20).for(:default_project_visibility) }
+      end
+    end
+
+    describe 'sentry_clientside_traces_sample_rate' do
+      it do
+        is_expected.to validate_numericality_of(:sentry_clientside_traces_sample_rate)
+          .is_greater_than_or_equal_to(0)
+          .is_less_than_or_equal_to(1)
+          .with_message("must be a value between 0 and 1")
       end
     end
   end

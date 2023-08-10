@@ -408,6 +408,26 @@ task cleans up the temporary indexes.
 - The time it takes for database index rebuilding to complete depends on the size
 of the target database. It can take between several hours and several days.
 
+## Dump the database schema
+
+In rare circumstances, the database schema can differ from what the application code expects
+even if all database migrations are complete. If this does occur, it can lead to odd errors
+in GitLab.
+
+To dump the database schema:
+
+```shell
+SCHEMA=/tmp/structure.sql gitlab-rake db:schema:dump
+```
+
+The Rake task creates a `/tmp/structure.sql` file that contains the database schema dump.
+
+To determine if there are any differences:
+
+1. Go to the [`db/structure.sql`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql) file in the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
+   Select the branch that matches your GitLab version. For example, the file for GitLab 16.2: <https://gitlab.com/gitlab-org/gitlab/-/blob/16-2-stable-ee/db/structure.sql>.
+1. Compare `/tmp/structure.sql` with the `db/structure.sql` file for your version.
+
 ## Import common metrics
 
 Sometimes you may need to re-import the common metrics that power the Metrics dashboards.

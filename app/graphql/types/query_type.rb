@@ -171,6 +171,18 @@ module Types
           description: 'Definitions for all audit events available on the instance.',
           resolver: Resolvers::AuditEvents::AuditEventDefinitionsResolver
 
+    field :abuse_report, ::Types::AbuseReportType,
+          null: true,
+          alpha: { milestone: '16.3' },
+          description: 'Find an abuse report.',
+          resolver: Resolvers::AbuseReportResolver
+
+    field :abuse_report_labels, ::Types::LabelType.connection_type,
+          null: true,
+          alpha: { milestone: '16.3' },
+          description: 'Abuse report labels.',
+          resolver: Resolvers::AbuseReportLabelsResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

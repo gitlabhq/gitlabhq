@@ -7,38 +7,21 @@ type: concepts, howto
 
 # Profile preferences **(FREE)**
 
-A user's profile preferences page allows the user to customize various aspects
-of GitLab to their liking.
+You can update your preferences to change the look and feel of GitLab.
 
-To navigate to your profile's preferences:
+## Change the color theme
 
-1. On the left sidebar, select your avatar.
-1. Select **Preferences**.
-
-## Navigation theme
-
-The GitLab navigation theme setting allows you to personalize your GitLab experience.
-You can choose from several color themes that add unique colors to the left sidebar.
+You can change the color theme of the GitLab UI. These colors are displayed on the left sidebar.
 Using individual color themes might help you differentiate between your different
 GitLab instances.
 
-The default theme is Indigo. You can choose between 10 themes:
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. In the **Color theme** section, select a theme.
 
-- Indigo
-- Light Indigo
-- Blue
-- Light Blue
-- Green
-- Light Green
-- Red
-- Light Red
-- Dark
-- Light
-- [Dark Mode](#dark-mode)
+### Dark mode
 
-## Dark mode
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](../../policy/experiment-beta-support.md#experiment) release.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](../../policy/experiment-beta-support.md#experiment).
 
 GitLab has started work on dark mode! The dark mode Experiment release is available in the
 spirit of iteration and the lower expectations of
@@ -58,7 +41,7 @@ Dark mode is available as a navigation theme, for MVC and compatibility reasons.
 to make it configurable in its own section along with support for
 different navigation themes.
 
-Dark theme only works with the **Dark** syntax highlighting theme.
+Dark mode works only with the **Dark** syntax highlighting theme.
 
 ## Syntax highlighting theme
 
