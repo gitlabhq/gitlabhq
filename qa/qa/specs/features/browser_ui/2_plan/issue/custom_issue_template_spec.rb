@@ -7,10 +7,7 @@ module QA
       let(:template_content) { 'This is a custom issue template test' }
 
       let(:template_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = "custom-issue-template-project"
-          project.initialize_with_readme = true
-        end
+        create(:project, :with_readme, name: 'custom-issue-template-project')
       end
 
       before do

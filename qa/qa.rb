@@ -29,6 +29,7 @@ module QA
 
   loader.push_dir(root, namespace: QA)
 
+  loader.ignore("#{root}/factories")
   loader.ignore("#{root}/specs/features")
   loader.ignore("#{root}/specs/spec_helper.rb")
 

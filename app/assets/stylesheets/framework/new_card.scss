@@ -102,6 +102,10 @@
         @include gl-border-t-0;
       }
 
+      &:last-of-type td:not(:last-of-type) {
+        @include gl-border-b-1;
+      }
+
       > td[data-label] {
         @include gl-border-left-0;
         @include gl-border-l-none;

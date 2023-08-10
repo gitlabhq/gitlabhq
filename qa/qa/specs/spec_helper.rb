@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/testing/time_helpers'
+require 'factory_bot'
 
 require_relative '../../qa'
 
@@ -28,6 +29,9 @@ RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
   config.include QA::Support::Matchers::EventuallyMatcher
   config.include QA::Support::Matchers::HaveMatcher
+  config.include FactoryBot::Syntax::Methods
+
+  FactoryBot.definition_file_paths = ['qa/factories']
 
   config.add_formatter QA::Support::Formatters::ContextFormatter
   config.add_formatter QA::Support::Formatters::QuarantineFormatter
@@ -43,6 +47,10 @@ RSpec.configure do |config|
     # Reset fabrication counters tracked in resource base
     Thread.current[:api_fabrication] = 0
     Thread.current[:browser_ui_fabrication] = 0
+  end
+
+  config.before(:suite) do
+    FactoryBot.find_definitions
   end
 
   config.after do

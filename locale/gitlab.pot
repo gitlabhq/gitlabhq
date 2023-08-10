@@ -2911,6 +2911,9 @@ msgstr ""
 msgid "Add new key"
 msgstr ""
 
+msgid "Add new pipeline subscription"
+msgstr ""
+
 msgid "Add new pipeline trigger token"
 msgstr ""
 
@@ -5779,9 +5782,6 @@ msgid "ApplicationSettings|Soft"
 msgstr ""
 
 msgid "ApplicationSettings|Text shown after a user signs up. Markdown enabled."
-msgstr ""
-
-msgid "ApplicationSettings|This feature is only available on GitLab.com"
 msgstr ""
 
 msgid "ApplicationSettings|Upload denylist file"
@@ -17714,9 +17714,6 @@ msgstr ""
 msgid "Enable cleanup policy caching."
 msgstr ""
 
-msgid "Enable dashboard limits on namespaces"
-msgstr ""
-
 msgid "Enable diagrams.net"
 msgstr ""
 
@@ -20366,9 +20363,6 @@ msgid "Frameworks can not be added to projects in personal namespaces. %{linkSta
 msgstr ""
 
 msgid "Free Trial of GitLab.com Ultimate"
-msgstr ""
-
-msgid "Free User Cap"
 msgstr ""
 
 msgid "Free groups are limited to %{free_user_limit} member and the remaining members will get a status of over-limit and lose access to the group."
@@ -40090,9 +40084,6 @@ msgstr ""
 msgid "Rollback"
 msgstr ""
 
-msgid "Rollout of free user limits within GitLab.com. Do not edit these values unless approval has been given via %{link_start}this issue%{link_end}."
-msgstr ""
-
 msgid "Root cause analysis"
 msgstr ""
 
@@ -45473,6 +45464,9 @@ msgid "Subscription History"
 msgstr ""
 
 msgid "Subscription deletion failed."
+msgstr ""
+
+msgid "Subscription for %{subscription} will be removed. Do you want to continue?"
 msgstr ""
 
 msgid "Subscription service outage"

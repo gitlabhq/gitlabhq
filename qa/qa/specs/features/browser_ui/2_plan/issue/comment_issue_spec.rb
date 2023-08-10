@@ -6,7 +6,7 @@ module QA
       before do
         Flow::Login.sign_in
 
-        Resource::Issue.fabricate_via_api!.visit!
+        create(:issue).visit!
       end
 
       it 'comments on an issue and edits the comment', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347978' do

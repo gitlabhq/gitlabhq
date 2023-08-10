@@ -190,6 +190,7 @@ Naming/FileName:
     - 'jh/spec/**/*'
     - 'qa/bin/*'
     - 'qa/spec/**/*'
+    - 'qa/qa/factories/**/*'
     - 'qa/qa/specs/**/*'
     - 'qa/tasks/**/*.rake'
     - '**/*.ru'

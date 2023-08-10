@@ -347,7 +347,7 @@ end
 ## Creating resources in your tests
 
 To create a resource in your tests, you can call the `.fabricate!` method on
-the resource class.
+the resource class, or use the [factory](#factories) to create it.
 Note that if the resource class supports API fabrication, this uses this
 fabrication by default.
 
@@ -389,6 +389,23 @@ end
 ```
 
 In this case, the result is similar to calling `Resource::Shirt.fabricate!`.
+
+### Factories
+
+You may also use FactoryBot invocations to create resources within your tests.
+
+```ruby
+# create a project via the API to use in the test
+let(:project) { create(:project) }
+
+# create an issue belonging to a project via the API to use in the test
+let(:issue) { create(:issue, project: project) }
+
+# create a private project via the API with a specific name
+let(:project) { create(:project, :private, name: 'my-project-name', add_name_uuid: false) }
+```
+
+All factories are defined in [`qa/qa/factories`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/factories/).
 
 ### Resources cleanup
 
