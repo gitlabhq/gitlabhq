@@ -2,9 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::HookData::IssueBuilder do
-  let_it_be(:label) { create(:label) }
-  let_it_be(:issue) { create(:labeled_issue, labels: [label], project: label.project) }
+RSpec.describe Gitlab::HookData::IssueBuilder, feature_category: :webhooks do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:issue) { create(:labeled_issue, labels: [label], project: project) }
+  let_it_be(:contact) { create(:contact, group: project.group) }
+  let_it_be(:issue_contact) { create(:issue_customer_relations_contact, issue: issue, contact: contact) }
 
   let(:builder) { described_class.new(issue) }
 
@@ -50,6 +54,7 @@ RSpec.describe Gitlab::HookData::IssueBuilder do
       expect(data).to include(:state)
       expect(data).to include(:severity)
       expect(data).to include('labels' => [label.hook_attrs])
+      expect(data).to include('customer_relations_contacts' => [contact.reload.hook_attrs])
     end
 
     context 'when the issue has an image in the description' do

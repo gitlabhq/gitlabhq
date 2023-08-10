@@ -188,7 +188,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
           expect(issue).not_to be_valid
           expect(issue.errors[:base])
-            .to include(_('A confidential issue cannot have a parent that already has non-confidential children.'))
+            .to include(_('A confidential issue must have only confidential children. Make any child items confidential and try again.'))
         end
 
         it 'allows to make child confidential' do

@@ -3266,6 +3266,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+
+    context 'with check_mergeability_retry_lease option' do
+      it 'call check_mergeability with sync_retry_lease' do
+        allow(subject).to receive(:mergeable_state?) { true }
+        expect(subject).to receive(:check_mergeability).with(sync_retry_lease: true)
+
+        subject.mergeable?(check_mergeability_retry_lease: true)
+      end
+    end
   end
 
   describe '#skipped_mergeable_checks' do
@@ -3298,6 +3307,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(mergeability_service).to receive(:execute)
 
         subject.check_mergeability
+      end
+
+      context 'when sync_retry_lease is true' do
+        it 'executes MergeabilityCheckService' do
+          expect(mergeability_service).to receive(:execute).with(retry_lease: true)
+
+          subject.check_mergeability(sync_retry_lease: true)
+        end
       end
 
       context 'when async is true' do

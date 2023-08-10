@@ -24,7 +24,7 @@
             %span.js-mirrored-repo-count
               = mirrored_repositories_count
         .gl-new-card-actions
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content" }) do
+          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content", data: { testid: 'add-new-mirror' } }) do
             = _('Add new')
       - c.with_body do
         - if mirror_settings_enabled

@@ -67,7 +67,7 @@ module MergeRequests
       error =
         if @merge_request.should_be_rebased?
           'Only fast-forward merge is allowed for your project. Please update your source branch'
-        elsif !@merge_request.mergeable?(skip_discussions_check: @options[:skip_discussions_check])
+        elsif !@merge_request.mergeable?(skip_discussions_check: @options[:skip_discussions_check], check_mergeability_retry_lease: @options[:check_mergeability_retry_lease])
           'Merge request is not mergeable'
         elsif !@merge_request.squash && project.squash_always?
           'This project requires squashing commits when merge requests are accepted.'

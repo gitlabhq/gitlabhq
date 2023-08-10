@@ -1166,7 +1166,7 @@ class MergeRequest < ApplicationRecord
     MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
 
-  def check_mergeability(async: false)
+  def check_mergeability(async: false, sync_retry_lease: false)
     return unless recheck_merge_status?
 
     check_service = MergeRequests::MergeabilityCheckService.new(self)
@@ -1174,7 +1174,7 @@ class MergeRequest < ApplicationRecord
     if async
       check_service.async_execute
     else
-      check_service.execute(retry_lease: false)
+      check_service.execute(retry_lease: sync_retry_lease)
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
@@ -1218,14 +1218,14 @@ class MergeRequest < ApplicationRecord
     }
   end
 
-  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false)
+  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false)
     return false unless mergeable_state?(
       skip_ci_check: skip_ci_check,
       skip_discussions_check: skip_discussions_check,
       skip_approved_check: skip_approved_check
     )
 
-    check_mergeability
+    check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
 
     can_be_merged? && !should_be_rebased?
   end

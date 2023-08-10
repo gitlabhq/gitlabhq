@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CustomerRelations::Contact, type: :model do
+RSpec.describe CustomerRelations::Contact, type: :model, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
 
   describe 'associations' do
@@ -278,6 +278,27 @@ RSpec.describe CustomerRelations::Contact, type: :model do
       it 'sorts them by phone in ascending order' do
         expect(group.contacts.sort_by_field('phone', :asc)).to eq([contact_b, contact_c, contact_a])
       end
+    end
+  end
+
+  describe '#hook_attrs' do
+    let_it_be(:contact) { create(:contact, group: group) }
+
+    it 'includes the expected attributes' do
+      expect(contact.hook_attrs).to match a_hash_including(
+        {
+          'created_at' => contact.created_at,
+          'description' => contact.description,
+          'first_name' => contact.first_name,
+          'group_id' => group.id,
+          'id' => contact.id,
+          'last_name' => contact.last_name,
+          'organization_id' => contact.organization_id,
+          'state' => contact.state,
+          'updated_at' => contact.updated_at
+        }
+      )
+      expect(contact.hook_attrs.keys).to match_array(described_class::SAFE_ATTRIBUTES)
     end
   end
 end

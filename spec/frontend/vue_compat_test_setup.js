@@ -21,6 +21,13 @@ function isLegacyExtendedComponent(component) {
 function unwrapLegacyVueExtendComponent(selector) {
   return isLegacyExtendedComponent(selector) ? selector.options : selector;
 }
+function getStubProps(component) {
+  const stubProps = { ...component.props };
+  component.mixins?.forEach((mixin) => {
+    Object.assign(stubProps, unwrapLegacyVueExtendComponent(mixin).props);
+  });
+  return stubProps;
+}
 
 if (global.document) {
   const compatConfig = {
@@ -148,33 +155,27 @@ if (global.document) {
     return true;
   };
 
-  VTU.config.plugins.createStubs = ({ name, component: rawComponent, registerStub }) => {
+  VTU.config.plugins.createStubs = ({ name, component: rawComponent, registerStub, stubs }) => {
     const component = unwrapLegacyVueExtendComponent(rawComponent);
     const hyphenatedName = name.replace(/\B([A-Z])/g, '-$1').toLowerCase();
+    const stubTag = stubs?.[name] ? name : hyphenatedName;
 
     const stub = Vue.defineComponent({
       name: getComponentName(component),
-      props: component.props,
-      model: component.model,
+      props: getStubProps(component),
+      model: component.model ?? component.mixins?.find((m) => m.model),
       methods: Object.fromEntries(
         Object.entries(component.methods ?? {}).map(([key]) => [key, noop]),
       ),
       render() {
-        const {
-          $slots: slots = {},
-          $scopedSlots: scopedSlots = {},
-          $parent: parent,
-          $vnode: vnode,
-        } = this;
+        const { $scopedSlots: scopedSlots = {} } = this;
 
-        const hasStaticDefaultSlot = 'default' in slots && !('default' in scopedSlots);
-        const isTheOnlyChild = parent?.$.subTree === vnode;
-        // this condition should be altered when https://github.com/vuejs/vue-test-utils/pull/2068 is merged
-        // and our codebase will be updated to include it (@vue/test-utils@1.3.6 I assume)
-        const shouldRenderAllSlots = !hasStaticDefaultSlot && isTheOnlyChild;
+        // eslint-disable-next-line no-underscore-dangle
+        const hasDefaultSlot = 'default' in scopedSlots && scopedSlots.default._ns;
+        const shouldRenderAllSlots = !component.functional && !hasDefaultSlot;
 
         const renderSlotByName = (slotName) => {
-          const slot = scopedSlots[slotName] || slots[slotName];
+          const slot = scopedSlots[slotName];
           let result;
           if (typeof slot === 'function') {
             try {
@@ -189,16 +190,16 @@ if (global.document) {
         };
 
         const slotContents = shouldRenderAllSlots
-          ? [...new Set([...Object.keys(slots), ...Object.keys(scopedSlots)])]
-              .map(renderSlotByName)
-              .filter(Boolean)
+          ? Object.keys(scopedSlots).map(renderSlotByName).filter(Boolean)
           : renderSlotByName('default');
 
         const props = Object.fromEntries(
-          Object.entries(this.$props).filter(([prop]) => isPropertyValidOnDomNode(prop)),
+          Object.entries(this.$props)
+            .filter(([prop]) => isPropertyValidOnDomNode(prop))
+            .map(([key, value]) => [key, typeof value === 'function' ? '[Function]' : value]),
         );
 
-        return Vue.h(`${hyphenatedName || 'anonymous'}-stub`, props, slotContents);
+        return Vue.h(`${stubTag || 'anonymous'}-stub`, props, slotContents);
       },
     });
 

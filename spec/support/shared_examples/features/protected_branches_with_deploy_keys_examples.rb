@@ -20,6 +20,7 @@ RSpec.shared_examples 'Deploy keys with protected branches' do
       it "shows all dropdown sections in the 'Allowed to push' main dropdown, with only one deploy key" do
         visit project_protected_branches_path(project)
 
+        click_button 'Add protected branch'
         find(".js-allowed-to-push").click
         wait_for_requests
 
@@ -35,6 +36,7 @@ RSpec.shared_examples 'Deploy keys with protected branches' do
       it "shows all sections but not deploy keys in the 'Allowed to merge' main dropdown" do
         visit project_protected_branches_path(project)
 
+        click_button 'Add protected branch'
         find(".js-allowed-to-merge").click
         wait_for_requests
 
@@ -65,6 +67,7 @@ RSpec.shared_examples 'Deploy keys with protected branches' do
       it "just shows all sections but not deploy keys in the 'Allowed to push' dropdown" do
         visit project_protected_branches_path(project)
 
+        click_button 'Add protected branch'
         find(".js-allowed-to-push").click
         wait_for_requests
 

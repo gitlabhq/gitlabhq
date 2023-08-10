@@ -1,54 +1,51 @@
 <script>
-import { GlDisclosureDropdownGroup } from '@gitlab/ui';
-import { mapState, mapGetters } from 'vuex';
-import { ALL_GITLAB, PLACES } from '~/vue_shared/global_search/constants';
+import DefaultPlaces from './global_search_default_places.vue';
+import DefaultIssuables from './global_search_default_issuables.vue';
+
+const components = [DefaultPlaces, DefaultIssuables];
 
 export default {
   name: 'GlobalSearchDefaultItems',
-  i18n: {
-    ALL_GITLAB,
-    PLACES,
+  data() {
+    return {
+      // The components here are expected to:
+      // - be responsible for getting their own data,
+      // - render a GlDisclosureDropdownGroup as the root vnode,
+      // - transparently pass all attrs to it (e.g., `bordered`),
+      // - not render anything if they have no data,
+      // - emit a `nothing-to-render` event if they have nothing to render.
+      // - have a unique `name`
+      componentNames: components.map(({ name }) => name),
+    };
   },
-  components: {
-    GlDisclosureDropdownGroup,
-  },
-  inject: ['contextSwitcherLinks'],
-  computed: {
-    ...mapState(['searchContext']),
-    ...mapGetters(['defaultSearchOptions']),
-    currentContextName() {
-      return (
-        this.searchContext?.project?.name ||
-        this.searchContext?.group?.name ||
-        this.$options.i18n.ALL_GITLAB
-      );
+  methods: {
+    componentFromName(name) {
+      return components.find((component) => component.name === name);
     },
-    groups() {
-      const groups = [
-        {
-          name: this.$options.i18n.PLACES,
-          items: this.contextSwitcherLinks.map(({ title, link }) => ({ text: title, href: link })),
-        },
-        {
-          name: this.currentContextName,
-          items: this.defaultSearchOptions,
-        },
-      ];
-
-      return groups.filter(({ items }) => items.length > 0);
+    remove(nameToRemove) {
+      const indexToRemove = this.componentNames.findIndex((name) => name === nameToRemove);
+      if (indexToRemove !== -1) this.componentNames.splice(indexToRemove, 1);
+    },
+    attrs(index) {
+      return index === 0
+        ? null
+        : {
+            bordered: true,
+            class: 'gl-mt-3',
+          };
     },
   },
 };
 </script>
 
 <template>
-  <ul class="gl-p-0 gl-m-0 gl-list-style-none">
-    <gl-disclosure-dropdown-group
-      v-for="(group, index) of groups"
-      :key="group.name"
-      :group="group"
-      bordered
-      :class="{ 'gl-mt-0!': index === 0 }"
+  <ul class="gl-p-0 gl-m-0 gl-pt-2 gl-list-style-none">
+    <component
+      :is="componentFromName(name)"
+      v-for="(name, index) in componentNames"
+      :key="name"
+      v-bind="attrs(index)"
+      @nothing-to-render="remove(name)"
     />
   </ul>
 </template>

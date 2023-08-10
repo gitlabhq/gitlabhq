@@ -6,16 +6,22 @@ module Ci
       module_function
 
       def with_routing_tables
-        # model.table_name = :routing_table
+        previous_table_name = CommitStatus.table_name
+        CommitStatus.table_name = :p_ci_builds
+        CommitStatus.descendants.each(&:reset_table_name)
+
         yield
-        # ensure
-        # model.table_name = :regular_table
+
+      ensure
+        CommitStatus.table_name = previous_table_name
+        CommitStatus.descendants.each(&:reset_table_name)
       end
 
       def setup(connection: Ci::ApplicationRecord.connection)
         each_partitionable_table do |table_name|
           create_test_partition("p_#{table_name}", connection: connection)
         end
+        ensure_builds_id_uniquness(connection: connection)
       end
 
       def teardown(connection: Ci::ApplicationRecord.connection)
@@ -54,6 +60,16 @@ module Ci
         connection.execute(<<~SQL.squish)
           ALTER TABLE #{table_name} DETACH PARTITION  #{full_partition_name(table_name)};
           DROP TABLE IF EXISTS #{full_partition_name(table_name)};
+        SQL
+      end
+
+      # This can be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/421173
+      # is implemented
+      def ensure_builds_id_uniquness(connection:)
+        connection.execute(<<~SQL.squish)
+          CREATE TRIGGER assign_p_ci_builds_id_trigger
+            BEFORE INSERT ON #{full_partition_name('ci_builds')}
+            FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
         SQL
       end
 

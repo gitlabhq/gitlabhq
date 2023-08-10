@@ -7,6 +7,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
     it "allows creating protected branches that #{access_type_name} can push to" do
       visit project_protected_branches_path(project)
 
+      show_add_form
       set_protected_branch_name('master')
       set_allowed_to('merge', no_one)
       set_allowed_to('push', access_type_name)
@@ -19,6 +20,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
     it "allows creating protected branches that #{access_type_name} can merge to" do
       visit project_protected_branches_path(project)
 
+      show_add_form
       set_protected_branch_name('master')
       set_allowed_to('merge', access_type_name)
       set_allowed_to('push', no_one)
@@ -31,6 +33,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
     it "allows updating protected branches so that #{access_type_name} can push to them" do
       visit project_protected_branches_path(project)
 
+      show_add_form
       set_protected_branch_name('master')
       set_allowed_to('merge', no_one)
       set_allowed_to('push', no_one)
@@ -52,6 +55,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
     it "allows updating protected branches so that #{access_type_name} can merge to them" do
       visit project_protected_branches_path(project)
 
+      show_add_form
       set_protected_branch_name('master')
       set_allowed_to('merge', no_one)
       set_allowed_to('push', no_one)

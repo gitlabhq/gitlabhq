@@ -577,6 +577,14 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
             end
           end
         end
+
+        context 'when passing `check_mergeability_retry_lease: true` as `options` parameter' do
+          it 'call mergeable? with check_mergeability_retry_lease' do
+            expect(merge_request).to receive(:mergeable?).with(hash_including(check_mergeability_retry_lease: true)).and_call_original
+
+            service.execute(merge_request, check_mergeability_retry_lease: true)
+          end
+        end
       end
     end
 

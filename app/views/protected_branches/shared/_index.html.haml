@@ -7,15 +7,31 @@
       = s_("ProtectedBranch|Protected branches")
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary.gl-mb-0
       = s_("ProtectedBranch|Keep stable branches secure and force developers to use merge requests.")
       = link_to s_("ProtectedBranch|What are protected branches?"), help_page_path("user/project/protected_branches")
   .settings-content
-    %p
-      = s_("ProtectedBranch|By default, protected branches restrict who can modify the branch.")
-      = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/protected_branches", anchor: "who-can-modify-a-protected-branch")
+    .js-alert-protected-branch-created-container.gl-mt-5
 
-    - if can_admin_entity
-      = content_for :create_protected_branch
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+      - c.with_header do
+        .gl-new-card-title-wrapper.gl-justify-content-space-between
+          %h3.gl-new-card-title
+            = s_("ProtectedBranch|Protected branches")
+            .gl-new-card-count
+              = sprite_icon('branch', css_class: 'gl-mr-2')
+              %span= @protected_branches.size
+          .gl-new-card-actions
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-new-token-button' } }) do
+              = _('Add protected branch')
+        .gl-new-card-description.gl-mt-2.gl-sm-mt-0
+          = s_("ProtectedBranch|By default, protected branches restrict who can modify the branch.")
+          = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/protected_branches", anchor: "who-can-modify-a-protected-branch")
+      - c.with_body do
+        - if can_admin_entity
+          .gl-new-card-add-form.gl-m-3.gl-display-none.js-toggle-content
+            = content_for :create_protected_branch
 
-    = content_for :branches_list
+        = content_for :branches_list
+
+    = paginate @protected_branches, theme: 'gitlab'

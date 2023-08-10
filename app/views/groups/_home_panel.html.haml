@@ -8,7 +8,7 @@
       .avatar-container.rect-avatar.s64.home-panel-avatar.gl-flex-shrink-0.float-none{ class: 'gl-mr-3!' }
         = group_icon(@group, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'logo')
       %div
-        %h1.home-panel-title.gl-font-size-h1.gl-mt-3.gl-mb-2.gl-display-flex{ itemprop: 'name' }
+        %h1.home-panel-title.gl-font-size-h1.gl-mt-3.gl-mb-2.gl-display-flex.gl-word-break-word{ itemprop: 'name' }
           = @group.name
           %span.visibility-icon.gl-text-secondary.has-tooltip.gl-ml-2{ data: { container: 'body' }, title: visibility_icon_description(@group) }
             = visibility_level_icon(@group.visibility_level, options: {class: 'icon'})

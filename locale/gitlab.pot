@@ -1777,7 +1777,7 @@ msgstr ""
 msgid "A complete DevOps platform"
 msgstr ""
 
-msgid "A confidential issue cannot have a parent that already has non-confidential children."
+msgid "A confidential issue must have only confidential children. Make any child items confidential and try again."
 msgstr ""
 
 msgid "A confidential work item cannot have a parent that already has non-confidential children."
@@ -2939,6 +2939,9 @@ msgid "Add project"
 msgstr ""
 
 msgid "Add projects"
+msgstr ""
+
+msgid "Add protected branch"
 msgstr ""
 
 msgid "Add reaction"
@@ -37944,9 +37947,6 @@ msgstr ""
 msgid "ProtectedBranch|Protect a branch"
 msgstr ""
 
-msgid "ProtectedBranch|Protected branch (%{protected_branches_count})"
-msgstr ""
-
 msgid "ProtectedBranch|Protected branches"
 msgstr ""
 
@@ -37965,7 +37965,7 @@ msgstr ""
 msgid "ProtectedBranch|Tag"
 msgstr ""
 
-msgid "ProtectedBranch|There are currently no protected branches, protect a branch with the form above."
+msgid "ProtectedBranch|There are currently no protected branches, to protect a branch start by creating a new one above."
 msgstr ""
 
 msgid "ProtectedBranch|Toggle allowed to force push"

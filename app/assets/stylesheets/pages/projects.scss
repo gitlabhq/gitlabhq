@@ -493,31 +493,6 @@
   }
 }
 
-.protected-branches-list {
-  margin-bottom: 32px;
-
-  .settings-message {
-    margin: 0;
-    border-radius: 0 0 1px 1px;
-    padding: 20px 0;
-    border: 0;
-  }
-
-  .table-bordered {
-    border-radius: 1px;
-
-    th:not(:last-child),
-    td:not(:last-child) {
-      border-right: solid 1px transparent;
-    }
-  }
-
-  .flash-container {
-    padding: 0;
-  }
-}
-
-
 .compare-revision-cards {
   @media (max-width: $breakpoint-lg) {
     .swap-button {
