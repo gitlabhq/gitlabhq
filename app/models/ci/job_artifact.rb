@@ -341,16 +341,10 @@ module Ci
     end
 
     def to_deleted_object_attrs(pick_up_at = nil)
-      final_path_store_dir, final_path_filename = nil
-      if file_final_path.present?
-        final_path_store_dir = File.dirname(file_final_path)
-        final_path_filename = File.basename(file_final_path)
-      end
-
       {
         file_store: file_store,
-        store_dir: final_path_store_dir || file.store_dir.to_s,
-        file: final_path_filename || file_identifier,
+        store_dir: file.store_dir.to_s,
+        file: file_identifier,
         pick_up_at: pick_up_at || expire_at || Time.current
       }
     end

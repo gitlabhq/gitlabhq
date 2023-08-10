@@ -1,6 +1,5 @@
 ---
 key_path: counts.groups_gitlab_slack_application_active
-name: count_groups_gitlab_slack_application_active
 description: Count groups with active slack application
 product_section: dev
 product_stage: manage

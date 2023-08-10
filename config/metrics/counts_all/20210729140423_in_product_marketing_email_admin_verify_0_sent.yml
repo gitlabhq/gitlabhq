@@ -1,6 +1,5 @@
 ---
 key_path: counts.in_product_marketing_email_admin_verify_0_sent
-name: "count_sent_first_email_of_the_admin_verify_track_for_in_product_marketing_emails"
 description: Total sent emails of the admin_verify track's first email
 product_section: growth
 product_stage: growth

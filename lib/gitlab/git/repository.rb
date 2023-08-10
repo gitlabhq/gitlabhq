@@ -1198,6 +1198,12 @@ module Gitlab
         end
       end
 
+      def get_patch_id(old_revision, new_revision)
+        wrapped_gitaly_errors do
+          gitaly_commit_client.get_patch_id(old_revision, new_revision)
+        end
+      end
+
       private
 
       def repository_info_size_megabytes

@@ -2573,6 +2573,12 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#get_patch_id' do
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :get_patch_id do
+      subject { repository.get_patch_id('HEAD~', 'HEAD') }
+    end
+  end
+
   def create_remote_branch(remote_name, branch_name, source_branch_name)
     source_branch = repository.find_branch(source_branch_name)
     repository.write_ref("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)

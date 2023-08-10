@@ -5,7 +5,6 @@ import {
   GlSkeletonLoader,
   GlLoadingIcon,
   GlIcon,
-  GlBadge,
   GlButton,
   GlTooltipDirective,
   GlEmptyState,
@@ -19,8 +18,9 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
-  sprintfWorkItem,
   i18n,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_NOTIFICATIONS,
@@ -60,7 +60,6 @@ export default {
   components: {
     WorkItemStateToggleButton,
     GlAlert,
-    GlBadge,
     GlButton,
     GlLoadingIcon,
     GlSkeletonLoader,
@@ -79,6 +78,7 @@ export default {
     WorkItemDetailModal,
     AbuseCategorySelector,
     GlIntersectionObserver,
+    ConfidentialityBadge,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'reportAbusePath'],
@@ -185,9 +185,6 @@ export default {
     },
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
-    },
-    confidentialTooltip() {
-      return sprintfWorkItem(this.$options.i18n.confidentialTooltip, this.workItemType);
     },
     fullPath() {
       return this.workItem?.project.fullPath;
@@ -377,8 +374,8 @@ export default {
       }
     },
   },
-
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORKSPACE_PROJECT,
 };
 </script>
 
@@ -439,16 +436,6 @@ export default {
             />
             {{ workItemBreadcrumbReference }}
           </div>
-          <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
-          <gl-badge
-            v-if="workItem.confidential"
-            v-gl-tooltip.bottom
-            :title="confidentialTooltip"
-            variant="warning"
-            icon="eye-slash"
-            class="gl-mr-3 gl-cursor-help"
-            >{{ __('Confidential') }}</gl-badge
-          >
           <work-item-state-toggle-button
             v-if="canUpdate"
             :work-item-id="workItem.id"
@@ -503,7 +490,10 @@ export default {
             :can-update="canUpdate"
             @error="updateError = $event"
           />
-          <work-item-created-updated :work-item-iid="workItemIid" />
+          <work-item-created-updated
+            :work-item-iid="workItemIid"
+            :update-in-progress="updateInProgress"
+          />
         </div>
         <gl-intersection-observer
           v-if="showIntersectionObserver"
@@ -523,15 +513,12 @@ export default {
                   {{ workItem.title }}
                 </span>
                 <gl-loading-icon v-if="updateInProgress" class="gl-mr-3" />
-                <gl-badge
+                <confidentiality-badge
                   v-if="workItem.confidential"
-                  v-gl-tooltip.bottom
-                  :title="confidentialTooltip"
-                  variant="warning"
-                  icon="eye-slash"
-                  class="gl-mr-3 gl-cursor-help"
-                  >{{ __('Confidential') }}</gl-badge
-                >
+                  data-testid="confidential"
+                  :workspace-type="$options.WORKSPACE_PROJECT"
+                  :issuable-type="workItemType"
+                />
                 <work-item-todos
                   v-if="showWorkItemCurrentUserTodos"
                   :work-item-id="workItem.id"

@@ -9,10 +9,16 @@ class CommitStatus < Ci::ApplicationRecord
   include BulkInsertableAssociations
   include TaggableQueries
 
+  ROUTING_FEATURE_FLAG = :ci_partitioning_use_ci_builds_routing_table
+
   self.table_name = 'ci_builds'
   self.sequence_name = 'ci_builds_id_seq'
   self.primary_key = :id
-  partitionable scope: :pipeline
+
+  partitionable scope: :pipeline, through: {
+    table: :p_ci_builds,
+    flag: ROUTING_FEATURE_FLAG
+  }
 
   belongs_to :user
   belongs_to :project

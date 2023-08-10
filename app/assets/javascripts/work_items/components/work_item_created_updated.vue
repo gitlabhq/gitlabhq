@@ -1,8 +1,10 @@
 <script>
-import { GlAvatarLink, GlSprintf } from '@gitlab/ui';
+import { GlAvatarLink, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { WORKSPACE_PROJECT } from '~/issues/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
@@ -13,6 +15,8 @@ export default {
     TimeAgoTooltip,
     WorkItemStateBadge,
     WorkItemTypeIcon,
+    ConfidentialityBadge,
+    GlLoadingIcon,
   },
   inject: ['fullPath'],
   props: {
@@ -20,6 +24,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    updateInProgress: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -44,6 +53,9 @@ export default {
     workItemIconName() {
       return this.workItem?.workItemType?.iconName;
     },
+    isWorkItemConfidential() {
+      return this.workItem?.confidential;
+    },
   },
   apollo: {
     workItem: {
@@ -62,12 +74,21 @@ export default {
       },
     },
   },
+  WORKSPACE_PROJECT,
 };
 </script>
 
 <template>
   <div class="gl-mb-3 gl-text-gray-700">
     <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
+    <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
+    <confidentiality-badge
+      v-if="isWorkItemConfidential"
+      class="gl-vertical-align-middle gl-display-inline-flex!"
+      data-testid="confidential"
+      :workspace-type="$options.WORKSPACE_PROJECT"
+      :issuable-type="workItemType"
+    />
     <work-item-type-icon
       class="gl-vertical-align-middle gl-mr-0!"
       :work-item-icon-name="workItemIconName"

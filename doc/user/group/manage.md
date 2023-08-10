@@ -493,6 +493,9 @@ To disable third-party AI features for a group:
 1. Under **Third-party AI services**, uncheck the **Use third-party AI services** checkbox.
 1. Select **Save changes**.
 
+When Code Suggestions are enabled and disabled, an
+[audit event](../../administration/audit_events.md#view-audit-events) is created. 
+
 ## Group activity analytics **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).

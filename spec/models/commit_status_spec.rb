@@ -1067,4 +1067,26 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     it_behaves_like 'having enum with nil value'
   end
+
+  describe 'routing table switch' do
+    context 'with ff disabled' do
+      before do
+        stub_feature_flags(ci_partitioning_use_ci_builds_routing_table: false)
+      end
+
+      it 'uses the legacy table' do
+        expect(described_class.table_name).to eq('ci_builds')
+      end
+    end
+
+    context 'with ff enabled' do
+      before do
+        stub_feature_flags(ci_partitioning_use_ci_builds_routing_table: true)
+      end
+
+      it 'uses the routing table' do
+        expect(described_class.table_name).to eq('p_ci_builds')
+      end
+    end
+  end
 end

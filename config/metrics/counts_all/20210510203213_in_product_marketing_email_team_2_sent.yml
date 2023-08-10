@@ -1,7 +1,6 @@
 ---
 data_category: optional
 key_path: counts.in_product_marketing_email_team_2_sent
-name: "count_sent_third_email_of_the_team_track_for_in_product_marketing_emails"
 description: Total sent emails of the team track's third email
 product_section: 'TBD'
 product_stage: growth

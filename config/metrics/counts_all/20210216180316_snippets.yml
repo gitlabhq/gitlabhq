@@ -1,7 +1,6 @@
 ---
 data_category: optional
 key_path: usage_activity_by_stage.create.snippets
-name: count_distinct_author_id_from_snippets
 description: Count of distinct author_id from snippets
 product_section: dev
 product_stage: create

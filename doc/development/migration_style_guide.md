@@ -420,6 +420,18 @@ minimum acceptable timestamp would be 20230424000000.
 
 While the above should be considered a hard rule, it is a best practice to try to keep migration timestamps to within three weeks of the date it is anticipated that the migration will be merged upstream, regardless of how much time has elapsed since the last hard stop.
 
+To update a migration timestamp:
+
+1. Migrate down the migration for the `ci` and `main` DBs:
+
+   ```ruby
+   rake db:migrate:down:main VERSION=<timestamp>
+   rake db:migrate:down:ci VERSION=<timestamp>
+   ```
+
+1. Delete the migration file.
+1. Recreate the migration following the [migration style guide](#choose-an-appropriate-migration-type).
+
 ## Migration helpers and versioning
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339115) in GitLab 14.3.

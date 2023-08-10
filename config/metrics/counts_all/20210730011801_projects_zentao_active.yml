@@ -1,6 +1,5 @@
 ---
 key_path: counts.projects_zentao_active
-name: count_all_projects_zentao_active
 description: Count of projects with active Zentao integrations
 product_section: dev
 product_stage: manage

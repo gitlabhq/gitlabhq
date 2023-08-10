@@ -29669,12 +29669,6 @@ msgstr ""
 msgid "MetricsDashboardAnnotation|can't be before starting_at time"
 msgstr ""
 
-msgid "MetricsUsersStarredDashboards|Dashboard with requested path can not be found"
-msgstr ""
-
-msgid "MetricsUsersStarredDashboards|You are not authorized to add star to this dashboard"
-msgstr ""
-
 msgid "Metrics|Create metric"
 msgstr ""
 
@@ -41365,6 +41359,9 @@ msgstr ""
 msgid "ScanResultPolicy|Age is:"
 msgstr ""
 
+msgid "ScanResultPolicy|Block users from unprotecting branches"
+msgstr ""
+
 msgid "ScanResultPolicy|Choose an option"
 msgstr ""
 
@@ -41408,6 +41405,9 @@ msgid "ScanResultPolicy|Only 1 severity is allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Only 2 status criteria are allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Override project approval settings"
 msgstr ""
 
 msgid "ScanResultPolicy|Pre-existing"

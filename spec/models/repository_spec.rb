@@ -3804,4 +3804,22 @@ RSpec.describe Repository, feature_category: :source_code_management do
       include_examples 'does not delete branch'
     end
   end
+
+  describe '#get_patch_id' do
+    it 'returns patch_id of given revisions' do
+      expect(repository.get_patch_id('HEAD~', 'HEAD')).to eq('45435e5d7b339dd76d939508c7687701d0c17fff')
+    end
+
+    context 'when one of the param is invalid' do
+      it 'raises an ArgumentError error' do
+        expect { repository.get_patch_id('HEAD', nil) }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when two revisions are the same' do
+      it 'raises an Gitlab::Git::CommandError error' do
+        expect { repository.get_patch_id('HEAD', 'HEAD') }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+  end
 end

@@ -1,7 +1,6 @@
 ---
 data_category: optional
 key_path: counts.in_product_marketing_email_create_0_sent
-name: "count_sent_first_email_of_the_create_track_for_in_product_marketing_emails"
 description: Total sent emails of the create track's first email
 product_section: 'TBD'
 product_stage: growth

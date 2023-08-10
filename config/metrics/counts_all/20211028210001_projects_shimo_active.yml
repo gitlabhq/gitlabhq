@@ -1,6 +1,5 @@
 ---
 key_path: counts.projects_shimo_active
-name: count_all_projects_shimo_active
 description: Count of projects with active Shimo integrations
 product_section: dev
 product_stage: manage

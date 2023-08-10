@@ -1248,6 +1248,10 @@ class Repository
     prohibited_branches.each { |name| raw_repository.delete_branch(name) }
   end
 
+  def get_patch_id(old_revision, new_revision)
+    raw_repository.get_patch_id(old_revision, new_revision)
+  end
+
   private
 
   def ancestor_cache_key(ancestor_id, descendant_id)

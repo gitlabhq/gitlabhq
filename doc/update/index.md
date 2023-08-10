@@ -319,12 +319,22 @@ Before upgrading, see [GitLab 16 changes](versions/gitlab_16_changes.md).
 
 ### 15.10.5
 
+- A [bug with Elastic Indexer Cron Workers](https://gitlab.com/gitlab-org/gitlab/-/issues/408214) can cause saturation in Sidekiq.
+  - When this issue occurs, merge request merges, pipelines, Slack notifications, and other events are not created or take a long time to occur.
+  - This issue may not manifest immediately as it can take up to a week before the Sidekiq is saturated enough.
+  - Elasticsearch does not need to be enabled for this to occur.
+  - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
 - Many [project importers](../user/project/import/index.md) and [group importers](../user/group/import/index.md) now
   require the Maintainer role instead of only requiring the Developer role. For more information, see the documentation
   for any importers you use.
 
 ### 15.10.0
 
+- A [bug with Elastic Indexer Cron Workers](https://gitlab.com/gitlab-org/gitlab/-/issues/408214) can cause saturation in Sidekiq.
+  - When this issue occurs, merge request merges, pipelines, Slack notifications, and other events are not created or take a long time to occur.
+  - This issue may not manifest immediately as it can take up to a week before the Sidekiq is saturated enough.
+  - Elasticsearch does not need to be enabled for this to occur.
+  - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
 - Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
   maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](#gitaly-omnibus-gitlab-configuration-structure-change).
 - You might encounter the following error while upgrading to GitLab 15.10 or later:
@@ -375,6 +385,11 @@ For more information, see [issue 415724](https://gitlab.com/gitlab-org/gitlab/-/
 
 ### 15.9.0
 
+- A [bug with Elastic Indexer Cron Workers](https://gitlab.com/gitlab-org/gitlab/-/issues/408214) can cause saturation in Sidekiq.
+  - When this issue occurs, merge request merges, pipelines, Slack notifications, and other events are not created or take a long time to occur.
+  - This issue may not manifest immediately as it can take up to a week before the Sidekiq is saturated enough.
+  - Elasticsearch does not need to be enabled for this to occur.
+  - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
 - **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:
   - Patch releases 15.9.0, 15.9.1, 15.9.2 have [a bug that can cause data loss](#user-profile-data-loss-bug-in-159x) from the user profile fields.
   - The second [bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/394760) ensures it is possible to upgrade directly from 15.4.x.

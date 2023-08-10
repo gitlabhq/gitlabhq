@@ -1,7 +1,5 @@
 import {
   GlAlert,
-  GlBadge,
-  GlLoadingIcon,
   GlSkeletonLoader,
   GlButton,
   GlEmptyState,
@@ -68,7 +66,6 @@ describe('WorkItemDetail component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
@@ -316,27 +313,7 @@ describe('WorkItemDetail component', () => {
     `(
       'when work item has $context',
       ({ handlerMock, confidentialityMock, confidentialityFailureMock, inputVariables }) => {
-        it('renders confidential badge when work item is confidential', async () => {
-          createComponent({
-            handler: jest.fn().mockResolvedValue(confidentialWorkItem),
-            confidentialityMock,
-          });
-
-          await waitForPromises();
-
-          const confidentialBadge = wrapper.findComponent(GlBadge);
-          expect(confidentialBadge.exists()).toBe(true);
-          expect(confidentialBadge.props()).toMatchObject({
-            variant: 'warning',
-            icon: 'eye-slash',
-          });
-          expect(confidentialBadge.attributes('title')).toBe(
-            'Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task.',
-          );
-          expect(confidentialBadge.text()).toBe('Confidential');
-        });
-
-        it('renders gl-loading-icon while update mutation is in progress', async () => {
+        it('sends updateInProgress props to child component', async () => {
           createComponent({
             handler: handlerMock,
             confidentialityMock,
@@ -348,10 +325,10 @@ describe('WorkItemDetail component', () => {
 
           await nextTick();
 
-          expect(findLoadingIcon().exists()).toBe(true);
+          expect(findCreatedUpdated().props('updateInProgress')).toBe(true);
         });
 
-        it('emits workItemUpdated and shows confidentiality badge when mutation is successful', async () => {
+        it('emits workItemUpdated when mutation is successful', async () => {
           createComponent({
             handler: handlerMock,
             confidentialityMock,
@@ -366,7 +343,6 @@ describe('WorkItemDetail component', () => {
           expect(confidentialityMock[1]).toHaveBeenCalledWith({
             input: inputVariables,
           });
-          expect(findLoadingIcon().exists()).toBe(false);
         });
 
         it('shows an alert when mutation fails', async () => {
@@ -384,7 +360,6 @@ describe('WorkItemDetail component', () => {
 
           expect(findAlert().exists()).toBe(true);
           expect(findAlert().text()).toBe(errorMessage);
-          expect(findLoadingIcon().exists()).toBe(false);
         });
       },
     );

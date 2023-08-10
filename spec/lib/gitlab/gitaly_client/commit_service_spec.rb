@@ -1108,4 +1108,22 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
     end
   end
+
+  describe '#get_patch_id' do
+    it 'returns patch_id of given revisions' do
+      expect(client.get_patch_id('HEAD~', 'HEAD')).to eq('45435e5d7b339dd76d939508c7687701d0c17fff')
+    end
+
+    context 'when one of the param is invalid' do
+      it 'raises an GRPC::InvalidArgument error' do
+        expect { client.get_patch_id('HEAD', nil) }.to raise_error(GRPC::InvalidArgument)
+      end
+    end
+
+    context 'when two revisions are the same' do
+      it 'raises an GRPC::FailedPrecondition error' do
+        expect { client.get_patch_id('HEAD', 'HEAD') }.to raise_error(GRPC::FailedPrecondition)
+      end
+    end
+  end
 end

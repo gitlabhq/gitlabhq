@@ -80,6 +80,7 @@ module Ci
 
       def handle_partitionable_through(options)
         return unless options
+        return if Gitlab::Utils.to_boolean(ENV['DISABLE_PARTITIONABLE_SWITCH'], default: false)
 
         define_singleton_method(:routing_table_name) { options[:table] }
         define_singleton_method(:routing_table_name_flag) { options[:flag] }

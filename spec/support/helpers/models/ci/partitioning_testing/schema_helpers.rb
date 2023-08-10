@@ -6,15 +6,12 @@ module Ci
       module_function
 
       def with_routing_tables
-        previous_table_name = CommitStatus.table_name
-        CommitStatus.table_name = :p_ci_builds
-        CommitStatus.descendants.each(&:reset_table_name)
+        # previous_table_name = Model.table_name
+        # Model.table_name = routing_table_name
 
         yield
-
-      ensure
-        CommitStatus.table_name = previous_table_name
-        CommitStatus.descendants.each(&:reset_table_name)
+        # ensure
+        # Model.table_name = previous_table_name
       end
 
       def setup(connection: Ci::ApplicationRecord.connection)

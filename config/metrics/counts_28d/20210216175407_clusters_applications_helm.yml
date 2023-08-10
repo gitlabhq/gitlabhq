@@ -17,7 +17,6 @@ tier:
 - free
 - premium
 - ultimate
-name: 'count_distinct_user_id_from_clusters_applications_helm'
 performance_indicator_type: []
 milestone: "<13.9"
 milestone_removed: "14.4"

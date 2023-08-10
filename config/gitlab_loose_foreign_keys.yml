@@ -22,16 +22,6 @@ ci_build_report_results:
   - table: projects
     column: project_id
     on_delete: async_delete
-ci_builds:
-  - table: users
-    column: user_id
-    on_delete: async_nullify
-  - table: projects
-    column: project_id
-    on_delete: async_delete
-  - table: ci_runners
-    column: runner_id
-    on_delete: async_nullify
 ci_daily_build_group_report_results:
   - table: namespaces
     column: group_id
@@ -259,6 +249,16 @@ ml_candidates:
 namespaces:
   - table: organizations
     column: organization_id
+    on_delete: async_nullify
+p_ci_builds:
+  - table: users
+    column: user_id
+    on_delete: async_nullify
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: ci_runners
+    column: runner_id
     on_delete: async_nullify
 p_ci_builds_metadata:
   - table: projects

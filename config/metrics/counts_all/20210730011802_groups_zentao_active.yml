@@ -1,6 +1,5 @@
 ---
 key_path: counts.groups_zentao_active
-name: count_all_groups_zentao_active
 description: Count of groups with active Zentao integrations
 product_section: dev
 product_stage: manage

@@ -1,7 +1,6 @@
 ---
 data_category: operational
 key_path: counts.ci_runners_instance_type_active
-name: "count_active_instance_ci_runners"
 description: Total active Shared (Instance) Runners
 product_section: ops
 product_stage: verify

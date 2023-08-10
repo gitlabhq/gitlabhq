@@ -1,6 +1,5 @@
 ---
 key_path: counts.templates_gitlab_slack_application_active
-name: count_templates_gitlab_slack_application_active
 description: Count templates with active slack application
 product_section: dev
 product_stage: manage

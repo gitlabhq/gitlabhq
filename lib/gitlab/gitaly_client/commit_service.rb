@@ -589,6 +589,15 @@ module Gitlab
         Hash[commit_refs]
       end
 
+      def get_patch_id(old_revision, new_revision)
+        request = Gitaly::GetPatchIDRequest
+          .new(repository: @gitaly_repo, old_revision: old_revision, new_revision: new_revision)
+
+        response = gitaly_client_call(@repository.storage, :diff_service, :get_patch_id, request, timeout: GitalyClient.medium_timeout)
+
+        response.patch_id
+      end
+
       private
 
       def parse_global_options!(options)

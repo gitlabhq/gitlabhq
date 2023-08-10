@@ -20787,6 +20787,17 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinetriggerowner"></a>`owner` | [`UserCore!`](#usercore) | Owner of the pipeline trigger token. |
 | <a id="pipelinetriggertoken"></a>`token` | [`String!`](#string) | Value of the pipeline trigger token. |
 
+### `PolicyApprovalGroup`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policyapprovalgroupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
+| <a id="policyapprovalgroupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
+| <a id="policyapprovalgroupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
+| <a id="policyapprovalgroupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
+
 ### `PreviewBillableUserChange`
 
 #### Fields
@@ -23266,6 +23277,7 @@ Represents the scan result policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="scanresultpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
 | <a id="scanresultpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="scanresultpolicygroupapprovers"></a>`groupApprovers` | [`[Group!]`](#group) | Approvers of the group type. |

@@ -1,7 +1,6 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.code_review.i_code_review_user_resolve_conflict_monthly
-name: resolve_conflict
 description: Count of unique users per week who attempt to resolve a conflict through the ui
 product_stage: create
 product_group: code_review

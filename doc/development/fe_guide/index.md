@@ -31,6 +31,8 @@ We use [Apollo](https://www.apollographql.com/) as our global state manager and 
 You should **not** [use VueX and Apollo together](graphql.md#using-with-vuex),
 and should [avoid adding new VueX stores](migrating_from_vuex.md) whenever possible.
 
+For copy strings and translations, we have frontend utilities available. Please see the JavaScript section of [Preparing a page for translation](../i18n/externalization.md#javascript-files) for more information.
+
 Working with our frontend assets requires Node (v12.22.1 or greater) and Yarn
 (v1.10.0 or greater). You can find information on how to install these on our
 [installation guide](../../install/installation.md#5-node).

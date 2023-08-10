@@ -1,6 +1,5 @@
 ---
 key_path: redis_hll_counters.runner.g_runner_fleet_read_jobs_statistics_weekly
-name: g_runner_fleet_read_jobs_statistics_weekly
 description: Count of unique users (weekly) who read runner job statistics
 product_section: ops
 product_stage: verify

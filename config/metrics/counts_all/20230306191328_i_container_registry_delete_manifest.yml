@@ -1,6 +1,5 @@
 ---
 key_path: counts.container_registry_events_i_container_registry_delete_manifest
-name: manifest_delete_events
 description: A count of manifests that have been deleted
 product_section: ops
 product_stage: package
