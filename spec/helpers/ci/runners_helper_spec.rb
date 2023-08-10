@@ -83,22 +83,9 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
   end
 
   describe '#admin_runners_data_attributes' do
-    let_it_be(:admin) { create(:user, :admin) }
-    let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-    let_it_be(:project_runner) { create(:ci_runner, :project) }
+    subject { helper.admin_runners_data_attributes }
 
-    before do
-      allow(helper).to receive(:current_user).and_return(admin)
-    end
-
-    it 'returns the data in format' do
-      expect(helper.admin_runners_data_attributes).to include(
-        runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
-        registration_token: Gitlab::CurrentSettings.runners_registration_token,
-        online_contact_timeout_secs: 7200,
-        stale_timeout_secs: 7889238
-      )
-    end
+    it_behaves_like 'admin_runners_data_attributes contains data'
   end
 
   describe '#group_shared_runners_settings_data' do

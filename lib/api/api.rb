@@ -188,6 +188,7 @@ module API
         # Keep in alphabetical order
         mount ::API::AccessRequests
         mount ::API::Admin::BatchedBackgroundMigrations
+        mount ::API::Admin::BroadcastMessages
         mount ::API::Admin::Ci::Variables
         mount ::API::Admin::Dictionary
         mount ::API::Admin::InstanceClusters
@@ -199,7 +200,6 @@ module API
         mount ::API::Avatar
         mount ::API::Badges
         mount ::API::Branches
-        mount ::API::BroadcastMessages
         mount ::API::BulkImports
         mount ::API::Ci::JobArtifacts
         mount ::API::Groups

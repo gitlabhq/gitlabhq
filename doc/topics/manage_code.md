@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Manage your code **(FREE)**
 
-Store your source files in a repository, create merge requests, and compile code hosted on GitLab.
+Store your source files in a repository and create merge requests. Write, debug, and compile code hosted on GitLab.
 
 - [Repositories](../user/project/repository/index.md)
 - [Merge requests](../user/project/merge_requests/index.md)

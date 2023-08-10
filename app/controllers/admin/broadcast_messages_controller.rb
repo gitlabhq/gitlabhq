@@ -2,7 +2,7 @@
 
 module Admin
   class BroadcastMessagesController < ApplicationController
-    include BroadcastMessagesHelper
+    include Admin::BroadcastMessagesHelper
 
     before_action :find_broadcast_message, only: [:edit, :update, :destroy]
     before_action :find_broadcast_messages, only: [:index, :create]

@@ -4,7 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :importers do
   let(:worker) do
-    Class.new { include(Gitlab::GithubImport::ReschedulingMethods) }.new
+    Class.new do
+      def self.name
+        'MockImportWorker'
+      end
+
+      include ApplicationWorker
+      include Gitlab::GithubImport::ReschedulingMethods
+    end.new
   end
 
   describe '#perform' do

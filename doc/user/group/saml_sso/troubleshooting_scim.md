@@ -40,40 +40,42 @@ To check if a user's SAML `NameId` matches their SCIM `externalId`:
 
 - Administrators can use the Admin Area to [list SCIM identities for a user](../../../administration/admin_area.md#user-identities).
 - Group owners can see the list of users and the identifier stored for each user in the group SAML SSO Settings page.
-- You can use the [SCIM API](../../../api/scim.md) to manually retrieve the `external_uid` GitLab has stored for users and compare the value for each user from the [SAML API](../../../api/saml.md) .
-- Have the user use a [SAML Tracer](troubleshooting.md#saml-debugging-tools) and compare the `external_uid` to
+- You can use the [SCIM API](../../../api/scim.md) to manually retrieve the `extern_uid` GitLab has stored for users and compare the value for each user from the [SAML API](../../../api/saml.md) .
+- Have the user use a [SAML Tracer](troubleshooting.md#saml-debugging-tools) and compare the `extern_uid` to
   the value returned as the SAML `NameId`.
 
 ## Mismatched SCIM `extern_uid` and SAML `NameId`
 
 Whether the value was changed or you need to map to a different field, the following must map to the same field:
 
-- `id`
 - `externalId`
 - `NameId`
 
-If the GitLab `extern_uid` doesn't match the SAML `NameId`, it must be updated for the user to sign in. Your identity
-provider should be configured to do this update. In some cases the identity provider cannot do the update, for example
-when a user lookup fails because of an ID change.
+If the GitLab `extern_uid` does not match the SAML `NameId`, you must update the GitLab `extern_uid` to enable the user to sign in.
 
-Be cautious if you revise the fields used by your SCIM identity provider, typically `id` and `externalId`.
-GitLab uses these IDs to look up users. If the identity provider does not know the current values for these fields,
-that provider may create duplicate users.
+Be cautious if you revise the fields used by your SCIM identity provider, typically `externalId`.
+Your identity provider should be configured to do this update.
+In some cases the identity provider cannot do the update, for example when a user lookup fails.
 
-If the `extern_uid` for a user is not correct, and also doesn't match the SAML `NameID`, either:
+GitLab uses these IDs to look up users.
+If the identity provider does not know the current values for these fields,
+that provider may create duplicate users, or fail to complete expected actions.
 
-- Have users unlink and relink themselves, based on the
+To change the identifier values to match:
+
+1. Have users unlink and relink themselves, based on the
   [SAML authentication failed: User has already been taken](troubleshooting.md#message-saml-authentication-failed-user-has-already-been-taken)
   section.
-- Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
-- Use the [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
-  `NameId`. To look up a user, you must know the desired value that matches the `NameId` as well as the current
-  `extern_uid`.
+1. Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
+1. Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
+  `NameId` or SCIM `externalId`.
 
 You must not:
 
 - Update these to incorrect values because this causes users to be unable to sign in.
 - Assign a value to the wrong user because this causes users to be signed in to the wrong account.
+
+Additionally, the user's primary email must match the email in your SCIM identity provider.
 
 ## Change SCIM app
 

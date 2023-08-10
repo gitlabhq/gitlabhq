@@ -34,7 +34,7 @@ With remote development, you can use:
 
 For a complete IDE experience, connect the Web IDE to a development environment configured to run as a remote host. You can create this environment [inside](../../workspace/index.md) or [outside](connect_machine.md) of GitLab.
 
-## Workspace
+## Workspaces **(PREMIUM)**
 
 A [workspace](../../workspace/index.md) is a virtual sandbox environment for your code in GitLab that includes:
 

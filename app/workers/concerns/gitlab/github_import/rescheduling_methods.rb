@@ -5,9 +5,14 @@ module Gitlab
     # Module that provides methods shared by the various workers used for
     # importing GitHub projects.
     module ReschedulingMethods
+      extend ActiveSupport::Concern
       include JobDelayCalculator
 
       ENQUEUED_JOB_COUNT = 'github-importer/enqueued_job_count/%{project}/%{collection}'
+
+      included do
+        loggable_arguments 2
+      end
 
       # project_id - The ID of the GitLab project to import the note into.
       # hash - A Hash containing the details of the GitHub object to import.

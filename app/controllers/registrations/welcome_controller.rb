@@ -4,6 +4,7 @@ module Registrations
   class WelcomeController < ApplicationController
     include OneTrustCSP
     include GoogleAnalyticsCSP
+    include GoogleSyndicationCSP
     include ::Gitlab::Utils::StrongMemoize
 
     layout 'minimal'

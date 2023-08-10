@@ -44,7 +44,7 @@ A good example is as follows:
 ```ruby
 desc 'Get all broadcast messages' do
   detail 'This feature was introduced in GitLab 8.12.'
-  success Entities::BroadcastMessage
+  success Entities::System::BroadcastMessage
 end
 params do
   optional :page,     type: Integer, desc: 'Current page number'
@@ -53,7 +53,7 @@ end
 get do
   messages = System::BroadcastMessage.all
 
-  present paginate(messages), with: Entities::BroadcastMessage
+  present paginate(messages), with: Entities::System::BroadcastMessage
 end
 ```
 

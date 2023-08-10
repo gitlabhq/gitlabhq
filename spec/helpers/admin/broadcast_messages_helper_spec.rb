@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
+RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :onboarding do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:user) { create(:user) }
@@ -130,6 +130,36 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
       message = build(:broadcast_message, :future)
 
       expect(helper.broadcast_message_status(message)).to eq 'Pending'
+    end
+  end
+
+  describe '#render_broadcast_message' do
+    context 'when message is banner' do
+      let_it_be(:broadcast_message) do
+        System::BroadcastMessage.new(message: 'Current Message', broadcast_type: :banner)
+      end.freeze
+
+      it 'renders broadcast message' do
+        expect(helper.render_broadcast_message(broadcast_message)).to eq("<p>Current Message</p>")
+      end
+    end
+
+    context 'when message is notification' do
+      let_it_be(:broadcast_message) do
+        System::BroadcastMessage.new(message: 'Current Message', broadcast_type: :notification)
+      end.freeze
+
+      it 'renders broadcast message' do
+        expect(helper.render_broadcast_message(broadcast_message)).to eq("<p>Current Message</p>")
+      end
+    end
+  end
+
+  describe '#target_access_levels_display' do
+    let_it_be(:access_levels) { [Gitlab::Access::REPORTER, Gitlab::Access::DEVELOPER] }.freeze
+
+    it 'joins access levels' do
+      expect(helper.target_access_levels_display(access_levels)).to eq("Reporter, Developer")
     end
   end
 

@@ -8,6 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
   include OneTrustCSP
   include BizibleCSP
   include GoogleAnalyticsCSP
+  include GoogleSyndicationCSP
   include PreferredLanguageSwitcher
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
   include SkipsAlreadySignedInMessage

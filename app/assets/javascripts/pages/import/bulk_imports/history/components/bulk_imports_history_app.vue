@@ -15,21 +15,21 @@ import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { getBulkImportsHistory } from '~/rest_api';
 import ImportStatus from '~/import_entities/components/import_status.vue';
+import { StatusPoller } from '~/import_entities/import_groups/services/status_poller';
+
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
+import { isImporting } from '../utils';
 import { DEFAULT_ERROR } from '../utils/error_messages';
 
 const DEFAULT_PER_PAGE = 20;
-const DEFAULT_TH_CLASSES =
-  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-200! gl-border-b-1! gl-p-5!';
 
 const HISTORY_PAGINATION_SIZE_PERSIST_KEY = 'gl-bulk-imports-history-per-page';
 
 const tableCell = (config) => ({
-  thClass: `${DEFAULT_TH_CLASSES}`,
   tdClass: (value, key, item) => {
     return {
       // eslint-disable-next-line no-underscore-dangle
@@ -57,6 +57,8 @@ export default {
     GlTooltip,
   },
 
+  inject: ['realtimeChangesPath'],
+
   data() {
     return {
       loading: true,
@@ -73,12 +75,12 @@ export default {
     tableCell({
       key: 'source_full_path',
       label: s__('BulkImport|Source'),
-      thClass: `${DEFAULT_TH_CLASSES} gl-w-30p`,
+      thClass: `gl-w-30p`,
     }),
     tableCell({
       key: 'destination_name',
       label: s__('BulkImport|Destination'),
-      thClass: `${DEFAULT_TH_CLASSES} gl-w-40p`,
+      thClass: `gl-w-40p`,
     }),
     tableCell({
       key: 'created_at',
@@ -95,6 +97,12 @@ export default {
     hasHistoryItems() {
       return this.historyItems.length > 0;
     },
+
+    importingHistoryItemIds() {
+      return this.historyItems
+        .filter((item) => isImporting(item.status))
+        .map((item) => item.bulk_import_id);
+    },
   },
 
   watch: {
@@ -104,10 +112,43 @@ export default {
       },
       deep: true,
     },
+
+    importingHistoryItemIds(value) {
+      if (value.length > 0) {
+        this.statusPoller.startPolling();
+      } else {
+        this.statusPoller.stopPolling();
+      }
+    },
   },
 
   mounted() {
     this.loadHistoryItems();
+
+    this.statusPoller = new StatusPoller({
+      pollPath: this.realtimeChangesPath,
+      updateImportStatus: (update) => {
+        if (!this.importingHistoryItemIds.includes(update.id)) {
+          return;
+        }
+
+        const updateItemIndex = this.historyItems.findIndex(
+          (item) => item.bulk_import_id === update.id,
+        );
+        const updateItem = this.historyItems[updateItemIndex];
+
+        if (updateItem.status !== update.status_name) {
+          this.$set(this.historyItems, updateItemIndex, {
+            ...updateItem,
+            status: update.status_name,
+          });
+        }
+      },
+    });
+  },
+
+  beforeDestroy() {
+    this.statusPoller.stopPolling();
   },
 
   methods: {

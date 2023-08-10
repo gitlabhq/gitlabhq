@@ -9,12 +9,7 @@ class EnsureBackfillForCiPipelineVariablesPipelineIdIsFinished < Gitlab::Databas
   TABLE_NAME = :ci_pipeline_variables
 
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
-      table_name: TABLE_NAME,
-      column_name: 'pipeline_id',
-      job_arguments: [['pipeline_id'], ['id_convert_to_bigint']]
-    )
+    # no-op
   end
 
   def down
