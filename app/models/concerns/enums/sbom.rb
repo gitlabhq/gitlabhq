@@ -26,7 +26,9 @@ module Enums
     end
 
     def self.purl_types
-      PURL_TYPES
+      # return 0 by default if the purl_type is not found, to prevent
+      # consumers from producing invalid SQL caused by null entries
+      @_purl_types ||= PURL_TYPES.dup.tap { |h| h.default = 0 }
     end
   end
 end
