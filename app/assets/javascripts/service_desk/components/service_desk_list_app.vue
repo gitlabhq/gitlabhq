@@ -1,5 +1,4 @@
 <script>
-import { GlEmptyState } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { isEmpty } from 'lodash';
@@ -44,7 +43,6 @@ import searchProjectMilestonesQuery from '../queries/search_project_milestones.q
 import {
   errorFetchingCounts,
   errorFetchingIssues,
-  noSearchNoFilterTitle,
   searchPlaceholder,
   SERVICE_DESK_BOT_USERNAME,
   STATUS_OPEN,
@@ -63,19 +61,21 @@ import {
   confidentialityTokenBase,
 } from '../search_tokens';
 import InfoBanner from './info_banner.vue';
+import EmptyStateWithAnyIssues from './empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from './empty_state_without_any_issues.vue';
 
 export default {
   i18n: {
     errorFetchingCounts,
     errorFetchingIssues,
-    noSearchNoFilterTitle,
     searchPlaceholder,
   },
   issuableListTabs,
   components: {
-    GlEmptyState,
     IssuableList,
     InfoBanner,
+    EmptyStateWithAnyIssues,
+    EmptyStateWithoutAnyIssues,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -188,6 +188,9 @@ export default {
         [STATUS_ALL]: allIssues?.count,
       };
     },
+    isOpenTab() {
+      return this.state === STATUS_OPEN;
+    },
     urlParams() {
       return {
         sort: urlSortParams[this.sortKey],
@@ -200,7 +203,10 @@ export default {
       };
     },
     isInfoBannerVisible() {
-      return this.isServiceDeskSupported && this.hasAnyIssues;
+      return this.isServiceDeskSupported && this.hasAnyServiceDeskIssues;
+    },
+    hasAnyServiceDeskIssues() {
+      return this.hasSearch || Boolean(this.tabCounts.all);
     },
     hasOrFeature() {
       return this.glFeatures.orIssuableQueries;
@@ -404,6 +410,7 @@ export default {
   <section>
     <info-banner v-if="isInfoBannerVisible" />
     <issuable-list
+      v-if="hasAnyServiceDeskIssues"
       namespace="service-desk"
       recent-searches-storage-key="service-desk-issues"
       :error="issuesError"
@@ -423,11 +430,10 @@ export default {
       @filter="handleFilter"
     >
       <template #empty-state>
-        <gl-empty-state
-          :svg-path="emptyStateSvgPath"
-          :title="$options.i18n.noSearchNoFilterTitle"
-        />
+        <empty-state-with-any-issues :has-search="hasSearch" :is-open-tab="isOpenTab" />
       </template>
     </issuable-list>
+
+    <empty-state-without-any-issues v-else />
   </section>
 </template>

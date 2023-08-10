@@ -109,7 +109,7 @@ Gather data on the state of the Sidekiq workers with the following Ruby script.
 
      ```shell
      cat > /etc/cron.d/sidekiqcheck <<EOF
-     */5 * * * *  root  /opt/gitlab/bin/gitlab-rails runner /var/opt/gitlab/sidekiqcheck.rb > /tmp/sidekiqcheck_$(date '+\%Y\%m\%d-\%H:\%M').out
+     */5 * * * *  root  /opt/gitlab/bin/gitlab-rails runner /var/opt/gitlab/sidekiqcheck.rb > /tmp/sidekiqcheck_$(date '+\%Y\%m\%d-\%H:\%M').out 2>&1
      EOF
      ```
 

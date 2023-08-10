@@ -64,7 +64,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_ENVIRONMENT_ACTION`                  | 13.11  | all    | The action annotation specified for this job's environment. Available if [`environment:action`](../yaml/index.md#environmentaction) is set. Can be `start`, `prepare`, or `stop`. |
 | `CI_ENVIRONMENT_TIER`                    | 14.0   | all    | The [deployment tier of the environment](../environments/index.md#deployment-tier-of-environments) for this job. |
 | `CI_RELEASE_DESCRIPTION`                 | 15.5   | all    | The description of the release. Available only on pipelines for tags. Description length is limited to first 1024 characters.|
-| `CI_GITLAB_FIPS_MODE`                    | 14.10  | all    | The configuration setting for whether FIPS mode is enabled in the GitLab instance. |
+| `CI_GITLAB_FIPS_MODE`                    | 14.10  | all    | Only available if [FIPS mode](../../development/fips_compliance.md) is enabled in the GitLab instance. `true` when available. |
 | `CI_HAS_OPEN_REQUIREMENTS`               | 13.1   | all    | Only available if the pipeline's project has an open [requirement](../../user/project/requirements/index.md). `true` when available. |
 | `CI_JOB_ID`                              | 9.0    | all    | The internal ID of the job, unique across all jobs in the GitLab instance. |
 | `CI_JOB_IMAGE`                           | 12.9   | 12.9   | The name of the Docker image running the job. |
@@ -76,7 +76,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_JOB_NAME_SLUG`                       | 15.4   | all    | `CI_JOB_NAME_SLUG` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in paths. |
 | `CI_JOB_STAGE`                           | 9.0    | 0.5    | The name of the job's stage. |
 | `CI_JOB_STATUS`                          | all    | 13.5   | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/index.md#after_script). Can be `success`, `failed`, or `canceled`. |
-| `CI_JOB_TIMEOUT`                         | 15.7   | 15.7   | The job timeout value. |
+| `CI_JOB_TIMEOUT`                         | 15.7   | 15.7   | The job timeout, in seconds. |
 | `CI_JOB_TOKEN`                           | 9.0    | 1.2    | A token to authenticate with [certain API endpoints](../jobs/ci_job_token.md). The token is valid as long as the job is running. |
 | `CI_JOB_URL`                             | 11.1   | 0.5    | The job details URL. |
 | `CI_JOB_STARTED_AT`                      | 13.10  | all    | The UTC datetime when a job started, in [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. |

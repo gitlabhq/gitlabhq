@@ -8,7 +8,9 @@ import {
   I18N_CARD_TITLE,
   I18N_GENERIC_ERROR,
   I18N_FEEDBACK_PARAGRAPH,
+  I18N_TOAST_SAVED,
 } from '../custom_email_constants';
+import CustomEmailForm from './custom_email_form.vue';
 
 export default {
   components: {
@@ -18,11 +20,13 @@ export default {
     GlSprintf,
     GlLink,
     GlCard,
+    CustomEmailForm,
   },
   FEEDBACK_ISSUE_URL,
   I18N_LOADING_LABEL,
   I18N_CARD_TITLE,
   I18N_FEEDBACK_PARAGRAPH,
+  I18N_TOAST_SAVED,
   props: {
     incomingEmail: {
       type: String,
@@ -38,6 +42,7 @@ export default {
   data() {
     return {
       loading: true,
+      submitting: false,
       customEmail: null,
       enabled: false,
       verificationState: null,
@@ -46,6 +51,11 @@ export default {
       errorMessage: null,
       alertMessage: null,
     };
+  },
+  computed: {
+    customEmailNotSetUp() {
+      return !this.enabled && this.verificationState === null && this.customEmail === null;
+    },
   },
   mounted() {
     this.getCustomEmailDetails();
@@ -75,6 +85,21 @@ export default {
       this.verificationError = data.custom_email_verification_error;
       this.smtpAddress = data.custom_email_smtp_address;
       this.errorMessage = data.error_message;
+    },
+    onSaveCustomEmail(requestData) {
+      this.alertMessage = null;
+      this.submitting = true;
+
+      axios
+        .post(this.customEmailEndpoint, requestData)
+        .then(({ data }) => {
+          this.updateData(data);
+          this.$toast.show(this.$options.I18N_TOAST_SAVED);
+        })
+        .catch(this.handleRequestError)
+        .finally(() => {
+          this.submitting = false;
+        });
     },
   },
 };
@@ -108,11 +133,20 @@ export default {
           <gl-alert
             v-if="alertMessage"
             variant="warning"
-            class="gl-mt-n5 gl-mx-n5"
+            class="gl-mt-n5 gl-mb-4 gl-mx-n5"
             @dismiss="dismissAlert"
           >
             {{ alertMessage }}
           </gl-alert>
+
+          <!-- Use v-show to preserve form data after verification failure
+            without the need to maintain a state in this component. -->
+          <custom-email-form
+            v-show="customEmailNotSetUp && !loading"
+            :incoming-email="incomingEmail"
+            :submitting="submitting"
+            @submit="onSaveCustomEmail"
+          />
         </template>
 
         <template #footer>

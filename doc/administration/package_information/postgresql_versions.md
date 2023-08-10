@@ -31,6 +31,7 @@ Read more about update policies and warnings in the PostgreSQL
 
 | GitLab version | PostgreSQL versions | Default version for fresh installs | Default version for upgrades | Notes |
 | -------------- | ------------------- | ---------------------------------- | ---------------------------- | ----- |
+| 16.2.0 | 13.11, 14.8 | 13.11 | 13.11 | For upgrades, users can manually upgrade to 14.8 following the [upgrade documentation](https://docs.gitlab.com/omnibus/settings/database.html#gitlab-162-and-later). |
 | 16.0.2 | 13.11 | 13.11 | 13.11 | |
 | 16.0.0 | 13.8  | 13.8  | 13.8  | |
 | 15.11.7 | 13.11 | 13.11 | 12.12 | |

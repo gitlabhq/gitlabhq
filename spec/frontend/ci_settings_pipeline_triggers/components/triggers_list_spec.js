@@ -1,6 +1,7 @@
 import { GlTable, GlBadge } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import TriggersList from '~/ci_settings_pipeline_triggers/components/triggers_list.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -25,17 +26,26 @@ describe('TriggersList', () => {
   const findInvalidBadge = (i) => findCell(i, 0).findComponent(GlBadge);
   const findEditBtn = (i) => findRowAt(i).find('[data-testid="edit-btn"]');
   const findRevokeBtn = (i) => findRowAt(i).find('[data-testid="trigger_revoke_button"]');
-  const findRevealHideButton = () => wrapper.findByTestId('reveal-hide-values-button');
+  const findRevealHideButton = () =>
+    document.querySelector('[data-testid="reveal-hide-values-button"]');
 
   describe('With triggers set', () => {
     beforeEach(async () => {
+      setHTMLFixture(`
+        <button data-testid="reveal-hide-values-button">Reveal values</button>
+      `);
+
       createComponent();
 
       await nextTick();
     });
 
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
     it('displays a table with expected headers', () => {
-      const headers = ['Token', 'Description', 'Owner', 'Last Used', ''];
+      const headers = ['Token', 'Description', 'Owner', 'Last Used', 'Actions'];
       headers.forEach((header, i) => {
         expect(findHeaderAt(i).text()).toBe(header);
       });
@@ -44,16 +54,16 @@ describe('TriggersList', () => {
     it('displays a "Reveal/Hide values" button', async () => {
       const revealHideButton = findRevealHideButton();
 
-      expect(revealHideButton.exists()).toBe(true);
-      expect(revealHideButton.text()).toBe('Reveal values');
+      expect(Boolean(revealHideButton)).toBe(true);
+      expect(revealHideButton.innerText).toBe('Reveal values');
 
-      await revealHideButton.vm.$emit('click');
+      await revealHideButton.click();
 
-      expect(revealHideButton.text()).toBe('Hide values');
+      expect(revealHideButton.innerText).toBe('Hide values');
     });
 
     it('displays a table with rows', async () => {
-      await findRevealHideButton().vm.$emit('click');
+      await findRevealHideButton().click();
 
       expect(findRows()).toHaveLength(triggers.length);
 

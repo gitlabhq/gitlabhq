@@ -28,8 +28,9 @@ To create a trigger token:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > CI/CD**.
-1. Expand **Pipeline triggers**.
-1. Enter a description and select **Add trigger**.
+1. Expand **Pipeline trigger tokens**.
+1. Select **Add new token**
+1. Enter a description and select **Create pipeline trigger token**.
    - You can view and copy the full token for all triggers you have created.
    - You can only see the first 4 characters for tokens created by other project members.
 

@@ -1,6 +1,9 @@
+import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import ServiceDeskRoot from './components/service_desk_root.vue';
+
+Vue.use(GlToast);
 
 export default () => {
   const el = document.querySelector('.js-service-desk-setting-root');

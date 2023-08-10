@@ -399,6 +399,12 @@ export const ISSUABLE_CHANGE_LABEL = {
   defaultKeys: ['l'],
 };
 
+export const ISSUABLE_COPY_REF = {
+  id: 'issuables.copyIssuableRef',
+  description: __('Copy reference'),
+  defaultKeys: ['c r'], // eslint-disable-line @gitlab/require-i18n-strings
+};
+
 export const ISSUE_MR_CHANGE_ASSIGNEE = {
   id: 'issuesMRs.changeAssignee',
   description: __('Change assignee'),
@@ -606,7 +612,12 @@ const PROJECT_FILES_SHORTCUTS_GROUP = {
 const ISSUABLE_SHORTCUTS_GROUP = {
   id: 'issuables',
   name: __('Epics, issues, and merge requests'),
-  keybindings: [ISSUABLE_COMMENT_OR_REPLY, ISSUABLE_EDIT_DESCRIPTION, ISSUABLE_CHANGE_LABEL],
+  keybindings: [
+    ISSUABLE_COMMENT_OR_REPLY,
+    ISSUABLE_EDIT_DESCRIPTION,
+    ISSUABLE_CHANGE_LABEL,
+    ISSUABLE_COPY_REF,
+  ],
 };
 
 const ISSUE_MR_SHORTCUTS_GROUP = {

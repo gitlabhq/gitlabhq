@@ -11,6 +11,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
   let_it_be(:label) { create(:label, title: 'a', project: project) }
   let_it_be(:label2) { create(:label, title: 'b', project: project) }
+  let_it_be(:label3) { create(:label, title: 'c', project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
 
   let(:issue) do
@@ -992,75 +993,17 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
     end
 
     context 'updating labels' do
-      let(:label3) { create(:label, project: project) }
-      let(:result) { described_class.new(container: project, current_user: user, params: params).execute(issue).reload }
+      let(:label_a) { label }
+      let(:label_b) { label2 }
+      let(:label_c) { label3 }
+      let(:issuable) { issue }
 
-      context 'when add_label_ids and label_ids are passed' do
-        let(:params) { { label_ids: [label.id], add_label_ids: [label3.id] } }
+      it_behaves_like 'updating issuable labels'
+      it_behaves_like 'keeps issuable labels sorted after update'
+      it_behaves_like 'broadcasting issuable labels updates'
 
-        before do
-          issue.update!(labels: [label2])
-        end
-
-        it 'replaces the labels with the ones in label_ids and adds those in add_label_ids' do
-          expect(result.label_ids).to contain_exactly(label.id, label3.id)
-        end
-      end
-
-      context 'when remove_label_ids and label_ids are passed' do
-        let(:params) { { label_ids: [label.id, label2.id, label3.id], remove_label_ids: [label.id] } }
-
-        before do
-          issue.update!(labels: [label, label3])
-        end
-
-        it 'replaces the labels with the ones in label_ids and removes those in remove_label_ids' do
-          expect(result.label_ids).to contain_exactly(label2.id, label3.id)
-        end
-      end
-
-      context 'when add_label_ids and remove_label_ids are passed' do
-        let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
-
-        before do
-          issue.update!(labels: [label])
-        end
-
-        it 'adds the passed labels' do
-          expect(result.label_ids).to include(label3.id)
-        end
-
-        it 'removes the passed labels' do
-          expect(result.label_ids).not_to include(label.id)
-        end
-      end
-
-      context 'when same id is passed as add_label_ids and remove_label_ids' do
-        let(:params) { { add_label_ids: [label.id], remove_label_ids: [label.id] } }
-
-        context 'for a label assigned to an issue' do
-          it 'removes the label' do
-            issue.update!(labels: [label])
-
-            expect(result.label_ids).to be_empty
-          end
-        end
-
-        context 'for a label not assigned to an issue' do
-          it 'does not add the label' do
-            expect(result.label_ids).to be_empty
-          end
-        end
-      end
-
-      context 'when duplicate label titles are given' do
-        let(:params) do
-          { labels: [label3.title, label3.title] }
-        end
-
-        it 'assigns the label once' do
-          expect(result.labels).to contain_exactly(label3)
-        end
+      def update_issuable(update_params)
+        update_issue(update_params)
       end
     end
 
@@ -1510,19 +1453,6 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
           update_issue(update_params)
         end
-      end
-    end
-
-    context 'labels are updated' do
-      let(:label_a) { label }
-      let(:label_b) { label2 }
-      let(:issuable) { issue }
-
-      it_behaves_like 'keeps issuable labels sorted after update'
-      it_behaves_like 'broadcasting issuable labels updates'
-
-      def update_issuable(update_params)
-        update_issue(update_params)
       end
     end
 

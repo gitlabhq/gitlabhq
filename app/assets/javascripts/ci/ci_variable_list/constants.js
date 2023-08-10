@@ -40,8 +40,9 @@ export const instanceString = 'Instance';
 export const projectString = 'Project';
 
 export const AWS_TIP_DISMISSED_COOKIE_NAME = 'ci_variable_list_constants_aws_tip_dismissed';
-export const AWS_TIP_MESSAGE = __(
-  '%{deployLinkStart}Use a template to deploy to ECS%{deployLinkEnd}, or use a docker image to %{commandsLinkStart}run AWS commands in GitLab CI/CD%{commandsLinkEnd}.',
+export const AWS_TIP_TITLE = s__('CiVariable|Use OIDC to securely connect to cloud services');
+export const AWS_TIP_MESSAGE = s__(
+  'CiVariable|GitLab CI/CD supports OpenID Connect (OIDC) to give your build and deployment jobs access to cloud credentials and services. %{linkStart}How do I configure OIDC for my cloud provider?%{linkEnd}',
 );
 
 export const EVENT_LABEL = 'ci_variable_modal';

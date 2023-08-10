@@ -676,9 +676,6 @@ msgstr ""
 msgid "%{days} days until tags are automatically removed"
 msgstr ""
 
-msgid "%{deployLinkStart}Use a template to deploy to ECS%{deployLinkEnd}, or use a docker image to %{commandsLinkStart}run AWS commands in GitLab CI/CD%{commandsLinkEnd}."
-msgstr ""
-
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
@@ -2686,6 +2683,9 @@ msgstr ""
 msgid "Active personal access tokens"
 msgstr ""
 
+msgid "Active pipeline trigger tokens"
+msgstr ""
+
 msgid "Active project access tokens"
 msgstr ""
 
@@ -2911,6 +2911,9 @@ msgstr ""
 msgid "Add new key"
 msgstr ""
 
+msgid "Add new pipeline trigger token"
+msgstr ""
+
 msgid "Add new token"
 msgstr ""
 
@@ -2978,9 +2981,6 @@ msgid "Add to tree"
 msgstr ""
 
 msgid "Add topics to projects to help users find them."
-msgstr ""
-
-msgid "Add trigger"
 msgstr ""
 
 msgid "Add variable"
@@ -4850,9 +4850,6 @@ msgid "Amazon EKS"
 msgstr ""
 
 msgid "Amazon EKS integration allows you to provision EKS clusters from GitLab."
-msgstr ""
-
-msgid "Amazon Web Services Logo"
 msgstr ""
 
 msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
@@ -10221,6 +10218,9 @@ msgstr ""
 msgid "CiVariable|Define a CI/CD variable in the UI"
 msgstr ""
 
+msgid "CiVariable|GitLab CI/CD supports OpenID Connect (OIDC) to give your build and deployment jobs access to cloud credentials and services. %{linkStart}How do I configure OIDC for my cloud provider?%{linkEnd}"
+msgstr ""
+
 msgid "CiVariable|Maximum of %{limit} environments listed. For more environments, enter a search query."
 msgstr ""
 
@@ -10228,6 +10228,9 @@ msgid "CiVariable|New environment"
 msgstr ""
 
 msgid "CiVariable|Search environments"
+msgstr ""
+
+msgid "CiVariable|Use OIDC to securely connect to cloud services"
 msgstr ""
 
 msgid "CiVariable|Variable %{key} has been deleted."
@@ -13658,6 +13661,9 @@ msgstr ""
 msgid "Create phone verification exemption"
 msgstr ""
 
+msgid "Create pipeline trigger token"
+msgstr ""
+
 msgid "Create project"
 msgstr ""
 
@@ -16102,9 +16108,6 @@ msgid "Deployed-before"
 msgstr ""
 
 msgid "Deploying to"
-msgstr ""
-
-msgid "Deploying to AWS is easy with GitLab"
 msgstr ""
 
 msgid "Deployment"
@@ -21751,7 +21754,13 @@ msgstr ""
 msgid "GlobalSearch|in %{scope}"
 msgstr ""
 
+msgid "GlobalShortcuts|Copied reference to clipboard."
+msgstr ""
+
 msgid "GlobalShortcuts|Copied source branch name to clipboard."
+msgstr ""
+
+msgid "GlobalShortcuts|Unable to copy the reference at this time."
 msgstr ""
 
 msgid "GlobalShortcuts|Unable to copy the source branch name at this time."
@@ -27576,6 +27585,9 @@ msgstr ""
 msgid "Learn more about Needs relationships"
 msgstr ""
 
+msgid "Learn more about Service Desk"
+msgstr ""
+
 msgid "Learn more about Web Terminal"
 msgstr ""
 
@@ -27586,9 +27598,6 @@ msgid "Learn more about adding certificates to your project by following the %{d
 msgstr ""
 
 msgid "Learn more about custom project templates"
-msgstr ""
-
-msgid "Learn more about deploying to AWS"
 msgstr ""
 
 msgid "Learn more about deploying to a cluster"
@@ -28452,9 +28461,6 @@ msgid "Manage two-factor authentication"
 msgstr ""
 
 msgid "Manage usage"
-msgstr ""
-
-msgid "Manage your project's triggers"
 msgstr ""
 
 msgid "Manage your subscription"
@@ -33948,6 +33954,9 @@ msgstr ""
 msgid "Pipeline subscriptions trigger a new pipeline on the default branch of this project when a pipeline successfully completes for a new tag on the %{default_branch_docs} of the subscribed project."
 msgstr ""
 
+msgid "Pipeline trigger tokens"
+msgstr ""
+
 msgid "Pipeline triggers"
 msgstr ""
 
@@ -35449,6 +35458,9 @@ msgid "Previous unresolved discussion"
 msgstr ""
 
 msgid "Primary Action"
+msgstr ""
+
+msgid "Print as PDF"
 msgstr ""
 
 msgid "Print codes"
@@ -43275,7 +43287,19 @@ msgstr ""
 msgid "ServiceDesk|Cannot update custom email"
 msgstr ""
 
+msgid "ServiceDesk|Common ports are 587 when using TLS, and 25 when not."
+msgstr ""
+
 msgid "ServiceDesk|Configure a custom email address"
+msgstr ""
+
+msgid "ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials."
+msgstr ""
+
+msgid "ServiceDesk|Copy Service Desk email address"
+msgstr ""
+
+msgid "ServiceDesk|Custom email address"
 msgstr ""
 
 msgid "ServiceDesk|Custom email address could not be verified."
@@ -43293,6 +43317,12 @@ msgstr ""
 msgid "ServiceDesk|Custom email does not exist"
 msgstr ""
 
+msgid "ServiceDesk|Custom email is required and must be a valid email address."
+msgstr ""
+
+msgid "ServiceDesk|Email address your customers can use to send support requests. It must support sub-addressing."
+msgstr ""
+
 msgid "ServiceDesk|Enable Service Desk"
 msgstr ""
 
@@ -43302,10 +43332,46 @@ msgstr ""
 msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
 msgstr ""
 
+msgid "ServiceDesk|Minimum 8 characters long."
+msgstr ""
+
 msgid "ServiceDesk|Parameters missing"
 msgstr ""
 
 msgid "ServiceDesk|Please share your feedback on this feature in the %{linkStart}feedback issue%{linkEnd}"
+msgstr ""
+
+msgid "ServiceDesk|SMTP address is required and must be resolvable."
+msgstr ""
+
+msgid "ServiceDesk|SMTP host"
+msgstr ""
+
+msgid "ServiceDesk|SMTP password"
+msgstr ""
+
+msgid "ServiceDesk|SMTP password is required and must be at least 8 characters long."
+msgstr ""
+
+msgid "ServiceDesk|SMTP port"
+msgstr ""
+
+msgid "ServiceDesk|SMTP port is required and must be a port number larger than 0."
+msgstr ""
+
+msgid "ServiceDesk|SMTP username"
+msgstr ""
+
+msgid "ServiceDesk|SMTP username is required."
+msgstr ""
+
+msgid "ServiceDesk|Save and test connection"
+msgstr ""
+
+msgid "ServiceDesk|Saved custom email address and started verification."
+msgstr ""
+
+msgid "ServiceDesk|Service Desk email address to forward emails to"
 msgstr ""
 
 msgid "ServiceDesk|Service Desk is not enabled"
@@ -47635,7 +47701,7 @@ msgstr ""
 msgid "These dates affect how your epics appear in the roadmap. Set a fixed date or one inherited from the milestones assigned to issues in this epic."
 msgstr ""
 
-msgid "These examples show how to trigger this project's pipeline for a branch or tag."
+msgid "These examples show common methods of triggering a pipeline with a pipeline trigger token. The URL and ID for this project is prefilled."
 msgstr ""
 
 msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
@@ -51648,6 +51714,9 @@ msgid "View the documentation"
 msgstr ""
 
 msgid "View the latest successful deployment to this environment"
+msgstr ""
+
+msgid "View trigger token usage examples"
 msgstr ""
 
 msgid "View usage details"

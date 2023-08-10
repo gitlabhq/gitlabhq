@@ -64,6 +64,76 @@ RSpec.shared_examples 'issuable update service' do
   end
 end
 
+RSpec.shared_examples 'updating issuable labels' do
+  context 'when add_label_ids and label_ids are passed' do
+    let(:params) { { label_ids: [label_a.id], add_label_ids: [label_c.id] } }
+
+    it 'replaces the labels with the ones in label_ids and adds those in add_label_ids' do
+      issuable.update!(labels: [label_b])
+      update_issuable(params)
+
+      expect(issuable.label_ids).to contain_exactly(label_a.id, label_c.id)
+    end
+  end
+
+  context 'when remove_label_ids and label_ids are passed' do
+    let(:params) { { label_ids: [label_a.id, label_b.id, label_c.id], remove_label_ids: [label_a.id] } }
+
+    it 'replaces the labels with the ones in label_ids and removes those in remove_label_ids' do
+      issuable.update!(labels: [label_a, label_c])
+      update_issuable(params)
+
+      expect(issuable.label_ids).to contain_exactly(label_b.id, label_c.id)
+    end
+  end
+
+  context 'when add_label_ids and remove_label_ids are passed' do
+    let(:params) { { add_label_ids: [label_c.id], remove_label_ids: [label_a.id] } }
+
+    before do
+      issuable.update!(labels: [label_a])
+      update_issuable(params)
+    end
+
+    it 'adds the passed labels' do
+      expect(issuable.label_ids).to include(label_c.id)
+    end
+
+    it 'removes the passed labels' do
+      expect(issuable.label_ids).not_to include(label_a.id)
+    end
+  end
+
+  context 'when same id is passed as add_label_ids and remove_label_ids' do
+    let(:params) { { add_label_ids: [label_a.id], remove_label_ids: [label_a.id] } }
+
+    context 'for a label assigned to an issue' do
+      it 'removes the label' do
+        issuable.update!(labels: [label_a])
+        update_issuable(params)
+
+        expect(issuable.label_ids).to be_empty
+      end
+    end
+
+    context 'for a label not assigned to an issue' do
+      it 'does not add the label' do
+        expect(issuable.label_ids).to be_empty
+      end
+    end
+  end
+
+  context 'when duplicate label titles are given' do
+    let(:params) { { labels: [label_c.title, label_c.title] } }
+
+    it 'assigns the label once' do
+      update_issuable(params)
+
+      expect(issuable.labels).to contain_exactly(label_c)
+    end
+  end
+end
+
 RSpec.shared_examples 'keeps issuable labels sorted after update' do
   before do
     update_issuable(label_ids: [label_b.id])

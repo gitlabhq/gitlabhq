@@ -228,7 +228,13 @@ export const filtersMap = {
 
 export const errorFetchingCounts = __('An error occurred while getting issue counts');
 export const errorFetchingIssues = __('An error occurred while loading issues');
-export const noSearchNoFilterTitle = __('Please select at least one filter to see results');
+export const noOpenIssuesTitle = __('There are no open issues');
+export const noClosedIssuesTitle = __('There are no closed issues');
+export const noIssuesSignedOutButtonText = __('Register / Sign In');
+export const noSearchResultsDescription = __(
+  'To widen your search, change or remove filters above',
+);
+export const noSearchResultsTitle = __('Sorry, your filter produced no results');
 export const searchPlaceholder = __('Search or filter results...');
 export const infoBannerTitle = s__(
   'ServiceDesk|Use Service Desk to connect with your users and offer customer support through email right inside GitLab',
@@ -238,7 +244,7 @@ export const infoBannerUserNote = s__(
   'ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation.',
 );
 export const enableServiceDesk = s__('ServiceDesk|Enable Service Desk');
-export const learnMore = __('Learn more');
+export const learnMore = __('Learn more about Service Desk');
 export const titles = __('Titles');
 export const descriptions = __('Descriptions');
 export const no = __('No');

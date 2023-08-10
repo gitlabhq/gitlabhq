@@ -17,6 +17,9 @@ import getServiceDeskIssuesQuery from 'ee_else_ce/service_desk/queries/get_servi
 import getServiceDeskIssuesCountsQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues_counts.query.graphql';
 import ServiceDeskListApp from '~/service_desk/components/service_desk_list_app.vue';
 import InfoBanner from '~/service_desk/components/info_banner.vue';
+import EmptyStateWithAnyIssues from '~/service_desk/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from '~/service_desk/components/empty_state_without_any_issues.vue';
+
 import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
@@ -29,6 +32,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   getServiceDeskIssuesQueryResponse,
+  getServiceDeskIssuesQueryEmptyResponse,
   getServiceDeskIssuesCountsQueryResponse,
   filteredTokens,
   urlParams,
@@ -70,6 +74,9 @@ describe('CE ServiceDeskListApp', () => {
   const mockServiceDeskIssuesQueryResponseHandler = jest
     .fn()
     .mockResolvedValue(defaultQueryResponse);
+  const mockServiceDeskIssuesQueryEmptyResponseHandler = jest
+    .fn()
+    .mockResolvedValue(getServiceDeskIssuesQueryEmptyResponse);
   const mockServiceDeskIssuesCountsQueryResponseHandler = jest
     .fn()
     .mockResolvedValue(getServiceDeskIssuesCountsQueryResponse);
@@ -143,18 +150,45 @@ describe('CE ServiceDeskListApp', () => {
       expect(findInfoBanner().exists()).toBe(true);
     });
 
-    it('does not render when Service Desk is not supported and has any number of issues', async () => {
+    it('does not render when Service Desk is not supported and has any number of issues', () => {
       wrapper = createComponent({ provide: { isServiceDeskSupported: false } });
-      await waitForPromises();
 
       expect(findInfoBanner().exists()).toBe(false);
     });
 
-    it('does not render, when there are no issues', async () => {
-      wrapper = createComponent({ provide: { hasAnyIssues: false } });
-      await waitForPromises();
+    it('does not render, when there are no issues', () => {
+      wrapper = createComponent({
+        serviceDeskIssuesQueryResponseHandler: mockServiceDeskIssuesQueryEmptyResponseHandler,
+      });
 
       expect(findInfoBanner().exists()).toBe(false);
+    });
+  });
+
+  describe('Empty states', () => {
+    describe('when there are issues', () => {
+      it('shows EmptyStateWithAnyIssues component', () => {
+        setWindowLocation(locationSearch);
+        wrapper = createComponent({
+          serviceDeskIssuesQueryResponseHandler: mockServiceDeskIssuesQueryEmptyResponseHandler,
+        });
+
+        expect(wrapper.findComponent(EmptyStateWithAnyIssues).props()).toEqual({
+          hasSearch: true,
+          isOpenTab: true,
+        });
+      });
+    });
+
+    describe('when there are no issues', () => {
+      it('shows EmptyStateWithoutAnyIssues component', () => {
+        wrapper = createComponent({
+          provide: { hasAnyIssues: false },
+          serviceDeskIssuesQueryResponseHandler: mockServiceDeskIssuesQueryEmptyResponseHandler,
+        });
+
+        expect(wrapper.findComponent(EmptyStateWithoutAnyIssues).exists()).toBe(true);
+      });
     });
   });
 
@@ -169,10 +203,11 @@ describe('CE ServiceDeskListApp', () => {
     });
 
     describe('state', () => {
-      it('is set from the url params', () => {
+      it('is set from the url params', async () => {
         const initialState = STATUS_ALL;
         setWindowLocation(`?state=${initialState}`);
         wrapper = createComponent();
+        await waitForPromises();
 
         expect(findIssuableList().props('currentTab')).toBe(initialState);
       });
@@ -199,6 +234,7 @@ describe('CE ServiceDeskListApp', () => {
     describe('when user is signed out', () => {
       beforeEach(() => {
         wrapper = createComponent({ provide: { isSignedIn: false } });
+        return waitForPromises();
       });
 
       it('does not render My-Reaction or Confidential tokens', () => {
@@ -221,6 +257,7 @@ describe('CE ServiceDeskListApp', () => {
         };
 
         wrapper = createComponent();
+        return waitForPromises();
       });
 
       it('renders all tokens alphabetically', () => {
@@ -243,9 +280,10 @@ describe('CE ServiceDeskListApp', () => {
 
   describe('Events', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = createComponent();
         router.push = jest.fn();
+        await waitForPromises();
 
         findIssuableList().vm.$emit('click-tab', STATUS_CLOSED);
       });
@@ -265,6 +303,7 @@ describe('CE ServiceDeskListApp', () => {
       it('updates IssuableList with url params', async () => {
         wrapper = createComponent();
         router.push = jest.fn();
+        await waitForPromises();
 
         findIssuableList().vm.$emit('filter', filteredTokens);
         await nextTick();
@@ -278,10 +317,10 @@ describe('CE ServiceDeskListApp', () => {
 
   describe('Errors', () => {
     describe.each`
-      error                      | responseHandler                                  | message
-      ${'fetching issues'}       | ${'serviceDeskIssuesQueryResponseHandler'}       | ${ServiceDeskListApp.i18n.errorFetchingIssues}
-      ${'fetching issue counts'} | ${'serviceDeskIssuesCountsQueryResponseHandler'} | ${ServiceDeskListApp.i18n.errorFetchingCounts}
-    `('when there is an error $error', ({ responseHandler, message }) => {
+      error                      | responseHandler
+      ${'fetching issues'}       | ${'serviceDeskIssuesQueryResponseHandler'}
+      ${'fetching issue counts'} | ${'serviceDeskIssuesCountsQueryResponseHandler'}
+    `('when there is an error $error', ({ responseHandler }) => {
       beforeEach(() => {
         wrapper = createComponent({
           [responseHandler]: jest.fn().mockRejectedValue(new Error('ERROR')),
@@ -290,14 +329,13 @@ describe('CE ServiceDeskListApp', () => {
       });
 
       it('shows an error message', () => {
-        expect(findIssuableList().props('error')).toBe(message);
         expect(Sentry.captureException).toHaveBeenCalledWith(new Error('ERROR'));
       });
     });
   });
 
   describe('When providing token for labels', () => {
-    it('passes function to fetchLatestLabels property if frontend caching is enabled', () => {
+    it('passes function to fetchLatestLabels property if frontend caching is enabled', async () => {
       wrapper = createComponent({
         provide: {
           glFeatures: {
@@ -305,11 +343,12 @@ describe('CE ServiceDeskListApp', () => {
           },
         },
       });
+      await waitForPromises();
 
       expect(typeof findLabelsToken().fetchLatestLabels).toBe('function');
     });
 
-    it('passes null to fetchLatestLabels property if frontend caching is disabled', () => {
+    it('passes null to fetchLatestLabels property if frontend caching is disabled', async () => {
       wrapper = createComponent({
         provide: {
           glFeatures: {
@@ -317,6 +356,7 @@ describe('CE ServiceDeskListApp', () => {
           },
         },
       });
+      await waitForPromises();
 
       expect(findLabelsToken().fetchLatestLabels).toBe(null);
     });

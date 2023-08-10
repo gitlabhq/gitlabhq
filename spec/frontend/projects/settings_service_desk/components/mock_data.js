@@ -15,3 +15,20 @@ export const MOCK_CUSTOM_EMAIL_EMPTY = {
   custom_email_smtp_address: null,
   error_message: null,
 };
+
+export const MOCK_CUSTOM_EMAIL_STARTED = {
+  custom_email: 'user@example.com',
+  custom_email_enabled: false,
+  custom_email_verification_state: 'started',
+  custom_email_verification_error: null,
+  custom_email_smtp_address: 'smtp.example.com',
+  error_message: null,
+};
+
+export const MOCK_CUSTOM_EMAIL_FORM_SUBMIT = {
+  custom_email: 'user@example.com',
+  smtp_address: 'smtp.example.com',
+  smtp_password: 'supersecret',
+  smtp_port: '587',
+  smtp_username: 'user@example.com',
+};

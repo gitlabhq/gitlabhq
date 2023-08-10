@@ -47,6 +47,11 @@ The GraphQL framework has some specific gotchas to be aware of, and domain exper
 If you are asked to review a merge request that modifies any GraphQL files or adds an endpoint, please have a look at
 [our GraphQL review guide](graphql_guide/reviewing.md).
 
+## Reading GraphQL logs
+
+See the [Reading GraphQL logs](graphql_guide/monitoring.md) guide for tips on how to inspect logs
+of GraphQL requests and monitor the performance of your GraphQL queries.
+
 ## Authentication
 
 Authentication happens through the `GraphqlController`, right now this
@@ -2404,7 +2409,3 @@ elimination of laziness, where needed.
 
 For dealing with lazy values without forcing them, use
 `Gitlab::Graphql::Lazy.with_value`.
-
-## Monitoring GraphQL
-
-See the [Monitoring GraphQL](graphql_guide/monitoring.md) guide for tips on how to inspect logs of GraphQL requests and monitor the performance of your GraphQL queries.

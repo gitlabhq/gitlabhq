@@ -1300,11 +1300,13 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       let(:issuable) { described_class.new(project: project, current_user: user, params: params).execute(existing_merge_request) }
     end
 
-    context 'labels are updated' do
+    context 'updating labels' do
       let(:label_a) { label }
       let(:label_b) { create(:label, title: 'b', project: project) }
+      let(:label_c) { create(:label, title: 'c', project: project) }
       let(:issuable) { merge_request }
 
+      it_behaves_like 'updating issuable labels'
       it_behaves_like 'keeps issuable labels sorted after update'
       it_behaves_like 'broadcasting issuable labels updates'
 

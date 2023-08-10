@@ -25,6 +25,7 @@ import {
   AWS_TOKEN_CONSTANTS,
   ADD_CI_VARIABLE_MODAL_ID,
   AWS_TIP_DISMISSED_COOKIE_NAME,
+  AWS_TIP_TITLE,
   AWS_TIP_MESSAGE,
   CONTAINS_VARIABLE_REFERENCE_MESSAGE,
   defaultVariableState,
@@ -62,10 +63,6 @@ export default {
   },
   mixins: [glFeatureFlagsMixin(), trackingMixin],
   inject: [
-    'awsLogoSvgPath',
-    'awsTipCommandsLink',
-    'awsTipDeployLink',
-    'awsTipLearnLink',
     'containsVariableReferenceLink',
     'environmentScopeLink',
     'isProtectedByDefault',
@@ -295,6 +292,7 @@ export default {
     },
   },
   i18n: {
+    awsTipTitle: AWS_TIP_TITLE,
     awsTipMessage: AWS_TIP_MESSAGE,
     containsVariableReferenceMessage: CONTAINS_VARIABLE_REFERENCE_MESSAGE,
     defaultScope: allEnvironments.text,
@@ -304,6 +302,9 @@ export default {
   },
   flagLink: helpPagePath('ci/variables/index', {
     anchor: 'define-a-cicd-variable-in-the-ui',
+  }),
+  oidcLink: helpPagePath('ci/cloud_services/index', {
+    anchor: 'oidc-authorization-with-your-cloud-provider',
   }),
   modalId: ADD_CI_VARIABLE_MODAL_ID,
   tokens: awsTokens,
@@ -322,6 +323,23 @@ export default {
     @hidden="resetModalHandler"
     @shown="onShow"
   >
+    <gl-collapse :visible="isTipVisible">
+      <gl-alert
+        :title="$options.i18n.awsTipTitle"
+        variant="warning"
+        class="gl-mb-5"
+        data-testid="aws-guidance-tip"
+        @dismiss="dismissTip"
+      >
+        <gl-sprintf :message="$options.i18n.awsTipMessage">
+          <template #link="{ content }">
+            <gl-link :href="$options.oidcLink">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </gl-alert>
+    </gl-collapse>
     <form>
       <gl-form-combobox
         v-model="variable.key"
@@ -468,45 +486,7 @@ export default {
         </gl-form-checkbox>
       </gl-form-group>
     </form>
-    <gl-collapse :visible="isTipVisible">
-      <gl-alert
-        :title="__('Deploying to AWS is easy with GitLab')"
-        variant="tip"
-        data-testid="aws-guidance-tip"
-        @dismiss="dismissTip"
-      >
-        <div class="gl-display-flex gl-flex-direction-row gl-flex-wrap gl-md-flex-nowrap gl-gap-3">
-          <div>
-            <p>
-              <gl-sprintf :message="$options.i18n.awsTipMessage">
-                <template #deployLink="{ content }">
-                  <gl-link :href="awsTipDeployLink" target="_blank">{{ content }}</gl-link>
-                </template>
-                <template #commandsLink="{ content }">
-                  <gl-link :href="awsTipCommandsLink" target="_blank">{{ content }}</gl-link>
-                </template>
-              </gl-sprintf>
-            </p>
-            <p>
-              <gl-button
-                :href="awsTipLearnLink"
-                target="_blank"
-                category="secondary"
-                variant="confirm"
-                class="gl-overflow-wrap-break"
-                >{{ __('Learn more about deploying to AWS') }}</gl-button
-              >
-            </p>
-          </div>
-          <img
-            class="gl-mt-3"
-            :alt="__('Amazon Web Services Logo')"
-            :src="awsLogoSvgPath"
-            height="32"
-          />
-        </div>
-      </gl-alert>
-    </gl-collapse>
+
     <gl-alert
       v-if="containsVariableReference"
       :title="__('Value might contain a variable reference')"

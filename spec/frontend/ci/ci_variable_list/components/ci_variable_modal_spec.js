@@ -1,4 +1,4 @@
-import { GlButton, GlFormInput } from '@gitlab/ui';
+import { GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import CiEnvironmentsDropdown from '~/ci/ci_variable_list/components/ci_environments_dropdown.vue';
@@ -10,6 +10,8 @@ import {
   EVENT_LABEL,
   EVENT_ACTION,
   ENVIRONMENT_SCOPE_LINK_TITLE,
+  AWS_TIP_TITLE,
+  AWS_TIP_MESSAGE,
   groupString,
   instanceString,
   projectString,
@@ -28,10 +30,6 @@ describe('Ci variable modal', () => {
   const mockVariables = mockVariablesWithScopes(instanceString);
 
   const defaultProvide = {
-    awsLogoSvgPath: '/logo',
-    awsTipCommandsLink: '/tips',
-    awsTipDeployLink: '/deploy',
-    awsTipLearnLink: '/learn-link',
     containsVariableReferenceLink: '/reference',
     environmentScopeLink: '/help/environments',
     glFeatures: {
@@ -171,7 +169,7 @@ describe('Ci variable modal', () => {
 
     it('does not show AWS guidance tip', () => {
       const tip = findAWSTip();
-      expect(tip.exists()).toBe(true);
+
       expect(tip.isVisible()).toBe(false);
     });
   });
@@ -184,13 +182,18 @@ describe('Ci variable modal', () => {
         key: AWS_ACCESS_KEY_ID,
         value: 'AKIAIOSFODNN7EXAMPLEjdhy',
       };
-      createComponent({ mountFn: mountExtended, props: { selectedVariable: AWSKeyVariable } });
+      createComponent({
+        mountFn: shallowMountExtended,
+        props: { selectedVariable: AWSKeyVariable },
+      });
     });
 
     it('shows AWS guidance tip', () => {
       const tip = findAWSTip();
-      expect(tip.exists()).toBe(true);
+
       expect(tip.isVisible()).toBe(true);
+      expect(tip.props('title')).toBe(AWS_TIP_TITLE);
+      expect(tip.findComponent(GlSprintf).attributes('message')).toBe(AWS_TIP_MESSAGE);
     });
   });
 

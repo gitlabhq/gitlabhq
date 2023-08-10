@@ -565,6 +565,8 @@
   - 1
 - - sbom_reports
   - 1
+- - search_elastic_default_branch_changed
+  - 1
 - - search_elastic_group_association_deletion
   - 1
 - - search_namespace_index_integrity

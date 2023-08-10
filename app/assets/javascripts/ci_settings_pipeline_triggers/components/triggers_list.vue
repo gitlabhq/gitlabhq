@@ -1,13 +1,5 @@
 <script>
-import {
-  GlAlert,
-  GlAvatar,
-  GlAvatarLink,
-  GlBadge,
-  GlButton,
-  GlTable,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlAvatar, GlAvatarLink, GlBadge, GlButton, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { thWidthPercent } from '~/lib/utils/table_utility';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -25,7 +17,6 @@ export default {
   },
   components: {
     ClipboardButton,
-    GlAlert,
     GlAvatar,
     GlAvatarLink,
     GlBadge,
@@ -53,28 +44,32 @@ export default {
     {
       key: 'token',
       label: s__('Pipelines|Token'),
-      thClass: thWidthPercent(70),
+      thClass: thWidthPercent(60),
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'description',
       label: s__('Pipelines|Description'),
-      thClass: thWidthPercent(15),
+      thClass: thWidthPercent(20),
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'owner',
       label: s__('Pipelines|Owner'),
       thClass: thWidthPercent(5),
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'lastUsed',
       label: s__('Pipelines|Last Used'),
-      thClass: thWidthPercent(5),
+      thClass: thWidthPercent(10),
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'actions',
-      label: '',
+      label: __('Actions'),
       tdClass: 'gl-text-right gl-white-space-nowrap',
-      thClass: thWidthPercent(5),
+      thClass: `gl-text-right ${thWidthPercent(5)}`,
     },
   ],
   computed: {
@@ -88,9 +83,22 @@ export default {
       return '*'.repeat(47);
     },
   },
+  mounted() {
+    const revealButton = document.querySelector('[data-testid="reveal-hide-values-button"]');
+    if (revealButton) {
+      if (this.triggers.length === 0) {
+        revealButton.style.display = 'none';
+      }
+
+      revealButton.addEventListener('click', () => {
+        this.toggleHiddenState(revealButton);
+      });
+    }
+  },
   methods: {
-    toggleHiddenState() {
+    toggleHiddenState(element) {
       this.areValuesHidden = !this.areValuesHidden;
+      element.innerText = this.valuesButtonText;
     },
   },
 };
@@ -102,7 +110,8 @@ export default {
       v-if="hasTriggers"
       :fields="$options.fields"
       :items="triggers"
-      class="triggers-list"
+      class="triggers-list gl-mb-0"
+      stacked="md"
       responsive
     >
       <template #cell(token)="{ item }">
@@ -116,8 +125,8 @@ export default {
           :title="$options.i18n.copyTrigger"
           css-class="gl-border-none gl-py-0 gl-px-2"
         />
-        <div class="gl-display-inline-block gl-ml-3">
-          <gl-badge v-if="!item.canAccessProject" variant="danger">
+        <div v-if="!item.canAccessProject" class="gl-display-inline-block gl-ml-3">
+          <gl-badge variant="danger">
             <span
               v-gl-tooltip.viewport
               boundary="viewport"
@@ -132,7 +141,7 @@ export default {
           :title="item.description"
           truncate-target="child"
           placement="top"
-          class="gl-max-w-15 gl-display-flex"
+          class="gl-max-w-15 gl-display-inline-flex"
         >
           <div class="gl-flex-grow-1 gl-text-truncate">{{ item.description }}</div>
         </tooltip-on-truncate>
@@ -157,6 +166,7 @@ export default {
           :title="$options.i18n.editButton"
           :aria-label="$options.i18n.editButton"
           icon="pencil"
+          category="tertiary"
           data-testid="edit-btn"
           :href="item.editProjectTriggerPath"
         />
@@ -164,32 +174,24 @@ export default {
           :title="$options.i18n.revokeButton"
           :aria-label="$options.i18n.revokeButton"
           icon="remove"
+          category="tertiary"
           :data-confirm="$options.i18n.revokeButtonConfirm"
           data-method="delete"
           data-confirm-btn-variant="danger"
           rel="nofollow"
-          class="gl-ml-3"
           data-testid="trigger_revoke_button"
           data-qa-selector="trigger_revoke_button"
           :href="item.projectTriggerPath"
         />
       </template>
     </gl-table>
-    <gl-alert
+    <div
       v-else
-      variant="warning"
-      :dismissible="false"
-      :show-icon="false"
+      class="gl-new-card-empty gl-px-5 gl-py-4"
       data-testid="no_triggers_content"
       data-qa-selector="no_triggers_content"
     >
       {{ s__('Pipelines|No triggers have been created yet. Add one using the form above.') }}
-    </gl-alert>
-    <gl-button
-      v-if="hasTriggers"
-      data-testid="reveal-hide-values-button"
-      @click="toggleHiddenState"
-      >{{ valuesButtonText }}</gl-button
-    >
+    </div>
   </div>
 </template>

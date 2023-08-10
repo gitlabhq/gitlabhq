@@ -7,11 +7,17 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import CustomEmail from '~/projects/settings_service_desk/components/custom_email.vue';
+import CustomEmailForm from '~/projects/settings_service_desk/components/custom_email_form.vue';
 import {
   FEEDBACK_ISSUE_URL,
   I18N_GENERIC_ERROR,
+  I18N_TOAST_SAVED,
 } from '~/projects/settings_service_desk/custom_email_constants';
-import { MOCK_CUSTOM_EMAIL_EMPTY } from './mock_data';
+import {
+  MOCK_CUSTOM_EMAIL_EMPTY,
+  MOCK_CUSTOM_EMAIL_STARTED,
+  MOCK_CUSTOM_EMAIL_FORM_SUBMIT,
+} from './mock_data';
 
 describe('CustomEmail', () => {
   let axiosMock;
@@ -22,10 +28,17 @@ describe('CustomEmail', () => {
     customEmailEndpoint: '/flightjs/Flight/-/service_desk/custom_email',
   };
 
+  const showToast = jest.fn();
+
   const createWrapper = (props = {}) => {
     wrapper = extendedWrapper(
       mount(CustomEmail, {
         propsData: { ...defaultProps, ...props },
+        mocks: {
+          $toast: {
+            show: showToast,
+          },
+        },
       }),
     );
   };
@@ -40,6 +53,7 @@ describe('CustomEmail', () => {
 
   afterEach(() => {
     axiosMock.restore();
+    showToast.mockReset();
   });
 
   it('displays link to feedback issue', () => {
@@ -52,7 +66,7 @@ describe('CustomEmail', () => {
     beforeEach(() => {
       axiosMock
         .onGet(defaultProps.customEmailEndpoint)
-        .reply(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_EMPTY);
+        .replyOnce(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_EMPTY);
 
       createWrapper();
     });
@@ -63,6 +77,40 @@ describe('CustomEmail', () => {
       await waitForPromises();
       // loading completed
       expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    it('displays form', async () => {
+      await waitForPromises();
+
+      expect(wrapper.findComponent(CustomEmailForm).exists()).toBe(true);
+    });
+
+    describe('when CustomEmailForm emits submit event with valid params', () => {
+      beforeEach(() => {
+        axiosMock
+          .onPost(defaultProps.customEmailEndpoint)
+          .replyOnce(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_STARTED);
+      });
+
+      it('creates custom email', async () => {
+        createWrapper();
+        await nextTick();
+
+        const spy = jest.spyOn(axios, 'post');
+
+        wrapper.findComponent(CustomEmailForm).vm.$emit('submit', MOCK_CUSTOM_EMAIL_FORM_SUBMIT);
+
+        expect(wrapper.findComponent(CustomEmailForm).emitted('submit')).toEqual([
+          [MOCK_CUSTOM_EMAIL_FORM_SUBMIT],
+        ]);
+        await waitForPromises();
+
+        expect(spy).toHaveBeenCalledWith(
+          defaultProps.customEmailEndpoint,
+          MOCK_CUSTOM_EMAIL_FORM_SUBMIT,
+        );
+        expect(showToast).toHaveBeenCalledWith(I18N_TOAST_SAVED);
+      });
     });
   });
 

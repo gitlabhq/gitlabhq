@@ -68,6 +68,9 @@ The dependency list shows the path between a dependency and a top-level dependen
 to, if any. There are many possible paths connecting a transient dependency to top-level
 dependencies, but the user interface shows only one of the shortest paths.
 
+NOTE:
+The dependency path is only displayed for dependencies that have vulnerabilities.
+
 ![Dependency path](img/yarn_dependency_path_v13_6.png)
 
 Dependency paths are supported for the following package managers:

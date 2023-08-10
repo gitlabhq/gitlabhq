@@ -11,6 +11,31 @@ Ensure you review these instructions and any specific instructions for your inst
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 7.0](https://docs.gitlab.com/charts/releases/7_0.html).
 
+## 16.3.0
+
+### Linux package installations
+
+Specific information applies to Linux package installations:
+
+- In GitLab 16.0, we [announced](https://about.gitlab.com/releases/2023/05/22/gitlab-16-0-released/#omnibus-improvements) an upgraded base Docker image,
+  which has a new version of OpenSSH Server. An unintended consequence of the new version is that it disables accepting SSH RSA SHA-1 signatures by default. This issue should only
+  impact users using very outdated SSH clients.
+
+  To avoid problems with SHA-1 signatures being unavailable, users should update their SSH clients because using SHA-1 signatures is discouraged by the upstream library for security
+  reasons.
+
+  To allow for a transition period where users can't immediately upgrade their SSH clients, GitLab 16.3 and later has support for a `GITLAB_ALLOW_SHA1_RSA` environment variable in
+  the `Dockerfile`. If `GITLAB_ALLOW_SHA1_RSA` is set to `true`, this deprecated support is reactivated.
+
+  Because we want to foster security best practices and follow the upstream recommendation, this environment variable will only be available until GitLab 17.0, when we plan to
+  drop support for it.
+
+  For more information, see:
+ 
+  - [OpenSSH 8.8 release notes](https://www.openssh.com/txt/release-8.8).
+  - [An informal explanation](https://gitlab.com/gitlab-org/gitlab/-/issues/416714#note_1482388504).
+  - `omnibus-gitlab` [merge request 7035](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7035), which introduces the environment variable.
+
 ## 16.2.0
 
 - Legacy LDAP configuration settings may cause
