@@ -151,7 +151,7 @@ To integrate Microsoft Azure AD, you:
 1. Select **Microsoft Graph > Application permissions**.
 1. Select the checkboxes **GroupMember.Read.All** and **User.Read.All**.
 1. Select **Add permissions** to save.
-1. Select **Grant admin consent for <application name>**, then on the confirmation dialog select **Yes**. The **Status** column for both permissions should change to a green check with **Granted for <application name>**.
+1. Select **Grant admin consent for `<application_name>`**, then on the confirmation dialog select **Yes**. The **Status** column for both permissions should change to a green check with **Granted for `<application_name>`**.
 
 <!-- vale gitlab.SentenceSpacing = YES -->
 

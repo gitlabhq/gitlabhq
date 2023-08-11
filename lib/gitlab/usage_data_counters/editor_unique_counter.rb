@@ -9,24 +9,24 @@ module Gitlab
       EDIT_CATEGORY = 'ide_edit'
 
       class << self
-        def track_web_ide_edit_action(author:, time: Time.zone.now, project:)
-          track_unique_action(EDIT_BY_WEB_IDE, author, time, project)
+        def track_web_ide_edit_action(author:, project:)
+          track_internal_event(EDIT_BY_WEB_IDE, author, project)
         end
 
         def count_web_ide_edit_actions(date_from:, date_to:)
           count_unique(EDIT_BY_WEB_IDE, date_from, date_to)
         end
 
-        def track_sfe_edit_action(author:, time: Time.zone.now, project:)
-          track_unique_action(EDIT_BY_SFE, author, time, project)
+        def track_sfe_edit_action(author:, project:)
+          track_internal_event(EDIT_BY_SFE, author, project)
         end
 
         def count_sfe_edit_actions(date_from:, date_to:)
           count_unique(EDIT_BY_SFE, date_from, date_to)
         end
 
-        def track_snippet_editor_edit_action(author:, time: Time.zone.now, project:)
-          track_unique_action(EDIT_BY_SNIPPET_EDITOR, author, time, project)
+        def track_snippet_editor_edit_action(author:, project:)
+          track_internal_event(EDIT_BY_SNIPPET_EDITOR, author, project)
         end
 
         def count_snippet_editor_edit_actions(date_from:, date_to:)
@@ -35,21 +35,15 @@ module Gitlab
 
         private
 
-        def track_unique_action(event_name, author, time, project = nil)
+        def track_internal_event(event_name, author, project = nil)
           return unless author
 
-          Gitlab::Tracking.event(
-            name,
-            'ide_edit',
-            property: event_name.to_s,
-            project: project,
-            namespace: project&.namespace,
+          Gitlab::InternalEvents.track_event(
+            event_name,
             user: author,
-            label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit',
-            context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context]
+            project: project,
+            namespace: project&.namespace
           )
-
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: author.id, time: time)
         end
 
         def count_unique(actions, date_from, date_to)

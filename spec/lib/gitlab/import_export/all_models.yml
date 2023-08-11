@@ -433,6 +433,7 @@ builds:
 - dast_scanner_profiles_build
 - dast_scanner_profile
 - job_annotations
+- job_artifacts_annotations
 bridges:
 - user
 - pipeline

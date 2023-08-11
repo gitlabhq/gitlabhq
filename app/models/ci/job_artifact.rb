@@ -60,7 +60,8 @@ module Ci
       requirements_v2: 'requirements_v2.json',
       coverage_fuzzing: 'gl-coverage-fuzzing.json',
       api_fuzzing: 'gl-api-fuzzing-report.json',
-      cyclonedx: 'gl-sbom.cdx.json'
+      cyclonedx: 'gl-sbom.cdx.json',
+      annotations: 'gl-annotations.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -79,6 +80,7 @@ module Ci
       cluster_applications: :gzip, # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
       lsif: :zip,
       cyclonedx: :gzip,
+      annotations: :gzip,
 
       # Security reports and license scanning reports are raw artifacts
       # because they used to be fetched by the frontend, but this is not the case anymore.
@@ -221,7 +223,8 @@ module Ci
       api_fuzzing: 26, ## EE-specific
       cluster_image_scanning: 27, ## EE-specific
       cyclonedx: 28, ## EE-specific
-      requirements_v2: 29 ## EE-specific
+      requirements_v2: 29, ## EE-specific
+      annotations: 30
     }
 
     # `file_location` indicates where actual files are stored.

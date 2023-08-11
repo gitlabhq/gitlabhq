@@ -2,9 +2,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getEnvironment from '../graphql/queries/environment.query.graphql';
-import getEnvironmentWithNamespace from '../graphql/queries/environment_with_namespace.graphql';
 import updateEnvironment from '../graphql/mutations/update_environment.mutation.graphql';
 import EnvironmentForm from './environment_form.vue';
 
@@ -13,14 +11,11 @@ export default {
     GlLoadingIcon,
     EnvironmentForm,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['projectEnvironmentsPath', 'projectPath', 'environmentName'],
   apollo: {
     environment: {
       query() {
-        return this.glFeatures?.kubernetesNamespaceForEnvironment
-          ? getEnvironmentWithNamespace
-          : getEnvironment;
+        return getEnvironment;
       },
       variables() {
         return {

@@ -20444,7 +20444,10 @@ CREATE TABLE plan_limits (
     google_cloud_logging_configurations integer DEFAULT 5 NOT NULL,
     ml_model_max_file_size bigint DEFAULT '10737418240'::bigint NOT NULL,
     limits_history jsonb DEFAULT '{}'::jsonb NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    ci_max_artifact_size_annotations integer DEFAULT 0 NOT NULL,
+    ci_job_annotations_size integer DEFAULT 81920 NOT NULL,
+    ci_job_annotations_num integer DEFAULT 20 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

@@ -143,6 +143,7 @@ RSpec.shared_context 'with user contribution events' do
   # reopened
   let_it_be(:reopened_issue_event) { create(:event, :reopened, author: user, project: project, target: issue) }
   let_it_be(:reopened_milestone_event) { create(:event, :reopened, author: user, project: project, target: milestone) }
+  let_it_be(:reopened_task_event) { create(:event, :reopened, author: user, project: project, target: task) }
   let_it_be(:reopened_incident_event) { create(:event, :reopened, author: user, project: project, target: incident) }
   let_it_be(:reopened_merge_request_event) do
     create(:event, :reopened, author: user, project: project, target: merge_request)

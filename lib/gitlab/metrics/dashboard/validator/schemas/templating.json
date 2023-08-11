@@ -1,7 +1,0 @@
-{
-  "type": "object",
-  "required": ["variables"],
-  "properties": {
-    "variables": { "type": "object" }
-  }
-}

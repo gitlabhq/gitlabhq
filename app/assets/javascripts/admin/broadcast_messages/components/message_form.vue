@@ -69,8 +69,13 @@ export default {
     dismissableDescription: s__('BroadcastMessages|Allow users to dismiss the broadcast message'),
     target: s__('BroadcastMessages|Target broadcast message'),
     targetRoles: s__('BroadcastMessages|Target roles'),
+    targetRolesRequired: s__('BroadcastMessages|Select at least one role.'),
+    targetRolesValidationMsg: s__('BroadcastMessages|One or more roles is required.'),
     targetPath: s__('BroadcastMessages|Target Path'),
-    targetPathDescription: s__('BroadcastMessages|Paths can contain wildcards, like */welcome'),
+    targetPathDescription: s__('BroadcastMessages|Paths can contain wildcards, like */welcome.'),
+    targetPathWithRolesReminder: s__(
+      'BroadcastMessages|Leave blank to target all group and project pages.',
+    ),
     startsAt: s__('BroadcastMessages|Starts at'),
     endsAt: s__('BroadcastMessages|Ends at'),
     add: s__('BroadcastMessages|Add broadcast message'),
@@ -110,6 +115,7 @@ export default {
       endsAt: new Date(this.broadcastMessage.endsAt.getTime()),
       renderedMessage: '',
       showInCli: this.broadcastMessage.showInCli,
+      isValidated: false,
     };
   },
   computed: {
@@ -137,6 +143,18 @@ export default {
       return (
         this.targetSelected === TARGET_ROLES || this.targetSelected === TARGET_ALL_MATCHING_PATH
       );
+    },
+    targetPathDescription() {
+      const defaultDescription = this.$options.i18n.targetPathDescription;
+
+      if (this.showTargetRoles) {
+        return `${defaultDescription} ${this.$options.i18n.targetPathWithRolesReminder}`;
+      }
+
+      return defaultDescription;
+    },
+    targetRolesValid() {
+      return !this.showTargetRoles || this.targetAccessLevels.length > 0;
     },
     formPayload() {
       return JSON.stringify({
@@ -177,6 +195,12 @@ export default {
     },
     async onSubmit() {
       this.loading = true;
+      this.isValidated = true;
+
+      if (!this.targetRolesValid) {
+        this.loading = false;
+        return;
+      }
 
       const success = await this.submitForm();
       if (success) {
@@ -294,6 +318,9 @@ export default {
     <gl-form-group
       v-show="showTargetRoles"
       :label="$options.i18n.targetRoles"
+      :label-description="$options.i18n.targetRolesRequired"
+      :invalid-feedback="$options.i18n.targetRolesValidationMsg"
+      :state="!isValidated || targetRolesValid"
       data-testid="target-roles-checkboxes"
     >
       <gl-form-checkbox-group v-model="targetAccessLevels" :options="targetAccessLevelOptions" />
@@ -307,7 +334,7 @@ export default {
     >
       <gl-form-input id="target-path-input" v-model="targetPath" />
       <gl-form-text>
-        {{ $options.i18n.targetPathDescription }}
+        {{ targetPathDescription }}
       </gl-form-text>
     </gl-form-group>
 
@@ -326,7 +353,7 @@ export default {
         :loading="loading"
         :disabled="messageBlank"
         data-testid="submit-button"
-        class="gl-mr-2"
+        class="js-no-auto-disable gl-mr-2"
       >
         {{ isAddForm ? $options.i18n.add : $options.i18n.update }}
       </gl-button>

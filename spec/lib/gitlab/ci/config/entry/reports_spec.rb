@@ -48,6 +48,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports, feature_category: :pipeline_c
         :terraform | 'tfplan.json'
         :accessibility | 'gl-accessibility.json'
         :cyclonedx | 'gl-sbom.cdx.zip'
+        :annotations | 'gl-annotations.json'
       end
 
       with_them do

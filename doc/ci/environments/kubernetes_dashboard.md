@@ -21,7 +21,7 @@ For Flux users, the synchronization status of a given environment is not display
 ## Configure a dashboard
 
 > - Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `kubernetes_namespace_for_environment`. Disabled by default.
-> - Feature flag `kubernetes_namespace_for_environment` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127043) in GitLab 16.3.
+> - Filtering resources by namespace [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127043) in GitLab 16.3. Feature flag `kubernetes_namespace_for_environment` removed.
 
 Configure a dashboard to use it for a given environment.
 You can configure dashboard for an environment that already exists, or

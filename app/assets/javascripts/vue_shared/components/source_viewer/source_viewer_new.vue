@@ -40,6 +40,10 @@ export default {
     this.track(EVENT_ACTION, { label: EVENT_LABEL_VIEWER, property: this.blob.language });
     addBlobLinksTracking();
   },
+  mounted() {
+    const { hash } = this.$route;
+    this.lineHighlighter.highlightHash(hash);
+  },
   userColorScheme: window.gon.user_color_scheme,
 };
 </script>

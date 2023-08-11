@@ -64,7 +64,7 @@ and, for autopilot clusters, to add configurations that specify which jobs to ru
 1. Verify that you are connected to the cluster:
 
    ```shell
-   kubectl config view current-context
+   kubectl config current-context
    ```
 
 ## Install and configure the Kubernetes Operator
@@ -74,7 +74,7 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
 1. Install the prerequisites:
 
    ```shell
-     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.1/cert-manager.yaml
+   kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.1/cert-manager.yaml
    ```
 
 1. Install the Operator Lifecycle Manager (OLM), a tool that manages the Kubernetes Operators that

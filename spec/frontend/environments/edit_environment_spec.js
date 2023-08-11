@@ -7,7 +7,6 @@ import EditEnvironment from '~/environments/components/edit_environment.vue';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import getEnvironment from '~/environments/graphql/queries/environment.query.graphql';
-import getEnvironmentWithNamespace from '~/environments/graphql/queries/environment_with_namespace.graphql';
 import updateEnvironment from '~/environments/graphql/mutations/update_environment.mutation.graphql';
 import { __ } from '~/locale';
 import createMockApollo from '../__helpers__/mock_apollo_helper';
@@ -43,9 +42,6 @@ describe('~/environments/components/edit.vue', () => {
   let wrapper;
 
   const getEnvironmentQuery = jest.fn().mockResolvedValue({ data: resolvedEnvironment });
-  const getEnvironmentWithNamespaceQuery = jest
-    .fn()
-    .mockResolvedValue({ data: resolvedEnvironment });
 
   const updateEnvironmentSuccess = jest
     .fn()
@@ -59,24 +55,17 @@ describe('~/environments/components/edit.vue', () => {
 
     const mocks = [
       [getEnvironment, getEnvironmentQuery],
-      [getEnvironmentWithNamespace, getEnvironmentWithNamespaceQuery],
       [updateEnvironment, mutationHandler],
     ];
 
     return createMockApollo(mocks);
   };
 
-  const createWrapperWithApollo = async ({
-    mutationHandler = updateEnvironmentSuccess,
-    kubernetesNamespaceForEnvironment = false,
-  } = {}) => {
+  const createWrapperWithApollo = async ({ mutationHandler = updateEnvironmentSuccess } = {}) => {
     wrapper = mountExtended(EditEnvironment, {
       propsData: { environment: {} },
       provide: {
         ...provide,
-        glFeatures: {
-          kubernetesNamespaceForEnvironment,
-        },
       },
       apolloProvider: createMockApolloProvider(mutationHandler),
     });
@@ -167,13 +156,6 @@ describe('~/environments/components/edit.vue', () => {
         expect(createAlert).toHaveBeenCalledWith({ message: 'uh oh!' });
         expect(showsLoading()).toBe(false);
       });
-    });
-  });
-
-  describe('when `kubernetesNamespaceForEnvironment` is enabled', () => {
-    it('calls the `getEnvironmentWithNamespace` query', () => {
-      createWrapperWithApollo({ kubernetesNamespaceForEnvironment: true });
-      expect(getEnvironmentWithNamespaceQuery).toHaveBeenCalled();
     });
   });
 });

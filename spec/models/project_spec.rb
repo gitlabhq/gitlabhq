@@ -3045,6 +3045,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
             shard_name: 'foo'
           )
         end
+
+        it 'refreshes a memoized repository value' do
+          previous_repository = project.repository
+
+          allow(project).to receive(:disk_path).and_return('fancy/new/path')
+          allow(project).to receive(:repository_storage).and_return('foo')
+
+          project.track_project_repository
+
+          expect(project.repository).not_to eq(previous_repository)
+        end
+
+        context 'when "replicate_object_pool_on_move" FF is disabled' do
+          before do
+            stub_feature_flags(replicate_object_pool_on_move: false)
+          end
+
+          it 'does not update  a memoized repository value' do
+            previous_repository = project.repository
+
+            allow(project).to receive(:disk_path).and_return('fancy/new/path')
+            allow(project).to receive(:repository_storage).and_return('foo')
+
+            project.track_project_repository
+
+            expect(project.repository).to eq(previous_repository)
+          end
+        end
       end
     end
 
@@ -6951,6 +6979,73 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#swap_pool_repository!' do
+    subject(:swap_pool_repository!) { project.swap_pool_repository! }
+
+    let_it_be_with_reload(:project) { create(:project, :empty_repo) }
+    let_it_be(:shard_to) { create(:shard, name: 'test_second_storage') }
+
+    let!(:pool1) { create(:pool_repository, source_project: project) }
+    let!(:pool2) { create(:pool_repository, shard: shard_to, source_project: project) }
+    let(:project_pool) { pool1 }
+    let(:repository_storage) { shard_to.name }
+
+    before do
+      stub_storage_settings(
+        'test_second_storage' => {
+          'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
+          'path' => TestEnv::SECOND_STORAGE_PATH
+        }
+      )
+
+      project.update!(pool_repository: project_pool, repository_storage: repository_storage)
+    end
+
+    shared_examples 'no pool repository swap' do
+      it 'does not change pool repository for the project' do
+        expect { swap_pool_repository! }.not_to change { project.reload.pool_repository }
+      end
+    end
+
+    it 'moves project to the new pool repository' do
+      expect { swap_pool_repository! }.to change { project.reload.pool_repository }.from(pool1).to(pool2)
+    end
+
+    context 'when feature flag replicate_object_pool_on_move is disabled' do
+      before do
+        stub_feature_flags(replicate_object_pool_on_move: false)
+      end
+
+      it_behaves_like 'no pool repository swap'
+    end
+
+    context 'when repository does not exist' do
+      let(:project) { build(:project) }
+
+      it_behaves_like 'no pool repository swap'
+    end
+
+    context 'when project does not have a pool repository' do
+      let(:project_pool) { nil }
+
+      it_behaves_like 'no pool repository swap'
+    end
+
+    context 'when project pool is on the same shard as repository' do
+      let(:project_pool) { pool2 }
+
+      it_behaves_like 'no pool repository swap'
+    end
+
+    context 'when pool repository for shard is missing' do
+      let(:pool2) { nil }
+
+      it 'raises record not found error' do
+        expect { swap_pool_repository! }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
   describe '#leave_pool_repository' do
     let(:pool) { create(:pool_repository) }
     let(:project) { create(:project, :repository, pool_repository: pool) }
@@ -6974,6 +7069,53 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         subject
 
         expect(pool.member_projects.reload).not_to include(project)
+      end
+    end
+  end
+
+  describe '#link_pool_repository' do
+    let(:pool) { create(:pool_repository) }
+    let(:project) { build(:project, :empty_repo, pool_repository: pool) }
+
+    subject { project.link_pool_repository }
+
+    it 'links pool repository to project repository' do
+      expect(pool).to receive(:link_repository).with(project.repository)
+
+      subject
+    end
+
+    context 'when pool repository is missing' do
+      let(:pool) { nil }
+
+      it 'does not link anything' do
+        allow_next_instance_of(PoolRepository) do |pool_repository|
+          expect(pool_repository).not_to receive(:link_repository)
+        end
+
+        subject
+      end
+    end
+
+    context 'when pool repository is on the different shard as project repository' do
+      let(:pool) { create(:pool_repository, shard: create(:shard, name: 'new')) }
+
+      it 'does not link anything' do
+        expect(pool).not_to receive(:link_repository)
+
+        subject
+      end
+
+      context 'when feature flag replicate_object_pool_on_move is disabled' do
+        before do
+          stub_feature_flags(replicate_object_pool_on_move: false)
+        end
+
+        it 'links pool repository to project repository' do
+          expect(pool).to receive(:link_repository).with(project.repository)
+
+          subject
+        end
       end
     end
   end

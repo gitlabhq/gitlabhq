@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PoolRepository do
+RSpec.describe PoolRepository, feature_category: :source_code_management do
   describe 'associations' do
     it { is_expected.to belong_to(:shard) }
     it { is_expected.to belong_to(:source_project) }
@@ -16,11 +16,42 @@ RSpec.describe PoolRepository do
     it { is_expected.to validate_presence_of(:source_project) }
   end
 
+  describe 'scopes' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:new_shard) { create(:shard, name: 'new') }
+    let_it_be(:pool_repository1) { create(:pool_repository, source_project: project1) }
+    let_it_be(:pool_repository2) { create(:pool_repository, source_project: project1, shard: new_shard) }
+    let_it_be(:another_pool_repository) { create(:pool_repository, source_project: project2) }
+
+    describe '.by_source_project' do
+      subject { described_class.by_source_project(project1) }
+
+      it 'returns pool repositories per source project from all shards' do
+        is_expected.to match_array([pool_repository1, pool_repository2])
+      end
+    end
+
+    describe '.by_source_project_and_shard_name' do
+      subject { described_class.by_source_project_and_shard_name(project1, new_shard.name) }
+
+      it 'returns only a requested pool repository' do
+        is_expected.to match_array([pool_repository2])
+      end
+    end
+  end
+
   describe '#disk_path' do
     it 'sets the hashed disk_path' do
       pool = create(:pool_repository)
 
       expect(pool.disk_path).to match(%r{\A@pools/\h{2}/\h{2}/\h{64}})
+    end
+
+    it 'keeps disk_path if already provided' do
+      pool = create(:pool_repository, disk_path: '@pools/aa/bbbb')
+
+      expect(pool.disk_path).to eq('@pools/aa/bbbb')
     end
   end
 

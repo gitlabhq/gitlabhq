@@ -26829,6 +26829,7 @@ Iteration ID wildcard values.
 | Value | Description |
 | ----- | ----------- |
 | <a id="jobartifactfiletypeaccessibility"></a>`ACCESSIBILITY` | ACCESSIBILITY job artifact file type. |
+| <a id="jobartifactfiletypeannotations"></a>`ANNOTATIONS` | ANNOTATIONS job artifact file type. |
 | <a id="jobartifactfiletypeapi_fuzzing"></a>`API_FUZZING` | API FUZZING job artifact file type. |
 | <a id="jobartifactfiletypearchive"></a>`ARCHIVE` | ARCHIVE job artifact file type. |
 | <a id="jobartifactfiletypebrowser_performance"></a>`BROWSER_PERFORMANCE` | BROWSER PERFORMANCE job artifact file type. |

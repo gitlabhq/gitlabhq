@@ -454,7 +454,7 @@ export default {
     </div>
     <ai-genie
       v-if="explainCodeAvailable"
-      container-id="fileHolder"
+      container-selector=".file-content"
       :file-path="path"
       class="gl-ml-7"
     />

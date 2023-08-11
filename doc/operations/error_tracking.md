@@ -82,7 +82,7 @@ You can also review the stack trace.
 
 ### Supported language SDKs & Sentry types
 
-In the following table, you can see a list of all event types available through Sentry SDK, and whether they are supported by GitLab Error Tracking.
+The following table lists all event types available through Sentry SDK, and whether they are supported by GitLab Error Tracking.
 
 | Language | Tested SDK client and version   | Endpoint   | Supported item types              |
 | -------- | ------------------------------- | ---------- | --------------------------------- |
@@ -201,9 +201,7 @@ to your runner's `config.toml` configuration file, as referenced in
 
 If you're asked for the project type while setting up Sentry, select **Go**.
 
-If you see the following error in your GitLab Runner logs, then you should
-specify the deprecated
-DSN in **Sentry.io > Project Settings > Client Keys (DSN) > Show deprecated DSN**.
+To rectify the following error, specify the deprecated DSN in **Sentry.io > Project Settings > Client Keys (DSN) > Show deprecated DSN**.
 
 ```plaintext
 ERROR: Sentry failure builds=0 error=raven: dsn missing private key

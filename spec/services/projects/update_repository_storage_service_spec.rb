@@ -12,16 +12,31 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
     before do
       allow(Time).to receive(:now).and_return(time)
-      allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(%w[default test_second_storage])
+
+      stub_storage_settings(
+        'test_second_storage' => {
+          'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
+          'path' => TestEnv::SECOND_STORAGE_PATH
+        }
+      )
     end
 
     context 'without wiki and design repository' do
+      let!(:shard_default) { create(:shard, name: 'default') }
+      let!(:shard_second_storage) { create(:shard, name: 'test_second_storage') }
+
       let(:project) { create(:project, :repository, wiki_enabled: false) }
       let(:destination) { 'test_second_storage' }
       let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, container: project, destination_storage_name: destination) }
       let!(:checksum) { project.repository.checksum }
       let(:project_repository_double) { double(:repository) }
       let(:original_project_repository_double) { double(:repository) }
+
+      let(:object_pool_double) { double(:object_pool, repository: object_pool_repository_double) }
+      let(:object_pool_repository_double) { double(:repository) }
+
+      let(:original_object_pool_double) { double(:object_pool, repository: original_object_pool_repository_double) }
+      let(:original_object_pool_repository_double) { double(:repository) }
 
       before do
         allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
@@ -33,6 +48,17 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
         allow(Gitlab::Git::Repository).to receive(:new)
           .with('default', project.repository.raw.relative_path, nil, nil)
           .and_return(original_project_repository_double)
+
+        allow(Gitlab::Git::ObjectPool).to receive(:new).and_call_original
+        allow(Gitlab::Git::ObjectPool).to receive(:new)
+          .with('test_second_storage', anything, anything, anything)
+          .and_return(object_pool_double)
+        allow(Gitlab::Git::ObjectPool).to receive(:new)
+          .with('default', anything, anything, anything)
+          .and_return(original_object_pool_double)
+
+        allow(original_object_pool_double).to receive(:create)
+        allow(object_pool_double).to receive(:create)
       end
 
       context 'when the move succeeds' do
@@ -124,25 +150,138 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
         end
       end
 
-      context 'when a object pool was joined' do
-        let!(:pool) { create(:pool_repository, :ready, source_project: project) }
+      context 'with repository pool' do
+        let(:shard_from) { shard_default }
+        let(:shard_to) { shard_second_storage }
+        let(:old_object_pool_checksum) { 'abcd' }
+        let(:new_object_pool_checksum) { old_object_pool_checksum }
 
-        it 'leaves the pool' do
-          allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
-          allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
+        before do
+          allow(project_repository_double).to receive(:replicate).with(project.repository.raw)
+          allow(project_repository_double).to receive(:checksum).and_return(checksum)
+          allow(original_project_repository_double).to receive(:remove)
 
-          expect(project_repository_double).to receive(:replicate)
-            .with(project.repository.raw)
-          expect(project_repository_double).to receive(:checksum)
-            .and_return(checksum)
-          expect(original_project_repository_double).to receive(:remove)
+          allow(object_pool_repository_double).to receive(:replicate).with(original_object_pool_repository_double)
+          allow(object_pool_repository_double).to receive(:checksum).and_return(new_object_pool_checksum)
+          allow(original_object_pool_repository_double).to receive(:checksum).and_return(old_object_pool_checksum)
 
-          result = subject.execute
-          project.reload
+          allow(object_pool_double).to receive(:link) do |repository|
+            expect(repository.storage).to eq 'test_second_storage'
+          end
+        end
 
-          expect(result).to be_success
-          expect(project.repository_storage).to eq('test_second_storage')
-          expect(project.reload_pool_repository).to be_nil
+        context 'when project had a repository pool' do
+          let!(:pool_repository) { create(:pool_repository, :ready, shard: shard_from, source_project: project) }
+
+          it 'creates a new repository pool and connects project to it' do
+            result = subject.execute
+            expect(result).to be_success
+
+            project.reload.cleanup
+
+            new_pool_repository = project.pool_repository
+
+            expect(new_pool_repository).not_to eq(pool_repository)
+            expect(new_pool_repository.shard).to eq(shard_second_storage)
+            expect(new_pool_repository.state).to eq('ready')
+            expect(new_pool_repository.disk_path).to eq(pool_repository.disk_path)
+            expect(new_pool_repository.source_project).to eq(project)
+
+            expect(object_pool_double).to have_received(:link).with(project.repository.raw)
+          end
+
+          context 'when feature flag replicate_object_pool_on_move is disabled' do
+            before do
+              stub_feature_flags(replicate_object_pool_on_move: false)
+            end
+
+            it 'just moves the repository without the object pool' do
+              result = subject.execute
+              expect(result).to be_success
+
+              project.reload.cleanup
+
+              new_pool_repository = project.pool_repository
+
+              expect(new_pool_repository).to eq(pool_repository)
+              expect(new_pool_repository.shard).to eq(shard_default)
+              expect(new_pool_repository.state).to eq('ready')
+              expect(new_pool_repository.source_project).to eq(project)
+
+              expect(object_pool_repository_double).not_to have_received(:replicate)
+              expect(object_pool_double).not_to have_received(:link)
+            end
+          end
+
+          context 'when new shard has a repository pool' do
+            let!(:new_pool_repository) { create(:pool_repository, :ready, shard: shard_to, source_project: project) }
+
+            it 'connects project to it' do
+              result = subject.execute
+              expect(result).to be_success
+
+              project.reload.cleanup
+
+              project_pool_repository = project.pool_repository
+
+              expect(project_pool_repository).to eq(new_pool_repository)
+              expect(object_pool_double).to have_received(:link).with(project.repository.raw)
+            end
+          end
+
+          context 'when repository does not exist' do
+            let(:project) { create(:project) }
+            let(:checksum) { nil }
+
+            it 'does not mirror object pool' do
+              result = subject.execute
+              expect(result).to be_success
+
+              expect(object_pool_repository_double).not_to have_received(:replicate)
+            end
+          end
+
+          context 'when project belongs to repository pool, but not as a root project' do
+            let!(:another_project) { create(:project, :repository) }
+            let!(:pool_repository) { create(:pool_repository, :ready, shard: shard_from, source_project: another_project) }
+
+            before do
+              project.update!(pool_repository: pool_repository)
+            end
+
+            it 'creates a new repository pool and connects project to it' do
+              result = subject.execute
+              expect(result).to be_success
+
+              project.reload.cleanup
+
+              new_pool_repository = project.pool_repository
+
+              expect(new_pool_repository).not_to eq(pool_repository)
+              expect(new_pool_repository.shard).to eq(shard_second_storage)
+              expect(new_pool_repository.state).to eq('ready')
+              expect(new_pool_repository.source_project).to eq(another_project)
+
+              expect(object_pool_double).to have_received(:link).with(project.repository.raw)
+            end
+          end
+
+          context 'when object pool checksum does not match' do
+            let(:new_object_pool_checksum) { 'not_match' }
+
+            it 'raises an error and does not change state' do
+              original_count = PoolRepository.count
+
+              expect { subject.execute }.to raise_error(UpdateRepositoryStorageMethods::Error)
+
+              project.reload
+
+              expect(PoolRepository.count).to eq(original_count)
+
+              expect(project.pool_repository).to eq(pool_repository)
+              expect(project.repository.shard).to eq('default')
+            end
+          end
         end
       end
 

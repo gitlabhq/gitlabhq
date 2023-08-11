@@ -8,6 +8,7 @@ import {
   EVENT_TYPE_PRIVATE,
   EVENT_TYPE_MERGED,
   EVENT_TYPE_CLOSED,
+  EVENT_TYPE_REOPENED,
   PUSH_EVENT_REF_TYPE_BRANCH,
   PUSH_EVENT_REF_TYPE_TAG,
   EVENT_TYPE_CREATED,
@@ -16,7 +17,7 @@ import {
   TARGET_TYPE_MERGE_REQUEST,
   TARGET_TYPE_WIKI,
   TARGET_TYPE_DESIGN,
-  TARGET_TYPE_WORK_ITEM,
+  WORK_ITEM_ISSUE_TYPE_ISSUE,
   WORK_ITEM_ISSUE_TYPE_TASK,
   WORK_ITEM_ISSUE_TYPE_INCIDENT,
 } from '~/contribution_events/constants';
@@ -25,12 +26,7 @@ const findEventByAction = (action) => () => events.find((event) => event.action 
 const findEventByActionAndTargetType = (action, targetType) => () =>
   events.find((event) => event.action === action && event.target?.type === targetType);
 const findEventByActionAndIssueType = (action, issueType) => () =>
-  events.find(
-    (event) =>
-      event.action === action &&
-      event.target?.type === TARGET_TYPE_WORK_ITEM &&
-      event.target.issue_type === issueType,
-  );
+  events.find((event) => event.action === action && event.target.issue_type === issueType);
 
 export const eventApproved = findEventByAction(EVENT_TYPE_APPROVED);
 
@@ -100,3 +96,18 @@ export const eventWikiPageClosed = findClosedEvent(TARGET_TYPE_WIKI);
 export const eventDesignClosed = findClosedEvent(TARGET_TYPE_DESIGN);
 export const eventTaskClosed = findWorkItemClosedEvent(WORK_ITEM_ISSUE_TYPE_TASK);
 export const eventIncidentClosed = findWorkItemClosedEvent(WORK_ITEM_ISSUE_TYPE_INCIDENT);
+
+export const eventReopened = findEventByAction(EVENT_TYPE_REOPENED);
+
+export const findReopenedEvent = (targetType) =>
+  findEventByActionAndTargetType(EVENT_TYPE_REOPENED, targetType);
+export const findWorkItemReopenedEvent = (issueType) =>
+  findEventByActionAndIssueType(EVENT_TYPE_REOPENED, issueType);
+
+export const eventMilestoneReopened = findReopenedEvent(TARGET_TYPE_MILESTONE);
+export const eventMergeRequestReopened = findReopenedEvent(TARGET_TYPE_MERGE_REQUEST);
+export const eventWikiPageReopened = findReopenedEvent(TARGET_TYPE_WIKI);
+export const eventDesignReopened = findReopenedEvent(TARGET_TYPE_DESIGN);
+export const eventIssueReopened = findWorkItemReopenedEvent(WORK_ITEM_ISSUE_TYPE_ISSUE);
+export const eventTaskReopened = findWorkItemReopenedEvent(WORK_ITEM_ISSUE_TYPE_TASK);
+export const eventIncidentReopened = findWorkItemReopenedEvent(WORK_ITEM_ISSUE_TYPE_INCIDENT);

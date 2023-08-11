@@ -11,9 +11,9 @@ module Gitlab
       # most of the durations for cpu, gitaly, db and elasticsearch
       SIDEKIQ_LATENCY_BUCKETS = [0.1, 0.5, 1, 2.5].freeze
 
-      # These are the buckets we currently use for alerting, we will likely
-      # replace these histograms with Application SLIs
-      # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1313
+      # These buckets are only available on self-managed.
+      # We have replaced with Application SLIs on GitLab.com.
+      # https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/700
       SIDEKIQ_JOB_DURATION_BUCKETS = [10, 300].freeze
       SIDEKIQ_QUEUE_DURATION_BUCKETS = [10, 60].freeze
 
@@ -24,15 +24,12 @@ module Gitlab
         include ::Gitlab::SidekiqMiddleware::MetricsHelper
 
         def metrics
-          {
+          metrics = {
             sidekiq_jobs_cpu_seconds: ::Gitlab::Metrics.histogram(:sidekiq_jobs_cpu_seconds, 'Seconds this Sidekiq job spent on the CPU', {}, SIDEKIQ_LATENCY_BUCKETS),
-            sidekiq_jobs_completion_seconds: ::Gitlab::Metrics.histogram(:sidekiq_jobs_completion_seconds, 'Seconds to complete Sidekiq job', {}, SIDEKIQ_JOB_DURATION_BUCKETS),
             sidekiq_jobs_db_seconds: ::Gitlab::Metrics.histogram(:sidekiq_jobs_db_seconds, 'Seconds of database time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
             sidekiq_jobs_gitaly_seconds: ::Gitlab::Metrics.histogram(:sidekiq_jobs_gitaly_seconds, 'Seconds of Gitaly time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
-            sidekiq_jobs_queue_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_jobs_queue_duration_seconds, 'Duration in seconds that a Sidekiq job was queued before being executed', {}, SIDEKIQ_QUEUE_DURATION_BUCKETS),
             sidekiq_redis_requests_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_redis_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent requests a Redis server', {}, Gitlab::Instrumentation::Redis::QUERY_TIME_BUCKETS),
             sidekiq_elasticsearch_requests_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_elasticsearch_requests_duration_seconds, 'Duration in seconds that a Sidekiq job spent in requests to an Elasticsearch server', {}, SIDEKIQ_LATENCY_BUCKETS),
-            sidekiq_jobs_failed_total: ::Gitlab::Metrics.counter(:sidekiq_jobs_failed_total, 'Sidekiq jobs failed'),
             sidekiq_jobs_retried_total: ::Gitlab::Metrics.counter(:sidekiq_jobs_retried_total, 'Sidekiq jobs retried'),
             sidekiq_jobs_interrupted_total: ::Gitlab::Metrics.counter(:sidekiq_jobs_interrupted_total, 'Sidekiq jobs interrupted'),
             sidekiq_redis_requests_total: ::Gitlab::Metrics.counter(:sidekiq_redis_requests_total, 'Redis requests during a Sidekiq job execution'),
@@ -41,6 +38,17 @@ module Gitlab
             sidekiq_concurrency: ::Gitlab::Metrics.gauge(:sidekiq_concurrency, 'Maximum number of Sidekiq jobs', {}, :all),
             sidekiq_mem_total_bytes: ::Gitlab::Metrics.gauge(:sidekiq_mem_total_bytes, 'Number of bytes allocated for both objects consuming an object slot and objects that required a malloc', {}, :all)
           }
+
+          if Feature.enabled?(:emit_sidekiq_histogram_metrics, type: :ops)
+            metrics[:sidekiq_jobs_completion_seconds] = ::Gitlab::Metrics.histogram(:sidekiq_jobs_completion_seconds, 'Seconds to complete Sidekiq job', {}, SIDEKIQ_JOB_DURATION_BUCKETS)
+            metrics[:sidekiq_jobs_queue_duration_seconds] = ::Gitlab::Metrics.histogram(:sidekiq_jobs_queue_duration_seconds, 'Duration in seconds that a Sidekiq job was queued before being executed', {}, SIDEKIQ_QUEUE_DURATION_BUCKETS)
+            metrics[:sidekiq_jobs_failed_total] = ::Gitlab::Metrics.counter(:sidekiq_jobs_failed_total, 'Sidekiq jobs failed')
+          else
+            # The sum metric is still used in GitLab.com for dashboards
+            metrics[:sidekiq_jobs_completion_seconds_sum] = ::Gitlab::Metrics.counter(:sidekiq_jobs_completion_seconds_sum, 'Total of seconds to complete Sidekiq job')
+          end
+
+          metrics
         end
 
         def initialize_process_metrics
@@ -58,6 +66,8 @@ module Gitlab
 
             base_labels = create_labels(worker_class, queue, {})
             possible_sli_labels << base_labels.slice(*SIDEKIQ_SLI_LABELS)
+
+            next unless Feature.enabled?(:emit_sidekiq_histogram_metrics, type: :ops)
 
             %w[done fail].each do |status|
               metrics[:sidekiq_jobs_completion_seconds].get(base_labels.merge(job_status: status))
@@ -92,7 +102,8 @@ module Gitlab
       def instrument(job, labels)
         queue_duration = ::Gitlab::InstrumentationHelper.queue_duration_for_job(job)
 
-        @metrics[:sidekiq_jobs_queue_duration_seconds].observe(labels, queue_duration) if queue_duration
+        @metrics[:sidekiq_jobs_queue_duration_seconds]&.observe(labels, queue_duration) if queue_duration
+
         @metrics[:sidekiq_running_jobs].increment(labels, 1)
 
         if job['retry_count'].present?
@@ -119,13 +130,21 @@ module Gitlab
 
           # sidekiq_running_jobs, sidekiq_jobs_failed_total should not include the job_status label
           @metrics[:sidekiq_running_jobs].increment(labels, -1)
-          @metrics[:sidekiq_jobs_failed_total].increment(labels, 1) unless job_succeeded
+
+          if Feature.enabled?(:emit_sidekiq_histogram_metrics, type: :ops)
+            @metrics[:sidekiq_jobs_failed_total].increment(labels, 1) unless job_succeeded
+          else
+            # we don't need job_status label here
+            @metrics[:sidekiq_jobs_completion_seconds_sum].increment(labels, monotonic_time)
+          end
 
           # job_status: done, fail match the job_status attribute in structured logging
           labels[:job_status] = job_succeeded ? "done" : "fail"
           instrumentation = job[:instrumentation] || {}
           @metrics[:sidekiq_jobs_cpu_seconds].observe(labels, job_thread_cputime)
-          @metrics[:sidekiq_jobs_completion_seconds].observe(labels, monotonic_time)
+
+          @metrics[:sidekiq_jobs_completion_seconds]&.observe(labels, monotonic_time)
+
           @metrics[:sidekiq_jobs_db_seconds].observe(labels, ActiveRecord::LogSubscriber.runtime / 1000)
           @metrics[:sidekiq_jobs_gitaly_seconds].observe(labels, get_gitaly_time(instrumentation))
           @metrics[:sidekiq_redis_requests_total].increment(labels, get_redis_calls(instrumentation))

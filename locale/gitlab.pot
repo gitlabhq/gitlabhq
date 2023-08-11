@@ -895,9 +895,6 @@ msgstr ""
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
-msgid "%{location} is missing required keys: %{keys}"
-msgstr ""
-
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
@@ -1332,24 +1329,6 @@ msgid "%{widget} options"
 msgstr ""
 
 msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
-msgstr ""
-
-msgid "'%{data}' at %{location} does not match format: %{format}"
-msgstr ""
-
-msgid "'%{data}' at %{location} does not match pattern: %{pattern}"
-msgstr ""
-
-msgid "'%{data}' at %{location} is invalid: error_type=%{type}"
-msgstr ""
-
-msgid "'%{data}' at %{location} is not of type: %{type}"
-msgstr ""
-
-msgid "'%{data}' at %{location} is not one of: %{enum}"
-msgstr ""
-
-msgid "'%{data}' at %{location} is not: %{const}"
 msgstr ""
 
 msgid "'%{level}' is not a valid visibility level"
@@ -8181,9 +8160,6 @@ msgstr ""
 msgid "Both SSH and HTTP(S)"
 msgstr ""
 
-msgid "Both project and dashboard_path are required"
-msgstr ""
-
 msgid "Branch"
 msgstr ""
 
@@ -8577,6 +8553,9 @@ msgstr ""
 msgid "BroadcastMessages|Indigo"
 msgstr ""
 
+msgid "BroadcastMessages|Leave blank to target all group and project pages."
+msgstr ""
+
 msgid "BroadcastMessages|Light"
 msgstr ""
 
@@ -8604,10 +8583,16 @@ msgstr ""
 msgid "BroadcastMessages|Notification"
 msgstr ""
 
-msgid "BroadcastMessages|Paths can contain wildcards, like */welcome"
+msgid "BroadcastMessages|One or more roles is required."
+msgstr ""
+
+msgid "BroadcastMessages|Paths can contain wildcards, like */welcome."
 msgstr ""
 
 msgid "BroadcastMessages|Red"
+msgstr ""
+
+msgid "BroadcastMessages|Select at least one role."
 msgstr ""
 
 msgid "BroadcastMessages|Show only to users who have specific roles on groups/project pages"
@@ -9945,10 +9930,16 @@ msgstr ""
 msgid "CiCatalog|About this project"
 msgstr ""
 
+msgid "CiCatalog|Back to the CI/CD Catalog"
+msgstr ""
+
 msgid "CiCatalog|CI/CD Catalog"
 msgstr ""
 
 msgid "CiCatalog|CI/CD Catalog resource"
+msgstr ""
+
+msgid "CiCatalog|Component ID not found, or you do not have permission to access component."
 msgstr ""
 
 msgid "CiCatalog|Create a pipeline component repository and make reusing pipeline configurations faster and easier."
@@ -9967,6 +9958,9 @@ msgid "CiCatalog|Mark project as a CI/CD Catalog resource"
 msgstr ""
 
 msgid "CiCatalog|Mark project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
+msgstr ""
+
+msgid "CiCatalog|No component available"
 msgstr ""
 
 msgid "CiCatalog|No release available"
@@ -13125,6 +13119,39 @@ msgid "ContributionEvent|Pushed to tag %{refLink} in %{resourceParentLink}."
 msgstr ""
 
 msgid "ContributionEvent|Removed due to membership expiration from %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened Epic %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened incident %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened issue %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened key result %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened merge request %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened milestone %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened objective %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened requirement %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened resource."
+msgstr ""
+
+msgid "ContributionEvent|Reopened task %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Reopened test case %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
 msgid "ContributionEvent|…and %{count} more commits. %{linkStart}Compare%{linkEnd}."
@@ -55903,9 +55930,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "mergedCommitsAdded| (commits were squashed)"
-msgstr ""
-
-msgid "metric_id must be unique across a project"
 msgstr ""
 
 msgid "milestone"

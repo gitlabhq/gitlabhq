@@ -248,6 +248,7 @@ RSpec.describe PlanLimits do
         ci_max_artifact_size_requirements_v2
         ci_max_artifact_size_coverage_fuzzing
         ci_max_artifact_size_api_fuzzing
+        ci_max_artifact_size_annotations
       ]
     end
 

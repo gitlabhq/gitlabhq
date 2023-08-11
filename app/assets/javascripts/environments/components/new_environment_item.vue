@@ -11,10 +11,8 @@ import {
 import { __, s__ } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
 import getEnvironmentClusterAgent from '../graphql/queries/environment_cluster_agent.query.graphql';
-import getEnvironmentClusterAgentWithNamespace from '../graphql/queries/environment_cluster_agent_with_namespace.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
 import StopComponent from './environment_stop.vue';
@@ -52,7 +50,6 @@ export default {
   directives: {
     GlTooltip,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['helpPagePath', 'projectPath'],
   props: {
     environment: {
@@ -165,9 +162,6 @@ export default {
     rolloutStatus() {
       return this.environment?.rolloutStatus;
     },
-    isKubernetesNamespaceAvailable() {
-      return this.glFeatures?.kubernetesNamespaceForEnvironment;
-    },
   },
   methods: {
     toggleEnvironmentCollapse() {
@@ -185,9 +179,7 @@ export default {
           return { environmentName: this.environment.name, projectFullPath: this.projectPath };
         },
         query() {
-          return this.isKubernetesNamespaceAvailable
-            ? getEnvironmentClusterAgentWithNamespace
-            : getEnvironmentClusterAgent;
+          return getEnvironmentClusterAgent;
         },
         update(data) {
           this.clusterAgent = data?.project?.environment?.clusterAgent;

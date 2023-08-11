@@ -1,5 +1,10 @@
 <script>
-import { EVENT_CREATED_I18N, TARGET_TYPE_DESIGN } from 'ee_else_ce/contribution_events/constants';
+import {
+  EVENT_CREATED_I18N,
+  TARGET_TYPE_DESIGN,
+  TYPE_FALLBACK,
+} from 'ee_else_ce/contribution_events/constants';
+import { getValueByEventTarget } from '../../utils';
 import ContributionEventBase from './contribution_event_base.vue';
 
 export default {
@@ -18,15 +23,12 @@ export default {
     resourceParent() {
       return this.event.resource_parent;
     },
-    issueType() {
-      return this.target.issue_type;
-    },
     message() {
       if (!this.target) {
-        return EVENT_CREATED_I18N[this.resourceParent.type] || EVENT_CREATED_I18N.fallback;
+        return EVENT_CREATED_I18N[this.resourceParent.type] || EVENT_CREATED_I18N[TYPE_FALLBACK];
       }
 
-      return EVENT_CREATED_I18N[this.issueType || this.target.type] || EVENT_CREATED_I18N.fallback;
+      return getValueByEventTarget(EVENT_CREATED_I18N, this.event);
     },
     iconName() {
       switch (this.target?.type) {

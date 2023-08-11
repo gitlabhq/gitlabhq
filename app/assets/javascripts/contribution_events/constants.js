@@ -34,6 +34,8 @@ export const WORK_ITEM_ISSUE_TYPE_ISSUE = 'issue';
 export const WORK_ITEM_ISSUE_TYPE_TASK = 'task';
 export const WORK_ITEM_ISSUE_TYPE_INCIDENT = 'incident';
 
+export const TYPE_FALLBACK = 'fallback';
+
 export const EVENT_CREATED_I18N = {
   [RESOURCE_PARENT_TYPE_PROJECT]: s__('ContributionEvent|Created project %{resourceParentLink}.'),
   [TARGET_TYPE_MILESTONE]: s__(
@@ -57,7 +59,7 @@ export const EVENT_CREATED_I18N = {
   [WORK_ITEM_ISSUE_TYPE_INCIDENT]: s__(
     'ContributionEvent|Opened incident %{targetLink} in %{resourceParentLink}.',
   ),
-  fallback: s__('ContributionEvent|Created resource.'),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Created resource.'),
 };
 
 export const EVENT_CLOSED_I18N = {
@@ -76,11 +78,35 @@ export const EVENT_CLOSED_I18N = {
   [WORK_ITEM_ISSUE_TYPE_INCIDENT]: s__(
     'ContributionEvent|Closed incident %{targetLink} in %{resourceParentLink}.',
   ),
-  fallback: s__('ContributionEvent|Closed resource.'),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Closed resource.'),
+};
+
+export const EVENT_REOPENED_I18N = {
+  [TARGET_TYPE_MILESTONE]: s__(
+    'ContributionEvent|Reopened milestone %{targetLink} in %{resourceParentLink}.',
+  ),
+  [TARGET_TYPE_MERGE_REQUEST]: s__(
+    'ContributionEvent|Reopened merge request %{targetLink} in %{resourceParentLink}.',
+  ),
+  [WORK_ITEM_ISSUE_TYPE_ISSUE]: s__(
+    'ContributionEvent|Reopened issue %{targetLink} in %{resourceParentLink}.',
+  ),
+  [WORK_ITEM_ISSUE_TYPE_TASK]: s__(
+    'ContributionEvent|Reopened task %{targetLink} in %{resourceParentLink}.',
+  ),
+  [WORK_ITEM_ISSUE_TYPE_INCIDENT]: s__(
+    'ContributionEvent|Reopened incident %{targetLink} in %{resourceParentLink}.',
+  ),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Reopened resource.'),
 };
 
 export const EVENT_CLOSED_ICONS = {
   [WORK_ITEM_ISSUE_TYPE_ISSUE]: 'issue-closed',
   [TARGET_TYPE_MERGE_REQUEST]: 'merge-request-close',
-  fallback: 'status_closed',
+  [TYPE_FALLBACK]: 'status_closed',
+};
+
+export const EVENT_REOPENED_ICONS = {
+  [TARGET_TYPE_MERGE_REQUEST]: 'merge-request-open',
+  [TYPE_FALLBACK]: 'status_open',
 };

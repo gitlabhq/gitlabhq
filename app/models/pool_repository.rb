@@ -12,7 +12,13 @@ class PoolRepository < ApplicationRecord
 
   has_many :member_projects, class_name: 'Project'
 
-  after_create :correct_disk_path
+  after_create :set_disk_path
+
+  scope :by_source_project, ->(project) { where(source_project: project) }
+  scope :by_source_project_and_shard_name, ->(project, shard_name) do
+    by_source_project(project)
+      .for_repository_storage(shard_name)
+  end
 
   state_machine :state, initial: :none do
     state :scheduled
@@ -107,8 +113,8 @@ class PoolRepository < ApplicationRecord
 
   private
 
-  def correct_disk_path
-    update!(disk_path: storage.disk_path)
+  def set_disk_path
+    update!(disk_path: storage.disk_path) if disk_path.blank?
   end
 
   def storage

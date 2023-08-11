@@ -3,6 +3,7 @@ query getEnvironmentClusterAgent($projectFullPath: ID!, $environmentName: String
     id
     environment(name: $environmentName) {
       id
+      kubernetesNamespace
       clusterAgent {
         id
         name

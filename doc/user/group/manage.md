@@ -233,11 +233,10 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 
 ## User cap for groups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7 [with a flag](../../administration/feature_flags.md) named `saas_user_caps`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/9263) in GitLab 16.3.
 
-FLAG:
-On self-managed GitLab, this feature is not available. On GitLab.com, this feature is available for some groups.
-This feature is not ready for production use.
+For more information about user caps for GitLab self-managed, see [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
 
 When the number of billable members reaches the user cap, new users can't be added to the group
 without being approved by the group owner.
@@ -300,6 +299,16 @@ To approve members that are pending because they've exceeded the user cap:
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
+
+### Known issues
+
+The user cap cannot be enabled if a group, subgroup, or project is shared externally. If a group, subgroup,
+or project is shared externally, it is shared outside of the namespace hierarchy, regardless of its level
+in the hierarchy. 
+
+To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only within the top-level namespace. This ensure that groups in the same top-leve namespace can be invited, and prevents the addition of new users (seats) when the group is shared.
+
+User cap doesn’t consider whether users are billable or not (e.g., Free Guest Users in Ultimate). In other words, if you set a cap of 500, user caps block new sign-ups after 500 users, regardless of whether those are all consuming paid seats or not.
 
 ## Group file templates **(PREMIUM)**
 

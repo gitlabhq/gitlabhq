@@ -44,7 +44,7 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
     end
 
     it 'controller/users/activity.json' do
-      get :activity, params: { username: user.username, limit: 50 }, format: :json
+      get :activity, params: { username: user.username, limit: 100 }, format: :json
 
       expect(response).to be_successful
     end

@@ -59,6 +59,19 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           described_class.initialize_process_metrics
         end
 
+        context 'when emit_sidekiq_histogram FF is disabled' do
+          before do
+            stub_feature_flags(emit_sidekiq_histogram_metrics: false)
+            allow(Gitlab::SidekiqConfig).to receive(:current_worker_queue_mappings).and_return('MergeWorker' => 'merge')
+          end
+
+          it 'does not initialize sidekiq_jobs_completion_seconds' do
+            expect(completion_seconds_metric).not_to receive(:get)
+
+            described_class.initialize_process_metrics
+          end
+        end
+
         shared_examples "not initializing sidekiq SLIs" do
           it 'does not initialize sidekiq SLIs' do
             expect(Gitlab::Metrics::SidekiqSlis)
@@ -439,6 +452,54 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
         TestWorker.process_job(job)
       end
+    end
+  end
+
+  context 'when emit_sidekiq_histogram_metrics FF is disabled' do
+    include_context 'server metrics with mocked prometheus'
+    include_context 'server metrics call' do
+      let(:stub_subject) { false }
+    end
+
+    subject(:middleware) { described_class.new }
+
+    let(:job) { {} }
+    let(:queue) { :test }
+    let(:worker_class) do
+      Class.new do
+        def self.name
+          "TestWorker"
+        end
+        include ApplicationWorker
+      end
+    end
+
+    let(:worker) { worker_class.new }
+    let(:labels) do
+      { queue: queue.to_s,
+        worker: worker.class.name,
+        boundary: "",
+        external_dependencies: "no",
+        feature_category: "",
+        urgency: "low" }
+    end
+
+    before do
+      stub_feature_flags(emit_sidekiq_histogram_metrics: false)
+    end
+
+    it 'does not emit histogram metrics' do
+      expect(completion_seconds_metric).not_to receive(:observe)
+      expect(queue_duration_seconds).not_to receive(:observe)
+      expect(failed_total_metric).not_to receive(:increment)
+
+      middleware.call(worker, job, queue) { nil }
+    end
+
+    it 'emits sidekiq_jobs_completion_seconds_sum metric' do
+      expect(completion_seconds_sum_metric).to receive(:increment).with(labels, monotonic_time_duration)
+
+      middleware.call(worker, job, queue) { nil }
     end
   end
 end

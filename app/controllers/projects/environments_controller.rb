@@ -12,10 +12,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     push_frontend_feature_flag(:environment_details_vue, @project)
   end
 
-  before_action only: [:index, :edit, :new] do
-    push_frontend_feature_flag(:kubernetes_namespace_for_environment)
-  end
-
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]

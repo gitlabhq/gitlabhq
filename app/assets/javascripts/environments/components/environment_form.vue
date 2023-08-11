@@ -17,7 +17,6 @@ import {
   ENVIRONMENT_EDIT_HELP_TEXT,
 } from 'ee_else_ce/environments/constants';
 import csrf from '~/lib/utils/csrf';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import getNamespacesQuery from '../graphql/queries/k8s_namespaces.query.graphql';
 import getUserAuthorizedAgents from '../graphql/queries/user_authorized_agents.query.graphql';
@@ -33,7 +32,6 @@ export default {
     GlSprintf,
     GlAlert,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     protectedEnvironmentSettingsPath: { default: '' },
     projectPath: { default: '' },
@@ -173,11 +171,8 @@ export default {
         item.text.toLowerCase().includes(lowerCasedSearchTerm),
       );
     },
-    isKasKubernetesNamespaceAvailable() {
-      return this.glFeatures?.kubernetesNamespaceForEnvironment;
-    },
     showNamespaceSelector() {
-      return Boolean(this.isKasKubernetesNamespaceAvailable && this.selectedAgentId);
+      return Boolean(this.selectedAgentId);
     },
     namespaceDropdownToggleText() {
       return this.selectedNamespace || this.$options.i18n.namespaceHelpText;
