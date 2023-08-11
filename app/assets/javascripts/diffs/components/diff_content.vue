@@ -3,7 +3,7 @@ import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
-import { mapParallel, mapParallelNoSast } from 'ee_else_ce/diffs/components/diff_row_utils';
+import { mapParallel } from 'ee_else_ce/diffs/components/diff_row_utils';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { diffViewerModes } from '~/ide/constants';
@@ -14,7 +14,6 @@ import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_d
 import NoteForm from '~/notes/components/note_form.vue';
 import eventHub from '~/notes/event_hub';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '../i18n';
 import { getDiffMode } from '../store/utils';
@@ -36,7 +35,7 @@ export default {
     UserAvatarLink,
     DiffFileDrafts,
   },
-  mixins: [diffLineNoteFormMixin, draftCommentsMixin, glFeatureFlagsMixin()],
+  mixins: [diffLineNoteFormMixin, draftCommentsMixin],
   props: {
     diffFile: {
       type: Object,
@@ -92,11 +91,7 @@ export default {
       return this.getUserData;
     },
     mappedLines() {
-      if (this.glFeatures.sastReportsInInlineDiff) {
-        return this.diffLines(this.diffFile).map(mapParallel(this)) || [];
-      }
-
-      return this.diffLines(this.diffFile).map(mapParallelNoSast(this)) || [];
+      return this.diffLines(this.diffFile).map(mapParallel(this)) || [];
     },
     imageDiscussions() {
       return this.diffFile.discussions.filter(

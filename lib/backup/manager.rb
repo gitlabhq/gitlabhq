@@ -195,7 +195,12 @@ module Backup
     def build_repositories_task
       max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence&.to_i
       max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence&.to_i
-      strategy = Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
+      strategy = Backup::GitalyBackup.new(progress,
+                                          incremental: incremental?,
+                                          max_parallelism: max_concurrency,
+                                          storage_parallelism: max_storage_concurrency,
+                                          server_side: backup_information[:repositories_server_side]
+                                         )
 
       Repositories.new(progress,
                        strategy: strategy,
@@ -286,7 +291,8 @@ module Backup
         skipped: ENV['SKIP'],
         repositories_storages: ENV['REPOSITORIES_STORAGES'],
         repositories_paths: ENV['REPOSITORIES_PATHS'],
-        skip_repositories_paths: ENV['SKIP_REPOSITORIES_PATHS']
+        skip_repositories_paths: ENV['SKIP_REPOSITORIES_PATHS'],
+        repositories_server_side: Gitlab::Utils.to_boolean(ENV['REPOSITORIES_SERVER_SIDE'], default: false)
       }
     end
 

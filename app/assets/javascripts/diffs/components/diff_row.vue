@@ -342,7 +342,6 @@ export default {
             v-if="$options.showCodequalityLeft(props) || $options.showSecurityLeft(props)"
             :inline-findings-expanded="props.inlineFindingsExpanded"
             :codequality="props.line.left.codequality"
-            :sast="props.line.left.sast"
             :file-path="props.filePath"
             @showInlineFindings="
               listeners.toggleCodeQualityFindings(
@@ -483,7 +482,6 @@ export default {
             :is="$options.InlineFindingsGutterIcon"
             v-if="$options.showCodequalityRight(props) || $options.showSecurityRight(props)"
             :codequality="props.line.right.codequality"
-            :sast="props.line.right.sast"
             :file-path="props.filePath"
             data-testid="inlineFindingsIcon"
             @showInlineFindings="

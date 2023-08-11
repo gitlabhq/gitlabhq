@@ -48,6 +48,16 @@
     = webpack_bundle_tag 'legacy_sentry'
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
+  - if vite_enabled
+    %meta{ name: 'controller-path', content: controller_full_path }
+    - if Rails.env.development?
+      = vite_client_tag
+    = vite_javascript_tag "main"
+    - if Gitlab.ee?
+      = vite_javascript_tag "main_ee"
+    - if Gitlab.jh?
+      = vite_javascript_tag "main_jh"
+
   = yield :page_specific_javascripts
 
   = webpack_bundle_tag 'super_sidebar' if show_super_sidebar?

@@ -18,8 +18,6 @@ const fs = require('fs');
 const path = require('path');
 
 const BABEL_VERSION = require('@babel/core/package.json').version;
-const SOURCEGRAPH_VERSION = require('@sourcegraph/code-host-integration/package.json').version;
-const GITLAB_WEB_IDE_VERSION = require('@gitlab/web-ide/package.json').version;
 
 const BABEL_LOADER_VERSION = require('babel-loader/package.json').version;
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -37,14 +35,23 @@ const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const WEBPACK_VERSION = require('webpack/package.json').version;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
+const {
+  IS_EE,
+  IS_JH,
+  ROOT_PATH,
+  WEBPACK_OUTPUT_PATH,
+  WEBPACK_PUBLIC_PATH,
+  SOURCEGRAPH_PUBLIC_PATH,
+  SOURCEGRAPH_OUTPUT_PATH,
+  GITLAB_WEB_IDE_OUTPUT_PATH,
+  GITLAB_WEB_IDE_PUBLIC_PATH,
+} = require('./webpack.constants');
+
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
-const IS_EE = require('./helpers/is_ee_env');
-const IS_JH = require('./helpers/is_jh_env');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
 
-const ROOT_PATH = path.resolve(__dirname, '..');
 const SUPPORTED_BROWSERS = fs.readFileSync(path.join(ROOT_PATH, '.browserslistrc'), 'utf-8');
 const SUPPORTED_BROWSERS_HASH = crypto
   .createHash('sha256')
@@ -82,18 +89,8 @@ if (WEBPACK_REPORT) {
   NO_HASHED_CHUNKS = true;
 }
 
-const WEBPACK_OUTPUT_PATH = path.join(ROOT_PATH, 'public/assets/webpack');
-const WEBPACK_PUBLIC_PATH = '/assets/webpack/';
 const SOURCEGRAPH_PACKAGE = '@sourcegraph/code-host-integration';
 const GITLAB_WEB_IDE_PACKAGE = '@gitlab/web-ide';
-
-const SOURCEGRAPH_PATH = path.join('sourcegraph', SOURCEGRAPH_VERSION, '/');
-const SOURCEGRAPH_OUTPUT_PATH = path.join(WEBPACK_OUTPUT_PATH, SOURCEGRAPH_PATH);
-const SOURCEGRAPH_PUBLIC_PATH = path.join(WEBPACK_PUBLIC_PATH, SOURCEGRAPH_PATH);
-
-const GITLAB_WEB_IDE_PATH = path.join('gitlab-vscode', GITLAB_WEB_IDE_VERSION, '/');
-const GITLAB_WEB_IDE_OUTPUT_PATH = path.join(WEBPACK_OUTPUT_PATH, GITLAB_WEB_IDE_PATH);
-const GITLAB_WEB_IDE_PUBLIC_PATH = path.join(WEBPACK_PUBLIC_PATH, GITLAB_WEB_IDE_PATH);
 
 const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 

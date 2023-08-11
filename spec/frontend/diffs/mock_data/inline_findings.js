@@ -95,6 +95,7 @@ export const threeCodeQualityFindings = {
   filePath: 'index.js',
   codequality: multipleFindingsArrCodeQualityScale.slice(0, 3),
 };
+export const threeCodeQualityFindingsRaw = [multipleFindingsArrCodeQualityScale.slice(0, 3)];
 
 export const singularCodeQualityFinding = {
   filePath: 'index.js',

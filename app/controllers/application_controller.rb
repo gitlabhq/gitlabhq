@@ -115,6 +115,24 @@ class ApplicationController < ActionController::Base
 
   content_security_policy do |p|
     next if p.directives.blank?
+
+    if Rails.env.development? && Feature.enabled?(:vite)
+      vite_host = ViteRuby.instance.config.host
+      vite_port = ViteRuby.instance.config.port
+      vite_origin = "#{vite_host}:#{vite_port}"
+      http_origin = "http://#{vite_origin}"
+      ws_origin = "ws://#{vite_origin}"
+      wss_origin = "wss://#{vite_origin}"
+      gitlab_ws_origin = Gitlab::Utils.append_path(Gitlab.config.gitlab.url, 'vite-dev/')
+      http_path = Gitlab::Utils.append_path(http_origin, 'vite-dev/')
+
+      connect_sources = p.directives['connect-src']
+      p.connect_src(*(Array.wrap(connect_sources) | [ws_origin, wss_origin, http_path]))
+
+      worker_sources = p.directives['worker-src']
+      p.worker_src(*(Array.wrap(worker_sources) | [gitlab_ws_origin, http_path]))
+    end
+
     next unless Gitlab::CurrentSettings.snowplow_enabled? && !Gitlab::CurrentSettings.snowplow_collector_hostname.blank?
 
     default_connect_src = p.directives['connect-src'] || p.directives['default-src']

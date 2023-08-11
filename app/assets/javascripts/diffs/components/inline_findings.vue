@@ -14,10 +14,6 @@ export default {
       type: Array,
       required: true,
     },
-    sast: {
-      type: Array,
-      required: true,
-    },
   },
 };
 </script>
@@ -31,12 +27,6 @@ export default {
       v-if="codeQuality.length"
       :title="$options.i18n.newCodeQualityFindings"
       :findings="codeQuality"
-    />
-
-    <diff-inline-findings
-      v-if="sast.length"
-      :title="$options.i18n.newSastFindings"
-      :findings="sast"
     />
 
     <gl-button

@@ -74,7 +74,6 @@ RSpec.shared_context 'GroupPolicy context' do
       read_statistics
       update_default_branch_protection
       read_group_runners
-      admin_group_runners
       register_group_runners
       read_billing
       edit_billing

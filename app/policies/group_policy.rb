@@ -231,7 +231,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
     enable :read_usage_quotas
     enable :read_group_runners
-    enable :admin_group_runners
     enable :register_group_runners
     enable :create_runner
 

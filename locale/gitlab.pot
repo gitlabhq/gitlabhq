@@ -1543,11 +1543,6 @@ msgid_plural "%d Issues"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "1 Security finding"
-msgid_plural "%d Security findings"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "1 closed issue"
 msgid_plural "%{issues} closed issues"
 msgstr[0] ""
@@ -52064,6 +52059,9 @@ msgstr ""
 msgid "VulnerabilityStatusTypes|Resolved"
 msgstr ""
 
+msgid "Vulnerability|%{file} was not found in commit %{ref}"
+msgstr ""
+
 msgid "Vulnerability|%{scannerName} (version %{scannerVersion})"
 msgstr ""
 
@@ -52263,6 +52261,9 @@ msgid "Vulnerability|Severity:"
 msgstr ""
 
 msgid "Vulnerability|Show prompt"
+msgstr ""
+
+msgid "Vulnerability|Something went wrong while trying to get the source file."
 msgstr ""
 
 msgid "Vulnerability|Stacktrace snippet:"

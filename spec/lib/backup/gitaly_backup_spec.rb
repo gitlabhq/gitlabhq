@@ -7,6 +7,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
   let(:storage_parallelism) { nil }
   let(:destination) { File.join(Gitlab.config.backup.path, 'repositories') }
   let(:backup_id) { '20220101' }
+  let(:server_side) { false }
 
   let(:progress) do
     Tempfile.new('progress').tap do |progress|
@@ -26,7 +27,14 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
     progress.close
   end
 
-  subject { described_class.new(progress, max_parallelism: max_parallelism, storage_parallelism: storage_parallelism) }
+  subject do
+    described_class.new(
+      progress,
+      max_parallelism: max_parallelism,
+      storage_parallelism: storage_parallelism,
+      server_side: server_side
+    )
+  end
 
   context 'unknown' do
     it 'fails to start unknown' do
@@ -86,6 +94,17 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
 
         it 'passes parallel option through' do
           expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-parallel-storage', '3', '-id', backup_id).and_call_original
+
+          subject.start(:create, destination, backup_id: backup_id)
+          subject.finish!
+        end
+      end
+
+      context 'server-side option set' do
+        let(:server_side) { true }
+
+        it 'passes option through' do
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-server-side', '-id', backup_id).and_call_original
 
           subject.start(:create, destination, backup_id: backup_id)
           subject.finish!
@@ -205,6 +224,35 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel-storage', '3').and_call_original
 
         subject.start(:restore, destination, backup_id: backup_id)
+        subject.finish!
+      end
+    end
+
+    context 'server-side option set' do
+      let(:server_side) { true }
+
+      it 'passes option through' do
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-server-side', '-id', backup_id).and_call_original
+
+        subject.start(:restore, destination, backup_id: backup_id)
+        subject.finish!
+      end
+
+      context 'missing backup_id' do
+        it 'wont set the option' do
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-server-side').and_call_original
+
+          subject.start(:restore, destination)
+          subject.finish!
+        end
+      end
+    end
+
+    context 'missing backup_id' do
+      it 'wont set the option' do
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer').and_call_original
+
+        subject.start(:restore, destination)
         subject.finish!
       end
     end

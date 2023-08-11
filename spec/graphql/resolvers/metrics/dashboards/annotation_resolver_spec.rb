@@ -7,13 +7,12 @@ RSpec.describe Resolvers::Metrics::Dashboards::AnnotationResolver, feature_categ
 
   describe '#resolve' do
     context 'user with developer access' do
-      subject(:resolve_annotations) { resolve(described_class, obj: dashboard, args: args, ctx: { current_user: current_user }) }
+      subject(:resolve_annotations) { resolve(described_class, obj: nil, args: args, ctx: { current_user: current_user }) }
 
       let_it_be(:current_user) { create(:user) }
       let_it_be(:environment) { create(:environment) }
       let_it_be(:path) { 'config/prometheus/common_metrics.yml' }
 
-      let(:dashboard) { PerformanceMonitoring::PrometheusDashboard.new(path: path, environment: environment) }
       let(:args) do
         {
           from: 10.minutes.ago,

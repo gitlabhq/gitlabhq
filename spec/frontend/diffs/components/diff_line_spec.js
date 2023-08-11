@@ -16,13 +16,6 @@ const left = {
           severity: EXAMPLE_SEVERITY,
         },
       ],
-      sast: [
-        {
-          line: EXAMPLE_LINE_NUMBER,
-          description: EXAMPLE_DESCRIPTION,
-          severity: EXAMPLE_SEVERITY,
-        },
-      ],
     },
   },
 };
@@ -31,13 +24,6 @@ const right = {
   line: {
     right: {
       codequality: [
-        {
-          line: EXAMPLE_LINE_NUMBER,
-          description: EXAMPLE_DESCRIPTION,
-          severity: EXAMPLE_SEVERITY,
-        },
-      ],
-      sast: [
         {
           line: EXAMPLE_LINE_NUMBER,
           description: EXAMPLE_DESCRIPTION,
@@ -68,13 +54,6 @@ describe('DiffLine', () => {
     it('should set correct props for InlineFindings', () => {
       const wrapper = createWrapper(element);
       expect(wrapper.findComponent(InlineFindings).props('codeQuality')).toEqual([
-        {
-          line: EXAMPLE_LINE_NUMBER,
-          description: EXAMPLE_DESCRIPTION,
-          severity: EXAMPLE_SEVERITY,
-        },
-      ]);
-      expect(wrapper.findComponent(InlineFindings).props('sast')).toEqual([
         {
           line: EXAMPLE_LINE_NUMBER,
           description: EXAMPLE_DESCRIPTION,

@@ -11,6 +11,7 @@
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
+    VITE_RUBY_SKIP_ASSETS_PRECOMPILE_EXTENSION: "true"
   stage: prepare
   needs: []
   script:
