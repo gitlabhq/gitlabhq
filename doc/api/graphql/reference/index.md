@@ -16542,7 +16542,7 @@ GPG signature for a signed commit.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
-| <a id="groupactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | Actual storage size limit for the namespace in bytes. This limit is agnostic of enforcement type. |
+| <a id="groupactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
@@ -16591,7 +16591,7 @@ GPG signature for a signed commit.
 | <a id="groupsharewithgrouplock"></a>`shareWithGroupLock` | [`Boolean`](#boolean) | Indicates if sharing a project with another group within this group is prevented. |
 | <a id="groupsharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
-| <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Storage limit included in the root namespace plan in bytes. This limit only applies to namespaces under Namespace limit enforcement. |
+| <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
 | <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
 | <a id="grouptimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the namespace. |
@@ -19857,7 +19857,7 @@ Contains statistics about a milestone.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
-| <a id="namespaceactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | Actual storage size limit for the namespace in bytes. This limit is agnostic of enforcement type. |
+| <a id="namespaceactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="namespacecontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespacecrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
@@ -19875,7 +19875,7 @@ Contains statistics about a milestone.
 | <a id="namespacerequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
 | <a id="namespacerootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
 | <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
-| <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | Storage limit included in the root namespace plan in bytes. This limit only applies to namespaces under Namespace limit enforcement. |
+| <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
 | <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
@@ -25358,6 +25358,9 @@ Represents the linked items widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemwidgetlinkeditemsblocked"></a>`blocked` | [`Boolean`](#boolean) | Indicates the work item is blocked. Returns `null`if `linked_work_items` feature flag is disabled. |
+| <a id="workitemwidgetlinkeditemsblockedbycount"></a>`blockedByCount` | [`Int`](#int) | Count of items blocking the work item. Returns `null`if `linked_work_items` feature flag is disabled. |
+| <a id="workitemwidgetlinkeditemsblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of items the work item is blocking. Returns `null`if `linked_work_items` feature flag is disabled. |
 | <a id="workitemwidgetlinkeditemslinkeditems"></a>`linkedItems` **{warning-solid}** | [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Linked items for the work item. Returns `null`if `linked_work_items` feature flag is disabled. |
 | <a id="workitemwidgetlinkeditemstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 

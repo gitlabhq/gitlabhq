@@ -12269,7 +12269,7 @@ CREATE TABLE audit_events_google_cloud_logging_configurations (
     log_id_name text DEFAULT 'audit_events'::text,
     encrypted_private_key bytea NOT NULL,
     encrypted_private_key_iv bytea NOT NULL,
-    name text,
+    name text NOT NULL,
     CONSTRAINT check_0ef835c61e CHECK ((char_length(client_email) <= 254)),
     CONSTRAINT check_55783c7c19 CHECK ((char_length(google_project_id_name) <= 30)),
     CONSTRAINT check_898a76b005 CHECK ((char_length(log_id_name) <= 511)),
@@ -12340,6 +12340,7 @@ CREATE TABLE audit_events_streaming_headers (
     external_audit_event_destination_id bigint NOT NULL,
     key text NOT NULL,
     value text NOT NULL,
+    active boolean DEFAULT true NOT NULL,
     CONSTRAINT check_53c3152034 CHECK ((char_length(key) <= 255)),
     CONSTRAINT check_ac213cca22 CHECK ((char_length(value) <= 255))
 );
@@ -17271,6 +17272,7 @@ CREATE TABLE instance_audit_events_streaming_headers (
     instance_external_audit_event_destination_id bigint NOT NULL,
     key text NOT NULL,
     value text NOT NULL,
+    active boolean DEFAULT true NOT NULL,
     CONSTRAINT check_d52adbbabb CHECK ((char_length(value) <= 255)),
     CONSTRAINT check_e92010d531 CHECK ((char_length(key) <= 255))
 );

@@ -9,8 +9,11 @@ import {
   I18N_GENERIC_ERROR,
   I18N_FEEDBACK_PARAGRAPH,
   I18N_TOAST_SAVED,
+  I18N_TOAST_DELETED,
 } from '../custom_email_constants';
+import CustomEmailConfirmModal from './custom_email_confirm_modal.vue';
 import CustomEmailForm from './custom_email_form.vue';
+import CustomEmailStateStarted from './custom_email_state_started.vue';
 
 export default {
   components: {
@@ -20,13 +23,16 @@ export default {
     GlSprintf,
     GlLink,
     GlCard,
+    CustomEmailConfirmModal,
     CustomEmailForm,
+    CustomEmailStateStarted,
   },
   FEEDBACK_ISSUE_URL,
   I18N_LOADING_LABEL,
   I18N_CARD_TITLE,
   I18N_FEEDBACK_PARAGRAPH,
   I18N_TOAST_SAVED,
+  I18N_TOAST_DELETED,
   props: {
     incomingEmail: {
       type: String,
@@ -43,6 +49,7 @@ export default {
     return {
       loading: true,
       submitting: false,
+      confirmModalVisible: false,
       customEmail: null,
       enabled: false,
       verificationState: null,
@@ -73,7 +80,17 @@ export default {
         .catch(this.handleRequestError)
         .finally(() => {
           this.loading = false;
+          this.enqueueReFetchVerification();
         });
+    },
+    enqueueReFetchVerification() {
+      setTimeout(this.reFetchVerification, 8000);
+    },
+    reFetchVerification() {
+      if (this.verificationState !== 'started') {
+        return;
+      }
+      this.getCustomEmailDetails();
     },
     handleRequestError() {
       this.alertMessage = I18N_GENERIC_ERROR;
@@ -95,6 +112,31 @@ export default {
         .then(({ data }) => {
           this.updateData(data);
           this.$toast.show(this.$options.I18N_TOAST_SAVED);
+          this.enqueueReFetchVerification();
+        })
+        .catch(this.handleRequestError)
+        .finally(() => {
+          this.submitting = false;
+        });
+    },
+    onResetCustomEmail() {
+      this.confirmModalVisible = true;
+    },
+    onConfirmModalCanceled() {
+      this.confirmModalVisible = false;
+    },
+    onConfirmModalProceed() {
+      this.submitting = true;
+      this.confirmModalVisible = false;
+
+      this.deleteCustomEmail();
+    },
+    deleteCustomEmail() {
+      axios
+        .delete(this.customEmailEndpoint)
+        .then(({ data }) => {
+          this.updateData(data);
+          this.$toast.show(I18N_TOAST_DELETED);
         })
         .catch(this.handleRequestError)
         .finally(() => {
@@ -130,6 +172,13 @@ export default {
             </div>
           </template>
 
+          <custom-email-confirm-modal
+            :visible="confirmModalVisible"
+            :custom-email="customEmail"
+            @remove="onConfirmModalProceed"
+            @cancel="onConfirmModalCanceled"
+          />
+
           <gl-alert
             v-if="alertMessage"
             variant="warning"
@@ -146,6 +195,14 @@ export default {
             :incoming-email="incomingEmail"
             :submitting="submitting"
             @submit="onSaveCustomEmail"
+          />
+
+          <custom-email-state-started
+            v-if="verificationState === 'started'"
+            :custom-email="customEmail"
+            :smtp-address="smtpAddress"
+            :submitting="submitting"
+            @reset="onResetCustomEmail"
           />
         </template>
 

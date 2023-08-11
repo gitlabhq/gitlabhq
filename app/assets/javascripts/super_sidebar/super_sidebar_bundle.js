@@ -40,6 +40,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       lastName,
       companyName,
       glmContent,
+      createHandRaiseLeadPath,
     } = convertObjectPropsToCamelCase(sidebarData.trial_status_popover_data_attrs);
 
     return {
@@ -53,6 +54,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       plansHref,
       daysRemaining,
       targetId,
+      createHandRaiseLeadPath,
       trialEndDate: new Date(trialEndDate),
       user: { namespaceId, userName, firstName, lastName, companyName, glmContent },
     };

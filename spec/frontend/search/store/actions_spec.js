@@ -181,25 +181,36 @@ describe('Global Search Store Actions', () => {
   });
 
   describe('applyQuery', () => {
-    it('calls visitUrl and setParams with the state.query', () => {
-      return testAction(actions.applyQuery, null, state, [], [], () => {
-        expect(urlUtils.setUrlParams).toHaveBeenCalledWith({ ...state.query, page: null });
-        expect(urlUtils.visitUrl).toHaveBeenCalled();
-      });
+    it('calls visitUrl and setParams with the state.query', async () => {
+      await testAction(actions.applyQuery, null, state, [], []);
+      expect(urlUtils.setUrlParams).toHaveBeenCalledWith(
+        { ...state.query, page: null },
+        'http://test.host/',
+        false,
+        true,
+      );
+      expect(urlUtils.visitUrl).toHaveBeenCalled();
     });
   });
 
   describe('resetQuery', () => {
-    it('calls visitUrl and setParams with empty values', () => {
-      return testAction(actions.resetQuery, null, state, [], [], () => {
-        expect(urlUtils.setUrlParams).toHaveBeenCalledWith({
+    it('calls visitUrl and setParams with empty values', async () => {
+      await testAction(actions.resetQuery, null, state, [], []);
+      const resetParams = SIDEBAR_PARAMS.reduce((acc, param) => {
+        acc[param] = null;
+        return acc;
+      }, {});
+
+      expect(urlUtils.setUrlParams).toHaveBeenCalledWith(
+        {
           ...state.query,
           page: null,
-          state: null,
-          confidential: null,
-        });
-        expect(urlUtils.visitUrl).toHaveBeenCalled();
-      });
+          ...resetParams,
+        },
+        undefined,
+        true,
+      );
+      expect(urlUtils.visitUrl).toHaveBeenCalled();
     });
   });
 

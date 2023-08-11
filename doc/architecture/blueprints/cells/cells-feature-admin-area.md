@@ -47,6 +47,33 @@ options:
    designed to be totally independent, and it does also enforce stricter
    requirements on compatibility between Cells.
 
+The following overview describes at what level each feature contained in the current Admin Area will be managed:
+
+| Feature | Cluster | Cell | Organization |
+| --- | --- | --- | --- |
+| Abuse reports | | | |
+| Analytics | | | |
+| Applications | | | |
+| Deploy keys | | | |
+| Labels | | | |
+| Messages | ✓ | | |
+| Monitoring | | ✓ | |
+| Subscription | | | |
+| System hooks | | | |
+| Overview | | | |
+| Settings - General | ✓ | | |
+| Settings - Integrations | ✓ | | |
+| Settings - Repository | ✓ | | |
+| Settings - CI/CD (1) | ✓ | ✓ | |
+| Settings - Reporting | ✓ | | |
+| Settings - Metrics | ✓ | | |
+| Settings - Service usage data | | ✓ | |
+| Settings - Network | ✓ | | |
+| Settings - Appearance | ✓ | | |
+| Settings - Preferences | ✓ | | |
+
+(1) Depending on the specific setting, some will be managed at the cluster-level, and some at the Cell-level.
+
 ## 4. Evaluation
 
 ## 4.1. Pros

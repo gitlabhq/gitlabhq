@@ -71,6 +71,11 @@ class WorkItem < Issue
 
       includes(:parent_link).order(keyset_order)
     end
+
+    override :related_link_class
+    def related_link_class
+      WorkItems::RelatedWorkItemLink
+    end
   end
 
   def noteable_target_type_name

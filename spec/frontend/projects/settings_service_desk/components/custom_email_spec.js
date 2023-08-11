@@ -8,10 +8,14 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import CustomEmail from '~/projects/settings_service_desk/components/custom_email.vue';
 import CustomEmailForm from '~/projects/settings_service_desk/components/custom_email_form.vue';
+import CustomEmailConfirmModal from '~/projects/settings_service_desk/components/custom_email_confirm_modal.vue';
+import CustomEmailStateStarted from '~/projects/settings_service_desk/components/custom_email_state_started.vue';
+
 import {
   FEEDBACK_ISSUE_URL,
   I18N_GENERIC_ERROR,
   I18N_TOAST_SAVED,
+  I18N_TOAST_DELETED,
 } from '~/projects/settings_service_desk/custom_email_constants';
 import {
   MOCK_CUSTOM_EMAIL_EMPTY,
@@ -46,6 +50,9 @@ describe('CustomEmail', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findFeedbackLink = () => wrapper.findByTestId('feedback-link');
+  const findCustomEmailForm = () => wrapper.findComponent(CustomEmailForm);
+  const findCustomEmailStateStarted = () => wrapper.findComponent(CustomEmailStateStarted);
+  const findCustomEmailConfirmModal = () => wrapper.findComponent(CustomEmailConfirmModal);
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
@@ -53,6 +60,7 @@ describe('CustomEmail', () => {
 
   afterEach(() => {
     axiosMock.restore();
+    jest.clearAllTimers();
     showToast.mockReset();
   });
 
@@ -66,7 +74,7 @@ describe('CustomEmail', () => {
     beforeEach(() => {
       axiosMock
         .onGet(defaultProps.customEmailEndpoint)
-        .replyOnce(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_EMPTY);
+        .reply(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_EMPTY);
 
       createWrapper();
     });
@@ -82,7 +90,7 @@ describe('CustomEmail', () => {
     it('displays form', async () => {
       await waitForPromises();
 
-      expect(wrapper.findComponent(CustomEmailForm).exists()).toBe(true);
+      expect(findCustomEmailForm().exists()).toBe(true);
     });
 
     describe('when CustomEmailForm emits submit event with valid params', () => {
@@ -96,21 +104,68 @@ describe('CustomEmail', () => {
         createWrapper();
         await nextTick();
 
-        const spy = jest.spyOn(axios, 'post');
+        findCustomEmailForm().vm.$emit('submit', MOCK_CUSTOM_EMAIL_FORM_SUBMIT);
 
-        wrapper.findComponent(CustomEmailForm).vm.$emit('submit', MOCK_CUSTOM_EMAIL_FORM_SUBMIT);
-
-        expect(wrapper.findComponent(CustomEmailForm).emitted('submit')).toEqual([
-          [MOCK_CUSTOM_EMAIL_FORM_SUBMIT],
-        ]);
+        expect(findCustomEmailForm().emitted('submit')).toEqual([[MOCK_CUSTOM_EMAIL_FORM_SUBMIT]]);
         await waitForPromises();
 
-        expect(spy).toHaveBeenCalledWith(
-          defaultProps.customEmailEndpoint,
-          MOCK_CUSTOM_EMAIL_FORM_SUBMIT,
-        );
         expect(showToast).toHaveBeenCalledWith(I18N_TOAST_SAVED);
+
+        expect(findCustomEmailStateStarted().exists()).toBe(true);
       });
+    });
+  });
+
+  describe('when initial resource loading return started verification', () => {
+    beforeEach(async () => {
+      axiosMock
+        .onGet(defaultProps.customEmailEndpoint)
+        .reply(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_STARTED);
+
+      createWrapper();
+      await waitForPromises();
+    });
+
+    it('displays CustomEmailStateStarted component', () => {
+      expect(findCustomEmailStateStarted().exists()).toBe(true);
+    });
+
+    it('schedules and executes polling', async () => {
+      const spy = jest.spyOn(axios, 'get');
+
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      // first after initial resource fetching, second after first polling
+      expect(setTimeout).toHaveBeenCalledTimes(2);
+      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 8000);
+    });
+
+    describe('when CustomEmailStateFailed triggers reset event', () => {
+      beforeEach(() => {
+        findCustomEmailStateStarted().vm.$emit('reset');
+      });
+
+      it('shows confirm modal', () => {
+        expect(findCustomEmailConfirmModal().props('visible')).toBe(true);
+      });
+    });
+
+    it('deletes custom email on remove event', async () => {
+      axiosMock
+        .onDelete(defaultProps.customEmailEndpoint)
+        .reply(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_EMPTY);
+
+      const spy = jest.spyOn(axios, 'delete');
+
+      findCustomEmailConfirmModal().vm.$emit('remove');
+      await waitForPromises();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(showToast).toHaveBeenCalledWith(I18N_TOAST_DELETED);
+
+      expect(findCustomEmailForm().exists()).toBe(true);
     });
   });
 

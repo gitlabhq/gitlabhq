@@ -7,6 +7,6 @@ RSpec.describe Types::WorkItems::Widgets::LinkedItemsType, feature_category: :po
     expected_fields = %i[type linkedItems]
 
     expect(described_class.graphql_name).to eq('WorkItemWidgetLinkedItems')
-    expect(described_class).to have_graphql_fields(*expected_fields)
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 end

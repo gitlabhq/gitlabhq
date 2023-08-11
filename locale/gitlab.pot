@@ -9892,6 +9892,9 @@ msgstr ""
 msgid "Choose a type..."
 msgstr ""
 
+msgid "Choose an option"
+msgstr ""
+
 msgid "Choose file…"
 msgstr ""
 
@@ -38048,10 +38051,13 @@ msgstr ""
 msgid "ProtectedEnvironments|Edit"
 msgstr ""
 
-msgid "ProtectedEnvironments|List of protected environments (%{protectedEnvironmentsCount})"
+msgid "ProtectedEnvironments|Number of approvals must be between 1 and 5"
 msgstr ""
 
-msgid "ProtectedEnvironments|Number of approvals must be between 1 and 5"
+msgid "ProtectedEnvironments|Protect an environment"
+msgstr ""
+
+msgid "ProtectedEnvironments|Protected environments"
 msgstr ""
 
 msgid "ProtectedEnvironments|Remove approval rule"
@@ -38079,6 +38085,9 @@ msgid "ProtectedEnvironments|Users"
 msgstr ""
 
 msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
+msgstr ""
+
+msgid "ProtectedEnvironment|Add new protected environment"
 msgstr ""
 
 msgid "ProtectedEnvironment|All environments specified with the deployment tiers below are protected by a parent group. %{link_start}Learn More%{link_end}."
@@ -41366,10 +41375,16 @@ msgstr ""
 msgid "ScanResultPolicy|Age is:"
 msgstr ""
 
-msgid "ScanResultPolicy|Block users from unprotecting branches"
+msgid "ScanResultPolicy|Attribute is:"
 msgstr ""
 
-msgid "ScanResultPolicy|Choose an option"
+msgid "ScanResultPolicy|Attribute:"
+msgstr ""
+
+msgid "ScanResultPolicy|Attributes are automatically applied by the scanners"
+msgstr ""
+
+msgid "ScanResultPolicy|Block users from unprotecting branches"
 msgstr ""
 
 msgid "ScanResultPolicy|Choose criteria type"
@@ -41384,6 +41399,21 @@ msgstr ""
 msgid "ScanResultPolicy|Except"
 msgstr ""
 
+msgid "ScanResultPolicy|False positive"
+msgstr ""
+
+msgid "ScanResultPolicy|Fix available"
+msgstr ""
+
+msgid "ScanResultPolicy|Fix available is only applicable to container and dependency scanning"
+msgstr ""
+
+msgid "ScanResultPolicy|Is"
+msgstr ""
+
+msgid "ScanResultPolicy|Is not"
+msgstr ""
+
 msgid "ScanResultPolicy|License is:"
 msgstr ""
 
@@ -41394,6 +41424,9 @@ msgid "ScanResultPolicy|Matching"
 msgstr ""
 
 msgid "ScanResultPolicy|New age"
+msgstr ""
+
+msgid "ScanResultPolicy|New attribute"
 msgstr ""
 
 msgid "ScanResultPolicy|New severity"
@@ -41409,6 +41442,9 @@ msgid "ScanResultPolicy|Only 1 age criteria is allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Only 1 severity is allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Only 2 attribute criteria are allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Only 2 status criteria are allowed"
@@ -43288,6 +43324,9 @@ msgstr ""
 msgid "ServiceAccount|User does not have permission to create a service account."
 msgstr ""
 
+msgid "ServiceDesk|A verification email has been sent to a sub-address of your custom email address. This can take up to 30 minutes. The screen refreshes automatically."
+msgstr ""
+
 msgid "ServiceDesk|Cannot create custom email"
 msgstr ""
 
@@ -43339,6 +43378,9 @@ msgstr ""
 msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
 msgstr ""
 
+msgid "ServiceDesk|Keep custom email"
+msgstr ""
+
 msgid "ServiceDesk|Minimum 8 characters long."
 msgstr ""
 
@@ -43346,6 +43388,15 @@ msgid "ServiceDesk|Parameters missing"
 msgstr ""
 
 msgid "ServiceDesk|Please share your feedback on this feature in the %{linkStart}feedback issue%{linkEnd}"
+msgstr ""
+
+msgid "ServiceDesk|Reset custom email"
+msgstr ""
+
+msgid "ServiceDesk|Reset custom email address and delete credentials"
+msgstr ""
+
+msgid "ServiceDesk|Reset custom email address."
 msgstr ""
 
 msgid "ServiceDesk|SMTP address is required and must be resolvable."
@@ -43396,10 +43447,22 @@ msgstr ""
 msgid "ServiceDesk|To enable Service Desk on this instance, an instance administrator must first set up incoming email."
 msgstr ""
 
+msgid "ServiceDesk|To use a custom email address for this Service Desk, you'll need to configure and verify an email address again."
+msgstr ""
+
 msgid "ServiceDesk|Use Service Desk to connect with your users and offer customer support through email right inside GitLab"
 msgstr ""
 
 msgid "ServiceDesk|User cannot manage project."
+msgstr ""
+
+msgid "ServiceDesk|Verification started"
+msgstr ""
+
+msgid "ServiceDesk|Verify %{customEmail} with SMTP host %{smtpAddress}:"
+msgstr ""
+
+msgid "ServiceDesk|You are about to %{strongStart}disable the custom email address%{strongEnd} %{customEmail} %{strongStart}and delete its credentials%{strongEnd}."
 msgstr ""
 
 msgid "ServiceDesk|Your users can send emails to this address:"

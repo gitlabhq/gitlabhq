@@ -12,9 +12,15 @@ module WorkItems
     class << self
       extend ::Gitlab::Utils::Override
 
+      # Used as issuable table name for calculating blocked and blocking count in IssuableLink
       override :issuable_type
       def issuable_type
-        :work_item
+        :issue
+      end
+
+      override :issuable_name
+      def issuable_name
+        'work item'
       end
     end
   end

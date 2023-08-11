@@ -83,30 +83,6 @@ RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :team_planning 
 
         expect(finder.execute).to be_empty
       end
-
-      context 'when include_descendant_shares_in_user_autocomplete is disabled' do
-        before do
-          stub_feature_flags(include_descendant_shares_in_user_autocomplete: false)
-        end
-
-        it 'does not return members of groups invited to a descendant group' do
-          create(:group_group_link, shared_group: subgroup, shared_with_group: invited_group)
-
-          expect(finder.execute).to be_empty
-        end
-
-        it 'does not return members of groups invited to a child project' do
-          create(:project_group_link, project: group_project, group: invited_group)
-
-          expect(finder.execute).to be_empty
-        end
-
-        it 'does not return members of groups invited to a descendant project' do
-          create(:project_group_link, project: subgroup_project, group: invited_group)
-
-          expect(finder.execute).to be_empty
-        end
-      end
     end
   end
 end

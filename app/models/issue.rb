@@ -317,6 +317,10 @@ class Issue < ApplicationRecord
         pattern: IssuableFinder::FULL_TEXT_SEARCH_TERM_PATTERN
       )
     end
+
+    def related_link_class
+      IssueLink
+    end
   end
 
   def self.participant_includes
@@ -642,12 +646,13 @@ class Issue < ApplicationRecord
   end
 
   def issue_link_type
+    link_class = self.class.related_link_class
     return unless respond_to?(:issue_link_type_value) && respond_to?(:issue_link_source_id)
 
-    type = IssueLink.link_types.key(issue_link_type_value) || IssueLink::TYPE_RELATES_TO
+    type = link_class.link_types.key(issue_link_type_value) || link_class::TYPE_RELATES_TO
     return type if issue_link_source_id == id
 
-    IssueLink.inverse_link_type(type)
+    link_class.inverse_link_type(type)
   end
 
   def relocation_target

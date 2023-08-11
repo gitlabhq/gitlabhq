@@ -30,19 +30,12 @@ module Autocomplete
     private
 
     def member_relations
-      relations = [
+      [
         members_from_group_hierarchy.select(:user_id),
-        members_from_descendant_projects.select(:user_id)
+        members_from_hierarchy_group_shares.select(:user_id),
+        members_from_descendant_projects.select(:user_id),
+        members_from_descendant_project_shares.select(:user_id)
       ]
-
-      if Feature.enabled?(:include_descendant_shares_in_user_autocomplete, @group)
-        relations << members_from_hierarchy_group_shares.select(:user_id)
-        relations << members_from_descendant_project_shares.select(:user_id)
-      else
-        relations << @group.members_from_self_and_ancestor_group_shares.reselect(:user_id)
-      end
-
-      relations
     end
 
     def members_from_group_hierarchy

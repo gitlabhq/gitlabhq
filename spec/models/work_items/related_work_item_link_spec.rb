@@ -18,10 +18,14 @@ RSpec.describe WorkItems::RelatedWorkItemLink, type: :model, feature_category: :
     let_it_be(:item1) { create(:work_item, project: project) }
     let_it_be(:item2) { create(:work_item, project: project) }
     let_it_be(:link_factory) { :work_item_link }
-    let_it_be(:item_type) { 'work item' }
+    let_it_be(:item_type) { described_class.issuable_name }
   end
 
   describe '.issuable_type' do
-    it { expect(described_class.issuable_type).to eq(:work_item) }
+    it { expect(described_class.issuable_type).to eq(:issue) }
+  end
+
+  describe '.issuable_name' do
+    it { expect(described_class.issuable_name).to eq('work item') }
   end
 end

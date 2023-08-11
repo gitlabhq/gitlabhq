@@ -937,42 +937,6 @@ class Group < Namespace
   end
   strong_memoize_attr :group_readme
 
-  def members_from_self_and_ancestor_group_shares
-    group_group_link_table = GroupGroupLink.arel_table
-    group_member_table = GroupMember.arel_table
-
-    source_ids =
-      if has_parent?
-        self_and_ancestors.reorder(nil).select(:id)
-      else
-        id
-      end
-
-    group_group_links_query = GroupGroupLink.where(shared_group_id: source_ids)
-    cte = Gitlab::SQL::CTE.new(:group_group_links_cte, group_group_links_query)
-    cte_alias = cte.table.alias(GroupGroupLink.table_name)
-
-    # Instead of members.access_level, we need to maximize that access_level at
-    # the respective group_group_links.group_access.
-    member_columns = GroupMember.attribute_names.map do |column_name|
-      if column_name == 'access_level'
-        smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]], 'access_level')
-      else
-        group_member_table[column_name]
-      end
-    end
-
-    GroupMember
-      .with(cte.to_arel)
-      .select(*member_columns)
-      .from([group_member_table, cte.alias_to(group_group_link_table)])
-      .where(group_member_table[:requested_at].eq(nil))
-      .where(group_member_table[:source_id].eq(group_group_link_table[:shared_with_group_id]))
-      .where(group_member_table[:source_type].eq('Namespace'))
-      .where(group_member_table[:state].eq(::Member::STATE_ACTIVE))
-      .non_minimal_access
-  end
-
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag)
@@ -1031,6 +995,42 @@ class Group < Namespace
     return if parent_allows_two_factor_authentication?
 
     errors.add(:require_two_factor_authentication, _('is forbidden by a top-level group'))
+  end
+
+  def members_from_self_and_ancestor_group_shares
+    group_group_link_table = GroupGroupLink.arel_table
+    group_member_table = GroupMember.arel_table
+
+    source_ids =
+      if has_parent?
+        self_and_ancestors.reorder(nil).select(:id)
+      else
+        id
+      end
+
+    group_group_links_query = GroupGroupLink.where(shared_group_id: source_ids)
+    cte = Gitlab::SQL::CTE.new(:group_group_links_cte, group_group_links_query)
+    cte_alias = cte.table.alias(GroupGroupLink.table_name)
+
+    # Instead of members.access_level, we need to maximize that access_level at
+    # the respective group_group_links.group_access.
+    member_columns = GroupMember.attribute_names.map do |column_name|
+      if column_name == 'access_level'
+        smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]], 'access_level')
+      else
+        group_member_table[column_name]
+      end
+    end
+
+    GroupMember
+      .with(cte.to_arel)
+      .select(*member_columns)
+      .from([group_member_table, cte.alias_to(group_group_link_table)])
+      .where(group_member_table[:requested_at].eq(nil))
+      .where(group_member_table[:source_id].eq(group_group_link_table[:shared_with_group_id]))
+      .where(group_member_table[:source_type].eq('Namespace'))
+      .where(group_member_table[:state].eq(::Member::STATE_ACTIVE))
+      .non_minimal_access
   end
 
   def smallest_value_arel(args, column_alias)

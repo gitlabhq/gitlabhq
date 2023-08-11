@@ -21,3 +21,5 @@ module Types
     end
   end
 end
+
+Types::WorkItems::Widgets::LinkedItemsType.prepend_mod

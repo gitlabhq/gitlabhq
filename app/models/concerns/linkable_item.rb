@@ -28,13 +28,10 @@ module LinkableItem
       existing_relation = WorkItems::ParentLink.for_parents([source, target]).for_children([source, target])
       return if existing_relation.none?
 
-      errors.add(
-        :source,
-        format(
-          _('is a parent or child of this %{item}'),
-          item: self.class.issuable_type.to_s.humanize(capitalize: false)
-        )
-      )
+      errors.add(:source, format(_('is a parent or child of this %{item}'), item: self.class.issuable_name))
     end
   end
 end
+
+LinkableItem.include_mod_with('LinkableItem::Callbacks')
+LinkableItem.prepend_mod_with('LinkableItem')

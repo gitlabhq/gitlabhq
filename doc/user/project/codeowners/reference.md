@@ -210,6 +210,8 @@ Users can be owners of an entry. Each entry can be owned by
 
 ## Error handling in Code Owners
 
+> Error validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216066) in GitLab 16.3.
+
 ### Entries with spaces
 
 Paths containing whitespace must be escaped with backslashes: `path\ with\ spaces/*.md`.

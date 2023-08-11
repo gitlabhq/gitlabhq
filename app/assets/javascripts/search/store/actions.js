@@ -107,9 +107,18 @@ export const applyQuery = ({ state }) => {
 };
 
 export const resetQuery = ({ state }) => {
+  const resetParams = SIDEBAR_PARAMS.reduce((acc, param) => {
+    acc[param] = null;
+    return acc;
+  }, {});
+
   visitUrl(
     setUrlParams(
-      { ...state.query, page: null, state: null, confidential: null, labels: null },
+      {
+        ...state.query,
+        page: null,
+        ...resetParams,
+      },
       undefined,
       true,
     ),

@@ -12,6 +12,7 @@ export const I18N_GENERIC_ERROR = __('An error occurred. Please try again.');
 export const I18N_TOAST_SAVED = s__(
   'ServiceDesk|Saved custom email address and started verification.',
 );
+export const I18N_TOAST_DELETED = s__('ServiceDesk|Reset custom email address.');
 
 export const I18N_FORM_INTRODUCTION_PARAGRAPH = s__(
   'ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials.',
@@ -51,3 +52,23 @@ export const I18N_FORM_INVALID_FEEDBACK_SMTP_USERNAME = s__(
 export const I18N_FORM_INVALID_FEEDBACK_SMTP_PASSWORD = s__(
   'ServiceDesk|SMTP password is required and must be at least 8 characters long.',
 );
+
+export const I18N_MODAL_TITLE = s__(
+  'ServiceDesk|Reset custom email address and delete credentials',
+);
+export const I18N_MODAL_CANCEL_BUTTON_LABEL = s__('ServiceDesk|Keep custom email');
+export const I18N_MODAL_DISABLE_CUSTOM_EMAIL_PARAGRAPH = s__(
+  'ServiceDesk|You are about to %{strongStart}disable the custom email address%{strongEnd} %{customEmail} %{strongStart}and delete its credentials%{strongEnd}.',
+);
+export const I18N_MODAL_SET_UP_AGAIN_PARAGRAPH = s__(
+  "ServiceDesk|To use a custom email address for this Service Desk, you'll need to configure and verify an email address again.",
+);
+
+export const I18N_STATE_INTRO_PARAGRAPH = s__(
+  'ServiceDesk|Verify %{customEmail} with SMTP host %{smtpAddress}:',
+);
+export const I18N_STATE_VERIFICATION_STARTED = s__('ServiceDesk|Verification started');
+export const I18N_STATE_VERIFICATION_STARTED_INFO_PARAGRAPH = s__(
+  'ServiceDesk|A verification email has been sent to a sub-address of your custom email address. This can take up to 30 minutes. The screen refreshes automatically.',
+);
+export const I18N_RESET_BUTTON_LABEL = s__('ServiceDesk|Reset custom email');

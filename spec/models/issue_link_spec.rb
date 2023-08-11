@@ -16,6 +16,10 @@ RSpec.describe IssueLink, feature_category: :portfolio_management do
     it { expect(described_class.issuable_type).to eq(:issue) }
   end
 
+  describe '.issuable_name' do
+    it { expect(described_class.issuable_name).to eq('issue') }
+  end
+
   it_behaves_like 'includes LinkableItem concern' do
     let_it_be(:item) { create(:issue, project: project) }
     let_it_be(:item1) { create(:issue, project: project) }
