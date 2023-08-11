@@ -7,6 +7,35 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Issues workflow
 
+## Finding issues to work on
+
+GitLab has over 75,000 issues that you can work on.
+You can use [labels](../../user/project/labels.md) to filter and find suitable issues to work on.
+New contributors can look for [issues with the `quick win` label](https://gitlab.com/groups/gitlab-org/-/issues/?sort=created_asc&state=opened&label_name%5B%5D=quick%20win&first_page_size=20).
+
+The `frontend` and `backend` labels are also a good choice to refine the issue list.
+
+## Clarifying/validating an issue
+
+Many issues have not been visited or validated recently.
+Before trying to solve an issue, take the following steps:
+
+- Ask the author if the issue is still relevant.
+- Ask the community if the issue is still relevant.
+- Attempt to validate whether:
+  - A merge request has already been created (see the related merge requests section).
+    Sometimes the issue is not closed/updated.
+  - The `type::bug` still exists (by recreating it).
+  - The `type::feature` has not already been implemented (by trying it).
+
+## Working on the issue
+
+Leave a note to indicate you wish to work on the issue and would like to be assigned
+(mention the author and/or `@gitlab-org/coaches`).
+
+If you are stuck or did not properly understand the issue you can ask the author or
+the community for help.
+
 **Before you submit an issue, [search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)**
 for similar entries. Someone else might have already had the same bug or feature proposal.
 If you find an existing issue, show your support with an emoji reaction and add your notes to the discussion.

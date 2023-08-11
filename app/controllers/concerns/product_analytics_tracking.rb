@@ -12,6 +12,19 @@ module ProductAnalyticsTracking
         route_events_to(destinations, name, action, label, &block)
       end
     end
+
+    def track_internal_event(*controller_actions, name:, conditions: nil)
+      custom_conditions = [:trackable_html_request?, *conditions]
+
+      after_action only: controller_actions, if: custom_conditions do
+        Gitlab::InternalEvents.track_event(
+          name,
+          user: current_user,
+          project: tracking_project_source,
+          namespace: tracking_namespace_source
+        )
+      end
+    end
   end
 
   private

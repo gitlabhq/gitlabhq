@@ -21,7 +21,7 @@ import {
   VISIBILITY_TYPE_ICON,
   GROUP_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
-import { ITEM_TYPE } from '../constants';
+import { ITEM_TYPE, ACTIVE_TAB_SHARED } from '../constants';
 
 import eventHub from '../event_hub';
 
@@ -50,7 +50,11 @@ export default {
     ItemActions,
     ItemStats,
   },
-  inject: ['currentGroupVisibility'],
+  inject: {
+    currentGroupVisibility: {
+      default: '',
+    },
+  },
   props: {
     parentGroup: {
       type: Object,
@@ -114,7 +118,7 @@ export default {
     },
     shouldShowVisibilityWarning() {
       return (
-        this.action === 'shared' &&
+        this.action === ACTIVE_TAB_SHARED &&
         VISIBILITY_LEVELS_STRING_TO_INTEGER[this.group.visibility] >
           VISIBILITY_LEVELS_STRING_TO_INTEGER[this.currentGroupVisibility]
       );

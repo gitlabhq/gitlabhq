@@ -1421,6 +1421,8 @@ The new structure is documented below with the old keys described in a comment a
 1. Skip any keys you haven't configured a value for previously.
 1. Remove the old keys from the configuration once migrated.
 1. Optional but recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
+1. When configuring `storage` to replace `git_data_dirs`, you must append `repositories` to the path as documented below. If you omit this step, your Git repositories are
+   inaccessible until the configuration is fixed.
 
   ```ruby
 gitaly['configuration'] = {

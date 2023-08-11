@@ -7,12 +7,24 @@ import { readFileAsDataURL } from '~/lib/utils/file_utility';
 import axios from '~/lib/utils/axios_utils';
 import ProfileEditApp from '~/profile/edit/components/profile_edit_app.vue';
 import UserAvatar from '~/profile/edit/components/user_avatar.vue';
+import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
+import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
+import { timeRanges } from '~/vue_shared/constants';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/file_utility', () => ({
   readFileAsDataURL: jest.fn().mockResolvedValue(),
 }));
+
+const [oneMinute, oneHour] = timeRanges;
+const defaultProvide = {
+  currentEmoji: 'basketball',
+  currentMessage: 'Foo bar',
+  currentAvailability: AVAILABILITY_STATUS.NOT_SET,
+  defaultEmoji: 'speech_balloon',
+  currentClearStatusAfter: oneMinute.shortcut,
+};
 
 describe('Profile Edit App', () => {
   let wrapper;
@@ -32,6 +44,7 @@ describe('Profile Edit App', () => {
         profilePath: stubbedProfilePath,
         userPath: stubbedUserPath,
       },
+      provide: defaultProvide,
     });
   };
 
@@ -44,8 +57,17 @@ describe('Profile Edit App', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findButtons = () => wrapper.findAllComponents(GlButton);
   const findAvatar = () => wrapper.findComponent(UserAvatar);
+  const findSetStatusForm = () => wrapper.findComponent(SetStatusForm);
   const submitForm = () => findForm().vm.$emit('submit', new Event('submit'));
   const setAvatar = () => findAvatar().vm.$emit('blob-change', mockAvatarFile);
+  const setStatus = () => {
+    const setStatusForm = findSetStatusForm();
+
+    setStatusForm.vm.$emit('message-input', 'Foo bar baz');
+    setStatusForm.vm.$emit('emoji-click', 'baseball');
+    setStatusForm.vm.$emit('clear-status-after-click', oneHour);
+    setStatusForm.vm.$emit('availability-input', true);
+  };
 
   it('renders the form for users to interact with', () => {
     const form = findForm();
@@ -55,6 +77,17 @@ describe('Profile Edit App', () => {
     expect(buttons).toHaveLength(2);
 
     expect(wrapper.findByTestId('cancel-edit-button').attributes('href')).toBe(stubbedUserPath);
+  });
+
+  it('renders `SetStatusForm` component and passes correct props', () => {
+    expect(findSetStatusForm().props()).toMatchObject({
+      defaultEmoji: defaultProvide.defaultEmoji,
+      emoji: defaultProvide.currentEmoji,
+      message: defaultProvide.currentMessage,
+      availability: false,
+      clearStatusAfter: null,
+      currentClearStatusAfter: defaultProvide.currentClearStatusAfter,
+    });
   });
 
   describe('when form submit request is successful', () => {
@@ -80,6 +113,43 @@ describe('Profile Edit App', () => {
       await waitForPromises();
 
       expect(readFileAsDataURL).toHaveBeenCalledWith(mockAvatarFile);
+    });
+
+    it('contains changes from the status form', async () => {
+      mockAxios.onPut(stubbedProfilePath).reply(200, {
+        message: successMessage,
+      });
+
+      setStatus();
+      submitForm();
+
+      await waitForPromises();
+      const axiosRequestData = mockAxios.history.put[0].data;
+
+      expect(axiosRequestData.get('user[status][emoji]')).toBe('baseball');
+      expect(axiosRequestData.get('user[status][clear_status_after]')).toBe(oneHour.shortcut);
+      expect(axiosRequestData.get('user[status][message]')).toBe('Foo bar baz');
+      expect(axiosRequestData.get('user[status][availability]')).toBe(AVAILABILITY_STATUS.BUSY);
+    });
+
+    describe('when clear status after has not been changed', () => {
+      it('does not include it in the API request', async () => {
+        mockAxios.onPut(stubbedProfilePath).reply(200, {
+          message: successMessage,
+        });
+
+        submitForm();
+
+        await waitForPromises();
+        const axiosRequestData = mockAxios.history.put[0].data;
+
+        expect(axiosRequestData.get('user[status][emoji]')).toBe(defaultProvide.currentEmoji);
+        expect(axiosRequestData.get('user[status][clear_status_after]')).toBe(null);
+        expect(axiosRequestData.get('user[status][message]')).toBe(defaultProvide.currentMessage);
+        expect(axiosRequestData.get('user[status][availability]')).toBe(
+          AVAILABILITY_STATUS.NOT_SET,
+        );
+      });
     });
   });
 

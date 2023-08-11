@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe WikiPage do
+RSpec.describe WikiPage, feature_category: :wiki do
   let(:user) { create(:user) }
   let(:container) { create(:project) }
   let(:wiki) { container.wiki }
@@ -830,10 +830,18 @@ RSpec.describe WikiPage do
         expect(subject.content_changed?).to be(true)
       end
 
-      it 'returns false if only the newline format has changed' do
+      it 'returns false if only the newline format has changed from LF to CRLF' do
         expect(subject.page).to receive(:text_data).and_return("foo\nbar")
 
         subject.attributes[:content] = "foo\r\nbar"
+
+        expect(subject.content_changed?).to be(false)
+      end
+
+      it 'returns false if only the newline format has changed from CRLF to LF' do
+        expect(subject.page).to receive(:text_data).and_return("foo\r\nbar")
+
+        subject.attributes[:content] = "foo\nbar"
 
         expect(subject.content_changed?).to be(false)
       end

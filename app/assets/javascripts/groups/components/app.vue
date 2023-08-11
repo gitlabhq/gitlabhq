@@ -28,11 +28,6 @@ export default {
       required: false,
       default: '',
     },
-    containerId: {
-      type: String,
-      required: false,
-      default: '',
-    },
     store: {
       type: Object,
       required: true,
@@ -94,10 +89,6 @@ export default {
   },
   mounted() {
     this.fetchAllGroups();
-
-    if (this.containerId) {
-      this.containerEl = document.getElementById(this.containerId);
-    }
   },
   beforeDestroy() {
     eventHub.$off(`${this.action}fetchPage`, this.fetchPage);

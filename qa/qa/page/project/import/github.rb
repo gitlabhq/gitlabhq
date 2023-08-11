@@ -47,7 +47,7 @@ module QA
           def import!(gh_project_name, target_group_path, project_name)
             within_element(:project_import_row, source_project: gh_project_name) do
               click_element(:target_namespace_selector_dropdown)
-              click_element(:"listbox-item-#{target_group_path}", wait: 10)
+              click_element("listbox-item-#{target_group_path}", wait: 10)
               fill_element(:project_path_field, project_name)
 
               retry_until do

@@ -27,8 +27,8 @@ module QA
         end
       end
 
-      let(:gitlab_address_with_port) { Support::GitlabAddress.address_with_port }
-      let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port }
+      let(:gitlab_address_without_port) { Support::GitlabAddress.address_with_port(with_default_port: false) }
+      let(:gitlab_host_without_port) { Support::GitlabAddress.host_with_port(with_default_port: false) }
 
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|

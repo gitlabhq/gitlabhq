@@ -98,6 +98,7 @@ To protect a branch:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
@@ -135,6 +136,7 @@ To protect a branch for all the projects in a group:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. In the **Branch** text box, type the branch name or a wildcard.
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
@@ -158,6 +160,7 @@ To protect multiple branches at the same time:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, type the branch name and a wildcard.
    For example:
 
@@ -205,6 +208,7 @@ check in directly to a protected branch:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to merge** list, select **Developers + Maintainers**.
 1. From the **Allowed to push and merge** list, select **No one**.
@@ -217,6 +221,7 @@ You can allow everyone with write access to push to the protected branch.
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** list, select **Developers + Maintainers**.
 1. Select **Protect**.
@@ -245,6 +250,7 @@ To allow a deploy key to push to a protected branch:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** list, select the deploy key.
 1. Select **Protect**.
@@ -264,6 +270,7 @@ To protect a new branch and enable force push:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** and **Allowed to merge** lists, select the settings you want.
 1. To allow all users with push access to force push, turn on the **Allowed to force push** toggle.
@@ -276,6 +283,7 @@ To enable force pushes on branches that are already protected:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
 
 Members who can push to this branch can now also force push.
@@ -317,6 +325,7 @@ To protect a new branch and enable Code Owner's approval:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** and **Allowed to merge** lists, select the settings you want.
 1. Turn on the **Require approval from code owners** toggle.
@@ -327,6 +336,7 @@ To enable Code Owner's approval on branches that are already protected:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
+1. Select **Add protected branch**.
 1. In the list of protected branches, next to the branch, turn on the **Code owner approval** toggle.
 
 When enabled, all merge requests for these branches require approval

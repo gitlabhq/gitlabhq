@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, product_group: :import_and_integrate,
-    quarantine: {
-      type: :stale,
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/420722'
-    } do
+  RSpec.describe 'Manage', :requires_admin, product_group: :import_and_integrate do
     describe 'GitHub import' do
       include_context 'with github import'
 

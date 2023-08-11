@@ -84,7 +84,8 @@ module ProfilesHelper
       gravatar_link: { hostname: Gitlab.config.gravatar.host, url: "https://#{Gitlab.config.gravatar.host}" }.to_json,
       brand_profile_image_guidelines: current_appearance&.profile_image_guidelines? ? brand_profile_image_guidelines : '',
       cropper_css_path: ActionController::Base.helpers.stylesheet_path('lazy_bundles/cropper.css'),
-      user_path: user_path(current_user)
+      user_path: user_path(current_user),
+      **user_status_properties(user)
     }
   end
 end

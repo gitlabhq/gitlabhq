@@ -28,9 +28,7 @@ module QA
         end
       end
 
-      let!(:gitlab_address_with_port) do
-        Support::GitlabAddress.address_with_port
-      end
+      let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port }
 
       before do
         Flow::Login.sign_in

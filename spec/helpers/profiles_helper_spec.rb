@@ -125,7 +125,15 @@ RSpec.describe ProfilesHelper do
   end
 
   describe '#user_profile_data' do
-    let(:user) { build_stubbed(:user) }
+    let(:time) { 3.hours.ago }
+    let(:user) do
+      build_stubbed(:user, status: UserStatus.new(
+        message: 'Some message',
+        emoji: 'basketball',
+        availability: 'busy',
+        clear_status_at: time
+      ))
+    end
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -143,6 +151,11 @@ RSpec.describe ProfilesHelper do
       expect(data[:brand_profile_image_guidelines]).to be_a(String)
       expect(data[:cropper_css_path]).to eq(ActionController::Base.helpers.stylesheet_path('lazy_bundles/cropper.css'))
       expect(data[:user_path]).to be_a(String)
+      expect(data[:current_emoji]).to eq('basketball')
+      expect(data[:current_message]).to eq('Some message')
+      expect(data[:current_availability]).to eq('busy')
+      expect(data[:current_clear_status_after]).to eq(time.to_fs(:iso8601))
+      expect(data[:default_emoji]).to eq(UserStatus::DEFAULT_EMOJI)
     end
   end
 

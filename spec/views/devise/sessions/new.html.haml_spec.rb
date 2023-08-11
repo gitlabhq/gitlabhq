@@ -102,27 +102,6 @@ RSpec.describe 'devise/sessions/new' do
     end
   end
 
-  describe 'broadcast messaging' do
-    before do
-      stub_devise
-      disable_captcha
-    end
-
-    it 'renders the broadcast layout' do
-      render
-
-      expect(rendered).to render_template('layouts/_broadcast')
-    end
-
-    context 'when SaaS', :saas do
-      it 'does not render the broadcast layout' do
-        render
-
-        expect(rendered).not_to render_template('layouts/_broadcast')
-      end
-    end
-  end
-
   def disable_other_signin_methods
     allow(view).to receive(:password_authentication_enabled_for_web?).and_return(false)
     allow(view).to receive(:omniauth_enabled?).and_return(false)

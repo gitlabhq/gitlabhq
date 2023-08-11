@@ -5,8 +5,7 @@
   = render "layouts/one_trust"
 
 - content_for :sessions_broadcast do
-  - unless Gitlab.com?
-    = render "layouts/broadcast"
+  = render "devise/sessions/broadcast"
 
 = render "layouts/google_tag_manager_body"
 

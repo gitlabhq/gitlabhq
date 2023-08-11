@@ -284,10 +284,9 @@ class WikiPage
 
   def content_changed?
     if persisted?
-      # gollum-lib always converts CRLFs to LFs in Gollum::Wiki#normalize,
-      # so we need to do the same here.
-      # Also see https://gitlab.com/gitlab-org/gitlab/-/issues/21431
-      raw_content.delete("\r") != page&.text_data
+      # To avoid end-of-line differences depending if Git is enforcing CRLF or not,
+      # we compare just the Wiki Content.
+      raw_content.lines(chomp: true) != page&.text_data&.lines(chomp: true)
     else
       raw_content.present?
     end

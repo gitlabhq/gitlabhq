@@ -21,6 +21,13 @@ export const avatarI18n = {
   cropAvatarSetAsNewAvatar: s__('Profiles|Set new profile picture'),
 };
 
+export const statusI18n = {
+  setStatusTitle: s__('Profiles|Current status'),
+  setStatusDescription: s__(
+    'Profiles|This emoji and message will appear on your profile and throughout the interface.',
+  ),
+};
+
 export const i18n = {
   updateProfileSettings: s__('Profiles|Update profile settings'),
   cancel: __('Cancel'),

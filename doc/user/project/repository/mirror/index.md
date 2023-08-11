@@ -43,6 +43,7 @@ Prerequisites:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
+1. Select **Add new**.
 1. Enter a **Git repository URL**. For security reasons, the URL to the original
    repository is only displayed to users with the Maintainer role
    or the Owner role for the mirrored project.

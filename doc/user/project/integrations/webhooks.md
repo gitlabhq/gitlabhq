@@ -55,6 +55,7 @@ specific to a group, including:
 To configure a webhook for a project or group:
 
 1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
+1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
    The URL must be percent-encoded if it contains one or more special characters.
 1. In **Secret token**, enter the [secret token](#validate-payloads-by-using-a-secret-token) to validate payloads.
