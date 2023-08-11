@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.2.4 (2023-08-11)
+
+### Fixed (2 changes)
+
+- [Replace vscode-cdn.net with web-ide.gitlab-static.net](gitlab-org/gitlab@b19d3d6412b4e349b932775d0736c8727d98b1b2) ([merge request](gitlab-org/gitlab!128950))
+- [Revert "Remove log_response_length feature flag"](gitlab-org/gitlab@03a2a38a822da8c303a3ccefd9a4b8de818c2ca2) ([merge request](gitlab-org/gitlab!128778))
+
 ## 16.2.3 (2023-08-03)
 
 No changes.
