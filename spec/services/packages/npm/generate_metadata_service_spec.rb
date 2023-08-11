@@ -12,8 +12,7 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
   let_it_be(:latest_package) { create(:npm_package, version: '2.0.11', project: project, name: package_name) }
 
   let(:packages) { project.packages.npm.with_name(package_name) }
-  let(:service) { described_class.new(package_name, packages) }
-  let(:metadata) { service.execute }
+  let(:metadata) { described_class.new(package_name, packages).execute }
 
   describe '#versions' do
     let_it_be(:version_schema) { 'public_api/v4/packages/npm_package_version' }
@@ -107,29 +106,6 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
 
       it 'does not return them' do
         expect(shasums).not_to include(package_file_pending_destruction.file_sha1)
-      end
-    end
-
-    context 'with a package dependency' do
-      let_it_be(:dependency) { create(:packages_dependency) }
-      let_it_be(:dependency_link) { create(:packages_dependency_link, package: package1, dependency: dependency) }
-
-      it 'caches dependencies' do
-        subject
-
-        expect(service.instance_variable_get(:@dependencies_cache)).to eq(dependency.id => dependency)
-      end
-
-      context 'when npm_optimize_metadata_generation flag is disabled' do
-        before do
-          stub_feature_flags(npm_optimize_metadata_generation: false)
-        end
-
-        it 'does not cache dependencies' do
-          subject
-
-          expect(service.instance_variable_get(:@dependencies_cache)).to eq({})
-        end
       end
     end
   end

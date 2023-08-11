@@ -30,7 +30,6 @@ export default {
       selectedProjectId: this.selectedProject.id,
       projects: [],
       searchStr: '',
-      debouncedProjectsSearch: null,
     };
   },
   computed: {

@@ -36,7 +36,7 @@ module CompareHelper
 
   def project_compare_selector_data(project, merge_request, params)
     {
-      target_projects_path: project_new_merge_request_json_target_projects_path(@target_project),
+      target_projects_path: project_new_merge_request_json_target_projects_path(project),
       project_compare_index_path: project_compare_index_path(project),
       source_project: { id: project.id, text: project.full_path }.to_json,
       target_project: { id: @target_project.id, text: @target_project.full_path }.to_json,

@@ -22,7 +22,7 @@
               = sprite_icon('branch', css_class: 'gl-mr-2')
               %span= @protected_branches.size
           .gl-new-card-actions
-            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-new-token-button' } }) do
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-protected-branch-button' } }) do
               = _('Add protected branch')
         .gl-new-card-description.gl-mt-2.gl-sm-mt-0
           = s_("ProtectedBranch|By default, protected branches restrict who can modify the branch.")
