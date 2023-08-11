@@ -328,14 +328,19 @@ module Gitlab
       db_config&.name || 'unknown'
     end
 
-    # Currently the database configuration can only be shared with `main:`
-    # If the `database_tasks: false` is being used
-    # This is to be refined: https://gitlab.com/gitlab-org/gitlab/-/issues/356580
+    # If the `database_tasks: false` is being used,
+    # return the expected fallback database for this database configuration
     def self.db_config_share_with(db_config)
-      if db_config.database_tasks?
-        nil # no sharing
+      # no sharing
+      return if db_config.database_tasks?
+
+      database_connection_info = all_database_connections[db_config.name]
+
+      if database_connection_info
+        database_connection_info.fallback_database&.to_s
       else
-        'main' # share with `main:`
+        # legacy behaviour
+        'main'
       end
     end
 

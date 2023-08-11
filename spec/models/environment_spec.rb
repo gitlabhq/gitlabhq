@@ -16,6 +16,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   it { is_expected.to be_kind_of(ReactiveCaching) }
   it { is_expected.to nullify_if_blank(:external_url) }
   it { is_expected.to nullify_if_blank(:kubernetes_namespace) }
+  it { is_expected.to nullify_if_blank(:flux_resource_path) }
 
   it { is_expected.to belong_to(:project).required }
   it { is_expected.to belong_to(:merge_request).optional }
@@ -37,6 +38,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
   it { is_expected.to validate_length_of(:kubernetes_namespace).is_at_most(63) }
+  it { is_expected.to validate_length_of(:flux_resource_path).is_at_most(255) }
 
   describe 'validation' do
     it 'does not become invalid record when external_url is empty' do

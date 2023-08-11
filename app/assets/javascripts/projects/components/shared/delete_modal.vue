@@ -37,22 +37,22 @@ export default {
       required: true,
     },
     issuesCount: {
-      type: Number,
+      type: [Number, String],
       required: false,
       default: null,
     },
     mergeRequestsCount: {
-      type: Number,
+      type: [Number, String],
       required: false,
       default: null,
     },
     forksCount: {
-      type: Number,
+      type: [Number, String],
       required: false,
       default: null,
     },
     starsCount: {
-      type: Number,
+      type: [Number, String],
       required: false,
       default: null,
     },

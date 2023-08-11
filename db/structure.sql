@@ -15840,6 +15840,8 @@ CREATE TABLE environments (
     merge_request_id bigint,
     cluster_agent_id bigint,
     kubernetes_namespace text,
+    flux_resource_path text,
+    CONSTRAINT check_23b1eb18a2 CHECK ((char_length(flux_resource_path) <= 255)),
     CONSTRAINT check_b5373a1804 CHECK ((char_length(kubernetes_namespace) <= 63))
 );
 

@@ -130,7 +130,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
 
         parent_shared_runners_setting: Namespace::SR_ENABLED,
         parent_name: parent.name,
-        parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'js-runner-settings')
+        parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'runners-settings')
       }.merge(runner_constants)
 
       expect(helper.group_shared_runners_settings_data(group)).to eq result
@@ -162,7 +162,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
 
         parent_shared_runners_setting: Namespace::SR_ENABLED,
         parent_name: parent.name,
-        parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'js-runner-settings')
+        parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'runners-settings')
       }.merge(runner_constants)
 
       expect(helper.group_shared_runners_settings_data(group_with_project)).to eq result
@@ -207,8 +207,28 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
 
     context 'when project has runners' do
       it 'returns the correct value for is_enabled' do
+        allow(helper).to receive(:can?).with(user, :admin_group, group).and_return(false)
+
         data = helper.toggle_shared_runners_settings_data(project_with_runners)
-        expect(data[:is_enabled]).to eq("true")
+
+        expect(data).to include(
+          is_enabled: 'true',
+          group_name: nil,
+          group_settings_path: nil
+        )
+      end
+    end
+
+    context 'when group can be configured by user' do
+      it 'returns values to configure group' do
+        allow(helper).to receive(:can?).with(user, :admin_group, group).and_return(true)
+
+        data = helper.toggle_shared_runners_settings_data(project_with_runners)
+
+        expect(data).to include(
+          group_name: group.name,
+          group_settings_path: group_settings_ci_cd_path(group, anchor: 'runners-settings')
+        )
       end
     end
 

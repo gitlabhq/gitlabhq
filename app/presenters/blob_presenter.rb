@@ -6,7 +6,6 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   include DiffHelper
   include TreeHelper
   include ChecksCollaboration
-  include Gitlab::Utils::StrongMemoize
 
   presents ::Blob, as: :blob
 
@@ -150,7 +149,6 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def external_storage_url
-    return lfs_object_url if lfs_blob?
     return unless static_objects_external_storage_enabled?
 
     external_storage_url_or_path(url_helpers.project_raw_url(project, ref_qualified_path), project)
@@ -165,25 +163,6 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   private
-
-  def lfs_object_url
-    return unless lfs_object.present?
-
-    if LfsObjectUploader.proxy_download_enabled? || lfs_object.file.file_storage?
-      "#{project.http_url_to_repo}/gitlab-lfs/objects/#{lfs_object.oid}"
-    else
-      lfs_object.file.url(content_type: "application/octet-stream")
-    end
-  end
-
-  def lfs_object
-    project.lfs_objects.find_by_oid(blob.lfs_oid) if lfs_blob?
-  end
-  strong_memoize_attr :lfs_object
-
-  def lfs_blob?
-    blob.stored_externally? && blob.lfs_pointer?
-  end
 
   def path_params
     if ref_type.present?

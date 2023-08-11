@@ -43,6 +43,21 @@ RSpec.describe Environments::UpdateService, feature_category: :environment_manag
       end
     end
 
+    context 'when setting a flux resource path to the environment' do
+      let(:params) { { flux_resource_path: 'path/to/flux/resource' } }
+
+      it 'updates the flux resource path' do
+        expect { subject }.to change { environment.reload.flux_resource_path }.to('path/to/flux/resource')
+      end
+
+      it 'returns successful response' do
+        response = subject
+
+        expect(response).to be_success
+        expect(response.payload[:environment]).to eq(environment)
+      end
+    end
+
     context 'when setting a cluster agent to the environment' do
       let_it_be(:agent_management_project) { create(:project) }
       let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }

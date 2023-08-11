@@ -344,6 +344,33 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
   end
 
+  describe '.db_config_share_with' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:db_config_name, :db_config_attributes, :expected_db_config_share_with) do
+      'main'             | { database_tasks: true }  | nil
+      'main'             | { database_tasks: false } | nil
+      'ci'               | { database_tasks: true }  | nil
+      'ci'               | { database_tasks: false } | 'main'
+      'main_clusterwide' | { database_tasks: true }  | nil
+      'main_clusterwide' | { database_tasks: false } | 'main'
+      '_test_unknown'    | { database_tasks: true }  | nil
+      '_test_unknown'    | { database_tasks: false } | 'main'
+    end
+
+    with_them do
+      it 'returns the expected result' do
+        db_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
+          Rails.env,
+          db_config_name,
+          db_config_attributes
+        )
+
+        expect(described_class.db_config_share_with(db_config)).to eq(expected_db_config_share_with)
+      end
+    end
+  end
+
   describe '.gitlab_schemas_for_connection' do
     it 'does return a valid schema depending on a base model used', :request_store do
       expect(described_class.gitlab_schemas_for_connection(Project.connection)).to include(:gitlab_main, :gitlab_shared)

@@ -15,6 +15,7 @@ query getOrganizationProjects {
         descriptionHtml
         issuesAccessLevel
         forkingAccessLevel
+        isForked
         accessLevel {
           integerValue
         }

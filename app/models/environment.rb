@@ -18,7 +18,7 @@ class Environment < ApplicationRecord
   belongs_to :cluster_agent, class_name: 'Clusters::Agent', optional: true, inverse_of: :environments
 
   use_fast_destroy :all_deployments
-  nullify_if_blank :external_url, :kubernetes_namespace
+  nullify_if_blank :external_url, :kubernetes_namespace, :flux_resource_path
 
   has_many :all_deployments, class_name: 'Deployment'
   has_many :deployments, -> { visible }
@@ -76,6 +76,10 @@ class Environment < ApplicationRecord
       with: Gitlab::Regex.kubernetes_namespace_regex,
       message: Gitlab::Regex.kubernetes_namespace_regex_message
     }
+
+  validates :flux_resource_path,
+    length: { maximum: 255 },
+    allow_nil: true
 
   validates :tier, presence: true
 

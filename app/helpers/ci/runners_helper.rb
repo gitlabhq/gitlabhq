@@ -95,7 +95,7 @@ module Ci
       if group.parent && can?(current_user, :admin_group, group.parent)
         data.merge!({
           parent_name: group.parent.name,
-          parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'js-runner-settings')
+          parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'runners-settings')
         })
       end
 
@@ -113,11 +113,22 @@ module Ci
     end
 
     def toggle_shared_runners_settings_data(project)
-      {
+      data = {
         is_enabled: project.shared_runners_enabled?.to_s,
         is_disabled_and_unoverridable: (project.group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE).to_s,
-        update_path: toggle_shared_runners_project_runners_path(project)
+        update_path: toggle_shared_runners_project_runners_path(project),
+        group_name: nil,
+        group_settings_path: nil
       }
+
+      if project.group && can?(current_user, :admin_group, project.group)
+        data.merge!({
+          group_name: project.group.name,
+          group_settings_path: group_settings_ci_cd_path(project.group, anchor: 'runners-settings')
+        })
+      end
+
+      data
     end
   end
 end

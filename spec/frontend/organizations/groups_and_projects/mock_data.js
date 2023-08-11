@@ -19,6 +19,7 @@ export const organizationProjects = {
         '<p data-sourcepos="1:1-1:59" dir="auto">Optio et reprehenderit enim doloremque deserunt et commodi.</p>',
       issuesAccessLevel: 'enabled',
       forkingAccessLevel: 'enabled',
+      isForked: true,
       accessLevel: {
         integerValue: 30,
       },
@@ -37,6 +38,7 @@ export const organizationProjects = {
         '<p data-sourcepos="1:1-1:49" dir="auto">Dolor dicta rerum et ut eius voluptate earum qui.</p>',
       issuesAccessLevel: 'enabled',
       forkingAccessLevel: 'enabled',
+      isForked: false,
       accessLevel: {
         integerValue: 20,
       },
@@ -55,6 +57,7 @@ export const organizationProjects = {
         '<p data-sourcepos="1:1-1:52" dir="auto">Incidunt est aliquam autem nihil eveniet quis autem.</p>',
       issuesAccessLevel: 'enabled',
       forkingAccessLevel: 'enabled',
+      isForked: false,
       accessLevel: {
         integerValue: 40,
       },
@@ -73,6 +76,7 @@ export const organizationProjects = {
         '<p data-sourcepos="1:1-1:34" dir="auto">Sint eos dolorem impedit rerum et.</p>',
       issuesAccessLevel: 'enabled',
       forkingAccessLevel: 'enabled',
+      isForked: false,
       accessLevel: {
         integerValue: 10,
       },
@@ -91,6 +95,7 @@ export const organizationProjects = {
         '<p data-sourcepos="1:1-1:40" dir="auto">Veritatis error laboriosam libero autem.</p>',
       issuesAccessLevel: 'enabled',
       forkingAccessLevel: 'enabled',
+      isForked: false,
       accessLevel: {
         integerValue: 30,
       },

@@ -1,4 +1,5 @@
 import { formatProjects, formatGroups } from '~/organizations/groups_and_projects/utils';
+import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/projects_list/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { organizationProjects, organizationGroups } from './mock_data';
 
@@ -16,6 +17,7 @@ describe('formatProjects', () => {
           accessLevel: firstMockProject.accessLevel.integerValue,
         },
       },
+      actions: [ACTION_EDIT, ACTION_DELETE],
     });
     expect(formattedProjects.length).toBe(organizationProjects.nodes.length);
   });

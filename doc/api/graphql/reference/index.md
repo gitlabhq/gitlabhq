@@ -3260,6 +3260,7 @@ Input type: `EnvironmentCreateInput`
 | <a id="mutationenvironmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationenvironmentcreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID`](#clustersagentid) | Cluster agent of the environment. |
 | <a id="mutationenvironmentcreateexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
+| <a id="mutationenvironmentcreatefluxresourcepath"></a>`fluxResourcePath` | [`String`](#string) | Flux resource path of the environment. |
 | <a id="mutationenvironmentcreatekubernetesnamespace"></a>`kubernetesNamespace` | [`String`](#string) | Kubernetes namespace of the environment. |
 | <a id="mutationenvironmentcreatename"></a>`name` | [`String!`](#string) | Name of the environment. |
 | <a id="mutationenvironmentcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
@@ -3328,6 +3329,7 @@ Input type: `EnvironmentUpdateInput`
 | <a id="mutationenvironmentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationenvironmentupdateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID`](#clustersagentid) | Cluster agent of the environment. |
 | <a id="mutationenvironmentupdateexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
+| <a id="mutationenvironmentupdatefluxresourcepath"></a>`fluxResourcePath` | [`String`](#string) | Flux resource path of the environment. |
 | <a id="mutationenvironmentupdateid"></a>`id` | [`EnvironmentID!`](#environmentid) | Global ID of the environment to update. |
 | <a id="mutationenvironmentupdatekubernetesnamespace"></a>`kubernetesNamespace` | [`String`](#string) | Kubernetes namespace of the environment. |
 | <a id="mutationenvironmentupdatetier"></a>`tier` | [`DeploymentTier`](#deploymenttier) | Tier of the environment. |
@@ -15475,6 +15477,7 @@ Describes where code is deployed for a project.
 | <a id="environmentdeployfreezes"></a>`deployFreezes` | [`[CiFreezePeriod!]`](#cifreezeperiod) | Deployment freeze periods of the environment. |
 | <a id="environmentenvironmenttype"></a>`environmentType` | [`String`](#string) | Folder name of the environment. |
 | <a id="environmentexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
+| <a id="environmentfluxresourcepath"></a>`fluxResourcePath` | [`String`](#string) | Flux resource path of the environment. |
 | <a id="environmentid"></a>`id` | [`ID!`](#id) | ID of the environment. |
 | <a id="environmentkubernetesnamespace"></a>`kubernetesNamespace` | [`String`](#string) | Kubernetes namespace of the environment. |
 | <a id="environmentlatestopenedmostseverealert"></a>`latestOpenedMostSevereAlert` | [`AlertManagementAlert`](#alertmanagementalert) | Most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned. |
