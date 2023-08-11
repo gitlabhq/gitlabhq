@@ -96,6 +96,15 @@ describe('ListboxInput', () => {
       expect(findGlListbox().props('fluidWidth')).toBe(fluidWidth);
     });
 
+    it.each(['class-a class-b', ['class-a', 'class-b'], { 'class-a': true, 'class-b': true }])(
+      'passes %s class to listbox',
+      (toggleClass) => {
+        createComponent({ toggleClass });
+
+        expect(findGlListbox().props('toggleClass')).toBe(toggleClass);
+      },
+    );
+
     it.each(['right', 'left'])("passes %s to the listbox's placement prop", (placement) => {
       createComponent({ placement });
 

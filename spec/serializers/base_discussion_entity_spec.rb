@@ -39,6 +39,14 @@ RSpec.describe BaseDiscussionEntity do
     )
   end
 
+  context 'when note is on an issue' do
+    let_it_be(:note) { create(:discussion_note_on_issue) }
+
+    it 'does not include resolve_with_issue_path' do
+      expect(subject.keys.sort).not_to include(:resolve_with_issue_path)
+    end
+  end
+
   context 'when is LegacyDiffDiscussion' do
     let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project) }

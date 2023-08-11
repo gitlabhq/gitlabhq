@@ -191,4 +191,8 @@ class Discussion
   def to_global_id(options = {})
     GlobalID.new(::Gitlab::GlobalId.build(model_name: Discussion.to_s, id: id))
   end
+
+  def noteable_collection_name
+    noteable.class.underscore.pluralize
+  end
 end

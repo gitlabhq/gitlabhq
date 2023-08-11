@@ -245,15 +245,16 @@ export default {
   },
   methods: {
     ...mapActions(['toggleResolveNote']),
-    shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState) {
-      const newResolvedStateAfterUpdate =
-        this.shouldBeResolved && this.shouldBeResolved(shouldResolve);
-
-      const shouldToggleState =
-        newResolvedStateAfterUpdate !== undefined &&
-        beforeSubmitDiscussionState !== newResolvedStateAfterUpdate;
-
-      return shouldResolve || shouldToggleState;
+    shouldToggleResolved(beforeSubmitDiscussionState) {
+      return (
+        this.showResolveDiscussionToggle && beforeSubmitDiscussionState !== this.newResolvedState()
+      );
+    },
+    newResolvedState() {
+      return (
+        (this.discussionResolved && !this.isUnresolving) ||
+        (!this.discussionResolved && this.isResolving)
+      );
     },
     editMyLastNote() {
       if (this.updatedNoteBody === '') {
@@ -293,7 +294,7 @@ export default {
       }
       this.updatedNoteBody = '';
     },
-    handleUpdate(shouldResolve) {
+    handleUpdate() {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
 
@@ -309,22 +310,12 @@ export default {
         () => {
           this.isSubmitting = false;
 
-          if (this.shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState)) {
+          if (this.shouldToggleResolved(beforeSubmitDiscussionState)) {
             this.resolveHandler(beforeSubmitDiscussionState);
           }
         },
         this.discussionResolved ? !this.isUnresolving : this.isResolving,
       );
-    },
-    shouldBeResolved(resolveStatus) {
-      if (this.withBatchComments) {
-        return (
-          (this.discussionResolved && !this.isUnresolving) ||
-          (!this.discussionResolved && this.isResolving)
-        );
-      }
-
-      return resolveStatus;
     },
     handleAddToReview() {
       // check if draft should resolve thread
@@ -390,21 +381,22 @@ export default {
         />
       </comment-field-layout>
       <div class="note-form-actions">
+        <p v-if="showResolveDiscussionToggle">
+          <label>
+            <template v-if="discussionResolved">
+              <gl-form-checkbox v-model="isUnresolving" class="js-unresolve-checkbox">
+                {{ __('Unresolve thread') }}
+              </gl-form-checkbox>
+            </template>
+            <template v-else>
+              <gl-form-checkbox v-model="isResolving" class="js-resolve-checkbox">
+                {{ __('Resolve thread') }}
+              </gl-form-checkbox>
+            </template>
+          </label>
+        </p>
+
         <template v-if="showBatchCommentsActions">
-          <p v-if="showResolveDiscussionToggle">
-            <label>
-              <template v-if="discussionResolved">
-                <gl-form-checkbox v-model="isUnresolving" class="js-unresolve-checkbox">
-                  {{ __('Unresolve thread') }}
-                </gl-form-checkbox>
-              </template>
-              <template v-else>
-                <gl-form-checkbox v-model="isResolving" class="js-resolve-checkbox">
-                  {{ __('Resolve thread') }}
-                </gl-form-checkbox>
-              </template>
-            </label>
-          </p>
           <div class="gl-display-flex gl-flex-wrap gl-mb-n3">
             <gl-button
               :disabled="isDisabled"
@@ -449,15 +441,6 @@ export default {
               @click="handleUpdate()"
             >
               {{ saveButtonTitle }}
-            </gl-button>
-            <gl-button
-              v-if="discussion.resolvable"
-              category="secondary"
-              variant="default"
-              class="gl-sm-mr-3 gl-xs-mb-3 js-comment-resolve-button"
-              @click.prevent="handleUpdate(true)"
-            >
-              {{ resolveButtonTitle }}
             </gl-button>
             <gl-button
               class="note-edit-cancel js-close-discussion-note-form"

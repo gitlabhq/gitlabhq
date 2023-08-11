@@ -110,7 +110,7 @@ export default {
       <gl-form-input-group
         max-length="7"
         type="text"
-        class="gl-align-center gl-rounded-0 gl-rounded-top-right-base gl-rounded-bottom-right-base"
+        class="gl-align-center gl-rounded-0 gl-rounded-top-right-base gl-rounded-bottom-right-base gl-max-w-26"
         :value="value"
         :state="state"
         @input="handleColorChange"

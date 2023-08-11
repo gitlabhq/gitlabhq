@@ -474,6 +474,15 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :service_desk do
           resource :custom_email, only: [:show, :create, :update, :destroy], controller: 'custom_email'
         end
+
+        scope path: ':noteable_type/:noteable_id' do
+          resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
+            member do
+              post :resolve
+              delete :resolve, action: :unresolve
+            end
+          end
+        end
       end
       # End of the /-/ scope.
 

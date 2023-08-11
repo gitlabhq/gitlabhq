@@ -17,7 +17,7 @@ module Noteable
 
     # `Noteable` class names that support resolvable notes.
     def resolvable_types
-      %w(MergeRequest DesignManagement::Design)
+      %w(Issue MergeRequest DesignManagement::Design)
     end
 
     # `Noteable` class names that support creating/forwarding individual notes.
@@ -49,6 +49,8 @@ module Noteable
   end
 
   def supports_resolvable_notes?
+    return false if is_a?(Issue) && Feature.disabled?(:resolvable_issue_threads, project)
+
     self.class.resolvable_types.include?(base_class_name)
   end
 

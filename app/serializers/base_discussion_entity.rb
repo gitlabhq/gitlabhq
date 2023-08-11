@@ -40,16 +40,16 @@ class BaseDiscussionEntity < Grape::Entity
     expose :resolved_at
 
     expose :resolve_path do |discussion|
-      resolve_project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion.id)
+      resolve_project_discussion_path(discussion.project, discussion.noteable_collection_name, discussion.noteable, discussion.id)
     end
 
-    expose :resolve_with_issue_path do |discussion|
+    expose :resolve_with_issue_path, if: -> (d, _) { d.noteable.is_a?(MergeRequest) } do |discussion|
       new_project_issue_path(discussion.project, merge_request_to_resolve_discussions_of: discussion.noteable.iid, discussion_to_resolve: discussion.id) if discussion&.project&.issues_enabled?
     end
   end
 
   expose :truncated_diff_lines_path, if: -> (d, _) { !d.expanded? && !render_truncated_diff_lines? } do |discussion|
-    project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion)
+    project_discussion_path(discussion.project, discussion.noteable_collection_name, discussion.noteable, discussion)
   end
 
   private

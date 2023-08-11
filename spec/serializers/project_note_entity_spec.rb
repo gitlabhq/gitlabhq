@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe ProjectNoteEntity do
   include Gitlab::Routing
 
-  let(:request) { double('request', current_user: user, noteable: note.noteable) }
+  let_it_be(:note) { create(:note_on_merge_request) }
+  let_it_be(:user) { create(:user) }
 
+  let(:request) { double('request', current_user: user, noteable: note.noteable) }
   let(:entity) { described_class.new(note, request: request) }
-  let(:note) { create(:note) }
-  let(:user) { create(:user) }
 
   subject { entity.as_json }
 
@@ -27,6 +27,14 @@ RSpec.describe ProjectNoteEntity do
 
     it 'exposes paths to resolve note' do
       expect(subject).to include(:resolve_path, :resolve_with_issue_path)
+    end
+
+    context 'when note is on an issue' do
+      let(:note) { create(:note_on_issue) }
+
+      it 'does not include resolve_with_issue_path' do
+        expect(subject).not_to include(:resolve_with_issue_path)
+      end
     end
   end
 end

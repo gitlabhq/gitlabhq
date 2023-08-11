@@ -391,8 +391,8 @@ RSpec.describe Noteable, feature_category: :code_review_workflow do
   end
 
   describe '.resolvable_types' do
-    it 'exposes the replyable types' do
-      expect(described_class.resolvable_types).to include('MergeRequest', 'DesignManagement::Design')
+    it 'exposes the resolvable types' do
+      expect(described_class.resolvable_types).to include('Issue', 'MergeRequest', 'DesignManagement::Design')
     end
   end
 

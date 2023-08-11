@@ -242,6 +242,42 @@ describe('issue_note_form component', () => {
     });
   });
 
+  describe('resolve checkbox', () => {
+    it('hides resolve checkbox when discussion is not resolvable', () => {
+      createComponentWrapper({
+        discussion: {
+          ...discussionMock,
+          notes: [
+            ...discussionMock.notes.map((n) => ({
+              ...n,
+              resolvable: false,
+              current_user: { ...n.current_user, can_resolve_discussion: false },
+            })),
+          ],
+        },
+      });
+
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
+    });
+
+    it('shows resolve checkbox when discussion is resolvable', () => {
+      createComponentWrapper({
+        discussion: {
+          ...discussionMock,
+          notes: [
+            ...discussionMock.notes.map((n) => ({
+              ...n,
+              resolvable: true,
+              current_user: { ...n.current_user, can_resolve_discussion: true },
+            })),
+          ],
+        },
+      });
+
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
+    });
+  });
+
   describe('with batch comments', () => {
     beforeEach(() => {
       store.registerModule('batchComments', batchComments());
@@ -257,29 +293,6 @@ describe('issue_note_form component', () => {
       findCancelCommentButton().vm.$emit('click');
 
       expect(wrapper.emitted('cancelForm')).toEqual([[true, false]]);
-    });
-
-    it('shows resolve checkbox', () => {
-      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
-    });
-
-    it('hides resolve checkbox', () => {
-      createComponentWrapper({
-        isDraft: false,
-        discussion: {
-          ...discussionMock,
-          notes: [
-            ...discussionMock.notes.map((n) => ({
-              ...n,
-              resolvable: true,
-              current_user: { ...n.current_user, can_resolve_discussion: false },
-            })),
-          ],
-          for_commit: false,
-        },
-      });
-
-      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
     });
 
     it('hides actions for commits', () => {

@@ -3,40 +3,41 @@
 require 'spec_helper'
 
 RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
-  let(:project) { create(:project, :repository) }
-  let(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   subject { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
 
   context 'resolvability scopes' do
-    let!(:note1) { create(:note, project: project) }
-    let!(:note2) { create(:diff_note_on_commit, project: project) }
-    let!(:note3) { create(:diff_note_on_merge_request, :resolved, noteable: merge_request, project: project) }
-    let!(:note4) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
-    let!(:note5) { create(:discussion_note_on_issue, project: project) }
-    let!(:note6) { create(:discussion_note_on_merge_request, :system, noteable: merge_request, project: project) }
+    let_it_be(:note1) { create(:note, project: project) }
+    let_it_be(:note2) { create(:diff_note_on_commit, project: project) }
+    let_it_be(:note3) { create(:diff_note_on_merge_request, :resolved, noteable: merge_request, project: project) }
+    let_it_be(:note4) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
+    let_it_be(:note5) { create(:discussion_note_on_issue, project: project) }
+    let_it_be(:note6) { create(:discussion_note_on_merge_request, :system, noteable: merge_request, project: project) }
+    let_it_be(:note7) { create(:discussion_note_on_issue, :resolved, project: project) }
 
     describe '.potentially_resolvable' do
-      it 'includes diff and discussion notes on merge requests' do
-        expect(described_class.potentially_resolvable).to match_array([note3, note4, note6])
+      it 'includes diff and discussion notes on issues and merge requests' do
+        expect(described_class.potentially_resolvable).to match_array([note3, note4, note5, note6, note7])
       end
     end
 
     describe '.resolvable' do
-      it 'includes non-system diff and discussion notes on merge requests' do
-        expect(described_class.resolvable).to match_array([note3, note4])
+      it 'includes non-system diff and discussion notes on issues and merge requests' do
+        expect(described_class.resolvable).to match_array([note3, note4, note5, note7])
       end
     end
 
     describe '.resolved' do
-      it 'includes resolved non-system diff and discussion notes on merge requests' do
-        expect(described_class.resolved).to match_array([note3])
+      it 'includes resolved non-system diff and discussion notes on issues and merge requests' do
+        expect(described_class.resolved).to match_array([note3, note7])
       end
     end
 
     describe '.unresolved' do
-      it 'includes non-resolved non-system diff and discussion notes on merge requests' do
-        expect(described_class.unresolved).to match_array([note4])
+      it 'includes non-resolved non-system diff and discussion notes on issues and merge requests' do
+        expect(described_class.unresolved).to match_array([note4, note5])
       end
     end
   end

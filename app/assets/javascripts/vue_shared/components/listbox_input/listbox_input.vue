@@ -62,6 +62,11 @@ export default {
       required: false,
       default: GlCollapsibleListbox.props.block.default,
     },
+    toggleClass: {
+      type: [Array, String, Object],
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -134,6 +139,7 @@ export default {
     <gl-collapsible-listbox
       :selected="selected"
       :toggle-text="toggleText"
+      :toggle-class="toggleClass"
       :items="filteredItems"
       :searchable="isSearchable"
       :no-results-text="$options.i18n.noResultsText"

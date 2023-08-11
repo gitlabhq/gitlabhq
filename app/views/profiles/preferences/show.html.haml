@@ -74,14 +74,14 @@
       = f.gitlab_ui_radio_component :layout, layout_choices[0][1], layout_choices[0][0], help_text: fixed_help_text
       = f.gitlab_ui_radio_component :layout, layout_choices[1][1], layout_choices[1][0], help_text: fluid_help_text
 
-    .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard, block: true.to_s, fluid_width: true.to_s } }
+    .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
 
     = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
 
     .form-group
       = f.label :project_view, class: 'label-bold' do
         = s_('Preferences|Project overview content')
-      = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select'
+      = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select gl-form-input-xl gl-display-block'
       .form-text.text-muted
         = s_('Preferences|Choose what content you want to see on a project’s overview page.')
     .form-group
@@ -107,7 +107,7 @@
     .form-group
       = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
       = f.number_field :tab_width,
-                      class: 'form-control gl-form-input',
+                      class: 'form-control gl-form-input gl-max-w-15',
                       min: Gitlab::TabWidth::MIN,
                       max: Gitlab::TabWidth::MAX,
                       required: true
@@ -123,7 +123,8 @@
       = _('Customize language and region related settings.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer'
-    .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language, block: true.to_s, fluid_width: true.to_s } }
+
+    .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
     %p.gl-mt-n5
       = link_to help_page_url('development/i18n/translation'), class: 'text-nowrap', target: '_blank', rel: 'noopener noreferrer' do
         = _("Help translate GitLab into your language")
@@ -132,7 +133,7 @@
     .form-group
       = f.label :first_day_of_week, class: 'label-bold' do
         = _('First day of the week')
-      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select'
+      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select gl-display-block gl-form-input-xl'
 
   .settings-section.js-preferences-form.js-search-settings-section#time-preferences
     .settings-sticky-header

@@ -55,13 +55,6 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
     post :export_csv
   end
 
-  resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
-    member do
-      post :resolve
-      delete :resolve, action: :unresolve
-    end
-  end
-
   scope module: :merge_requests do
     resources :drafts, only: [:index, :update, :create, :destroy] do
       collection do

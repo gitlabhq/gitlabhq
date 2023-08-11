@@ -121,8 +121,8 @@ RSpec.describe MergeRequestPresenter do
 
   context 'issues links' do
     let_it_be(:project) { create(:project, :private, :repository, creator: user, namespace: user.namespace) }
-    let_it_be(:issue_a) { create(:issue, project: project) }
-    let_it_be(:issue_b) { create(:issue, project: project) }
+    let_it_be(:issue_a) { create(:issue, project: project, iid: 1) }
+    let_it_be(:issue_b) { create(:issue, project: project, iid: 3) }
 
     let_it_be(:resource) do
       create(
@@ -141,6 +141,17 @@ RSpec.describe MergeRequestPresenter do
       allow(resource.project).to receive(:default_branch)
         .and_return(resource.target_branch)
       resource.cache_merge_request_closes_issues!
+    end
+
+    describe '#issues_sentence' do
+      let(:issue_c) { create(:issue, project: project, iid: 10) }
+      let(:issues) { [issue_b, issue_c, issue_a] }
+
+      subject { described_class.new(resource, current_user: user).send(:issues_sentence, project, issues) }
+
+      it 'orders issues numerically' do
+        is_expected.to eq("##{issue_a.iid}, ##{issue_b.iid}, and ##{issue_c.iid}")
+      end
     end
 
     describe '#closing_issues_links' do
