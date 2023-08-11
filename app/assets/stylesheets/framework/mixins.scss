@@ -326,11 +326,6 @@
   color: $gray-500;
   fill: $gray-500;
 
-  svg {
-    @include btn-svg;
-    margin: 0;
-  }
-
   .award-control-icon-positive,
   .award-control-icon-super-positive {
     position: absolute;
@@ -473,11 +468,4 @@
   &::after {
     margin-left: $gl-padding;
   }
-}
-
-@mixin btn-svg {
-  height: $gl-padding;
-  width: $gl-padding;
-  top: 0;
-  vertical-align: text-top;
 }

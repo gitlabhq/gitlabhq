@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Stage::Factory do
+RSpec.describe Gitlab::Ci::Status::Stage::Factory, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }

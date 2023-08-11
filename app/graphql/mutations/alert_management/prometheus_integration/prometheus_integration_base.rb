@@ -5,9 +5,9 @@ module Mutations
     module PrometheusIntegration
       class PrometheusIntegrationBase < BaseMutation
         field :integration,
-              Types::AlertManagement::PrometheusIntegrationType,
-              null: true,
-              description: "Newly created integration."
+          Types::AlertManagement::PrometheusIntegrationType,
+          null: true,
+          description: "Newly created integration."
 
         authorize :admin_project
 

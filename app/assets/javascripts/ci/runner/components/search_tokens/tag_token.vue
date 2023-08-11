@@ -7,20 +7,13 @@ import { s__ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { RUNNER_TAG_BG_CLASS } from '../../constants';
 
-// TODO This should be implemented via a GraphQL API
-// The API should
-// 1) scope to the rights of the user
-// 2) stay up to date to the removal of old tags
-// 3) consider the scope of search, like searching within the tags of a group
-// See: https://gitlab.com/gitlab-org/gitlab/-/issues/333796
-export const TAG_SUGGESTIONS_PATH = '/admin/runners/tag_list.json';
-
 export default {
   components: {
     BaseToken,
     GlFilteredSearchSuggestion,
     GlToken,
   },
+  inject: ['tagSuggestionsPath'],
   props: {
     config: {
       type: Object,
@@ -36,7 +29,7 @@ export default {
   methods: {
     getTagsOptions(search) {
       return axios
-        .get(TAG_SUGGESTIONS_PATH, {
+        .get(this.tagSuggestionsPath, {
           params: {
             search,
           },

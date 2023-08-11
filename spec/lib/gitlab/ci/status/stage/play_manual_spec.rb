@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Stage::PlayManual do
+RSpec.describe Gitlab::Ci::Status::Stage::PlayManual, feature_category: :continuous_integration do
   let(:stage) { double('stage') }
   let(:play_manual) { described_class.new(stage) }
 

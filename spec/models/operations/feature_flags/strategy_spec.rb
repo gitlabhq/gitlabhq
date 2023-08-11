@@ -29,7 +29,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
             expect(strategy).to be_invalid
 
-            expect(strategy.errors[:name]).to eq(['strategy name is invalid'])
+            expect(strategy.errors[:name]).to eq([s_('Validation|strategy name is invalid')])
             expect(strategy.errors[:parameters]).to be_empty
           end
         end
@@ -51,7 +51,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
             expect(strategy).to be_invalid
 
-            expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
+            expect(strategy.errors[:parameters]).to eq([s_('Validation|parameters are invalid')])
           end
         end
 
@@ -83,7 +83,9 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
               expect(strategy).to be_invalid
 
-              expect(strategy.errors[:parameters]).to eq(['percentage must be a string between 0 and 100 inclusive'])
+              expect(strategy.errors[:parameters]).to eq([
+                s_('Validation|percentage must be a string between 0 and 100 inclusive')
+              ])
             end
           end
 
@@ -120,7 +122,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
               expect(strategy).to be_invalid
 
-              expect(strategy.errors[:parameters]).to eq(['groupId parameter is invalid'])
+              expect(strategy.errors[:parameters]).to eq([s_('Validation|groupId parameter is invalid')])
             end
           end
 
@@ -164,7 +166,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
             expect(strategy).to be_invalid
 
-            expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
+            expect(strategy.errors[:parameters]).to eq([s_('Validation|parameters are invalid')])
           end
         end
 
@@ -201,7 +203,9 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
               expect(strategy).to be_invalid
 
-              expect(strategy.errors[:parameters]).to eq(['rollout must be a string between 0 and 100 inclusive'])
+              expect(strategy.errors[:parameters]).to eq([
+                s_('Validation|rollout must be a string between 0 and 100 inclusive')
+              ])
             end
           end
 
@@ -307,7 +311,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
             expect(strategy).to be_invalid
 
-            expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
+            expect(strategy.errors[:parameters]).to eq([s_('Validation|parameters are invalid')])
           end
         end
 
@@ -365,7 +369,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
             expect(strategy).to be_invalid
 
-            expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
+            expect(strategy.errors[:parameters]).to eq([s_('Validation|parameters are invalid')])
           end
         end
 
@@ -394,7 +398,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
             expect(strategy).to be_invalid
 
-            expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
+            expect(strategy.errors[:parameters]).to eq([s_('Validation|parameters are invalid')])
           end
         end
 
@@ -435,7 +439,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
           expect(strategy).to be_invalid
 
-          expect(strategy.errors[:user_list]).to eq(['must belong to the same project'])
+          expect(strategy.errors[:user_list]).to eq([s_('Validation|must belong to the same project')])
         end
       end
 

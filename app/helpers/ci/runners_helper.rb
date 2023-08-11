@@ -71,7 +71,8 @@ module Ci
         new_runner_path: new_admin_runner_path,
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
-        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i,
+        tag_suggestions_path: tag_list_admin_runners_path(format: :json)
       }
     end
 

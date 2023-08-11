@@ -6,11 +6,17 @@
  * See EE version
  */
 export const provide = (elDataset) => {
-  const { runnerInstallHelpPage, onlineContactTimeoutSecs, staleTimeoutSecs } = elDataset;
+  const {
+    runnerInstallHelpPage,
+    onlineContactTimeoutSecs,
+    staleTimeoutSecs,
+    tagSuggestionsPath,
+  } = elDataset;
 
   return {
     runnerInstallHelpPage,
     onlineContactTimeoutSecs,
     staleTimeoutSecs,
+    tagSuggestionsPath,
   };
 };

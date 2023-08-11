@@ -39,8 +39,12 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     encrypted_tofa_url_iv
     vertex_project
   ], remove_with: '16.3', remove_after: '2023-07-22'
-  ignore_column :dashboard_notification_limit, remove_with: '16.5', remove_after: '2023-08-22'
   ignore_column :database_apdex_settings, remove_with: '16.4', remove_after: '2023-08-22'
+  ignore_columns %i[
+    dashboard_notification_limit
+    dashboard_enforcement_limit
+    dashboard_limit_new_namespace_creation_enforcement_date
+  ], remove_with: '16.5', remove_after: '2023-08-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

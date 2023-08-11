@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe StageEntity do
+RSpec.describe StageEntity, feature_category: :continuous_integration do
   let(:pipeline) { create(:ci_pipeline) }
   let(:request) { double('request') }
   let(:user) { create(:user) }

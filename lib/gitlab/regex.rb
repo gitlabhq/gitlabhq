@@ -312,11 +312,6 @@ module Gitlab
       /\A[a-z]([-_a-z0-9]*[a-z0-9])?\z/
     end
 
-    def feature_flag_regex_message
-      "can contain only lowercase letters, digits, '_' and '-'. " \
-      "Must start with a letter, and cannot end with '-' or '_'"
-    end
-
     # One or more `part`s, separated by separator
     def sep_by_1(separator, part)
       %r(#{part} (#{separator} #{part})*)x

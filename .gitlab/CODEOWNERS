@@ -59,16 +59,6 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /ee/app/finders/
 /rubocop/rubocop-migrations.yml
 
-[Create::IDE - Remote Development Scripts] @gitlab-org/maintainers/remote-development/backend
-# This entry must occur before `/scripts/` in order to be matched first
-/scripts/remote_development/
-
-# This entry must occur before `/scripts/glfm/**/*`/`/scripts/lib/glfm/**/*` in order to be matched first
-/scripts/glfm/**/*.js @gitlab-org/maintainers/frontend
-/scripts/lib/glfm/**/*.js @gitlab-org/maintainers/frontend
-/scripts/glfm/**/* @gitlab-org/maintainers/rails-backend
-/scripts/lib/glfm/**/* @gitlab-org/maintainers/rails-backend
-
 [Pipeline configuration] @gl-quality/eng-prod
 /.gitlab-ci.yml
 /.gitlab/ci/
@@ -84,14 +74,15 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /gems/gem.gitlab-ci.yml
 
 [Tooling] @gl-quality/eng-prod
-/.gitlab/CODEOWNERS
 Dangerfile
 /danger/
 /tooling/danger/
 /scripts/
 /scripts/**/*.rb @gl-quality/eng-prod @gitlab-org/maintainers/rails-backend
+/scripts/**/glfm/**/* @gl-quality/eng-prod @gitlab-org/maintainers/rails-backend
 /scripts/**/*.js @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
+/scripts/remote_development/ @gitlab-org/maintainers/remote-development/backend
 /scripts/review_apps/seed-dast-test-data.sh @gl-quality/eng-prod @dappelt @ngeorge1
 /.codeclimate.yml
 /.dockerignore
@@ -1491,12 +1482,14 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/graphql/resolvers/remote_development/
 /ee/app/controllers/remote_development/
 /ee/app/services/remote_development/
+/ee/lib/remote_development/
 /ee/spec/frontend/remote_development/
 /ee/spec/features/remote_development/
 /ee/spec/models/remote_development/
 /ee/spec/policies/remote_development/
 /ee/spec/requests/api/graphql/mutations/remote_development/
 /ee/spec/requests/api/graphql/remote_development/
+/ee/spec/features/remote_development/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
 /ee/spec/finders/remote_development/
 /ee/spec/support/shared_contexts/remote_development/
 /ee/spec/graphql/types/remote_development/
@@ -1505,13 +1498,12 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/fixtures/remote_development/
 /ee/spec/controllers/remote_development/
 /ee/spec/services/remote_development/
-/ee/lib/remote_development/
-/qa/qa/specs/features/ee/browser_ui/3_create/remote_development/
+/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/remote-development/backend @gl-quality/qe-maintainers
 
 [Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/remote-development/frontend
+/ee/app/assets/**/remote_development/
 /ee/app/views/remote_development/
-/ee/app/assets/javascripts/remote_development/
-/ee/app/assets/javascripts/pages/remote_development/
+/ee/spec/frontend/**/remote_development/
 
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
 

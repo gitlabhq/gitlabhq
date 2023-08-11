@@ -108,7 +108,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
 | `merge_request_iid`                      | integer           | yes         | The IID of a project merge request.
 | `note`                                   | string            | yes         | The content of a note.
 | `commit_id`                              | string            | no          | The SHA of a commit to associate the draft note to.
-| `in_reply_to_discussion_id`              | integer           | no          | The ID of a discussion the draft note replies to.
+| `in_reply_to_discussion_id`              | string            | no          | The ID of a discussion the draft note replies to.
 | `resolve_discussion`                     | boolean           | no          | The associated discussion should be resolved.
 | `position[base_sha]`                     | string            | yes         | Base commit SHA in the source branch. |
 | `position[head_sha]`                     | string            | yes         | SHA referencing HEAD of this merge request. |

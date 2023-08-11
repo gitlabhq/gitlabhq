@@ -137,7 +137,7 @@ module API
         requires :id,                        type: String,  desc: "The ID of a project."
         requires :merge_request_iid,         type: Integer, desc: "The ID of a merge request."
         requires :note,                      type: String,  desc: 'The content of a note.'
-        optional :in_reply_to_discussion_id, type: Integer, desc: 'The ID of a discussion the draft note replies to.'
+        optional :in_reply_to_discussion_id, type: String,  desc: 'The ID of a discussion the draft note replies to.'
         optional :commit_id,                 type: String,  desc: 'The sha of a commit to associate the draft note to.'
         optional :resolve_discussion,        type: Boolean, desc: 'The associated discussion should be resolved.'
         use :positional
