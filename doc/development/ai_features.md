@@ -211,7 +211,7 @@ tail -f log/llm.log
 
 In order to obtain a GCP service key for local development, please follow the steps below:
 
-- Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request). 
+- Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request).
 - In the GCP console, go to `IAM & Admin` > `Service Accounts` and click on the "Create new service account" button
 - Name the service account something specific to what you're using it for. Select Create and Continue. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
 - Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account.
@@ -242,18 +242,47 @@ Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 
 ### Testing GitLab Duo Chat with predefined questions
 
-Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use following commands to validate answers to some predefined questions:
-
-1. Rake task which iterates through questions defined in CSV file and checks tools used for evaluating each question.
+Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use the following rspecs to validate answers to some predefined questions:
 
 ```ruby
-rake gitlab:llm:zero_shot:test:questions[<issue_url>]
+export OPENAP_API_KEY='<key>'
+export ANTHROPIC_API_KEY='<key>'
+REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
 ```
 
-1. RSpec which iterates through resource-specific questions on predefined resources:
+When you need to update the test questions that require documentation embeddings,
+make sure a new fixture is generated and committed together with the change.
+
+#### Populating embeddings and using embeddings fixture
+
+To seed your development database with the embeddings for GitLab Documentation,
+you may use the pre-generated embeddings and a Rake test.
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:seed_pre_generated
+```
+
+The DBCleaner gem we use clear the database tables before each test runs.
+Instead of fully populating the table `tanuki_bot_mvc` where we store embeddings for the documentations,
+we can add a few selected embeddings to the table from a pre-generated fixture.
+
+For instance, to test that the question "How can I reset my password" is correctly
+retrieving the relevant embeddings and answered, we can extract the top N closet embeddings
+to the question into a fixture and only restore a small number of embeddings quickly.
+To faciliate an extraction process, a Rake task been written.
+You can add or remove the questions needed to be tested in the Rake task and run the task to generate a new fixture.
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:extract_embeddings
+```
+
+In the specs where you need to use the embeddings,
+use the RSpec config hook `:ai_embedding_fixtures` on a context.
 
 ```ruby
-ANTHROPIC_API_KEY='<key>' REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
+context 'when asking about how to use GitLab', :ai_embedding_fixtures do
+  # ...examples
+end
 ```
 
 ## Experimental REST API
