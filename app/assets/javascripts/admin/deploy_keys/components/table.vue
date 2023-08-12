@@ -277,6 +277,7 @@ export default {
     <gl-empty-state
       v-else
       :svg-path="emptyStateSvgPath"
+      :svg-height="150"
       :title="$options.i18n.emptyStateTitle"
       :description="$options.i18n.emptyStateDescription"
     />

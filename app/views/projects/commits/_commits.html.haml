@@ -44,7 +44,8 @@
 
 - if commits.size == 0 && context_commits.nil?
   .commits-empty.gl-mt-6
-    = custom_icon('illustration_no_commits')
+    .svg-content.svg-150
+      = image_tag('illustrations/empty-state/empty-search-md.svg')
     %h4
       = _('Your search didn\'t match any commits.')
     %p

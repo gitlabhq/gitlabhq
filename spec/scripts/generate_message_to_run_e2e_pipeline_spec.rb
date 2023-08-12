@@ -222,19 +222,20 @@ RSpec.describe GenerateMessageToRunE2ePipeline, feature_category: :tooling do
     let(:expected_content) do
       <<~MARKDOWN
       <!-- Run e2e warning begin -->
-      :warning: @#{author_username} Some end-to-end (E2E) tests have been selected based on the stage label on this MR.
+      @#{author_username} Some end-to-end (E2E) tests should run based on the stage label.
 
-      Please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure the tests in `follow-up-e2e:package-and-test-ee` pipeline
-      are passing **before this MR is merged**.
-      (The E2E test pipeline is computationally intensive and we cannot afford running it automatically for all pushes/rebases. Therefore, this job must be triggered manually after significant changes at least once.)
+      Please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure tests in the `follow-up-e2e:package-and-test-ee` pipeline
+      pass **before this MR is merged**.
+      (E2E tests are computationally intensive and don't run automatically for every push/rebase, so we ask you to run this job manually at least once.)
 
-      If you would like to run all E2E tests, please apply the ~"pipeline:run-all-e2e" label and trigger a new pipeline. This will run all tests in `e2e:package-and-test` pipeline.
+      To run all E2E tests, apply the ~"pipeline:run-all-e2e" label and run a new pipeline.
 
-      The E2E test jobs are allowed to fail due to [flakiness](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-metrics-dashboards/#package-and-test). For the list of known failures please refer to [the latest pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
+      E2E test jobs are allowed to fail due to [flakiness](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-metrics-dashboards/#package-and-test).
+      See current failures at the latest [pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
 
-      Once done, please apply the ✅ emoji on this comment.
+      Once done, apply the ✅ emoji on this comment.
 
-      For any questions or help in reviewing the E2E test results, please reach out on the internal #quality Slack channel.
+      For any questions or help, reach out on the internal #quality Slack channel.
       <!-- Run e2e warning end -->
       MARKDOWN
     end
