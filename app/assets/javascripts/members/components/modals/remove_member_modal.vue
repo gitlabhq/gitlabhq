@@ -103,7 +103,6 @@ export default {
     :title="actionText"
     :visible="removeMemberModalVisible"
     data-qa-selector="remove_member_modal"
-    data-testid="remove-member-modal-content"
     @primary="submitForm"
     @hide="hideRemoveMemberModal"
   >

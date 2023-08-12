@@ -125,7 +125,7 @@ export default {
             <dt>
               {{ __('MD5') }}
             </dt>
-            <dd class="fingerprint" data-testid="key-md5-fingerprint-content">
+            <dd class="fingerprint">
               {{ deployKey.fingerprint }}
             </dd>
           </template>

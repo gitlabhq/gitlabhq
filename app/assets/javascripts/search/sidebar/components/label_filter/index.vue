@@ -247,15 +247,10 @@ export default {
             <gl-form-checkbox-group v-model="selectedFilters">
               <label-dropdown-items
                 v-if="hasSelectedLabels"
-                data-testid="selected-lavel-items"
                 :labels="filteredAppliedSelectedLabels"
               />
               <gl-dropdown-divider v-if="hasSelectedLabels && hasUnselectedLabels" />
-              <label-dropdown-items
-                v-if="hasUnselectedLabels"
-                data-testid="unselected-lavel-items"
-                :labels="filteredUnselectedLabels"
-              />
+              <label-dropdown-items v-if="hasUnselectedLabels" :labels="filteredUnselectedLabels" />
             </gl-form-checkbox-group>
           </gl-dropdown-form>
         </div>

@@ -80,7 +80,6 @@ export default {
       :is-merge-train="isMergeTrain"
       :stages="stages"
       :update-dropdown="updateDropdown"
-      data-testid="pipeline-stages"
       @miniGraphStageClick="$emit('miniGraphStageClick')"
     />
     <gl-icon

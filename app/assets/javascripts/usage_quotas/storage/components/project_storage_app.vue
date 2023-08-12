@@ -133,7 +133,6 @@ export default {
               :href="$options.usageQuotasHelpPaths.usageQuotas"
               target="_blank"
               :aria-label="helpLinkAriaLabel($options.USAGE_QUOTAS_LABEL)"
-              data-testid="usage-quotas-help-link"
               >{{ $options.LEARN_MORE_LABEL }}</gl-link
             >
           </p>

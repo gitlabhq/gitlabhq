@@ -149,7 +149,6 @@ export default {
     :has-error="hasError"
     :content="expandedData"
     :loading-text="$options.i18n.loading"
-    data-testid="new-cq-widget"
     :summary="summary"
     :widget-name="$options.name"
     :status-icon-name="statusIcon"

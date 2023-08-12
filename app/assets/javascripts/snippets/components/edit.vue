@@ -262,7 +262,6 @@ export default {
             type="submit"
             variant="confirm"
             data-qa-selector="submit_button"
-            data-testid="snippet-submit-btn"
             :disabled="isUpdating"
             >{{ saveButtonLabel }}</gl-button
           >

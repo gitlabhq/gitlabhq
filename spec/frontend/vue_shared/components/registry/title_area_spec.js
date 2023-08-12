@@ -1,5 +1,4 @@
 import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
-import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import component from '~/vue_shared/components/registry/title_area.vue';
 
@@ -89,19 +88,17 @@ describe('title area', () => {
   `('$slotNames metadata slots', ({ slotNames }) => {
     const slots = generateSlotMocks(slotNames);
 
-    it('exist when the slot is present', async () => {
+    it('exist when the slot is present', () => {
       mountComponent({ slots });
 
-      await nextTick();
       slotNames.forEach((name) => {
         expect(findMetadataSlot(name).exists()).toBe(true);
       });
     });
 
-    it('is/are hidden when metadata-loading is true', async () => {
+    it('is/are hidden when metadata-loading is true', () => {
       mountComponent({ slots, propsData: { title: 'foo', metadataLoading: true } });
 
-      await nextTick();
       slotNames.forEach((name) => {
         expect(findMetadataSlot(name).exists()).toBe(false);
       });
@@ -111,18 +108,14 @@ describe('title area', () => {
   describe('metadata skeleton loader', () => {
     const slots = generateSlotMocks(['metadata-foo']);
 
-    it('is hidden when metadata loading is false', async () => {
+    it('is hidden when metadata loading is false', () => {
       mountComponent({ slots });
-
-      await nextTick();
 
       expect(findSkeletonLoader().exists()).toBe(false);
     });
 
-    it('is shown when metadata loading is true', async () => {
+    it('is shown when metadata loading is true', () => {
       mountComponent({ propsData: { metadataLoading: true }, slots });
-
-      await nextTick();
 
       expect(findSkeletonLoader().exists()).toBe(true);
     });

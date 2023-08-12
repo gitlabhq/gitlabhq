@@ -100,10 +100,10 @@ export default {
     <template #modal-title>{{ $options.i18n.title }}</template>
     <div>
       <gl-alert class="gl-mb-5" variant="danger" :dismissible="false">
-        <h4 v-if="isFork" data-testid="delete-alert-title" class="gl-alert-title">
+        <h4 v-if="isFork" class="gl-alert-title">
           {{ $options.i18n.isForkAlertTitle }}
         </h4>
-        <h4 v-else data-testid="delete-alert-title" class="gl-alert-title">
+        <h4 v-else class="gl-alert-title">
           {{ $options.i18n.isNotForkAlertTitle }}
         </h4>
         <ul>
@@ -130,16 +130,8 @@ export default {
             </gl-sprintf>
           </li>
         </ul>
-        <gl-sprintf
-          v-if="isFork"
-          data-testid="delete-alert-body"
-          :message="$options.i18n.isForkAlertBody"
-        />
-        <gl-sprintf
-          v-else
-          data-testid="delete-alert-body"
-          :message="$options.i18n.isNotForkAlertBody"
-        >
+        <gl-sprintf v-if="isFork" :message="$options.i18n.isForkAlertBody" />
+        <gl-sprintf v-else :message="$options.i18n.isNotForkAlertBody">
           <template #strong="{ content }">
             <strong>{{ content }}</strong>
           </template>

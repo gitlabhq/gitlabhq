@@ -33,6 +33,10 @@ module QA
           "/projects/#{project.id}/cluster_agents"
         end
 
+        def api_delete_path
+          api_get_path
+        end
+
         def api_post_body
           {
             id: project.id,

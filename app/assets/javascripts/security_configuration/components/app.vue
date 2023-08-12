@@ -182,7 +182,7 @@ export default {
         <section-layout class="gl-border-b-0" :heading="$options.i18n.securityTesting">
           <template #description>
             <p>
-              <span data-testid="latest-pipeline-info-security">
+              <span>
                 <gl-sprintf
                   v-if="latestPipelinePath"
                   :message="$options.i18n.latestPipelineDescription"

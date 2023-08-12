@@ -165,7 +165,7 @@ module QA
           raise ArgumentError, "Please use :minimum, :maximum, :count, or :between so that all is more reliable"
         end
 
-        wait_for_requests
+        wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
 
         all(element_selector_css(name), **kwargs)
       end
@@ -381,7 +381,7 @@ module QA
       end
 
       def within_element(name, **kwargs, &block)
-        wait_for_requests(skip_finished_loading_check: kwargs.delete(:skip_finished_loading_check))
+        wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
         text = kwargs.delete(:text)
 
         page.within(element_selector_css(name, kwargs), text: text, &block)

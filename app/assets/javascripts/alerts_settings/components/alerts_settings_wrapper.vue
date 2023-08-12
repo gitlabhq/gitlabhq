@@ -396,7 +396,7 @@ export default {
       />
     </gl-tab>
     <gl-tab :title="$options.i18n.settingsTabs.integrationSettings">
-      <alerts-form class="gl-pt-3" data-testid="alert-integration-settings-tab" />
+      <alerts-form class="gl-pt-3" />
     </gl-tab>
   </gl-tabs>
 </template>

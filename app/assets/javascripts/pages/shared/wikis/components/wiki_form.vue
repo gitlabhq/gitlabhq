@@ -344,7 +344,7 @@ export default {
       </div>
     </div>
 
-    <div class="row" data-testid="wiki-form-content-fieldset">
+    <div class="row">
       <div class="col-sm-12 row-sm-5">
         <gl-form-group>
           <markdown-editor

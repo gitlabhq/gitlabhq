@@ -83,7 +83,6 @@ terraform init \\
         :title="$options.i18n.copyToClipboardText"
         :text="getModalInfoCopyStr()"
         :modal-id="$options.modalId"
-        data-testid="init-command-copy-clipboard"
         css-classes="gl-align-self-start gl-ml-2"
       />
     </div>

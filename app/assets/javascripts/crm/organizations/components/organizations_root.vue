@@ -226,7 +226,6 @@ export default {
               <gl-button
                 v-if="canAdminCrmOrganization"
                 v-gl-tooltip.hover.bottom="$options.i18n.editButtonLabel"
-                data-testid="edit-organization-button"
                 icon="pencil"
                 :aria-label="$options.i18n.editButtonLabel"
               />

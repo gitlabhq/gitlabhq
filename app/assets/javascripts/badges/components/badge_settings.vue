@@ -110,11 +110,7 @@ export default {
 
       <div v-if="addFormVisible" class="gl-new-card-add-form gl-m-5">
         <h4 class="gl-mt-0">{{ $options.i18n.addFormTitle }}</h4>
-        <badge-form
-          :is-editing="false"
-          data-testid="add-new-badge"
-          @close-add-form="closeAddForm"
-        />
+        <badge-form :is-editing="false" @close-add-form="closeAddForm" />
       </div>
 
       <badge-list />

@@ -68,11 +68,7 @@ export default {
       </gl-link>
     </template>
     <template #left-secondary>
-      <abuse-category
-        :category="report.category"
-        class="gl-mt-2 gl-mb-3"
-        data-testid="abuse-report-category"
-      />
+      <abuse-category :category="report.category" class="gl-mt-2 gl-mb-3" />
     </template>
 
     <template #right-secondary>

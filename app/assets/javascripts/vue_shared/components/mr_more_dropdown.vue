@@ -283,7 +283,6 @@ export default {
 
         <gl-disclosure-dropdown-item
           v-if="isOpen && canUpdateMergeRequest"
-          data-testid="close-merge-request"
           @action="stateAction('close')"
         >
           <template #list-item>

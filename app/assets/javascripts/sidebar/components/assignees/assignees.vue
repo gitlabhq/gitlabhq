@@ -49,7 +49,7 @@ export default {
   <div>
     <collapsed-assignee-list :users="sortedAssigness" :issuable-type="issuableType" />
 
-    <div data-testid="expanded-assignee" class="value hide-collapsed">
+    <div class="value hide-collapsed">
       <span v-if="hasNoUsers" class="no-value" data-testid="no-value">
         {{ __('None') }}
         <template v-if="editable">

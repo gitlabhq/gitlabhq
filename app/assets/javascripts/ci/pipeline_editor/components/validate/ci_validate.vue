@@ -201,7 +201,6 @@ export default {
           :title="$options.i18n.pipelineSourceTooltip"
           :toggle-text="$options.i18n.pipelineSourceDefault"
           disabled
-          data-testid="pipeline-source"
         />
         <validate-pipeline-popover />
         <gl-icon

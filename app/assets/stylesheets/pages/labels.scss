@@ -91,12 +91,10 @@
 
     .prioritized-labels:not(.is-not-draggable) & {
       cursor: grab;
-      border: 1px solid transparent;
 
       &:hover,
       &:focus-within {
-        background-color: $white;
-        border-color: $gray-50;
+        background-color: $blue-50;
       }
 
       &:active {

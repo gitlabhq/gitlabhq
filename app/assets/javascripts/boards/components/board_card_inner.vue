@@ -306,7 +306,7 @@ export default {
         </span>
         <span class="board-info-items gl-mt-3 gl-display-inline-block">
           <span v-if="shouldRenderEpicCountables" data-testid="epic-countables">
-            <gl-tooltip :target="() => $refs.countBadge" data-testid="epic-countables-tooltip">
+            <gl-tooltip :target="() => $refs.countBadge">
               <p v-if="allowSubEpics" class="gl-font-weight-bold gl-m-0">
                 {{ __('Epics') }} &#8226;
                 <span class="gl-font-weight-normal">

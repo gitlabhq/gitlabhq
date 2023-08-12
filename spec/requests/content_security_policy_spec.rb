@@ -7,7 +7,6 @@ require 'spec_helper'
 # of testing in application_controller_spec.
 RSpec.describe 'Content Security Policy', feature_category: :application_instrumentation do
   let(:snowplow_host) { 'snowplow.example.com' }
-  let(:vite_origin) { "#{ViteRuby.instance.config.host}:#{ViteRuby.instance.config.port}" }
 
   shared_examples 'snowplow is not in the CSP' do
     it 'does not add the snowplow collector hostname to the CSP' do
@@ -46,33 +45,6 @@ RSpec.describe 'Content Security Policy', feature_category: :application_instrum
       end
 
       it_behaves_like 'snowplow is not in the CSP'
-    end
-
-    context 'when vite enabled during development' do
-      before do
-        stub_rails_env('development')
-        stub_feature_flags(vite: true)
-
-        get explore_root_url
-      end
-
-      it 'adds vite csp' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers['Content-Security-Policy']).to include(vite_origin)
-      end
-    end
-
-    context 'when vite disabled' do
-      before do
-        stub_feature_flags(vite: false)
-
-        get explore_root_url
-      end
-
-      it "doesn't add vite csp" do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers['Content-Security-Policy']).not_to include(vite_origin)
-      end
     end
   end
 end

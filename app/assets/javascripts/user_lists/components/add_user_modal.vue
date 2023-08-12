@@ -55,7 +55,6 @@ export default {
   <gl-modal
     v-bind="$options.modalOptions"
     :visible="visible"
-    data-testid="add-users-modal"
     @primary="submitUsers"
     @canceled="clearInput"
   >

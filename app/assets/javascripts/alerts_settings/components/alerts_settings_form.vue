@@ -550,7 +550,6 @@ export default {
             variant="confirm"
             category="secondary"
             class="gl-ml-3 js-no-auto-disable"
-            data-testid="integration-form-test-and-submit"
             data-qa-selector="save_and_create_alert_button"
             @click="submit(true)"
           >

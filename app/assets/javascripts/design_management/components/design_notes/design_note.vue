@@ -312,7 +312,6 @@ export default {
           icon="ellipsis_v"
           category="tertiary"
           data-qa-selector="design_discussion_actions_ellipsis_dropdown"
-          data-testid="more-actions-dropdown"
           text-sr-only
           :title="$options.i18n.moreActionsLabel"
           :aria-label="$options.i18n.moreActionsLabel"

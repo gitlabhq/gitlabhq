@@ -41,6 +41,9 @@ export default {
   created() {
     this.recalculateMetadataSlots();
   },
+  updated() {
+    this.recalculateMetadataSlots();
+  },
   methods: {
     recalculateMetadataSlots() {
       const METADATA_PREFIX = 'metadata-';

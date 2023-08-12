@@ -48,7 +48,6 @@ export default {
     category="secondary"
     icon="doc-text"
     :aria-label="$options.i18n.metadataLabel"
-    data-testid="metadata-button"
     @click="selectSecureFile()"
   />
 </template>

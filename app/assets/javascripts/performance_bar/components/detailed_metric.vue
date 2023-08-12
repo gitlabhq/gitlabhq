@@ -171,7 +171,7 @@ export default {
                 sprintf(__('%{duration}ms'), { duration: item.duration })
               }}</span>
             </td>
-            <td data-testid="performance-item-content">
+            <td>
               <div>
                 <div
                   v-for="(key, keyIndex) in keys"

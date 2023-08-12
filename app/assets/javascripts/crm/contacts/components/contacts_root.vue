@@ -231,7 +231,6 @@ export default {
               <gl-button
                 v-if="canAdminCrmContact"
                 v-gl-tooltip.hover.bottom="$options.i18n.editButtonLabel"
-                data-testid="edit-contact-button"
                 icon="pencil"
                 :aria-label="$options.i18n.editButtonLabel"
               />

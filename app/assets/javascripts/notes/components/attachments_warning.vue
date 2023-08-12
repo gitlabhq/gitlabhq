@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-  <div class="issuable-note-warning" data-testid="attachment-warning">
+  <div class="issuable-note-warning">
     {{ message }}
   </div>
 </template>

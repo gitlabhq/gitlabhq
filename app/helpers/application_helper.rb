@@ -485,15 +485,6 @@ module ApplicationHelper
     end
   end
 
-  def controller_full_path
-    action = case controller.action_name
-             when 'create' then 'new'
-             when 'update' then 'edit'
-             else controller.action_name
-             end
-    "#{controller.controller_path}/#{action}"
-  end
-
   private
 
   def browser_id

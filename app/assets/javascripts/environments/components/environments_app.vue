@@ -250,7 +250,6 @@ export default {
       v-if="canSetupReviewApp"
       v-model="isReviewAppModalVisible"
       :modal-id="$options.modalId"
-      data-testid="enable-review-app-modal"
     />
     <stop-stale-environments-modal
       v-if="canCleanUpEnvs"

@@ -147,7 +147,6 @@ export default {
         <template v-if="confirmCleanup">
           <gl-button
             :disabled="!canSubmit"
-            data-testid="remove-integration-and-resources-modal-button"
             variant="danger"
             category="primary"
             @click="handleSubmit(true)"

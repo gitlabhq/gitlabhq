@@ -545,7 +545,6 @@ export default {
     </header>
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
-      data-testid="mr-suggest-pipeline"
       class="mr-widget-workflow"
       :pipeline-path="mr.mergeRequestAddCiConfigPath"
       :pipeline-svg-path="mr.pipelinesEmptySvgPath"

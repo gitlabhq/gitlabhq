@@ -24,6 +24,15 @@ module QA
         self
       end
 
+      def connect!
+        validate_dependencies
+
+        @provider.validate_dependencies
+        @provider.connect
+
+        self
+      end
+
       def remove!
         @provider.teardown
       end
@@ -36,8 +45,24 @@ module QA
         cluster_name
       end
 
-      def install_kubernetes_agent(agent_token)
-        @provider.install_kubernetes_agent(agent_token: agent_token, kas_address: fetch_kas_address)
+      def install_kubernetes_agent(agent_token, agent_name)
+        @provider.install_kubernetes_agent(agent_token: agent_token, kas_address: fetch_kas_address,
+          agent_name: agent_name)
+      end
+
+      def uninstall_kubernetes_agent(agent_name)
+        @provider.uninstall_kubernetes_agent(agent_name: agent_name)
+      end
+
+      def setup_workspaces_in_cluster
+        @provider.install_ngnix_ingress
+        @provider.install_gitlab_workspaces_proxy
+      end
+
+      def update_dns_with_load_balancer_ip
+        load_balancer_ip = shell("kubectl -n ingress-nginx get svc ingress-nginx-controller \
+          -o jsonpath='{.status.loadBalancer.ingress[0].ip}'")
+        @provider.update_dns(load_balancer_ip)
       end
 
       def create_secret(secret, secret_name)

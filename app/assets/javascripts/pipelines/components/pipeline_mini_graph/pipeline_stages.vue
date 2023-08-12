@@ -38,7 +38,7 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="pipeline-stages" class="gl-display-inline gl-vertical-align-middle">
+  <div class="gl-display-inline gl-vertical-align-middle">
     <div
       v-for="stage in stages"
       :key="stage.name"

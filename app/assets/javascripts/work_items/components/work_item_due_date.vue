@@ -219,7 +219,6 @@ export default {
           ref="startDatePicker"
           v-model="dirtyStartDate"
           container="body"
-          data-testid="work-item-start-date-picker"
           :disabled="isDatepickerDisabled"
           :input-id="$options.startDateInputId"
           show-clear-button
@@ -250,7 +249,6 @@ export default {
           ref="dueDatePicker"
           v-model="dirtyDueDate"
           container="body"
-          data-testid="work-item-due-date-picker"
           :disabled="isDatepickerDisabled"
           :input-id="$options.dueDateInputId"
           :min-date="dirtyStartDate"

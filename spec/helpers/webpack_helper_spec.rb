@@ -34,22 +34,4 @@ RSpec.describe WebpackHelper do
       expect(output).to eq("<link rel=\"prefetch\" href=\"#{asset_path}\">")
     end
   end
-
-  context 'when vite enabled' do
-    let(:bundle) { 'bundle.js' }
-
-    before do
-      stub_rails_env('development')
-      stub_feature_flags(vite: true)
-
-      allow(helper).to receive(:vite_javascript_tag).and_return('vite')
-      allow(helper).to receive(:vite_running).and_return(true)
-    end
-
-    describe '#webpack_bundle_tag' do
-      it 'return vite javascript tag' do
-        expect(helper.webpack_bundle_tag(bundle)).to eq('vite')
-      end
-    end
-  end
 end

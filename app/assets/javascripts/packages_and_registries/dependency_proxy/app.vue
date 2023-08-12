@@ -160,11 +160,7 @@ export default {
 
 <template>
   <div>
-    <gl-alert
-      v-if="showDeleteCacheAlert"
-      data-testid="delete-cache-alert"
-      @dismiss="showDeleteCacheAlert = false"
-    >
+    <gl-alert v-if="showDeleteCacheAlert" @dismiss="showDeleteCacheAlert = false">
       {{ deleteCacheAlertMessage }}
     </gl-alert>
     <title-area :title="$options.i18n.pageTitle">

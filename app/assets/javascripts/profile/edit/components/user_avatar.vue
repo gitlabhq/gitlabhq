@@ -97,10 +97,7 @@ export default {
           {{ $options.i18n.uploadNewAvatar }}
         </h5>
         <div class="gl-display-flex gl-align-items-center gl-my-3">
-          <gl-button
-            class="js-choose-user-avatar-button"
-            data-testid="select-avatar-trigger-button"
-          >
+          <gl-button class="js-choose-user-avatar-button">
             {{ $options.i18n.chooseFile }}
           </gl-button>
           <span class="gl-ml-3 js-avatar-filename">{{ $options.i18n.noFileChosen }}</span>

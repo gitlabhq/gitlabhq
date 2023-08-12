@@ -105,7 +105,7 @@ export default {
 </script>
 
 <template>
-  <div data-testid="text-widget">
+  <div>
     <gl-form-group
       :description="description"
       :invalid-feedback="invalidFeedbackMessage"

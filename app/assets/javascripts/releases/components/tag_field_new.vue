@@ -95,7 +95,6 @@ export default {
       :state="!showTagNameValidationError"
       :invalid-feedback="tagFeedback"
       optional
-      data-testid="tag-name-field"
     >
       <gl-dropdown
         :id="id"

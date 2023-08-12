@@ -225,7 +225,6 @@ export default {
   <gl-modal
     :ref="modalId"
     v-bind="$attrs"
-    data-testid="modal-delete"
     :modal-id="modalId"
     :title="title"
     :action-primary="primaryOptions"
