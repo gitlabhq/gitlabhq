@@ -688,6 +688,9 @@ Settings.cron_jobs['global_metrics_update_worker']['job_class'] ||= 'Metrics::Gl
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker'] ||= {}
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['cron'] ||= '*/6 * * * *'
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['job_class'] = 'ObjectStorage::DeleteStaleDirectUploadsWorker'
+Settings.cron_jobs['service_desk_custom_email_verification_cleanup'] ||= {}
+Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['cron'] ||= '*/2 * * * *'
+Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['job_class'] = 'ServiceDesk::CustomEmailVerificationCleanupWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

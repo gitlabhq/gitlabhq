@@ -7,5 +7,9 @@ FactoryBot.define do
     project
     triggerer factory: :user
     triggered_at { Time.current }
+
+    trait :overdue do
+      triggered_at { (ServiceDesk::CustomEmailVerification::TIMEFRAME + 1).minutes.ago }
+    end
   end
 end

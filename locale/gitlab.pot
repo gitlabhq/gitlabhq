@@ -50475,10 +50475,10 @@ msgstr ""
 msgid "UsageQuota|Dependency proxy"
 msgstr ""
 
-msgid "UsageQuota|Filter chart by month"
+msgid "UsageQuota|Filter charts by year"
 msgstr ""
 
-msgid "UsageQuota|Filter charts by year"
+msgid "UsageQuota|Filter projects data by month"
 msgstr ""
 
 msgid "UsageQuota|For more information about storage limits, see our %{faq_link_start}FAQ%{link_end}."
@@ -50592,13 +50592,13 @@ msgstr ""
 msgid "UsageQuota|The %{strong_start}%{context_name}%{strong_end} project will be affected by this. "
 msgstr ""
 
+msgid "UsageQuota|The chart and the table below show usage for %{month} %{year}"
+msgstr ""
+
 msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. Group owners can view namespace storage usage and purchase more from %{strong_start}%{usage_quotas_nav_instruction}%{strong_end}. %{docs_link_start}How can I manage my storage%{link_end}?"
 msgstr ""
 
 msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. View and manage your usage from %{strong_start}%{usage_quotas_nav_instruction}%{strong_end}. %{docs_link_start}Learn more%{link_end} about how to reduce your storage."
-msgstr ""
-
-msgid "UsageQuota|The table below shows usage since %{usageSince}"
 msgstr ""
 
 msgid "UsageQuota|This namespace has %{planLimit} of storage. %{linkStart}How are limits applied?%{linkEnd}"

@@ -21,11 +21,6 @@ in the project's default branch.
 The [default issue closing pattern](../user/project/issues/managing_issues.md#default-closing-pattern)
 covers a wide range of words. You can change the pattern to suit your needs.
 
-NOTE:
-To test the issue closing pattern, use <https://rubular.com>.
-However, Rubular doesn't understand `%{issue_ref}`. When testing your patterns,
-replace this string with `#\d+`, which matches only local issue references like `#123`.
-
 To change the default issue closing pattern:
 
 ::Tabs
@@ -108,3 +103,7 @@ To change the default issue closing pattern:
    ```
 
 ::EndTabs
+
+To test the issue closing pattern, use <https://rubular.com>.
+However, Rubular doesn't understand `%{issue_ref}`. When testing your patterns,
+replace this string with `#\d+`, which matches only local issue references like `#123`.

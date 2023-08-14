@@ -115,6 +115,8 @@ Depending on your role, you can also use the following methods to manage or redu
 - [Manage artifact expiration period](../ci/yaml/index.md#artifactsexpire_in).
 - [Reduce build artifact storage](../ci/jobs/job_artifacts.md#delete-job-log-and-artifacts).
 
+To automate storage usage analysis and management, see the [storage management automation](storage_management_automation.md) documentation.
+
 ## Manage your transfer usage
 
 Depending on your role, to manage your transfer usage you can [reduce Container Registry data transfers](packages/container_registry/reduce_container_registry_data_transfer.md).

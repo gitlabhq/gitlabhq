@@ -44,8 +44,7 @@ Under this objective the following steps are expected:
 
 1. **Allow to share cluster-wide data with database-level data access layer.**
 
-    Cells can connect to a database containing shared data. For example:
-    application settings, users, or routing information.
+    Cells can connect to a database containing shared data. For example: application settings, users, or routing information.
 
 1. **Evaluate the efficiency of database-level access vs. API-oriented access layer.**
 
@@ -108,8 +107,7 @@ The first 2-3 quarters are required to define a general split of data and build 
 
 1. **User can push to Git repository.**
 
-    The purpose is to ensure that essential joins from the Projects table are properly attributed to be
-    Cell-local, and as a result the essential Git workflow is supported.
+    The purpose is to ensure that essential joins from the Projects table are properly attributed to be Cell-local, and as a result the essential Git workflow is supported.
 
 1. **User can run CI pipeline.**
 
@@ -269,13 +267,12 @@ One iteration describes one quarter's worth of work.
 
     - Essential workflows: User can create Project.
     - Routing: Technology.
+    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer
 
 1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - FY24Q4
 
     - Essential workflows: User can push to Git repository.
-    - Essential workflows: User can run CI pipeline.
     - Essential workflows: User can create issue, merge request, and merge it after it is green.
-    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer
     - Data access layer: Cluster-unique identifiers.
     - Routing: Cell discovery.
     - Routing: Router endpoints classification.
@@ -283,6 +280,26 @@ One iteration describes one quarter's worth of work.
 
 1. Iteration 5 - FY25Q1
 
+    - Essential workflows: User can run CI pipeline.
+    - Essential workflows: Instance-wide settings are shared across cluster.
+    - Essential workflows: User can change profile avatar that is shared in cluster.
+    - Essential workflows: User can create issue, merge request, and merge it after it is green.
+    - Essential workflows: User can manage Group and Project members.
+    - Essential workflows: User can manage instance-wide runners.
+    - Essential workflows: User is part of Organization and can only see information from the Organization.
+    - Routing: GraphQL and other ambiguous endpoints.
+    - Data access layer: Allow to share cluster-wide data with database-level data access layer.
+    - Data access layer: Cluster-wide deletions.
+    - Data access layer: Data access layer.
+    - Data access layer: Database migrations.
+
+1. Iteration 6 - FY25Q2
+    - TBD
+
+1. Iteration 7 - FY25Q3
+    - TBD
+
+1. Iteration 8 - FY25Q4
     - TBD
 
 ## Technical Proposals

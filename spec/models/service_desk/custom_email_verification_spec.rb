@@ -96,6 +96,20 @@ RSpec.describe ServiceDesk::CustomEmailVerification, feature_category: :service_
     end
   end
 
+  describe 'scopes' do
+    let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
+    let_it_be(:other_project) { create(:project) }
+    let_it_be(:overdue_verification) do
+      create(:service_desk_custom_email_verification, :overdue, project: other_project)
+    end
+
+    describe '.overdue' do
+      it 'returns verifications that are overdue' do
+        expect(described_class.overdue).to eq([overdue_verification])
+      end
+    end
+  end
+
   describe '#accepted_until' do
     it 'returns nil' do
       expect(subject.accepted_until).to be_nil
