@@ -210,7 +210,7 @@ gem 'asciidoctor-plantuml', '~> 0.0.16'
 gem 'asciidoctor-kroki', '~> 0.8.0', require: false
 gem 'rouge', '~> 4.1.3'
 gem 'truncato', '~> 0.7.12'
-gem 'nokogiri', '~> 1.15', '>= 1.15.3'
+gem 'nokogiri', '~> 1.15', '>= 1.15.4'
 
 # Calendar rendering
 gem 'icalendar'

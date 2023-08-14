@@ -7682,7 +7682,7 @@ msgstr ""
 msgid "Billing|An error occurred while loading billable members list."
 msgstr ""
 
-msgid "Billing|An error occurred while loading details for the Code Suggestions add-on."
+msgid "Billing|An error occurred while loading details for the Code Suggestions add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
 msgid "Billing|An error occurred while loading pending members list"
@@ -7706,6 +7706,12 @@ msgstr ""
 msgid "Billing|Enter at least three characters to search."
 msgstr ""
 
+msgid "Billing|Error assigning Code Suggestions add-on"
+msgstr ""
+
+msgid "Billing|Error un-assigning Code Suggestions add-on"
+msgstr ""
+
 msgid "Billing|Explore paid plans"
 msgstr ""
 
@@ -7723,6 +7729,9 @@ msgstr[1] ""
 msgid "Billing|Members who were invited via a group invitation cannot be removed. You can either remove the entire group, or ask an Owner of the invited group to remove the member."
 msgstr ""
 
+msgid "Billing|No seats available"
+msgstr ""
+
 msgid "Billing|No users to display."
 msgstr ""
 
@@ -7733,6 +7742,12 @@ msgid "Billing|Project invite"
 msgstr ""
 
 msgid "Billing|Remove user %{username} from your subscription"
+msgstr ""
+
+msgid "Billing|Something went wrong when assigning the add-on to this member. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
+msgstr ""
+
+msgid "Billing|Something went wrong when un-assigning the add-on to this member. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
 msgid "Billing|Subscription end"
@@ -7760,6 +7775,9 @@ msgid "Billing|View pending approvals"
 msgstr ""
 
 msgid "Billing|You are about to remove user %{username} from your subscription. If you continue, the user will be removed from the %{namespace} group and all its subgroups and projects. This action can't be undone."
+msgstr ""
+
+msgid "Billing|You have assigned all available Code Suggestions add-on seats. Please %{salesLinkStart}contact sales%{salesLinkEnd} if you would like to purchase more seats."
 msgstr ""
 
 msgid "Billing|Your group recently changed to use the Free plan. %{over_limit_message} You can free up space for new members by removing those who no longer need access or toggling them to over-limit. To get an unlimited number of members, you can %{link_start}upgrade%{link_end} to a paid tier."

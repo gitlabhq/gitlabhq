@@ -262,6 +262,21 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION set_has_merge_request_on_vulnerability_reads() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+UPDATE
+  vulnerability_reads
+SET
+  has_merge_request = true
+WHERE
+  vulnerability_id = NEW.vulnerability_id AND has_merge_request IS FALSE;
+RETURN NULL;
+
+END
+$$;
+
 CREATE FUNCTION trigger_07bc3c48f407() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -358,6 +373,36 @@ BEGIN
     vulnerability_reads
   SET
     has_issues = false
+  WHERE
+    vulnerability_id = OLD.vulnerability_id;
+
+  RETURN NULL;
+END
+$$;
+
+CREATE FUNCTION unset_has_merge_request_on_vulnerability_reads() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  has_merge_request_links integer;
+BEGIN
+  PERFORM 1
+  FROM
+    vulnerability_reads
+  WHERE
+    vulnerability_id = OLD.vulnerability_id
+  FOR UPDATE;
+
+  SELECT 1 INTO has_merge_request_links FROM vulnerability_merge_request_links WHERE vulnerability_id = OLD.vulnerability_id LIMIT 1;
+
+  IF (has_merge_request_links = 1) THEN
+    RETURN NULL;
+  END IF;
+
+  UPDATE
+    vulnerability_reads
+  SET
+    has_merge_request = false
   WHERE
     vulnerability_id = OLD.vulnerability_id;
 
@@ -20451,7 +20496,8 @@ CREATE TABLE plan_limits (
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     ci_max_artifact_size_annotations integer DEFAULT 0 NOT NULL,
     ci_job_annotations_size integer DEFAULT 81920 NOT NULL,
-    ci_job_annotations_num integer DEFAULT 20 NOT NULL
+    ci_job_annotations_num integer DEFAULT 20 NOT NULL,
+    file_size_limit_mb double precision DEFAULT 100.0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -35845,6 +35891,10 @@ CREATE TRIGGER trigger_update_details_on_project_update AFTER UPDATE ON projects
 CREATE TRIGGER trigger_update_has_issues_on_vulnerability_issue_links_delete AFTER DELETE ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION unset_has_issues_on_vulnerability_reads();
 
 CREATE TRIGGER trigger_update_has_issues_on_vulnerability_issue_links_update AFTER INSERT ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION set_has_issues_on_vulnerability_reads();
+
+CREATE TRIGGER trigger_update_has_merge_request_on_vulnerability_mr_links_dele AFTER DELETE ON vulnerability_merge_request_links FOR EACH ROW EXECUTE FUNCTION unset_has_merge_request_on_vulnerability_reads();
+
+CREATE TRIGGER trigger_update_has_merge_request_on_vulnerability_mr_links_upda AFTER INSERT ON vulnerability_merge_request_links FOR EACH ROW EXECUTE FUNCTION set_has_merge_request_on_vulnerability_reads();
 
 CREATE TRIGGER trigger_update_location_on_vulnerability_occurrences_update AFTER UPDATE ON vulnerability_occurrences FOR EACH ROW WHEN (((new.report_type = ANY (ARRAY[2, 7])) AND (((old.location ->> 'image'::text) IS DISTINCT FROM (new.location ->> 'image'::text)) OR (((old.location -> 'kubernetes_resource'::text) ->> 'agent_id'::text) IS DISTINCT FROM ((new.location -> 'kubernetes_resource'::text) ->> 'agent_id'::text))))) EXECUTE FUNCTION update_location_from_vulnerability_occurrences();
 

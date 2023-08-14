@@ -46,10 +46,20 @@ RSpec.describe Gitlab::Checks::GlobalFileSizeCheck, feature_category: :source_co
         end
       end
 
-      it 'logs a message with blob size' do
+      it 'logs a message with blob size and raises an exception' do
         expect(Gitlab::AppJsonLogger).to receive(:info).with('Checking for blobs over the file size limit')
         expect(Gitlab::AppJsonLogger).to receive(:info).with(message: 'Found blob over global limit', blob_sizes: [10])
-        subject.validate!
+        expect { subject.validate! }.to raise_exception(Gitlab::GitAccess::ForbiddenError)
+      end
+
+      context 'when the enforce_global_file_size_limit feature flag is disabled' do
+        before do
+          stub_feature_flags(enforce_global_file_size_limit: false)
+        end
+
+        it 'does not raise an exception' do
+          expect { subject.validate! }.not_to raise_error
+        end
       end
     end
   end
