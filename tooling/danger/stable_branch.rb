@@ -146,26 +146,20 @@ module Tooling
       end
 
       def targeting_patchable_version?
-        raise VersionApiError if last_three_minor_versions.empty?
+        raise VersionApiError if current_stable_version.empty?
 
-        last_three_minor_versions.include?(targeted_version)
+        current_stable_version == targeted_version
       rescue VersionApiError
         warn FAILED_VERSION_REQUEST_MESSAGE
         true
       end
 
-      def last_three_minor_versions
-        return [] unless versions
+      def current_stable_version
+        return unless versions
 
         current_version = versions.first.match(VERSION_REGEX)
-        version_1 = previous_minor_version(current_version)
-        version_2 = previous_minor_version(version_1)
 
-        [
-          version_to_minor_string(current_version),
-          version_to_minor_string(version_1),
-          version_to_minor_string(version_2)
-        ]
+        version_to_minor_string(current_version)
       end
 
       def targeted_version
@@ -173,7 +167,7 @@ module Tooling
       end
 
       def versions(page = 1)
-        version_api_endpoint = "https://version.gitlab.com/api/v1/versions?per_page=50&page=#{page}"
+        version_api_endpoint = "https://version.gitlab.com/api/v1/versions?per_page=20&page=#{page}"
         response = HTTParty.get(version_api_endpoint) # rubocop:disable Gitlab/HTTParty
 
         raise VersionApiError unless response.success?
@@ -181,33 +175,6 @@ module Tooling
         version_list = response.parsed_response.map { |v| v['version'] } # rubocop:disable Rails/Pluck
 
         version_list.sort_by { |v| Gem::Version.new(v) }.reverse
-      end
-
-      def previous_minor_version(version)
-        previous_minor = version[:minor].to_i - 1
-
-        return "#{version[:major]}.#{previous_minor}".match(VERSION_REGEX) if previous_minor >= 0
-
-        fetch_last_minor_version_for_major(version[:major].to_i - 1)
-      end
-
-      def fetch_last_minor_version_for_major(major)
-        page = 1
-        last_minor_version = nil
-
-        while last_minor_version.nil?
-          last_minor_version = versions(page).find do |version|
-            version.split('.').first.to_i == major
-          end
-
-          break if page > 10
-
-          page += 1
-        end
-
-        raise VersionApiError if last_minor_version.nil?
-
-        last_minor_version.match(VERSION_REGEX)
       end
 
       def version_to_minor_string(version)
