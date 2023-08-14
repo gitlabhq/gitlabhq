@@ -59,6 +59,8 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
     end
 
     context 'when not applicable' do
+      let(:current_stable_branch) { '15-1-stable-ee' }
+
       where(:stable_branch?, :security_mr?) do
         true  | true
         false | true
@@ -67,7 +69,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
 
       with_them do
         before do
-          allow(fake_helper).to receive(:mr_target_branch).and_return(stable_branch? ? '15-1-stable-ee' : 'main')
+          allow(fake_helper).to receive(:mr_target_branch).and_return(stable_branch? ? current_stable_branch : 'main')
           allow(fake_helper).to receive(:security_mr?).and_return(security_mr?)
         end
 
@@ -239,7 +241,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       end
 
       context 'when not an applicable version' do
-        let(:target_branch) { '14-9-stable-ee' }
+        let(:target_branch) { '15-0-stable-ee' }
 
         it 'warns about the package-and-test pipeline and the version' do
           expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
@@ -296,18 +298,6 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         end
 
         it_behaves_like 'without a failure'
-      end
-
-      context 'when too many version API requests are made' do
-        let(:parsed_response) { [{ 'version' => '15.0.0' }] }
-
-        it 'adds a warning' do
-          expect(HTTParty).to receive(:get).and_return(version_response).at_least(10).times
-          expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
-          expect(stable_branch).to receive(:warn).with(described_class::FAILED_VERSION_REQUEST_MESSAGE)
-
-          subject
-        end
       end
     end
   end
