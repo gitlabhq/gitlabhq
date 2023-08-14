@@ -996,6 +996,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       let(:label_a) { label }
       let(:label_b) { label2 }
       let(:label_c) { label3 }
+      let(:label_locked) { create(:label, title: 'locked', project: project, lock_on_merge: true) }
       let(:issuable) { issue }
 
       it_behaves_like 'updating issuable labels'

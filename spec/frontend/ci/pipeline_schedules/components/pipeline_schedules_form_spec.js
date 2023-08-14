@@ -21,6 +21,7 @@ import {
   createScheduleMutationResponse,
   updateScheduleMutationResponse,
   mockSinglePipelineScheduleNode,
+  mockSinglePipelineScheduleNodeNoVars,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -51,6 +52,9 @@ describe('Pipeline schedules form', () => {
   const dailyLimit = '';
 
   const querySuccessHandler = jest.fn().mockResolvedValue(mockSinglePipelineScheduleNode);
+  const querySuccessEmptyVarsHandler = jest
+    .fn()
+    .mockResolvedValue(mockSinglePipelineScheduleNodeNoVars);
   const queryFailedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   const createMutationHandlerSuccess = jest.fn().mockResolvedValue(createScheduleMutationResponse);
@@ -95,6 +99,10 @@ describe('Pipeline schedules form', () => {
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key');
   const findValueInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-value');
+  const findHiddenValueInputs = () =>
+    wrapper.findAllByTestId('pipeline-form-ci-variable-hidden-value');
+  const findVariableSecurityBtn = () => wrapper.findByTestId('variable-security-btn');
+
   const findRemoveIcons = () => wrapper.findAllByTestId('remove-ci-variable-row');
 
   const addVariableToForm = () => {
@@ -241,6 +249,12 @@ describe('Pipeline schedules form', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
+    it('does not show variable security button', () => {
+      createComponent();
+
+      expect(findVariableSecurityBtn().exists()).toBe(false);
+    });
+
     describe('schedule creation success', () => {
       let mock;
 
@@ -336,6 +350,26 @@ describe('Pipeline schedules form', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
+    it('shows variable security button', async () => {
+      createComponent(shallowMountExtended, true, [
+        [getPipelineSchedulesQuery, querySuccessHandler],
+      ]);
+
+      await waitForPromises();
+
+      expect(findVariableSecurityBtn().exists()).toBe(true);
+    });
+
+    it('does not show variable security button with no present variables', async () => {
+      createComponent(shallowMountExtended, true, [
+        [getPipelineSchedulesQuery, querySuccessEmptyVarsHandler],
+      ]);
+
+      await waitForPromises();
+
+      expect(findVariableSecurityBtn().exists()).toBe(false);
+    });
+
     describe('schedule fetch success', () => {
       it('fetches schedule and sets form data correctly', async () => {
         createComponent(mountExtended, true, [[getPipelineSchedulesQuery, querySuccessHandler]]);
@@ -351,8 +385,13 @@ describe('Pipeline schedules form', () => {
         expect(findVariableRows()).toHaveLength(3);
         expect(findKeyInputs().at(0).element.value).toBe(variables[0].key);
         expect(findKeyInputs().at(1).element.value).toBe(variables[1].key);
-        expect(findValueInputs().at(0).element.value).toBe(variables[0].value);
-        expect(findValueInputs().at(1).element.value).toBe(variables[1].value);
+        // values are hidden on load when editing a schedule
+        expect(findHiddenValueInputs().at(0).element.value).toBe('*****************');
+        expect(findHiddenValueInputs().at(1).element.value).toBe('*****************');
+        expect(findHiddenValueInputs().at(0).attributes('disabled')).toBe('disabled');
+        expect(findHiddenValueInputs().at(1).attributes('disabled')).toBe('disabled');
+        // empty placeholder to create a new variable
+        expect(findValueInputs()).toHaveLength(1);
       });
     });
 
@@ -431,6 +470,24 @@ describe('Pipeline schedules form', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while updating the pipeline schedule.',
       });
+    });
+
+    it('hides/shows variable values', async () => {
+      createComponent(mountExtended, true, [[getPipelineSchedulesQuery, querySuccessHandler]]);
+
+      await waitForPromises();
+
+      // shows two hidden values and one placeholder
+      expect(findHiddenValueInputs()).toHaveLength(2);
+      expect(findValueInputs()).toHaveLength(1);
+
+      findVariableSecurityBtn().vm.$emit('click');
+
+      await nextTick();
+
+      // shows all variable values
+      expect(findHiddenValueInputs()).toHaveLength(0);
+      expect(findValueInputs()).toHaveLength(3);
     });
   });
 });

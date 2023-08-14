@@ -240,20 +240,15 @@ check out. The merge request widget displays any security warnings detected,
 For more information, see
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
 
-## Auto License Compliance **(ULTIMATE)**
+<!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
 
-> Introduced in GitLab 11.0.
+## Auto License Compliance (removed) **(ULTIMATE)**
 
-License Compliance uses the
-[License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/license-finder)
-to search the project dependencies for their license. The Auto License Compliance stage
-is skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421363) in 16.3.
+Use Auto Dependency Scanning instead.
 
-After creating the report, it's uploaded as an artifact which you can later download and
-check out. The merge request displays any detected licenses.
-
-For more information, see
-[License Compliance](../../user/compliance/license_compliance/index.md).
+<!--- end_remove -->
 
 ## Auto Container Scanning
 

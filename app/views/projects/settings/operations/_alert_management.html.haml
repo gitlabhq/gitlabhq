@@ -9,7 +9,7 @@
       = _('Alerts')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = _('Expand')
-    %p
+    %p.gl-text-secondary.gl-mb-0
       = _('Display alerts from all configured monitoring tools.')
       = link_to _('Learn more.'), help_page_path('operations/incident_management/integrations.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content

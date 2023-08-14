@@ -36,9 +36,6 @@ export const i18n = {
   },
 };
 
-const bodyTrClass =
-  'gl-border-1 gl-border-t-solid gl-border-b-solid gl-border-gray-100 gl-hover-cursor-pointer gl-hover-bg-blue-50 gl-hover-border-blue-200';
-
 export default {
   i18n,
   typeSet,
@@ -85,20 +82,23 @@ export default {
     {
       key: 'active',
       label: __('Status'),
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'name',
       label: s__('AlertsIntegrations|Integration Name'),
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'type',
       label: __('Type'),
+      tdClass: 'gl-vertical-align-middle!',
       formatter: (value) => (value === typeSet.prometheus ? capitalize(value) : value),
     },
     {
       key: 'actions',
-      thClass: `gl-text-center`,
-      tdClass: `gl-text-center`,
+      thClass: 'gl-text-right',
+      tdClass: 'gl-text-right gl-vertical-align-middle!',
       label: __('Actions'),
     },
   ],
@@ -127,12 +127,6 @@ export default {
     this.observer.observe(this.$el);
   },
   methods: {
-    tbodyTrClass(item) {
-      return {
-        [bodyTrClass]: this.integrations?.length,
-        'gl-bg-blue-50': (item !== null && item.id) === this.currentIntegration?.id,
-      };
-    },
     trackPageViews() {
       const { category, action } = trackAlertIntegrationsViewsOptions;
       Tracking.event(category, action);
@@ -160,7 +154,6 @@ export default {
       :fields="$options.fields"
       :busy="loading"
       stacked="md"
-      :tbody-tr-class="tbodyTrClass"
       show-empty
     >
       <template #cell(active)="{ item }">
@@ -187,7 +180,7 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <gl-button-group class="gl-ml-3">
+        <gl-button-group class="gl-ml-3 gl-mt-n2 gl-mb-n2">
           <gl-button
             icon="settings"
             :aria-label="$options.i18n.editIntegration"
@@ -204,17 +197,14 @@ export default {
       </template>
 
       <template #table-busy>
-        <gl-loading-icon size="lg" color="dark" class="mt-3" />
+        <gl-loading-icon size="sm" />
       </template>
 
       <template #empty>
-        <div
-          class="gl-border-t-solid gl-border-b-solid gl-border-1 gl-border gl-border-gray-100 mt-n3 gl-px-5"
-        >
-          <p class="gl-text-gray-400 gl-py-3 gl-my-3">{{ $options.i18n.emptyState }}</p>
-        </div>
+        <p class="gl-new-card-empty gl-text-center gl-mb-0">{{ $options.i18n.emptyState }}</p>
       </template>
     </gl-table>
+
     <gl-modal
       modal-id="deleteIntegration"
       :title="$options.i18n.deleteIntegration"

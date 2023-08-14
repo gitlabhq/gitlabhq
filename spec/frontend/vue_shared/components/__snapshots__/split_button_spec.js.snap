@@ -12,6 +12,7 @@ exports[`SplitButton renders actionItems 1`] = `
   menu-class=""
   size="medium"
   split="true"
+  splithref=""
   text="professor"
   variant="default"
 >

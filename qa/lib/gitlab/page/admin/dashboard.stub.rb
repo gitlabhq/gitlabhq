@@ -51,30 +51,6 @@ module Gitlab
         def billable_users?
           # This is a stub, used for indexing. The method is dynamically generated.
         end
-
-        # @note Defined as +h3 :number_of_users+
-        # @return [String] The text content or value of +number_of_users+
-        def number_of_users
-          # This is a stub, used for indexing. The method is dynamically generated.
-        end
-
-        # @example
-        #   Gitlab::Page::Admin::Dashboard.perform do |dashboard|
-        #     expect(dashboard.number_of_users_element).to exist
-        #   end
-        # @return [Watir::H3] The raw +H3+ element
-        def number_of_users_element
-          # This is a stub, used for indexing. The method is dynamically generated.
-        end
-
-        # @example
-        #   Gitlab::Page::Admin::Dashboard.perform do |dashboard|
-        #     expect(dashboard).to be_number_of_users
-        #   end
-        # @return [Boolean] true if the +number_of_users+ element is present on the page
-        def number_of_users?
-          # This is a stub, used for indexing. The method is dynamically generated.
-        end
       end
     end
   end

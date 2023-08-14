@@ -200,7 +200,7 @@ describe('NotificationsDropdown', () => {
         noFlip: true,
       });
 
-      expect(findDropdown().attributes('no-flip')).toBe('true');
+      expect(findDropdown().props('noFlip')).toBe(true);
     });
   });
 

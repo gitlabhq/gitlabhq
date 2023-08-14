@@ -21,3 +21,5 @@ class Projects::Ci::PipelineEditorController < Projects::ApplicationController
     render_404 unless can_collaborate_with_project?(@project)
   end
 end
+
+Projects::Ci::PipelineEditorController.prepend_mod

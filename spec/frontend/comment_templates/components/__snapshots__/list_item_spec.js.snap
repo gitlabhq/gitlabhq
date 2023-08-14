@@ -26,7 +26,6 @@ exports[`Comment templates list item component renders list item 1`] = `
           class="btn btn-default btn-md gl-button btn-default-tertiary gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
           data-testid="base-dropdown-toggle"
           id="actions-toggle-3"
-          listeners="[object Object]"
           type="button"
         >
           <!---->

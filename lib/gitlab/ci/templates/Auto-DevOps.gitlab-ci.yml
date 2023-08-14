@@ -16,7 +16,6 @@
 # Test jobs may be disabled by setting environment variables:
 # * test: TEST_DISABLED
 # * code_quality: CODE_QUALITY_DISABLED
-# * license_management: LICENSE_MANAGEMENT_DISABLED
 # * browser_performance: BROWSER_PERFORMANCE_DISABLED
 # * load_performance: LOAD_PERFORMANCE_DISABLED
 # * sast: SAST_DISABLED
@@ -178,7 +177,6 @@ include:
   - template: Security/DAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml
   - template: Jobs/Container-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml
-  - template: Jobs/License-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/License-Scanning.gitlab-ci.yml
   - template: Jobs/SAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml
 

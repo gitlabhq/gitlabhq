@@ -13,6 +13,18 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## 16.3.0
 
+- For Go applications, [`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)
+  introduced a hard limit of 8192 bits for RSA keys. In the context of Go applications at GitLab, RSA keys can be configured for:
+
+  - [Container Registry](../../administration/packages/container_registry.md)
+  - [Gitaly](../../administration/gitaly/configure_gitaly.md#enable-tls-support)
+  - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates)
+  - [Workhorse](../../development/workhorse/configuration.md#tls-support)
+
+  You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)
+  for any of the applications above before
+  upgrading.
+
 ### Linux package installations
 
 Specific information applies to Linux package installations:

@@ -12,15 +12,11 @@ module Gitlab
         label :terms_of_services, text: /I agree that/
         button :remove_license
         button :confirm_remove_license
-        p :plan
-        p :started
-        p :name
-        p :company
-        p :email
-        h2 :billable_users
-        h2 :maximum_users
+        td :plan
+        td :name
+        td :company
+        td :email
         h2 :users_in_subscription
-        h2 :users_over_subscription
         table :subscription_history
 
         div :no_valid_license_alert, text: /no longer has a valid license/

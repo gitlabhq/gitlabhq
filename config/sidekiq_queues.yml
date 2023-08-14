@@ -445,6 +445,8 @@
   - 1
 - - package_cleanup
   - 1
+- - package_metadata_advisory_scan
+  - 1
 - - package_repositories
   - 1
 - - packages_composer_cache_update

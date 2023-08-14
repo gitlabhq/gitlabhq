@@ -132,6 +132,17 @@ RSpec.shared_examples 'updating issuable labels' do
       expect(issuable.labels).to contain_exactly(label_c)
     end
   end
+
+  context 'when remove_label_ids contains a locked label' do
+    let(:params) { { remove_label_ids: [label_locked.id] } }
+
+    it 'removes locked labels for non-merged issuables' do
+      issuable.update!(labels: [label_a, label_locked])
+      update_issuable(params)
+
+      expect(issuable.label_ids).to contain_exactly(label_a.id)
+    end
+  end
 end
 
 RSpec.shared_examples 'keeps issuable labels sorted after update' do

@@ -5,9 +5,14 @@ import savedRepliesResponse from 'test_fixtures/graphql/comment_templates/saved_
 import { mockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
 import savedRepliesQuery from '~/vue_shared/components/markdown/saved_replies.query.graphql';
+import {
+  TRACKING_SAVED_REPLIES_USE,
+  TRACKING_SAVED_REPLIES_USE_IN_MR,
+} from '~/vue_shared/components/markdown/constants';
 
 let wrapper;
 let savedRepliesResp;
@@ -36,6 +41,18 @@ function createComponent(options = {}) {
 function findDropdownComponent() {
   return wrapper.findComponent(GlCollapsibleListbox);
 }
+
+async function selectSavedReply() {
+  const dropdown = findDropdownComponent();
+
+  dropdown.vm.$emit('shown');
+
+  await waitForPromises();
+
+  dropdown.vm.$emit('select', savedRepliesResponse.data.currentUser.savedReplies.nodes[0].id);
+}
+
+useMockLocationHelper();
 
 describe('Comment templates dropdown', () => {
   it('fetches data when dropdown gets opened', async () => {
@@ -69,22 +86,44 @@ describe('Comment templates dropdown', () => {
       expect(wrapper.emitted().select[0]).toEqual(['Saved Reply Content']);
     });
 
-    it('tracks the usage of the saved comment', async () => {
-      const dropdown = findDropdownComponent();
+    describe('tracking', () => {
+      it('tracks overall usage', async () => {
+        await selectSavedReply();
 
-      dropdown.vm.$emit('shown');
+        expect(trackingSpy).toHaveBeenCalledWith(
+          expect.any(String),
+          TRACKING_SAVED_REPLIES_USE,
+          expect.any(Object),
+        );
+      });
 
-      await waitForPromises();
+      describe('MR-specific usage event', () => {
+        it('is sent when in an MR', async () => {
+          window.location.toString.mockReturnValue('this/looks/like/a/-/merge_requests/1');
 
-      dropdown.vm.$emit('select', savedRepliesResponse.data.currentUser.savedReplies.nodes[0].id);
+          await selectSavedReply();
 
-      await waitForPromises();
+          expect(trackingSpy).toHaveBeenCalledWith(
+            expect.any(String),
+            TRACKING_SAVED_REPLIES_USE_IN_MR,
+            expect.any(Object),
+          );
+          expect(trackingSpy).toHaveBeenCalledTimes(2);
+        });
 
-      expect(trackingSpy).toHaveBeenCalledWith(
-        expect.any(String),
-        'i_code_review_saved_replies_use',
-        expect.any(Object),
-      );
+        it('is not sent when not in an MR', async () => {
+          window.location.toString.mockReturnValue('this/looks/like/a/-/issues/1');
+
+          await selectSavedReply();
+
+          expect(trackingSpy).not.toHaveBeenCalledWith(
+            expect.any(String),
+            TRACKING_SAVED_REPLIES_USE_IN_MR,
+            expect.any(Object),
+          );
+          expect(trackingSpy).toHaveBeenCalledTimes(1);
+        });
+      });
     });
   });
 });

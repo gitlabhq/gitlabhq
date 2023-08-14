@@ -51,10 +51,8 @@ License Compliance Scanning does not support run-time installation of compilers 
 
 ## Enable License Compliance
 
-To enable License Compliance in your project's pipeline, either:
+To enable License Compliance in your project's pipeline:
 
-- Enable [Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance)
-  (provided by [Auto DevOps](../../../topics/autodevops/index.md)).
 - Include the [`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 License Compliance is not supported when GitLab is run with FIPS mode enabled.

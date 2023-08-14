@@ -65,7 +65,7 @@ module Emails
       @target_url = profile_personal_access_tokens_url
       @token_name = token_name
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("A new personal access token has been created")))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("A new personal access token has been created")))
     end
 
     def access_token_about_to_expire_email(user, token_names)

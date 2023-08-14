@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Label do
+RSpec.describe Label, feature_category: :team_planning do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project) { create(:project) }
 
   describe 'modules' do
@@ -162,11 +164,54 @@ RSpec.describe Label do
     end
   end
 
+  describe 'ensure_lock_on_merge_allowed' do
+    let(:validation_error) { 'can not be set for template labels' }
+
+    # rubocop:disable Rails/SaveBang
+    context 'when creating a label' do
+      let(:label) { described_class.create(title: 'test', template: template, lock_on_merge: lock_on_merge) }
+
+      where(:template, :lock_on_merge, :valid, :errors) do
+        false         | false        | true    | []
+        false         | true         | true    | []
+        true          | false        | true    | []
+        true          | true         | false   | [validation_error]
+        false         | true         | true    | []
+      end
+
+      with_them do
+        it 'validates lock_on_merge on label creation' do
+          expect(label.valid?).to be(valid)
+          expect(label.errors[:lock_on_merge]).to eq(errors)
+        end
+      end
+    end
+    # rubocop:enable Rails/SaveBang
+
+    context 'when updating a label' do
+      let_it_be(:template_label) { create(:label, template: true) }
+
+      where(:lock_on_merge, :valid, :errors) do
+        true         | false   | [validation_error]
+        false        | true    | []
+      end
+
+      with_them do
+        it 'validates lock_on_merge value if label is a template' do
+          template_label.update_column(:lock_on_merge, lock_on_merge)
+
+          expect(template_label.valid?).to be(valid)
+          expect(template_label.errors[:lock_on_merge]).to eq(errors)
+        end
+      end
+    end
+  end
+
   describe 'scopes' do
     describe '.on_board' do
       let(:board) { create(:board, project: project) }
-      let!(:list1)   { create(:list, board: board, label: development) }
-      let!(:list2)   { create(:list, board: board, label: testing) }
+      let!(:list1) { create(:list, board: board, label: development) }
+      let!(:list2) { create(:list, board: board, label: testing) }
 
       let!(:development) { create(:label, project: project, name: 'Development') }
       let!(:testing) { create(:label, project: project, name: 'Testing') }
@@ -174,6 +219,34 @@ RSpec.describe Label do
 
       it 'returns only the board labels' do
         expect(described_class.on_board(board.id)).to match_array([development, testing])
+      end
+    end
+
+    describe '.with_lock_on_merge' do
+      let(:label) { create(:label, project: project, name: 'Label') }
+      let(:label_locked) { create(:label, project: project, name: 'Label locked', lock_on_merge: true) }
+
+      it 'return only locked labels' do
+        expect(described_class.with_lock_on_merge).to match_array([label_locked])
+      end
+    end
+  end
+
+  describe 'destroying labels' do
+    context 'when lock_on_merge is true' do
+      it 'prevents label from being destroyed' do
+        label = create(:label, lock_on_merge: true)
+
+        expect(label.destroy).to be false
+      end
+    end
+
+    context 'when lock_on_merge is false' do
+      it 'allows label to be destroyed' do
+        label = create(:label, lock_on_merge: false)
+
+        expect(label.destroy).to eq label
+        expect(label.destroyed?).to be_truthy
       end
     end
   end

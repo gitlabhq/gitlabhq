@@ -316,7 +316,7 @@ end
 
 RSpec.shared_examples 'work items notifications' do
   let(:actions_dropdown_selector) { '[data-testid="work-item-actions-dropdown"]' }
-  let(:notifications_toggle_selector) { '[data-testid="notifications-toggle-action"] > button' }
+  let(:notifications_toggle_selector) { '[data-testid="notifications-toggle-action"] button[role="switch"]' }
 
   it 'displays toast when notification is toggled' do
     find(actions_dropdown_selector).click

@@ -176,8 +176,19 @@ module MergeRequests
         params.delete(:allow_collaboration)
       end
 
+      filter_locked_labels(merge_request)
       filter_reviewer(merge_request)
       filter_suggested_reviewers
+    end
+
+    # Filter out any locked labels that are requested to be removed.
+    # Only supported for merged MRs.
+    def filter_locked_labels(merge_request)
+      return unless params[:remove_label_ids].present?
+      return unless merge_request.merged?
+      return unless Feature.enabled?(:enforce_locked_labels_on_merge, merge_request.project, type: :ops)
+
+      params[:remove_label_ids] -= labels_service.filter_locked_labels_ids_in_param(:remove_label_ids)
     end
 
     def filter_reviewer(merge_request)

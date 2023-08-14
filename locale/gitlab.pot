@@ -4451,6 +4451,9 @@ msgstr ""
 msgid "AlertSettings|A webhook URL and authorization key is generated for the integration. After you save the integration, both are visible under the “View credentials” tab."
 msgstr ""
 
+msgid "AlertSettings|Active alerts"
+msgstr ""
+
 msgid "AlertSettings|Add new integration"
 msgstr ""
 
@@ -49043,7 +49046,7 @@ msgstr ""
 msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, ask your top-level group owner(s) to reduce the number of users in your top-level group to %{free_limit} users or less, or to upgrade to a paid tier which do not have user limits."
 msgstr ""
 
-msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users. To minimize the impact to operations, for a limited time, GitLab is offering a %{promotion_link_start}one-time 70 percent discount%{link_end} off the list price at time of purchase for a new, one year subscription of GitLab Premium SaaS to %{offer_availability_link_start}qualifying top-level groups%{link_end}. The offer is valid until %{offer_date}."
+msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
 msgstr ""
 
 msgid "To replace phone verification with credit card verification, create a phone verification exemption using the button below."
@@ -55015,6 +55018,9 @@ msgid "can not be changed to %{new_type}"
 msgstr ""
 
 msgid "can not be changed when assigned to an epic"
+msgstr ""
+
+msgid "can not be set for template labels"
 msgstr ""
 
 msgid "can not be set for this resource"

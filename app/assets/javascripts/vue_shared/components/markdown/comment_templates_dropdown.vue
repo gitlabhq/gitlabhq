@@ -1,8 +1,10 @@
 <script>
 import { GlCollapsibleListbox, GlTooltip, GlButton } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
 import { InternalEvents } from '~/tracking';
 import savedRepliesQuery from './saved_replies.query.graphql';
+import { TRACKING_SAVED_REPLIES_USE, TRACKING_SAVED_REPLIES_USE_IN_MR } from './constants';
 
 export default {
   apollo: {
@@ -54,10 +56,14 @@ export default {
       this.commentTemplateSearch = search;
     },
     onSelect(id) {
+      const isInMr = Boolean(getDerivedMergeRequestInformation({ endpoint: window.location }).id);
       const savedReply = this.savedReplies.find((r) => r.id === id);
       if (savedReply) {
         this.$emit('select', savedReply.content);
-        this.track_event('i_code_review_saved_replies_use');
+        this.track_event(TRACKING_SAVED_REPLIES_USE);
+        if (isInMr) {
+          this.track_event(TRACKING_SAVED_REPLIES_USE_IN_MR);
+        }
       }
     },
   },

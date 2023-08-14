@@ -138,7 +138,7 @@ describe('NewResourceDropdown component', () => {
           });
 
           it('dropdown button is not a link', () => {
-            expect(findDropdown().attributes('split-href')).toBeUndefined();
+            expect(findDropdown().props('splitHref')).toBe('');
           });
 
           it('displays default text on the dropdown button', () => {
@@ -162,7 +162,7 @@ describe('NewResourceDropdown component', () => {
           it('dropdown button is a link', () => {
             const href = joinPaths(project1.webUrl, DASH_SCOPE, expectedPath);
 
-            expect(findDropdown().attributes('split-href')).toBe(href);
+            expect(findDropdown().props('splitHref')).toBe(href);
           });
 
           it('displays project name on the dropdown button', () => {
@@ -199,7 +199,7 @@ describe('NewResourceDropdown component', () => {
       await nextTick();
       const dropdown = findDropdown();
 
-      expect(dropdown.attributes('split-href')).toBe(
+      expect(dropdown.props('splitHref')).toBe(
         joinPaths(project1.webUrl, DASH_SCOPE, 'issues/new'),
       );
       expect(dropdown.props('text')).toBe(`New issue in ${project1.name}`);
@@ -217,7 +217,7 @@ describe('NewResourceDropdown component', () => {
       await nextTick();
       const dropdown = findDropdown();
 
-      expect(dropdown.attributes('split-href')).toBe(
+      expect(dropdown.props('splitHref')).toBe(
         joinPaths(project1.webUrl, DASH_SCOPE, 'issues/new'),
       );
       expect(dropdown.props('text')).toBe(`New issue in ${project1.name}`);

@@ -34,7 +34,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
       expect(subscription_button).to have_css("button.is-checked")
 
       # Toggle subscription.
-      find('[data-testid="subscription-toggle"]').click
+      subscription_button.find('button').click
       wait_for_requests
 
       # Check we're unsubscribed.
@@ -66,7 +66,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
       expect(subscription_button).to have_css("button:not(.is-checked)")
 
       # Toggle subscription.
-      find('[data-testid="subscription-toggle"]').click
+      subscription_button.find('button').click
       wait_for_requests
 
       # Check we're subscribed.

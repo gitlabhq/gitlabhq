@@ -27,3 +27,5 @@ class MergeRequestSerializer < BaseSerializer
     super(merge_request, opts, entity)
   end
 end
+
+MergeRequestSerializer.prepend_mod

@@ -124,7 +124,6 @@ To enable all GitLab Security scanning tools, with default settings, enable
 - [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection)
 - [Auto DAST](../../topics/autodevops/stages.md#auto-dast)
 - [Auto Dependency Scanning](../../topics/autodevops/stages.md#auto-dependency-scanning)
-- [Auto License Compliance](../../topics/autodevops/stages.md#auto-license-compliance)
 - [Auto Container Scanning](../../topics/autodevops/stages.md#auto-container-scanning)
 
 While you cannot directly customize Auto DevOps, you can [include the Auto DevOps template in your project's `.gitlab-ci.yml` file](../../topics/autodevops/customize.md#customize-gitlab-ciyml).

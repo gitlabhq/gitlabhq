@@ -193,6 +193,26 @@ For example, if you select a 30-day range, a forecast for the following 15 days 
 
 Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
 
+### Generate issue descriptions **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's
+GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
+
+You can generate the description for an issue from a short summary.
+
+1. Create a new issue.
+1. Above the **Description** field, select **AI actions > Generate issue description**.
+1. Write a short description and select **Submit**.
+
+The issue description is replaced with AI-generated text.
+
+Provide feedback on this experimental feature in [issue 409844](https://gitlab.com/gitlab-org/gitlab/-/issues/409844).
+
+**Data usage**: When you use this feature, the text you enter is sent to the large
+language model referenced above.
+
 ## Data Usage
 
 GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function.

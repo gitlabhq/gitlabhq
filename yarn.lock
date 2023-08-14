@@ -1132,14 +1132,13 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.59.0.tgz#21090154aa7987e059264e13182c4c60e6d0d4b3"
   integrity sha512-5+FZ0Clwtf2X6oHEEVCwbhqhmnxT8Ds1CGFxHzzWsvQ5Hkdt658BVAicsbvQSU+TuEIhnKOK3BfooyleMUwLlQ==
 
-"@gitlab/ui@64.20.1":
-  version "64.20.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-64.20.1.tgz#4ca5ca7a854be5c15afcc464d16498b9b833ad6e"
-  integrity sha512-yB4gRRzQCIQxxHnD50j3uOAcg5mhSBw9+tRi9kDqn+CxozDUNC/SNfTy+v7cTLJBn2mdxHfw++cuJcH3gRajxQ==
+"@gitlab/ui@65.0.1":
+  version "65.0.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-65.0.1.tgz#4ce7ff6cc9c1ceb54111ba095bb64944f577390d"
+  integrity sha512-cVMYYJPRwtNviReOVU3U08wFUt8k8Lo/ypbTgpWdio42kldr2foj5xRTN3jsKu5WwlePA6WEGOryl4MsGaQXhg==
   dependencies:
     "@floating-ui/dom" "1.2.9"
     bootstrap-vue "2.23.1"
-    dompurify "^2.4.5"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"
