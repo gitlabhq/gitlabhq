@@ -46,7 +46,7 @@
       = s_('ProjectSettings|Badges')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary.gl-mb-0
       = s_('ProjectSettings|Customize this project\'s badges.')
       = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges')
   .settings-content

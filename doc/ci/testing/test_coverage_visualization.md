@@ -41,7 +41,7 @@ Other coverage analysis frameworks support the format out of the box, for exampl
 - [Coverage.py](https://coverage.readthedocs.io/en/coverage-5.0.4/cmd.html#xml-reporting) (Python)
 - [PHPUnit](https://github.com/sebastianbergmann/phpunit-documentation-english/blob/master/src/textui.rst#command-line-options) (PHP)
 
-After configuration, if your merge request triggers a pipeline that collects coverage reports, the coverage information is displayed in the diff view. This includes reports 
+After configuration, if your merge request triggers a pipeline that collects coverage reports, the coverage information is displayed in the diff view. This includes reports
 from any job in any stage in the pipeline. The coverage displays for each line:
 
 - `covered` (green): lines which have been checked at least once by tests

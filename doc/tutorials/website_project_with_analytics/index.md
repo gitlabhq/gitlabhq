@@ -82,7 +82,7 @@ To create a project label, in the `My website` project:
 
 1. Select **Manage > Labels**.
 1. Select **New label**.
-1. In the **Title** field, enter `feature request`. 
+1. In the **Title** field, enter `feature request`.
 1. Optional. In the **Description** field, enter additional information about how and when to use this label.
 1. Optional. Select a color by selecting from the available colors, or enter a hex color value for a specific color in the **Background color** field.
 1. Select **Create label**.

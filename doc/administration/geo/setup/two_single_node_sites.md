@@ -7,7 +7,7 @@ type: howto
 
 # Set up Geo for two single-node sites **(PREMIUM SELF)**
 
-The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances. 
+The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances.
 
 Prerequisites:
 
@@ -166,7 +166,7 @@ Prerequisites:
    This command uses the `external_url` defined in `/etc/gitlab/gitlab.rb`.
 
 1. Create a password for the `gitlab` database user.
-   
+
    1. Generate a MD5 hash of the desired password:
 
       ```shell
@@ -504,7 +504,7 @@ secondary site is a read-only copy.
 GitLab stores a number of secret values in `/etc/gitlab/gitlab-secrets.json`.
 This JSON file must be the same across each of the site nodes.
 You must manually replicate the secret file across all of your secondary sites, although
-[issue 3789](https://gitlab.com/gitlab-org/gitlab/-/issues/3789) proposes to change this behavior. 
+[issue 3789](https://gitlab.com/gitlab-org/gitlab/-/issues/3789) proposes to change this behavior.
 
 1. SSH into a Rails node on your primary site, and execute the command below:
 
@@ -566,7 +566,7 @@ You must manually replicate the secret file across all of your secondary sites, 
 
 1. Copy OpenSSH host keys from the primary site.
 
-   - If you can access as root one of the primary site nodes serving SSH traffic (usually, the main GitLab Rails application nodes): 
+   - If you can access as root one of the primary site nodes serving SSH traffic (usually, the main GitLab Rails application nodes):
 
      ```shell
      # Run this from the secondary site, change `<primary_site_fqdn>` for the IP or FQDN of the server

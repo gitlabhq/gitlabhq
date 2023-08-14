@@ -31,7 +31,7 @@ Specific information applies to Linux package installations:
   drop support for it.
 
   For more information, see:
- 
+
   - [OpenSSH 8.8 release notes](https://www.openssh.com/txt/release-8.8).
   - [An informal explanation](https://gitlab.com/gitlab-org/gitlab/-/issues/416714#note_1482388504).
   - `omnibus-gitlab` [merge request 7035](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7035), which introduces the environment variable.

@@ -16,7 +16,6 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::OperationsMenu, feature_cate
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
       :dependency_proxy,
-      :container_registry,
       :group_kubernetes_clusters
     ])
   end

@@ -115,7 +115,7 @@ at the [instance level](#instance-level-default-branch-protection) and
    and force push.
 
 WARNING:
-Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables. 
+Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.
 
 ### Instance-level default branch protection **(FREE SELF)**
 

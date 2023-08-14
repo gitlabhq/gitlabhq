@@ -304,7 +304,7 @@ To approve members that are pending because they've exceeded the user cap:
 
 The user cap cannot be enabled if a group, subgroup, or project is shared externally. If a group, subgroup,
 or project is shared externally, it is shared outside of the namespace hierarchy, regardless of its level
-in the hierarchy. 
+in the hierarchy.
 
 To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only within the top-level namespace. This ensure that groups in the same top-leve namespace can be invited, and prevents the addition of new users (seats) when the group is shared.
 
@@ -503,7 +503,7 @@ To disable third-party AI features for a group:
 1. Select **Save changes**.
 
 When Code Suggestions are enabled and disabled, an
-[audit event](../../administration/audit_events.md#view-audit-events) is created. 
+[audit event](../../administration/audit_events.md#view-audit-events) is created.
 
 ## Group activity analytics **(PREMIUM)**
 

@@ -11,7 +11,9 @@ module Resolvers
         return unless Feature.enabled?(:namespace_level_work_items)
         return WorkItem.none if resource_parent.nil?
 
-        finder = ::WorkItems::NamespaceWorkItemsFinder.new(current_user, args)
+        finder = ::WorkItems::NamespaceWorkItemsFinder.new(current_user, args.merge(
+          namespace_id: resource_parent
+        ))
 
         Gitlab::Graphql::Loaders::IssuableLoader.new(resource_parent, finder).batching_find_all do |q|
           apply_lookahead(q)

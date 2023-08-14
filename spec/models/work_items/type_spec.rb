@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Type do
+RSpec.describe WorkItems::Type, feature_category: :team_planning do
   describe 'modules' do
     it { is_expected.to include_module(CacheMarkdownField) }
   end
@@ -49,10 +49,10 @@ RSpec.describe WorkItems::Type do
       it 'deletes type but not unrelated issues' do
         type = create(:work_item_type)
 
-        expect(described_class.count).to eq(9)
+        expect(described_class.count).to eq(10)
 
         expect { type.destroy! }.not_to change(Issue, :count)
-        expect(described_class.count).to eq(8)
+        expect(described_class.count).to eq(9)
       end
     end
 

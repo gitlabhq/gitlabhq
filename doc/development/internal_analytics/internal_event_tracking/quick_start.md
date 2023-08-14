@@ -96,3 +96,18 @@ This attribute ensures that if we want to track GitLab internal events for a but
    Click Me
   </gl-button>
 ```
+
+For Haml
+
+```haml
+= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action' }}) do
+```
+
+#### Internal events on render
+
+Sometimes we want to send internal events when the component is rendered or loaded. In these cases, we can add the `data-event-tracking-load="true"` attribute:
+
+```haml
+= render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'i_devops' } }) do
+        = _("New project")
+```

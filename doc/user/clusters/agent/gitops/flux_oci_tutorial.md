@@ -9,7 +9,7 @@ info: A tutorial for deploying an OCI artifact using Flux
 This tutorial teaches you how to package your Kubernetes manifests into an [OCI](https://opencontainers.org/)
 artifact and deploy them to your cluster using Flux. You'll set up a sample manifest project, configure it to
 store manifests as an artifact in the project's Container Registry, and configure Flux to sync the artifact. With this
-setup, you can run additional steps in GitLab pipelines before Flux picks up the changes 
+setup, you can run additional steps in GitLab pipelines before Flux picks up the changes
 from the OCI image.
 
 This tutorial deploys an application from a public project. If you want to add a non-public project, you should create a [project deploy token](../../../project/deploy_tokens/index.md).

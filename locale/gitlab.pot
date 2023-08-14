@@ -11997,6 +11997,9 @@ msgstr ""
 msgid "Compliance framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|Active compliance frameworks"
+msgstr ""
+
 msgid "ComplianceFrameworks|Add framework"
 msgstr ""
 
@@ -12054,7 +12057,7 @@ msgstr ""
 msgid "ComplianceFrameworks|Error setting the default compliance frameworks"
 msgstr ""
 
-msgid "ComplianceFrameworks|Frameworks that have been added will appear here."
+msgid "ComplianceFrameworks|Frameworks that have been added will appear here, start by creating a new one above."
 msgstr ""
 
 msgid "ComplianceFrameworks|Invalid format"
@@ -43318,6 +43321,9 @@ msgstr ""
 msgid "Service Desk"
 msgstr ""
 
+msgid "Service Desk Ticket"
+msgstr ""
+
 msgid "Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email."
 msgstr ""
 
@@ -52248,6 +52254,9 @@ msgstr ""
 msgid "Vulnerability|GitLab Security Report"
 msgstr ""
 
+msgid "Vulnerability|GitLab has identified sensitive strings in the code snippet for the AI prompt, indicating a possible leaked secret. Please review your code before utilizing the Explain This Vulnerability feature. If you still wish to proceed and send the %{linkStart}code%{linkEnd} to the AI, click the checkbox below."
+msgstr ""
+
 msgid "Vulnerability|Hide prompt"
 msgstr ""
 
@@ -52399,6 +52408,9 @@ msgid "Vulnerability|Vulnerable class:"
 msgstr ""
 
 msgid "Vulnerability|Vulnerable method:"
+msgstr ""
+
+msgid "Vulnerability|Warning: possible secrets detected"
 msgstr ""
 
 msgid "WARNING:"

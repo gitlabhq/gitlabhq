@@ -2683,7 +2683,7 @@ upstream_status:
 
 #### `needs:parallel:matrix`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `ci_needs_parallel_matrix`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
 
 Jobs can use [`parallel:matrix`](#parallelmatrix) to run a job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.

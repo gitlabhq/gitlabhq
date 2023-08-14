@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28129) in GitLab 12.10.
 
-Rate limits control the pace at which new epics and issues can be created. 
+Rate limits control the pace at which new epics and issues can be created.
 For example, if you set the limit to `300`, the
 [Projects::IssuesController#create](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/projects/issues_controller.rb)
 action blocks requests that exceed a rate of 300 per minute. Access to the endpoint is available after one minute.

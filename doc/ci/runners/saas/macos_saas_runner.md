@@ -138,12 +138,12 @@ All GitLab SaaS runners include CDN support in Cocoapods.
 ### Use GitLab caching
 
 Use caching in Cocoapods packages in GitLab to only run `pod install`
-when pods change, which can improve build performance. 
+when pods change, which can improve build performance.
 
 To [configure caching](../../../ci/caching/index.md) for your project:
 
 1. Add the `cache` configuration to your `.gitlab-ci.yml` file:
-   
+
     ```yaml
     cache:
       key:
@@ -153,7 +153,7 @@ To [configure caching](../../../ci/caching/index.md) for your project:
       - Pods
     ```
 
-1. Add the [`cocoapods-check`](https://guides.cocoapods.org/plugins/optimising-ci-times.html) plugin to your project. 
+1. Add the [`cocoapods-check`](https://guides.cocoapods.org/plugins/optimising-ci-times.html) plugin to your project.
 1. Update the job script to check for installed dependencies before it calls `pod install`:
 
     ```shell

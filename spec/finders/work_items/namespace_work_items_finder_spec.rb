@@ -42,10 +42,9 @@ RSpec.describe WorkItems::NamespaceWorkItemsFinder, feature_category: :team_plan
     let(:namespace) { nil }
 
     subject do
-      finder = described_class.new(current_user, finder_params)
-      finder.parent_param = namespace
-
-      finder.execute
+      described_class.new(current_user, finder_params.merge(
+        namespace_id: namespace
+      )).execute
     end
 
     context 'when no parent is provided' do
@@ -92,7 +91,13 @@ RSpec.describe WorkItems::NamespaceWorkItemsFinder, feature_category: :team_plan
       context 'when user is admin' do
         let(:current_user) { create(:user, :admin).tap { |u| enable_admin_mode!(u) } }
 
-        it { is_expected.to match_array(WorkItem.all.to_a) }
+        it { is_expected.to contain_exactly(group_work_item, group_confidential_work_item, hidden_work_item) }
+      end
+
+      context 'with an anonymous user' do
+        let(:current_user) { nil }
+
+        it { is_expected.to contain_exactly(group_work_item) }
       end
 
       context 'when the user can not see confidential work_items' do

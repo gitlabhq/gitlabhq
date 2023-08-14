@@ -20295,8 +20295,12 @@ CREATE TABLE pages_deployments (
     file_sha256 bytea NOT NULL,
     size bigint,
     root_directory text DEFAULT 'public'::text,
+    path_prefix text,
+    build_ref text,
+    CONSTRAINT check_4d04b8dc9a CHECK ((char_length(path_prefix) <= 128)),
     CONSTRAINT check_5f9132a958 CHECK ((size IS NOT NULL)),
     CONSTRAINT check_7e938c810a CHECK ((char_length(root_directory) <= 255)),
+    CONSTRAINT check_b44e900e5c CHECK ((char_length(build_ref) <= 512)),
     CONSTRAINT check_f0fe8032dd CHECK ((char_length(file) <= 255))
 );
 
@@ -32751,6 +32755,8 @@ CREATE INDEX index_pages_deployments_on_ci_build_id ON pages_deployments USING b
 CREATE INDEX index_pages_deployments_on_file_store_and_id ON pages_deployments USING btree (file_store, id);
 
 CREATE INDEX index_pages_deployments_on_project_id ON pages_deployments USING btree (project_id);
+
+CREATE UNIQUE INDEX index_pages_deployments_unique_path_prefix_by_project ON pages_deployments USING btree (project_id, path_prefix);
 
 CREATE INDEX index_pages_domain_acme_orders_on_challenge_token ON pages_domain_acme_orders USING btree (challenge_token);
 

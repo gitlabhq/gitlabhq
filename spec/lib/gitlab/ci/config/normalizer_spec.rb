@@ -128,22 +128,6 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
         it 'parallelizes and only keeps needs specified by needs:parallel:matrix' do
           expect(subject.dig(:other_job, :needs, :job)).to eq(expanded_needs_parallel_job_attributes)
         end
-
-        context 'when FF `ci_needs_parallel_matrix` is disabled' do
-          before do
-            stub_feature_flags(ci_needs_parallel_matrix: false)
-          end
-
-          let(:expanded_job_attributes) do
-            expanded_job_names.map do |job_name|
-              { name: job_name, parallel: needs_parallel_config }
-            end
-          end
-
-          it 'keeps all parallelized jobs' do
-            expect(subject.dig(:other_job, :needs, :job)).to eq(expanded_job_attributes)
-          end
-        end
       end
     end
 

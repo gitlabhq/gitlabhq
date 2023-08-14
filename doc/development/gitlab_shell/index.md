@@ -33,7 +33,7 @@ and support:
 There are two version files relevent to GitLab Shell:
 
 - [Stable version](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/VERSION)
-- [Version deployed in GitLab SaaS](https://gitlab.com/gitlab-org/gitlab/-/blob/master/GITLAB_SHELL_VERSION) 
+- [Version deployed in GitLab SaaS](https://gitlab.com/gitlab-org/gitlab/-/blob/master/GITLAB_SHELL_VERSION)
 
 GitLab team members can also monitor the `#announcements` internal Slack channel.
 

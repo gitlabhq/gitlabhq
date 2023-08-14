@@ -236,10 +236,10 @@ Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.goo
 
 ### Inference window context
 
-Code Suggestions currently inferences against the currently opened file and has a context window of 2,048 tokens and 8,192 character limits. This limit includes content before and after the cursor, the file name, and the extension type. 
+Code Suggestions currently inferences against the currently opened file and has a context window of 2,048 tokens and 8,192 character limits. This limit includes content before and after the cursor, the file name, and the extension type.
 Learn more about Google Vertex AI [code-gecko](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models).
 
-The maximum number of tokens that is generated in the response is default 64. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words. 
+The maximum number of tokens that is generated in the response is default 64. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words.
 Learn more about Google Vertex AI [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-completion).
 
 ### Self-managed instance data privacy

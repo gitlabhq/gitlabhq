@@ -179,7 +179,8 @@ module IntegrationsHelper
       'incident' => _('Incident'),
       'test_case' => _('Test case'),
       'requirement' => _('Requirement'),
-      'task' => _('Task')
+      'task' => _('Task'),
+      'ticket' => _('Service Desk Ticket')
     }
 
     issue_type_i18n_map[issue_type] || issue_type

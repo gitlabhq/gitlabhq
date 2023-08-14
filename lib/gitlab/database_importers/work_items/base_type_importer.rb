@@ -126,6 +126,21 @@ module Gitlab
             :notifications,
             :award_emoji,
             :linked_items
+          ],
+          ticket: [
+            :assignees,
+            :labels,
+            :description,
+            :hierarchy,
+            :start_and_due_date,
+            :milestone,
+            :notes,
+            :iteration,
+            :weight,
+            :health_status,
+            :notifications,
+            :current_user_todos,
+            :award_emoji
           ]
         }.freeze
 

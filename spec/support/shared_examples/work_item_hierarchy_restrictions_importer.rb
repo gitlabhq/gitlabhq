@@ -3,7 +3,7 @@
 RSpec.shared_examples 'work item hierarchy restrictions importer' do
   shared_examples_for 'adds restrictions' do
     it "adds all restrictions if they don't exist" do
-      expect { subject }.to change { WorkItems::HierarchyRestriction.count }.from(0).to(6)
+      expect { subject }.to change { WorkItems::HierarchyRestriction.count }.from(0).to(7)
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.shared_examples 'work item hierarchy restrictions importer' do
       expect { subject }.to make_queries_matching(/INSERT/, 1).and(
         change { WorkItems::HierarchyRestriction.count }.by(1)
       )
-      expect(WorkItems::HierarchyRestriction.count).to eq(6)
+      expect(WorkItems::HierarchyRestriction.count).to eq(7)
     end
   end
 end

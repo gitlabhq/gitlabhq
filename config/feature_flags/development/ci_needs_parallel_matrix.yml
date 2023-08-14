@@ -1,8 +1,0 @@
----
-name: ci_needs_parallel_matrix
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118839
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416479
-milestone: '16.3'
-type: development
-group: group::pipeline authoring
-default_enabled: false

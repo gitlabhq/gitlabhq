@@ -172,6 +172,21 @@ The message field was removed from security reports schema in GitLab 16.0 and is
 
 </div>
 
+<div class="deprecation " data-milestone="17.0">
+
+### Deprecate `terminationGracePeriodSeconds` in the GitLab Runner Kubernetes executor
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- End of Support in GitLab <span class="milestone">17.0</span>
+- Removal in GitLab <span class="milestone">17.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28165).
+</div>
+
+The GitLab Runner Kubernetes executor setting, `terminationGracePeriodSeconds`, is deprecated and will be removed in GitLab 17.0. To manage the cleanup and termination of GitLab Runner worker pods on Kubernetes, customers should instead configure `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds`. For information about how to use the `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds, see the [GitLab Runner Executor documentation](https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings).
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="17.0">
 
 ### Deprecate field `hasSolutions` from GraphQL VulnerabilityType

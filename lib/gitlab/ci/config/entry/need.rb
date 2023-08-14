@@ -71,7 +71,7 @@ module Gitlab
                 optional: !!optional
               }
 
-              result[:parallel] = parallel_value if Feature.enabled?(:ci_needs_parallel_matrix) && has_parallel?
+              result[:parallel] = parallel_value if has_parallel?
 
               result
             end

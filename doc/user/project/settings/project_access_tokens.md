@@ -79,7 +79,7 @@ To revoke a project access token:
 
 ## Scopes for a project access token
 
-The scope determines the actions you can perform when you authenticate with a project access token. 
+The scope determines the actions you can perform when you authenticate with a project access token.
 
 NOTE:
 See the warning in [create a project access token](#create-a-project-access-token) regarding internal projects.

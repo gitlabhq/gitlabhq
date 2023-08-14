@@ -217,7 +217,7 @@ You may see this error if `pages_external_url` was updated at some point of time
    1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
    1. Select **Admin Area**.
    1. Select **Applications** and then **Add new application**.
-   1. Ensure the **Callback URL/Redirect URI** is using the protocol (HTTP or HTTPS) that 
+   1. Ensure the **Callback URL/Redirect URI** is using the protocol (HTTP or HTTPS) that
       `pages_external_url` is configured to use.
 1. The domain and path components of `Redirect URI` are valid: they should look like `projects.<pages_external_url>/auth`.
 

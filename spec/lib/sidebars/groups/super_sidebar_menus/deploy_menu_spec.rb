@@ -15,7 +15,8 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::DeployMenu, feature_category
   it 'defines list of NilMenuItem placeholders' do
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
-      :packages_registry
+      :packages_registry,
+      :container_registry
     ])
   end
 end

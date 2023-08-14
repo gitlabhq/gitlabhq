@@ -29,7 +29,7 @@ To sign in to Customers Portal with your email and to receive a one-time sign-in
 
 1. Navigate to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **Sign in with your email**.
-1. Provide the **Email** for your Customers Portal account. You will receive 
+1. Provide the **Email** for your Customers Portal account. You will receive
    an email with a one-time, sign-in link for your Customers Portal account.
 1. In the email you received, select **Sign in**.
 

@@ -130,7 +130,6 @@ export default {
       :label="__('Description')"
       :label-sr-only="!showFieldTitle"
       label-for="issuable-description"
-      label-class="gl-pb-0!"
       class="col-12 gl-px-0 common-note-form"
     >
       <markdown-field

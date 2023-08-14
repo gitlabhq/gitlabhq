@@ -834,7 +834,7 @@ Quotes around the `dependencies` entry are required.
 
 ## Specify a parallelized job using needs with multiple parallelized jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `ci_needs_parallel_matrix`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3. 
 
 You can use variables defined in [`needs:parallel:matrix`](../yaml/index.md#needsparallelmatrix) with multiple parallelized jobs.
 

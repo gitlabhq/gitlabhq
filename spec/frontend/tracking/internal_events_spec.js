@@ -2,7 +2,11 @@ import API from '~/api';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import InternalEvents from '~/tracking/internal_events';
-import { GITLAB_INTERNAL_EVENT_CATEGORY, SERVICE_PING_SCHEMA } from '~/tracking/constants';
+import {
+  GITLAB_INTERNAL_EVENT_CATEGORY,
+  SERVICE_PING_SCHEMA,
+  LOAD_INTERNAL_EVENTS_SELECTOR,
+} from '~/tracking/constants';
 import * as utils from '~/tracking/utils';
 import { Tracker } from '~/tracking/tracker';
 
@@ -95,6 +99,50 @@ describe('InternalEvents', () => {
 
       expect(addEventListenerMock).toHaveBeenCalledWith('click', expect.any(Function));
       expect(result).toEqual({ name: 'click', func: expect.any(Function) });
+    });
+  });
+
+  describe('trackInternalLoadEvents', () => {
+    let querySelectorAllMock;
+    let mockElements;
+    const action = 'i_devops_action';
+
+    beforeEach(() => {
+      Tracker.enabled.mockReturnValue(true);
+      querySelectorAllMock = jest.fn();
+      document.querySelectorAll = querySelectorAllMock;
+    });
+
+    it('should return an empty array if Tracker is not enabled', () => {
+      Tracker.enabled.mockReturnValue(false);
+      const result = InternalEvents.trackInternalLoadEvents();
+      expect(result).toEqual([]);
+    });
+
+    describe('tracking', () => {
+      let trackEventSpy;
+      beforeEach(() => {
+        trackEventSpy = jest.spyOn(InternalEvents, 'track_event');
+      });
+
+      it('should track event if action exists', () => {
+        mockElements = [{ dataset: { eventTracking: action, eventTrackingLoad: true } }];
+        querySelectorAllMock.mockReturnValue(mockElements);
+
+        const result = InternalEvents.trackInternalLoadEvents();
+        expect(trackEventSpy).toHaveBeenCalledWith(action);
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(querySelectorAllMock).toHaveBeenCalledWith(LOAD_INTERNAL_EVENTS_SELECTOR);
+        expect(result).toEqual(mockElements);
+      });
+
+      it('should not track event if action is not present', () => {
+        mockElements = [{ dataset: { eventTracking: undefined, eventTrackingLoad: true } }];
+        querySelectorAllMock.mockReturnValue(mockElements);
+
+        InternalEvents.trackInternalLoadEvents();
+        expect(trackEventSpy).toHaveBeenCalledTimes(0);
+      });
     });
   });
 });

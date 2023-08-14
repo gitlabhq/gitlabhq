@@ -22,7 +22,7 @@ module Gitlab
                 errors.add(:config, 'can not be an empty Hash')
               end
 
-              if Feature.enabled?(:ci_needs_parallel_matrix) && number_parallel_build?
+              if number_parallel_build?
                 errors.add(:config, 'cannot use "parallel: <number>".')
               end
             end
