@@ -79,7 +79,7 @@ and rights into the group or project.
 | View labels of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
 | View milestones of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
 | Be shared into other groups | ✓ |  |  |  |
-| Be shared into other projects | ✓ | ✓ |  |  |
+| Be shared into other projects | ✓ | ✓ | ✓ | ✓ |
 | Share the group with other members | ✓ | ✓ | ✓ | ✓ |
 
 In the following example, `User` is a:

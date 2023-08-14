@@ -6,7 +6,7 @@ module Emails
       @current_user = @user = User.find(user_id)
       @target_url = user_url(@user)
       @token = token
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject("Account was created for you"))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject("Account was created for you"))
     end
 
     def instance_access_request_email(user, recipient)
@@ -107,7 +107,7 @@ module Emails
       @fingerprints = fingerprints
       @target_url = profile_keys_url
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("Your SSH key has expired")))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your SSH key has expired")))
     end
 
     def ssh_key_expiring_soon_email(user, fingerprints)

@@ -12,12 +12,6 @@ RSpec.describe 'ClickHouse::Client', feature_category: :database do
   end
 
   describe 'when click_house spec tag is added', :click_house do
-    around do |example|
-      with_net_connect_allowed do
-        example.run
-      end
-    end
-
     it 'has a ClickHouse database configured' do
       databases = ClickHouse::Client.configuration.databases
 

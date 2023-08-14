@@ -16,11 +16,11 @@ have to redefine them if you want to override their values.
 Jobs can have an `urgency` attribute set, which can be `:high`,
 `:low`, or `:throttled`. These have the below targets:
 
-| **Urgency**  | **Queue Scheduling Target** | **Execution Latency Requirement**  |
-|--------------|-----------------------------|------------------------------------|
-| `:high`      | 10 seconds                  | p50 of 1 second, p99 of 10 seconds |
-| `:low`       | 1 minute                    | Maximum run time of 5 minutes      |
-| `:throttled` | None                        | Maximum run time of 5 minutes      |
+| **Urgency**      | **Queue Scheduling Target**   | **Execution Latency Requirement**    |
+|---------------   | ----------------------------- | ------------------------------------ |
+| `:high`          | 10 seconds                    | 10 seconds                           |
+| `:low` (default) | 1 minute                      | 5 minutes                            |
+| `:throttled`     | None                          | 5 minutes                            |
 
 To set a job's urgency, use the `urgency` class method:
 

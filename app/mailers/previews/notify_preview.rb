@@ -17,6 +17,10 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def new_user_email
+    Notify.new_user_email(user.id).message
+  end
+
   def note_merge_request_email_for_discussion
     note_email(:note_merge_request_email) do
       note = <<-MD.strip_heredoc
@@ -71,6 +75,11 @@ class NotifyPreview < ActionMailer::Preview
 
   def access_token_revoked_email
     Notify.access_token_revoked_email(user, 'token_name').message
+  end
+
+  def ssh_key_expired_email
+    fingerprints = []
+    Notify.ssh_key_expired_email(user, fingerprints).message
   end
 
   def new_mention_in_merge_request_email

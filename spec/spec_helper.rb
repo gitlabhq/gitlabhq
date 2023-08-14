@@ -345,6 +345,9 @@ RSpec.configure do |config|
       # Keep-around refs should only be turned off for specific projects/repositories.
       stub_feature_flags(disable_keep_around_refs: false)
 
+      # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
+      stub_feature_flags(clickhouse_data_collection: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

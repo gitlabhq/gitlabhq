@@ -28,6 +28,7 @@ to be emitted from the rails application:
 1. `global_search_apdex`
 1. `global_search_error_rate`
 1. `global_search_indexing_apdex`
+1. [`sidekiq_execution`](sidekiq_execution.md)
 
 ## Defining a new SLI
 

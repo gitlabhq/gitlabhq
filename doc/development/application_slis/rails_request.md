@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 NOTE:
 This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/index.md#error-budget)
-by default. You can [opt in](#error-budget-attribution-and-ownership).
+by default.
 
 The request Apdex SLI and the error rate SLI are [SLIs defined in the application](index.md).
 
