@@ -74,10 +74,14 @@ module QA
         def save_test_metrics
           return log(:debug, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
 
-          File.write("tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}.json", execution_data.to_json)
+          file = "tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}.json"
+
+          File.write(file, execution_data.to_json) && log(:debug, "Saved test metrics to #{file}")
         rescue StandardError => e
           log(:error, "Failed to save test execution metrics, error: #{e}")
         end
+
+        # rubocop:disable Metrics/AbcSize
 
         # Transform example to influxdb compatible metrics data
         # https://github.com/influxdata/influxdb-client-ruby#data-format
@@ -123,6 +127,7 @@ module QA
               pipeline_id: env('CI_PIPELINE_ID'),
               job_id: env('CI_JOB_ID'),
               merge_request_iid: merge_request_iid,
+              failure_exception: example.execution_result.exception.to_s.delete("\n"),
               **custom_metrics_fields(example.metadata)
             }
           }
@@ -130,6 +135,8 @@ module QA
           log(:error, "Failed to transform example '#{example.id}', error: #{e}")
           nil
         end
+
+        # rubocop:enable Metrics/AbcSize
 
         # Resource fabrication data point
         #

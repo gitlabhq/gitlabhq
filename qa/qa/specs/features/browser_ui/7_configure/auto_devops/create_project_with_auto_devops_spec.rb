@@ -28,7 +28,7 @@ module QA
       end
 
       before do
-        cluster.install_kubernetes_agent(agent_token.token)
+        cluster.install_kubernetes_agent(agent_token.token, kubernetes_agent.name)
         upload_agent_config(app_project, kubernetes_agent.name)
 
         set_kube_ingress_base_domain(app_project)

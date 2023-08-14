@@ -14,11 +14,17 @@ RSpec.shared_context 'with user contribution events' do
   # milestone
   let_it_be(:milestone) { create(:milestone, project: project) }
 
-  # note
-  let_it_be(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
-
   # design
   let_it_be(:design) { create(:design, project: project, issue: issue, author: user) }
+
+  # note
+  let_it_be(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
+  let_it_be(:note_on_merge_request) { create(:note_on_merge_request, noteable: merge_request, project: project) }
+  let_it_be(:note_on_project_snippet) { create(:note_on_project_snippet, project: project) }
+  let_it_be(:note_on_design) { create(:note_on_design, noteable: design) }
+  let_it_be(:note_on_personal_snippet) do
+    create(:note, project: nil, noteable: create(:personal_snippet, author: user))
+  end
 
   # work item
   let_it_be(:incident) { create(:work_item, :incident, author: user, project: project) }
@@ -47,8 +53,24 @@ RSpec.shared_context 'with user contribution events' do
   end
 
   # commented
-  let_it_be(:commented_event) do
+  let_it_be(:commented_issue_event) do
     create(:event, :commented, author: user, project: project, target: note_on_issue)
+  end
+
+  let_it_be(:commented_merge_request_event) do
+    create(:event, :commented, author: user, project: project, target: note_on_merge_request)
+  end
+
+  let_it_be(:commented_project_snippet_event) do
+    create(:event, :commented, author: user, target: note_on_project_snippet)
+  end
+
+  let_it_be(:commented_personal_snippet_event) do
+    create(:event, :commented, project: nil, author: user, target: note_on_personal_snippet)
+  end
+
+  let_it_be(:commented_design_event) do
+    create(:event, :commented, author: user, target: note_on_design)
   end
 
   # created

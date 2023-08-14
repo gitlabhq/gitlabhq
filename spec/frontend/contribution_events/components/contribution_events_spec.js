@@ -10,6 +10,7 @@ import ContributionEventMerged from '~/contribution_events/components/contributi
 import ContributionEventCreated from '~/contribution_events/components/contribution_event/contribution_event_created.vue';
 import ContributionEventClosed from '~/contribution_events/components/contribution_event/contribution_event_closed.vue';
 import ContributionEventReopened from '~/contribution_events/components/contribution_event/contribution_event_reopened.vue';
+import ContributionEventCommented from '~/contribution_events/components/contribution_event/contribution_event_commented.vue';
 import {
   eventApproved,
   eventExpired,
@@ -21,6 +22,7 @@ import {
   eventCreated,
   eventClosed,
   eventReopened,
+  eventCommented,
 } from '../utils';
 
 describe('ContributionEvents', () => {
@@ -40,23 +42,25 @@ describe('ContributionEvents', () => {
           eventCreated(),
           eventClosed(),
           eventReopened(),
+          eventCommented(),
         ],
       },
     });
   };
 
   it.each`
-    expectedComponent            | expectedEvent
-    ${ContributionEventApproved} | ${eventApproved()}
-    ${ContributionEventExpired}  | ${eventExpired()}
-    ${ContributionEventJoined}   | ${eventJoined()}
-    ${ContributionEventLeft}     | ${eventLeft()}
-    ${ContributionEventPushed}   | ${eventPushedBranch()}
-    ${ContributionEventPrivate}  | ${eventPrivate()}
-    ${ContributionEventMerged}   | ${eventMerged()}
-    ${ContributionEventCreated}  | ${eventCreated()}
-    ${ContributionEventClosed}   | ${eventClosed()}
-    ${ContributionEventReopened} | ${eventReopened()}
+    expectedComponent             | expectedEvent
+    ${ContributionEventApproved}  | ${eventApproved()}
+    ${ContributionEventExpired}   | ${eventExpired()}
+    ${ContributionEventJoined}    | ${eventJoined()}
+    ${ContributionEventLeft}      | ${eventLeft()}
+    ${ContributionEventPushed}    | ${eventPushedBranch()}
+    ${ContributionEventPrivate}   | ${eventPrivate()}
+    ${ContributionEventMerged}    | ${eventMerged()}
+    ${ContributionEventCreated}   | ${eventCreated()}
+    ${ContributionEventClosed}    | ${eventClosed()}
+    ${ContributionEventReopened}  | ${eventReopened()}
+    ${ContributionEventCommented} | ${eventCommented()}
   `(
     'renders `$expectedComponent.name` component and passes expected event',
     ({ expectedComponent, expectedEvent }) => {

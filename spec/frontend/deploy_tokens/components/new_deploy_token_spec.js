@@ -1,11 +1,19 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { GlButton, GlFormCheckbox, GlFormInput, GlFormInputGroup, GlDatepicker } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlFormCheckbox,
+  GlFormInput,
+  GlFormInputGroup,
+  GlDatepicker,
+} from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { TEST_HOST } from 'helpers/test_constants';
 import NewDeployToken from '~/deploy_tokens/components/new_deploy_token.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_INFO } from '~/alert';
 
@@ -36,10 +44,14 @@ describe('New Deploy Token', () => {
         tokenType,
       },
       stubs: {
+        GlAlert,
         GlFormCheckbox,
       },
     });
   };
+
+  const findNewTokenAlert = () => wrapper.findComponent(GlAlert);
+  const findClipboardButtons = () => wrapper.findAllComponents(ClipboardButton);
 
   describe('without a container registry', () => {
     beforeEach(() => {
@@ -211,6 +223,63 @@ describe('New Deploy Token', () => {
         .replyOnce(HTTP_STATUS_OK, { username: 'test token username', token: 'test token' });
 
       return submitTokenThenCheck();
+    });
+
+    it('should display the created token', async () => {
+      const mockAxios = new MockAdapter(axios);
+
+      const date = new Date();
+      const formInputs = wrapper.findAllComponents(GlFormInput);
+      const name = formInputs.at(0);
+      const username = formInputs.at(2);
+      name.vm.$emit('input', 'test name');
+      username.vm.$emit('input', 'test username');
+
+      const datepicker = wrapper.findAllComponents(GlDatepicker).at(0);
+      datepicker.vm.$emit('input', date);
+
+      const [
+        readRepo,
+        readRegistry,
+        writeRegistry,
+        readPackageRegistry,
+        writePackageRegistry,
+      ] = wrapper.findAllComponents(GlFormCheckbox).wrappers;
+      readRepo.vm.$emit('input', true);
+      readRegistry.vm.$emit('input', true);
+      writeRegistry.vm.$emit('input', true);
+      readPackageRegistry.vm.$emit('input', true);
+      writePackageRegistry.vm.$emit('input', true);
+
+      expect(findNewTokenAlert().exists()).toBe(false);
+
+      mockAxios
+        .onPost(createNewTokenPath, {
+          deploy_token: {
+            name: 'test name',
+            expires_at: date.toISOString(),
+            username: 'test username',
+            read_repository: true,
+            read_registry: true,
+            write_registry: true,
+            read_package_registry: true,
+            write_package_registry: true,
+          },
+        })
+        .replyOnce(HTTP_STATUS_OK, { username: 'test token username', token: 'test token' });
+
+      await submitTokenThenCheck();
+
+      const tokenAlert = findNewTokenAlert();
+      expect(tokenAlert.exists()).toBe(true);
+      expect(tokenAlert.text()).toContain('Your new deploy token');
+
+      const [usernameBtn, tokenBtn] = findClipboardButtons().wrappers;
+      expect(usernameBtn.props()).toMatchObject({
+        text: 'test token username',
+        title: 'Copy username',
+      });
+      expect(tokenBtn.props()).toMatchObject({ text: 'test token', title: 'Copy deploy token' });
     });
   });
 

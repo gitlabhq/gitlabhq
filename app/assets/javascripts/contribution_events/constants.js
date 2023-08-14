@@ -1,4 +1,10 @@
 import { s__ } from '~/locale';
+import {
+  ISSUE_NOTEABLE_TYPE,
+  MERGE_REQUEST_NOTEABLE_TYPE,
+  DESIGN_NOTEABLE_TYPE,
+  COMMIT_NOTEABLE_TYPE,
+} from '~/notes/constants';
 
 // From app/models/event.rb#L16
 export const EVENT_TYPE_CREATED = 'created';
@@ -36,7 +42,7 @@ export const WORK_ITEM_ISSUE_TYPE_INCIDENT = 'incident';
 
 export const TYPE_FALLBACK = 'fallback';
 
-export const EVENT_CREATED_I18N = {
+export const EVENT_CREATED_I18N = Object.freeze({
   [RESOURCE_PARENT_TYPE_PROJECT]: s__('ContributionEvent|Created project %{resourceParentLink}.'),
   [TARGET_TYPE_MILESTONE]: s__(
     'ContributionEvent|Opened milestone %{targetLink} in %{resourceParentLink}.',
@@ -60,9 +66,9 @@ export const EVENT_CREATED_I18N = {
     'ContributionEvent|Opened incident %{targetLink} in %{resourceParentLink}.',
   ),
   [TYPE_FALLBACK]: s__('ContributionEvent|Created resource.'),
-};
+});
 
-export const EVENT_CLOSED_I18N = {
+export const EVENT_CLOSED_I18N = Object.freeze({
   [TARGET_TYPE_MILESTONE]: s__(
     'ContributionEvent|Closed milestone %{targetLink} in %{resourceParentLink}.',
   ),
@@ -79,9 +85,9 @@ export const EVENT_CLOSED_I18N = {
     'ContributionEvent|Closed incident %{targetLink} in %{resourceParentLink}.',
   ),
   [TYPE_FALLBACK]: s__('ContributionEvent|Closed resource.'),
-};
+});
 
-export const EVENT_REOPENED_I18N = {
+export const EVENT_REOPENED_I18N = Object.freeze({
   [TARGET_TYPE_MILESTONE]: s__(
     'ContributionEvent|Reopened milestone %{targetLink} in %{resourceParentLink}.',
   ),
@@ -98,15 +104,38 @@ export const EVENT_REOPENED_I18N = {
     'ContributionEvent|Reopened incident %{targetLink} in %{resourceParentLink}.',
   ),
   [TYPE_FALLBACK]: s__('ContributionEvent|Reopened resource.'),
-};
+});
 
-export const EVENT_CLOSED_ICONS = {
+export const EVENT_COMMENTED_I18N = Object.freeze({
+  [ISSUE_NOTEABLE_TYPE]: s__(
+    'ContributionEvent|Commented on issue %{noteableLink} in %{resourceParentLink}.',
+  ),
+  [MERGE_REQUEST_NOTEABLE_TYPE]: s__(
+    'ContributionEvent|Commented on merge request %{noteableLink} in %{resourceParentLink}.',
+  ),
+  [DESIGN_NOTEABLE_TYPE]: s__(
+    'ContributionEvent|Commented on design %{noteableLink} in %{resourceParentLink}.',
+  ),
+  [COMMIT_NOTEABLE_TYPE]: s__(
+    'ContributionEvent|Commented on commit %{noteableLink} in %{resourceParentLink}.',
+  ),
+  fallback: s__('ContributionEvent|Commented on %{noteableLink}.'),
+});
+
+export const EVENT_COMMENTED_SNIPPET_I18N = Object.freeze({
+  [RESOURCE_PARENT_TYPE_PROJECT]: s__(
+    'ContributionEvent|Commented on snippet %{noteableLink} in %{resourceParentLink}.',
+  ),
+  fallback: s__('ContributionEvent|Commented on snippet %{noteableLink}.'),
+});
+
+export const EVENT_CLOSED_ICONS = Object.freeze({
   [WORK_ITEM_ISSUE_TYPE_ISSUE]: 'issue-closed',
   [TARGET_TYPE_MERGE_REQUEST]: 'merge-request-close',
   [TYPE_FALLBACK]: 'status_closed',
-};
+});
 
-export const EVENT_REOPENED_ICONS = {
+export const EVENT_REOPENED_ICONS = Object.freeze({
   [TARGET_TYPE_MERGE_REQUEST]: 'merge-request-open',
   [TYPE_FALLBACK]: 'status_open',
-};
+});

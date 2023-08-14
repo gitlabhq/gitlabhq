@@ -68,7 +68,8 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         pipeline_url: ci_pipeline_url,
         pipeline_id: ci_pipeline_id,
         job_id: ci_job_id,
-        merge_request_iid: nil
+        merge_request_iid: nil,
+        failure_exception: ''
       }
     }
   end

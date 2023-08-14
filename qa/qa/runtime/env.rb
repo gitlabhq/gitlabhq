@@ -620,6 +620,10 @@ module QA
         enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
       end
 
+      def fips?
+        enabled?(ENV['FIPS'], default: false)
+      end
+
       def container_registry_host
         ENV.fetch('QA_CONTAINER_REGISTRY_HOST', 'registry.gitlab.com')
       end

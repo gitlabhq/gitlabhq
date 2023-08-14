@@ -9,6 +9,7 @@ import {
   EVENT_TYPE_MERGED,
   EVENT_TYPE_CLOSED,
   EVENT_TYPE_REOPENED,
+  EVENT_TYPE_COMMENTED,
   PUSH_EVENT_REF_TYPE_BRANCH,
   PUSH_EVENT_REF_TYPE_TAG,
   EVENT_TYPE_CREATED,
@@ -20,7 +21,16 @@ import {
   WORK_ITEM_ISSUE_TYPE_ISSUE,
   WORK_ITEM_ISSUE_TYPE_TASK,
   WORK_ITEM_ISSUE_TYPE_INCIDENT,
+  RESOURCE_PARENT_TYPE_PROJECT,
 } from '~/contribution_events/constants';
+
+import {
+  ISSUE_NOTEABLE_TYPE,
+  MERGE_REQUEST_NOTEABLE_TYPE,
+  SNIPPET_NOTEABLE_TYPE,
+  DESIGN_NOTEABLE_TYPE,
+  COMMIT_NOTEABLE_TYPE,
+} from '~/notes/constants';
 
 const findEventByAction = (action) => () => events.find((event) => event.action === action);
 const findEventByActionAndTargetType = (action, targetType) => () =>
@@ -111,3 +121,35 @@ export const eventDesignReopened = findReopenedEvent(TARGET_TYPE_DESIGN);
 export const eventIssueReopened = findWorkItemReopenedEvent(WORK_ITEM_ISSUE_TYPE_ISSUE);
 export const eventTaskReopened = findWorkItemReopenedEvent(WORK_ITEM_ISSUE_TYPE_TASK);
 export const eventIncidentReopened = findWorkItemReopenedEvent(WORK_ITEM_ISSUE_TYPE_INCIDENT);
+
+export const eventCommented = findEventByAction(EVENT_TYPE_COMMENTED);
+
+const findEventByActionAndNoteableType = (action, noteableType) => () =>
+  events.find((event) => event.action === action && event.noteable?.type === noteableType);
+export const findCommentedEvent = (noteableType) =>
+  findEventByActionAndNoteableType(EVENT_TYPE_COMMENTED, noteableType);
+export const findCommentedSnippet = (resourceParentType) => () =>
+  events.find(
+    (event) =>
+      event.action === EVENT_TYPE_COMMENTED &&
+      event.noteable?.type === SNIPPET_NOTEABLE_TYPE &&
+      event.resource_parent?.type === resourceParentType,
+  );
+
+export const eventCommentedIssue = findCommentedEvent(ISSUE_NOTEABLE_TYPE);
+export const eventCommentedMergeRequest = findCommentedEvent(MERGE_REQUEST_NOTEABLE_TYPE);
+export const eventCommentedSnippet = findCommentedEvent(SNIPPET_NOTEABLE_TYPE);
+export const eventCommentedProjectSnippet = findCommentedSnippet(RESOURCE_PARENT_TYPE_PROJECT);
+export const eventCommentedPersonalSnippet = findCommentedSnippet(null);
+export const eventCommentedDesign = findCommentedEvent(DESIGN_NOTEABLE_TYPE);
+// Fixtures do not work for commits because they are not written to the database.
+// Manually creating a commented commit event as a workaround.
+export const eventCommentedCommit = () => ({
+  ...eventCommented(),
+  noteable: {
+    type: COMMIT_NOTEABLE_TYPE,
+    reference_link_text: '83c6aa31',
+    web_url: 'http://localhost/group3/project-1/-/commit/83c6aa31482b9076531ed3a880e75627fd6b335c',
+    first_line_in_markdown: '\u003cp\u003eMy title 9\u003c/p\u003e',
+  },
+});

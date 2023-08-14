@@ -1,32 +1,54 @@
-%h5= s_("DeployTokens|Active Deploy Tokens (%{active_tokens})") % { active_tokens: active_tokens.length }
-
-- if active_tokens.present?
-  .table-responsive.deploy-tokens
-    %table.table
-      %thead
-        %tr
-          %th= s_('DeployTokens|Name')
-          %th= s_('DeployTokens|Username')
-          %th= s_('DeployTokens|Created')
-          %th= s_('DeployTokens|Expires')
-          %th= s_('DeployTokens|Scopes')
-          %th
-      %tbody
-        - active_tokens.each do |token|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+  - c.with_header do
+    .gl-new-card-title-wrapper
+      %h5.gl-new-card-title
+        = s_("DeployTokens|Active deploy tokens")
+      .gl-new-card-count
+        = sprite_icon('token', css_class: 'gl-mr-2')
+        = active_tokens.length
+    .gl-new-card-actions
+      = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content" }) do
+        = _('Add token')
+  - c.with_body do
+    .gl-new-card-add-form.gl-m-3.gl-mb-4.gl-display-none.js-toggle-content
+      #js-new-deploy-token{ data: {
+          container_registry_enabled: container_registry_enabled?(group_or_project),
+          packages_registry_enabled: packages_registry_enabled?(group_or_project),
+          create_new_token_path: create_deploy_token_path(group_or_project),
+          token_type: group_or_project.is_a?(Group) ? 'group' : 'project',
+          deploy_tokens_help_url: help_page_path('user/project/deploy_tokens/index.md')
+        }
+      }
+    - if active_tokens.present?
+      %table.table.b-table.gl-table.b-table-stacked-md
+        %thead
           %tr
-            %td= token.name
-            %td= token.username
-            %td= token.created_at.to_date.to_fs(:medium)
-            %td
-              - if token.expires?
-                %span{ class: ('text-warning' if token.expires_soon?) }
-                  = time_ago_with_tooltip(token.expires_at)
-              - else
-                %span.token-never-expires-label= _('Never')
-            %td= token.scopes.present? ? token.scopes.join(', ') : _('no scopes selected')
-            %td
-              .js-deploy-token-revoke-button{ data: deploy_token_revoke_button_data(token: token, group_or_project: group_or_project) }
+            %th= s_('DeployTokens|Name')
+            %th= s_('DeployTokens|Username')
+            %th= s_('DeployTokens|Created')
+            %th= s_('DeployTokens|Expires')
+            %th= s_('DeployTokens|Scopes')
+            %th
+        %tbody
+          - active_tokens.each do |token|
+            %tr
+              %td{ data: { label: _('Name') }, class: 'gl-vertical-align-middle!' }
+                = token.name
+              %td{ data: { label: _('Username') }, class: 'gl-vertical-align-middle!' }
+                = token.username
+              %td{ data: { label: _('Created') }, class: 'gl-vertical-align-middle!' }
+                = token.created_at.to_date.to_fs(:medium)
+              %td{ data: { label: _('Expires') }, class: 'gl-vertical-align-middle!' }
+                - if token.expires?
+                  %span{ class: ('text-warning' if token.expires_soon?) }
+                    = time_ago_with_tooltip(token.expires_at)
+                - else
+                  %span.token-never-expires-label= _('Never')
+              %td{ data: { label: _('Scopes') }, class: 'gl-vertical-align-middle!' }
+                = token.scopes.present? ? token.scopes.join(', ') : _('no scopes selected')
+              %td{ data: { label: _('Actions') }, class: 'gl-vertical-align-middle!' }
+                .js-deploy-token-revoke-button{ data: deploy_token_revoke_button_data(token: token, group_or_project: group_or_project) }
 
-- else
-  .settings-message.text-center
-    = s_('DeployTokens|This %{entity_type} has no active Deploy Tokens.') % { entity_type: group_or_project.class.name.downcase }
+    - else
+      .gl-new-card-empty.gl-px-5.gl-py-4
+        = s_('DeployTokens|This %{entity_type} has no active deploy tokens.') % { entity_type: group_or_project.class.name.downcase }

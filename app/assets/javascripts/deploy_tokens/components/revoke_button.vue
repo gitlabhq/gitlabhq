@@ -35,9 +35,9 @@ export default {
   <div>
     <gl-button
       v-gl-modal="modalId"
-      category="primary"
+      category="secondary"
       variant="danger"
-      class="gl-float-right"
+      size="small"
       data-testid="revoke-button"
       >{{ s__('DeployTokens|Revoke') }}</gl-button
     >

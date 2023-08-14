@@ -40,7 +40,7 @@ module QA
           raise("Missing runner token value!") unless token
 
           cmd = <<~CMD.tr("\n", ' ')
-            docker run -d --rm --network #{network} --name #{@name}
+            docker run -d --rm --network #{network} --name #{@name} #{'--user=root' if Runtime::Env.fips?}
             #{'-v /var/run/docker.sock:/var/run/docker.sock' if @executor == :docker}
             --privileged
             #{"--add-host gdk.test:#{gdk_host_ip}" if gdk_network}

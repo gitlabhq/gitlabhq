@@ -2960,6 +2960,9 @@ msgstr ""
 msgid "Add to tree"
 msgstr ""
 
+msgid "Add token"
+msgstr ""
+
 msgid "Add topics to projects to help users find them."
 msgstr ""
 
@@ -13074,6 +13077,30 @@ msgstr ""
 msgid "ContributionEvent|Closed test case %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
+msgid "ContributionEvent|Commented on %{noteableLink}."
+msgstr ""
+
+msgid "ContributionEvent|Commented on Epic %{noteableLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Commented on commit %{noteableLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Commented on design %{noteableLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Commented on issue %{noteableLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Commented on merge request %{noteableLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Commented on snippet %{noteableLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Commented on snippet %{noteableLink}."
+msgstr ""
+
 msgid "ContributionEvent|Created project %{resourceParentLink}."
 msgstr ""
 
@@ -16027,7 +16054,7 @@ msgstr ""
 msgid "DeployKeys|Read access only"
 msgstr ""
 
-msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
+msgid "DeployTokens|Active deploy tokens"
 msgstr ""
 
 msgid "DeployTokens|Allows read and write access to registry images."
@@ -16049,6 +16076,9 @@ msgid "DeployTokens|Allows read-only access to the repository."
 msgstr ""
 
 msgid "DeployTokens|Allows write access to registry images."
+msgstr ""
+
+msgid "DeployTokens|Cancel"
 msgstr ""
 
 msgid "DeployTokens|Copy deploy token"
@@ -16111,7 +16141,7 @@ msgstr ""
 msgid "DeployTokens|Scopes (select at least one)"
 msgstr ""
 
-msgid "DeployTokens|This %{entity_type} has no active Deploy Tokens."
+msgid "DeployTokens|This %{entity_type} has no active deploy tokens."
 msgstr ""
 
 msgid "DeployTokens|This action cannot be undone."
@@ -16129,10 +16159,10 @@ msgstr ""
 msgid "DeployTokens|Username (optional)"
 msgstr ""
 
-msgid "DeployTokens|Your New Deploy Token"
+msgid "DeployTokens|Your new Deploy Token username"
 msgstr ""
 
-msgid "DeployTokens|Your new Deploy Token username"
+msgid "DeployTokens|Your new deploy token"
 msgstr ""
 
 msgid "DeployTokens|Your new group deploy token has been created."

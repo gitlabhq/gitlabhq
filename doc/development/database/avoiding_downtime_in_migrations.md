@@ -29,8 +29,9 @@ and upgrade processes for self-managed installations that lump together any of t
 
 ### Ignoring the column (release M)
 
-The first step is to ignore the column in the application code. This step is
-necessary because Rails caches the columns and re-uses this cache in various
+The first step is to ignore the column in the application code and remove all code references to it including
+model validations.
+This step is necessary because Rails caches the columns and re-uses this cache in various
 places. This can be done by defining the columns to ignore. For example, in release `12.5`, to ignore
 `updated_at` in the User model you'd use the following:
 

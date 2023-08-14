@@ -8,7 +8,9 @@ import {
   GlFormInputGroup,
   GlSprintf,
   GlLink,
+  GlAlert,
 } from '@gitlab/ui';
+import { MountingPortal } from 'portal-vue';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -26,6 +28,8 @@ export default {
     ClipboardButton,
     GlSprintf,
     GlLink,
+    GlAlert,
+    MountingPortal,
   },
 
   props: {
@@ -170,12 +174,17 @@ export default {
 </script>
 <template>
   <div>
-    <div v-if="newTokenDetails" class="created-deploy-token-container info-well">
-      <div class="well-segment">
-        <h5>{{ $options.translations.newTokenMessage }}</h5>
+    <mounting-portal append mount-to="#new-deploy-token-alert">
+      <gl-alert
+        v-if="newTokenDetails"
+        variant="success"
+        class="gl-mb-4"
+        @dismiss="newTokenDetails = null"
+      >
+        <h5 class="gl-mt-0!">{{ $options.translations.newTokenMessage }}</h5>
         <gl-form-group>
           <template #description>
-            <div class="deploy-token-help-block gl-mt-2 text-success">
+            <div class="deploy-token-help-block gl-mt-2">
               <gl-sprintf
                 :message="$options.translations.newTokenUsernameDescription"
                 :placeholders="placeholders.link"
@@ -200,9 +209,9 @@ export default {
             </template>
           </gl-form-input-group>
         </gl-form-group>
-        <gl-form-group>
+        <gl-form-group class="gl-mb-0">
           <template #description>
-            <div class="deploy-token-help-block gl-mt-2 text-danger">
+            <div class="deploy-token-help-block gl-mt-2">
               <gl-sprintf
                 :message="$options.translations.newTokenDescription"
                 :placeholders="placeholders.i"
@@ -222,9 +231,9 @@ export default {
             </template>
           </gl-form-input-group>
         </gl-form-group>
-      </div>
-    </div>
-    <h5>{{ $options.translations.addTokenHeader }}</h5>
+      </gl-alert>
+    </mounting-portal>
+    <h4 class="gl-mt-0">{{ $options.translations.addTokenHeader }}</h4>
     <p>
       <gl-sprintf
         :message="$options.translations.addTokenDescription"
@@ -295,6 +304,9 @@ export default {
     <div>
       <gl-button variant="confirm" @click="createDeployToken">
         {{ $options.translations.addTokenButton }}
+      </gl-button>
+      <gl-button class="gl-ml-3 js-toggle-button">
+        {{ $options.translations.cancelTokenCreation }}
       </gl-button>
     </div>
     <gl-datepicker v-model="expiresAt" target="#deploy_token_expires_at" container="body" />
