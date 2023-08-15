@@ -14,7 +14,7 @@
         = _("General pipelines")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded ? _('Collapse') : _('Expand')
-      %p
+      %p.gl-text-secondary
         = _("Customize your pipeline configuration.")
     .settings-content
       = render 'groups/settings/ci_cd/form', group: @group
@@ -31,7 +31,7 @@
       = _('Runners')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
       = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -43,7 +43,7 @@
       = _('Auto DevOps')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       - auto_devops_url = help_page_path('topics/autodevops/index')
       - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke')
       - auto_devops_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auto_devops_url }

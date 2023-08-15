@@ -6,6 +6,9 @@ development:
   cluster_cache:
     cluster:
       - redis://localhost:7001
+  cluster_shared_state:
+    cluster:
+      - redis://localhost:7001
   feature_flag:
     cluster:
       - redis://localhost:7001
@@ -18,6 +21,9 @@ test:
     cluster:
       - redis://localhost:7001
   cluster_cache:
+    cluster:
+      - redis://localhost:7001
+  cluster_shared_state:
     cluster:
       - redis://localhost:7001
   feature_flag:

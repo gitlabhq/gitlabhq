@@ -5,7 +5,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= s_('DeployTokens|Deploy tokens')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = description
   .settings-content
     #new-deploy-token-alert

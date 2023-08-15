@@ -26438,6 +26438,7 @@ Type of file the position refers to.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="diffpositiontypefile"></a>`file` | Unknown file type. |
 | <a id="diffpositiontypeimage"></a>`image` | An image. |
 | <a id="diffpositiontypetext"></a>`text` | Text file. |
 

@@ -718,7 +718,7 @@ msgstr ""
 msgid "%{emailPrefix}@company.com"
 msgstr ""
 
-msgid "%{enable_service_ping_link_start}Enable%{link_end} or %{generate_manually_link_start}generate%{link_end} Service Ping to preview and download service usage data payload."
+msgid "%{enable_service_ping_link_start}Enable%{enable_service_ping_link_end} or %{generate_manually_link_start}generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload."
 msgstr ""
 
 msgid "%{extra} more downstream pipelines"
@@ -12282,10 +12282,10 @@ msgstr ""
 msgid "Configure %{italic_start}What's new%{italic_end} drawer and content."
 msgstr ""
 
-msgid "Configure %{link} to track events. %{link_start}Learn more.%{link_end}"
+msgid "Configure %{repository_checks_link_start}repository checks%{link_end} and %{housekeeping_link_start}housekeeping%{link_end} on repositories."
 msgstr ""
 
-msgid "Configure %{repository_checks_link_start}repository checks%{link_end} and %{housekeeping_link_start}housekeeping%{link_end} on repositories."
+msgid "Configure %{snowplow_link_start}Snowplow%{snowplow_link_end} to track events. %{help_link_start}Learn more.%{help_link_end}"
 msgstr ""
 
 msgid "Configure CAPTCHAs, IP address limits, and other anti-spam measures."
@@ -18057,7 +18057,7 @@ msgstr ""
 msgid "Environment scope"
 msgstr ""
 
-msgid "Environment variables on this GitLab instance are configured to be %{link_start}protected%{link_end} by default."
+msgid "Environment variables on this GitLab instance are configured to be %{help_link_start}protected%{help_link_end} by default."
 msgstr ""
 
 msgid "Environment:"
@@ -21653,7 +21653,7 @@ msgstr ""
 msgid "Gitpod|To use Gitpod you must first enable the feature in the integrations section of your %{linkStart}user preferences%{linkEnd}."
 msgstr ""
 
-msgid "Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{link_start}How do I enable it?%{link_end} "
+msgid "Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
 msgstr ""
 
 msgid "Gitpod|https://gitpod.example.com"
@@ -22616,7 +22616,7 @@ msgstr ""
 msgid "GroupSettings|Compliance frameworks"
 msgstr ""
 
-msgid "GroupSettings|Configure analytics features for this group"
+msgid "GroupSettings|Configure analytics features for this group."
 msgstr ""
 
 msgid "GroupSettings|Configure compliance frameworks to make them available to projects in this group. %{linkStart}What are compliance frameworks?%{linkEnd}"

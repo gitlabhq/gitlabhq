@@ -23,9 +23,7 @@
       title: _('Service Ping payload not found in the application cache')) do |c|
 
       - c.with_body do
-        - enable_service_ping_link_url = help_page_path('administration/settings/usage_statistics', anchor: 'enable-or-disable-usage-statistics')
-        - enable_service_ping_link = '<a href="%{url}">'.html_safe % { url: enable_service_ping_link_url }
-        - generate_manually_link_url = help_page_path('development/internal_analytics/service_ping/troubleshooting', anchor: 'generate-service-ping')
-        - generate_manually_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: generate_manually_link_url }
+        - enable_service_ping_link = link_to('', help_page_path('administration/settings/usage_statistics', anchor: 'enable-or-disable-usage-statistics'), target: '_blank', rel: 'noopener noreferrer')
+        - generate_manually_link = link_to('', help_page_path('development/internal_analytics/service_ping/troubleshooting', anchor: 'generate-service-ping'), target: '_blank', rel: 'noopener noreferrer')
 
-        = html_escape(s_('%{enable_service_ping_link_start}Enable%{link_end} or %{generate_manually_link_start}generate%{link_end} Service Ping to preview and download service usage data payload.')) % { enable_service_ping_link_start: enable_service_ping_link, generate_manually_link_start: generate_manually_link, link_end: '</a>'.html_safe }
+        = safe_format(s_('%{enable_service_ping_link_start}Enable%{enable_service_ping_link_end} or %{generate_manually_link_start}generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload.'), tag_pair(enable_service_ping_link, :enable_service_ping_link_start, :enable_service_ping_link_end), tag_pair(generate_manually_link, :generate_manually_link_start, :generate_manually_link_end))

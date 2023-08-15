@@ -8,6 +8,7 @@ module Types
 
       value 'text', description: "Text file."
       value 'image', description: "An image."
+      value 'file', description: "Unknown file type."
     end
   end
 end

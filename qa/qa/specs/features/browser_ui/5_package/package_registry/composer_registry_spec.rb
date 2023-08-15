@@ -68,7 +68,14 @@ module QA
         package.remove_via_api!
       end
 
-      it 'publishes a composer package and deletes it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016' do
+      it(
+        'publishes a composer package and deletes it',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016',
+        quarantine: {
+          type: :broken,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/421885"
+        }
+      ) do
         Page::Project::Menu.perform(&:go_to_package_registry)
 
         Page::Project::Packages::Index.perform do |index|

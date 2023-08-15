@@ -12,6 +12,8 @@ module Gitlab
   # ExclusiveLease.
   #
   class ExclusiveLease
+    include Gitlab::Utils::StrongMemoize
+
     PREFIX = 'gitlab:exclusive_lease'
     NoKey = Class.new(ArgumentError)
 
@@ -31,7 +33,7 @@ module Gitlab
     EOS
 
     def self.get_uuid(key)
-      Gitlab::Redis::SharedState.with do |redis|
+      with_read_redis do |redis|
         redis.get(redis_shared_state_key(key)) || false
       end
     end
@@ -61,7 +63,7 @@ module Gitlab
     def self.cancel(key, uuid)
       return unless key.present?
 
-      Gitlab::Redis::SharedState.with do |redis|
+      with_write_redis do |redis|
         redis.eval(LUA_CANCEL_SCRIPT, keys: [ensure_prefixed_key(key)], argv: [uuid])
       end
     end
@@ -84,6 +86,21 @@ module Gitlab
           redis.del(key)
         end
       end
+
+      Gitlab::Redis::ClusterSharedState.with do |redis|
+        redis.scan_each(match: redis_shared_state_key(scope)).each do |key|
+          redis.del(key)
+        end
+      end
+    end
+
+    def self.use_cluster_shared_state?
+      Gitlab::SafeRequestStore[:use_cluster_shared_state] ||=
+        Feature.enabled?(:use_cluster_shared_state_for_exclusive_lease)
+    end
+
+    def self.use_double_lock?
+      Gitlab::SafeRequestStore[:use_double_lock] ||= Feature.enabled?(:enable_exclusive_lease_double_lock_rw)
     end
 
     def initialize(key, uuid: nil, timeout:)
@@ -95,10 +112,23 @@ module Gitlab
     # Try to obtain the lease. Return lease UUID on success,
     # false if the lease is already taken.
     def try_obtain
+      return try_obtain_with_new_lock if self.class.use_cluster_shared_state?
+
       # Performing a single SET is atomic
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set(@redis_shared_state_key, @uuid, nx: true, ex: @timeout) && @uuid
-      end
+      obtained = set_lease(Gitlab::Redis::SharedState) && @uuid
+
+      # traffic to new store is minimal since only the first lock holder can run SETNX in ClusterSharedState
+      return false unless obtained
+      return obtained unless self.class.use_double_lock?
+      return obtained if same_store # 2nd setnx will surely fail if store are the same
+
+      second_lock_obtained = set_lease(Gitlab::Redis::ClusterSharedState) && @uuid
+
+      # cancel is safe since it deletes key only if value matches uuid
+      # i.e. it will not delete the held lock on ClusterSharedState
+      cancel unless second_lock_obtained
+
+      second_lock_obtained
     end
 
     # This lease is waiting to obtain
@@ -109,7 +139,7 @@ module Gitlab
     # Try to renew an existing lease. Return lease UUID on success,
     # false if the lease is taken by a different UUID or inexistent.
     def renew
-      Gitlab::Redis::SharedState.with do |redis|
+      self.class.with_write_redis do |redis|
         result = redis.eval(LUA_RENEW_SCRIPT, keys: [@redis_shared_state_key], argv: [@uuid, @timeout])
         result == @uuid
       end
@@ -117,7 +147,7 @@ module Gitlab
 
     # Returns true if the key for this lease is set.
     def exists?
-      Gitlab::Redis::SharedState.with do |redis|
+      self.class.with_read_redis do |redis|
         redis.exists?(@redis_shared_state_key) # rubocop:disable CodeReuse/ActiveRecord
       end
     end
@@ -126,17 +156,66 @@ module Gitlab
     #
     # This method will return `nil` if no TTL could be obtained.
     def ttl
-      Gitlab::Redis::SharedState.with do |redis|
+      self.class.with_read_redis do |redis|
         ttl = redis.ttl(@redis_shared_state_key)
 
         ttl if ttl > 0
       end
     end
 
+    # rubocop:disable CodeReuse/ActiveRecord
+    def self.with_write_redis(&blk)
+      if use_cluster_shared_state?
+        result = Gitlab::Redis::ClusterSharedState.with(&blk)
+        Gitlab::Redis::SharedState.with(&blk)
+
+        result
+      elsif use_double_lock?
+        result = Gitlab::Redis::SharedState.with(&blk)
+        Gitlab::Redis::ClusterSharedState.with(&blk)
+
+        result
+      else
+        Gitlab::Redis::SharedState.with(&blk)
+      end
+    end
+
+    def self.with_read_redis(&blk)
+      if use_cluster_shared_state?
+        Gitlab::Redis::ClusterSharedState.with(&blk)
+      elsif use_double_lock?
+        Gitlab::Redis::SharedState.with(&blk) || Gitlab::Redis::ClusterSharedState.with(&blk)
+      else
+        Gitlab::Redis::SharedState.with(&blk)
+      end
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
+
     # Gives up this lease, allowing it to be obtained by others.
     def cancel
       self.class.cancel(@redis_shared_state_key, @uuid)
     end
+
+    private
+
+    def set_lease(redis_class)
+      redis_class.with do |redis|
+        redis.set(@redis_shared_state_key, @uuid, nx: true, ex: @timeout)
+      end
+    end
+
+    def try_obtain_with_new_lock
+      # checks shared-state to avoid 2 versions of the application acquiring 1 lock
+      # wait for held lock to expire or yielded in case any process on old version is running
+      return false if Gitlab::Redis::SharedState.with { |c| c.exists?(@redis_shared_state_key) } # rubocop:disable CodeReuse/ActiveRecord
+
+      set_lease(Gitlab::Redis::ClusterSharedState) && @uuid
+    end
+
+    def same_store
+      Gitlab::Redis::ClusterSharedState.with(&:id) == Gitlab::Redis::SharedState.with(&:id) # rubocop:disable CodeReuse/ActiveRecord
+    end
+    strong_memoize_attr :same_store
   end
 end
 

@@ -14,7 +14,7 @@ module BulkImports
           <<-GRAPHQL
           query($full_path: ID!, $cursor: String, $per_page: Int) {
             portable: #{context.entity.entity_type}(fullPath: $full_path) {
-              members: #{members_type}(relations: [DIRECT, INHERITED], first: $per_page, after: $cursor) {
+              members: #{members_type}(relations: #{relations}, first: $per_page, after: $cursor) {
                 page_info: pageInfo {
                   next_page: endCursor
                   has_next_page: hasNextPage
@@ -64,6 +64,14 @@ module BulkImports
             'groupMembers'
           else
             'projectMembers'
+          end
+        end
+
+        def relations
+          if context.entity.group?
+            "[DIRECT INHERITED SHARED_FROM_GROUPS]"
+          else
+            "[DIRECT INHERITED INVITED_GROUPS SHARED_INTO_ANCESTORS]"
           end
         end
       end
