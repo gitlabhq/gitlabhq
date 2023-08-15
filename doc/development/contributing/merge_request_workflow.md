@@ -110,7 +110,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 **Important notes:**
 
 - If the guidelines are not met, the MR may not pass the [Danger checks](https://gitlab.com/gitlab-org/gitlab/-/blob/master/danger/commit_messages/Dangerfile).
-- Consider enabling [Squash and merge](../../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
+- Consider enabling [Squash and merge](../../user/project/merge_requests/squash_and_merge.md)
   if your merge request includes "Applied suggestion to X files" commits, so that Danger can ignore those.
 - The prefixes in the form of `[prefix]` and `prefix:` are allowed (they can be all lowercase, as long
   as the message itself is capitalized). For instance, `danger: Improve Danger behavior` and
@@ -172,7 +172,7 @@ the contribution acceptance criteria below:
      restarting the failing CI job, rebasing on top of target branch to bring in updates that
      may resolve the failure, or if it has not been fixed yet, ask a developer to
      help you fix the test.
-1. The MR contains a few logically organized commits, or has [squashing commits enabled](../../user/project/merge_requests/squash_and_merge.md#squash-and-merge).
+1. The MR contains a few logically organized commits, or has [squashing commits enabled](../../user/project/merge_requests/squash_and_merge.md).
 1. The changes can merge without problems. If not, you should rebase if you're the
    only one working on your feature branch, otherwise merge the default branch into the MR branch.
 1. Only one specific issue is fixed or one specific feature is implemented. Do not

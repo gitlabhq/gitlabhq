@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group access tokens API **(FREE)**
+# Group access tokens API **(FREE ALL)**
 
 You can read more about [group access tokens](../user/group/settings/group_access_tokens.md).
 

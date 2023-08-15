@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Prepare Auto DevOps for deployment **(FREE)**
+# Prepare Auto DevOps for deployment **(FREE ALL)**
 
 If you enable Auto DevOps without setting the base domain and deployment
 strategy, GitLab can't deploy your application directly. Therefore, we

@@ -7,12 +7,7 @@ module QA
       #
       # git config --global receive.advertisepushoptions true
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'merge-request-push-options'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'merge-request-push-options') }
 
       it 'sets title and description', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347844' do
         description = "This is a test of MR push options"

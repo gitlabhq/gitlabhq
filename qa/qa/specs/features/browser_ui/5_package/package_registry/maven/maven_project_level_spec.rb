@@ -12,15 +12,7 @@ module QA
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven' }
       let(:personal_access_token) { Runtime::Env.personal_access_token }
-
-      let(:package_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = "#{package_type}_package_project"
-          project.initialize_with_readme = true
-          project.visibility = :private
-        end
-      end
-
+      let(:package_project) { create(:project, :with_readme, :private, name: "#{package_type}_package_project") }
       let(:package) do
         Resource::Package.init do |package|
           package.name = package_name

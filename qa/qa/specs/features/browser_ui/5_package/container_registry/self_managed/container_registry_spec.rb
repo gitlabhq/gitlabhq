@@ -5,14 +5,7 @@ module QA
     describe 'Self-managed Container Registry' do
       include Support::Helpers::MaskToken
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-registry'
-          project.template_name = 'express'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'project-with-registry', template_name: 'express') }
       let(:project_deploy_token) do
         Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
           deploy_token.name = 'registry-deploy-token'

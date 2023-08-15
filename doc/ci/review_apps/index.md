@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Review apps **(FREE)**
+# Review apps **(FREE ALL)**
 
 Review apps are a collaboration tool that provide an environment to showcase product changes.
 

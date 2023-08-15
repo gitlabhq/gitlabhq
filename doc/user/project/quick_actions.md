@@ -5,7 +5,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab quick actions **(FREE)**
+# GitLab quick actions **(FREE ALL)**
 
 Quick actions are text-based shortcuts for common actions that are usually done
 by selecting buttons or dropdowns in the GitLab user interface. You can enter

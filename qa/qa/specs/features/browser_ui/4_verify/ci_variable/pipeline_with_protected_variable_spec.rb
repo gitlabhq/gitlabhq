@@ -5,13 +5,7 @@ module QA
     describe 'Pipeline with protected variable' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:protected_value) { Faker::Alphanumeric.alphanumeric(number: 8) }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-ci-variables'
-          project.description = 'project with CI variables'
-        end
-      end
+      let(:project) { create(:project, name: 'project-with-ci-vars', description: 'project with CI vars') }
 
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|

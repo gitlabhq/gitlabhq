@@ -4,7 +4,7 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Web Editor **(FREE)**
+# Web Editor **(FREE ALL)**
 
 You can use the Web Editor to make changes to a single file directly from the
 GitLab UI. To make changes to multiple files, see [Web IDE](../web_ide/index.md).

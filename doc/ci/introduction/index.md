@@ -6,7 +6,7 @@ description: "An overview of Continuous Integration, Continuous Delivery, and Co
 type: concepts
 ---
 
-# CI/CD concepts **(FREE)**
+# CI/CD concepts **(FREE ALL)**
 
 With the continuous method of software development, you continuously build,
 test, and deploy iterative code changes. This iterative process helps reduce

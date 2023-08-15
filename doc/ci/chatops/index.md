@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, concepts, howto
 ---
 
-# GitLab ChatOps **(FREE)**
+# GitLab ChatOps **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466) in GitLab Ultimate 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780) to GitLab Free in 11.9.

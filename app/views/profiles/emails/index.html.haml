@@ -32,7 +32,7 @@
             = s_('Profiles|Add new email')
           = gitlab_ui_form_for 'email', url: profile_emails_path do |f|
             .form-group
-              = f.label :email, _('Profiles|Email'), class: 'label-bold'
+              = f.label :email, s_('Profiles|Email address'), class: 'label-bold'
               = f.text_field :email, class: 'form-control gl-form-input', data: { qa_selector: 'email_address_field' }
             .gl-mt-3
               = f.submit s_('Profiles|Add email address'), data: { qa_selector: 'add_email_address_button' }, pajamas_button: true

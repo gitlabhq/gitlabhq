@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Choose when to run jobs **(FREE)**
+# Choose when to run jobs **(FREE ALL)**
 
 When a new pipeline starts, GitLab checks the pipeline configuration to determine
 which jobs should run in that pipeline. You can configure jobs to run depending on

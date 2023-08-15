@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Metadata API **(FREE)**
+# Metadata API **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357032) in GitLab 15.2.
 > - `enterprise` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103969) in GitLab 15.6.

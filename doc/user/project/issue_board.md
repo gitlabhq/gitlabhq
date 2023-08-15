@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issue boards **(FREE)**
+# Issue boards **(FREE ALL)**
 
 The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -258,7 +258,7 @@ advanced functionality is present in [higher tiers only](https://about.gitlab.co
 > - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.8.
 > - Moved to GitLab Premium in 13.9.
 
-An issue board can be associated with a [milestone](milestones/index.md#milestones),
+An issue board can be associated with a [milestone](milestones/index.md),
 [labels](labels.md), assignee, weight, and current [iteration](../group/iterations/index.md),
 which automatically filter the board issues accordingly.
 This allows you to create unique boards according to your team's need.

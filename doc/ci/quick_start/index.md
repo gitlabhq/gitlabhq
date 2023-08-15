@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Tutorial: Create and run your first GitLab CI/CD pipeline **(FREE)**
+# Tutorial: Create and run your first GitLab CI/CD pipeline **(FREE ALL)**
 
 This tutorial shows you how to configure and run your first CI/CD pipeline in GitLab.
 

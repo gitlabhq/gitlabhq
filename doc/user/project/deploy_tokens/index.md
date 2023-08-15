@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy tokens **(FREE)**
+# Deploy tokens **(FREE ALL)**
 
 > [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) package registry scopes in GitLab 13.0.
 
@@ -95,6 +95,7 @@ Prerequisites:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
 1. Select **Settings > Repository**.
 1. Expand **Deploy tokens**.
+1. Select **Add token**.
 1. Complete the fields, and select the desired [scopes](#scope).
 1. Select **Create deploy token**.
 

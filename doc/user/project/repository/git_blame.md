@@ -6,7 +6,7 @@ type: reference, howto
 description: "Documentation on Git file blame."
 ---
 
-# Git file blame **(FREE)**
+# Git file blame **(FREE ALL)**
 
 [Git blame](https://git-scm.com/docs/git-blame) provides more information
 about every line in a file, including the last modified time, author, and

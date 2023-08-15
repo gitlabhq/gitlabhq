@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project integrations **(FREE)**
+# Project integrations **(FREE ALL)**
 
 You can integrate your GitLab projects with other applications. Integrations are
 like plugins, and give you the freedom to add

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Run your CI/CD jobs in Docker containers **(FREE)**
+# Run your CI/CD jobs in Docker containers **(FREE ALL)**
 
 You can run your CI/CD jobs in separate, isolated Docker containers.
 

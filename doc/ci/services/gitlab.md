@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Use GitLab as a microservice **(FREE)**
+# Use GitLab as a microservice **(FREE ALL)**
 
 Many applications need to access JSON APIs, so application tests might need access
 to APIs too. The following example shows how to use GitLab as a microservice to give

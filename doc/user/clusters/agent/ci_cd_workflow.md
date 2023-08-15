@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using GitLab CI/CD with a Kubernetes cluster **(FREE)**
+# Using GitLab CI/CD with a Kubernetes cluster **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327409) in GitLab 14.1.
 > - The pre-configured variable `$KUBECONFIG` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) in GitLab 14.2.
@@ -300,7 +300,7 @@ The identity can be specified with the following keys:
 
 See the [official Kubernetes documentation for details](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation).
 
-## Restrict project and group access to specific environments **(FREE)**
+## Restrict project and group access to specific environments **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343885) in GitLab 15.7.
 

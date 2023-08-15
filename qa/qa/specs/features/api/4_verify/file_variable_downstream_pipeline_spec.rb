@@ -8,18 +8,8 @@ module QA
     describe 'Pipeline with file variables and downstream pipelines' do
       let(:random_string) { Faker::Alphanumeric.alphanumeric(number: 8) }
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
-
-      let!(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'upstream-project-with-file-variables'
-        end
-      end
-
-      let!(:downstream_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'downstream-project'
-        end
-      end
+      let!(:project) { create(:project, name: 'upstream-project-with-file-variables') }
+      let!(:downstream_project) { create(:project, name: 'downstream-project') }
 
       let!(:project_runner) do
         Resource::ProjectRunner.fabricate! do |runner|

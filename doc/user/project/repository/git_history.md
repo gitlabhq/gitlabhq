@@ -6,7 +6,7 @@ type: reference, howto
 description: "Documentation on Git file history."
 ---
 
-# Git file history **(FREE)**
+# Git file history **(FREE ALL)**
 
 Git file History provides information about the commit history associated
 with a file. To use it:

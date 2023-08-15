@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Groups API **(FREE)**
+# Groups API **(FREE ALL)**
 
 Interact with [groups](../user/group/index.md) by using the REST API.
 

@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group releases API **(FREE)**
+# Group releases API **(FREE ALL)**
 
 Review your groups' [releases](../user/project/releases/index.md) with the REST API.
 

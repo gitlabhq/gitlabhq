@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Two-factor authentication **(FREE)**
+# Two-factor authentication **(FREE ALL)**
 
 Two-factor authentication (2FA) provides an additional level of security to your GitLab account. For others to access
 your account, they would need your username and password _and_ access to your second factor of authentication.

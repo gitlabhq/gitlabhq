@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, howto
 ---
 
-# Migrating from Jenkins **(FREE)**
+# Migrating from Jenkins **(FREE ALL)**
 
 A lot of GitLab users have successfully migrated to GitLab CI/CD from Jenkins.
 We've collected several resources here that you might find informative if you're just getting started.

@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group and project members API **(FREE)**
+# Group and project members API **(FREE ALL)**
 
 > `created_by` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28789) in GitLab 14.10.
 

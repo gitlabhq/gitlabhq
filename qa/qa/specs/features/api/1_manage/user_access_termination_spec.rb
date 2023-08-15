@@ -25,11 +25,7 @@ module QA
 
         @sandbox.add_member(@user)
 
-        @project = Resource::Project.fabricate_via_api! do |project|
-          project.group = group
-          project.name = "project-for-user-group-access-termination"
-          project.initialize_with_readme = true
-        end
+        @project = create(:project, :with_readme, name: 'project-for-user-group-access-termination', group: group)
       end
 
       context 'after parent group membership termination' do

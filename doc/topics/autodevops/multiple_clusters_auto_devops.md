@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Multiple Kubernetes clusters for Auto DevOps **(FREE)**
+# Multiple Kubernetes clusters for Auto DevOps **(FREE ALL)**
 
 When using Auto DevOps, you can deploy different environments to different Kubernetes clusters.
 

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Gmail actions **(FREE)**
+# Gmail actions **(FREE ALL)**
 
 GitLab supports [Google actions in email](https://developers.google.com/gmail/markup/actions/actions-overview).
 When you configure this integration, emails that require an action are marked in Gmail.

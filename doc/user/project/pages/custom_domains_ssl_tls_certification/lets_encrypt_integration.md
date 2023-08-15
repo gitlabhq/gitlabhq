@@ -6,7 +6,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages Let's Encrypt certificates **(FREE)**
+# GitLab Pages Let's Encrypt certificates **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28996) in GitLab 12.1.
 

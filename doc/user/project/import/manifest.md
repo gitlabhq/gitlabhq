@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import multiple repositories by uploading a manifest file **(FREE)**
+# Import multiple repositories by uploading a manifest file **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28811) in GitLab 11.2.
 > - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.

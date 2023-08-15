@@ -4,12 +4,7 @@ module QA
   RSpec.describe 'Create' do
     describe 'Branch with unusual name', product_group: :source_code do
       let(:branch_name) { 'unUsually/named#br--anch' }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |resource|
-          resource.name = 'unusually-named-branch-project'
-          resource.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'unusually-named-branch-project') }
 
       before do
         Flow::Login.sign_in

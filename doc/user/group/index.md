@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Groups **(FREE)**
+# Groups **(FREE ALL)**
 
 In GitLab, you use groups to manage one or more related projects at the same time.
 
@@ -301,7 +301,7 @@ To avoid this problem, GitLab administrators can [ensure removed users cannot in
 
 There are two different ways to add a new project to a group:
 
-- Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/index.md#create-a-project).
+- Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/index.md).
 - While you are creating a project, select a group from the dropdown list.
 
   ![Select group](img/select_group_dropdown_13_10.png)

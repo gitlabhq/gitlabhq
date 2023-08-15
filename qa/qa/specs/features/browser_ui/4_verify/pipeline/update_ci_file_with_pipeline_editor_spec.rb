@@ -4,13 +4,7 @@ module QA
   RSpec.describe 'Verify' do
     describe 'Update CI file with pipeline editor', product_group: :pipeline_authoring do
       let(:random_test_string) { SecureRandom.hex(10) }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'pipeline-editor-project'
-        end
-      end
-
+      let(:project) { create(:project, name: 'pipeline-editor-project') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate_via_api! do |runner|
           runner.project = project

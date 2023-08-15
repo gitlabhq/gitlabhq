@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Tutorial: How to update Git commit messages **(FREE)**
+# Tutorial: How to update Git commit messages **(FREE ALL)**
 
 Occasionally, after you've made a few commits to your branch, you realize you need
 to update one or more commit messages. Perhaps you found a typo, or some automation warned you

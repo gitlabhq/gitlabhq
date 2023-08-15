@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Connect to cloud services **(FREE)**
+# Connect to cloud services **(FREE ALL)**
 
 > - `CI_JOB_JWT` variable for reading secrets from Vault [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) in GitLab 12.10.
 > - `CI_JOB_JWT_V2` variable to support additional OIDC providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346737) in GitLab 14.7.

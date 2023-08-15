@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Secure and Govern glossary **(FREE)**
+# Secure and Govern glossary **(FREE ALL)**
 
 The glossary of terms aims to achieve the following:
 

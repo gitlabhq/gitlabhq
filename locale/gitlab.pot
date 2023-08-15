@@ -7833,6 +7833,9 @@ msgstr[1] ""
 msgid "Blocked issue"
 msgstr ""
 
+msgid "Blocked work items are not available for the current subscription tier"
+msgstr ""
+
 msgid "Blocking"
 msgstr ""
 
@@ -26268,6 +26271,9 @@ msgstr ""
 msgid "Italic text"
 msgstr ""
 
+msgid "Item with ID: %{id} cannot be added. You don't have permission to perform this action."
+msgstr ""
+
 msgid "Iteration"
 msgstr ""
 
@@ -29850,6 +29856,9 @@ msgstr ""
 msgid "Microsoft|Microsoft Azure integration settings were successfully updated."
 msgstr ""
 
+msgid "Microsoft|Sync group memberships from Microsoft Azure when SAML response includes an overage claim."
+msgstr ""
+
 msgid "Microsoft|Tenant ID"
 msgstr ""
 
@@ -31356,6 +31365,12 @@ msgstr ""
 msgid "No matching results for \"%{query}\""
 msgstr ""
 
+msgid "No matching work item found."
+msgstr ""
+
+msgid "No matching work item found. Make sure you are adding a valid ID and you have access to the item."
+msgstr ""
+
 msgid "No members found"
 msgstr ""
 
@@ -31372,6 +31387,9 @@ msgid "No milestone"
 msgstr ""
 
 msgid "No more than %{max_issues} issues can be updated at the same time"
+msgstr ""
+
+msgid "No more than %{max_work_items} work items can be linked at the same time."
 msgstr ""
 
 msgid "No other labels with such name or description"
@@ -36046,7 +36064,7 @@ msgstr ""
 msgid "Profiles|Edit Profile"
 msgstr ""
 
-msgid "Profiles|Email"
+msgid "Profiles|Email address"
 msgstr ""
 
 msgid "Profiles|Email addresses"
@@ -45812,6 +45830,9 @@ msgstr ""
 msgid "Successfully deleted WebAuthn device."
 msgstr ""
 
+msgid "Successfully linked ID(s): %{item_ids}."
+msgstr ""
+
 msgid "Successfully removed email."
 msgstr ""
 
@@ -53275,6 +53296,9 @@ msgid "Work in progress limit"
 msgstr ""
 
 msgid "Work item promoted successfully."
+msgstr ""
+
+msgid "Work items are already linked"
 msgstr ""
 
 msgid "WorkItem|%{count} more assignees"

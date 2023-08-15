@@ -5,14 +5,14 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: concepts, howto
 ---
 
-# Default branch **(FREE)**
+# Default branch **(FREE ALL)**
 
 When you create a new [project](../../index.md), GitLab creates a default branch
 in the repository. A default branch has special configuration options not shared
 by other branches:
 
 - It cannot be deleted.
-- It's [initially protected](../../protected_branches.md#protected-branches) against
+- It's [initially protected](../../protected_branches.md) against
   forced pushes.
 - When a merge request uses an
   [issue closing pattern](../../issues/managing_issues.md#closing-issues-automatically)
@@ -99,7 +99,7 @@ unless a subgroup configuration overrides it.
 > Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
 
 GitLab administrators and group owners can define [branch protections](../../../project/protected_branches.md)
-to apply to every repository's [default branch](#default-branch)
+to apply to every repository's default branch
 at the [instance level](#instance-level-default-branch-protection) and
 [group level](#group-level-default-branch-protection) with one of the following options:
 
@@ -161,7 +161,7 @@ GitLab administrators can still update the default branch protection of a group.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
 > - [Settings moved and renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/340403) in GitLab 14.9.
 
-Instance-level protections for [default branch](#default-branch)
+Instance-level protections for the default branch
 can be overridden on a per-group basis by the group's owner. In
 [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab administrators can
 [enforce protection of initial default branches](#prevent-overrides-of-default-branch-protection)

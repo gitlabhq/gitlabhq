@@ -6,13 +6,7 @@ module QA
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:pipeline_job_name) { 'customizable-variable' }
       let(:variable_custom_value) { 'Custom Foo' }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-customizable-variable-pipeline'
-        end
-      end
-
+      let(:project) { create(:project, name: 'project-with-customizable-variable-pipeline') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.project = project

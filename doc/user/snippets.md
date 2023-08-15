@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Snippets **(FREE)**
+# Snippets **(FREE ALL)**
 
 With GitLab snippets, you can store and share bits of code and text with other users.
 You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and

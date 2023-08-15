@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Using Redis **(FREE)**
+# Using Redis **(FREE ALL)**
 
 As many applications depend on Redis as their key-value store, you
 eventually need it in order for your tests to run. Below you are guided how to

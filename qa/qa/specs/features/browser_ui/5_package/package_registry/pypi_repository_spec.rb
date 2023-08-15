@@ -6,13 +6,7 @@ module QA
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'pypi-package-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'pypi-package-project') }
       let(:package) do
         Resource::Package.init do |package|
           package.name = "mypypipackage-#{SecureRandom.hex(8)}"

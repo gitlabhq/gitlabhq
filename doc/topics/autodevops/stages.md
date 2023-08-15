@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Stages of Auto DevOps **(FREE)**
+# Stages of Auto DevOps **(FREE ALL)**
 
 The following sections describe the stages of [Auto DevOps](index.md).
 Read them carefully to understand how each one works.

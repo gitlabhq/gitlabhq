@@ -46,7 +46,7 @@ RSpec.describe RedisMigrationWorker, :clean_gitlab_redis_shared_state, feature_c
     end
 
     it 'runs migration logic on scanned keys' do
-      expect(migrator).to receive(:perform)
+      expect(migrator).to receive(:perform).at_least(:once)
 
       subject.perform(job_class_name, '0')
     end

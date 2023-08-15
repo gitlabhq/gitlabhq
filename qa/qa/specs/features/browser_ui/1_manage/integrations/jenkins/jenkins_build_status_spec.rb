@@ -15,18 +15,9 @@ module QA
       end
 
       let(:jenkins_project_name) { "gitlab_jenkins_#{SecureRandom.hex(5)}" }
-
       let(:connection_name) { 'gitlab-connection' }
-
       let(:project_name) { "project_with_jenkins_#{SecureRandom.hex(4)}" }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = project_name
-          project.initialize_with_readme = true
-          project.auto_devops_enabled = false
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: project_name) }
 
       let(:access_token) do
         Runtime::Env.personal_access_token ||= fabricate_access_token

@@ -7,13 +7,7 @@ module QA
     describe 'Git clone using a deploy key' do
       let(:runner_name) { "qa-runner-#{SecureRandom.hex(4)}" }
       let(:repository_location) { project.repository_ssh_location }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'deploy-key-clone-project'
-        end
-      end
-
+      let(:project) { create(:project, name: 'deploy-key-clone-project') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate_via_api! do |resource|
           resource.project = project

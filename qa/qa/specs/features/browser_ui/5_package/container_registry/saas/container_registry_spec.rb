@@ -4,13 +4,7 @@ module QA
   RSpec.describe 'Package' do
     describe 'SaaS Container Registry', only: { subdomain: %i[staging staging-canary pre] },
       product_group: :container_registry do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-registry'
-          project.template_name = 'express'
-        end
-      end
-
+      let(:project) { create(:project, name: 'project-with-registry', template_name: 'express') }
       let!(:gitlab_ci_yaml) do
         <<~YAML
         stages:

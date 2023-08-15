@@ -6,11 +6,7 @@ module QA
       product_group: :code_review do
       let(:branch_name) { "merge-request-test-#{SecureRandom.hex(8)}" }
       let(:title) { "Merge from push event notification test #{SecureRandom.hex(8)}" }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme) }
 
       before do
         Flow::Login.sign_in

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import and migrate projects **(FREE)**
+# Import and migrate projects **(FREE ALL)**
 
 If you want to bring existing projects to GitLab or copy GitLab projects to a different location, you can:
 

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira issue management **(FREE)**
+# Jira issue management **(FREE ALL)**
 
 You can [manage Jira issues directly in GitLab](configure.md).
 You can then refer to Jira issues by ID in GitLab commits and merge requests.

@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository analytics for projects **(FREE)**
+# Repository analytics for projects **(FREE ALL)**
 
 Use repository analytics to view information about a project's Git repository:
 

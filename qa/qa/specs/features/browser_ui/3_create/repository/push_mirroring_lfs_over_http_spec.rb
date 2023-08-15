@@ -7,9 +7,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        target_project = Resource::Project.fabricate_via_api! do |project|
-          project.name = 'push-mirror-target-project'
-        end
+        target_project = create(:project, name: 'push-mirror-target-project')
         target_project_uri = target_project.repository_http_location.uri
         target_project_uri.user = Runtime::User.username
 

@@ -5,7 +5,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages **(FREE)**
+# GitLab Pages **(FREE ALL)**
 
 With GitLab Pages, you can publish static websites directly from a repository
 in GitLab.

@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected branches **(FREE)**
+# Protected branches **(FREE ALL)**
 
 In GitLab, [permissions](../permissions.md) are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose

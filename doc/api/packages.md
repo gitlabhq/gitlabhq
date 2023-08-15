@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Packages API **(FREE)**
+# Packages API **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349418) support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication for the project-level API in GitLab 15.3.
 

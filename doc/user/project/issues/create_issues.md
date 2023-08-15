@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create an issue **(FREE)**
+# Create an issue **(FREE ALL)**
 
 When you create an issue, you are prompted to enter the fields of the issue.
 If you know the values you want to assign to an issue, you can use

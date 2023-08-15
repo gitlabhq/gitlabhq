@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use AliCloud as an OmniAuth authentication provider **(FREE)**
+# Use AliCloud as an OmniAuth authentication provider **(FREE ALL)**
 
 You can enable the AliCloud OAuth 2.0 OmniAuth provider and sign in to
 GitLab using your AliCloud account.

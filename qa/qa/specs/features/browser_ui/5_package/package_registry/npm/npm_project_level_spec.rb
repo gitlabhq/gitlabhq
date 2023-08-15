@@ -29,14 +29,7 @@ module QA
 
       let(:gitlab_address_without_port) { Support::GitlabAddress.address_with_port(with_default_port: false) }
       let(:gitlab_host_without_port) { Support::GitlabAddress.host_with_port(with_default_port: false) }
-
-      let!(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'npm-project-level'
-          project.visibility = :private
-        end
-      end
-
+      let!(:project) { create(:project, :private, name: 'npm-project-level') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"

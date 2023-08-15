@@ -4,7 +4,7 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CLI - `glab`
+# GitLab CLI - `glab` **(FREE)**
 
 GLab is an open source GitLab CLI tool. It brings GitLab to your terminal:
 next to where you are already working with Git and your code, without

@@ -25,20 +25,6 @@ module Gitlab
         def default_ttl_seconds
           ENV.fetch('GITLAB_RAILS_CACHE_DEFAULT_TTL_SECONDS', 8.hours).to_i
         end
-
-        # Exposes redis for Peek adapter. To be removed after ClusterCache migration.
-        def multistore_redis
-          redis
-        end
-
-        private
-
-        def redis
-          primary_store = ::Redis.new(Gitlab::Redis::ClusterCache.params)
-          secondary_store = ::Redis.new(params)
-
-          MultiStore.new(primary_store, secondary_store, store_name)
-        end
       end
     end
   end

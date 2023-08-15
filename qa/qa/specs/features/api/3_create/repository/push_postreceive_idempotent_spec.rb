@@ -6,12 +6,7 @@ module QA
       # Tests that a push does not result in multiple changes from repeated PostReceive executions.
       # One of the consequences would be duplicate push events
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'push-postreceive-idempotent'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'push-postreceive-idempotent') }
 
       after do
         project&.remove_via_api!

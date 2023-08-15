@@ -4,25 +4,9 @@ module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
     describe 'Include multiple files from multiple projects' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
-
-      let(:main_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-pipeline'
-        end
-      end
-
-      let(:project1) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'external-project-1'
-        end
-      end
-
-      let(:project2) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'external-project-2'
-        end
-      end
-
+      let(:main_project) { create(:project, name: 'project-with-pipeline') }
+      let(:project1) { create(:project, name: 'external-project-1') }
+      let(:project2) { create(:project, name: 'external-project-2') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.project = main_project

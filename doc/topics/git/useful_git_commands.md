@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Frequently used Git commands **(FREE)**
+# Frequently used Git commands **(FREE ALL)**
 
 The GitLab support team has collected these commands to help you. You may not
 need them frequently.

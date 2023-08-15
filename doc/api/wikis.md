@@ -4,7 +4,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project wikis API **(FREE)**
+# Project wikis API **(FREE ALL)**
 
 > - The `encoding` field was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81150) in GitLab 14.9.
 > - The `render_html` attribute was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/336792) in GitLab 14.9.

@@ -4,7 +4,7 @@ group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Invitations API **(FREE)**
+# Invitations API **(FREE ALL)**
 
 Use the Invitations API to invite or add users to a group or project, and to list pending
 invitations.

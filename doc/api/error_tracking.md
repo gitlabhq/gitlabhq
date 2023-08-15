@@ -4,7 +4,7 @@ group: Observability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Error Tracking settings API **(FREE)**
+# Error Tracking settings API **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34940) in GitLab 12.7.
 

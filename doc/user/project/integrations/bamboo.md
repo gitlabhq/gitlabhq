@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Atlassian Bamboo **(FREE)**
+# Atlassian Bamboo **(FREE ALL)**
 
 You can automatically trigger builds in Atlassian Bamboo when you push changes
 to your project in GitLab.

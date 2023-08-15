@@ -12,11 +12,7 @@ module QA
         end
       end
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-for-canceled-schedule'
-        end
-      end
+      let(:project) { create(:project, name: 'project-for-canceled-schedule') }
 
       before do
         project.add_member(user, Resource::Members::AccessLevel::MAINTAINER)

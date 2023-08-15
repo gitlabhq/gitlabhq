@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Infrastructure as Code with Terraform and GitLab **(FREE)**
+# Infrastructure as Code with Terraform and GitLab **(FREE ALL)**
 
 To manage your infrastructure with GitLab, you can use the integration with
 Terraform to define resources that you can version, reuse, and share:

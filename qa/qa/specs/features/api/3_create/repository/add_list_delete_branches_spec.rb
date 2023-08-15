@@ -2,12 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    let(:project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.name = 'project-qa-test'
-        project.description = 'project for qa test'
-      end
-    end
+    let(:project) { create(:project, name: 'project-qa-test', description: 'project for qa test') }
 
     describe 'Create, Retrieve and Delete branches via API', :requires_admin, product_group: :source_code do
       created_branch = 'create-branch'

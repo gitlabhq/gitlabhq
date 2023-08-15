@@ -34,11 +34,7 @@ module QA
         let(:source_storage) { { type: :gitaly, name: 'default' } }
         let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.additional_repository_storage } }
         let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = 'repo-storage-move-status'
-            project.initialize_with_readme = true
-            project.api_client = Runtime::API::Client.as_admin
-          end
+          create(:project, :with_readme, name: 'repo-storage-move-status', api_client: Runtime::API::Client.as_admin)
         end
 
         before do
@@ -56,12 +52,11 @@ module QA
         let(:source_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:destination_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
         let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = 'repo-storage-move'
-            project.initialize_with_readme = true
-            project.repository_storage = source_storage[:name]
-            project.api_client = Runtime::API::Client.as_admin
-          end
+          create(:project,
+            :with_readme,
+            name: 'repo-storage-move',
+            repository_storage: source_storage[:name],
+            api_client: Runtime::API::Client.as_admin)
         end
 
         before do
@@ -79,12 +74,11 @@ module QA
         let(:source_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
         let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = 'repo-storage-move'
-            project.initialize_with_readme = true
-            project.repository_storage = source_storage[:name]
-            project.api_client = Runtime::API::Client.as_admin
-          end
+          create(:project,
+            :with_readme,
+            name: 'repo-storage-move',
+            repository_storage: source_storage[:name],
+            api_client: Runtime::API::Client.as_admin)
         end
 
         before do

@@ -8,7 +8,7 @@ author_gitlab: mehranrasulian
 
 <!-- vale off -->
 
-# Test and deploy Laravel applications with GitLab CI/CD and Envoy **(FREE)**
+# Test and deploy Laravel applications with GitLab CI/CD and Envoy **(FREE ALL)**
 
 ## Introduction
 
@@ -66,7 +66,7 @@ This test will be used later for continuously testing our app with GitLab CI/CD.
 ### Push to GitLab
 
 Since we have our app up and running locally, it's time to push the codebase to our remote repository.
-Let's create [a new project](../../../user/project/index.md#create-a-project) in GitLab named `laravel-sample`.
+Let's create [a new project](../../../user/project/index.md) in GitLab named `laravel-sample`.
 After that, follow the command line instructions displayed on the project's homepage to initiate the repository on our machine and push the first commit.
 
 ```shell

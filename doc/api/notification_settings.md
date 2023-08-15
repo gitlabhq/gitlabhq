@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Notification settings API **(FREE)**
+# Notification settings API **(FREE ALL)**
 
 Change [notification settings](../user/profile/notifications.md) using the REST API.
 

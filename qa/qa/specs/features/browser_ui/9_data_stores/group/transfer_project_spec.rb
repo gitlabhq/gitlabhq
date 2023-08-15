@@ -15,13 +15,7 @@ module QA
         end
       end
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.group = source_group
-          project.name = 'transfer-project'
-        end
-      end
-
+      let(:project) { create(:project, name: 'transfer-project', group: source_group) }
       let(:readme_content) { 'Here is the edited content.' }
 
       before do

@@ -3,13 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Repository tags', :reliable, product_group: :source_code do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-for-tags'
-          project.initialize_with_readme = true
-        end
-      end
-
+      let(:project) { create(:project, :with_readme, name: 'project-for-tags') }
       let(:developer_user) do
         Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
       end

@@ -29,20 +29,8 @@ module QA
 
       let(:gitlab_address_without_port) { Support::GitlabAddress.address_with_port(with_default_port: false) }
       let(:gitlab_host_without_port) { Support::GitlabAddress.host_with_port(with_default_port: false) }
-
-      let!(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'npm-instace-level-publish'
-        end
-      end
-
-      let!(:another_project) do
-        Resource::Project.fabricate_via_api! do |another_project|
-          another_project.name = 'npm-instance-level-install'
-          another_project.group = project.group
-        end
-      end
-
+      let!(:project) { create(:project, name: 'npm-instance-level-publish') }
+      let!(:another_project) { create(:project, name: 'npm-instance-level-install', group: project.group) }
       let!(:runner) do
         Resource::GroupRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"

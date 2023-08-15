@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Merge methods **(FREE)**
+# Merge methods **(FREE ALL)**
 
 The merge method you select for your project determines how the changes in your
 merge requests are merged into an existing branch.

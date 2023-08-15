@@ -4,7 +4,7 @@ group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Manage projects **(FREE)**
+# Manage projects **(FREE ALL)**
 
 Most work in GitLab is done in a [project](../../user/project/index.md). Files and
 code are saved in projects, and most features are in the scope of projects.

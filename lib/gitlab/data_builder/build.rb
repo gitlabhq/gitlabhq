@@ -12,7 +12,7 @@ module Gitlab
 
         author_url = build_author_url(build.commit, commit)
 
-        {
+        attrs = {
           object_kind: 'build',
 
           ref: build.ref,
@@ -68,8 +68,13 @@ module Gitlab
             visibility_level: project.visibility_level
           },
 
+          project: project.hook_attrs(backward: false),
+
           environment: build_environment(build)
         }
+
+        attrs[:source_pipeline] = source_pipeline_attrs(commit.source_pipeline) if commit.source_pipeline.present?
+        attrs
       end
 
       private
@@ -98,6 +103,20 @@ module Gitlab
         {
           name: build.expanded_environment_name,
           action: build.environment_action
+        }
+      end
+
+      def source_pipeline_attrs(source_pipeline)
+        project = source_pipeline.source_project
+
+        {
+          project: {
+            id: project.id,
+            web_url: project.web_url,
+            path_with_namespace: project.full_path
+          },
+          job_id: source_pipeline.source_job_id,
+          pipeline_id: source_pipeline.source_pipeline_id
         }
       end
     end

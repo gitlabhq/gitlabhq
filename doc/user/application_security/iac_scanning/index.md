@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Infrastructure as Code (IaC) Scanning **(FREE)**
+# Infrastructure as Code (IaC) Scanning **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.5.
 

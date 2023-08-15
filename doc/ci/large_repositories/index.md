@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Optimize GitLab for large repositories **(FREE)**
+# Optimize GitLab for large repositories **(FREE ALL)**
 
 Large repositories consisting of more than 50k files in a worktree
 may require more optimizations beyond

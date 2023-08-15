@@ -1,11 +1,15 @@
 - return unless @project.forked? && can?(current_user, :remove_fork_project, @project)
 - remove_form_id = "js-remove-project-fork-form"
 
-.sub-section
-  %h4.danger-title= _('Remove fork relationship')
-  %p= remove_fork_project_description_message(@project)
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|
+  - c.with_header do
+    .gl-new-card-title-wrapper
+      %h4.gl-new-card-title.danger-title= _('Remove fork relationship')
+    %p.gl-new-card-description
+      = remove_fork_project_description_message(@project)
 
-  = form_for @project, url: remove_fork_project_path(@project), method: :delete, html: { id: remove_form_id } do |f|
-    %p
-      %strong= _('After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks.')
-    .js-confirm-danger{ data: remove_fork_project_confirm_json(@project, remove_form_id) }
+  - c.with_body do
+    = form_for @project, url: remove_fork_project_path(@project), method: :delete, html: { id: remove_form_id } do |f|
+      %p
+        %strong= _('After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks.')
+      .js-confirm-danger{ data: remove_fork_project_confirm_json(@project, remove_form_id) }

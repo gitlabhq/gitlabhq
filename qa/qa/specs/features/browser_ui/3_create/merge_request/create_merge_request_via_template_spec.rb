@@ -5,13 +5,7 @@ module QA
     describe 'Merge request custom templates' do
       let(:template_name) { 'custom_merge_request_template' }
       let(:template_content) { 'This is a custom merge request template test' }
-      let(:template_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'custom-mr-template-project'
-          project.initialize_with_readme = true
-        end
-      end
-
+      let(:template_project) { create(:project, :with_readme, name: 'custom-mr-template-project') }
       let(:merge_request_title) { 'One merge request to rule them all' }
 
       before do

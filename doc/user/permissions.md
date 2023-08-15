@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Permissions and roles **(FREE)**
+# Permissions and roles **(FREE ALL)**
 
 When you add a user to a project or group, you assign them a role.
 The role determines which actions they can take in GitLab.

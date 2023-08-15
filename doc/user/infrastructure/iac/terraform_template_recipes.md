@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Terraform template recipes **(FREE)**
+# Terraform template recipes **(FREE ALL)**
 
 You can customize your Terraform integration by adding the recipes on
 this page to your pipeline.

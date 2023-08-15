@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index
 ---
 
-# Services **(FREE)**
+# Services **(FREE ALL)**
 
 When you configure CI/CD, you specify an image, which is used to create the container
 where your jobs run. To specify this image, you use the `image` keyword.

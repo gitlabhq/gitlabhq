@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 <!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
 
-# Shimo (deprecated) **(FREE)**
+# Shimo (deprecated) **(FREE ALL)**
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377824) in GitLab 15.7

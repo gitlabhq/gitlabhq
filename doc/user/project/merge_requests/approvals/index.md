@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, concepts
 ---
 
-# Merge request approvals **(FREE)**
+# Merge request approvals **(FREE ALL)**
 
 You can configure your merge requests so that they must be approved before
 they can be merged. While [GitLab Free](https://about.gitlab.com/pricing/) allows

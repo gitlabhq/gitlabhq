@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pivotal Tracker **(FREE)**
+# Pivotal Tracker **(FREE ALL)**
 
 The Pivotal Tracker integration adds commit messages as comments to Pivotal Tracker stories.
 

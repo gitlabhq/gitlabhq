@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Using MySQL **(FREE)**
+# Using MySQL **(FREE ALL)**
 
 Many applications depend on MySQL as their database, and you may
 need it for your tests to run.

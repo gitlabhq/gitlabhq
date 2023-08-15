@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# CI/CD pipelines **(FREE)**
+# CI/CD pipelines **(FREE ALL)**
 
 NOTE:
 Watch the

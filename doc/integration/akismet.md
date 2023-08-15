@@ -4,7 +4,7 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Akismet **(FREE)**
+# Akismet **(FREE ALL)**
 
 GitLab uses [Akismet](https://akismet.com/) to prevent the creation of
 spam issues on public projects. Issues created through the web UI or the API can be submitted to

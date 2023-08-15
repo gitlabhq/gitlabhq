@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# npm API **(FREE)**
+# npm API **(FREE ALL)**
 
 This is the API documentation for [npm Packages](../../user/packages/npm_registry/index.md).
 

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira issue integration **(FREE)**
+# Jira issue integration **(FREE ALL)**
 
 The Jira issue integration connects one or more GitLab projects to a Jira instance. You can host the Jira instance yourself or in [Jira Cloud](https://www.atlassian.com/migration/assess/why-cloud). The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
 

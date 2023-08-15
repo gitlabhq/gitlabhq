@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD artifacts reports types **(FREE)**
+# GitLab CI/CD artifacts reports types **(FREE ALL)**
 
 Use [`artifacts:reports`](index.md#artifactsreports) to:
 
@@ -298,7 +298,7 @@ report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [SAST widget](../../user/application_security/sast/index.md#static-application-security-testing-sast).
+- The merge request [SAST widget](../../user/application_security/sast/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
 ## `artifacts:reports:secret_detection`

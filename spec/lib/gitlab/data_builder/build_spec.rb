@@ -53,7 +53,9 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
     it { expect(data[:runner][:description]).to eq(ci_build.runner.description) }
     it { expect(data[:runner][:runner_type]).to eq(ci_build.runner.runner_type) }
     it { expect(data[:runner][:is_shared]).to eq(ci_build.runner.instance_type?) }
+    it { expect(data[:project]).to eq(ci_build.project.hook_attrs(backward: false)) }
     it { expect(data[:environment]).to be_nil }
+    it { expect(data[:source_pipeline]).to be_nil }
 
     it 'does not exceed number of expected queries' do
       ci_build # Make sure the Ci::Build model is created before recording.
@@ -63,7 +65,7 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
         described_class.build(b) # Don't use ci_build variable here since it has all associations loaded into memory
       end
 
-      expect(control.count).to eq(14)
+      expect(control.count).to eq(16)
     end
 
     context 'commit author_url' do
@@ -96,6 +98,34 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
 
         it { expect(data[:environment][:name]).to eq(ci_build.expanded_environment_name) }
         it { expect(data[:environment][:action]).to eq(ci_build.environment_action) }
+      end
+    end
+
+    context 'when the build job has an upstream' do
+      let(:source_pipeline_attrs) { data[:source_pipeline] }
+
+      shared_examples 'source pipeline attributes' do
+        it 'has source pipeline attributes', :aggregate_failures do
+          expect(source_pipeline_attrs[:pipeline_id]).to eq upstream_pipeline.id
+          expect(source_pipeline_attrs[:job_id]).to eq pipeline.reload.source_bridge.id
+          expect(source_pipeline_attrs[:project][:id]).to eq upstream_pipeline.project.id
+          expect(source_pipeline_attrs[:project][:web_url]).to eq upstream_pipeline.project.web_url
+          expect(source_pipeline_attrs[:project][:path_with_namespace]).to eq upstream_pipeline.project.full_path
+        end
+      end
+
+      context 'in same project' do
+        let_it_be(:upstream_pipeline) { create(:ci_pipeline, upstream_of: pipeline, project: ci_build.project) }
+
+        it_behaves_like 'source pipeline attributes'
+      end
+
+      context 'in different project' do
+        let_it_be(:upstream_pipeline) { create(:ci_pipeline, upstream_of: pipeline) }
+
+        it_behaves_like 'source pipeline attributes'
+
+        it { expect(source_pipeline_attrs[:project][:id]).not_to eq pipeline.project.id }
       end
     end
   end

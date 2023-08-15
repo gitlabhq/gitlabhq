@@ -9,12 +9,7 @@ module QA
         "#{Runtime::Scenario.gitlab_address}/#{project.path_with_namespace}/badges/main/pipeline.svg"
       end
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'badge-test-project'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'badge-test-project') }
 
       before do
         Flow::Login.sign_in

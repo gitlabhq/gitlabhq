@@ -6,7 +6,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages public folder **(FREE)**
+# GitLab Pages public folder **(FREE ALL)**
 
 > With GitLab 16.1 we introduced the ability to configure the published folder in `.gitlab-ci.yml`, so you longer need to change your framework config. For more information, see how to [set a custom folder to be deployed with Pages](introduction.md#customize-the-default-folder).
 

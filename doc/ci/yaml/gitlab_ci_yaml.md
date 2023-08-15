@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# The `.gitlab-ci.yml` file **(FREE)**
+# The `.gitlab-ci.yml` file **(FREE ALL)**
 
 To use GitLab CI/CD, you need:
 

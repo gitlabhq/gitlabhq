@@ -10,11 +10,7 @@ module QA
       end
     end
 
-    let!(:project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.name = 'xss-test-for-mentions-project'
-      end
-    end
+    let!(:project) { create(:project, name: 'xss-test-for-mentions-project') }
 
     describe 'check xss occurence in @mentions in issues', :requires_admin do
       before do

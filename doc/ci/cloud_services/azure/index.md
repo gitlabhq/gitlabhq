@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure OpenID Connect in Azure to retrieve temporary credentials **(FREE)**
+# Configure OpenID Connect in Azure to retrieve temporary credentials **(FREE ALL)**
 
 WARNING:
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)

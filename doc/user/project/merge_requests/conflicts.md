@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Merge conflicts **(FREE)**
+# Merge conflicts **(FREE ALL)**
 
 _Merge conflicts_ happen when the two branches in a merge request (the source and target) each have different
 changes, and you must decide which change to accept. In a merge request, Git compares

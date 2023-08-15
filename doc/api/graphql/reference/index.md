@@ -7254,6 +7254,34 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | <a id="mutationvulnerabilityreverttodetectederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvulnerabilityreverttodetectedvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after state change. |
 
+### `Mutation.workItemAddLinkedItems`
+
+Add linked items to the work item.
+
+WARNING:
+**Introduced** in 16.3.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `WorkItemAddLinkedItemsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemaddlinkeditemsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemaddlinkeditemsid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+| <a id="mutationworkitemaddlinkeditemslinktype"></a>`linkType` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Type of link. Defaults to `RELATED`. |
+| <a id="mutationworkitemaddlinkeditemsworkitemsids"></a>`workItemsIds` | [`[WorkItemID!]!`](#workitemid) | Global IDs of the items to link. Maximum number of IDs you can provide: 3. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemaddlinkeditemsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemaddlinkeditemserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemaddlinkeditemsmessage"></a>`message` | [`String`](#string) | Linked items update result message. |
+| <a id="mutationworkitemaddlinkeditemsworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
+
 ### `Mutation.workItemConvert`
 
 Converts the work item to a new type.
@@ -28004,6 +28032,16 @@ Values for work item award emoji update enum.
 | ----- | ----------- |
 | <a id="workitemawardemojiupdateactionadd"></a>`ADD` | Adds the emoji. |
 | <a id="workitemawardemojiupdateactionremove"></a>`REMOVE` | Removes the emoji. |
+
+### `WorkItemRelatedLinkType`
+
+Values for work item link types.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemrelatedlinktypeblocked_by"></a>`BLOCKED_BY` | Blocked by type. |
+| <a id="workitemrelatedlinktypeblocks"></a>`BLOCKS` | Blocks type. |
+| <a id="workitemrelatedlinktyperelated"></a>`RELATED` | Related type. |
 
 ### `WorkItemSort`
 

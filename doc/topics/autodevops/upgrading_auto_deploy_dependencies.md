@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Upgrading deployments for newer Auto Deploy dependencies **(FREE)**
+# Upgrading deployments for newer Auto Deploy dependencies **(FREE ALL)**
 
 [Auto Deploy](stages.md#auto-deploy) is a feature that deploys your application to a Kubernetes cluster.
 It consists of several dependencies:

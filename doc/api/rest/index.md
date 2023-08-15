@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# REST API **(FREE)**
+# REST API **(FREE ALL)**
 
 The REST APIs have been around for a longer time compared to GraphQL APIs, which
 may make them more familiar to some developers. It is often a good choice for

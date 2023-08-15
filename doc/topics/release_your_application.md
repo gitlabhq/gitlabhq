@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy and release your application **(FREE)**
+# Deploy and release your application **(FREE ALL)**
 
 Deployment is the step of the software delivery process when your
 application gets deployed to its final, target infrastructure.

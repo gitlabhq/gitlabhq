@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Downstream pipelines **(FREE)**
+# Downstream pipelines **(FREE ALL)**
 
 A downstream pipeline is any GitLab CI/CD pipeline triggered by another pipeline.
 Downstream pipelines run independently and concurrently to the upstream pipeline

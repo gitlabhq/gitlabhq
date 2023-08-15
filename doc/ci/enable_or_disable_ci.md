@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Disabling GitLab CI/CD **(FREE)**
+# Disabling GitLab CI/CD **(FREE ALL)**
 
 GitLab CI/CD is enabled by default on all new projects.
 If you use an external CI/CD server like Jenkins or Drone CI, you can

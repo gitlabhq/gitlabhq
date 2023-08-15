@@ -9,7 +9,7 @@ description: 'Confidence checking your entire app every time a new feature is ad
 
 <!-- vale off -->
 
-# End-to-end testing with GitLab CI/CD and WebdriverIO **(FREE)**
+# End-to-end testing with GitLab CI/CD and WebdriverIO **(FREE ALL)**
 
 [Review Apps](../../review_apps/index.md) are great: for every merge request
 (or branch, for that matter), the new code can be copied and deployed to a fresh production-like live

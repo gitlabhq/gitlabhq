@@ -4,7 +4,7 @@ group: Environments
 info: A tutorial using Flux
 ---
 
-# Tutorial: Set up Flux for GitOps **(FREE)**
+# Tutorial: Set up Flux for GitOps **(FREE ALL)**
 
 This tutorial teaches you how to set up Flux for GitOps. You'll complete a bootstrap installation,
 install `agentk` in your cluster, and deploy a simple `nginx` application.

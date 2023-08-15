@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group milestones API **(FREE)**
+# Group milestones API **(FREE ALL)**
 
 Use the group [milestones](../user/project/milestones/index.md) using the REST API.
 There's a separate [project milestones API](milestones.md) page.

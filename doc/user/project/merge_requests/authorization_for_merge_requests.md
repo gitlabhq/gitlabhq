@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts
 ---
 
-# Merge request workflows **(FREE)**
+# Merge request workflows **(FREE ALL)**
 
 There are two main ways to have a merge request flow with GitLab:
 

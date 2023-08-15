@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Incremental rollouts with GitLab CI/CD **(FREE)**
+# Incremental rollouts with GitLab CI/CD **(FREE ALL)**
 
 When rolling out changes to your application, it is possible to release production changes
 to only a portion of your Kubernetes pods as a risk mitigation strategy. By releasing

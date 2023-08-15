@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Trigger pipelines by using the API **(FREE)**
+# Trigger pipelines by using the API **(FREE ALL)**
 
 To trigger a pipeline for a specific branch or tag, you can use an API call
 to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).

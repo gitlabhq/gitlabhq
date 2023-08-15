@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Maven packages in the Package Registry **(FREE)**
+# Maven packages in the Package Registry **(FREE ALL)**
 
 Publish [Maven](https://maven.apache.org) artifacts in your project's Package Registry.
 Then, install the packages whenever you need to use them as a dependency.

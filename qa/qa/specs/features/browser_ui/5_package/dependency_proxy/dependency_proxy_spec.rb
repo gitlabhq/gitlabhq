@@ -6,13 +6,7 @@ module QA
       using RSpec::Parameterized::TableSyntax
       include Support::Helpers::MaskToken
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'dependency-proxy-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'dependency-proxy-project') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"

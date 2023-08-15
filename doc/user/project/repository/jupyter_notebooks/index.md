@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference
 ---
-# Jupyter Notebook files **(FREE)**
+# Jupyter Notebook files **(FREE ALL)**
 
 [Jupyter Notebook](https://jupyter.org/) (previously, IPython Notebook) files are used for
 interactive computing in many fields. They contain a complete record of the

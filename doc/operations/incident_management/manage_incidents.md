@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage incidents **(FREE)**
+# Manage incidents **(FREE ALL)**
 
 This page collects instructions for all the things you can do with [incidents](incidents.md) or in relation to them.
 

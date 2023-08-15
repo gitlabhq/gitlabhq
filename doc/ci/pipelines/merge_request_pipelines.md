@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 
-# Merge request pipelines **(FREE)**
+# Merge request pipelines **(FREE ALL)**
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merge requests` to `merge request pipelines` in GitLab 14.8.
 

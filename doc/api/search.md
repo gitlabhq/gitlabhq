@@ -4,7 +4,7 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Search API **(FREE)**
+# Search API **(FREE ALL)**
 
 > [Feature flag `search_filter_by_confidential` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/244923) in GitLab 13.6.
 

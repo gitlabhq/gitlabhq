@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Incidents **(FREE)**
+# Incidents **(FREE ALL)**
 
 An incident is a service disruption or outage that needs to be restored urgently.
 Incidents are critical in incident management workflows.

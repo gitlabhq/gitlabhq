@@ -12,10 +12,7 @@ module QA
       end
 
       it 'sets the default branch name for a new project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347837' do
-        project = Resource::Project.fabricate_via_api! do |project|
-          project.name = "default-branch-name"
-          project.initialize_with_readme = true
-        end
+        project = create(:project, :with_readme, name: 'default-branch-name')
 
         # It takes a moment to create the project. We wait until we
         # know it exists before we try to clone it
@@ -44,11 +41,7 @@ module QA
           repository.push_changes('trunk')
         end
 
-        project = Resource::Project.fabricate_via_api! do |project|
-          project.add_name_uuid = false
-          project.name = project_name
-          project.group = group
-        end
+        project = create(:project, name: project_name, group: group, add_name_uuid: false)
 
         expect(project.default_branch).to eq('trunk')
         expect(project).to have_file('README.md')

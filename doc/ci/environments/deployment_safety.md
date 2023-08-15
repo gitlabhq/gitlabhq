@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deployment safety **(FREE)**
+# Deployment safety **(FREE ALL)**
 
 [Deployment jobs](../jobs/index.md#deployment-jobs) are a specific kind of CI/CD
 job. They can be more sensitive than other jobs in a pipeline,

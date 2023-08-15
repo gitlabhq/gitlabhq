@@ -11,9 +11,13 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService, feature_category: :c
     let(:pipeline_status) { :running }
 
     before do
-      create(:ci_pipeline, pipeline_status, ref: mr_merge_if_green_enabled.source_branch,
-                                            sha: mr_merge_if_green_enabled.diff_head_sha,
-                                            project: mr_merge_if_green_enabled.source_project)
+      create(
+        :ci_pipeline,
+        pipeline_status,
+        ref: mr_merge_if_green_enabled.source_branch,
+        sha: mr_merge_if_green_enabled.diff_head_sha,
+        project: mr_merge_if_green_enabled.source_project
+      )
       mr_merge_if_green_enabled.update_head_pipeline
     end
 
@@ -73,13 +77,18 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService, feature_category: :c
       end
 
       let!(:build) do
-        create(:ci_build, :created, pipeline: pipeline, ref: ref,
-                                    name: 'build', ci_stage: build_stage)
+        create(
+          :ci_build,
+          :created,
+          pipeline: pipeline,
+          ref: ref,
+          name: 'build',
+          ci_stage: build_stage
+        )
       end
 
       let!(:test) do
-        create(:ci_build, :created, pipeline: pipeline, ref: ref,
-                                    name: 'test')
+        create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'test')
       end
 
       before do

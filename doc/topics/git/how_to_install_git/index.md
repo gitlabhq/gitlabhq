@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: 'This article describes how to install Git on macOS, Ubuntu Linux and Windows.'
 ---
 
-# Installing Git **(FREE)**
+# Installing Git **(FREE ALL)**
 
 To begin contributing to GitLab projects, you must install the appropriate Git client
 on your computer. Information about [installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)

@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Snippets API **(FREE)**
+# Snippets API **(FREE ALL)**
 
 Snippets API operates on [snippets](../user/snippets.md). Related APIs exist for
 [project snippets](project_snippets.md) and

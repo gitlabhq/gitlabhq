@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Authentication **(FREE)**
+# Authentication **(FREE ALL)**
 
 This page gathers all the resources for the topic **Authentication** in GitLab.
 

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 <!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
 
-# Slack notifications (deprecated) **(FREE)**
+# Slack notifications (deprecated) **(FREE ALL)**
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/372411) in GitLab 15.9

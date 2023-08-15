@@ -5,7 +5,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value stream analytics **(FREE)**
+# Value stream analytics **(FREE ALL)**
 
 Value stream analytics measures the time it takes to go from an idea to production.
 

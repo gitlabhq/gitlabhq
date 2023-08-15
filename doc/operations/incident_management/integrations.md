@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Integrations **(FREE)**
+# Integrations **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13203) in GitLab 12.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) from GitLab Ultimate to GitLab Free in 12.8.

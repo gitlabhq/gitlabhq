@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sorting and ordering issue lists **(FREE)**
+# Sorting and ordering issue lists **(FREE ALL)**
 
 You can sort a list of issues several ways.
 The available sorting options can change based on the context of the list.

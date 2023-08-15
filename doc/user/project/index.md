@@ -4,7 +4,7 @@ group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Create a project **(FREE)**
+# Create a project **(FREE ALL)**
 
 You can create a project in many ways in GitLab.
 
@@ -126,7 +126,7 @@ You cannot use `git push` to create projects with project paths that:
 
 Previously used project paths have a redirect. The redirect causes push attempts to redirect requests
 to the renamed project location, instead of creating a new project. To create a new project for a previously
-used or renamed project, use the [UI](#create-a-project) or the [Projects API](../../api/projects.md#create-project).
+used or renamed project, use the UI or the [Projects API](../../api/projects.md#create-project).
 
 Prerequisites:
 

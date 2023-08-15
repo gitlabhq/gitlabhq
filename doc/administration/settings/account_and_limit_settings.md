@@ -195,7 +195,7 @@ For instance, consider the following workflow:
 
 1. Your team develops apps which require large files to be stored in
    the application repository.
-1. Although you have enabled [Git LFS](../../topics/git/lfs/index.md#git-large-file-storage-lfs)
+1. Although you have enabled [Git LFS](../../topics/git/lfs/index.md)
    to your project, your storage has grown significantly.
 1. Before you exceed available storage, you set up a limit of 10 GB
    per repository.

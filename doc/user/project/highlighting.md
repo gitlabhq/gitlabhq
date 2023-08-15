@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Syntax Highlighting **(FREE)**
+# Syntax Highlighting **(FREE ALL)**
 
 GitLab provides syntax highlighting on all files through [Highlight.js](https://github.com/highlightjs/highlight.js/) and the
 [Rouge](https://rubygems.org/gems/rouge) Ruby gem. It attempts to guess what language

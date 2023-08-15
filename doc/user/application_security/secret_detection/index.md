@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secret Detection **(FREE)**
+# Secret Detection **(FREE ALL)**
 
 > - In GitLab 13.1, Secret Detection was split from the [SAST configuration](../sast/index.md#configuration)
 >   into its own CI/CD template. If you're using GitLab 13.0 or earlier and SAST is enabled, then

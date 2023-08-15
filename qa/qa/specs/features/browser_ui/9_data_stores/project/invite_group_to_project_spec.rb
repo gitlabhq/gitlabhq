@@ -47,12 +47,11 @@ module QA
         end
 
         let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = 'personal-namespace-project'
-            project.personal_namespace = Runtime::User.username
-            project.visibility = :private
-            project.description = 'test personal namespace project'
-          end
+          create(:project,
+            :private,
+            name: 'personal-namespace-project',
+            description: 'test personal namespace project',
+            personal_namespace: Runtime::User.username)
         end
 
         after do
@@ -70,13 +69,7 @@ module QA
           end
         end
 
-        let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = 'group-project'
-            project.visibility = :private
-            project.description = 'test group project'
-          end
-        end
+        let(:project) { create(:project, :private, name: 'group-project', description: 'test group project') }
 
         after do
           project.remove_via_api!

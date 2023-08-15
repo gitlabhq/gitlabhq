@@ -4,7 +4,7 @@ group: unassigned
 info: For assistance with this What's new page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# What's new **(FREE)**
+# What's new **(FREE ALL)**
 
 You can view some of the highlights from the last 10
 GitLab versions in the **What's new** feature. It lists new features available in different

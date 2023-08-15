@@ -8,10 +8,7 @@ module QA
 
         user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
 
-        project = Resource::Project.fabricate_via_api! do |project|
-          project.name = 'add-member-project'
-        end
-
+        project = create(:project, name: 'add-member-project')
         project.visit!
 
         Page::Project::Menu.perform(&:click_members)

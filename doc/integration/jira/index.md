@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira **(FREE)**
+# Jira **(FREE ALL)**
 
 If your organization uses [Jira](https://www.atlassian.com/software/jira),
 you can [migrate your issues from Jira to GitLab](../../user/project/import/jira.md).

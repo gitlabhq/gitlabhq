@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Labels **(FREE)**
+# Labels **(FREE ALL)**
 
 As your count of issues, merge requests, and epics grows in GitLab, it gets more challenging
 to keep track of those items. Especially as your organization grows from just a few people to

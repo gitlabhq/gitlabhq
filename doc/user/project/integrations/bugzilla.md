@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Bugzilla **(FREE)**
+# Bugzilla **(FREE ALL)**
 
 [Bugzilla](https://www.bugzilla.org/) is a web-based general-purpose bug tracking system and testing
 tool.

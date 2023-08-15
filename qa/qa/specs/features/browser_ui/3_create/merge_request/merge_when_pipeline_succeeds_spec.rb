@@ -5,14 +5,7 @@ module QA
     describe 'Merge requests' do
       shared_examples 'merge when pipeline succeeds' do |repeat: 1|
         let(:runner_name) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
-
-        let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = 'merge-when-pipeline-succeeds'
-            project.initialize_with_readme = true
-          end
-        end
-
+        let(:project) { create(:project, :with_readme, name: 'merge-when-pipeline-succeeds') }
         let!(:runner) do
           Resource::ProjectRunner.fabricate! do |runner|
             runner.project = project

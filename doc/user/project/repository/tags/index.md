@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tags **(FREE)**
+# Tags **(FREE ALL)**
 
 In Git, a tag marks an important point in a repository's history.
 Git supports two types of tags:

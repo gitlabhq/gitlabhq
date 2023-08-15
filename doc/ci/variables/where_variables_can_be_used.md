@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Where variables can be used **(FREE)**
+# Where variables can be used **(FREE ALL)**
 
 As it's described in the [CI/CD variables](index.md) documentation, you can
 define many different variables. Some of them can be used for all GitLab CI/CD

@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Users API **(FREE)**
+# Users API **(FREE ALL)**
 
 This documentation has information on API calls, parameters and responses for the Users API.
 

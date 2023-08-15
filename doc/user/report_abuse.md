@@ -4,7 +4,7 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Report abuse **(FREE)**
+# Report abuse **(FREE ALL)**
 
 You can report abuse from other GitLab users to GitLab administrators.
 

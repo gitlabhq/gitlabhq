@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Using Git submodules with GitLab CI/CD **(FREE)**
+# Using Git submodules with GitLab CI/CD **(FREE ALL)**
 
 Use [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) to keep
 a Git repository as a subdirectory of another Git repository. You can clone another

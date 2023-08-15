@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# .gitignore API **(FREE)**
+# .gitignore API **(FREE ALL)**
 
 In GitLab, the `/gitignores` endpoint returns a list of Git `.gitignore` templates. For more information,
 see the [Git documentation for `.gitignore`](https://git-scm.com/docs/gitignore).

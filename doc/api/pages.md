@@ -4,7 +4,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pages API **(FREE)**
+# Pages API **(FREE ALL)**
 
 Endpoints for managing [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
 

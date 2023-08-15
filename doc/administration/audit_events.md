@@ -116,7 +116,7 @@ The first row contains the headers, which are listed in the following table alon
 | **IP Address**       | IP address of the author who performed the action.                 |
 | **Created At (UTC)** | Formatted as `YYYY-MM-DD HH:MM:SS`.                                |
 
-## View sign-in events **(FREE)**
+## View sign-in events **(FREE ALL)**
 
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 

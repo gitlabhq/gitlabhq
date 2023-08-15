@@ -5,7 +5,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Milestones **(FREE)**
+# Milestones **(FREE ALL)**
 
 Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal in a certain period of time.
 

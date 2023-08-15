@@ -26,7 +26,7 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description \
   --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\"}"
 ```
 
-## Install the `release-cli` for the Shell executor **(FREE)**
+## Install the `release-cli` for the Shell executor **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/release-cli/-/issues/21) in GitLab 13.8.
 > - [Changed](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/108) in GitLab 14.2, the `release-cli` binaries are also [available in the Package Registry](https://gitlab.com/gitlab-org/release-cli/-/packages).

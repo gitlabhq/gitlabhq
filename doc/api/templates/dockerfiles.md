@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Dockerfiles API **(FREE)**
+# Dockerfiles API **(FREE ALL)**
 
 GitLab provides an API endpoint for instance-level Dockerfile templates.
 Default templates are defined at

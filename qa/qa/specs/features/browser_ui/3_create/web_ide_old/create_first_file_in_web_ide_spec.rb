@@ -8,13 +8,7 @@ module QA
     end
 
     describe 'First file using Web IDE' do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'empty-project'
-          project.initialize_with_readme = false
-        end
-      end
-
+      let(:project) { create(:project, :with_readme, name: 'empty-project') }
       let(:file_name) { 'the very first file.txt' }
 
       before do

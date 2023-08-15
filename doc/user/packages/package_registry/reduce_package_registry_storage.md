@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce Package Registry Storage **(FREE)**
+# Reduce Package Registry Storage **(FREE ALL)**
 
 Without cleanup, package registries become large over time. When a large number of packages and
 their assets are added:

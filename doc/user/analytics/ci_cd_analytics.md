@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD analytics **(FREE)**
+# CI/CD analytics **(FREE ALL)**
 
 Use the CI/CD analytics page to view pipeline success rates and duration, and the history of DORA metrics over time.
 

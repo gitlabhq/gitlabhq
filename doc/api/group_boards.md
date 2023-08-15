@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group issue boards API **(FREE)**
+# Group issue boards API **(FREE ALL)**
 
 Every API call to [group issue boards](../user/project/issue_board.md#group-issue-boards) must be authenticated.
 

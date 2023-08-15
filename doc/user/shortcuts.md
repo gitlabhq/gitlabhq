@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab keyboard shortcuts **(FREE)**
+# GitLab keyboard shortcuts **(FREE ALL)**
 
 GitLab has several keyboard shortcuts you can use to access its different
 features.

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Use CI/CD configuration from other files **(FREE)**
+# Use CI/CD configuration from other files **(FREE ALL)**
 
 You can use [`include`](index.md#include) to include external YAML files in your CI/CD jobs.
 

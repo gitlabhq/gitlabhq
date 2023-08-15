@@ -6,7 +6,7 @@ description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Inte
 type: index
 ---
 
-# GitLab CI/CD **(FREE)**
+# GitLab CI/CD **(FREE ALL)**
 
 GitLab CI/CD is a tool for software development using the continuous methodologies:
 

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Engineering Workflow Management (EWM) **(FREE)**
+# Engineering Workflow Management (EWM) **(FREE ALL)**
 
 The EWM integration allows you to go from GitLab to EWM work items mentioned in merge request
 descriptions and commit messages.

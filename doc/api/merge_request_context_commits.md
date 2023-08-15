@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Merge request context commits API **(FREE)**
+# Merge request context commits API **(FREE ALL)**
 
 ## List MR context commits
 

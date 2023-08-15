@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Create Jira credentials **(FREE)**
+# Tutorial: Create Jira credentials **(FREE ALL)**
 
 This tutorial shows you how to create Jira credentials. You can use your new Jira credentials to
 configure the [Jira issue integration](configure.md) in GitLab for Jira Data Center or Jira Server.

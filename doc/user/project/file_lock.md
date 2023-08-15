@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# File Locking **(FREE)**
+# File Locking **(FREE ALL)**
 
 Preventing wasted work caused by unresolvable merge conflicts requires
 a different way of working. This means explicitly requesting write permissions,

@@ -219,8 +219,10 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
 
     context 'when gitlab version is lower than 15.5' do
       let(:source_version) do
-        Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION,
-                                ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
+        Gitlab::VersionInfo.new(
+          ::BulkImport::MIN_MAJOR_VERSION,
+          ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT
+        )
       end
 
       before do

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Redmine **(FREE)**
+# Redmine **(FREE ALL)**
 
 You can use [Redmine](https://www.redmine.org/) as an external issue tracker.
 To enable the Redmine integration in a project:

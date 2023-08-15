@@ -4,13 +4,7 @@ module QA
   RSpec.describe 'Create', :orchestrated, :repository_storage, :requires_admin, product_group: :source_code do
     describe 'Gitaly repository storage' do
       let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
-      let(:parent_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'parent-project'
-          project.initialize_with_readme = true
-        end
-      end
-
+      let(:parent_project) { create(:project, :with_readme, name: 'parent-project') }
       let(:fork_project) do
         Resource::Fork.fabricate_via_api! do |fork|
           fork.user = user

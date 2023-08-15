@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Keys API **(FREE)**
+# Keys API **(FREE ALL)**
 
 If using a SHA256 fingerprint in an API call, you should URL-encode the fingerprint.
 

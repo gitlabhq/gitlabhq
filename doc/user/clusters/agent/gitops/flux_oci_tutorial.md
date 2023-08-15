@@ -4,7 +4,7 @@ group: Environments
 info: A tutorial for deploying an OCI artifact using Flux
 ---
 
-# Tutorial: Deploy an OCI artifact using Flux **(FREE)**
+# Tutorial: Deploy an OCI artifact using Flux **(FREE ALL)**
 
 This tutorial teaches you how to package your Kubernetes manifests into an [OCI](https://opencontainers.org/)
 artifact and deploy them to your cluster using Flux. You'll set up a sample manifest project, configure it to

@@ -3,12 +3,7 @@
 module QA
   RSpec.describe 'Verify' do
     describe 'Pipeline editor', product_group: :pipeline_authoring do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'pipeline-editor-project'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'pipeline-editor-project') }
 
       before do
         Flow::Login.sign_in

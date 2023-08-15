@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Agents API **(FREE)**
+# Agents API **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83270) in GitLab 14.10.
 > - Agent Tokens API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Code Suggestions (Beta) **(FREE)**
+# Code Suggestions (Beta) **(FREE ALL)**
 
 > - [Introduced](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta) in GitLab 15.9 as [Beta](../../../policy/experiment-beta-support.md#beta) for early access Ultimate customers on GitLab.com.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/408104) as opt-in with GitLab 15.11 as [Beta](../../../policy/experiment-beta-support.md#beta).

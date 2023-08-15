@@ -4,7 +4,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Linked issues **(FREE)**
+# Linked issues **(FREE ALL)**
 
 > The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) from GitLab Premium to GitLab Free in 13.4.
 

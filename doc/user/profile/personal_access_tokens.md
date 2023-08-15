@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Personal access tokens **(FREE)**
+# Personal access tokens **(FREE ALL)**
 
 > - Notifications for expiring tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 > - Token lifetime limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.

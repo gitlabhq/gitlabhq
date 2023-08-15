@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab Token overview **(FREE)**
+# GitLab Token overview **(FREE ALL)**
 
 This document lists tokens used in GitLab, their purpose and, where applicable, security guidance.
 

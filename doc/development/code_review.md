@@ -606,7 +606,7 @@ When ready to merge:
 WARNING:
 **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
 
-- Consider using the [Squash and merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
+- Consider using the [Squash and merge](../user/project/merge_requests/squash_and_merge.md)
   feature when the merge request has a lot of commits.
   When merging code, a maintainer should only use the squash feature if the
   author has already set this option, or if the merge request clearly contains a
@@ -625,7 +625,7 @@ WARNING:
     enough to `main`.
 - When you set the MR to auto-merge, you should take over
   subsequent revisions for anything that would be spotted after that.
-- For merge requests that have had [Squash and merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge) set,
+- For merge requests that have had [Squash and merge](../user/project/merge_requests/squash_and_merge.md) set,
   the squashed commit's default commit message is taken from the merge request title.
   You're encouraged to [select a commit with a more informative commit message](../user/project/merge_requests/squash_and_merge.md) before merging.
 

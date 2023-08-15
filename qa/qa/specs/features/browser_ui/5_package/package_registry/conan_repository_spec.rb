@@ -9,13 +9,7 @@ module QA
     describe 'Conan Repository' do
       include Runtime::Fixtures
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'conan-package-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'conan-package-project') }
       let(:package) do
         Resource::Package.init do |package|
           package.name = "conantest-#{SecureRandom.hex(8)}"

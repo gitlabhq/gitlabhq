@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Plan and track work **(FREE)**
+# Plan and track work **(FREE ALL)**
 
 Plan your work by creating requirements, issues, and epics. Schedule work
 with milestones and track your team's time. Learn how to save time with

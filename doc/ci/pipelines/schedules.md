@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Scheduled pipelines **(FREE)**
+# Scheduled pipelines **(FREE ALL)**
 
 Use scheduled pipelines to run GitLab CI/CD [pipelines](index.md) at regular intervals.
 

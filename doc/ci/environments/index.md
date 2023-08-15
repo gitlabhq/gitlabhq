@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Environments and deployments **(FREE)**
+# Environments and deployments **(FREE ALL)**
 
 Environments describe where code is deployed.
 

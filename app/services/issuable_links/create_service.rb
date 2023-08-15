@@ -96,7 +96,7 @@ module IssuableLinks
         if params[:issuable_references].present?
           extract_references
         elsif target_issuable
-          [target_issuable]
+          Array.wrap(target_issuable)
         else
           []
         end

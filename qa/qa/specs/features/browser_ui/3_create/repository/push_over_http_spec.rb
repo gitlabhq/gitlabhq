@@ -23,10 +23,9 @@ module QA
         :requires_praefect, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347789' do
         Flow::Login.sign_in_as_admin
 
-        project = Resource::Project.fabricate_via_api! do |storage_project|
-          storage_project.name = 'specific-repository-storage'
-          storage_project.repository_storage = QA::Runtime::Env.praefect_repository_storage
-        end
+        project = create(:project,
+          name: 'specific-repository-storage',
+          repository_storage: Runtime::Env.praefect_repository_storage)
 
         Resource::Repository::Push.fabricate! do |push|
           push.repository_http_uri = project.repository_http_location.uri

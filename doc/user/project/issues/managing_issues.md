@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage issues **(FREE)**
+# Manage issues **(FREE ALL)**
 
 After you create an issue, you can start working with it.
 

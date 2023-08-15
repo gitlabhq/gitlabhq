@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Integrations API **(FREE)**
+# Integrations API **(FREE ALL)**
 
 This API enables you to work with external services that integrate with GitLab.
 

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Track deployments of an external deployment tool **(FREE)**
+# Track deployments of an external deployment tool **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22513) in GitLab 12.5.
 

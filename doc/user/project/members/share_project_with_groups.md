@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Share a project with a group **(FREE)**
+# Share a project with a group **(FREE ALL)**
 
 When you want a group to have access to your project,
 you can invite [a group](../../group/index.md) to the project.
@@ -30,7 +30,7 @@ In addition:
 
 - You must be a member of the group or the subgroup being invited.
 
-- The [visibility level](../../public_access.md#project-and-group-visibility) of the group you're inviting
+- The [visibility level](../../public_access.md) of the group you're inviting
 must be at least as restrictive as that of the project. For example, you can invite:
   - A _private_ group to a _private_ project
   - A _private_ group to an _internal_ project.

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Repository files API **(FREE)**
+# Repository files API **(FREE ALL)**
 
 You can fetch, create, update, and delete files in your repository with this API.
 You can also [configure rate limits](../administration/settings/files_api_rate_limits.md)

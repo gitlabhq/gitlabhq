@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Webex Teams **(FREE)**
+# Webex Teams **(FREE ALL)**
 
 You can configure GitLab to send notifications to a Webex Teams space:
 

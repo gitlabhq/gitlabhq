@@ -17,8 +17,7 @@ RSpec.describe AuthorizedProjectUpdate::FindRecordsDueForRefreshService, feature
       context 'incorrect_auth_found_callback callback' do
         let(:user) { create(:user) }
         let(:service) do
-          described_class.new(user,
-                              incorrect_auth_found_callback: callback)
+          described_class.new(user, incorrect_auth_found_callback: callback)
         end
 
         it 'is called' do
@@ -33,8 +32,7 @@ RSpec.describe AuthorizedProjectUpdate::FindRecordsDueForRefreshService, feature
 
       context 'missing_auth_found_callback callback' do
         let(:service) do
-          described_class.new(user,
-                              missing_auth_found_callback: callback)
+          described_class.new(user, missing_auth_found_callback: callback)
         end
 
         it 'is called' do

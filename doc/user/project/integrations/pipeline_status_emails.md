@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pipeline status emails **(FREE)**
+# Pipeline status emails **(FREE ALL)**
 
 You can send notifications about pipeline status changes in a group or
 project to a list of email addresses.

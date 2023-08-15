@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# OAuth 2.0 identity provider API **(FREE)**
+# OAuth 2.0 identity provider API **(FREE ALL)**
 
 GitLab provides an API to allow third-party services to access GitLab resources on a user's behalf
 with the [OAuth 2.0](https://oauth.net/2/) protocol.

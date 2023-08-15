@@ -5,7 +5,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Time tracking **(FREE)**
+# Time tracking **(FREE ALL)**
 
 You can estimate and track the time you spend on [issues](issues/index.md)
 and [merge requests](merge_requests/index.md).

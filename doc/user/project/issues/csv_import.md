@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Importing issues from CSV **(FREE)**
+# Importing issues from CSV **(FREE ALL)**
 
 You can import issues to a project by uploading a CSV file with the following columns:
 

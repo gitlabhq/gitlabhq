@@ -4,7 +4,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create a GitLab Pages website from a project template **(FREE)**
+# Create a GitLab Pages website from a project template **(FREE ALL)**
 
 GitLab provides templates for the most popular Static Site Generators (SSGs).
 You can create a new project from a template and run the CI/CD pipeline to generate a Pages website.

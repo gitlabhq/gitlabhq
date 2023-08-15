@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: index
 ---
 
-# Git **(FREE)**
+# Git **(FREE ALL)**
 
 Git is a [free and open source](https://git-scm.com/about/free-and-open-source)
 distributed version control system designed to handle everything from small to

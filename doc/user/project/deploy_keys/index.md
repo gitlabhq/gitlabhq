@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy keys **(FREE)**
+# Deploy keys **(FREE ALL)**
 
 Use deploy keys to access repositories that are hosted in GitLab. In most cases, you use deploy keys
 to access a repository from an external host, like a build server or Continuous Integration (CI) server.
@@ -85,6 +85,7 @@ Prerequisites:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
+1. Select **Add new key**.
 1. Complete the fields.
 1. Optional. To grant `read-write` permission, select the **Grant write permissions to this key**
    checkbox.

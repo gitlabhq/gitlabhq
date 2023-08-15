@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD `workflow` keyword **(FREE)**
+# GitLab CI/CD `workflow` keyword **(FREE ALL)**
 
 Use the [`workflow`](index.md#workflow) keyword to control when pipelines are created.
 

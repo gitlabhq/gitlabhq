@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Changes in merge requests **(FREE)**
+# Changes in merge requests **(FREE ALL)**
 
 A [merge request](index.md) proposes a set of changes to files in a branch in your repository. These
 changes are shown as a _diff_ (difference) between the current state and the proposed

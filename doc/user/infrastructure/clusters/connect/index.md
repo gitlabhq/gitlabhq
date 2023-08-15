@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Connect a cluster to GitLab **(FREE)**
+# Connect a cluster to GitLab **(FREE ALL)**
 
 The [certificate-based Kubernetes integration with GitLab](../index.md)
 was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)

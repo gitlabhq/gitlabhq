@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy keys API **(FREE)**
+# Deploy keys API **(FREE ALL)**
 
 The deploy keys API can return in responses fingerprints of the public key in the following fields:
 

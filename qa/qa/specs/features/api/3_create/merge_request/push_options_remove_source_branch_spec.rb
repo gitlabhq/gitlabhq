@@ -9,13 +9,7 @@ module QA
 
       let(:branch) { "push-options-test-#{SecureRandom.hex(8)}" }
       let(:title) { "MR push options test #{SecureRandom.hex(8)}" }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'merge-request-push-options'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'merge-request-push-options') }
 
       it 'removes the source branch', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347841' do
         Resource::Repository::ProjectPush.fabricate! do |push|

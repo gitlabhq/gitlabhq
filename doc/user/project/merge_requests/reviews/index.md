@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Merge request reviews **(FREE)**
+# Merge request reviews **(FREE ALL)**
 
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)

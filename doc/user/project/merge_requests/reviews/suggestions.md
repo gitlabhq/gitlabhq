@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Suggest changes **(FREE)**
+# Suggest changes **(FREE ALL)**
 
 Reviewers can suggest code changes with a Markdown syntax in merge request diff threads.
 The merge request author (or other users with the appropriate role) can apply any or

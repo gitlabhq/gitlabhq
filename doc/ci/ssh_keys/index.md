@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Using SSH keys with GitLab CI/CD **(FREE)**
+# Using SSH keys with GitLab CI/CD **(FREE ALL)**
 
 GitLab currently doesn't have built-in support for managing SSH keys in a build
 environment (where the GitLab Runner runs).

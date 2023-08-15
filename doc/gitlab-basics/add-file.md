@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: howto
 ---
 
-# Add a file to a repository **(FREE)**
+# Add a file to a repository **(FREE ALL)**
 
 Adding files to a repository is a small, but key, task. No matter where the code,
 images, or documents were created, Git tracks them after you add them to your repository.

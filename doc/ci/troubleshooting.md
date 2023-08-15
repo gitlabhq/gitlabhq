@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Troubleshooting CI/CD **(FREE)**
+# Troubleshooting CI/CD **(FREE ALL)**
 
 GitLab provides several tools to help make troubleshooting your pipelines easier.
 

@@ -28,15 +28,8 @@ module QA
         end
       end
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-for-alerts'
-          project.description = 'Project for alerts'
-        end
-      end
-
+      let(:project) { create(:project, name: 'project-for-alerts', description: 'Project for alerts') }
       let(:alert_title) { Faker::Lorem.word }
-
       let(:credentials) do
         Flow::AlertSettings.integration_credentials
       end

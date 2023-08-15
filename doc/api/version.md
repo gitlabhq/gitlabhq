@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Version API **(FREE)**
+# Version API **(FREE ALL)**
 
 NOTE:
 We recommend you use the [Metadata API](metadata.md) instead of the Version API.

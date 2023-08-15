@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container Registry API **(FREE)**
+# Container Registry API **(FREE ALL)**
 
 > The use of `CI_JOB_TOKEN` scoped to the current project was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12.
 

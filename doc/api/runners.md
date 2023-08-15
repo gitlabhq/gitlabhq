@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Runners API **(FREE)**
+# Runners API **(FREE ALL)**
 
 [Pagination](rest/index.md#pagination) is available on the following API endpoints (they return 20 items by default):
 

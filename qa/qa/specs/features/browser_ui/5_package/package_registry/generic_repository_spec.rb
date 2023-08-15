@@ -5,13 +5,7 @@ module QA
     describe 'Generic Repository', :external_api_calls do
       include Runtime::Fixtures
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'generic-package-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'generic-package-project') }
       let(:package) do
         Resource::Package.init do |package|
           package.name = "my_package-#{SecureRandom.hex(8)}"

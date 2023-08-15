@@ -782,7 +782,7 @@ but do not use it. Link to the page instead.
 
 If a topic title has a [product tier badge](#product-tier-badges),
 do not include it in the anchor link. For example, for the topic
-`## This is an example **(FREE)**`, use the anchor `#this-is-an-example`.
+`## This is an example **(FREE ALL)**`, use the anchor `#this-is-an-example`.
 
 With Kramdown, you can add a custom ID to an HTML element, but these IDs
 don't work in `/help`, so you should not use them.

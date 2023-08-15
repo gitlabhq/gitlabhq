@@ -5,7 +5,7 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container Scanning **(FREE)**
+# Container Scanning **(FREE ALL)**
 
 > - Improved support for FIPS [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263482) in GitLab 13.6 by upgrading `CS_MAJOR_VERSION` from `2` to `3`.
 > - Integration with Trivy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322656) in GitLab 13.9 by upgrading `CS_MAJOR_VERSION` from `3` to `4`.

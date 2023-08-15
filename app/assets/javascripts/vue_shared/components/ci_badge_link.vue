@@ -24,6 +24,12 @@ import CiIcon from './ci_icon.vue';
  * - On-demand scans list
  */
 
+const badgeSizeOptions = {
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+};
+
 export default {
   components: {
     CiIcon,
@@ -45,10 +51,16 @@ export default {
     badgeSize: {
       type: String,
       required: false,
-      default: 'md',
+      default: badgeSizeOptions.md,
+      validator(value) {
+        return badgeSizeOptions[value] !== undefined;
+      },
     },
   },
   computed: {
+    isSmallBadgeSize() {
+      return this.badgeSize === badgeSizeOptions.sm;
+    },
     title() {
       return !this.showText ? this.status?.text : '';
     },
@@ -108,6 +120,7 @@ export default {
 <template>
   <gl-badge
     v-gl-tooltip
+    :class="{ 'gl-pl-0!': isSmallBadgeSize }"
     :title="title"
     :href="detailsPath"
     :size="badgeSize"

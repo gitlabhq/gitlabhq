@@ -62,8 +62,7 @@ RSpec.describe Commits::CommitPatchService, feature_category: :source_code_manag
     context 'when the user does not have access' do
       let(:user) { create(:user) }
 
-      it_behaves_like 'an error response',
-                      'You are not allowed to push into this branch'
+      it_behaves_like 'an error response', 'You are not allowed to push into this branch'
     end
 
     context 'when the patches are not valid' do

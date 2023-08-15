@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Dashboard annotations API **(FREE)**
+# Dashboard annotations API **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29089) in GitLab 12.10 behind a disabled feature flag.
 

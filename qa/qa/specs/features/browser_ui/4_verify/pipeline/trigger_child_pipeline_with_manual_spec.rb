@@ -4,13 +4,7 @@ module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_execution do
     describe "Trigger child pipeline with 'when:manual'" do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-pipeline'
-        end
-      end
-
+      let(:project) { create(:project, name: 'project-with-pipeline') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.project = project

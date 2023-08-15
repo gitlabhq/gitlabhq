@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy to Amazon Elastic Container Service **(FREE)**
+# Deploy to Amazon Elastic Container Service **(FREE ALL)**
 
 This step-by-step guide helps you deploy a project hosted on GitLab.com to
 the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).

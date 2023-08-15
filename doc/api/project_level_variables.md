@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, api
 ---
 
-# Project-level CI/CD variables API **(FREE)**
+# Project-level CI/CD variables API **(FREE ALL)**
 
 ## List project variables
 

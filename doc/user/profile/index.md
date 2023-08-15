@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User account **(FREE)**
+# User account **(FREE ALL)**
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 

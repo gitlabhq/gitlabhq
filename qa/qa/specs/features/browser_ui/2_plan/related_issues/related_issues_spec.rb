@@ -3,12 +3,7 @@
 module QA
   RSpec.describe 'Plan', :reliable, product_group: :project_management do
     describe 'Related issues' do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-to-test-related-issues'
-        end
-      end
-
+      let(:project) { create(:project, name: 'project-to-test-related-issues') }
       let(:issue_1) do
         Resource::Issue.fabricate_via_api! do |issue|
           issue.project = project

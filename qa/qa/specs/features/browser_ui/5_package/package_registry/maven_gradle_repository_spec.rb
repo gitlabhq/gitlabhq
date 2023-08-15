@@ -17,15 +17,7 @@ module QA
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven_gradle' }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = "#{package_type}_project"
-          project.initialize_with_readme = true
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, :with_readme, name: "#{package_type}_project") }
       let(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"

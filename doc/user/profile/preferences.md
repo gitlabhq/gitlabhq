@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Profile preferences **(FREE)**
+# Profile preferences **(FREE ALL)**
 
 You can update your preferences to change the look and feel of GitLab.
 

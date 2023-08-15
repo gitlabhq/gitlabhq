@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Organize work with projects **(FREE)**
+# Organize work with projects **(FREE ALL)**
 
 In GitLab, you can create projects to host
 your codebase. You can also use projects to track issues, plan work,

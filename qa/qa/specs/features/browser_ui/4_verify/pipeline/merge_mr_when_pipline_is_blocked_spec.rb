@@ -8,13 +8,7 @@ module QA
     } do
     context 'when pipeline is blocked' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-blocked-pipeline'
-        end
-      end
-
+      let(:project) { create(:project, name: 'project-with-blocked-pipeline') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.project = project

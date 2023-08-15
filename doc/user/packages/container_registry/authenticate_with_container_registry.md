@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Authenticate with the Container Registry **(FREE)**
+# Authenticate with the Container Registry **(FREE ALL)**
 
 <!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
 WARNING:

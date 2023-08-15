@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting SAML **(FREE)**
+# Troubleshooting SAML **(FREE ALL)**
 
 This page contains possible solutions for problems you might encounter when using:
 

@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Job artifacts **(FREE)**
+# Job artifacts **(FREE ALL)**
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
 

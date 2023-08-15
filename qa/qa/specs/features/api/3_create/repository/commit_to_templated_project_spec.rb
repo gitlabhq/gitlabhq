@@ -3,12 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Create a new project from a template', product_group: :source_code do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'templated-project'
-          project.template_name = 'dotnetcore'
-        end
-      end
+      let(:project) { create(:project, name: 'templated-project', template_name: 'dotnetcore') }
 
       it 'commits via the api', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/357234' do
         expect do

@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# To-Do List **(FREE)**
+# To-Do List **(FREE ALL)**
 
 Your *To-Do List* is a chronological list of items waiting for your input.
 The items are known as *to-do items*.

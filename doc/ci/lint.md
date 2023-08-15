@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Validate GitLab CI/CD configuration **(FREE)**
+# Validate GitLab CI/CD configuration **(FREE ALL)**
 
 Use the CI Lint tool to check the validity of GitLab CI/CD configuration.
 You can validate the syntax from a `.gitlab-ci.yml` file or any other sample CI/CD configuration.

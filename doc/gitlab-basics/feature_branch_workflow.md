@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Feature branch workflow **(FREE)**
+# Feature branch workflow **(FREE ALL)**
 
 To merge changes from a local branch to a feature branch, follow this workflow.
 

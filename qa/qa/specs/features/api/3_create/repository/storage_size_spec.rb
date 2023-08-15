@@ -30,9 +30,7 @@ module QA
       # attempt to detect large differences that could indicate a regression to previous behavior.
       it 'matches cloned repo usage to reported usage',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/365196' do
-        project = Resource::Project.fabricate_via_api! do |project|
-          project.name = project_name
-        end
+        project = create(:project, name: project_name)
 
         shared_data = SecureRandom.random_bytes(500000)
 

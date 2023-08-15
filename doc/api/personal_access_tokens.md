@@ -4,9 +4,9 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Personal access tokens API **(FREE)**
+# Personal access tokens API **(FREE ALL)**
 
-You can read more about [personal access tokens](../user/profile/personal_access_tokens.md#personal-access-tokens).
+You can read more about [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ## List personal access tokens
 

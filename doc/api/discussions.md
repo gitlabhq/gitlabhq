@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, api
 ---
 
-# Discussions API **(FREE)**
+# Discussions API **(FREE ALL)**
 
 Discussions are a set of related notes on:
 

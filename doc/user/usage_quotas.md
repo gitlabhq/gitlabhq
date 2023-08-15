@@ -5,7 +5,7 @@ group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Storage usage quota **(FREE)**
+# Storage usage quota **(FREE ALL)**
 
 Storage usage statistics are available for projects and namespaces. You can use that information to
 manage storage usage within the applicable quotas.

@@ -28,12 +28,7 @@ module QA
     describe 'Pipeline status emails' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:emails) { %w[foo@bar.com baz@buzz.com] }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'pipeline-status-project'
-        end
-      end
+      let(:project) { create(:project, name: 'pipeline-status-project') }
 
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|

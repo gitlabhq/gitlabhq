@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Control the job concurrency in GitLab CI/CD
 ---
 
-# Resource group **(FREE)**
+# Resource group **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
 

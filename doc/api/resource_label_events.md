@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Resource label events API **(FREE)**
+# Resource label events API **(FREE ALL)**
 
 Resource label events keep track about who, when, and which label was added to (or removed from)
 an issue, merge request, or epic.

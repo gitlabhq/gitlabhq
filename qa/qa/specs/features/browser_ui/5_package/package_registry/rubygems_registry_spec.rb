@@ -6,13 +6,7 @@ module QA
     describe 'RubyGems Repository', product_group: :package_registry do
       include Runtime::Fixtures
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'rubygems-package-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'rubygems-package-project') }
       let(:package) do
         Resource::Package.init do |package|
           package.name = "mygem-#{SecureRandom.hex(8)}"

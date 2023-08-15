@@ -14,12 +14,7 @@ module QA
         end
       end
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = "project-to-test-milestones-#{SecureRandom.hex(4)}"
-          project.group = group
-        end
-      end
+      let(:project) { create(:project, name: "project-to-test-milestones-#{SecureRandom.hex(4)}", group: group) }
 
       let(:issue) do
         Resource::Issue.fabricate_via_api! do |issue|

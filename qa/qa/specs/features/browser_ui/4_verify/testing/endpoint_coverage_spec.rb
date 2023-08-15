@@ -11,12 +11,7 @@ module QA
   # User views pipeline succeeds (Web read)
   RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
     context 'Endpoint Coverage' do
-      let!(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'endpoint-coverage'
-        end
-      end
-
+      let!(:project) { create(:project, name: 'endpoint-coverage') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate_via_api! do |runner|
           runner.project = project

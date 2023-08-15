@@ -4,7 +4,7 @@ group: Incubation
 info: Machine Learning Experiment Tracking is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
-# MLflow client compatibility **(FREE)**
+# MLflow client compatibility **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [Experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
 

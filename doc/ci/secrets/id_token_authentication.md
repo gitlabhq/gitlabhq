@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# OpenID Connect (OIDC) Authentication Using ID Tokens **(FREE)**
+# OpenID Connect (OIDC) Authentication Using ID Tokens **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 

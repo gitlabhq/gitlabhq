@@ -97,8 +97,8 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
 
       it 'tracks the exception' do
         expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception).with(kind_of(ActiveRecord::RecordInvalid),
-                                             merge_request_id: merge_request.id)
+          .to receive(:track_exception)
+          .with(kind_of(ActiveRecord::RecordInvalid), merge_request_id: merge_request.id)
 
         subject
       end
@@ -122,8 +122,8 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
 
       it 'tracks the exception' do
         expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception).with(kind_of(RuntimeError),
-                                             merge_request_id: merge_request.id)
+          .to receive(:track_exception)
+          .with(kind_of(RuntimeError), merge_request_id: merge_request.id)
 
         execute_with_error_in_yield
       end
@@ -242,8 +242,8 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
 
       it 'tracks the exception' do
         expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception).with(kind_of(RuntimeError),
-                                             merge_request_id: merge_request.id)
+          .to receive(:track_exception)
+          .with(kind_of(RuntimeError), merge_request_id: merge_request.id)
 
         cancel_with_error_in_yield
       end
@@ -289,8 +289,8 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
 
       it 'tracks the exception' do
         expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception).with(kind_of(RuntimeError),
-                                             merge_request_id: merge_request.id)
+          .to receive(:track_exception)
+          .with(kind_of(RuntimeError), merge_request_id: merge_request.id)
 
         abort_with_error_in_yield
       end

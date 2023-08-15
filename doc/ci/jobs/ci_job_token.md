@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD job token **(FREE)**
+# GitLab CI/CD job token **(FREE ALL)**
 
 When a pipeline job is about to run, GitLab generates a unique token and injects it as the
 [`CI_JOB_TOKEN` predefined variable](../variables/predefined_variables.md).

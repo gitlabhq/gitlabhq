@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Merge request widgets **(FREE)**
+# Merge request widgets **(FREE ALL)**
 
 The **Overview** page of a merge request displays status updates from services
 that perform actions on your merge request. All subscription levels display a

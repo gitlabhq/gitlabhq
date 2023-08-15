@@ -5,7 +5,7 @@ info: 'To determine the technical writer assigned to the Stage/Group associated 
 type: reference, index, howto
 ---
 
-# Project settings **(FREE)**
+# Project settings **(FREE ALL)**
 
 Use the **Settings** page to manage the configuration options in your [project](../index.md).
 
@@ -74,7 +74,7 @@ Use the toggles to enable or disable features in the project.
 | **Repository**                   | **{check-circle}** Yes | Enables [repository](../repository/index.md) functionality.
 | **Merge requests**               | **{check-circle}** Yes | Enables [merge request](../merge_requests/index.md) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project).
 | **Forks**                        | **{check-circle}** Yes | Enables [forking](../repository/forking_workflow.md) functionality.
-| **Git Large File Storage (LFS)** | **{dotted-circle}** No | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs).
+| **Git Large File Storage (LFS)** | **{dotted-circle}** No | Enables the use of [large files](../../../topics/git/lfs/index.md).
 | **Packages**                     | **{dotted-circle}** No | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality.
 | **CI/CD**                        | **{check-circle}** Yes | Enables [CI/CD](../../../ci/index.md) functionality.
 | **Container Registry**           | **{dotted-circle}** No | Activates a [registry](../../packages/container_registry/index.md) for your Docker images.
@@ -161,7 +161,7 @@ Prerequisites:
 Configure your project's merge request settings:
 
 - Set up the [merge request method](../merge_requests/methods/index.md) (merge commit, fast-forward merge).
-- Add merge request [description templates](../description_templates.md#description-templates).
+- Add merge request [description templates](../description_templates.md).
 - Enable [merge request approvals](../merge_requests/approvals/index.md).
 - Enable [status checks](../merge_requests/status_checks.md).
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).

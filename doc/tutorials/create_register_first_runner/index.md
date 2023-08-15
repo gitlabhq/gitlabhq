@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Create, register, and run your own project runner **(FREE)**
+# Tutorial: Create, register, and run your own project runner **(FREE ALL)**
 
 This tutorial shows you how to configure and run your first runner in GitLab.
 

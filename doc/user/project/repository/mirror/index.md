@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository mirroring **(FREE)**
+# Repository mirroring **(FREE ALL)**
 
 You can _mirror_ a repository to and from external sources. You can select which repository
 serves as the source. Branches, tags, and commits are synced automatically.

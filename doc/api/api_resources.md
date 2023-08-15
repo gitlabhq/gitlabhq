@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# REST API resources **(FREE)**
+# REST API resources **(FREE ALL)**
 
 Available resources for the [GitLab REST API](index.md) can be grouped in the following contexts:
 

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Merge requests **(FREE)**
+# Merge requests **(FREE ALL)**
 
 To incorporate changes from a source branch to a target branch, you use a *merge request* (MR).
 

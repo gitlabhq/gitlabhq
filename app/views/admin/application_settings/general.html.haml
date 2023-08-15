@@ -73,6 +73,7 @@
 
 = render 'admin/application_settings/external_authorization_service_form', expanded: expanded_by_default?
 
+= render_if_exists 'admin/application_settings/microsoft_application'
 = render_if_exists 'admin/application_settings/scim'
 
 %section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded_by_default?) }

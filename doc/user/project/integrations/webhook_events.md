@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Webhook events **(FREE)**
+# Webhook events **(FREE ALL)**
 
 You can configure a [webhook](webhooks.md) in your project that triggers when
 an event occurs. The following events are supported.
@@ -1460,6 +1460,19 @@ Payload example:
     "git_http_url": "http://192.168.64.1:3005/gitlab-org/gitlab-test.git",
     "visibility_level": 20
   },
+  "project":{
+     "id": 380,
+     "name": "Gitlab Test",
+     "description": "Atque in sunt eos similique dolores voluptatem.",
+     "web_url": "http://192.168.64.1:3005/gitlab-org/gitlab-test",
+     "avatar_url": null,
+     "git_ssh_url": "git@192.168.64.1:gitlab-org/gitlab-test.git",
+     "git_http_url": "http://192.168.64.1:3005/gitlab-org/gitlab-test.git",
+     "namespace": "Gitlab Org",
+     "visibility_level": 20,
+     "path_with_namespace": "gitlab-org/gitlab-test",
+     "default_branch": "master"
+  },
   "runner": {
     "active": true,
     "runner_type": "project_type",
@@ -1472,6 +1485,15 @@ Payload example:
     ]
   },
   "environment": null
+  "source_pipeline":{
+     "project":{
+       "id": 41,
+       "web_url": "https://gitlab.example.com/gitlab-org/upstream-project",
+       "path_with_namespace": "gitlab-org/upstream-project"
+     },
+     "pipeline_id": 30,
+     "job_id": 3401
+  },
 }
 ```
 

@@ -5,7 +5,7 @@ group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Storage management automation **(FREE)**
+# Storage management automation **(FREE ALL)**
 
 You can manage your storage through the GitLab UI and the API. This page describes how to
 automate storage analysis and cleanup to manage your [usage quota](usage_quotas.md). You can also

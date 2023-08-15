@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Commit message templates **(FREE)**
+# Commit message templates **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) squash commit templates in GitLab 14.6.

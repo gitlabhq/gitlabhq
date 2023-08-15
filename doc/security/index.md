@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index
 ---
 
-# Secure your installation **(FREE)**
+# Secure your installation **(FREE ALL)**
 
 - [Passwords and OAuth tokens storage](password_storage.md)
 - [Password length limits](password_length_limits.md)

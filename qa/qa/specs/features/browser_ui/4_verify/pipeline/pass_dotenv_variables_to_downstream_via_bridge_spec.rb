@@ -6,21 +6,8 @@ module QA
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:upstream_var) { Faker::Alphanumeric.alphanumeric(number: 8) }
       let(:group) { Resource::Group.fabricate_via_api! }
-
-      let(:upstream_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.group = group
-          project.name = 'upstream-project-with-bridge'
-        end
-      end
-
-      let(:downstream_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.group = group
-          project.name = 'downstream-project-with-bridge'
-        end
-      end
-
+      let(:upstream_project) { create(:project, group: group, name: 'upstream-project-with-bridge') }
+      let(:downstream_project) { create(:project, group: group, name: 'downstream-project-with-bridge') }
       let!(:runner) do
         Resource::GroupRunner.fabricate! do |runner|
           runner.name = executor

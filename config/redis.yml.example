@@ -3,7 +3,7 @@ development:
   chat:
     cluster:
       - redis://localhost:7001
-  cluster_cache:
+  cache:
     cluster:
       - redis://localhost:7001
   cluster_shared_state:
@@ -20,7 +20,7 @@ test:
   chat:
     cluster:
       - redis://localhost:7001
-  cluster_cache:
+  cache:
     cluster:
       - redis://localhost:7001
   cluster_shared_state:

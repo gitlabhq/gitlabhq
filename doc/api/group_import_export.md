@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group import and export API **(FREE)**
+# Group import and export API **(FREE ALL)**
 
 Use the group import and export API to export a group structure and import it to a new location.
 When you use the group import and export API with the [project import and export API](project_import_export.md), you can preserve connections with

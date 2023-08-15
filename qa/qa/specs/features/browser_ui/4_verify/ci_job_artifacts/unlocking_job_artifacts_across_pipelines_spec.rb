@@ -4,12 +4,7 @@ module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
     describe "Unlocking job artifacts across pipelines" do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'unlock-job-artifacts-project'
-        end
-      end
+      let(:project) { create(:project, name: 'unlock-job-artifacts-project') }
 
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|

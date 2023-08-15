@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Discord Notifications **(FREE)**
+# Discord Notifications **(FREE ALL)**
 
 The Discord Notifications integration sends event notifications from GitLab to the channel for which the webhook was created.
 

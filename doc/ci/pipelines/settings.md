@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Customize pipeline configuration **(FREE)**
+# Customize pipeline configuration **(FREE ALL)**
 
 You can customize how pipelines run for your project.
 

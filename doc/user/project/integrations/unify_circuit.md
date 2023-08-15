@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Unify Circuit **(FREE)**
+# Unify Circuit **(FREE ALL)**
 
 The Unify Circuit integration sends notifications from GitLab to a Circuit conversation.
 

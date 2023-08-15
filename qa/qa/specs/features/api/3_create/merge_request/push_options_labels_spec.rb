@@ -10,11 +10,7 @@ module QA
       let(:branch) { "push-options-test-#{SecureRandom.hex(8)}" }
       let(:title) { "MR push options test #{SecureRandom.hex(8)}" }
       let(:commit_message) { 'Add README.md' }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme) }
 
       def create_new_mr_via_push
         Resource::Repository::ProjectPush.fabricate! do |push|

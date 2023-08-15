@@ -10,13 +10,9 @@ module QA
     describe 'Git Server Hooks' do
       let(:file_path) { Runtime::Path.fixture('web_ide', 'README.md') }
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          # Projects that have names that include pattern 'reject-prereceive' trigger a server hook on orchestrated env
-          # that returns an error string using GL-HOOK-ERR
-          project.name = "project-reject-prereceive-#{SecureRandom.hex(8)}"
-        end
-      end
+      # Projects that have names that include pattern 'reject-prereceive' trigger a server hook on orchestrated env
+      # that returns an error string using GL-HOOK-ERR
+      let(:project) { create(:project, name: "project-reject-prereceive-#{SecureRandom.hex(8)}") }
 
       before do
         Flow::Login.sign_in

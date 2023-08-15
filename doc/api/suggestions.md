@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Suggest Changes API **(FREE)**
+# Suggest Changes API **(FREE ALL)**
 
 This page describes the API for [suggesting changes](../user/project/merge_requests/reviews/suggestions.md).
 
