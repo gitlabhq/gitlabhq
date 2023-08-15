@@ -59,7 +59,7 @@ Specific information applies to Linux package installations:
   in the `tls_options` hash, or use the legacy `gitlab_rails['ldap_host']` option.
   See the [configuration workarounds](https://gitlab.com/gitlab-org/gitlab/-/issues/419485#workarounds)
   for more details.
-- Git 2.41.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.41.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 - New job artifacts are not replicated if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
   16.2.3, 16.3.0, and later.
   - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
@@ -146,7 +146,7 @@ Specific information applies to installations using Geo:
 - Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
   [throw errors on startup](../../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
 - Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
-  - This change applies to installation methods with Linux packages (Omnibus GitLab), GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
+  - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
 
 ### Linux package installations
 

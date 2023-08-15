@@ -47,7 +47,7 @@ your website could enable the covert redirect attack.
    | Client secret  | `YOUR_APP_SECRET`                      | OAuth 2.0 client secret |
    | URL            | `https://github.example.com/`          | GitHub deployment URL   |
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      1. Open the `/etc/gitlab/gitlab.rb` file.
 
@@ -84,7 +84,7 @@ your website could enable the covert redirect attack.
      1. Save the file and [reconfigure](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
         GitLab.
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      1. Open the `config/gitlab.yml` file.
 
@@ -129,7 +129,7 @@ To fix this issue, you must disable SSL verification:
 
 1. Set `verify_ssl` to `false` in the configuration file.
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      ```ruby
      gitlab_rails['omniauth_providers'] = [
@@ -145,7 +145,7 @@ To fix this issue, you must disable SSL verification:
      ]
      ```
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      ```yaml
      - { name: 'github',
@@ -159,7 +159,7 @@ To fix this issue, you must disable SSL verification:
 
 1. Change the global Git `sslVerify` option to `false` on the GitLab server.
 
-   - **For Omnibus installations in [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later**:
+   - For Linux package installations running [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later:
 
      ```ruby
      gitaly['gitconfig'] = [
@@ -167,13 +167,13 @@ To fix this issue, you must disable SSL verification:
      ]
      ```
 
-   - **For Omnibus installations in GitLab 15.2 and earlier (legacy method)**:
+   - For Linux package installations running GitLab 15.2 and earlier (legacy method):
 
      ```ruby
      omnibus_gitconfig['system'] = { "http" => ["sslVerify = false"] }
      ```
 
-   - **For installations from source in [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later**, edit the Gitaly configuration (`gitaly.toml`):
+   - For self-compiled installations running [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later, edit the Gitaly configuration (`gitaly.toml`):
 
      ```toml
      [[git.config]]
@@ -181,7 +181,7 @@ To fix this issue, you must disable SSL verification:
      value = "false"
      ```
 
-   - **For installations from source in GitLab 15.2 and earlier (legacy method)**:
+   - For self-compiled installations running GitLab 15.2 and earlier (legacy method):
 
      ```shell
      git config --global http.sslVerify false

@@ -3822,4 +3822,93 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
   end
+
+  describe '#object_pool' do
+    let_it_be(:primary_project) { create(:project, :empty_repo) }
+    let_it_be(:forked_project) { create(:project, :empty_repo) }
+
+    let(:repository) { primary_project.repository }
+
+    subject { repository.object_pool }
+
+    context 'without object pool' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when pool repository exists' do
+      let!(:pool) { create(:pool_repository, :ready, source_project: primary_project) }
+
+      context 'when the current repository is a primary repository' do
+        it { is_expected.to be_nil }
+
+        context 'when repository is linked to the pool repository' do
+          before do
+            pool.link_repository(repository)
+          end
+
+          after do
+            pool.unlink_repository(repository)
+          end
+
+          it 'returns a object pool for the repository' do
+            is_expected.to be_kind_of(Gitlab::Git::ObjectPool)
+
+            expect(subject).to have_attributes(
+              relative_path: "#{pool.disk_path}.git",
+              source_repository: repository,
+              storage: repository.shard
+            )
+          end
+        end
+      end
+
+      context 'when the current repository is not a primary repository' do
+        let(:repository) { forked_project.repository }
+
+        it { is_expected.to be_nil }
+
+        context 'when repository is linked to the pool repository' do
+          before do
+            pool.link_repository(repository)
+            forked_project.update!(pool_repository: pool)
+          end
+
+          after do
+            pool.unlink_repository(repository)
+            forked_project.update!(pool_repository: nil)
+          end
+
+          it 'returns a object pool with correct links to primary repository' do
+            is_expected.to be_kind_of(Gitlab::Git::ObjectPool)
+
+            expect(subject).to have_attributes(
+              relative_path: "#{pool.disk_path}.git",
+              source_repository: primary_project.repository,
+              storage: primary_project.repository.shard
+            )
+          end
+        end
+
+        context 'when repository is linked to the pool repository in Gitaly only' do
+          before do
+            pool.link_repository(repository)
+          end
+
+          after do
+            pool.unlink_repository(repository)
+          end
+
+          it 'returns an object pool without a link to the primary repository' do
+            is_expected.to be_kind_of(Gitlab::Git::ObjectPool)
+
+            expect(subject).to have_attributes(
+              relative_path: "#{pool.disk_path}.git",
+              source_repository: nil,
+              storage: primary_project.repository.shard
+            )
+          end
+        end
+      end
+    end
+  end
 end

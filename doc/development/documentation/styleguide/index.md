@@ -188,15 +188,24 @@ change, you must update the `CODEOWNERS` file:
 
 When you update the `codeowners.rake` file:
 
-- To specify multiple writers for a single group, use a space between writer names:
+- To specify multiple writers for a single group, use a space between writer names. Files are assigned to both writers.
 
-  ```plaintext
+  ```ruby
   CodeOwnerRule.new('Group Name', '@writer1 @writer2'),
   ```
 
+  - To assign different writers within a group to docs in different directories, use the `path` parameter to specify a directory:
+
+    ```ruby
+    CodeOwnerRule.new('Group Name', ->(path) { path.start_with?('/doc/user') ? '@writer1' : '@writer2' }),
+    ```
+
+    In this example, `writer1` is a code owner for files related to this group that are in `/doc/user`.
+    For everything else, `writer2` is made code owner. For an example, see [MR 127903](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127903).
+
 - For a group that does not have an assigned writer, include the group name in the file and comment out the line:
 
-  ```plaintext
+  ```ruby
   # CodeOwnerRule.new('Group Name', ''),
   ```
 

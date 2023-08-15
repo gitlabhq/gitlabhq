@@ -45,13 +45,13 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
 
 1. On your GitLab server, open the configuration file.
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      ```shell
      sudo editor /etc/gitlab/gitlab.rb
      ```
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      ```shell
      cd /home/git/gitlab
@@ -66,7 +66,7 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
 1. Add the provider configuration. Replace `YOUR_APP_ID` with the ID on the application details page
    and `YOUR_APP_SECRET` with the **SecretValue** you got when you registered the AliCloud application.
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      ```ruby
        gitlab_rails['omniauth_providers'] = [
@@ -78,7 +78,7 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
        ]
      ```
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      ```yaml
      - { name: 'alicloud',

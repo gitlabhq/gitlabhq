@@ -104,7 +104,7 @@ to your instance and then upgrade it for any relevant features you're using.
 
 - Generate an upgrade plan by reading and understanding the relevant documentation:
   - upgrade based on the installation method:
-    - [Linux package (Omnibus)](index.md#linux-packages-omnibus-gitlab)
+    - [Linux package (Omnibus)](index.md#linux-packages-omnibus)
     - [Self-compiled](index.md#self-compiled-installation)
     - [Docker](index.md#installation-using-docker)
     - [Helm Charts](index.md#installation-using-helm)

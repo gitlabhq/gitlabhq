@@ -452,4 +452,14 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
       client.find_license
     end
   end
+
+  describe '#object_pool' do
+    it 'sends a get_object_pool_request message' do
+      expect_any_instance_of(Gitaly::ObjectPoolService::Stub)
+        .to receive(:get_object_pool)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+
+      client.object_pool
+    end
+  end
 end

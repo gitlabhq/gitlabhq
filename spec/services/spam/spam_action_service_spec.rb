@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency,
-  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/418757' do
+RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency do
   include_context 'includes Spam constants'
 
   let(:issue) { create(:issue, project: project, author: author) }

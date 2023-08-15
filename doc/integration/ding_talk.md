@@ -38,13 +38,13 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
 
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -56,9 +56,9 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
    to add `dingtalk` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 
-1. Add the provider configuration:
+1. Add the provider configuration.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```ruby
      gitlab_rails['omniauth_providers'] = [
@@ -71,7 +71,7 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
      ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: 'dingtalk',

@@ -63,13 +63,13 @@ To see your new project in the list, refresh the page.
 
 1. Open the configuration file.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -79,9 +79,9 @@ To see your new project in the list, refresh the page.
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `google_oauth2` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
-1. Add the provider configuration:
+1. Add the provider configuration.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -95,7 +95,7 @@ To see your new project in the list, refresh the page.
    ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: 'google_oauth2',
@@ -110,13 +110,13 @@ To see your new project in the list, refresh the page.
 1. Make sure that you configure GitLab to use a fully-qualified domain name, as
    Google doesn't accept raw IP addresses.
 
-   For Omnibus packages:
+   For Linux package installations:
 
    ```ruby
    external_url 'https://gitlab.example.com'
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    gitlab:

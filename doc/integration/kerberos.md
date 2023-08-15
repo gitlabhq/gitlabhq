@@ -41,7 +41,7 @@ sudo chmod 0600 /etc/http.keytab
 
 ### Configure GitLab
 
-#### Installations from source
+#### Self-compiled installations
 
 NOTE:
 For self-compiled installations, make sure the `kerberos` gem group
@@ -68,7 +68,7 @@ For self-compiled installations, make sure the `kerberos` gem group
 
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-#### Omnibus package installations
+#### Linux package installations
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -187,7 +187,9 @@ match the domain from the user's LDAP DN. The configuration value must specify
 all domains that users may be expected to have. Any other domains are
 ignored and an LDAP identity is not linked.
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -198,9 +200,7 @@ ignored and an LDAP identity is not linked.
 1. Save the file and [reconfigure](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
----
-
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit `config/gitlab.yml`:
 
@@ -211,6 +211,8 @@ ignored and an LDAP identity is not linked.
 
 1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
+
+::EndTabs
 
 ## HTTP Git access
 
@@ -312,7 +314,22 @@ If not, then add the settings [described above](#configuration).
 To disable password-based Kerberos sign-ins, remove the OmniAuth provider
 `kerberos` from your `gitlab.yml`/`gitlab.rb` file.
 
-**For installations from source**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb` and remove the `{ "name" => "kerberos" }` line
+   under `gitlab_rails['omniauth_providers']`:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     { "name" => "kerberos" } # <-- remove this entry
+   ]
+   ```
+
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+:::TabTitle Self-compiled (source)
 
 1. Edit [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example) and remove the `- { name: 'kerberos' }` line under OmniAuth
    providers:
@@ -327,18 +344,7 @@ To disable password-based Kerberos sign-ins, remove the OmniAuth provider
 
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-**For Omnibus installations**
-
-1. Edit `/etc/gitlab/gitlab.rb` and remove the `{ "name" => "kerberos" }` line
-   under `gitlab_rails['omniauth_providers']`:
-
-   ```ruby
-   gitlab_rails['omniauth_providers'] = [
-     { "name" => "kerberos" } # <-- remove this entry
-   ]
-   ```
-
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+::EndTabs
 
 NOTE:
 Removing the `kerberos` OmniAuth provider can also resolve a rare

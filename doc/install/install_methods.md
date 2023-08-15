@@ -29,7 +29,7 @@ or use one of the following methods.
 - macOS
 
 Installation of GitLab on these operating systems is possible, but not supported.
-See the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
+See the [installation guides](https://about.gitlab.com/install/) for more information.
 
 See [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported)
 for a list of supported and unsupported OS versions for Linux package installations as well as the last support GitLab version for that OS.

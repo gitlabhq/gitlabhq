@@ -391,6 +391,50 @@ displays to the right of the mini graph.
 
 ## Fetch artifacts from an upstream pipeline **(PREMIUM)**
 
+::Tabs
+
+:::TabTitle Parent-child pipeline
+
+Use [`needs:pipeline:job`](../yaml/index.md#needspipelinejob) to fetch artifacts from an
+upstream pipeline:
+
+1. In the upstream pipeline, save the artifacts in a job with the [`artifacts`](../yaml/index.md#artifacts)
+   keyword, then trigger the downstream pipeline with a trigger job:
+
+   ```yaml
+   build_artifacts:
+     stage: build
+     script:
+       - echo "This is a test artifact!" >> artifact.txt
+     artifacts:
+       paths:
+         - artifact.txt
+
+   deploy:
+     stage: deploy
+     trigger:
+       include:
+         - local: path/to/child-pipeline.yml
+     variables:
+       PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+   ```
+
+1. Use `needs:pipeline:job` in a job in the downstream pipeline to fetch the artifacts.
+
+   ```yaml
+   test:
+     stage: test
+     script:
+       - cat artifact.txt
+     needs:
+       - pipeline: $PARENT_PIPELINE_ID
+         job: build_artifacts
+   ```
+
+   Set `job` to the job in the upstream pipeline that created the artifacts.
+
+:::TabTitle Multi-project pipeline
+
 Use [`needs:project`](../yaml/index.md#needsproject) to fetch artifacts from an
 upstream pipeline:
 
@@ -408,7 +452,7 @@ upstream pipeline:
 
    deploy:
      stage: deploy
-     trigger: my/downstream_project
+     trigger: my/downstream_project   # Path to the project to trigger a pipeline in
    ```
 
 1. Use `needs:project` in a job in the downstream pipeline to fetch the artifacts.
@@ -430,6 +474,8 @@ upstream pipeline:
    - `job` to the job in the upstream pipeline that created the artifacts.
    - `ref` to the branch.
    - `artifacts` to `true`.
+
+::EndTabs
 
 ### Fetch artifacts from an upstream merge request pipeline
 

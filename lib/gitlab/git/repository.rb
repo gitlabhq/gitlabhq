@@ -1204,6 +1204,12 @@ module Gitlab
         end
       end
 
+      def object_pool
+        wrapped_gitaly_errors do
+          gitaly_repository_client.object_pool.object_pool
+        end
+      end
+
       private
 
       def repository_info_size_megabytes

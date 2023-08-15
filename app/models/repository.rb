@@ -1252,6 +1252,16 @@ class Repository
     raw_repository.get_patch_id(old_revision, new_revision)
   end
 
+  def object_pool
+    gitaly_object_pool = raw.object_pool
+
+    return unless gitaly_object_pool
+
+    source_project = project&.pool_repository&.source_project
+
+    Gitlab::Git::ObjectPool.init_from_gitaly(gitaly_object_pool, source_project&.repository)
+  end
+
   private
 
   def ancestor_cache_key(ancestor_id, descendant_id)

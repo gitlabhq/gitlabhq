@@ -16,10 +16,6 @@ module API
           SnippetsFinder.new(current_user, author: current_user).execute
         end
 
-        def public_snippets
-          Snippet.only_personal_snippets.are_public.fresh
-        end
-
         def snippets
           SnippetsFinder.new(current_user).execute
         end

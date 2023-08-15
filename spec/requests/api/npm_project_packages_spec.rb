@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::NpmProjectPackages, feature_category: :package_registry,
-  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/418757' do
+RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
   include ExclusiveLeaseHelpers
 
   include_context 'npm api setup'

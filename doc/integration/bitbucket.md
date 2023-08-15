@@ -79,7 +79,7 @@ you to use.
 
 1. Add the Bitbucket provider configuration:
 
-   For Omnibus packages:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -93,7 +93,7 @@ you to use.
    ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    omniauth:

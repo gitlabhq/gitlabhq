@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::ObjectPool do
+RSpec.describe Gitlab::Git::ObjectPool, feature_category: :source_code_management do
   let(:pool_repository) { create(:pool_repository) }
   let(:source_repository) { pool_repository.source_project.repository }
 
@@ -12,6 +12,29 @@ RSpec.describe Gitlab::Git::ObjectPool do
     it "equals the pool repository's shard name" do
       expect(subject.storage).not_to be_nil
       expect(subject.storage).to eq(pool_repository.shard_name)
+    end
+  end
+
+  describe '.init_from_gitaly' do
+    let(:gitaly_object_pool) { Gitaly::ObjectPool.new(repository: repository) }
+    let(:repository) do
+      Gitaly::Repository.new(
+        storage_name: 'default',
+        relative_path: '@pools/ef/2d/ef2d127d',
+        gl_project_path: ''
+      )
+    end
+
+    it 'returns an object pool object' do
+      object_pool = described_class.init_from_gitaly(gitaly_object_pool, source_repository)
+
+      expect(object_pool).to be_kind_of(described_class)
+      expect(object_pool).to have_attributes(
+        storage: repository.storage_name,
+        relative_path: repository.relative_path,
+        source_repository: source_repository,
+        gl_project_path: repository.gl_project_path
+      )
     end
   end
 

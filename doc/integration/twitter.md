@@ -55,13 +55,13 @@ Twitter. Twitter generates a client ID and secret key for you to use.
 
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```shell
      sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
      cd /home/git/gitlab
@@ -75,7 +75,7 @@ Twitter. Twitter generates a client ID and secret key for you to use.
 
 1. Add the provider configuration.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```ruby
      gitlab_rails['omniauth_providers'] = [
@@ -88,7 +88,7 @@ Twitter. Twitter generates a client ID and secret key for you to use.
      ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: 'twitter',

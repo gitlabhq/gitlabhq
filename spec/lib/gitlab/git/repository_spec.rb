@@ -2778,4 +2778,28 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       subject
     end
   end
+
+  describe '#object_pool' do
+    subject { repository.object_pool }
+
+    context 'without object pool' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when pool repository exists' do
+      let!(:pool) { create(:pool_repository, :ready, source_project: project) }
+
+      it { is_expected.to be_nil }
+
+      context 'when repository is linked to the pool repository' do
+        before do
+          pool.link_repository(pool.source_project.repository)
+        end
+
+        it 'returns a object pool for the repository' do
+          is_expected.to be_kind_of(Gitaly::ObjectPool)
+        end
+      end
+    end
+  end
 end

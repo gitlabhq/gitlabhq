@@ -25,12 +25,12 @@ has additional information about upgrading, including:
 Depending on the installation method and your GitLab version, there are multiple
 official ways to upgrade GitLab:
 
-- [Linux packages (Omnibus GitLab)](#linux-packages-omnibus-gitlab)
+- [Linux packages (Omnibus)](#linux-packages-omnibus)
 - [Self-compiled installations](#self-compiled-installation)
 - [Docker installations](#installation-using-docker)
 - [Kubernetes (Helm) installations](#installation-using-helm)
 
-### Linux packages (Omnibus GitLab)
+### Linux packages (Omnibus)
 
 The [package upgrade guide](package/index.md)
 contains the steps needed to upgrade a package installed by official GitLab
@@ -429,7 +429,7 @@ For more information, see [issue 415724](https://gitlab.com/gitlab-org/gitlab/-/
 
 ### 15.8.0
 
-- Git 2.38.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../install/installation.md#git).
+- Git 2.38.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../install/installation.md#git).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
 - Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
@@ -591,7 +591,7 @@ For more information, see [issue 415724](https://gitlab.com/gitlab-org/gitlab/-/
 ### 15.6.0
 
 - You should use one of the [officially supported PostgreSQL versions](../administration/package_information/postgresql_versions.md). Some database migrations can cause stability and performance issues with older PostgreSQL versions.
-- Git 2.37.0 and later is required by Gitaly. For installations from source, we recommend you use the [Git version provided by Gitaly](../install/installation.md#git).
+- Git 2.37.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../install/installation.md#git).
 - A database change to modify the behavior of four indexes fails on instances
   where these indexes do not exist:
 

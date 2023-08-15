@@ -735,10 +735,6 @@ For a full list of supported assertions, see the [OmniAuth SAML gem](https://git
 
 ## Configure users based on SAML group membership
 
-NOTE:
-SAML Group Sync is only supported for the [SAML provider named `saml`](#configure-gitlab-to-use-multiple-saml-idps).
-As a result, SAML Group Sync only supports a single SAML provider. For more information, see [issue 366450](https://gitlab.com/gitlab-org/gitlab/-/issues/366450).
-
 You can:
 
 - Require users to be members of a certain group.

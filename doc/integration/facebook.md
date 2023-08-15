@@ -58,13 +58,13 @@ Facebook. Facebook generates an app ID and secret key for you to use.
 
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -76,9 +76,9 @@ Facebook. Facebook generates an app ID and secret key for you to use.
    to add `facebook` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 
-1. Add the provider configuration:
+1. Add the provider configuration.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -91,7 +91,7 @@ Facebook. Facebook generates an app ID and secret key for you to use.
    ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: 'facebook',
