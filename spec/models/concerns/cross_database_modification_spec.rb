@@ -30,7 +30,7 @@ RSpec.describe CrossDatabaseModification do
       expect(ApplicationRecord.gitlab_transactions_stack).to be_empty
 
       Project.transaction do
-        expect(ApplicationRecord.gitlab_transactions_stack).to contain_exactly(:gitlab_main)
+        expect(ApplicationRecord.gitlab_transactions_stack).to contain_exactly(:gitlab_main_cell)
 
         Project.first
       end

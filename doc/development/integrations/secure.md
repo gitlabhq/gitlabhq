@@ -318,8 +318,8 @@ After the deprecation period for a schema version, the file is removed from GitL
 declare removed versions are rejected, and an error message displays on the corresponding pipeline.
 
 If a report uses a `PATCH` version that doesn't match any vendored schema version, it is validated against
-the latest vendored `PATCH` version. For example, if a report version is 14.0.23 and the latest vendored
-version is 14.0.6, the report is validated against version 14.0.6.
+the latest vendored `PATCH` version. For example, if a report version is 15.0.23 and the latest vendored
+version is 15.0.6, the report is validated against version 15.0.6.
 
 GitLab uses the
 [`json_schemer`](https://www.rubydoc.info/gems/json_schemer) gem to perform validation.
@@ -355,12 +355,12 @@ puts(schema_validation_errors)
 ```
 
 1. Download the appropriate schema that matches your report type and declared version. For
-   example, you can find version `14.0.6` of the `container_scanning` report schema at
-   `https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/raw/v14.0.6/dist/container-scanning-report-format.json?inline=false`.
+   example, you can find version `15.0.6` of the `container_scanning` report schema at
+   `https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/raw/v15.0.6/dist/container-scanning-report-format.json?inline=false`.
 1. Save the Ruby script above in a file, for example, `validate.rb`.
 1. Run the script, passing the schema and report file names as arguments in order. For example:
-   1. Using your local Ruby interpreter: `ruby validate.rb container-scanning-format_14-0-6.json gl-container-scanning-report.json`.
-   1. Using Docker: `docker run -it --rm -v $(pwd):/ci ruby:3-slim ruby /ci/validate.rb /ci/container-scanning-format_14-0-6.json  /ci/gl-container-scanning-report.json`
+   1. Using your local Ruby interpreter: `ruby validate.rb container-scanning-format_15-0-6.json gl-container-scanning-report.json`.
+   1. Using Docker: `docker run -it --rm -v $(pwd):/ci ruby:3 ruby /ci/validate.rb /ci/container-scanning-format_15-0-6.json  /ci/gl-container-scanning-report.json`
 1. Validation errors are shown on the screen. You must resolve these errors before GitLab can ingest your report.
 
 ### Report Fields

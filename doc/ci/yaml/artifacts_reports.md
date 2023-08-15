@@ -245,17 +245,18 @@ concatenate them into a single file. Use either:
 - A combination of both (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 - Directories are not supported(`junit: test-results`, `junit: test-results/**`).
 
+<!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
+
 ## `artifacts:reports:license_scanning` **(ULTIMATE)**
 
 > Introduced in GitLab 12.8.
 
-The License Compliance report collects [Licenses](../../user/compliance/license_compliance/index.md). The License
-Compliance report uploads to GitLab as an artifact.
+The license scanning report was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561)
+in GitLab 15.9 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421363) in GitLab 16.3.
+You should instead migrate to use [License approval policies](../../user/compliance/license_approval_policies.md) and
+the [new method of license scanning](../../user/compliance/license_scanning_of_cyclonedx_files/index.md).
 
-GitLab can display the results of one or more reports in:
-
-- The merge request [license compliance widget](../../user/compliance/license_compliance/index.md).
-- The [license list](../../user/compliance/license_list.md).
+<!--- end_remove -->
 
 ## `artifacts:reports:load_performance` **(PREMIUM)**
 

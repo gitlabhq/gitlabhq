@@ -342,7 +342,8 @@ export default {
       );
     },
     formattedFilterParams() {
-      const filtersCopy = { ...this.filterParams };
+      const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
+      const filtersCopy = convertObjectPropsToCamelCase(rawFilterParams, {});
       if (this.filterParams?.iterationId) {
         filtersCopy.iterationId = convertToGraphQLId(
           TYPENAME_ITERATION,

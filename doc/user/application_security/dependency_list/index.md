@@ -9,11 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - System dependencies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6698) in GitLab 14.6.
 > - Group-level dependency list [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8090) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies`. Disabled by default.
-> - Group-level dependency list [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/411257) in GitLab 16.3.
-
-FLAG:
-On self-managed GitLab, by default the group-level dependency list is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `group_level_dependencies`.
-On GitLab.com, this feature is available.
+> - Group-level dependency list [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/411257) in GitLab 16.4.
 
 Use the dependency list to review your project or group's dependencies and key
 details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings.
@@ -83,10 +79,13 @@ Dependency paths are supported for the following package managers:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10536) in GitLab 12.3.
 
-If the [License Compliance](../../compliance/license_compliance/index.md) CI job is configured,
-[discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) are displayed on this page.
+If the [Dependency Scanning](../../application_security/dependency_scanning/index.md) CI job is configured,
+[discovered licenses](../../compliance/license_scanning_of_cyclonedx_files/index.md#enable-license-scanning) are displayed on this page.
 
 ## View a group's dependencies
+
+FLAG:
+On self-managed GitLab, and GitLab.com the feature is disabled by default. To show the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `group_level_dependencies`.
 
 ![Dependency list](img/dependency_list_v16_3.png)
 

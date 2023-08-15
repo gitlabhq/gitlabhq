@@ -39,20 +39,23 @@ module Gitlab
       # rubocop:enable Database/RescueStatementTimeout
 
       def update_batch(sub_batch)
-        ApplicationRecord.connection.execute <<~SQL
-          WITH batched_relation AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (#{sub_batch.select(:id).to_sql})
-          UPDATE projects
-          SET star_count = (
-            SELECT COUNT(*)
-            FROM users_star_projects
-            INNER JOIN users
-            ON users_star_projects.user_id = users.id
-            WHERE users_star_projects.project_id = batched_relation.id
-            AND users.state = 'active'
-          )
-          FROM batched_relation
-          WHERE projects.id = batched_relation.id
-        SQL
+        ::Gitlab::Database.allow_cross_joins_across_databases(url:
+            'https://gitlab.com/gitlab-org/gitlab/-/issues/421843') do
+          ApplicationRecord.connection.execute <<~SQL
+            WITH batched_relation AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (#{sub_batch.select(:id).to_sql})
+            UPDATE projects
+            SET star_count = (
+              SELECT COUNT(*)
+              FROM users_star_projects
+              INNER JOIN users
+              ON users_star_projects.user_id = users.id
+              WHERE users_star_projects.project_id = batched_relation.id
+              AND users.state = 'active'
+            )
+            FROM batched_relation
+            WHERE projects.id = batched_relation.id
+          SQL
+        end
       end
     end
   end

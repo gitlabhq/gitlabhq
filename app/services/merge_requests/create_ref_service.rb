@@ -88,7 +88,7 @@ module MergeRequests
 
     def maybe_merge!(commit_sha, source_sha, expected_old_oid)
       unless target_project.merge_requests_ff_only_enabled
-        source_sha = safe_gitaly_operation do
+        commit_sha = safe_gitaly_operation do
           repository.merge_to_ref(
             current_user,
             source_sha: source_sha,

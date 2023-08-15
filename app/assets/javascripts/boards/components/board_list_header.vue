@@ -11,6 +11,7 @@ import {
 import { mapActions, mapState } from 'vuex';
 import { isListDraggable } from '~/boards/boards_util';
 import { isScopedLabel, parseBoolean } from '~/lib/utils/common_utils';
+import { fetchPolicies } from '~/lib/graphql';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { n__, s__ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
@@ -18,7 +19,6 @@ import Tracking from '~/tracking';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import AccessorUtilities from '~/lib/utils/accessor';
 import {
@@ -28,6 +28,7 @@ import {
   toggleFormEventPrefix,
   updateListQueries,
   toggleCollapsedMutations,
+  listsDeferredQuery,
 } from 'ee_else_ce/boards/constants';
 import eventHub from '../eventhub';
 import { setError } from '../graphql/cache_updates';
@@ -188,8 +189,16 @@ export default {
     userCanDrag() {
       return !this.disabled && isListDraggable(this.list);
     },
+    // due to the issues with cache-and-network, we need this hack to check if there is any data for the query in the cache.
+    // if we have cached data, we disregard the loading state
     isLoading() {
-      return this.$apollo.queries.boardList.loading;
+      return (
+        this.$apollo.queries.boardList.loading &&
+        !this.$apollo.provider.clients.defaultClient.readQuery({
+          query: listsDeferredQuery[this.issuableType].query,
+          variables: this.countQueryVariables,
+        })
+      );
     },
     totalWeight() {
       return this.boardList?.totalWeight;
@@ -197,15 +206,21 @@ export default {
     canShowTotalWeight() {
       return this.weightFeatureAvailable && !this.isLoading;
     },
+    countQueryVariables() {
+      return {
+        id: this.list.id,
+        filters: this.filterParams,
+      };
+    },
   },
   apollo: {
     boardList: {
-      query: listQuery,
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      query() {
+        return listsDeferredQuery[this.issuableType].query;
+      },
       variables() {
-        return {
-          id: this.list.id,
-          filters: this.filterParams,
-        };
+        return this.countQueryVariables;
       },
       context: {
         isSingleRequest: true,

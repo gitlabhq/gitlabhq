@@ -48,7 +48,9 @@ module Routable
 
     validates :route, presence: true, unless: -> { is_a?(Namespaces::ProjectNamespace) }
 
-    scope :with_route, -> { includes(:route) }
+    scope :with_route, -> do
+      includes(:route).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
+    end
 
     after_validation :set_path_errors
 

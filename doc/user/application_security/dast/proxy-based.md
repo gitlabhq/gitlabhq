@@ -675,6 +675,11 @@ To delete a site profile:
 
 Validating a site is required to run an active scan.
 
+Prerequisites:
+
+- A runner must be available in the project to run a validation job.
+- The GitLab server's certificate must be trusted and must not use a self-signed certificate.
+
 To validate a site profile:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
@@ -857,3 +862,9 @@ For details of the report's schema, see the [schema for DAST reports](https://gi
 WARNING:
 The JSON report artifacts are not a public API of DAST and their format is expected to change in the
 future.
+
+## Troubleshooting
+
+### `unable to get local issuer certificate` when trying to validate a site profile
+
+The use of self-signed certificates is not supported and may cause the job to fail with an error message: `unable to get local issuer certificate`. For more information, see [issue 416670](https://gitlab.com/gitlab-org/gitlab/-/issues/416670).

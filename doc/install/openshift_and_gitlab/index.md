@@ -37,7 +37,8 @@ Features requiring Docker-in-Docker might not work.
 For Auto DevOps, the following features are not supported yet:
 
 - [Auto Code Quality](../../ci/testing/code_quality.md)
-- [Auto License Compliance](../../user/compliance/license_compliance/index.md) ([License scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files/index.md) is supported on OpenShift)
+- [License approval policies](../../user/compliance/license_approval_policies.md)
+- [License Scanning](../../user/compliance/license_scanning_of_cyclonedx_files/index.md) is supported on OpenShift.
 - Auto Browser Performance Testing
 - Auto Build
 - [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md) (Note: Pipeline [Container Scanning](../../user/application_security/container_scanning/index.md) is supported)

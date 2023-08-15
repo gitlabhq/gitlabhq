@@ -1,11 +1,15 @@
 - remove_form_id = local_assigns.fetch(:remove_form_id, nil)
 
-.sub-section
-  %h4.danger-title= _('Remove group')
-  = form_tag(group, method: :delete, id: remove_form_id) do
-    %p
-      = _('Removing this group also removes all child projects, including archived projects, and their resources.')
-      %br
-      %strong= _('Removed group can not be restored!')
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-bg-red-50 gl-px-5 gl-py-4' }) do |c|
+  - c.with_header do
+    .gl-new-card-title-wrapper
+      %h4.gl-new-card-title.danger-title= _('Remove group')
 
-    = render 'groups/settings/remove_button', group: group, remove_form_id: remove_form_id
+  - c.with_body do
+    = form_tag(group, method: :delete, id: remove_form_id) do
+      %p
+        = _('Removing this group also removes all child projects, including archived projects, and their resources.')
+        %br
+        %strong= _('Removed group can not be restored!')
+
+      = render 'groups/settings/remove_button', group: group, remove_form_id: remove_form_id

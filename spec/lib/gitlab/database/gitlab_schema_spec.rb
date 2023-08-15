@@ -148,7 +148,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     subject { described_class.table_schemas!(tables) }
 
     it 'returns the matched schemas' do
-      expect(subject).to match_array %i[gitlab_main gitlab_ci].to_set
+      expect(subject).to match_array %i[gitlab_main_cell gitlab_main gitlab_ci].to_set
     end
 
     context 'when one of the tables does not have a matching table schema' do

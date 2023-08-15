@@ -5382,6 +5382,30 @@ Input type: `PipelineTriggerCreateInput`
 | <a id="mutationpipelinetriggercreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationpipelinetriggercreatepipelinetrigger"></a>`pipelineTrigger` | [`PipelineTrigger`](#pipelinetrigger) | Mutated pipeline trigger token. |
 
+### `Mutation.pipelineTriggerUpdate`
+
+WARNING:
+**Introduced** in 16.3.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `PipelineTriggerUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpipelinetriggerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpipelinetriggerupdatedescription"></a>`description` | [`String!`](#string) | Description of the pipeline trigger token. |
+| <a id="mutationpipelinetriggerupdateid"></a>`id` | [`CiTriggerID!`](#citriggerid) | ID of the pipeline trigger token to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpipelinetriggerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpipelinetriggerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationpipelinetriggerupdatepipelinetrigger"></a>`pipelineTrigger` | [`PipelineTrigger`](#pipelinetrigger) | Mutated pipeline trigger token. |
+
 ### `Mutation.projectCiCdSettingsUpdate`
 
 Input type: `ProjectCiCdSettingsUpdateInput`
@@ -28223,6 +28247,12 @@ An example `CiRunnerManagerID` is: `"gid://gitlab/Ci::RunnerManager/1"`.
 A `CiStageID` is a global ID. It is encoded as a string.
 
 An example `CiStageID` is: `"gid://gitlab/Ci::Stage/1"`.
+
+### `CiTriggerID`
+
+A `CiTriggerID` is a global ID. It is encoded as a string.
+
+An example `CiTriggerID` is: `"gid://gitlab/Ci::Trigger/1"`.
 
 ### `ClustersAgentID`
 

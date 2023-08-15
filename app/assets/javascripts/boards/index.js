@@ -29,7 +29,7 @@ function mountBoardApp(el) {
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
 
   const initialFilterParams = {
-    ...convertObjectPropsToCamelCase(rawFilterParams),
+    ...convertObjectPropsToCamelCase(rawFilterParams, {}),
   };
 
   const boardType = el.dataset.parent;

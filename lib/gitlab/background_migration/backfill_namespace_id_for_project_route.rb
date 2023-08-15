@@ -54,6 +54,7 @@ module Gitlab
           .where(namespace_id: nil)
           .where(source_type: 'Project')
           .where.not(projects: { project_namespace_id: nil })
+          .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
           .select("routes.id, projects.project_namespace_id")
       end
     end

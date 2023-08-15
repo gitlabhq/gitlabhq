@@ -47,6 +47,7 @@
 = render_if_exists 'groups/compliance_frameworks', expanded: expanded
 = render_if_exists 'groups/custom_project_templates_setting'
 = render_if_exists 'groups/templates_setting', expanded: expanded
+= render_if_exists 'shared/groups/max_pages_size_setting'
 
 %section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded), data: { qa_selector: 'advanced_settings_content' } }
   .settings-header
@@ -58,6 +59,3 @@
       = _('Perform advanced options such as changing path, transferring, exporting, or removing the group.')
   .settings-content
     = render 'groups/settings/advanced'
-
-= render_if_exists 'shared/groups/max_pages_size_setting'
-

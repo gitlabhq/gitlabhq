@@ -710,6 +710,7 @@ class Project < ApplicationRecord
     # includes(:route) which we use in ProjectsFinder.
     joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'")
       .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
+      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
   end
 
   scope :with_feature_enabled, ->(feature) {
@@ -939,6 +940,7 @@ class Project < ApplicationRecord
       if include_namespace
         joins(:route).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name], :description],
           use_minimum_char_limit: use_minimum_char_limit)
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
       else
         fuzzy_search(query, [:path, :name, :description], use_minimum_char_limit: use_minimum_char_limit)
       end

@@ -91,7 +91,6 @@ export default {
   computed: {
     ...mapGetters(['isSidebarOpen']),
     listQueryVariables() {
-      if (this.filterParams.groupBy) delete this.filterParams.groupBy;
       return {
         ...(this.isIssueBoard && {
           isGroup: this.isGroupBoard,
@@ -99,7 +98,7 @@ export default {
         }),
         fullPath: this.fullPath,
         boardId: this.boardId,
-        filters: this.filterParams,
+        filters: this.formattedFilterParams,
       };
     },
     isSwimlanesOn() {
@@ -113,6 +112,15 @@ export default {
     },
     activeList() {
       return this.activeListId ? this.boardListsApollo[this.activeListId] : undefined;
+    },
+    formattedFilterParams() {
+      if (this.filterParams.groupBy) delete this.filterParams.groupBy;
+      return filterVariables({
+        filters: this.filterParams,
+        issuableType: this.issuableType,
+        filterInfo: FiltersInfo,
+        filterFields: FilterFields,
+      });
     },
   },
   created() {
@@ -136,13 +144,7 @@ export default {
     },
     setFilters(filters) {
       const filterParams = { ...filters };
-      if (filterParams.groupBy) delete filterParams.groupBy;
-      this.filterParams = filterVariables({
-        filters: filterParams,
-        issuableType: this.issuableType,
-        filterInfo: FiltersInfo,
-        filterFields: FilterFields,
-      });
+      this.filterParams = filterParams;
     },
   },
 };
@@ -163,7 +165,7 @@ export default {
       :board-id="boardId"
       :add-column-form-visible="addColumnFormVisible"
       :is-swimlanes-on="isSwimlanesOn"
-      :filter-params="filterParams"
+      :filter-params="formattedFilterParams"
       :board-lists-apollo="boardListsApollo"
       :apollo-error="error"
       :list-query-variables="listQueryVariables"
