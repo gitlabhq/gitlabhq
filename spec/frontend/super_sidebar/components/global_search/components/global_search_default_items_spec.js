@@ -2,6 +2,8 @@ import { shallowMount } from '@vue/test-utils';
 
 import GlobalSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
 import GlobalSearchDefaultPlaces from '~/super_sidebar/components/global_search/components/global_search_default_places.vue';
+import FrequentProjects from '~/super_sidebar/components/global_search/components/frequent_projects.vue';
+import FrequentGroups from '~/super_sidebar/components/global_search/components/frequent_groups.vue';
 import GlobalSearchDefaultIssuables from '~/super_sidebar/components/global_search/components/global_search_default_issuables.vue';
 
 describe('GlobalSearchDefaultItems', () => {
@@ -12,6 +14,8 @@ describe('GlobalSearchDefaultItems', () => {
   };
 
   const findPlaces = () => wrapper.findComponent(GlobalSearchDefaultPlaces);
+  const findProjects = () => wrapper.findComponent(FrequentProjects);
+  const findGroups = () => wrapper.findComponent(FrequentGroups);
   const findIssuables = () => wrapper.findComponent(GlobalSearchDefaultIssuables);
   const receivedAttrs = (wrapperInstance) => ({
     // See https://github.com/vuejs/test-utils/issues/2151.
@@ -25,6 +29,8 @@ describe('GlobalSearchDefaultItems', () => {
   describe('all child components can render', () => {
     it('renders the components', () => {
       expect(findPlaces().exists()).toBe(true);
+      expect(findProjects().exists()).toBe(true);
+      expect(findGroups().exists()).toBe(true);
       expect(findIssuables().exists()).toBe(true);
     });
 
@@ -34,27 +40,37 @@ describe('GlobalSearchDefaultItems', () => {
       expect(places.classes()).toEqual([]);
     });
 
-    it('sets the expected props on second component', () => {
-      const issuables = findIssuables();
-      expect(receivedAttrs(issuables)).toEqual({ bordered: true });
-      expect(issuables.classes()).toEqual(['gl-mt-3']);
+    it('sets the expected props on the second component onwards', () => {
+      const components = [findProjects(), findGroups(), findIssuables()];
+      components.forEach((component) => {
+        expect(receivedAttrs(component)).toEqual({ bordered: true });
+        expect(component.classes()).toEqual(['gl-mt-3']);
+      });
     });
   });
 
-  describe('when a child component emits nothing-to-render', () => {
+  describe('when child components emit nothing-to-render', () => {
     beforeEach(() => {
+      // Emit from two elements to guard against naive index-based splicing
       findPlaces().vm.$emit('nothing-to-render');
+      findIssuables().vm.$emit('nothing-to-render');
     });
 
-    it('does not render the component', () => {
+    it('does not render the components', () => {
       expect(findPlaces().exists()).toBe(false);
-      expect(findIssuables().exists()).toBe(true);
+      expect(findIssuables().exists()).toBe(false);
     });
 
     it('sets the expected props on first component', () => {
-      const issuables = findIssuables();
-      expect(receivedAttrs(issuables)).toEqual({});
-      expect(issuables.classes()).toEqual([]);
+      const projects = findProjects();
+      expect(receivedAttrs(projects)).toEqual({});
+      expect(projects.classes()).toEqual([]);
+    });
+
+    it('sets the expected props on the second component', () => {
+      const groups = findGroups();
+      expect(receivedAttrs(groups)).toEqual({ bordered: true });
+      expect(groups.classes()).toEqual(['gl-mt-3']);
     });
   });
 });

@@ -167,8 +167,7 @@ target users. See the [Ruby example](#ruby-application-example) below.
 Enables the feature for lists of users created [in the feature flags UI](#create-a-user-list), or with the [feature flag user list API](../api/feature_flag_user_lists.md).
 Similar to [User IDs](#user-ids), it uses the Unleash UsersIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/reference/activation-strategies#userids).
 
-It's not possible to *disable* a feature for members of a user list, but you can achieve the same
-effect by enabling a feature for a user list that doesn't contain the excluded users.
+You can't disable a specific feature for a user, but you can achieve similar results by enabling it for a user list.
 
 For example:
 
@@ -221,8 +220,7 @@ To remove users from a user list:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
 
-Search your project and find any references of a feature flag in your
-code so that you can clean it up when it's time to remove the feature flag.
+To remove the feature flag from the code during cleanup, find any project references to it.
 
 To search for code references of a feature flag:
 
@@ -413,8 +411,7 @@ This feature is similar to the [linked issues](../user/project/issues/related_is
 
 ## Performance factors
 
-In general, GitLab feature flags can be used in any applications,
-however, if it's a large application, it could require an additional configuration in advance.
+GitLab feature flags can be used in any application. Large applications might require advance configuration.
 This section explains the performance factors to help your organization to identify
 what's needed to be done before using the feature.
 Read [How it works](#how-it-works) section before diving into the details.
@@ -431,7 +428,7 @@ The polling rate is configurable in SDKs. Provided that all clients are requesti
 - Request once per minute ... 500 clients can be supported.
 - Request once per 15 sec ... 125 clients can be supported.
 
-For applications looking for more scalable solution, we recommend to use [Unleash Proxy](#unleash-proxy-example).
+For applications looking for more scalable solution, you should use [Unleash Proxy](#unleash-proxy-example).
 This proxy server sits between the server and clients. It requests to the server as a behalf of the client groups,
 so the number of outbound requests can be greatly reduced.
 
@@ -452,7 +449,6 @@ Read the documentation in a SDK project for more information.
 Functionality-wise, there are no differences. Both SaaS and self-managed behave the same.
 
 In terms of scalability, it's up to the spec of the GitLab instance.
-For example, GitLab.com runs on HA architecture so that it can handle a lot of requests concurrently,
-however, a self-managed instance runs on a low spec machine can't expect the same result.
+For example, GitLab.com uses HA architecture so it can handle many concurrent requests. However, self-managed instances on underpowered machines won't deliver comparable performance.
 See [Reference architectures](../administration/reference_architectures/index.md)
 for more information.

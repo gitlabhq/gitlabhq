@@ -128,7 +128,7 @@ export default {
       :is="navItemLinkComponent"
       #default="{ isActive }"
       v-bind="linkProps"
-      class="nav-item-link gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus"
+      class="nav-item-link gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus show-on-focus-or-hover--context"
       :class="computedLinkClasses"
       data-qa-selector="nav_item_link"
       data-testid="nav-item-link"
@@ -146,7 +146,7 @@ export default {
           <gl-icon
             v-else-if="isInPinnedSection"
             name="grip"
-            class="gl-m-auto gl-text-gray-400 draggable-icon"
+            class="gl-m-auto gl-text-gray-400 js-draggable-icon gl-cursor-grab show-on-focus-or-hover--target"
           />
         </slot>
       </div>
@@ -172,6 +172,7 @@ export default {
           size="small"
           category="tertiary"
           icon="thumbtack"
+          class="show-on-focus-or-hover--target"
           :aria-label="$options.i18n.pinItem"
           @click.prevent="$emit('pin-add', item.id)"
         />
@@ -182,6 +183,7 @@ export default {
           category="tertiary"
           :aria-label="$options.i18n.unpinItem"
           icon="thumbtack-solid"
+          class="show-on-focus-or-hover--target"
           @click.prevent="$emit('pin-remove', item.id)"
         />
       </span>

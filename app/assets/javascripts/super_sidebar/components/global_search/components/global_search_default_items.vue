@@ -1,8 +1,10 @@
 <script>
 import DefaultPlaces from './global_search_default_places.vue';
 import DefaultIssuables from './global_search_default_issuables.vue';
+import FrequentGroups from './frequent_groups.vue';
+import FrequentProjects from './frequent_projects.vue';
 
-const components = [DefaultPlaces, DefaultIssuables];
+const components = [DefaultPlaces, FrequentProjects, FrequentGroups, DefaultIssuables];
 
 export default {
   name: 'GlobalSearchDefaultItems',

@@ -94,7 +94,7 @@ export default {
       v-model="draggableItems"
       class="gl-p-0 gl-m-0"
       data-testid="pinned-nav-items"
-      handle=".draggable-icon"
+      handle=".js-draggable-icon"
       tag="ul"
       @end="handleDrag"
     >

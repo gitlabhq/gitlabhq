@@ -543,20 +543,6 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
             expect(token_1.reload).not_to be_revoked
           end
         end
-
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(pat_reuse_detection: false)
-          end
-
-          it 'does not revoke the latest rotated token' do
-            expect(token_1).not_to be_revoked
-
-            expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::RevokedError)
-
-            expect(token_1.reload).not_to be_revoked
-          end
-        end
       end
     end
   end

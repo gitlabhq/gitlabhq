@@ -91,6 +91,7 @@ export default {
           size="small"
           category="tertiary"
           icon="dash"
+          class="show-on-focus-or-hover--target"
           :aria-label="$options.i18n.removeItem"
           :title="$options.i18n.removeItem"
           data-testid="item-remove"

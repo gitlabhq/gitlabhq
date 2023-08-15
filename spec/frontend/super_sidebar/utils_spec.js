@@ -70,7 +70,7 @@ describe('Super sidebar utils spec', () => {
       );
     });
 
-    it('updates existing item if it was persisted to the local storage over 15 minutes ago', () => {
+    it('updates existing item frequency/access time if it was persisted to the local storage over 15 minutes ago', () => {
       window.localStorage.setItem(
         storageKey,
         JSON.stringify([
@@ -95,7 +95,7 @@ describe('Super sidebar utils spec', () => {
       );
     });
 
-    it('leaves item as is if it was persisted to the local storage under 15 minutes ago', () => {
+    it('leaves item frequency/access time as is if it was persisted to the local storage under 15 minutes ago', () => {
       const jsonString = JSON.stringify([
         {
           id: 1,
@@ -112,6 +112,39 @@ describe('Super sidebar utils spec', () => {
 
       expect(window.localStorage.setItem).toHaveBeenCalledTimes(3);
       expect(window.localStorage.setItem).toHaveBeenLastCalledWith(storageKey, jsonString);
+    });
+
+    it('always updates stored item metadata', () => {
+      window.localStorage.setItem(
+        storageKey,
+        JSON.stringify([
+          {
+            id: 1,
+            frequency: 2,
+            lastAccessedOn: Date.now(),
+          },
+        ]),
+      );
+
+      trackContextAccess(username, {
+        ...context,
+        item: {
+          ...context.item,
+          avatarUrl: '/group.png',
+        },
+      });
+
+      expect(window.localStorage.setItem).toHaveBeenCalledWith(
+        storageKey,
+        JSON.stringify([
+          {
+            id: 1,
+            avatarUrl: '/group.png',
+            frequency: 2,
+            lastAccessedOn: Date.now(),
+          },
+        ]),
+      );
     });
 
     it('replaces the least popular item in the local storage once the persisted items limit has been hit', () => {

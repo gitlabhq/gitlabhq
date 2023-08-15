@@ -81,6 +81,9 @@ export const initSuperSidebar = () => {
   const sidebarData = JSON.parse(sidebar);
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
 
+  const projectsPath = sidebarData.projects_path;
+  const groupsPath = sidebarData.groups_path;
+
   const commandPaletteData = JSON.parse(commandPalette);
   const projectFilesPath = commandPaletteData.project_files_url;
   const projectBlobPath = commandPaletteData.project_blob_url;
@@ -107,6 +110,8 @@ export const initSuperSidebar = () => {
       searchContext,
       projectFilesPath,
       projectBlobPath,
+      projectsPath,
+      groupsPath,
     },
     store: createStore({
       searchPath,

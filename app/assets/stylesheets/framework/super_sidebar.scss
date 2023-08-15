@@ -159,32 +159,11 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   }
 
   .nav-item-link {
-    button,
-    .draggable-icon {
-      opacity: 0;
-    }
-
-    .draggable-icon {
-      cursor: grab;
-    }
-
-    &:hover {
-      button,
-      .draggable-icon {
-        opacity: 1;
-      }
-    }
-
     &:hover,
     &:focus-within {
       .nav-item-badge {
         opacity: 0;
       }
-    }
-
-    &:focus button,
-    button:focus {
-      opacity: 1;
     }
   }
 
@@ -313,5 +292,22 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     [id*='gl-disclosure-dropdown-group'] {
       @include gl-px-5;
     }
+  }
+}
+
+.show-on-focus-or-hover--context {
+  .show-on-focus-or-hover--target {
+    opacity: 0;
+  }
+
+  &:hover,
+  &:focus {
+    .show-on-focus-or-hover--target {
+      opacity: 1;
+    }
+  }
+
+  .show-on-focus-or-hover--target:focus {
+    opacity: 1;
   }
 }

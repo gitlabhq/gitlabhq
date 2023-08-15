@@ -1596,8 +1596,7 @@ When names change, it is more complicated to search or grep text that has line b
 
 ### Product tier badges
 
-Tier badges are displayed as orange text next to a topic title. These badges link to the GitLab
-pricing page.
+Tier badges provide information about a feature and are displayed next to the topic title.
 
 You should assign a tier badge:
 
@@ -1606,37 +1605,58 @@ You should assign a tier badge:
 
 The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
 
-Some pages won't have a tier badge, because no obvious tier badge applies. For example:
+#### Available product tier badges
 
-- Tutorials.
-- Pages that compare features from different tiers.
+Tier badges must include two components, in this order: a subscription tier and an offering.
+These components are surrounded by bold and parentheses, for example `**(ULTIMATE SAAS)**`.
+
+Subscription tiers:
+
+- `FREE` - Applies to all tiers.
+- `PREMIUM` - Applies to Premium and Ultimate tiers.
+- `ULTIMATE` - Applies to Ultimate tier only.
+
+Offerings:
+
+- `SELF`
+- `SAAS`
+- `ALL` - Applies to both self-managed and SaaS.
+
+You can also add a third component for the feature's status:
+
+- `EXPERIMENT`
+- `BETA`
 
 #### Add a tier badge
 
-To add a tier badge to a topic title, add the relevant tier badge
-after the title text. For example:
+To add a tier badge to a topic title, add the two relevant components
+after the title text. You must include the subscription tier first, and then the offering.
+For example:
 
 ```markdown
-# Topic title **(FREE)**
+# Topic title **(FREE ALL)**
 ```
+
+Optionally, you can add the feature status as the last part of the badge:
+
+```markdown
+# Topic title **(FREE ALL EXPERIMENT)**
+```
+
+##### Inline tier badges
 
 Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
 The single source of truth for a feature should be the topic where the
 functionality is described.
 
-#### Available product tier badges
+##### Pages that don't need a tier badge
 
-| Where feature is available                                                               | Tier badge            |
-|:-----------------------------------------------------------------------------------------|:----------------------|
-| On GitLab self-managed and GitLab SaaS, available in all tiers.                          | `**(FREE)**`          |
-| On GitLab self-managed and GitLab SaaS, available in Premium and Ultimate.               | `**(PREMIUM)**`       |
-| On GitLab self-managed and GitLab SaaS, available in Ultimate.                           | `**(ULTIMATE)**`      |
-| On GitLab self-managed, available in all tiers. Not available on GitLab SaaS.            | `**(FREE SELF)**`     |
-| On GitLab self-managed, available in Premium and Ultimate. Not available on GitLab SaaS. | `**(PREMIUM SELF)**`  |
-| On GitLab self-managed, available in Ultimate. Not available on GitLab SaaS.             | `**(ULTIMATE SELF)**` |
-| On GitLab SaaS, available in all tiers. Not available on self-managed.                   | `**(FREE SAAS)**`     |
-| On GitLab SaaS, available in Premium and Ultimate. Not available on self-managed.        | `**(PREMIUM SAAS)**`  |
-| On GitLab SaaS, available in Ultimate. Not available on self-managed.                    | `**(ULTIMATE SAAS)**` |
+Some pages won't have a tier badge, because no obvious tier badge applies. For example:
+
+- Tutorials.
+- Pages that compare features from different tiers.
+
+##### Administrator documentation tier badges
 
 Topics that are only for instance administrators should be badged `<TIER> SELF`. Instance
 administrator documentation often includes sections that mention:
@@ -1653,7 +1673,7 @@ instance administrator.
 Certain styles should be applied to specific sections. Styles for specific
 sections are outlined in this section.
 
-## Help and feedback section
+### Help and feedback section
 
 This section ([introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/319) in GitLab 11.4)
 is displayed at the end of each document and can be omitted by adding a key into

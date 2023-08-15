@@ -36,17 +36,15 @@ export const getTopFrequentItems = (items, maxCount) => {
   return frequentItems.slice(0, maxCount);
 };
 
-const updateItemAccess = (item) => {
+const updateItemAccess = (contextItem, { lastAccessedOn, frequency = 0 } = {}) => {
   const now = Date.now();
-  const neverAccessed = !item.lastAccessedOn;
-  const shouldUpdate =
-    neverAccessed || Math.abs(now - item.lastAccessedOn) / FIFTEEN_MINUTES_IN_MS > 1;
-  const currentFrequency = item.frequency ?? 0;
+  const neverAccessed = !lastAccessedOn;
+  const shouldUpdate = neverAccessed || Math.abs(now - lastAccessedOn) / FIFTEEN_MINUTES_IN_MS > 1;
 
   return {
-    ...item,
-    frequency: shouldUpdate ? currentFrequency + 1 : currentFrequency,
-    lastAccessedOn: shouldUpdate ? now : item.lastAccessedOn,
+    ...contextItem,
+    frequency: shouldUpdate ? frequency + 1 : frequency,
+    lastAccessedOn: shouldUpdate ? now : lastAccessedOn,
   };
 };
 
@@ -63,7 +61,7 @@ export const trackContextAccess = (username, context) => {
   );
 
   if (existingItemIndex > -1) {
-    storedItems[existingItemIndex] = updateItemAccess(storedItems[existingItemIndex]);
+    storedItems[existingItemIndex] = updateItemAccess(context.item, storedItems[existingItemIndex]);
   } else {
     const newItem = updateItemAccess(context.item);
     if (storedItems.length === FREQUENT_ITEMS.MAX_COUNT) {
