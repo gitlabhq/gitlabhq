@@ -6,6 +6,7 @@ import {
   GlLoadingIcon,
   GlModalDirective as GlModal,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { s__, __ } from '~/locale';
 import { states, ADD_USER_MODAL_ID } from '../constants/show';

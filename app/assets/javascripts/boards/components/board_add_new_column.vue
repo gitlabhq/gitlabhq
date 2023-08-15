@@ -7,6 +7,7 @@ import {
   GlCollapsibleListbox,
   GlIcon,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';

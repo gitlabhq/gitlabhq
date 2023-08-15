@@ -261,7 +261,6 @@ module IssuablesHelper
       isFirstContribution: issuable.first_contribution?,
       issueType: issuable.issue_type,
       serviceDeskReplyTo: issuable.present(current_user: current_user).service_desk_reply_to,
-      workItemType: issuable.work_item_type.name,
       zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
       sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
       iid: issuable.iid.to_s,

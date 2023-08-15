@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import terminalModule from '~/ide/stores/modules/terminal';

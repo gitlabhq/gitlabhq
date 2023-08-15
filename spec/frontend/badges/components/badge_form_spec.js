@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { mount } from '@vue/test-utils';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'helpers/test_constants';

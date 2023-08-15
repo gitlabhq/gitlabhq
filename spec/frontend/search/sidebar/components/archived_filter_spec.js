@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { GlFormCheckboxGroup } from '@gitlab/ui';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';

@@ -1,7 +1,7 @@
 import { GlAlert, GlButton, GlFormInputGroup, GlSprintf } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { sprintf } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
@@ -48,15 +48,26 @@ describe('InstallAgentModal', () => {
   let trackingSpy;
 
   const configurations = [{ agentName: 'agent-name' }];
-  const apolloQueryResponse = {
+  const apolloQueryResponse = (configurationsNodes = configurations) => ({
     data: {
       project: {
         __typename: 'Project',
         id: 'project-1',
         clusterAgents: { nodes: [] },
-        agentConfigurations: { nodes: configurations },
+        agentConfigurations: { nodes: configurationsNodes },
       },
     },
+  });
+
+  const provide = {
+    projectPath,
+    kasAddress,
+    emptyStateImage,
+  };
+
+  const propsData = {
+    defaultBranchName,
+    maxAgents,
   };
 
   const findModal = () => wrapper.findComponent(ModalStub);
@@ -80,17 +91,12 @@ describe('InstallAgentModal', () => {
     }
   };
 
-  const createWrapper = () => {
-    const provide = {
-      projectPath,
-      kasAddress,
-      emptyStateImage,
-    };
-
-    const propsData = {
-      defaultBranchName,
-      maxAgents,
-    };
+  const createWrapper = (mockApolloProvider) => {
+    apolloProvider =
+      mockApolloProvider ||
+      createMockApollo([
+        [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse())],
+      ]);
 
     wrapper = shallowMountExtended(InstallAgentModal, {
       attachTo: document.body,
@@ -102,6 +108,8 @@ describe('InstallAgentModal', () => {
       provide,
       propsData,
     });
+
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
 
   const writeQuery = () => {
@@ -117,11 +125,9 @@ describe('InstallAgentModal', () => {
     });
   };
 
-  const mockSelectedAgentResponse = async () => {
-    createWrapper();
+  const mockSelectedAgentResponse = (mockApolloProvider) => {
+    createWrapper(mockApolloProvider);
     writeQuery();
-
-    await waitForPromises();
 
     wrapper.vm.setAgentName('agent-name');
     findActionButton().vm.$emit('click');
@@ -129,21 +135,16 @@ describe('InstallAgentModal', () => {
     return waitForPromises();
   };
 
-  beforeEach(async () => {
-    apolloProvider = createMockApollo([
-      [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
-    ]);
-    createWrapper();
-    await waitForPromises();
-    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-  });
-
   afterEach(() => {
     apolloProvider = null;
   });
 
   describe('when KAS is enabled', () => {
     describe('initial state', () => {
+      beforeEach(() => {
+        createWrapper();
+      });
+
       it('renders the dropdown for available agents', () => {
         expect(findAgentDropdown().isVisible()).toBe(true);
       });
@@ -173,8 +174,45 @@ describe('InstallAgentModal', () => {
       });
     });
 
+    describe('when there are 10 or more available agent configurations', () => {
+      it('displays an alert with Terraform instructions', async () => {
+        const configurationsNodes = Array(10).fill(configurations);
+        const mockApolloProvider = createMockApollo([
+          [
+            getAgentConfigurations,
+            jest.fn().mockResolvedValue(apolloQueryResponse(configurationsNodes)),
+          ],
+        ]);
+
+        createWrapper(mockApolloProvider);
+        await waitForPromises();
+
+        expect(findAlert().text()).toMatchInterpolatedText(
+          s__('ClusterAgents|To manage more agents, %{linkStart}use Terraform%{linkEnd}.'),
+        );
+      });
+
+      it('displays an alert with a warning when there are 100 or more configurations', async () => {
+        const configurationsNodes = Array(100).fill(configurations);
+        const mockApolloProvider = createMockApollo([
+          [
+            getAgentConfigurations,
+            jest.fn().mockResolvedValue(apolloQueryResponse(configurationsNodes)),
+          ],
+        ]);
+
+        createWrapper(mockApolloProvider);
+        await waitForPromises();
+
+        expect(findAlert().text()).toContain(
+          s__('ClusterAgents|We only support 100 agents on the UI.'),
+        );
+      });
+    });
+
     describe('an agent is selected', () => {
       beforeEach(() => {
+        createWrapper();
         findAgentDropdown().vm.$emit('agentSelected');
       });
 
@@ -195,13 +233,13 @@ describe('InstallAgentModal', () => {
       const createAgentTokenHandler = jest.fn().mockResolvedValue(createAgentTokenResponse);
 
       beforeEach(() => {
-        apolloProvider = createMockApollo([
-          [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
+        const mockApolloProvider = createMockApollo([
+          [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse())],
           [createAgentMutation, createAgentHandler],
           [createAgentTokenMutation, createAgentTokenHandler],
         ]);
 
-        return mockSelectedAgentResponse();
+        return mockSelectedAgentResponse(mockApolloProvider);
       });
 
       it('creates an agent and token', () => {
@@ -230,12 +268,12 @@ describe('InstallAgentModal', () => {
 
       describe('error creating agent', () => {
         beforeEach(() => {
-          apolloProvider = createMockApollo([
-            [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
+          const mockApolloProvider = createMockApollo([
+            [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse())],
             [createAgentMutation, jest.fn().mockResolvedValue(createAgentErrorResponse)],
           ]);
 
-          return mockSelectedAgentResponse();
+          return mockSelectedAgentResponse(mockApolloProvider);
         });
 
         it('displays the error message', () => {
@@ -247,13 +285,13 @@ describe('InstallAgentModal', () => {
 
       describe('error creating token', () => {
         beforeEach(() => {
-          apolloProvider = createMockApollo([
-            [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
+          const mockApolloProvider = createMockApollo([
+            [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse())],
             [createAgentMutation, jest.fn().mockResolvedValue(createAgentResponse)],
             [createAgentTokenMutation, jest.fn().mockResolvedValue(createAgentTokenErrorResponse)],
           ]);
 
-          return mockSelectedAgentResponse();
+          return mockSelectedAgentResponse(mockApolloProvider);
         });
 
         it('displays the error message', () => {
@@ -267,11 +305,11 @@ describe('InstallAgentModal', () => {
 
   describe('when KAS is disabled', () => {
     beforeEach(async () => {
-      apolloProvider = createMockApollo([
+      const mockApolloProvider = createMockApollo([
         [getAgentConfigurations, jest.fn().mockResolvedValue(kasDisabledErrorResponse)],
       ]);
 
-      createWrapper();
+      createWrapper(mockApolloProvider);
       await waitForPromises();
     });
 

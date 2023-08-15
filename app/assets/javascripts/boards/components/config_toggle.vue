@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { formType } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';

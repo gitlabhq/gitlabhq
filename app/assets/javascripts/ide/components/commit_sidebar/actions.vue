@@ -2,6 +2,7 @@
 <script>
 import { GlSprintf } from '@gitlab/ui';
 import { escape } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, createNamespacedHelpers } from 'vuex';
 import { s__ } from '~/locale';
 import {

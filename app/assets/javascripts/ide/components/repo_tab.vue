@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlTab } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
 

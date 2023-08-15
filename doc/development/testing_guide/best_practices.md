@@ -621,11 +621,11 @@ You can use the `be_axe_clean` matcher to run [axe automated accessibility testi
 
 ##### Externalized contents
 
-Test expectations against externalized contents should call the same
+For RSpec tests, expectations against externalized contents should call the same
 externalizing method to match the translation. For example, you should use the `_`
-method in Ruby and `__` method in JavaScript.
+method in Ruby.
 
-See [Internationalization for GitLab - Test files](../i18n/externalization.md#test-files) for details.
+See [Internationalization for GitLab - Test files (RSpec)](../i18n/externalization.md#test-files-rspec) for details.
 
 ##### Actions
 

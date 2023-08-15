@@ -1,6 +1,7 @@
 import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import RadioFilter from '~/search/sidebar/components/radio_filter.vue';

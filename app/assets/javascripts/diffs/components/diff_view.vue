@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { throttle } from 'lodash';
 import { IdState } from 'vendor/vue-virtual-scroller';

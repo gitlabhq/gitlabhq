@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { sprintf, __, s__ } from '~/locale';

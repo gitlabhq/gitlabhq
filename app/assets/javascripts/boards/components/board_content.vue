@@ -3,6 +3,7 @@ import { GlAlert } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 import produce from 'immer';
 import Draggable from 'vuedraggable';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { s__ } from '~/locale';

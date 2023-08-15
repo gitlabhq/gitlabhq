@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert } from '~/alert';

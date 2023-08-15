@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { GlCollapsibleListbox, GlListboxItem, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import DiscussionFilter from '~/notes/components/mr_discussion_filter.vue';
 import { MR_FILTER_OPTIONS } from '~/notes/constants';

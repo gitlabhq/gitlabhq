@@ -8,6 +8,7 @@ import {
   GlResizeObserverDirective,
   GlModal,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce, clamp } from 'lodash';
 import { truncate } from '~/lib/utils/text_utility';

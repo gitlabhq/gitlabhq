@@ -16,6 +16,10 @@ to the files in the target branch, and shows only the parts of a file that have 
 
 ![Example screenshot of a source code diff](img/mr-diff-example_v15.png)
 
+For technical details on how GitLab calculates the diff between the two revisions,
+read [Working with diffs](../../../development/merge_request_concepts/diffs/index.md)
+in our development documentation.
+
 ## Show all changes in a merge request
 
 To view the diff of changes included in a merge request:

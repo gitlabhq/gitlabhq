@@ -131,6 +131,10 @@ export const I18N_AGENT_MODAL = {
   learnMoreLink: s__('ClusterAgents|How do I register an agent?'),
   registrationErrorTitle: s__('ClusterAgents|Failed to register an agent'),
   unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
+  maxAgentsSupport: s__('ClusterAgents|We only support 100 agents on the UI.'),
+  useTerraformText: s__(
+    'ClusterAgents|To manage more agents, %{linkStart}use Terraform%{linkEnd}.',
+  ),
 };
 
 export const KAS_DISABLED_ERROR = 'Gitlab::Kas::Client::ConfigurationError';

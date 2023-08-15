@@ -169,9 +169,9 @@ If you need to translate strings in the Vue component's JavaScript, you can impo
 
 To test Vue translations, learn about [manually testing translations from the UI](#manually-test-translations-from-the-ui).
 
-### Test files
+### Test files (RSpec)
 
-Test expectations against externalized contents should not be hard coded,
+For RSpec tests, expectations against externalized contents should not be hard coded,
 because we may need to run the tests with non-default locale, and tests with
 hard coded contents will fail.
 
@@ -194,18 +194,19 @@ click_button _('Submit review')
 expect(rendered).to have_content(_('Thank you for your feedback!'))
 ```
 
-This includes JavaScript tests:
+### Test files (Jest)
 
-Bad:
+For Frontend Jest tests, expectations do not need to reference externalization methods. Externalization is mocked
+in the Frontend test environment, so the expectations are deterministic across locales
+([see relevant MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128531)).
 
-```javascript
-expect(findUpdateIgnoreStatusButton().text()).toBe('Ignore');
-```
-
-Good:
+Example:
 
 ```javascript
-expect(findUpdateIgnoreStatusButton().text()).toBe(__('Ignore'));
+// Bad. Not necessary in Frontend environment.
+expect(findText()).toBe(__('Lorem ipsum dolar sit'));
+// Good.
+expect(findText()).toBe('Lorem ipsum dolar sit');
 ```
 
 #### Recommendations

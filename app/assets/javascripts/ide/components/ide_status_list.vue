@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { isTextFile, getFileEOL } from '~/ide/utils';
 import TerminalSyncStatusSafe from './terminal_sync/terminal_sync_status_safe.vue';

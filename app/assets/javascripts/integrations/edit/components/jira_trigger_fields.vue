@@ -7,6 +7,7 @@ import {
   GlLink,
   GlSprintf,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';

@@ -9,12 +9,7 @@ import Issue from '~/issues/issue';
 import { initTitleSuggestions, initTypePopover, initTypeSelect } from '~/issues/new';
 import { initRelatedMergeRequests } from '~/issues/related_merge_requests';
 import { initRelatedIssues } from '~/related_issues';
-import {
-  initHeaderActions,
-  initIncidentApp,
-  initIssueApp,
-  initSentryErrorStackTrace,
-} from '~/issues/show';
+import { initIncidentApp, initIssueApp, initSentryErrorStackTrace } from '~/issues/show';
 import { parseIssuableData } from '~/issues/show/utils/parse_data';
 import LabelsSelect from '~/labels/labels_select';
 import initNotesApp from '~/notes';
@@ -58,7 +53,6 @@ export function initShow({ notesParams } = {}) {
 
   if (issueType === TYPE_INCIDENT) {
     initIncidentApp({ ...issuableData, issuableId: el.dataset.issuableId }, store);
-    initHeaderActions(store, TYPE_INCIDENT);
     initLinkedResources();
     initRelatedIssues(TYPE_INCIDENT);
   } else {

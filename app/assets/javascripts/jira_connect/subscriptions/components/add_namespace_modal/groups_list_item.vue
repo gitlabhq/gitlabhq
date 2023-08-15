@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import GroupItemName from '../group_item_name.vue';

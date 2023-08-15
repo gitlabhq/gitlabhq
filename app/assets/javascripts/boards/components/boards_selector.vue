@@ -10,6 +10,7 @@ import {
 } from '@gitlab/ui';
 import { produce } from 'immer';
 import { throttle } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 
 import BoardForm from 'ee_else_ce/boards/components/board_form.vue';

@@ -1,5 +1,6 @@
 <script>
 import { GlModal, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { __, s__, sprintf } from '~/locale';
 

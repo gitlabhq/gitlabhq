@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';

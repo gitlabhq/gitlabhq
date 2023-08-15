@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { JOB_SIDEBAR_COPY, forwardDeploymentFailureModalId } from '~/jobs/constants';
 import ArtifactsBlock from './artifacts_block.vue';

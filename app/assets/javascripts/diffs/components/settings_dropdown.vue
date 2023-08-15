@@ -6,6 +6,7 @@ import {
   GlFormCheckbox,
   GlTooltip,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { SETTINGS_DROPDOWN } from '../i18n';
 

@@ -1,6 +1,7 @@
 import { GlTabs, GlSearchBoxByClick } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 
 import { stubComponent } from 'helpers/stub_component';

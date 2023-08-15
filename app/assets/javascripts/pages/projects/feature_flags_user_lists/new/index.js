@@ -1,6 +1,7 @@
 /* eslint-disable no-new */
 
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import NewUserList from '~/user_lists/components/new_user_list.vue';
 import createStore from '~/user_lists/store/new';

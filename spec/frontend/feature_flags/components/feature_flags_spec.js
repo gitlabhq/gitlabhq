@@ -1,6 +1,7 @@
 import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';

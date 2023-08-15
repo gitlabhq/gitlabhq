@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import FeatureFlagsComponent from './components/feature_flags.vue';

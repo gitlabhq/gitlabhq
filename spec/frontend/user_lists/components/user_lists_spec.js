@@ -2,6 +2,7 @@ import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { mount, createWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';

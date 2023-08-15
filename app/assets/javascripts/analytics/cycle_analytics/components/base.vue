@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';

@@ -12,10 +12,9 @@ module Spam
     end
 
     def execute
-      return ServiceResponse.success(message: 'Skipped spam check because spam_params was not present') unless spam_params
       return ServiceResponse.success(message: 'Skipped spam check because user was not present') unless user
 
-      if target.supports_recaptcha?
+      if target.supports_recaptcha? && spam_params
         execute_with_captcha_support
       else
         execute_spam_check
@@ -105,8 +104,8 @@ module Spam
           user_id: user.id,
           title: target.spam_title,
           description: target.spam_description,
-          source_ip: spam_params.ip_address,
-          user_agent: spam_params.user_agent,
+          source_ip: spam_params&.ip_address,
+          user_agent: spam_params&.user_agent,
           noteable_type: noteable_type,
           # Now, all requests are via the API, so hardcode it to true to simplify the logic and API
           # of this service.  See https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2266
@@ -127,9 +126,9 @@ module Spam
       }
 
       options = {
-        ip_address: spam_params.ip_address,
-        user_agent: spam_params.user_agent,
-        referer: spam_params.referer
+        ip_address: spam_params&.ip_address,
+        user_agent: spam_params&.user_agent,
+        referer: spam_params&.referer
       }
 
       SpamVerdictService.new(target: target,

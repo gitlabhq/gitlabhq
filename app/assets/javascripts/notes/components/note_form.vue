@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';

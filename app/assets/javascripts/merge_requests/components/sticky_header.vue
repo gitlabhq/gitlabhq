@@ -1,5 +1,6 @@
 <script>
 import { GlIntersectionObserver, GlLink, GlSprintf, GlBadge } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';

@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import createStore from '../stores/artifacts_list';
 import ArtifactsList from './artifacts_list.vue';

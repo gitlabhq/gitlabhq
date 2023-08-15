@@ -54,7 +54,7 @@ Align your work across teams.
 
 Use these day-to-day planning features.
 
-- [Your work sidebar](../topics/your_work.md)
+- [Your work sidebar](../tutorials/left_sidebar/index.md)
 - [Keyboard shortcuts](../user/shortcuts.md)
 - [Quick actions](../user/project/quick_actions.md)
 - [Markdown](../user/markdown.md)

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value stream analytics development guidelines
 
-For information on how to configure value stream analytics (VSA) in GitLab, see our [analytics documentation](../user/analytics/value_stream_analytics.md).
+For information on how to configure value stream analytics (VSA) in GitLab, see our [analytics documentation](../user/group/value_stream_analytics/index.md).
 
 ## How does Value Stream Analytics work?
 
@@ -290,7 +290,7 @@ considered legacy, which will be phased out at some point.
 
 ## Frontend
 
-[Project VSA](../user/analytics/value_stream_analytics.md) is available for all users and:
+[Project VSA](../user/group/value_stream_analytics/index.md) is available for all users and:
 
 - Includes a mixture of key and DORA metrics based on the tier.
 - Uses the set of [default stages](#default-stages).

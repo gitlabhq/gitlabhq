@@ -78,11 +78,7 @@ module Gitlab
           end
 
           def inputs
-            @inputs ||= if Feature.enabled?(:ci_interpolation_inputs_refactor)
-                          Ci::Interpolation::Inputs.new(spec, args)
-                        else
-                          Ci::Input::Inputs.new(spec, args)
-                        end
+            @inputs ||= Ci::Interpolation::Inputs.new(spec, args)
           end
 
           def context

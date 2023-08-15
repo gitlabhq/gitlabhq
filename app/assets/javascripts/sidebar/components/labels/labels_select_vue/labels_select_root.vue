@@ -1,5 +1,6 @@
 <script>
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
 import { isInViewport } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';

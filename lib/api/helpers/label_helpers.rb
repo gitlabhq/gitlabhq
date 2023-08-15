@@ -107,7 +107,9 @@ module API
 
         authorize! :admin_label, label
 
-        destroy_conditionally!(label)
+        return if destroy_conditionally!(label)
+
+        render_api_error!('Label is locked and was not removed', 400)
       end
 
       def promote_label(parent)

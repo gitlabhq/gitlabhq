@@ -1424,6 +1424,17 @@ Instead of **and/or**, use **or** or re-write the sentence. This rule also appli
 
 Do not use **slave**. Another option is **secondary**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
+## storages
+
+In the context of:
+
+- Gitaly, storage is physical and must be called a **storage**.
+- Gitaly Cluster, storage can be either:
+  - Virtual and must be called a **virtual storage**.
+  - Physical and must be called a **physical storage**.
+
+Gitaly storages have physical paths and virtual storages have virtual paths.
+
 ## subgroup
 
 Use **subgroup** (no hyphen) instead of **sub-group**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))

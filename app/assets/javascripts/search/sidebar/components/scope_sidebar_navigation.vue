@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import NavItem from '~/super_sidebar/components/nav_item.vue';

@@ -6,6 +6,7 @@ import {
   GlTooltipDirective,
   GlOutsideDirective as Outside,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';

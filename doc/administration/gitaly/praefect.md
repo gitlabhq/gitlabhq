@@ -1020,10 +1020,10 @@ Particular attention should be shown to:
 - The `gitaly['configuration'][:auth][:token]` configured in this section must match the `token`
   value under `praefect['configuration'][:virtual_storage][<index>][:node][<index>][:token]` on the Praefect node. This value was
   set in the [previous section](#praefect). This document uses the placeholder `PRAEFECT_INTERNAL_TOKEN` throughout.
-- The storage names in `gitaly['configuration'][:storage]` configured in this section must match the
-  storage names under `praefect['configuration'][:virtual_storage]` on the Praefect node. This
+- The physical storage names in `gitaly['configuration'][:storage]` configured in this section must match the
+  physical storage names under `praefect['configuration'][:virtual_storage]` on the Praefect node. This
   was set in the [previous section](#praefect). This document uses `gitaly-1`,
-  `gitaly-2`, and `gitaly-3` as Gitaly storage names.
+  `gitaly-2`, and `gitaly-3` as physical storage names.
 
 For more information on Gitaly server configuration, see our
 [Gitaly documentation](configure_gitaly.md#configure-gitaly-servers).

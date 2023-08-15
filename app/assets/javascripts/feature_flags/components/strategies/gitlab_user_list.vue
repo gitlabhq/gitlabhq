@@ -1,6 +1,7 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { createNamespacedHelpers } from 'vuex';
 import { s__ } from '~/locale';
 import ParameterFormGroup from './parameter_form_group.vue';

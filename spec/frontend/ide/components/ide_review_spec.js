@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { keepAlive } from 'helpers/keep_alive_component_helper';
 import { trimText } from 'helpers/text_helper';

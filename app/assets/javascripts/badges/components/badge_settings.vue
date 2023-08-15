@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlCard, GlModal, GlIcon, GlSprintf } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { __, s__ } from '~/locale';

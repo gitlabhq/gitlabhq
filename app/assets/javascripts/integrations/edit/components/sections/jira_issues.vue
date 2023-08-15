@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 
 import JiraIssuesFields from '../jira_issues_fields.vue';

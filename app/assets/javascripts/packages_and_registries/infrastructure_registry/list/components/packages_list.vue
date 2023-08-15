@@ -1,5 +1,6 @@
 <script>
 import { GlPagination } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import Tracking from '~/tracking';
 import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';

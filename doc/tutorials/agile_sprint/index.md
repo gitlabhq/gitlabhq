@@ -47,9 +47,7 @@ When creating an iteration cadence, you can decide whether to automatically mana
 disable the automated scheduling to
 [manually manage the iterations](../../user/group/iterations/index.md#manual-iteration-management).
 
-Similar to membership, iterations cascade down your group, subgroup, and project hierarchy. If your
-team works across many groups, subgroups, and projects, create the iteration cadence in the top-most
-group shared by all projects that contain the team's issues as illustrated by the diagram below.
+Similar to membership, iterations cascade down your group, subgroup, and project hierarchy. If your team has multiple groups and projects, create the iteration cadence in the top-most shared group:
 
 ```mermaid
 graph TD

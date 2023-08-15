@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlTableLite } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapMutations, mapState } from 'vuex';
 import { removeSubscription } from '~/jira_connect/subscriptions/api';
 import { reloadPage } from '~/jira_connect/subscriptions/utils';

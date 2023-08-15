@@ -1,6 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import { GlDropdown, GlDropdownItem, GlLink, GlModal, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';

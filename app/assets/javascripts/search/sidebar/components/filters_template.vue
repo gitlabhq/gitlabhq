@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlLink, GlForm } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import Tracking from '~/tracking';
 

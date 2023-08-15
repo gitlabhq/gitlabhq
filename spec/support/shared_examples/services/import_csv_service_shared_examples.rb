@@ -36,3 +36,15 @@ RSpec.shared_examples 'correctly handles invalid files' do
     it_behaves_like 'invalid file'
   end
 end
+
+RSpec.shared_examples 'performs a spam check' do |perform_check|
+  it 'initializes issue create service with expected spam check parameter' do
+    expect(Issues::CreateService)
+      .to receive(:new)
+      .at_least(:once)
+      .with(hash_including(perform_spam_check: perform_check))
+      .and_call_original
+
+    subject
+  end
+end

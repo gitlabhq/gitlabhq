@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective, GlBadge } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { leftSidebarViews } from '../constants';

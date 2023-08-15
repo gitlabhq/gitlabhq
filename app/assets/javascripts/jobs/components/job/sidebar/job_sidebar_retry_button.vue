@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlDisclosureDropdown, GlModalDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { JOB_SIDEBAR_COPY } from '~/jobs/constants';
 

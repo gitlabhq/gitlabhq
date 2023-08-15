@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { refreshCurrentPage, queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';

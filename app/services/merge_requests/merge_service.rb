@@ -16,6 +16,8 @@ module MergeRequests
     delegate :merge_jid, :state, to: :@merge_request
 
     def execute(merge_request, options = {})
+      return execute_v2(merge_request, options) if Feature.enabled?(:refactor_merge_service, project)
+
       if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
         FfMergeService.new(project: project, current_user: current_user, params: params).execute(merge_request)
         return
@@ -45,11 +47,40 @@ module MergeRequests
       exclusive_lease(merge_request.id).cancel
     end
 
+    def execute_v2(merge_request, options = {})
+      return if merge_request.merged?
+      return unless exclusive_lease(merge_request.id).try_obtain
+
+      merge_strategy_class = options[:merge_strategy] || MergeRequests::MergeStrategies::FromSourceBranch
+      @merge_strategy = merge_strategy_class.new(merge_request, current_user, merge_params: params, options: options)
+
+      @merge_request = merge_request
+      @options = options
+      jid = merge_jid
+
+      validate!
+
+      merge_request.in_locked_state do
+        if commit_v2
+          after_merge
+          clean_merge_jid
+          success
+        end
+      end
+
+      log_info("Merge process finished on JID #{jid} with state #{state}")
+    rescue MergeError, MergeRequests::MergeStrategies::StrategyError => e
+      handle_merge_error(log_message: e.message, save_message_on_model: true)
+    ensure
+      exclusive_lease(merge_request.id).cancel
+    end
+
     private
 
     def validate!
       authorization_check!
       error_check!
+      validate_strategy!
       updated_check!
     end
 
@@ -59,8 +90,11 @@ module MergeRequests
       end
     end
 
+    # Can remove this entire method when :refactor_merge_service is enabled
     def error_check!
       super
+
+      return if Feature.enabled?(:refactor_merge_service, project)
 
       check_source
 
@@ -76,6 +110,10 @@ module MergeRequests
       raise_error(error) if error
     end
 
+    def validate_strategy!
+      @merge_strategy.validate! if Feature.enabled?(:refactor_merge_service, project)
+    end
+
     def updated_check!
       unless source_matches?
         raise_error('Branch has been updated since the merge was requested. '\
@@ -83,9 +121,28 @@ module MergeRequests
       end
     end
 
+    def commit_v2
+      log_info("Git merge started on JID #{merge_jid}")
+
+      merge_result = try_merge { @merge_strategy.execute_git_merge! }
+
+      commit_sha = merge_result[:commit_sha]
+      raise_error(GENERIC_ERROR_MESSAGE) unless commit_sha
+
+      log_info("Git merge finished on JID #{merge_jid} commit #{commit_sha}")
+
+      new_merge_request_attributes = merge_result.slice(:merge_commit_sha, :squash_commit_sha)
+      merge_request.update!(new_merge_request_attributes) if new_merge_request_attributes.present?
+
+      commit_sha
+    ensure
+      merge_request.update_and_mark_in_progress_merge_commit_sha(nil)
+      log_info("Merge request marked in progress")
+    end
+
     def commit
       log_info("Git merge started on JID #{merge_jid}")
-      commit_id = try_merge
+      commit_id = try_merge { execute_git_merge }
 
       if commit_id
         log_info("Git merge finished on JID #{merge_jid} commit #{commit_id}")
@@ -113,7 +170,7 @@ module MergeRequests
     end
 
     def try_merge
-      execute_git_merge
+      yield
     rescue Gitlab::Git::PreReceiveError => e
       raise MergeError, "Something went wrong during merge pre-receive hook. #{e.message}".strip
     rescue StandardError => e

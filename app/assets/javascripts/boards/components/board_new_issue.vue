@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { getMilestone, formatIssueInput, getBoardQuery } from 'ee_else_ce/boards/boards_util';

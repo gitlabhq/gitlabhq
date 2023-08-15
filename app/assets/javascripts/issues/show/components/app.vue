@@ -15,7 +15,6 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
-import { WORK_ITEM_TYPE_VALUE_ISSUE } from '~/work_items/constants';
 import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
@@ -233,11 +232,6 @@ export default {
       required: false,
       default: '',
     },
-    workItemType: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     const store = new Store({
@@ -267,8 +261,8 @@ export default {
     },
   },
   computed: {
-    isIssue() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE;
+    headerClasses() {
+      return this.issuableType === TYPE_INCIDENT ? 'gl-mb-3' : 'gl-mb-6';
     },
     issuableTemplates() {
       return this.store.formState.issuableTemplates;
@@ -307,10 +301,10 @@ export default {
         : '';
     },
     statusIcon() {
-      if (this.issuableType === TYPE_ISSUE) {
-        return this.isClosed ? 'issue-closed' : 'issues';
+      if (this.issuableType === TYPE_EPIC) {
+        return this.isClosed ? 'epic-closed' : 'epic';
       }
-      return this.isClosed ? 'epic-closed' : 'epic';
+      return this.isClosed ? 'issue-closed' : 'issues';
     },
     statusVariant() {
       return this.isClosed ? 'info' : 'success';
@@ -319,7 +313,7 @@ export default {
       return issuableStatusText[this.issuableStatus];
     },
     shouldShowStickyHeader() {
-      return [TYPE_ISSUE, TYPE_EPIC].includes(this.issuableType);
+      return [TYPE_INCIDENT, TYPE_ISSUE, TYPE_EPIC].includes(this.issuableType);
     },
   },
   created() {
@@ -560,7 +554,7 @@ export default {
       >
         <template #actions>
           <slot name="actions">
-            <header-actions v-if="isIssue" />
+            <header-actions />
           </slot>
         </template>
       </title-component>
@@ -623,7 +617,8 @@ export default {
 
       <slot name="header">
         <issue-header
-          v-if="isIssue"
+          class="gl-p-0 gl-mt-2 gl-sm-mt-0"
+          :class="headerClasses"
           :author="author"
           :confidential="isConfidential"
           :created-at="createdAt"
@@ -632,6 +627,7 @@ export default {
           :is-hidden="isHidden"
           :is-locked="isLocked"
           :issuable-state="issuableStatus"
+          :issuable-type="issuableType"
           :moved-to-issue-url="movedToIssueUrl"
           :promoted-to-epic-url="promotedToEpicUrl"
           :service-desk-reply-to="serviceDeskReplyTo"

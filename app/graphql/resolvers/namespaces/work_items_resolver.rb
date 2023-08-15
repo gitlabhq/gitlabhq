@@ -8,7 +8,7 @@ module Resolvers
       type Types::WorkItemType.connection_type, null: true
 
       def resolve_with_lookahead(**args)
-        return unless Feature.enabled?(:namespace_level_work_items)
+        return unless Feature.enabled?(:namespace_level_work_items, resource_parent)
         return WorkItem.none if resource_parent.nil?
 
         finder = ::WorkItems::NamespaceWorkItemsFinder.new(current_user, args.merge(

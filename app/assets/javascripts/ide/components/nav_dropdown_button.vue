@@ -1,5 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 

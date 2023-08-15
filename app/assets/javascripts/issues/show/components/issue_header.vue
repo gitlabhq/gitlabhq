@@ -1,11 +1,10 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { STATUS_OPEN, STATUS_REOPENED, TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
+import { STATUS_OPEN, STATUS_REOPENED, WORKSPACE_PROJECT } from '~/issues/constants';
 import { __, s__ } from '~/locale';
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
 
 export default {
-  TYPE_ISSUE,
   WORKSPACE_PROJECT,
   components: {
     GlLink,
@@ -42,6 +41,10 @@ export default {
       required: true,
     },
     issuableState: {
+      type: String,
+      required: true,
+    },
+    issuableType: {
       type: String,
       required: true,
     },
@@ -96,7 +99,6 @@ export default {
 
 <template>
   <issuable-header
-    class="gl-p-0 gl-mb-6 gl-mt-2 gl-sm-mt-0"
     :author="author"
     :blocked="isLocked"
     :confidential="confidential"
@@ -104,7 +106,7 @@ export default {
     :is-first-contribution="isFirstContribution"
     :is-hidden="isHidden"
     :issuable-state="issuableState"
-    :issuable-type="$options.TYPE_ISSUE"
+    :issuable-type="issuableType"
     :service-desk-reply-to="serviceDeskReplyTo"
     show-work-item-type-icon
     :status-icon="statusIcon"

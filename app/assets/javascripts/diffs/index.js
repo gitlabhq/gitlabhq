@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';

@@ -4,7 +4,7 @@ import { GlAlert } from '@gitlab/ui';
 import { getDraft, updateDraft, getLockVersion, clearDraft } from '~/lib/utils/autosave';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE, TYPENAME_USER } from '~/graphql_shared/constants';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import EditActions from './edit_actions.vue';
@@ -107,8 +107,8 @@ export default {
     showLockedWarning() {
       return this.formState.lockedWarningVisible && !this.formState.updateLoading;
     },
-    isIssueType() {
-      return this.issuableType === TYPE_ISSUE;
+    showTypeField() {
+      return [TYPE_INCIDENT, TYPE_ISSUE].includes(this.issuableType);
     },
     resourceId() {
       return this.issueId && convertToGraphQLId(TYPENAME_ISSUE, this.issueId);
@@ -202,7 +202,7 @@ export default {
       </div>
     </div>
     <div class="row gl-gap-3">
-      <div v-if="isIssueType" class="col-12 col-md-4 pr-md-0">
+      <div v-if="showTypeField" class="col-12 col-md-4 pr-md-0">
         <issuable-type-field ref="issue-type" />
       </div>
 

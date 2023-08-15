@@ -1,5 +1,6 @@
 <script>
 import { GlFormCheckbox, GlModal } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { s__, __ } from '~/locale';

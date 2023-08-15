@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import TerminalSyncStatus from './terminal_sync_status.vue';
 

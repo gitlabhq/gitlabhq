@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import UserList from '~/user_lists/components/user_list.vue';
 import createStore from '~/user_lists/store/show';

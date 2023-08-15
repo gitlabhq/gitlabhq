@@ -1,5 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
 

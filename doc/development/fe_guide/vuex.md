@@ -40,6 +40,7 @@ applications stored in this [repository](https://gitlab.com/gitlab-org/gitlab/-/
 This is the entry point for our store. You can use the following as a guide:
 
 ```javascript
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
@@ -287,6 +288,7 @@ function when mounting your Vue component:
 // in the Vue app's initialization script (for example, mount_show.js)
 
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { createStore } from './stores';
 import AwesomeVueApp from './components/awesome_vue_app.vue'
@@ -372,6 +374,7 @@ when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript
 
 ```javascript
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 
 export default {
@@ -433,6 +436,7 @@ components, we need to include the store and provide the correct state:
 ```javascript
 //component_spec.js
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { mount } from '@vue/test-utils';
 import { createStore } from './store';

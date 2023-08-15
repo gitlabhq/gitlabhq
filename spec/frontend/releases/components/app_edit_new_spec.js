@@ -1,6 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { merge } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { nextTick } from 'vue';
 import { GlDatepicker, GlFormCheckbox } from '@gitlab/ui';

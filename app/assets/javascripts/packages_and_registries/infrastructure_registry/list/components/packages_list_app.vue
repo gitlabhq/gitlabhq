@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { historyReplaceState } from '~/lib/utils/common_utils';

@@ -1,5 +1,6 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';

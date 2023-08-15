@@ -1,5 +1,6 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { integrationFormSectionComponents, billingPlanNames } from '~/integrations/constants';

@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { modalTypes, viewerTypes } from '../constants';
 import IdeTreeList from './ide_tree_list.vue';

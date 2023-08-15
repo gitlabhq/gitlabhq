@@ -2,6 +2,7 @@ import { GlTab } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { editor as monacoEditor, Range } from 'monaco-editor';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';

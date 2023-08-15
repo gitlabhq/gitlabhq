@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { viewerTypes } from '../constants';
 import EditorModeDropdown from './editor_mode_dropdown.vue';

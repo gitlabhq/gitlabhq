@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
 
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';

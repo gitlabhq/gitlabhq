@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { sprintf, s__ } from '~/locale';
 import UploadDropzoneField from '../upload_dropzone_field.vue';

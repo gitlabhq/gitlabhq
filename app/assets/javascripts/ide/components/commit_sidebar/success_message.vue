@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 

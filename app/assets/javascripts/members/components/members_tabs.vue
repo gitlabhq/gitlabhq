@@ -1,5 +1,6 @@
 <script>
 import { GlTabs, GlTab, GlBadge, GlButton } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { __ } from '~/locale';
 import { queryToObject } from '~/lib/utils/url_utility';

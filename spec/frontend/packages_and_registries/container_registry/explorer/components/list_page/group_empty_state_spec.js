@@ -1,6 +1,7 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import groupEmptyState from '~/packages_and_registries/container_registry/explorer/components/list_page/group_empty_state.vue';
 import { GlEmptyState } from '../../stubs';

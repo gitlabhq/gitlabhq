@@ -1,5 +1,6 @@
 <script>
 import { pickBy, isEmpty, mapValues } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { getIdFromGraphQLId, isGid, convertToGraphQLId } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';

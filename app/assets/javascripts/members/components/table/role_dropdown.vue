@@ -1,6 +1,7 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';

@@ -238,6 +238,7 @@ RSpec.describe Label, feature_category: :team_planning do
         label = create(:label, lock_on_merge: true)
 
         expect(label.destroy).to be false
+        expect(label.errors.full_messages).to include("#{label.name} is locked and was not removed")
       end
     end
 

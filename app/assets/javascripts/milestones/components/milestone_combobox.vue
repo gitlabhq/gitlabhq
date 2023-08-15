@@ -9,6 +9,7 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import { debounce, isEqual } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { s__, __, sprintf } from '~/locale';
 import createStore from '../stores';

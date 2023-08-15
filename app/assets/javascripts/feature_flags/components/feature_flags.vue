@@ -1,6 +1,7 @@
 <script>
 import { GlAlert, GlBadge, GlButton, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 
 import { buildUrlWithCurrentLocation, historyPushState } from '~/lib/utils/common_utils';

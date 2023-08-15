@@ -1,5 +1,6 @@
 import { GlButton, GlFriendlyWrap, GlLink, GlPagination, GlEmptyState } from '@gitlab/ui';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';

@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { merge, last } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import tags from 'test_fixtures/api/tags/tags.json';
 import commit from 'test_fixtures/api/commits/commit.json';

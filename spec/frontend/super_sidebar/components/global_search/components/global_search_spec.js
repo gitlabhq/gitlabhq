@@ -1,5 +1,6 @@
 import { GlModal, GlSearchBoxByType, GlToken, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { s__, sprintf } from '~/locale';

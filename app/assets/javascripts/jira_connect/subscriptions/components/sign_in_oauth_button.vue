@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapMutations } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import { sprintf } from '~/locale';

@@ -64,10 +64,13 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def destroy
-    @label.destroy
-
-    redirect_to group_labels_path(@group), status: :found,
-      notice: format(_('%{label_name} was removed'), label_name: @label.name)
+    if @label.destroy
+      redirect_to group_labels_path(@group), status: :found,
+        notice: format(_('%{label_name} was removed'), label_name: @label.name)
+    else
+      redirect_to group_labels_path(@group), status: :found,
+        alert: @label.errors.full_messages.to_sentence
+    end
   end
 
   protected

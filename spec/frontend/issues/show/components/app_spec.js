@@ -1,5 +1,6 @@
 import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -10,6 +11,7 @@ import {
   STATUS_OPEN,
   STATUS_REOPENED,
   TYPE_EPIC,
+  TYPE_INCIDENT,
   TYPE_ISSUE,
 } from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
@@ -77,6 +79,13 @@ describe('Issuable output', () => {
 
     jest.advanceTimersToNextTimer(2);
     return waitForPromises();
+  };
+
+  const createComponentAndScroll = async (props) => {
+    await createComponent({ props });
+    global.pageYOffset = 100;
+    wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
+    await nextTick();
   };
 
   const emitHubEvent = (event) => {
@@ -320,57 +329,51 @@ describe('Issuable output', () => {
   });
 
   describe('sticky header', () => {
-    beforeEach(async () => {
-      await createComponent();
-    });
-
     describe('when title is in view', () => {
-      it('is not shown', () => {
+      it('is not shown', async () => {
+        await createComponent();
         wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
+
         expect(findStickyHeader().exists()).toBe(false);
       });
     });
 
     describe('when title is not in view', () => {
-      beforeEach(() => {
-        global.pageYOffset = 100;
-        wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
-      });
+      it.each([TYPE_INCIDENT, TYPE_ISSUE, TYPE_EPIC])(
+        'shows with title when issuableType="%s"',
+        async (issuableType) => {
+          await createComponentAndScroll({ issuableType });
 
-      it('shows with title', () => {
-        expect(findStickyHeader().text()).toContain(initialRequest.title_text);
-      });
-
-      it('shows with title for an epic', async () => {
-        await wrapper.setProps({ issuableType: 'epic' });
-
-        expect(findStickyHeader().text()).toContain(' this is a title');
-      });
+          expect(findStickyHeader().text()).toContain('this is a title');
+        },
+      );
 
       it.each`
-        issuableType  | issuableStatus   | statusIcon
-        ${TYPE_ISSUE} | ${STATUS_OPEN}   | ${'issues'}
-        ${TYPE_ISSUE} | ${STATUS_CLOSED} | ${'issue-closed'}
-        ${TYPE_EPIC}  | ${STATUS_OPEN}   | ${'epic'}
-        ${TYPE_EPIC}  | ${STATUS_CLOSED} | ${'epic-closed'}
+        issuableType     | issuableStatus   | statusIcon
+        ${TYPE_INCIDENT} | ${STATUS_OPEN}   | ${'issues'}
+        ${TYPE_INCIDENT} | ${STATUS_CLOSED} | ${'issue-closed'}
+        ${TYPE_ISSUE}    | ${STATUS_OPEN}   | ${'issues'}
+        ${TYPE_ISSUE}    | ${STATUS_CLOSED} | ${'issue-closed'}
+        ${TYPE_EPIC}     | ${STATUS_OPEN}   | ${'epic'}
+        ${TYPE_EPIC}     | ${STATUS_CLOSED} | ${'epic-closed'}
       `(
         'shows with state icon "$statusIcon" for $issuableType when status is $issuableStatus',
         async ({ issuableType, issuableStatus, statusIcon }) => {
-          await wrapper.setProps({ issuableType, issuableStatus });
+          await createComponentAndScroll({ issuableType, issuableStatus });
 
           expect(findStickyHeader().findComponent(GlIcon).props('name')).toBe(statusIcon);
         },
       );
 
       it.each`
-        title                                        | state
+        title                                        | issuableStatus
         ${'shows with Open when status is opened'}   | ${STATUS_OPEN}
         ${'shows with Closed when status is closed'} | ${STATUS_CLOSED}
         ${'shows with Open when status is reopened'} | ${STATUS_REOPENED}
-      `('$title', async ({ state }) => {
-        await wrapper.setProps({ issuableStatus: state });
+      `('$title', async ({ issuableStatus }) => {
+        await createComponentAndScroll({ issuableStatus });
 
-        expect(findStickyHeader().text()).toContain(issuableStatusText[state]);
+        expect(findStickyHeader().text()).toContain(issuableStatusText[issuableStatus]);
       });
 
       it.each`
@@ -378,10 +381,11 @@ describe('Issuable output', () => {
         ${'does not show confidential badge when issue is not confidential'} | ${false}
         ${'shows confidential badge when issue is confidential'}             | ${true}
       `('$title', async ({ isConfidential }) => {
-        await wrapper.setProps({ isConfidential });
-
+        await createComponentAndScroll({ isConfidential });
         const confidentialEl = findConfidentialBadge();
+
         expect(confidentialEl.exists()).toBe(isConfidential);
+
         if (isConfidential) {
           expect(confidentialEl.props()).toMatchObject({
             workspaceType: 'project',
@@ -395,8 +399,7 @@ describe('Issuable output', () => {
         ${'does not show locked badge when issue is not locked'} | ${false}
         ${'shows locked badge when issue is locked'}             | ${true}
       `('$title', async ({ isLocked }) => {
-        await wrapper.setProps({ isLocked });
-
+        await createComponentAndScroll({ isLocked });
         const lockedBadge = findLockedBadge();
 
         expect(lockedBadge.exists()).toBe(isLocked);
@@ -414,8 +417,7 @@ describe('Issuable output', () => {
         ${'does not show hidden badge when issue is not hidden'} | ${false}
         ${'shows hidden badge when issue is hidden'}             | ${true}
       `('$title', async ({ isHidden }) => {
-        await wrapper.setProps({ isHidden });
-
+        await createComponentAndScroll({ isHidden });
         const hiddenBadge = findHiddenBadge();
 
         expect(hiddenBadge.exists()).toBe(isHidden);

@@ -2,6 +2,7 @@
 import produce from 'immer';
 import { GlButton, GlDrawer, GlLabel, GlModal, GlModalDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   LIST,

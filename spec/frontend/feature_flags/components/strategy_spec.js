@@ -2,6 +2,7 @@ import { GlAlert, GlFormSelect, GlLink, GlToken, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import { last } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Api from '~/api';
 import NewEnvironmentsDropdown from '~/feature_flags/components/new_environments_dropdown.vue';

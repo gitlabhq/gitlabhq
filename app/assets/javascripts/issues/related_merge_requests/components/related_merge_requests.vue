@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { sprintf, __, n__ } from '~/locale';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';

@@ -326,6 +326,7 @@ class Label < ApplicationRecord
   def prevent_locked_label_destroy
     return unless lock_on_merge
 
+    errors.add(:base, format(_('%{label_name} is locked and was not removed'), label_name: name))
     throw :abort # rubocop:disable Cop/BanCatchThrow
   end
 

@@ -1,5 +1,6 @@
 <script>
 import { GlDropdownItem, GlDropdownSectionHeader } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import { ALL_GITLAB } from '~/vue_shared/global_search/constants';
 

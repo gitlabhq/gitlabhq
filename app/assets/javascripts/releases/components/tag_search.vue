@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlDropdownItem, GlSearchBoxByType, GlSprintf } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { debounce } from 'lodash';
 import { REF_TYPE_TAGS, SEARCH_DEBOUNCE_MS } from '~/ref/constants';

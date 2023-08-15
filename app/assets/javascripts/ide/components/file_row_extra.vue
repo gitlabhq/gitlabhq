@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { n__ } from '~/locale';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';

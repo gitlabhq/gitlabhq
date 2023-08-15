@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import SentryErrorStackTrace from '~/issues/show/components/sentry_error_stack_trace.vue';

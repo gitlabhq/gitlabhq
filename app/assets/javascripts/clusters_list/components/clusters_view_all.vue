@@ -1,5 +1,6 @@
 <script>
 import { GlCard, GlSprintf, GlPopover, GlLink, GlBadge, GlLoadingIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { AGENT_CARD_INFO, CERTIFICATE_BASED_CARD_INFO, MAX_CLUSTERS_LIST } from '../constants';
 import Clusters from './clusters.vue';

@@ -44,7 +44,7 @@ For a video overview, see [Design Management (GitLab 12.2)](https://www.youtube.
 
   A GitLab administrator can verify the storage type of a project by going to **Admin Area > Projects**
   and then selecting the project in question. A project can be identified as
-  hashed-stored if its **Gitaly relative path** contains `@hashed`.
+  hashed-stored if the value of the **Relative path** field contains `@hashed`.
 
 If the requirements are not met, you are notified in the **Designs** section.
 

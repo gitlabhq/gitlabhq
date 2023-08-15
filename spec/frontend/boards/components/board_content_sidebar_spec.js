@@ -2,6 +2,7 @@ import { GlDrawer } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdown_widget.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';

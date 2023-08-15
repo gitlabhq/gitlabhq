@@ -42,20 +42,6 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
       described_service.execute
     end
 
-    context 'when spam_params is nil' do
-      let(:spam_params) { nil }
-      let(:expected_service_params_not_present_message) do
-        /Skipped spam check because spam_params was not present/
-      end
-
-      it "returns success with a messaage" do
-        response = subject
-
-        expect(response.message).to match(expected_service_params_not_present_message)
-        expect(issue).not_to be_spam
-      end
-    end
-
     context 'when user is nil' do
       let(:spam_params) { true }
       let(:user) { nil }

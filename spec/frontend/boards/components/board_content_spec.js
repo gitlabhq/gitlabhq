@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import Draggable from 'vuedraggable';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 
 import createMockApollo from 'helpers/mock_apollo_helper';

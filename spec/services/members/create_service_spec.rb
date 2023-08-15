@@ -121,7 +121,12 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
         source.group.add_developer(member)
       end
 
-      it 'triggers the members added event' do
+      it 'triggers the members added and authorizations changed events' do
+        expect(Gitlab::EventStore)
+          .to receive(:publish)
+                .with(an_instance_of(ProjectAuthorizations::AuthorizationsChangedEvent))
+                .and_call_original
+
         expect(Gitlab::EventStore)
           .to receive(:publish)
           .with(an_instance_of(Members::MembersAddedEvent))

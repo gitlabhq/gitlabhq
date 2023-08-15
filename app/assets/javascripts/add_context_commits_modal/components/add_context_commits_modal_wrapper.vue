@@ -1,5 +1,6 @@
 <script>
 import { GlModal, GlTabs, GlTab, GlSprintf, GlBadge, GlFilteredSearch } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
 import { createAlert } from '~/alert';

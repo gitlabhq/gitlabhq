@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { scrollToElement, contentTop } from '~/lib/utils/common_utils';
 

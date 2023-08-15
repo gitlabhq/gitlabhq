@@ -1,6 +1,7 @@
 import { GlDropdownItem, GlLoadingIcon, GlAvatar, GlAlert, GlDropdownDivider } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import HeaderSearchAutocompleteItems from '~/header_search/components/header_search_autocomplete_items.vue';
 import { LARGE_AVATAR_PX, SMALL_AVATAR_PX } from '~/header_search/constants';

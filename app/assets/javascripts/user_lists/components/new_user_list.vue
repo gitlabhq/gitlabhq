@@ -1,5 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import UserListForm from './user_list_form.vue';

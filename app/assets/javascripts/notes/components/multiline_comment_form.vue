@@ -1,5 +1,6 @@
 <script>
 import { GlFormSelect, GlSprintf } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { getSymbol, getLineClasses } from './multiline_comment_utils';
 

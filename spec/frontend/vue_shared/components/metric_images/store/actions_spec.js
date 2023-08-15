@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import actionsFactory from '~/vue_shared/components/metric_images/store/actions';
 import * as types from '~/vue_shared/components/metric_images/store/mutation_types';

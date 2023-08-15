@@ -7,6 +7,7 @@ import {
   GlButton,
   GlModalDirective,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { __, s__ } from '~/locale';
 import { GROUP_BADGE, PROJECT_BADGE, INITIAL_PAGE, PAGE_SIZE } from '../constants';

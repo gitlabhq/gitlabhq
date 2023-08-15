@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import IdeSidebarNav from '../ide_sidebar_nav.vue';
 

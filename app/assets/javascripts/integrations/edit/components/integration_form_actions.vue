@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlModalDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import { integrationLevels } from '~/integrations/constants';
 import ConfirmationModal from './confirmation_modal.vue';

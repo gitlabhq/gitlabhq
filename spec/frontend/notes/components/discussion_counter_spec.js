@@ -1,6 +1,7 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import notesModule from '~/notes/stores/modules';

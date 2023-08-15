@@ -136,6 +136,8 @@ rules:
     - paths:
         - name: mousetrap
           message: 'Import { Mousetrap } from ~/lib/mousetrap instead.'
+        - name: vuex
+          message: 'See our documentation on "Migrating from VueX" for tips on how to avoid adding new VueX stores.'
   unicorn/prefer-dom-node-dataset:
     - error
   no-unsanitized/method:

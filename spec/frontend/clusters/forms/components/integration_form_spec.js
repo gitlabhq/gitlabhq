@@ -1,6 +1,7 @@
 import { GlToggle, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import IntegrationForm from '~/clusters/forms/components/integration_form.vue';
 import { createStore } from '~/clusters/forms/stores/index';

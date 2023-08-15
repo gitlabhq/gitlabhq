@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { joinPaths, escapeFileUrl, visitUrl } from '~/lib/utils/url_utility';

@@ -1,6 +1,7 @@
 <script>
 import Vue from 'vue';
 import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import { intersection } from 'lodash';
 import Tracking from '~/tracking';

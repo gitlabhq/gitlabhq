@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter/index.vue';
 import RadioFilter from '~/search/sidebar/components/radio_filter.vue';

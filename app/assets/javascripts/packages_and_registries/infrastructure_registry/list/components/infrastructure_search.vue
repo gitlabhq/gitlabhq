@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { LIST_KEY_PACKAGE_TYPE } from '~/packages_and_registries/infrastructure_registry/list/constants';
 import { sortableFields } from '~/packages_and_registries/infrastructure_registry/list/utils';

@@ -22,6 +22,7 @@ describe('IssueHeader component', () => {
         isHidden: false,
         isLocked: false,
         issuableState: 'opened',
+        issuableType: 'issue',
         movedToIssueUrl: '',
         promotedToEpicUrl: '',
         ...props,

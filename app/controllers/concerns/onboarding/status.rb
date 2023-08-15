@@ -2,6 +2,10 @@
 
 module Onboarding
   class Status
+    def self.tracking_label
+      { free: 'free_registration' }
+    end
+
     def initialize(params, session, user)
       @params = params
       @session = session

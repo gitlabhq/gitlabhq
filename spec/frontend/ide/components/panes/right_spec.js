@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
 import RightPane from '~/ide/components/panes/right.vue';

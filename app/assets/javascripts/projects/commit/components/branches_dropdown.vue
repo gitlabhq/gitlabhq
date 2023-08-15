@@ -1,5 +1,6 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { debounce, uniqBy } from 'lodash';
 import {

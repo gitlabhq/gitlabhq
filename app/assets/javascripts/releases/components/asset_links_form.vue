@@ -9,6 +9,7 @@ import {
   GlFormInput,
   GlFormSelect,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { DEFAULT_ASSET_LINK_TYPE, ASSET_LINK_TYPE } from '../constants';

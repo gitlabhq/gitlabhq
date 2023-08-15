@@ -9,6 +9,7 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';

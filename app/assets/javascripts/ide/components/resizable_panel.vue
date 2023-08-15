@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { SIDEBAR_MIN_WIDTH } from '../constants';

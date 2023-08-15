@@ -1,6 +1,7 @@
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlToken, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import GlobalSearchScopedItems from '~/super_sidebar/components/global_search/components/global_search_scoped_items.vue';

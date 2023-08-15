@@ -1,6 +1,7 @@
 import { GlDropdownItem, GlToken, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import HeaderSearchScopedItems from '~/header_search/components/header_search_scoped_items.vue';

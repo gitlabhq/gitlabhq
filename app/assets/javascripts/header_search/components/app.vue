@@ -6,6 +6,7 @@ import {
   GlTooltipDirective,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce } from 'lodash';
 import { visitUrl } from '~/lib/utils/url_utility';

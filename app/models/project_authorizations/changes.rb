@@ -18,6 +18,7 @@ module ProjectAuthorizations
 
     def initialize
       @authorizations_to_add = []
+      @affected_project_ids = Set.new
       yield self
     end
 
@@ -37,6 +38,8 @@ module ProjectAuthorizations
       delete_authorizations_for_user if should_delete_authorizations_for_user?
       delete_authorizations_for_project if should_delete_authorizations_for_project?
       add_authorizations if should_add_authorization?
+
+      publish_events
     end
 
     private
@@ -55,18 +58,21 @@ module ProjectAuthorizations
 
     def add_authorizations
       insert_all_in_batches(authorizations_to_add)
+      @affected_project_ids += authorizations_to_add.pluck(:project_id)
     end
 
     def delete_authorizations_for_user
       delete_all_in_batches(resource: user,
         ids_to_remove: project_ids,
         column_name_of_ids_to_remove: :project_id)
+      @affected_project_ids += project_ids
     end
 
     def delete_authorizations_for_project
       delete_all_in_batches(resource: project,
         ids_to_remove: user_ids,
         column_name_of_ids_to_remove: :user_id)
+      @affected_project_ids << project.id
     end
 
     def delete_all_in_batches(resource:, ids_to_remove:, column_name_of_ids_to_remove:)
@@ -124,6 +130,14 @@ module ProjectAuthorizations
 
     def user_ids
       users_to_remove&.[](:user_ids)
+    end
+
+    def publish_events
+      @affected_project_ids.each do |project_id|
+        ::Gitlab::EventStore.publish(
+          ::ProjectAuthorizations::AuthorizationsChangedEvent.new(data: { project_id: project_id })
+        )
+      end
     end
   end
 end

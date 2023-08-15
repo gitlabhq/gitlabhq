@@ -1,5 +1,6 @@
 import { GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_vue/dropdown_contents_create_view.vue';

@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { s__, __, sprintf } from '~/locale';
 import { createAlert } from '~/alert';

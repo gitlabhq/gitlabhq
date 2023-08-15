@@ -10,6 +10,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
@@ -419,7 +420,7 @@ export default {
       v-gl-tooltip.bottom
       :title="$options.i18n.editTitleAndDescription"
       :aria-label="$options.i18n.editTitleAndDescription"
-      class="js-issuable-edit gl-display-none gl-sm-display-block"
+      class="js-issuable-edit gl-display-none! gl-sm-display-block!"
       data-testid="edit-button"
       @click="edit"
     >

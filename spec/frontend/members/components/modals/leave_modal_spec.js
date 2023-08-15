@@ -1,6 +1,7 @@
 import { GlModal, GlForm } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import LeaveModal from '~/members/components/modals/leave_modal.vue';

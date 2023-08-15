@@ -10,6 +10,7 @@ import {
   GlAlert,
   GlOutsideDirective as Outside,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { uniq } from 'lodash';
 import { rgbFromHex } from '@gitlab/ui/dist/utils/utils';

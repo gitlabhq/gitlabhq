@@ -54,29 +54,27 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-popover
-      v-if="showPopover"
-      target="new-actions-header-dropdown"
-      container="viewport"
-      placement="left"
-      :show="showPopover"
-      triggers="manual"
-      content="text"
-      :css-classes="['gl-p-2 new-header-popover']"
+  <gl-popover
+    v-if="showPopover"
+    target="new-actions-header-dropdown"
+    container="viewport"
+    placement="left"
+    :show="showPopover"
+    triggers="manual"
+    content="text"
+    :css-classes="['gl-p-2 new-header-popover']"
+  >
+    <template #title>
+      <div class="gl-font-base gl-font-weight-normal">
+        {{ popoverText }}
+      </div>
+    </template>
+    <gl-button
+      data-testid="confirm-button"
+      variant="confirm"
+      type="submit"
+      @click="dismissPopover"
+      >{{ $options.i18n.confirmButtonText }}</gl-button
     >
-      <template #title>
-        <div class="gl-font-base gl-font-weight-normal">
-          {{ popoverText }}
-        </div>
-      </template>
-      <gl-button
-        data-testid="confirm-button"
-        variant="confirm"
-        type="submit"
-        @click="dismissPopover"
-        >{{ $options.i18n.confirmButtonText }}</gl-button
-      >
-    </gl-popover>
-  </div>
+  </gl-popover>
 </template>

@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
 import { escape, debounce } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert, VARIANT_INFO } from '~/alert';

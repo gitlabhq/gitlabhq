@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import NewFeatureFlag from './components/new_feature_flag.vue';

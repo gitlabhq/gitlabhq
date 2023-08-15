@@ -1,6 +1,7 @@
 import { GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import searchComponent from '~/frequent_items/components/frequent_items_search_input.vue';

@@ -1,6 +1,7 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
 import { debounce } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import {
   EDITOR_TYPE_DIFF,

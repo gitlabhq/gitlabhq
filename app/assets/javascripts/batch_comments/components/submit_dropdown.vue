@@ -1,5 +1,6 @@
 <script>
 import { GlDropdown, GlButton, GlIcon, GlForm, GlFormCheckbox } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';

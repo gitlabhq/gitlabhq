@@ -74,7 +74,8 @@ To create server hooks for a repository:
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
 1. Go to **Overview > Projects** and select the project you want to add a server hook to.
-1. On the page that appears, locate the value of **Gitaly relative path**. This path is where server hooks must be located.
+1. On the page that appears, locate the value of **Relative path**. This path is where server
+   hooks must be located.
    - If you are using [hashed storage](repository_storage_types.md#hashed-storage), see
      [Translate hashed storage paths](repository_storage_types.md#translate-hashed-storage-paths) for information on
      interpreting the relative path.

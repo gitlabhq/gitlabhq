@@ -1,5 +1,6 @@
 <script>
 import { GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
 
 export default {

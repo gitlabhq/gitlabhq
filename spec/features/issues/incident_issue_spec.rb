@@ -70,10 +70,6 @@ RSpec.describe 'Incident Detail', :js, feature_category: :team_planning do
 
           # Linked Issues/MRs and comment box are hidden on page
           expect(hidden_items.count).to eq(0)
-
-          # does not show the edit title and description button
-          edit_button = find_all('[aria-label="Edit title and description"]', wait: false)
-          expect(edit_button.count).to eq(0)
         end
       end
     end

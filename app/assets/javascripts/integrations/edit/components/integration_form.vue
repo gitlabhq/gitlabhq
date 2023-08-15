@@ -2,6 +2,7 @@
 import { GlAlert, GlForm } from '@gitlab/ui';
 import axios from 'axios';
 import * as Sentry from '@sentry/browser';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';

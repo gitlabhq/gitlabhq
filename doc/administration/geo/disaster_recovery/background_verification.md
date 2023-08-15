@@ -143,10 +143,7 @@ If the **primary** and **secondary** sites have a checksum verification mismatch
    1. On the left sidebar, select **Overview > Projects**.
    1. Find the project that you want to check the checksum differences and
       select its name.
-   1. On the project administration page get the **Gitaly storage name**,
-      and **Gitaly relative path**.
-
-      ![Project administration page](img/checksum-differences-admin-project-page.png)
+   1. On the project administration page, get the values in the **Storage name** and **Relative path** fields.
 
 1. On a **Gitaly node on the primary** site and a **Gitaly node on the secondary** site, go to the project's repository directory. If using Gitaly Cluster, [check that it is in a healthy state](../../gitaly/troubleshooting.md#check-cluster-health) prior to running these commands.
 

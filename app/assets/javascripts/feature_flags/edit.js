@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import EditFeatureFlag from './components/edit_feature_flag.vue';
 import createStore from './store/edit';

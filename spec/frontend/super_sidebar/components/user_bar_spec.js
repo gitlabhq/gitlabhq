@@ -1,4 +1,5 @@
 import { GlBadge } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';

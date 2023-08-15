@@ -1,6 +1,7 @@
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 
 import DropdownTitle from '~/sidebar/components/labels/labels_select_vue/dropdown_title.vue';

@@ -2,6 +2,7 @@
 import { GlLoadingIcon, GlIcon, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { throttle, isEmpty } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
 import LogTopBar from 'ee_else_ce/jobs/components/job/job_log_controllers.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';

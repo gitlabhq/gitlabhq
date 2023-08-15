@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { throttle } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import {
   MSG_TERMINAL_SYNC_CONNECTING,
