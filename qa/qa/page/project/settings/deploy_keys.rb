@@ -19,12 +19,17 @@ module QA
 
           view 'app/assets/javascripts/deploy_keys/components/app.vue' do
             element 'project-deploy-keys-container'
+            element 'add-new-deploy-key-button'
           end
 
           view 'app/assets/javascripts/deploy_keys/components/key.vue' do
             element 'key-container'
             element 'key-title-content'
             element 'key-sha256-fingerprint-content'
+          end
+
+          def add_new_key
+            click_element('add-new-deploy-key-button')
           end
 
           def add_key

@@ -6,22 +6,58 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Single Table Inheritance
 
-**Summary:** don't use Single Table Inheritance (STI), use separate tables
-instead.
+**Summary:** Don't design new tables using Single Table Inheritance (STI). For existing tables that use STI as a pattern, avoid adding new types, and consider splitting them into separate tables.
 
-Rails makes it possible to have multiple models stored in the same table and map
-these rows to the correct models using a `type` column. This can be used to for
-example store two different types of SSH keys in the same table.
+STI is a database design pattern where a single table stores
+different types of records. These records have a subset of shared columns and another column
+that instructs the application which object that record should be represented by.
+This can be used to for example store two different types of SSH keys in the same
+table. ActiveRecord makes use of it and provides some features that make STI usage
+more convenient.
 
-While tempting to use one should avoid this at all costs for the same reasons as
-outlined in the document ["Polymorphic Associations"](polymorphic_associations.md).
+We no longer allow new STI tables because they:
 
-## Solution
+- Lead to tables with large number of rows, when we should strive to keep tables small.
+- Need additional indexes, increasing our usage of lightweight locks, whose saturation can cause incidents.
+- Add overhead by having to filter all of the data by a value, leading to more page accesses on read.
+- Use the `class_name` to load the correct class for an object, but storing
+  the class name is costly and unnecessary.
 
-The solution is very simple: just use a separate table for every type you'd
-otherwise store in the same table. For example, instead of having a `keys` table
-with `type` set to either `Key` or `DeployKey` you'd have two separate tables:
-`keys` and `deploy_keys`.
+Instead of using STI, consider the following alternatives:
+
+- Use a different table for each type.
+- Avoid adding `*_type` columns. This is a code smell that might indicate that new types will be added in the future, and refactoring in the future will be much harder.
+- If you already have a table that is effectively an STI on a `_type` column, consider:
+  - Splitting the existent data into multiple tables.
+  - Refactoring so that new types can be added as new tables while keeping existing ones (for example, move logic of the base class into a concern).
+
+If, **after considering all of the above downsides and alternatives**, STI
+is the only solution for the problem at hand, we can at least avoid the
+issues with saving the class name in the record by using an enum type
+instead and the `EnumInheritance` concern:
+
+```ruby
+class Animal < ActiveRecord::Base
+  include EnumInheritance
+
+  enum species: {
+    dog: 1,
+    cat: 2
+  }
+
+  def self.inheritance_column_to_class_map = {
+    dog: 'Dog',
+    cat: 'Cat'
+  }
+
+  def self.inheritance_column = 'species'
+end
+
+class Dog < Animal; end
+class Cat < Animal; end
+```
+
+If your table already has a `*_type`, new classes for the different types can be added as needed.
 
 ## In migrations
 

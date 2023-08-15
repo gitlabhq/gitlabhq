@@ -40,7 +40,7 @@
     %p.gl-text-secondary
       = s_('Preferences|Customize the appearance of the syntax.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'change-the-syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
     .syntax-theme.row
       - Gitlab::ColorSchemes.each do |scheme|
         %label.col-6.col-sm-4.col-md-3.col-lg-auto.gl-mb-5

@@ -28,9 +28,12 @@ export default {
 </script>
 
 <template>
-  <div class="deploy-keys-panel table-holder">
+  <div class="deploy-keys-panel table-holder gl-bg-white gl-rounded-lg">
     <template v-if="keys.length > 0">
-      <div role="row" class="gl-responsive-table-row table-row-header">
+      <div
+        role="row"
+        class="gl-responsive-table-row table-row-header gl-font-base gl-font-weight-bold gl-text-gray-900 gl-md-pl-5 gl-md-pr-5 gl-bg-gray-10 gl-border-gray-100!"
+      >
         <div role="rowheader" class="table-section section-40">
           {{ s__('DeployKeys|Deploy key') }}
         </div>
@@ -50,8 +53,8 @@ export default {
         :project-id="projectId"
       />
     </template>
-    <div v-else class="settings-message text-center gl-mt-5">
-      {{ s__('DeployKeys|No deploy keys found. Create one with the form above.') }}
+    <div v-else class="gl-new-card-empty gl-bg-gray-10 gl-text-center gl-p-5">
+      {{ s__('DeployKeys|No deploy keys found, start by adding a new one above.') }}
     </div>
   </div>
 </template>

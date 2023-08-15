@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlIcon, GlLink, GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlBadge, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { head, tail } from 'lodash';
 import { s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -10,9 +10,9 @@ import ActionBtn from './action_btn.vue';
 export default {
   components: {
     ActionBtn,
+    GlBadge,
     GlButton,
     GlIcon,
-    GlLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -111,12 +111,21 @@ export default {
 </script>
 
 <template>
-  <div class="gl-responsive-table-row deploy-key">
+  <div
+    class="gl-responsive-table-row gl-align-items-flex-start deploy-key gl-bg-gray-10 gl-md-pl-5 gl-md-pr-5 gl-border-gray-100!"
+  >
     <div class="table-section section-40">
-      <div role="rowheader" class="table-mobile-header">{{ s__('DeployKeys|Deploy key') }}</div>
+      <div
+        role="rowheader"
+        class="table-mobile-header gl-align-self-start gl-font-weight-bold gl-text-gray-700"
+      >
+        {{ s__('DeployKeys|Deploy key') }}
+      </div>
       <div class="table-mobile-content" data-testid="key-container">
-        <strong class="title" data-testid="key-title-content"> {{ deployKey.title }} </strong>
-        <dl>
+        <p class="title gl-font-weight-semibold gl-text-gray-700" data-testid="key-title-content">
+          {{ deployKey.title }}
+        </p>
+        <dl class="gl-font-sm gl-mb-0">
           <dt>{{ __('SHA256') }}</dt>
           <dd class="fingerprint" data-testid="key-sha256-fingerprint-content">
             {{ deployKey.fingerprint_sha256 }}
@@ -133,53 +142,62 @@ export default {
       </div>
     </div>
     <div class="table-section section-20 section-wrap">
-      <div role="rowheader" class="table-mobile-header">{{ s__('DeployKeys|Project usage') }}</div>
-      <div class="table-mobile-content deploy-project-list">
+      <div role="rowheader" class="table-mobile-header gl-font-weight-bold gl-text-gray-700">
+        {{ s__('DeployKeys|Project usage') }}
+      </div>
+      <div class="table-mobile-content deploy-project-list gl-display-flex gl-flex-wrap">
         <template v-if="projects.length > 0">
-          <gl-link
+          <gl-badge
             v-gl-tooltip
             :title="projectTooltipTitle(firstProject)"
-            class="label deploy-project-label"
+            :icon="firstProject.can_push ? 'lock-open' : 'lock'"
+            class="deploy-project-label gl-mr-2 gl-mb-2 gl-truncate"
           >
-            <span> {{ firstProject.project.full_name }} </span>
-            <gl-icon :name="firstProject.can_push ? 'lock-open' : 'lock'" />
-          </gl-link>
-          <gl-link
+            <span class="gl-text-truncate">{{ firstProject.project.full_name }}</span>
+          </gl-badge>
+
+          <gl-badge
             v-if="isExpandable"
             v-gl-tooltip
             :title="restProjectsTooltip"
-            class="label deploy-project-label"
-            @click="toggleExpanded"
+            class="deploy-project-label gl-mr-2 gl-mb-2 gl-truncate"
+            href="#"
+            @click.native="toggleExpanded"
           >
-            <span>{{ restProjectsLabel }}</span>
-          </gl-link>
-          <gl-link
+            <span class="gl-text-truncate">{{ restProjectsLabel }}</span>
+          </gl-badge>
+
+          <gl-badge
             v-for="deployKeysProject in restProjects"
             v-else-if="isExpanded"
             :key="deployKeysProject.project.full_path"
             v-gl-tooltip
             :href="deployKeysProject.project.full_path"
             :title="projectTooltipTitle(deployKeysProject)"
-            class="label deploy-project-label"
+            :icon="deployKeysProject.can_push ? 'lock-open' : 'lock'"
+            class="deploy-project-label gl-mr-2 gl-mb-2 gl-truncate"
           >
-            <span> {{ deployKeysProject.project.full_name }} </span>
-            <gl-icon :name="deployKeysProject.can_push ? 'lock-open' : 'lock'" />
-          </gl-link>
+            <span class="gl-text-truncate">{{ deployKeysProject.project.full_name }}</span>
+          </gl-badge>
         </template>
-        <span v-else class="text-secondary">{{ __('None') }}</span>
+        <span v-else class="gl-text-secondary">{{ __('None') }}</span>
       </div>
     </div>
     <div class="table-section section-15">
-      <div role="rowheader" class="table-mobile-header">{{ __('Created') }}</div>
-      <div class="table-mobile-content text-secondary key-created-at">
+      <div role="rowheader" class="table-mobile-header gl-font-weight-bold gl-text-gray-700">
+        {{ __('Created') }}
+      </div>
+      <div class="table-mobile-content gl-text-gray-700 key-created-at">
         <span v-gl-tooltip :title="tooltipTitle(deployKey.created_at)">
           <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.created_at) }}</span>
         </span>
       </div>
     </div>
     <div class="table-section section-15">
-      <div role="rowheader" class="table-mobile-header">{{ __('Expires') }}</div>
-      <div class="table-mobile-content text-secondary key-expires-at">
+      <div role="rowheader" class="table-mobile-header gl-font-weight-bold gl-text-gray-700">
+        {{ __('Expires') }}
+      </div>
+      <div class="table-mobile-content gl-text-gray-700 key-expires-at">
         <span
           v-if="deployKey.expires_at"
           v-gl-tooltip
@@ -214,7 +232,7 @@ export default {
           :deploy-key="deployKey"
           :title="__('Remove')"
           :aria-label="__('Remove')"
-          category="primary"
+          category="secondary"
           variant="danger"
           icon="remove"
           type="remove"
@@ -229,7 +247,7 @@ export default {
           type="disable"
           data-container="body"
           icon="cancel"
-          category="primary"
+          category="secondary"
           variant="danger"
         />
       </div>

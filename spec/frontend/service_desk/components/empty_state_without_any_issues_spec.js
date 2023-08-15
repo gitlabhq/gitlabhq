@@ -13,6 +13,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     canAdminIssues: true,
     isServiceDeskEnabled: true,
     serviceDeskEmailAddress: 'email@address.com',
+    serviceDeskHelpPath: 'service/desk/help/path',
   };
 
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -42,9 +43,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     });
 
     it('renders description with service desk docs link', () => {
-      expect(findIssuesHelpPageLink().attributes('href')).toBe(
-        EmptyStateWithoutAnyIssues.serviceDeskHelpPagePath,
-      );
+      expect(findIssuesHelpPageLink().attributes('href')).toBe(defaultProvide.serviceDeskHelpPath);
     });
 
     it('renders email address, when user can admin issues and service desk is enabled', () => {
@@ -80,9 +79,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     });
 
     it('renders service desk docs link', () => {
-      expect(findGlLink().attributes('href')).toBe(
-        EmptyStateWithoutAnyIssues.serviceDeskHelpPagePath,
-      );
+      expect(findGlLink().attributes('href')).toBe(defaultProvide.serviceDeskHelpPath);
       expect(findGlLink().text()).toBe(learnMore);
     });
   });

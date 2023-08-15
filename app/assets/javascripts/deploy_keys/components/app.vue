@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
@@ -14,8 +14,9 @@ export default {
     ConfirmModal,
     KeysPanel,
     NavigationTabs,
-    GlLoadingIcon,
+    GlButton,
     GlIcon,
+    GlLoadingIcon,
   },
   props: {
     endpoint: {
@@ -41,6 +42,10 @@ export default {
     enabled_keys: s__('DeployKeys|Enabled deploy keys'),
     available_project_keys: s__('DeployKeys|Privately accessible deploy keys'),
     public_keys: s__('DeployKeys|Publicly accessible deploy keys'),
+  },
+  i18n: {
+    loading: s__('DeployKeys|Loading deploy keys'),
+    addButton: s__('DeployKeys|Add new key'),
   },
   computed: {
     tabs() {
@@ -132,23 +137,41 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-3 deploy-keys">
+  <div class="deploy-keys">
     <confirm-modal :visible="confirmModalVisible" @remove="removeKey" @cancel="cancel" />
     <gl-loading-icon
       v-if="isLoading && !hasKeys"
-      :label="s__('DeployKeys|Loading deploy keys')"
-      size="lg"
+      :label="$options.i18n.loading"
+      size="sm"
+      class="gl-m-5"
     />
     <template v-else-if="hasKeys">
-      <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">
-        <div class="fade-left">
-          <gl-icon name="chevron-lg-left" :size="12" />
-        </div>
-        <div class="fade-right">
-          <gl-icon name="chevron-lg-right" :size="12" />
+      <div class="gl-new-card-header gl-align-items-center gl-pt-0 gl-pb-0 gl-pl-0">
+        <div class="top-area scrolling-tabs-container inner-page-scroll-tabs gl-border-b-0">
+          <div class="fade-left">
+            <gl-icon name="chevron-lg-left" :size="12" />
+          </div>
+          <div class="fade-right">
+            <gl-icon name="chevron-lg-right" :size="12" />
+          </div>
+
+          <navigation-tabs
+            :tabs="tabs"
+            scope="deployKeys"
+            class="gl-rounded-lg"
+            @onChangeTab="onChangeTab"
+          />
         </div>
 
-        <navigation-tabs :tabs="tabs" scope="deployKeys" @onChangeTab="onChangeTab" />
+        <div class="gl-new-card-actions">
+          <gl-button
+            size="small"
+            class="js-toggle-button js-toggle-content"
+            data-testid="add-new-deploy-key-button"
+          >
+            {{ $options.i18n.addButton }}
+          </gl-button>
+        </div>
       </div>
       <keys-panel
         :project-id="projectId"

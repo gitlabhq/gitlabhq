@@ -162,21 +162,27 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
   end
 
   context 'restore' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository, :design_repo) }
     let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
     let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
 
-    def copy_bundle_to_backup_path(bundle_name, destination)
-      FileUtils.mkdir_p(File.join(Gitlab.config.backup.path, 'repositories', File.dirname(destination)))
-      FileUtils.cp(Rails.root.join('spec/fixtures/lib/backup', bundle_name), File.join(Gitlab.config.backup.path, 'repositories', destination))
+    def copy_fixture_to_backup_path(backup_name, repo_disk_path)
+      FileUtils.mkdir_p(File.join(Gitlab.config.backup.path, 'repositories', File.dirname(repo_disk_path)))
+
+      %w[.bundle .refs].each do |filetype|
+        FileUtils.cp(
+          Rails.root.join('spec/fixtures/lib/backup', backup_name + filetype),
+          File.join(Gitlab.config.backup.path, 'repositories', repo_disk_path + filetype)
+        )
+      end
     end
 
     it 'restores from repository bundles', :aggregate_failures do
-      copy_bundle_to_backup_path('project_repo.bundle', project.disk_path + '.bundle')
-      copy_bundle_to_backup_path('wiki_repo.bundle', project.disk_path + '.wiki.bundle')
-      copy_bundle_to_backup_path('design_repo.bundle', project.disk_path + '.design.bundle')
-      copy_bundle_to_backup_path('personal_snippet_repo.bundle', personal_snippet.disk_path + '.bundle')
-      copy_bundle_to_backup_path('project_snippet_repo.bundle', project_snippet.disk_path + '.bundle')
+      copy_fixture_to_backup_path('project_repo', project.disk_path)
+      copy_fixture_to_backup_path('wiki_repo', project.wiki.disk_path)
+      copy_fixture_to_backup_path('design_repo', project.design_repository.disk_path)
+      copy_fixture_to_backup_path('personal_snippet_repo', personal_snippet.disk_path)
+      copy_fixture_to_backup_path('project_snippet_repo', project_snippet.disk_path)
 
       expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer').and_call_original
 
@@ -200,7 +206,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
     it 'clears specified storages when remove_all_repositories is set' do
       expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-remove-all-repositories', 'default').and_call_original
 
-      copy_bundle_to_backup_path('project_repo.bundle', project.disk_path + '.bundle')
+      copy_fixture_to_backup_path('project_repo', project.disk_path)
       subject.start(:restore, destination, backup_id: backup_id, remove_all_repositories: %w[default])
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
       subject.finish!

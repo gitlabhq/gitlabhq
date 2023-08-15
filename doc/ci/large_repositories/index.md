@@ -234,7 +234,6 @@ concurrent = 4
   cache_dir = "/cache"
 
   environment = [
-    "GIT_DEPTH=10",
     "GIT_CLONE_PATH=$CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_NAME"
   ]
 

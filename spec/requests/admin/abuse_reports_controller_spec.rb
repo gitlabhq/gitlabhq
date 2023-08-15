@@ -53,16 +53,16 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
     end
   end
 
-  describe 'PUT #update' do
+  shared_examples 'moderates user' do
     let(:report) { create(:abuse_report) }
     let(:params) { { user_action: 'block_user', close: 'true', reason: 'spam', comment: 'obvious spam' } }
     let(:expected_params) { ActionController::Parameters.new(params).permit! }
     let(:message) { 'Service response' }
 
-    subject(:request) { put admin_abuse_report_path(report, params) }
+    subject(:request) { put path }
 
-    it 'invokes the Admin::AbuseReportUpdateService' do
-      expect_next_instance_of(Admin::AbuseReportUpdateService, report, admin, expected_params) do |service|
+    it 'invokes the Admin::AbuseReports::ModerateUserService' do
+      expect_next_instance_of(Admin::AbuseReports::ModerateUserService, report, admin, expected_params) do |service|
         expect(service).to receive(:execute).and_call_original
       end
 
@@ -71,7 +71,7 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
 
     context 'when the service response is a success' do
       before do
-        allow_next_instance_of(Admin::AbuseReportUpdateService, report, admin, expected_params) do |service|
+        allow_next_instance_of(Admin::AbuseReports::ModerateUserService, report, admin, expected_params) do |service|
           allow(service).to receive(:execute).and_return(ServiceResponse.success(message: message))
         end
 
@@ -86,7 +86,7 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
 
     context 'when the service response is an error' do
       before do
-        allow_next_instance_of(Admin::AbuseReportUpdateService, report, admin, expected_params) do |service|
+        allow_next_instance_of(Admin::AbuseReports::ModerateUserService, report, admin, expected_params) do |service|
           allow(service).to receive(:execute).and_return(ServiceResponse.error(message: message))
         end
 
@@ -98,6 +98,18 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
         expect(json_response['message']).to eq(message)
       end
     end
+  end
+
+  describe 'PUT #update' do
+    let(:path) { admin_abuse_report_path(report, params) }
+
+    it_behaves_like 'moderates user'
+  end
+
+  describe 'PUT #moderate_user' do
+    let(:path) { moderate_user_admin_abuse_report_path(report, params) }
+
+    it_behaves_like 'moderates user'
   end
 
   describe 'DELETE #destroy' do

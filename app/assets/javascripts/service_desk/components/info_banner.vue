@@ -51,7 +51,7 @@ export default {
       </p>
       <p>
         {{ $options.i18n.infoBannerUserNote }}
-        <gl-link :href="serviceDeskHelpPath" target="_blank">{{ $options.i18n.learnMore }}</gl-link
+        <gl-link :href="serviceDeskHelpPath">{{ $options.i18n.learnMore }}</gl-link
         >.
       </p>
       <p v-if="canEnableServiceDesk" class="gl-mt-3">

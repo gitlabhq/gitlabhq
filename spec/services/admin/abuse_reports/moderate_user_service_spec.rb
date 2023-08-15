@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::AbuseReportUpdateService, feature_category: :instance_resiliency do
+RSpec.describe Admin::AbuseReports::ModerateUserService, feature_category: :instance_resiliency do
   let_it_be_with_reload(:abuse_report) { create(:abuse_report) }
   let(:action) { 'ban_user' }
   let(:close) { true }

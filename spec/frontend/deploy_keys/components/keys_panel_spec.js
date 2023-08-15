@@ -41,10 +41,10 @@ describe('Deploy keys panel', () => {
   it('renders help box if keys are empty', () => {
     mountComponent({ keys: [] });
 
-    expect(wrapper.find('.settings-message').exists()).toBe(true);
+    expect(wrapper.find('.gl-new-card-empty').exists()).toBe(true);
 
-    expect(wrapper.find('.settings-message').text().trim()).toBe(
-      'No deploy keys found. Create one with the form above.',
+    expect(wrapper.find('.gl-new-card-empty').text().trim()).toBe(
+      'No deploy keys found, start by adding a new one above.',
     );
   });
 

@@ -76,6 +76,8 @@ Example response:
 
 ## Add a member role to a group
 
+> Ability to add a name and description when creating a custom role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
+
 Adds a member role to a group.
 
 ```plaintext
@@ -130,6 +132,12 @@ Example response:
   "read_vulnerability": false
 }
 ```
+
+In GitLab 16.3 and later, you can use the API to:
+
+- Add a name (required) and description (optional) when you
+  [create a new custom role](../user/permissions.md#create-a-custom-role).
+- Update an existing custom role's name and description.
 
 ### Remove member role of a group
 

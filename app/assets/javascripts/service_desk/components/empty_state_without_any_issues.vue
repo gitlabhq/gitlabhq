@@ -1,6 +1,5 @@
 <script>
 import { GlEmptyState, GlLink } from '@gitlab/ui';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   noIssuesSignedOutButtonText,
   infoBannerTitle,
@@ -17,7 +16,6 @@ export default {
     infoBannerAdminNote,
     learnMore,
   },
-  serviceDeskHelpPagePath: helpPagePath('user/project/service_desk/index'),
   components: {
     GlEmptyState,
     GlLink,
@@ -29,6 +27,7 @@ export default {
     'canAdminIssues',
     'isServiceDeskEnabled',
     'serviceDeskEmailAddress',
+    'serviceDeskHelpPath',
   ],
   computed: {
     canSeeEmailAddress() {
@@ -50,7 +49,7 @@ export default {
           {{ $options.i18n.infoBannerAdminNote }} <br /><code>{{ serviceDeskEmailAddress }}</code>
         </p>
         <p>{{ $options.i18n.infoBannerUserNote }}</p>
-        <gl-link :href="$options.serviceDeskHelpPagePath" target="_blank">
+        <gl-link :href="serviceDeskHelpPath">
           {{ $options.i18n.learnMore }}
         </gl-link>
       </template>
@@ -67,7 +66,7 @@ export default {
   >
     <template #description>
       <p>{{ $options.i18n.infoBannerUserNote }}</p>
-      <gl-link :href="$options.serviceDeskHelpPagePath">
+      <gl-link :href="serviceDeskHelpPath">
         {{ $options.i18n.learnMore }}
       </gl-link>
     </template>

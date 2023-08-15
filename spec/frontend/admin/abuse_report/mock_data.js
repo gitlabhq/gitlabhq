@@ -51,5 +51,6 @@ export const mockAbuseReport = {
     screenshot:
       '/uploads/-/system/abuse_report/screenshot/27/Screenshot_2023-03-30_at_16.56.37.png',
     updatePath: '/admin/abuse_reports/27',
+    moderateUserPath: '/admin/abuse_reports/27/moderate_user',
   },
 };

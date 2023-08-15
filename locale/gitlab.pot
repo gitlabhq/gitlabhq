@@ -16012,6 +16012,12 @@ msgstr ""
 msgid "DeployKeys|+%{count} others"
 msgstr ""
 
+msgid "DeployKeys|Add new deploy key"
+msgstr ""
+
+msgid "DeployKeys|Add new key"
+msgstr ""
+
 msgid "DeployKeys|Current project"
 msgstr ""
 
@@ -16039,7 +16045,7 @@ msgstr ""
 msgid "DeployKeys|Loading deploy keys"
 msgstr ""
 
-msgid "DeployKeys|No deploy keys found. Create one with the form above."
+msgid "DeployKeys|No deploy keys found, start by adding a new one above."
 msgstr ""
 
 msgid "DeployKeys|Privately accessible deploy keys"

@@ -91,6 +91,7 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :groups
       deploy_key_title = attributes_for(:key)[:title]
       deploy_key_body  = attributes_for(:key)[:key]
 
+      click_button("Add new key")
       fill_in("deploy_key_title", with: deploy_key_title)
       fill_in("deploy_key_key",   with: deploy_key_body)
 
@@ -101,6 +102,16 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :groups
       page.within(".deploy-keys") do
         expect(page).to have_content(deploy_key_title)
       end
+    end
+
+    it "click on cancel hides the form" do
+      click_button("Add new key")
+
+      expect(page).to have_css('.gl-new-card-add-form')
+
+      click_button("Cancel")
+
+      expect(page).not_to have_css('.gl-new-card-add-form')
     end
   end
 

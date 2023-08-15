@@ -144,7 +144,7 @@ Example response:
   }
 ```
 
-## Create a new project to a project's CI/CD job token inbound allowlist
+## Add a project to a CI/CD job token inbound allowlist
 
 Add a project to the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token) of a project.
 
@@ -161,16 +161,16 @@ Supported attributes:
 
 If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
 
-| Attribute           | Type    | Description           |
-|:--------------------|:--------|:----------------------|
-| `source_project_id` | integer | The ID of the project whose CI/CD job token inbound allowlist is added to. |
-| `target_project_id` | integer | The ID of the project that is added to the inbound allowlist of the source project. |
+| Attribute           | Type    | Description |
+|---------------------|---------|-------------|
+| `source_project_id` | integer | ID of the project containing the CI/CD job token inbound allowlist to update. |
+| `target_project_id` | integer | ID of the project that is added to the source project's inbound allowlist. |
 
 Example request:
 
 ```shell
-curl --request PATCH \
-  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope" \
+curl --request POST \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist" \
   --header 'PRIVATE-TOKEN: <your_access_token>' \
   --header 'Content-Type: application/json' \
   --data '{ "target_project_id": 2 }'
@@ -185,7 +185,7 @@ Example response:
 }
 ```
 
-## Remove a project from a project's CI/CD job token inbound allowlist
+## Remove a project from a CI/CD job token inbound allowlist
 
 Remove a project from the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token) of a project.
 
@@ -205,7 +205,6 @@ If successful, returns [`204`](rest/index.md#status-codes) and no response body.
 Example request:
 
 ```shell
-
 curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist/2" \
   --header 'PRIVATE-TOKEN: <your_access_token>' \

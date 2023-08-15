@@ -95,10 +95,12 @@ export default {
         return;
       }
 
-      axios
-        .put(this.report.updatePath, this.form)
-        .then(this.handleResponse)
-        .catch(this.handleError);
+      // TODO: In 16.4 use moderateUserPath without falling back to using updatePath
+      // See https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/167?work_item_iid=443
+      const { moderateUserPath, updatePath } = this.report;
+      const path = moderateUserPath || updatePath;
+
+      axios.put(path, this.form).then(this.handleResponse).catch(this.handleError);
     },
     handleResponse({ data }) {
       this.toggleActionsDrawer();
