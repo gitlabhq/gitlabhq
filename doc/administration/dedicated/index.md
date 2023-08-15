@@ -39,7 +39,7 @@ When onboarding, you must also specify your preference for the weekly four-hour 
 
 Available scheduled mainenance windows, performed outside standard working hours:
 
-- APAC: Wednesday 1 AM - 5 PM UTC
+- APAC: Wednesday 1 AM - 5 AM UTC
 - EU: Tuesday 1 AM - 5 AM UTC
 - AMER Option 1: Tuesday 7 AM - 11 AM UTC
 - AMER Option 2: Sunday 9 PM - Monday 1 AM UTC

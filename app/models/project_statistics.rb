@@ -19,7 +19,7 @@ class ProjectStatistics < ApplicationRecord
     Namespaces::ScheduleAggregationWorker.perform_async(project_statistics.namespace_id)
   end
 
-  before_save :update_storage_size
+  after_commit :refresh_storage_size!, on: :update, if: -> { storage_size_components_changed? }
 
   COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size, :uploads_size, :container_registry_size].freeze
   INCREMENTABLE_COLUMNS = [
@@ -111,19 +111,14 @@ class ProjectStatistics < ApplicationRecord
     super.to_i
   end
 
-  def update_storage_size
-    self.storage_size = storage_size_components.sum { |component| method(component).call }
-  end
-
+  # Since this incremental update method does not update the storage_size directly,
+  # we have to update the storage_size separately in an after_commit action.
   def refresh_storage_size!
     detect_race_on_record(log_fields: { caller: __method__, attributes: :storage_size }) do
-      update!(storage_size: storage_size_sum)
+      self.class.where(id: id).update_all("storage_size = #{storage_size_sum}")
     end
   end
 
-  # Since this incremental update method does not call update_storage_size above through before_save,
-  # we have to update the storage_size separately.
-  #
   # For counter attributes, storage_size will be refreshed after the counter is flushed,
   # through counter_attribute_after_commit
   #
@@ -174,6 +169,10 @@ class ProjectStatistics < ApplicationRecord
     run_after_commit do
       Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)
     end
+  end
+
+  def storage_size_components_changed?
+    (previous_changes.keys & STORAGE_SIZE_COMPONENTS.map(&:to_s)).any?
   end
 end
 

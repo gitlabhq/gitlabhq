@@ -24,6 +24,9 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)
   for any of the applications above before
   upgrading.
+- Large instances with 30,000 users or more must include 16.0 on the upgrade path and wait for
+  database migrations to complete before upgrading to a later release. [Read more](#long-running-user-type-data-change)
+  about the reason for this, and how to assess whether your GitLab instance is affected.
 
 ### Linux package installations
 
@@ -62,6 +65,17 @@ Specific information applies to Linux package installations:
   - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
   - If you deployed an affected version, after upgrading to a fixed GitLab version, follow [these instructions](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)
     to resync the affected job artifacts.
+- You might encounter the following error while upgrading to GitLab 16.2 or later:
+
+  ```plaintext
+  main: == 20230620134708 ValidateUserTypeConstraint: migrating =======================
+  main: -- execute("ALTER TABLE users VALIDATE CONSTRAINT check_0dd5948e38;")
+  rake aborted!
+  StandardError: An error has occurred, all later migrations canceled:
+  PG::CheckViolation: ERROR:  check constraint "check_0dd5948e38" of relation "users" is violated by some row
+  ```
+
+  For more information, see [issue 421629](https://gitlab.com/gitlab-org/gitlab/-/issues/421629).
 
 ### Linux package installations
 
@@ -80,12 +94,9 @@ Specific information applies to Linux package installations:
 
 ## 16.1.0
 
-- A `MigrateHumanUserType` background migration will be finalized with
-    the `FinalizeUserTypeMigration` migration.
-    GitLab 16.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
-    [migrate `user_type` values from `NULL` to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849). This
-    migration may take multiple days to complete on larger GitLab instances. Make sure the migration
-    has completed successfully before upgrading to 16.1.0.
+- Large instances with 30,000 users or more must include 16.0 on the upgrade path and wait for
+  database migrations to complete before upgrading to a later release. [Read more](#long-running-user-type-data-change)
+  about the reason for this, and how to assess whether your GitLab instance is affected.
 - A `BackfillPreparedAtMergeRequests` background migration will be finalized with
   the `FinalizeBackFillPreparedAtMergeRequests` post-deploy migration.
   GitLab 15.10.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
@@ -124,6 +135,9 @@ Specific information applies to installations using Geo:
 
 ## 16.0.0
 
+- Large instances with 30,000 users or more must include 16.0 on the upgrade path and wait for
+  database migrations to complete before upgrading to a later release. [Read more](#long-running-user-type-data-change)
+  about the reason for this, and how to assess whether your GitLab instance is affected.
 - Sidekiq crashes if there are non-ASCII characters in the `/etc/gitlab/gitlab.rb` file. You can fix this
   by following the workaround in [issue 412767](https://gitlab.com/gitlab-org/gitlab/-/issues/412767#note_1404507549).
 - Sidekiq jobs are only routed to `default` and `mailers` queues by default, and as a result,
@@ -166,3 +180,42 @@ Specific information applies to installations using Geo:
 
   - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
   - Versions containing fix: GitLab 16.1.3 and later.
+
+## Long-running user type data change
+
+GitLab 16.0 is a required stop for large GitLab instances with a lot of records in the `users` table.
+
+The threshold is **30,000 users**, which includes:
+
+- Developers and other users in any state, including active, blocked, and pending approval.
+- Bot accounts for project and group access tokens.
+
+GitLab 16.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+[migrate `user_type` values from `NULL` to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849). This
+migration might take multiple days to complete on larger GitLab instances. Make sure the migration
+has completed successfully before upgrading to 16.1.0 or later.
+
+GitLab 16.1 introduces the `FinalizeUserTypeMigration` migration which ensures the
+16.0 `MigrateHumanUserType` background migration is completed, making the 16.0 changes synchronously
+during the upgrade if it's not completed.
+
+GitLab 16.2 [implements a `NOT NULL` database constraint](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122454)
+which fails if the 16.0 migration is not complete.
+
+If 16.0 has been skipped (or the 16.0 migration is not complete) subsequent
+Linux package (Omnibus) and Docker upgrades might fail
+after an hour:
+
+```plaintext
+FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
+[..]
+Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
+```
+
+[There is a fix-forward workaround for this issue](../package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
+
+While the workaround is completing the database changes, GitLab is likely to be in
+an unusuable state, generating `500` errors. The errors are caused by Sidekiq and Puma running
+application code that is incompatible with the database schema.
+
+At the end of the workaround process, Sidekiq and Puma are restarted to resolve that issue.

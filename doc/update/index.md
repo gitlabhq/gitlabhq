@@ -189,8 +189,8 @@ When upgrading:
 1. Find where your version sits in the upgrade path:
 
    - GitLab 14: [`14.0.12`](#1400) > [`14.3.6`](#1430) > [`14.9.5`](#1490) > [`14.10.5`](#14100).
-   - GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [`15.11.x`](#15110).
-   - GitLab 16: [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
+   - GitLab 15: [`15.0.5`](#1500) > [`15.1.6`](#1510) (for GitLab instances with multiple web nodes) > [`15.4.6`](#1540) > [`15.11.13`](#15110).
+   - GitLab 16: [`16.0.x`](versions/gitlab_16_changes.md#1600) (only [instances with lots of users](versions/gitlab_16_changes.md#long-running-user-type-data-change)) > [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
 
 1. Check for [required upgrade stops](#required-upgrade-stops).
 1. Consult the [version-specific upgrade instructions](#version-specific-upgrading-instructions).
@@ -837,6 +837,14 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
   1. Ensure all GitLab web nodes are running GitLab 15.1.Z.
   1. [Enable the `active_support_hash_digest_sha256` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to switch `ActiveSupport::Digest` to use SHA256:
+
+     1. [Start the rails console](../administration/operations/rails_console.md)
+     1. Enable the feature flag:
+
+        ```ruby
+        Feature.enable(:active_support_hash_digest_sha256)
+        ```
+
   1. Only then, continue to upgrade to later versions of GitLab.
 - Unauthenticated requests to the [`ciConfig` GraphQL field](../api/graphql/reference/index.md#queryciconfig) are no longer supported.
   Before you upgrade to GitLab 15.1, add an [access token](../api/rest/index.md#authentication) to your requests.

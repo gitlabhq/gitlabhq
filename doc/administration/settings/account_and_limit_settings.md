@@ -139,7 +139,7 @@ To modify the maximum download file size for imports by direct transfer:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.3.
 
-When you [import a project](../../user/project/settings/import_export.md), you can specify the maximum decompressed file size for imported archives. The default value is 25 GB.
+When you import a project using [file exports](../../user/project/settings/import_export.md) or [direct transfer](../../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended), you can specify the maximum decompressed file size for imported archives. The default value is 25 GB.
 
 When you import a compressed file, the decompressed size cannot exceed the maximum decompressed file size limit. If the decompressed size exceeds the configured limit, the following error is returned:
 

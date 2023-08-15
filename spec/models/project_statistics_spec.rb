@@ -25,6 +25,55 @@ RSpec.describe ProjectStatistics do
     end
   end
 
+  describe 'callbacks' do
+    context 'on after_commit' do
+      context 'when storage size components are updated' do
+        it 'updates the correct storage size for relevant attributes' do
+          statistics.update!(repository_size: 10)
+
+          expect(statistics.reload.storage_size).to eq(10)
+        end
+      end
+
+      context 'when storage size components are not updated' do
+        it 'does not affect the storage_size total' do
+          statistics.update!(pipeline_artifacts_size: 3, container_registry_size: 50)
+
+          expect(statistics.reload.storage_size).to eq(0)
+        end
+      end
+    end
+
+    describe 'with race conditions' do
+      before do
+        statistics.update!(storage_size: 14621247)
+      end
+
+      it 'handles concurrent updates correctly' do
+        # Concurrently update the statistics in two different processes
+        t1 = Thread.new do
+          stats_1 = ProjectStatistics.find(statistics.id)
+          stats_1.snippets_size = 530
+          stats_1.save!
+        end
+
+        t2 = Thread.new do
+          stats_2 = ProjectStatistics.find(statistics.id)
+          ProjectStatistics.update_counters(stats_2.id, packages_size: 1000)
+          stats_2.refresh_storage_size!
+        end
+
+        [t1, t2].each(&:join)
+
+        # Reload the statistics object
+        statistics.reload
+
+        # The final storage size should be correctly updated
+        expect(statistics.storage_size).to eq(1530) # Final value is correct (snippets_size + packages_size)
+      end
+    end
+  end
+
   describe 'statistics columns' do
     it "supports bigint values" do
       expect do
@@ -370,75 +419,6 @@ RSpec.describe ProjectStatistics do
     end
   end
 
-  describe '#update_storage_size' do
-    it "sums the relevant storage counters" do
-      statistics.update!(
-        repository_size: 2,
-        wiki_size: 4,
-        lfs_objects_size: 3,
-        snippets_size: 2,
-        build_artifacts_size: 3,
-        packages_size: 6,
-        uploads_size: 5
-      )
-
-      statistics.reload
-
-      expect(statistics.storage_size).to eq 25
-    end
-
-    it 'excludes the container_registry_size' do
-      statistics.update!(
-        repository_size: 2,
-        uploads_size: 5,
-        container_registry_size: 10
-      )
-
-      statistics.reload
-
-      expect(statistics.storage_size).to eq 7
-    end
-
-    it 'excludes the pipeline_artifacts_size' do
-      statistics.update!(
-        repository_size: 2,
-        uploads_size: 5,
-        pipeline_artifacts_size: 10
-      )
-
-      statistics.reload
-
-      expect(statistics.storage_size).to eq 7
-    end
-
-    it 'works during wiki_size backfill' do
-      statistics.update!(
-        repository_size: 2,
-        wiki_size: nil,
-        lfs_objects_size: 3
-      )
-
-      statistics.reload
-
-      expect(statistics.storage_size).to eq 5
-    end
-
-    context 'when nullable columns are nil' do
-      it 'does not raise any error' do
-        expect do
-          statistics.update!(
-            repository_size: 2,
-            wiki_size: nil,
-            lfs_objects_size: 3,
-            snippets_size: nil
-          )
-        end.not_to raise_error
-
-        expect(statistics.storage_size).to eq 5
-      end
-    end
-  end
-
   describe '#refresh_storage_size!' do
     subject(:refresh_storage_size) { statistics.refresh_storage_size! }
 
@@ -464,6 +444,7 @@ RSpec.describe ProjectStatistics do
         statistics.update_columns(
           repository_size: 2,
           wiki_size: nil,
+          snippets_size: nil,
           storage_size: 0
         )
       end
