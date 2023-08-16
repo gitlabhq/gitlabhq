@@ -45,9 +45,11 @@ module QA
         attr_reader :public_port, :admin_port
 
         def host_name
-          return host_ip unless QA::Runtime::Env.running_in_ci? || QA::Runtime::Env.qa_hostname
-
-          "#{@name}.#{@network_cache}"
+          @host_name ||= if QA::Runtime::Env.running_in_ci? || QA::Runtime::Env.qa_hostname
+                           "#{@name}.#{@network_cache}"
+                         else
+                           host_ip
+                         end
         end
 
         def wait_for_running

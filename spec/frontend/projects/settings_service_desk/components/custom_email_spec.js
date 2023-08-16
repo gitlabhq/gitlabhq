@@ -1,197 +1,134 @@
-import { nextTick } from 'vue';
-import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlButton, GlToggle, GlBadge } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
-import { HTTP_STATUS_OK, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
+import { nextTick } from 'vue';
 import CustomEmail from '~/projects/settings_service_desk/components/custom_email.vue';
-import CustomEmailForm from '~/projects/settings_service_desk/components/custom_email_form.vue';
-import CustomEmailConfirmModal from '~/projects/settings_service_desk/components/custom_email_confirm_modal.vue';
-import CustomEmailStateStarted from '~/projects/settings_service_desk/components/custom_email_state_started.vue';
-
 import {
-  FEEDBACK_ISSUE_URL,
-  I18N_GENERIC_ERROR,
-  I18N_TOAST_SAVED,
-  I18N_TOAST_DELETED,
+  I18N_VERIFICATION_ERRORS,
+  I18N_STATE_VERIFICATION_STARTED,
+  I18N_STATE_VERIFICATION_FAILED,
+  I18N_STATE_VERIFICATION_FAILED_RESET_PARAGRAPH,
+  I18N_STATE_VERIFICATION_STARTED_RESET_PARAGRAPH,
+  I18N_STATE_VERIFICATION_FINISHED_RESET_PARAGRAPH,
 } from '~/projects/settings_service_desk/custom_email_constants';
-import {
-  MOCK_CUSTOM_EMAIL_EMPTY,
-  MOCK_CUSTOM_EMAIL_STARTED,
-  MOCK_CUSTOM_EMAIL_FORM_SUBMIT,
-} from './mock_data';
 
 describe('CustomEmail', () => {
-  let axiosMock;
   let wrapper;
 
   const defaultProps = {
-    incomingEmail: 'incoming@example.com',
-    customEmailEndpoint: '/flightjs/Flight/-/service_desk/custom_email',
+    customEmail: 'user@example.com',
+    smtpAddress: 'smtp.example.com',
+    verificationState: 'started',
+    verificationError: null,
+    enabled: false,
+    submitting: false,
   };
 
-  const showToast = jest.fn();
+  const findButton = () => wrapper.findComponent(GlButton);
+  const findBadge = () => wrapper.findComponent(GlBadge);
+  const findToggle = () => wrapper.findComponent(GlToggle);
 
   const createWrapper = (props = {}) => {
-    wrapper = extendedWrapper(
-      mount(CustomEmail, {
-        propsData: { ...defaultProps, ...props },
-        mocks: {
-          $toast: {
-            show: showToast,
-          },
-        },
-      }),
-    );
+    wrapper = mount(CustomEmail, { propsData: { ...defaultProps, ...props } });
   };
 
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAlert = () => wrapper.findComponent(GlAlert);
-  const findFeedbackLink = () => wrapper.findByTestId('feedback-link');
-  const findCustomEmailForm = () => wrapper.findComponent(CustomEmailForm);
-  const findCustomEmailStateStarted = () => wrapper.findComponent(CustomEmailStateStarted);
-  const findCustomEmailConfirmModal = () => wrapper.findComponent(CustomEmailConfirmModal);
-
-  beforeEach(() => {
-    axiosMock = new AxiosMockAdapter(axios);
-  });
-
-  afterEach(() => {
-    axiosMock.restore();
-    jest.clearAllTimers();
-    showToast.mockReset();
-  });
-
-  it('displays link to feedback issue', () => {
+  it('displays the custom email address and smtp address in the body', () => {
     createWrapper();
+    const text = wrapper.text();
 
-    expect(findFeedbackLink().attributes('href')).toEqual(FEEDBACK_ISSUE_URL);
+    expect(text).toContain(defaultProps.customEmail);
+    expect(text).toContain(defaultProps.smtpAddress);
   });
 
-  describe('when initial resource loading returns no configured custom email', () => {
+  describe('when verificationState is started', () => {
     beforeEach(() => {
-      axiosMock
-        .onGet(defaultProps.customEmailEndpoint)
-        .reply(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_EMPTY);
-
       createWrapper();
     });
 
-    it('displays loading icon while fetching data', async () => {
-      // while loading
-      expect(findLoadingIcon().exists()).toBe(true);
-      await waitForPromises();
-      // loading completed
-      expect(findLoadingIcon().exists()).toBe(false);
+    it('displays badge with correct props', () => {
+      expect(findBadge().props('variant')).toBe('info');
+      expect(findBadge().text()).toBe(I18N_STATE_VERIFICATION_STARTED);
     });
 
-    it('displays form', async () => {
-      await waitForPromises();
-
-      expect(findCustomEmailForm().exists()).toBe(true);
-    });
-
-    describe('when CustomEmailForm emits submit event with valid params', () => {
-      beforeEach(() => {
-        axiosMock
-          .onPost(defaultProps.customEmailEndpoint)
-          .replyOnce(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_STARTED);
-      });
-
-      it('creates custom email', async () => {
-        createWrapper();
-        await nextTick();
-
-        findCustomEmailForm().vm.$emit('submit', MOCK_CUSTOM_EMAIL_FORM_SUBMIT);
-
-        expect(findCustomEmailForm().emitted('submit')).toEqual([[MOCK_CUSTOM_EMAIL_FORM_SUBMIT]]);
-        await waitForPromises();
-
-        expect(showToast).toHaveBeenCalledWith(I18N_TOAST_SAVED);
-
-        expect(findCustomEmailStateStarted().exists()).toBe(true);
-      });
+    it('displays reset paragraph', () => {
+      expect(wrapper.text()).toContain(I18N_STATE_VERIFICATION_STARTED_RESET_PARAGRAPH);
     });
   });
 
-  describe('when initial resource loading return started verification', () => {
-    beforeEach(async () => {
-      axiosMock
-        .onGet(defaultProps.customEmailEndpoint)
-        .reply(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_STARTED);
-
-      createWrapper();
-      await waitForPromises();
+  describe('when verificationState is failed', () => {
+    beforeEach(() => {
+      createWrapper({ verificationState: 'failed' });
     });
 
-    it('displays CustomEmailStateStarted component', () => {
-      expect(findCustomEmailStateStarted().exists()).toBe(true);
+    it('displays badge with correct props', () => {
+      expect(findBadge().props('variant')).toBe('danger');
+      expect(findBadge().text()).toBe(I18N_STATE_VERIFICATION_FAILED);
     });
 
-    it('schedules and executes polling', async () => {
-      const spy = jest.spyOn(axios, 'get');
-
-      jest.runOnlyPendingTimers();
-      await waitForPromises();
-
-      expect(spy).toHaveBeenCalledTimes(1);
-      // first after initial resource fetching, second after first polling
-      expect(setTimeout).toHaveBeenCalledTimes(2);
-      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 8000);
-    });
-
-    describe('when CustomEmailStateFailed triggers reset event', () => {
-      beforeEach(() => {
-        findCustomEmailStateStarted().vm.$emit('reset');
-      });
-
-      it('shows confirm modal', () => {
-        expect(findCustomEmailConfirmModal().props('visible')).toBe(true);
-      });
-    });
-
-    it('deletes custom email on remove event', async () => {
-      axiosMock
-        .onDelete(defaultProps.customEmailEndpoint)
-        .reply(HTTP_STATUS_OK, MOCK_CUSTOM_EMAIL_EMPTY);
-
-      const spy = jest.spyOn(axios, 'delete');
-
-      findCustomEmailConfirmModal().vm.$emit('remove');
-      await waitForPromises();
-
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(showToast).toHaveBeenCalledWith(I18N_TOAST_DELETED);
-
-      expect(findCustomEmailForm().exists()).toBe(true);
+    it('displays reset paragraph', () => {
+      expect(wrapper.text()).toContain(I18N_STATE_VERIFICATION_FAILED_RESET_PARAGRAPH);
     });
   });
 
-  describe('when initial resource loading returns 404', () => {
-    beforeEach(async () => {
-      axiosMock.onGet(defaultProps.customEmailEndpoint).reply(HTTP_STATUS_NOT_FOUND);
+  describe('verification error', () => {
+    it.each([
+      'smtp_host_issue',
+      'invalid_credentials',
+      'mail_not_received_within_timeframe',
+      'incorrect_from',
+      'incorrect_token',
+    ])('displays %s label and description', (error) => {
+      createWrapper({ verificationError: error });
+      const text = wrapper.text();
 
-      createWrapper();
-      await waitForPromises();
+      expect(text).toContain(I18N_VERIFICATION_ERRORS[error].label);
+      expect(text).toContain(I18N_VERIFICATION_ERRORS[error].description);
+    });
+  });
+
+  describe('when verificationState is finished', () => {
+    beforeEach(() => {
+      createWrapper({ verificationState: 'finished' });
     });
 
-    it('displays error alert with correct text', () => {
-      expect(findLoadingIcon().exists()).toBe(false);
-
-      expect(findAlert().exists()).toBe(true);
-      expect(findAlert().text()).toBe(I18N_GENERIC_ERROR);
+    it('displays reset paragraph', () => {
+      expect(wrapper.text()).toContain(I18N_STATE_VERIFICATION_FINISHED_RESET_PARAGRAPH);
     });
 
-    it('dismissing the alert removes it', async () => {
-      expect(findAlert().exists()).toBe(true);
+    it('toggle value is false', () => {
+      expect(findToggle().props('value')).toBe(false);
+    });
 
-      findAlert().vm.$emit('dismiss');
-
+    it('emits a toggle event when toggle is clicked', async () => {
+      findToggle().vm.$emit('change', true);
       await nextTick();
 
-      expect(findAlert().exists()).toBe(false);
+      expect(wrapper.emitted('toggle')).toEqual([[true]]);
+    });
+  });
+
+  describe('when enabled', () => {
+    beforeEach(() => {
+      createWrapper({ verificationState: 'finished', isEnabled: true });
+    });
+
+    it('value is true', () => {
+      expect(findToggle().props('value')).toBe(true);
+    });
+  });
+
+  describe('button', () => {
+    it('emits a reset event when button clicked', () => {
+      createWrapper();
+      findButton().trigger('click');
+
+      expect(wrapper.emitted('reset')).toEqual([[]]);
+    });
+
+    it('does not emit event when button clicked and submitting', () => {
+      createWrapper({ isSubmitting: true });
+      findButton().trigger('click');
+
+      expect(wrapper.emitted('reset')).toBeUndefined();
     });
   });
 });

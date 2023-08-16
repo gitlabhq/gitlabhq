@@ -108,7 +108,7 @@ export default {
       @pointerleave="handlePointerleave"
     >
       <span
-        :class="[isActive ? 'gl-bg-blue-500' : 'gl-bg-transparent']"
+        :class="[isActive ? 'active-indicator gl-bg-blue-500' : 'gl-bg-transparent']"
         class="gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
         aria-hidden="true"
         style="width: 3px; border-radius: 3px; margin-right: 1px"

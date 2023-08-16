@@ -30,7 +30,7 @@ Workspaces use the AMD64 architecture.
 ## Workspaces and projects
 
 Workspaces are scoped to a project.
-When you [create a workspace](configuration.md#create-a-workspace), you must:
+When you [create a workspace](configuration.md#set-up-a-workspace), you must:
 
 - Assign the workspace to a specific project.
 - Select a project with a [`.devfile.yaml`](#devfile) file.
@@ -130,7 +130,7 @@ For more information, see [Web IDE](../project/web_ide/index.md).
 
 ## Private repositories
 
-You cannot [create a workspace](configuration.md#create-a-workspace) for a private repository
+You cannot [create a workspace](configuration.md#set-up-a-workspace) for a private repository
 because GitLab does not inject any credentials into the workspace.
 You can only create a workspace for public repositories that have a devfile.
 

@@ -188,4 +188,3 @@ Style/RedundantFreeze:
     - 'lib/gitlab/x509/certificate.rb'
     - 'lib/gitlab/zoom_link_extractor.rb'
     - 'lib/sbom/package_url/argument_validator.rb'
-    - 'lib/tasks/gitlab/db/decomposition/rollback/bump_ci_sequences.rake'

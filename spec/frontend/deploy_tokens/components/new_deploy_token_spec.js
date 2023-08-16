@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import {
   GlAlert,
   GlButton,
@@ -52,6 +51,63 @@ describe('New Deploy Token', () => {
 
   const findNewTokenAlert = () => wrapper.findComponent(GlAlert);
   const findClipboardButtons = () => wrapper.findAllComponents(ClipboardButton);
+  const findAllCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
+  const findFormInputs = () => wrapper.findAllComponents(GlFormInput);
+
+  const setScopeCheckboxes = ({
+    readRepoValue = true,
+    readRegistryValue = true,
+    writeRegistryValue = true,
+    readPackageRegistryValue = true,
+    writePackageRegistryValue = true,
+  } = {}) => {
+    const [
+      readRepo,
+      readRegistry,
+      writeRegistry,
+      readPackageRegistry,
+      writePackageRegistry,
+    ] = findAllCheckboxes().wrappers;
+
+    readRepo.vm.$emit('input', readRepoValue);
+    readRegistry.vm.$emit('input', readRegistryValue);
+    writeRegistry.vm.$emit('input', writeRegistryValue);
+    readPackageRegistry.vm.$emit('input', readPackageRegistryValue);
+    writePackageRegistry.vm.$emit('input', writePackageRegistryValue);
+  };
+
+  const setTokenName = ({ nameVal = 'test name', usernameVal = 'test username' } = {}) => {
+    const formInputs = findFormInputs();
+    formInputs.at(0).vm.$emit('input', nameVal);
+    formInputs.at(2).vm.$emit('input', usernameVal);
+  };
+
+  const setTokenForm = ({ date }) => {
+    setTokenName();
+
+    const datepicker = wrapper.findAllComponents(GlDatepicker).at(0);
+    datepicker.vm.$emit('input', date);
+
+    setScopeCheckboxes();
+  };
+
+  const submitToken = async () => {
+    wrapper.findAllComponents(GlButton).at(0).vm.$emit('click');
+    await waitForPromises();
+  };
+
+  const checkSubmittedToken = () => {
+    const [tokenUsername, tokenValue] = wrapper.findAllComponents(GlFormInputGroup).wrappers;
+
+    expect(tokenUsername.props('value')).toBe('test token username');
+    expect(tokenValue.props('value')).toBe('test token');
+
+    expect(createAlert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variant: VARIANT_INFO,
+      }),
+    );
+  };
 
   describe('without a container registry', () => {
     beforeEach(() => {
@@ -71,204 +127,114 @@ describe('New Deploy Token', () => {
     });
 
     it('should show the read registry scope', () => {
-      const checkbox = wrapper.findAllComponents(GlFormCheckbox).at(1);
+      const checkbox = findAllCheckboxes().at(1);
       expect(checkbox.text()).toContain('read_registry');
     });
+  });
 
-    function submitTokenThenCheck() {
-      wrapper.findAllComponents(GlButton).at(0).vm.$emit('click');
+  describe('token submission', () => {
+    let mockAxios;
+    const defaultTokenPayload = {
+      name: 'test name',
+      username: 'test username',
+      read_repository: true,
+      read_registry: true,
+      write_registry: true,
+      read_package_registry: true,
+      write_package_registry: true,
+    };
 
-      return waitForPromises()
-        .then(() => nextTick())
-        .then(() => {
-          const [tokenUsername, tokenValue] = wrapper.findAllComponents(GlFormInputGroup).wrappers;
+    const mockTokenRequest = ({ payload, status, response }) => {
+      mockAxios.onPost(createNewTokenPath, { deploy_token: payload }).replyOnce(status, response);
+    };
 
-          expect(tokenUsername.props('value')).toBe('test token username');
-          expect(tokenValue.props('value')).toBe('test token');
-
-          expect(createAlert).toHaveBeenCalledWith(
-            expect.objectContaining({
-              variant: VARIANT_INFO,
-            }),
-          );
-        });
-    }
+    beforeEach(() => {
+      mockAxios = new MockAdapter(axios);
+      wrapper = factory();
+    });
 
     it('should alert error message if token creation fails', async () => {
-      const mockAxios = new MockAdapter(axios);
-
+      const message = 'Server error while creating a token';
       const date = new Date();
-      const formInputs = wrapper.findAllComponents(GlFormInput);
-      const name = formInputs.at(0);
-      const username = formInputs.at(2);
-      name.vm.$emit('input', 'test name');
-      username.vm.$emit('input', 'test username');
 
-      const datepicker = wrapper.findAllComponents(GlDatepicker).at(0);
-      datepicker.vm.$emit('input', date);
+      setTokenForm({ date });
+      mockTokenRequest({
+        payload: {
+          ...defaultTokenPayload,
+          expires_at: date.toISOString(),
+        },
+        status: HTTP_STATUS_INTERNAL_SERVER_ERROR,
+        response: { message },
+      });
 
-      const [
-        readRepo,
-        readRegistry,
-        writeRegistry,
-        readPackageRegistry,
-        writePackageRegistry,
-      ] = wrapper.findAllComponents(GlFormCheckbox).wrappers;
-      readRepo.vm.$emit('input', true);
-      readRegistry.vm.$emit('input', true);
-      writeRegistry.vm.$emit('input', true);
-      readPackageRegistry.vm.$emit('input', true);
-      writePackageRegistry.vm.$emit('input', true);
+      await submitToken();
 
-      const expectedErrorMessage = 'Server error while creating a token';
-
-      mockAxios
-        .onPost(createNewTokenPath, {
-          deploy_token: {
-            name: 'test name',
-            expires_at: date.toISOString(),
-            username: 'test username',
-            read_repository: true,
-            read_registry: true,
-            write_registry: true,
-            read_package_registry: true,
-            write_package_registry: true,
-          },
-        })
-        .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, { message: expectedErrorMessage });
-
-      wrapper.findAllComponents(GlButton).at(0).vm.$emit('click');
-
-      await waitForPromises().then(() => nextTick());
-
-      expect(createAlert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: expectedErrorMessage,
-        }),
-      );
+      expect(createAlert).toHaveBeenCalledWith(expect.objectContaining({ message }));
     });
 
-    it('should make a request to create a token on submit', () => {
-      const mockAxios = new MockAdapter(axios);
-
+    it('should make a request to create a token on submit', async () => {
       const date = new Date();
-      const formInputs = wrapper.findAllComponents(GlFormInput);
-      const name = formInputs.at(0);
-      const username = formInputs.at(2);
-      name.vm.$emit('input', 'test name');
-      username.vm.$emit('input', 'test username');
 
-      const datepicker = wrapper.findAllComponents(GlDatepicker).at(0);
-      datepicker.vm.$emit('input', date);
+      setTokenForm({ date });
+      mockTokenRequest({
+        payload: {
+          ...defaultTokenPayload,
+          expires_at: date.toISOString(),
+        },
+        status: HTTP_STATUS_OK,
+        response: { username: 'test token username', token: 'test token' },
+      });
 
-      const [
-        readRepo,
-        readRegistry,
-        writeRegistry,
-        readPackageRegistry,
-        writePackageRegistry,
-      ] = wrapper.findAllComponents(GlFormCheckbox).wrappers;
-      readRepo.vm.$emit('input', true);
-      readRegistry.vm.$emit('input', true);
-      writeRegistry.vm.$emit('input', true);
-      readPackageRegistry.vm.$emit('input', true);
-      writePackageRegistry.vm.$emit('input', true);
+      await submitToken();
 
-      mockAxios
-        .onPost(createNewTokenPath, {
-          deploy_token: {
-            name: 'test name',
-            expires_at: date.toISOString(),
-            username: 'test username',
-            read_repository: true,
-            read_registry: true,
-            write_registry: true,
-            read_package_registry: true,
-            write_package_registry: true,
-          },
-        })
-        .replyOnce(HTTP_STATUS_OK, { username: 'test token username', token: 'test token' });
-
-      return submitTokenThenCheck();
+      checkSubmittedToken();
     });
 
-    it('should request a token without an expiration date', () => {
-      const mockAxios = new MockAdapter(axios);
+    it('should request a token without an expiration date', async () => {
+      const nameVal = 'test never expire name';
+      const usernameVal = 'test never expire username';
+      const readRepoValue = false;
+      const readRegistryValue = false;
+      const writeRegistryValue = false;
 
-      const formInputs = wrapper.findAllComponents(GlFormInput);
-      const name = formInputs.at(0);
-      const username = formInputs.at(2);
-      name.vm.$emit('input', 'test never expire name');
-      username.vm.$emit('input', 'test never expire username');
+      setTokenName({ nameVal, usernameVal });
+      setScopeCheckboxes({ readRepoValue, readRegistryValue, writeRegistryValue });
 
-      const [, , , readPackageRegistry, writePackageRegistry] = wrapper.findAllComponents(
-        GlFormCheckbox,
-      ).wrappers;
-      readPackageRegistry.vm.$emit('input', true);
-      writePackageRegistry.vm.$emit('input', true);
+      mockTokenRequest({
+        payload: {
+          ...defaultTokenPayload,
+          expires_at: null,
+          name: nameVal,
+          username: usernameVal,
+          read_repository: readRepoValue,
+          read_registry: readRegistryValue,
+          write_registry: writeRegistryValue,
+        },
+        status: HTTP_STATUS_OK,
+        response: { username: 'test token username', token: 'test token' },
+      });
 
-      mockAxios
-        .onPost(createNewTokenPath, {
-          deploy_token: {
-            name: 'test never expire name',
-            expires_at: null,
-            username: 'test never expire username',
-            read_repository: false,
-            read_registry: false,
-            write_registry: false,
-            read_package_registry: true,
-            write_package_registry: true,
-          },
-        })
-        .replyOnce(HTTP_STATUS_OK, { username: 'test token username', token: 'test token' });
+      await submitToken();
 
-      return submitTokenThenCheck();
+      checkSubmittedToken();
     });
 
     it('should display the created token', async () => {
-      const mockAxios = new MockAdapter(axios);
-
-      const date = new Date();
-      const formInputs = wrapper.findAllComponents(GlFormInput);
-      const name = formInputs.at(0);
-      const username = formInputs.at(2);
-      name.vm.$emit('input', 'test name');
-      username.vm.$emit('input', 'test username');
-
-      const datepicker = wrapper.findAllComponents(GlDatepicker).at(0);
-      datepicker.vm.$emit('input', date);
-
-      const [
-        readRepo,
-        readRegistry,
-        writeRegistry,
-        readPackageRegistry,
-        writePackageRegistry,
-      ] = wrapper.findAllComponents(GlFormCheckbox).wrappers;
-      readRepo.vm.$emit('input', true);
-      readRegistry.vm.$emit('input', true);
-      writeRegistry.vm.$emit('input', true);
-      readPackageRegistry.vm.$emit('input', true);
-      writePackageRegistry.vm.$emit('input', true);
-
       expect(findNewTokenAlert().exists()).toBe(false);
 
-      mockAxios
-        .onPost(createNewTokenPath, {
-          deploy_token: {
-            name: 'test name',
-            expires_at: date.toISOString(),
-            username: 'test username',
-            read_repository: true,
-            read_registry: true,
-            write_registry: true,
-            read_package_registry: true,
-            write_package_registry: true,
-          },
-        })
-        .replyOnce(HTTP_STATUS_OK, { username: 'test token username', token: 'test token' });
+      const date = new Date();
+      setTokenForm({ date });
 
-      await submitTokenThenCheck();
+      mockTokenRequest({
+        payload: {
+          ...defaultTokenPayload,
+          expires_at: date.toISOString(),
+        },
+        status: HTTP_STATUS_OK,
+        response: { username: 'test token username', token: 'test token' },
+      });
+
+      await submitToken();
 
       const tokenAlert = findNewTokenAlert();
       expect(tokenAlert.exists()).toBe(true);
@@ -284,7 +250,7 @@ describe('New Deploy Token', () => {
   });
 
   describe('help text for write_package_registry scope', () => {
-    const findWriteRegistryScopeCheckbox = () => wrapper.findAllComponents(GlFormCheckbox).at(4);
+    const findWriteRegistryScopeCheckbox = () => findAllCheckboxes().at(4);
 
     describe('with project tokenType', () => {
       beforeEach(() => {

@@ -148,7 +148,6 @@ export default {
         :title="$options.i18n.stopImpersonating"
         :aria-label="$options.i18n.stopImpersonating"
         icon="incognito"
-        variant="confirm"
         category="tertiary"
         data-method="delete"
         data-testid="stop-impersonation-btn"

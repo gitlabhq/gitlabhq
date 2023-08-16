@@ -13,6 +13,8 @@ export const I18N_TOAST_SAVED = s__(
   'ServiceDesk|Saved custom email address and started verification.',
 );
 export const I18N_TOAST_DELETED = s__('ServiceDesk|Reset custom email address.');
+export const I18N_TOAST_ENABLED = s__('ServiceDesk|Custom email enabled.');
+export const I18N_TOAST_DISABLED = s__('ServiceDesk|Custom email disabled.');
 
 export const I18N_FORM_INTRODUCTION_PARAGRAPH = s__(
   'ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials.',
@@ -68,7 +70,77 @@ export const I18N_STATE_INTRO_PARAGRAPH = s__(
   'ServiceDesk|Verify %{customEmail} with SMTP host %{smtpAddress}:',
 );
 export const I18N_STATE_VERIFICATION_STARTED = s__('ServiceDesk|Verification started');
-export const I18N_STATE_VERIFICATION_STARTED_INFO_PARAGRAPH = s__(
+export const I18N_STATE_VERIFICATION_STARTED_RESET_PARAGRAPH = s__(
   'ServiceDesk|A verification email has been sent to a sub-address of your custom email address. This can take up to 30 minutes. The screen refreshes automatically.',
 );
 export const I18N_RESET_BUTTON_LABEL = s__('ServiceDesk|Reset custom email');
+
+export const I18N_STATE_VERIFICATION_FINISHED_INTRO_PARAGRAPH = s__(
+  'ServiceDesk|%{customEmail} with SMTP host %{smtpAddress} is %{badgeStart}verified%{badgeEnd}',
+);
+export const I18N_STATE_VERIFICATION_FINISHED_TOGGLE_LABEL = s__(
+  'ServiceDesk|Enable custom email address',
+);
+export const I18N_STATE_VERIFICATION_FINISHED_TOGGLE_HELP = s__(
+  'ServiceDesk|When enabled, Service Desk emails will be sent using the provided credentials.',
+);
+export const I18N_STATE_VERIFICATION_FINISHED_RESET_PARAGRAPH = s__(
+  'ServiceDesk|Or reset and connect a new custom email address to this Service Desk.',
+);
+
+export const I18N_STATE_VERIFICATION_FAILED = s__('ServiceDesk|Verification failed');
+export const I18N_STATE_VERIFICATION_FAILED_RESET_PARAGRAPH = s__(
+  'ServiceDesk|Please try again. Check email forwarding settings and credentials, and then restart verification.',
+);
+
+export const I18N_STATE_RESET_PARAGRAPH = {
+  started: I18N_STATE_VERIFICATION_STARTED_RESET_PARAGRAPH,
+  failed: I18N_STATE_VERIFICATION_FAILED_RESET_PARAGRAPH,
+  finished: I18N_STATE_VERIFICATION_FINISHED_RESET_PARAGRAPH,
+};
+
+export const I18N_ERROR_SMTP_HOST_ISSUE_LABEL = s__('ServiceDesk|SMTP host issue');
+export const I18N_ERROR_SMTP_HOST_ISSUE_DESC = s__(
+  'ServiceDesk|A connection to the specified host could not be made or an SSL issue occurred.',
+);
+export const I18N_ERROR_INVALID_CREDENTIALS_LABEL = s__('ServiceDesk|Invalid credentials');
+export const I18N_ERROR_INVALID_CREDENTIALS_DESC = s__(
+  'ServiceDesk|The given credentials (username and password) were rejected by the SMTP server.',
+);
+export const I18N_ERROR_MAIL_NOT_RECEIVED_IN_TIMEFRAME_LABEL = s__(
+  'ServiceDesk|Verification email not received within timeframe',
+);
+export const I18N_ERROR_MAIL_NOT_RECEIVED_IN_TIMEFRAME_DESC = s__(
+  "ServiceDesk|The verification email wasn't received in time. There is a 30 minutes timeframe for verification emails to appear in your instance's Service Desk. Make sure that you have set up email forwarding correctly.",
+);
+export const I18N_ERROR_INCORRECT_FROM_LABEL = s__('ServiceDesk|Incorrect From header');
+export const I18N_ERROR_INCORRECT_FROM_DESC = s__(
+  'ServiceDesk|Check your forwarding settings and make sure the original email sender remains in the From header.',
+);
+export const I18N_ERROR_INCORRECT_TOKEN_LABEL = s__('ServiceDesk|Incorrect verification token');
+export const I18N_ERROR_INCORRECT_TOKEN_DESC = s__(
+  "ServiceDesk|The received email didn't contain the verification token that was sent to your email address.",
+);
+
+export const I18N_VERIFICATION_ERRORS = {
+  smtp_host_issue: {
+    label: I18N_ERROR_SMTP_HOST_ISSUE_LABEL,
+    description: I18N_ERROR_SMTP_HOST_ISSUE_DESC,
+  },
+  invalid_credentials: {
+    label: I18N_ERROR_INVALID_CREDENTIALS_LABEL,
+    description: I18N_ERROR_INVALID_CREDENTIALS_DESC,
+  },
+  mail_not_received_within_timeframe: {
+    label: I18N_ERROR_MAIL_NOT_RECEIVED_IN_TIMEFRAME_LABEL,
+    description: I18N_ERROR_MAIL_NOT_RECEIVED_IN_TIMEFRAME_DESC,
+  },
+  incorrect_from: {
+    label: I18N_ERROR_INCORRECT_FROM_LABEL,
+    description: I18N_ERROR_INCORRECT_FROM_DESC,
+  },
+  incorrect_token: {
+    label: I18N_ERROR_INCORRECT_TOKEN_LABEL,
+    description: I18N_ERROR_INCORRECT_TOKEN_DESC,
+  },
+};

@@ -54,7 +54,7 @@ export default {
       required: false,
       default: '',
     },
-    submitting: {
+    isSubmitting: {
       type: Boolean,
       required: false,
       default: false,
@@ -182,7 +182,7 @@ export default {
           type="email"
           :state="validationState.customEmail"
           :required="true"
-          :disabled="submitting"
+          :disabled="isSubmitting"
           @change="onCustomEmailChange"
         />
         <!-- eslint-enable @gitlab/vue-require-i18n-attribute-strings -->
@@ -205,7 +205,7 @@ export default {
           type="email"
           :state="validationState.smtpAddress"
           :required="true"
-          :disabled="submitting"
+          :disabled="isSubmitting"
           @change="validateSmtpAddress"
         />
         <!-- eslint-enable @gitlab/vue-require-i18n-attribute-strings -->
@@ -228,7 +228,7 @@ export default {
           type="number"
           :state="validationState.smtpPort"
           :required="true"
-          :disabled="submitting"
+          :disabled="isSubmitting"
           @change="validateSmtpPort"
         />
         <!-- eslint-enable @gitlab/vue-require-i18n-attribute-strings -->
@@ -249,7 +249,7 @@ export default {
           placeholder="contact@example.com"
           :state="validationState.smtpUsername"
           :required="true"
-          :disabled="submitting"
+          :disabled="isSubmitting"
           @change="validateSmtpUsername"
         />
         <!-- eslint-enable @gitlab/vue-require-i18n-attribute-strings -->
@@ -270,7 +270,7 @@ export default {
           type="password"
           :state="validationState.smtpPassword"
           :required="true"
-          :disabled="submitting"
+          :disabled="isSubmitting"
           @change="validateSmtpPassword"
         />
       </gl-form-group>
@@ -281,7 +281,7 @@ export default {
         class="gl-mt-5"
         data-testid="form-submit"
         :disabled="!isFormValid"
-        :loading="submitting"
+        :loading="isSubmitting"
         @click="onSubmit"
       >
         {{ $options.I18N_FORM_SUBMIT_LABEL }}

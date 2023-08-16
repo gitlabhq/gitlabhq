@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import timezoneMock from 'timezone-mock';
 import Feature from '~/whats_new/components/feature.vue';
 import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 
@@ -16,7 +17,7 @@ describe("What's new single feature", () => {
     available_in: ['Ultimate'],
     documentation_link: `${DOCS_URL_IN_EE_DIR}/user/project/settings/#compliance-pipeline-configuration`,
     image_url: 'https://img.youtube.com/vi/upLJ_equomw/hqdefault.jpg',
-    published_at: '2021-04-22T00:00:00.000Z',
+    published_at: '2021-04-22',
     release: '13.11',
   };
 
@@ -50,6 +51,22 @@ describe("What's new single feature", () => {
       createWrapper({ feature: { ...exampleFeature, published_at: null } });
 
       expect(findReleaseDate().exists()).toBe(false);
+    });
+  });
+
+  describe('when the user is in a time zone West of UTC', () => {
+    beforeEach(() => {
+      timezoneMock.register('US/Pacific');
+    });
+
+    afterEach(() => {
+      timezoneMock.unregister();
+    });
+
+    it('renders the date', () => {
+      createWrapper({ feature: exampleFeature });
+
+      expect(findReleaseDate().text()).toBe('April 22, 2021');
     });
   });
 

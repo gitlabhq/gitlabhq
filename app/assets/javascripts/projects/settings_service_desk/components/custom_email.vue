@@ -1,227 +1,139 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlSprintf, GlLink, GlCard } from '@gitlab/ui';
-import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
-import axios from '~/lib/utils/axios_utils';
+import { GlBadge, GlButton, GlSprintf, GlToggle } from '@gitlab/ui';
 import {
-  FEEDBACK_ISSUE_URL,
-  I18N_LOADING_LABEL,
-  I18N_CARD_TITLE,
-  I18N_GENERIC_ERROR,
-  I18N_FEEDBACK_PARAGRAPH,
-  I18N_TOAST_SAVED,
-  I18N_TOAST_DELETED,
+  I18N_STATE_INTRO_PARAGRAPH,
+  I18N_STATE_VERIFICATION_FINISHED_INTRO_PARAGRAPH,
+  I18N_STATE_VERIFICATION_STARTED,
+  I18N_RESET_BUTTON_LABEL,
+  I18N_STATE_VERIFICATION_FAILED,
+  I18N_STATE_VERIFICATION_FINISHED_TOGGLE_LABEL,
+  I18N_STATE_VERIFICATION_FINISHED_TOGGLE_HELP,
+  I18N_STATE_RESET_PARAGRAPH,
+  I18N_VERIFICATION_ERRORS,
 } from '../custom_email_constants';
-import CustomEmailConfirmModal from './custom_email_confirm_modal.vue';
-import CustomEmailForm from './custom_email_form.vue';
-import CustomEmailStateStarted from './custom_email_state_started.vue';
 
 export default {
   components: {
-    BetaBadge,
-    GlAlert,
-    GlLoadingIcon,
+    GlBadge,
+    GlButton,
     GlSprintf,
-    GlLink,
-    GlCard,
-    CustomEmailConfirmModal,
-    CustomEmailForm,
-    CustomEmailStateStarted,
+    GlToggle,
   },
-  FEEDBACK_ISSUE_URL,
-  I18N_LOADING_LABEL,
-  I18N_CARD_TITLE,
-  I18N_FEEDBACK_PARAGRAPH,
-  I18N_TOAST_SAVED,
-  I18N_TOAST_DELETED,
+  I18N_STATE_VERIFICATION_STARTED,
+  I18N_STATE_VERIFICATION_FAILED,
+  I18N_STATE_VERIFICATION_FINISHED_TOGGLE_LABEL,
+  I18N_STATE_VERIFICATION_FINISHED_TOGGLE_HELP,
+  I18N_RESET_BUTTON_LABEL,
   props: {
-    incomingEmail: {
+    customEmail: {
       type: String,
       required: true,
-      default: '',
     },
-    customEmailEndpoint: {
+    smtpAddress: {
       type: String,
       required: true,
+    },
+    verificationState: {
+      type: String,
+      required: true,
+    },
+    verificationError: {
+      type: String,
+      required: false,
       default: '',
     },
-  },
-  data() {
-    return {
-      loading: true,
-      submitting: false,
-      confirmModalVisible: false,
-      customEmail: null,
-      enabled: false,
-      verificationState: null,
-      verificationError: null,
-      smtpAddress: null,
-      errorMessage: null,
-      alertMessage: null,
-    };
+    isEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isSubmitting: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
-    customEmailNotSetUp() {
-      return !this.enabled && this.verificationState === null && this.customEmail === null;
+    isVerificationFailed() {
+      return this.verificationState === 'failed';
     },
-  },
-  mounted() {
-    this.getCustomEmailDetails();
-  },
-  methods: {
-    dismissAlert() {
-      this.alertMessage = null;
+    isVerificationFinished() {
+      return this.verificationState === 'finished';
     },
-    getCustomEmailDetails() {
-      axios
-        .get(this.customEmailEndpoint)
-        .then(({ data }) => {
-          this.updateData(data);
-        })
-        .catch(this.handleRequestError)
-        .finally(() => {
-          this.loading = false;
-          this.enqueueReFetchVerification();
-        });
+    containerClass() {
+      return this.isVerificationFinished ? '' : 'gl-text-center';
     },
-    enqueueReFetchVerification() {
-      setTimeout(this.reFetchVerification, 8000);
+    introNote() {
+      return this.isVerificationFinished
+        ? I18N_STATE_VERIFICATION_FINISHED_INTRO_PARAGRAPH
+        : I18N_STATE_INTRO_PARAGRAPH;
     },
-    reFetchVerification() {
-      if (this.verificationState !== 'started') {
-        return;
-      }
-      this.getCustomEmailDetails();
+    badgeVariant() {
+      return this.isVerificationFailed ? 'danger' : 'info';
     },
-    handleRequestError() {
-      this.alertMessage = I18N_GENERIC_ERROR;
+    badgeContent() {
+      return this.isVerificationFailed
+        ? I18N_STATE_VERIFICATION_FAILED
+        : I18N_STATE_VERIFICATION_STARTED;
     },
-    updateData(data) {
-      this.customEmail = data.custom_email;
-      this.enabled = data.custom_email_enabled;
-      this.verificationState = data.custom_email_verification_state;
-      this.verificationError = data.custom_email_verification_error;
-      this.smtpAddress = data.custom_email_smtp_address;
-      this.errorMessage = data.error_message;
+    verificationErrorI18nObject() {
+      return I18N_VERIFICATION_ERRORS[this.verificationError];
     },
-    onSaveCustomEmail(requestData) {
-      this.alertMessage = null;
-      this.submitting = true;
-
-      axios
-        .post(this.customEmailEndpoint, requestData)
-        .then(({ data }) => {
-          this.updateData(data);
-          this.$toast.show(this.$options.I18N_TOAST_SAVED);
-          this.enqueueReFetchVerification();
-        })
-        .catch(this.handleRequestError)
-        .finally(() => {
-          this.submitting = false;
-        });
+    errorLabel() {
+      return this.verificationErrorI18nObject?.label;
     },
-    onResetCustomEmail() {
-      this.confirmModalVisible = true;
+    errorDescription() {
+      return this.verificationErrorI18nObject?.description;
     },
-    onConfirmModalCanceled() {
-      this.confirmModalVisible = false;
-    },
-    onConfirmModalProceed() {
-      this.submitting = true;
-      this.confirmModalVisible = false;
-
-      this.deleteCustomEmail();
-    },
-    deleteCustomEmail() {
-      axios
-        .delete(this.customEmailEndpoint)
-        .then(({ data }) => {
-          this.updateData(data);
-          this.$toast.show(I18N_TOAST_DELETED);
-        })
-        .catch(this.handleRequestError)
-        .finally(() => {
-          this.submitting = false;
-        });
+    resetNote() {
+      return I18N_STATE_RESET_PARAGRAPH[this.verificationState];
     },
   },
 };
 </script>
 
 <template>
-  <div class="row gl-mt-7">
-    <div class="col-md-9">
-      <gl-card>
-        <template #header>
-          <div class="gl-display-flex align-items-center justify-content-between">
-            <h5 class="gl-my-0">{{ $options.I18N_CARD_TITLE }}</h5>
-            <beta-badge />
-          </div>
+  <div :class="containerClass">
+    <p>
+      <gl-sprintf :message="introNote">
+        <template #customEmail>
+          <strong>{{ customEmail }}</strong>
         </template>
-
-        <template #default>
-          <template v-if="loading">
-            <div class="gl-p-3 gl-text-center">
-              <gl-loading-icon
-                :label="$options.I18N_LOADING_LABEL"
-                size="md"
-                color="dark"
-                variant="spinner"
-                :inline="false"
-              />
-              {{ $options.I18N_LOADING_LABEL }}
-            </div>
-          </template>
-
-          <custom-email-confirm-modal
-            :visible="confirmModalVisible"
-            :custom-email="customEmail"
-            @remove="onConfirmModalProceed"
-            @cancel="onConfirmModalCanceled"
-          />
-
-          <gl-alert
-            v-if="alertMessage"
-            variant="warning"
-            class="gl-mt-n5 gl-mb-4 gl-mx-n5"
-            @dismiss="dismissAlert"
-          >
-            {{ alertMessage }}
-          </gl-alert>
-
-          <!-- Use v-show to preserve form data after verification failure
-            without the need to maintain a state in this component. -->
-          <custom-email-form
-            v-show="customEmailNotSetUp && !loading"
-            :incoming-email="incomingEmail"
-            :submitting="submitting"
-            @submit="onSaveCustomEmail"
-          />
-
-          <custom-email-state-started
-            v-if="verificationState === 'started'"
-            :custom-email="customEmail"
-            :smtp-address="smtpAddress"
-            :submitting="submitting"
-            @reset="onResetCustomEmail"
-          />
+        <template #smtpAddress>
+          <strong>{{ smtpAddress }}</strong>
         </template>
-
-        <template #footer>
-          <span>
-            <gl-sprintf :message="$options.I18N_FEEDBACK_PARAGRAPH">
-              <template #link="{ content }">
-                <gl-link
-                  :href="$options.FEEDBACK_ISSUE_URL"
-                  data-testid="feedback-link"
-                  target="_blank"
-                  class="gl-text-blue-600 font-size-inherit"
-                  >{{ content }}
-                </gl-link>
-              </template>
-            </gl-sprintf>
-          </span>
+        <template #badge="{ content }">
+          <gl-badge variant="success">{{ content }}</gl-badge>
         </template>
-      </gl-card>
+      </gl-sprintf>
+    </p>
+
+    <div v-if="!isVerificationFinished" class="gl-mb-5">
+      <gl-badge :variant="badgeVariant">{{ badgeContent }}</gl-badge>
     </div>
+
+    <template v-if="isVerificationFinished">
+      <gl-toggle
+        :value="isEnabled"
+        :is-loading="isSubmitting"
+        :label="$options.I18N_STATE_VERIFICATION_FINISHED_TOGGLE_LABEL"
+        :help="$options.I18N_STATE_VERIFICATION_FINISHED_TOGGLE_HELP"
+        label-position="top"
+        @change="$emit('toggle', $event)"
+      />
+      <hr />
+    </template>
+
+    <template v-if="verificationError">
+      <p class="gl-mb-0">
+        <strong>{{ errorLabel }}</strong>
+      </p>
+      <p>{{ errorDescription }}</p>
+    </template>
+
+    <p>{{ resetNote }}</p>
+    <gl-button :loading="isSubmitting" @click="$emit('reset')">
+      {{ $options.I18N_RESET_BUTTON_LABEL }}
+    </gl-button>
   </div>
 </template>

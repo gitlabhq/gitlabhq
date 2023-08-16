@@ -16,7 +16,8 @@ On self-managed GitLab, by default this feature is available. To hide the featur
 WARNING:
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 
-You can use remote development to write and compile code hosted on GitLab. With remote development, you can:
+You can use remote development to write and compile code hosted on GitLab.
+With remote development, you can:
 
 - Create a secure development environment in the cloud.
 - Connect to that environment from your local machine through a web browser or client-based solution.
@@ -32,7 +33,8 @@ With remote development, you can use:
 - The Web IDE as a frontend
 - A separate machine as a backend runtime environment
 
-For a complete IDE experience, connect the Web IDE to a development environment configured to run as a remote host. You can create this environment [inside](../../workspace/index.md) or [outside](connect_machine.md) of GitLab.
+For a complete IDE experience, connect the Web IDE to a development environment configured to run as a remote host.
+You can create this environment [inside](../../workspace/configuration.md) or [outside](connect_machine.md) of GitLab.
 
 ## Workspaces **(PREMIUM)**
 

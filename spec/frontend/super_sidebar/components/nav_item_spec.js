@@ -113,7 +113,7 @@ describe('NavItem component', () => {
         createWrapper({ item: { title: 'Foo', to: { name: 'foo' } } });
 
         expect(findNavItemRouterLink().findByTestId('active-indicator').classes()).toContain(
-          'gl-bg-transparent',
+          'gl-opacity-0',
         );
       });
     });
@@ -126,7 +126,7 @@ describe('NavItem component', () => {
         });
 
         expect(findNavItemRouterLink().findByTestId('active-indicator').classes()).toContain(
-          'gl-bg-blue-500',
+          'gl-opacity-10',
         );
       });
     });
@@ -138,7 +138,7 @@ describe('NavItem component', () => {
         createWrapper({ item: { title: 'Foo', link: '/foo', is_active: false } });
 
         expect(findNavItemLink().findByTestId('active-indicator').classes()).toContain(
-          'gl-bg-transparent',
+          'gl-opacity-0',
         );
       });
     });
@@ -148,7 +148,7 @@ describe('NavItem component', () => {
         createWrapper({ item: { title: 'Foo', link: '/foo', is_active: true } });
 
         expect(findNavItemLink().findByTestId('active-indicator').classes()).toContain(
-          'gl-bg-blue-500',
+          'gl-opacity-10',
         );
       });
     });

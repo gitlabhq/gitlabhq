@@ -21,7 +21,7 @@ This tutorial shows you how to:
 - Create a development environment outside of GitLab.
 - Connect a remote machine to the [Web IDE](../web_ide/index.md).
 
-To connect a remote machine to the Web IDE, you must:
+To connect a remote machine to the Web IDE, you'll:
 
 1. [Generate Let's Encrypt certificates](#generate-lets-encrypt-certificates).
 1. [Connect a development environment to the Web IDE](#connect-a-development-environment-to-the-web-ide).
@@ -112,7 +112,7 @@ Alternatively, you can pass the parameters from a URL and connect directly to th
 
 1. Go to that URL and enter the token you've fetched.
 
-You've done it! Your development environment now runs as a remote host that's connected to the Web IDE.
+You've done it! Your development environment now runs as a remote host that's connected to the [Web IDE](../web_ide/index.md).
 
 ## Related topics
 

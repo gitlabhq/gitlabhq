@@ -23,7 +23,7 @@ export default {
   computed: {
     releaseDate() {
       const { published_at } = this.feature;
-      const date = new Date(published_at);
+      const date = new Date(`${published_at}T00:00:00`); // eslint-disable-line camelcase
 
       if (!isValidDate(date) || date.getTime() === 0) {
         return '';

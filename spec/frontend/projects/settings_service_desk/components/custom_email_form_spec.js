@@ -10,7 +10,7 @@ describe('CustomEmailForm', () => {
 
   const defaultProps = {
     incomingEmail: 'incoming@example.com',
-    submitting: false,
+    isSubmitting: false,
   };
 
   const findForm = () => wrapper.find('form');
@@ -48,7 +48,7 @@ describe('CustomEmailForm', () => {
   });
 
   it('form inputs are disabled when submitting', () => {
-    createWrapper({ submitting: true });
+    createWrapper({ isSubmitting: true });
 
     expect(findCustomEmailInput().attributes('disabled')).toBeDefined();
     expect(findSmtpAddressInput().attributes('disabled')).toBeDefined();

@@ -111,8 +111,14 @@ module QA
         # @return [String]
         def host_ip
           docker_host = shell("docker context inspect --format='{{json .Endpoints.docker.Host}}'").delete('"')
-          ip = Addrinfo.tcp(URI(docker_host).host, nil).ip_address
+          hostname = URI(docker_host).host
+          # The docker host could be bound to a Unix socket, in which case as a URI it has no host
+          host = hostname.presence || Socket.gethostname
+          ip = Addrinfo.tcp(host, nil).ip_address
           ip == '0.0.0.0' ? '127.0.0.1' : ip
+        rescue SocketError
+          # If the host could not be resolved, fallback on localhost
+          '127.0.0.1'
         end
       end
     end

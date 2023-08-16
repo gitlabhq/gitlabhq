@@ -42599,6 +42599,9 @@ msgstr ""
 msgid "SecurityOrchestration|View policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|Vulnerabilities %{vulnerabilityStates}."
+msgstr ""
+
 msgid "SecurityOrchestration|Vulnerabilities are %{vulnerabilityStates}."
 msgstr ""
 
@@ -42650,6 +42653,12 @@ msgstr ""
 msgid "SecurityOrchestration|any security scanner finds"
 msgstr ""
 
+msgid "SecurityOrchestration|are false positives"
+msgstr ""
+
+msgid "SecurityOrchestration|are not false positives"
+msgstr ""
+
 msgid "SecurityOrchestration|branch"
 msgstr ""
 
@@ -42663,6 +42672,12 @@ msgid "SecurityOrchestration|group level branch input"
 msgstr ""
 
 msgid "SecurityOrchestration|group level branch selector"
+msgstr ""
+
+msgid "SecurityOrchestration|have a fix available"
+msgstr ""
+
+msgid "SecurityOrchestration|have no fix available"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"
@@ -43450,6 +43465,12 @@ msgstr ""
 msgid "ServiceAccount|User does not have permission to create a service account."
 msgstr ""
 
+msgid "ServiceDesk|%{customEmail} with SMTP host %{smtpAddress} is %{badgeStart}verified%{badgeEnd}"
+msgstr ""
+
+msgid "ServiceDesk|A connection to the specified host could not be made or an SSL issue occurred."
+msgstr ""
+
 msgid "ServiceDesk|A verification email has been sent to a sub-address of your custom email address. This can take up to 30 minutes. The screen refreshes automatically."
 msgstr ""
 
@@ -43457,6 +43478,9 @@ msgid "ServiceDesk|Cannot create custom email"
 msgstr ""
 
 msgid "ServiceDesk|Cannot update custom email"
+msgstr ""
+
+msgid "ServiceDesk|Check your forwarding settings and make sure the original email sender remains in the From header."
 msgstr ""
 
 msgid "ServiceDesk|Common ports are 587 when using TLS, and 25 when not."
@@ -43486,7 +43510,13 @@ msgstr ""
 msgid "ServiceDesk|Custom email already exists"
 msgstr ""
 
+msgid "ServiceDesk|Custom email disabled."
+msgstr ""
+
 msgid "ServiceDesk|Custom email does not exist"
+msgstr ""
+
+msgid "ServiceDesk|Custom email enabled."
 msgstr ""
 
 msgid "ServiceDesk|Custom email is required and must be a valid email address."
@@ -43498,7 +43528,19 @@ msgstr ""
 msgid "ServiceDesk|Enable Service Desk"
 msgstr ""
 
+msgid "ServiceDesk|Enable custom email address"
+msgstr ""
+
 msgid "ServiceDesk|For help setting up the Service Desk for your instance, please contact an administrator."
+msgstr ""
+
+msgid "ServiceDesk|Incorrect From header"
+msgstr ""
+
+msgid "ServiceDesk|Incorrect verification token"
+msgstr ""
+
+msgid "ServiceDesk|Invalid credentials"
 msgstr ""
 
 msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
@@ -43510,10 +43552,16 @@ msgstr ""
 msgid "ServiceDesk|Minimum 8 characters long."
 msgstr ""
 
+msgid "ServiceDesk|Or reset and connect a new custom email address to this Service Desk."
+msgstr ""
+
 msgid "ServiceDesk|Parameters missing"
 msgstr ""
 
 msgid "ServiceDesk|Please share your feedback on this feature in the %{linkStart}feedback issue%{linkEnd}"
+msgstr ""
+
+msgid "ServiceDesk|Please try again. Check email forwarding settings and credentials, and then restart verification."
 msgstr ""
 
 msgid "ServiceDesk|Reset custom email"
@@ -43529,6 +43577,9 @@ msgid "ServiceDesk|SMTP address is required and must be resolvable."
 msgstr ""
 
 msgid "ServiceDesk|SMTP host"
+msgstr ""
+
+msgid "ServiceDesk|SMTP host issue"
 msgstr ""
 
 msgid "ServiceDesk|SMTP password"
@@ -43570,6 +43621,15 @@ msgstr ""
 msgid "ServiceDesk|Service Desk setting or verification object missing"
 msgstr ""
 
+msgid "ServiceDesk|The given credentials (username and password) were rejected by the SMTP server."
+msgstr ""
+
+msgid "ServiceDesk|The received email didn't contain the verification token that was sent to your email address."
+msgstr ""
+
+msgid "ServiceDesk|The verification email wasn't received in time. There is a 30 minutes timeframe for verification emails to appear in your instance's Service Desk. Make sure that you have set up email forwarding correctly."
+msgstr ""
+
 msgid "ServiceDesk|To enable Service Desk on this instance, an instance administrator must first set up incoming email."
 msgstr ""
 
@@ -43582,10 +43642,19 @@ msgstr ""
 msgid "ServiceDesk|User cannot manage project."
 msgstr ""
 
+msgid "ServiceDesk|Verification email not received within timeframe"
+msgstr ""
+
+msgid "ServiceDesk|Verification failed"
+msgstr ""
+
 msgid "ServiceDesk|Verification started"
 msgstr ""
 
 msgid "ServiceDesk|Verify %{customEmail} with SMTP host %{smtpAddress}:"
+msgstr ""
+
+msgid "ServiceDesk|When enabled, Service Desk emails will be sent using the provided credentials."
 msgstr ""
 
 msgid "ServiceDesk|You are about to %{strongStart}disable the custom email address%{strongEnd} %{customEmail} %{strongStart}and delete its credentials%{strongEnd}."

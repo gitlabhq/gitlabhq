@@ -6,7 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ServiceDeskRoot from '~/projects/settings_service_desk/components/service_desk_root.vue';
 import ServiceDeskSetting from '~/projects/settings_service_desk/components/service_desk_setting.vue';
-import CustomEmail from '~/projects/settings_service_desk/components/custom_email.vue';
+import CustomEmailWrapper from '~/projects/settings_service_desk/components/custom_email_wrapper.vue';
 
 describe('ServiceDeskRoot', () => {
   let axiosMock;
@@ -192,12 +192,12 @@ describe('ServiceDeskRoot', () => {
     });
   });
 
-  describe('CustomEmail component', () => {
+  describe('CustomEmailWrapper component', () => {
     it('is rendered', () => {
       wrapper = createComponent();
 
-      expect(wrapper.findComponent(CustomEmail).exists()).toBe(true);
-      expect(wrapper.findComponent(CustomEmail).props()).toEqual({
+      expect(wrapper.findComponent(CustomEmailWrapper).exists()).toBe(true);
+      expect(wrapper.findComponent(CustomEmailWrapper).props()).toEqual({
         incomingEmail: provideData.initialIncomingEmail,
         customEmailEndpoint: provideData.customEmailEndpoint,
       });
@@ -209,7 +209,7 @@ describe('ServiceDeskRoot', () => {
       });
 
       it('is not rendered', () => {
-        expect(wrapper.findComponent(CustomEmail).exists()).toBe(false);
+        expect(wrapper.findComponent(CustomEmailWrapper).exists()).toBe(false);
       });
     });
 
@@ -219,7 +219,7 @@ describe('ServiceDeskRoot', () => {
       });
 
       it('is not rendered', () => {
-        expect(wrapper.findComponent(CustomEmail).exists()).toBe(false);
+        expect(wrapper.findComponent(CustomEmailWrapper).exists()).toBe(false);
       });
     });
 
@@ -229,7 +229,7 @@ describe('ServiceDeskRoot', () => {
       });
 
       it('is not rendered', () => {
-        expect(wrapper.findComponent(CustomEmail).exists()).toBe(false);
+        expect(wrapper.findComponent(CustomEmailWrapper).exists()).toBe(false);
       });
     });
   });

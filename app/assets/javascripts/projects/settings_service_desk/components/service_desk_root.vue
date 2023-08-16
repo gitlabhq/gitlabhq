@@ -7,7 +7,7 @@ import { __, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ServiceDeskSetting from './service_desk_setting.vue';
 
-const CustomEmail = () => import('./custom_email.vue');
+const CustomEmailWrapper = () => import('./custom_email_wrapper.vue');
 
 export default {
   serviceDeskEmailHelpPath: helpPagePath('/user/project/service_desk.html', {
@@ -18,7 +18,7 @@ export default {
     GlSprintf,
     GlLink,
     ServiceDeskSetting,
-    CustomEmail,
+    CustomEmailWrapper,
   },
   directives: {
     SafeHtml,
@@ -77,7 +77,7 @@ export default {
     };
   },
   computed: {
-    showCustomEmail() {
+    showCustomEmailWrapper() {
       return this.glFeatures.serviceDeskCustomEmail && this.isEnabled && this.isIssueTrackerEnabled;
     },
   },
@@ -192,8 +192,8 @@ export default {
       @save="onSaveTemplate"
       @toggle="onEnableToggled"
     />
-    <custom-email
-      v-if="showCustomEmail"
+    <custom-email-wrapper
+      v-if="showCustomEmailWrapper"
       :incoming-email="incomingEmail"
       :custom-email-endpoint="customEmailEndpoint"
     />

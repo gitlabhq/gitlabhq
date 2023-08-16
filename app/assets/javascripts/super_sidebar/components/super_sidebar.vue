@@ -131,7 +131,9 @@ export default {
         />
         <trial-status-popover />
       </div>
-      <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
+      <div
+        class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
+      >
         <div
           class="gl-flex-grow-1"
           :class="{ 'gl-overflow-auto': !sidebarState.contextSwitcherOpen }"
