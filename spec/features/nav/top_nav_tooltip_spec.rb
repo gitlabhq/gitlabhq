@@ -11,7 +11,7 @@ RSpec.describe 'top nav tooltips', :js, feature_category: :navigation do
   end
 
   it 'clicking new dropdown hides tooltip', :aggregate_failures,
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/382786' do
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/382786' do
     btn = '#js-onboarding-new-project-link'
 
     page.find(btn).hover

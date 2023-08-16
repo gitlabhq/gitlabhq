@@ -45,10 +45,13 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       context 'when deleted user is present as both author and merge_user' do
         include_examples 'migrating records to the ghost user', MergeRequest, [:author, :merge_user] do
           let(:created_record) do
-            create(:merge_request, source_project: project,
-                                   author: user,
-                                   merge_user: user,
-                                   target_branch: "first")
+            create(
+              :merge_request,
+              source_project: project,
+              author: user,
+              merge_user: user,
+              target_branch: "first"
+            )
           end
         end
       end
@@ -56,9 +59,12 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       context 'when deleted user is present only as both merge_user' do
         include_examples 'migrating records to the ghost user', MergeRequest, [:merge_user] do
           let(:created_record) do
-            create(:merge_request, source_project: project,
-                                   merge_user: user,
-                                   target_branch: "first")
+            create(
+              :merge_request,
+              source_project: project,
+              merge_user: user,
+              target_branch: "first"
+            )
           end
         end
       end
@@ -212,11 +218,14 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       end
 
       it 'nullifies merge request associations', :aggregate_failures do
-        merge_request = create(:merge_request, source_project: project,
-                                               target_project: project,
-                                               assignee: user,
-                                               updated_by: user,
-                                               merge_user: user)
+        merge_request = create(
+          :merge_request,
+          source_project: project,
+          target_project: project,
+          assignee: user,
+          updated_by: user,
+          merge_user: user
+        )
         merge_request.metrics.update!(merged_by: user, latest_closed_by: user)
         merge_request.reviewers = [user]
         merge_request.assignees = [user]
@@ -242,10 +251,18 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
           nullify_in_batches_regexp(:merge_request_metrics, :latest_closed_by_id, user)
         ]
 
-        expected_queries += delete_in_batches_regexps(:merge_request_assignees, :user_id, user,
-                                                      merge_request.assignees)
-        expected_queries += delete_in_batches_regexps(:merge_request_reviewers, :user_id, user,
-                                                      merge_request.reviewers)
+        expected_queries += delete_in_batches_regexps(
+          :merge_request_assignees,
+          :user_id,
+          user,
+          merge_request.assignees
+        )
+        expected_queries += delete_in_batches_regexps(
+          :merge_request_reviewers,
+          :user_id,
+          user,
+          merge_request.reviewers
+        )
 
         expect(query_recorder.log).to include(*expected_queries)
       end
@@ -322,8 +339,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
               raise_error(Users::MigrateRecordsToGhostUserService::DestroyError, 'foo'))
             expect(snippet.reload).not_to be_nil
             expect(
-              gitlab_shell.repository_exists?(snippet.repository_storage,
-                                              "#{snippet.disk_path}.git")
+              gitlab_shell.repository_exists?(snippet.repository_storage, "#{snippet.disk_path}.git")
             ).to be(true)
           end
         end

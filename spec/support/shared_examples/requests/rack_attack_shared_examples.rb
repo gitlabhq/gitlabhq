@@ -148,6 +148,12 @@ RSpec.shared_examples 'rate-limited token requests' do
         expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
+      matched = throttle_types[throttle_setting_prefix]
+
+      if request_method == 'GET' && throttle_setting_prefix == 'throttle_protected_paths'
+        matched = 'throttle_authenticated_get_protected_paths_api'
+      end
+
       arguments = a_hash_including({
         message: 'Rack_Attack',
         status: 429,
@@ -155,7 +161,7 @@ RSpec.shared_examples 'rate-limited token requests' do
         remote_ip: '127.0.0.1',
         request_method: request_method,
         path: request_args.first,
-        matched: throttle_types[throttle_setting_prefix]
+        matched: matched
       }.merge(log_data))
 
       expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
@@ -166,7 +172,14 @@ RSpec.shared_examples 'rate-limited token requests' do
     end
 
     it_behaves_like 'tracking when dry-run mode is set' do
-      let(:throttle_name) { throttle_types[throttle_setting_prefix] }
+      let(:throttle_name) do
+        name = throttle_types[throttle_setting_prefix]
+        if request_method == 'GET' && throttle_setting_prefix == 'throttle_protected_paths'
+          name = 'throttle_authenticated_get_protected_paths_api'
+        end
+
+        name
+      end
 
       def do_request
         make_request(request_args)
@@ -315,7 +328,13 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
         expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
-      arguments = a_hash_including({
+      matched = throttle_types[throttle_setting_prefix]
+
+      if request_method == 'GET' && throttle_setting_prefix == 'throttle_protected_paths'
+        matched = 'throttle_authenticated_get_protected_paths_web'
+      end
+
+      arguments = a_hash_including(
         message: 'Rack_Attack',
         status: 429,
         env: :throttle,
@@ -324,15 +343,22 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
         path: url_that_requires_authentication,
         user_id: user.id,
         'meta.user' => user.username,
-        matched: throttle_types[throttle_setting_prefix]
-      })
+        matched: matched
+      )
 
       expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
       expect { request_authenticated_web_url }.not_to exceed_query_limit(control_count)
     end
 
     it_behaves_like 'tracking when dry-run mode is set' do
-      let(:throttle_name) { throttle_types[throttle_setting_prefix] }
+      let(:throttle_name) do
+        name = throttle_types[throttle_setting_prefix]
+        if request_method == 'GET' && throttle_setting_prefix == 'throttle_protected_paths'
+          name = 'throttle_authenticated_get_protected_paths_web'
+        end
+
+        name
+      end
 
       def do_request
         request_authenticated_web_url

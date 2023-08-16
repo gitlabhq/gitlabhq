@@ -83,6 +83,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['allow_account_deletion']).to eq(true)
       expect(json_response['gitlab_shell_operation_limit']).to eq(600)
       expect(json_response['namespace_aggregation_schedule_lease_duration_in_seconds']).to eq(300)
+      expect(json_response['default_branch_protection_defaults']).to be_kind_of(Hash)
     end
   end
 
@@ -156,6 +157,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             diff_max_files: 2000,
             diff_max_lines: 50000,
             default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
+            default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys,
             local_markdown_version: 3,
             allow_local_requests_from_web_hooks_and_services: true,
             allow_local_requests_from_system_hooks: false,
@@ -236,6 +238,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['diff_max_files']).to eq(2000)
         expect(json_response['diff_max_lines']).to eq(50000)
         expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
         expect(json_response['local_markdown_version']).to eq(3)
         expect(json_response['allow_local_requests_from_web_hooks_and_services']).to eq(true)
         expect(json_response['allow_local_requests_from_system_hooks']).to eq(false)

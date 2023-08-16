@@ -68,7 +68,7 @@ export default {
     size: {
       type: String,
       required: false,
-      default: '',
+      default: null,
     },
   },
   data() {

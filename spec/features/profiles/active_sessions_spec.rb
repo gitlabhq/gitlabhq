@@ -57,9 +57,7 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state, fe
       using_session :session1 do
         visit profile_active_sessions_path
 
-        expect(page).to(
-          have_selector('ul.list-group li.list-group-item', text: 'Signed in on',
-                                                            count: 2))
+        expect(page).to(have_selector('ul.list-group li.list-group-item', text: 'Signed in on', count: 2))
 
         expect(page).to have_content(
           '127.0.0.1 ' \

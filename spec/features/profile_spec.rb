@@ -38,8 +38,7 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
 
       expect(page).to have_content('Account scheduled for removal')
       expect(
-        Users::GhostUserMigration.where(user: user,
-                                        initiator_user: user)
+        Users::GhostUserMigration.where(user: user, initiator_user: user)
       ).to be_exists
     end
 

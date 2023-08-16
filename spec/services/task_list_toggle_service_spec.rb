@@ -64,9 +64,12 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
   end
 
   it 'checks Task 1' do
-    toggler = described_class.new(markdown, markdown_html,
-                                  toggle_as_checked: true,
-                                  line_source: '* [ ] Task 1', line_number: 1)
+    toggler = described_class.new(
+      markdown, markdown_html,
+      toggle_as_checked: true,
+      line_source: '* [ ] Task 1',
+      line_number: 1
+    )
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[0]).to eq "* [x] Task 1\n"
@@ -74,9 +77,12 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
   end
 
   it 'unchecks Item 1' do
-    toggler = described_class.new(markdown, markdown_html,
-                                  toggle_as_checked: false,
-                                  line_source: '1. [X] Item 1', line_number: 6)
+    toggler = described_class.new(
+      markdown, markdown_html,
+      toggle_as_checked: false,
+      line_source: '1. [X] Item 1',
+      line_number: 6
+    )
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[5]).to eq "1. [ ] Item 1\n"
@@ -84,9 +90,12 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
   end
 
   it 'checks task in loose list' do
-    toggler = described_class.new(markdown, markdown_html,
-                                  toggle_as_checked: true,
-                                  line_source: '- [ ] loose list', line_number: 9)
+    toggler = described_class.new(
+      markdown, markdown_html,
+      toggle_as_checked: true,
+      line_source: '- [ ] loose list',
+      line_number: 9
+    )
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[8]).to eq "- [x] loose list\n"
@@ -94,9 +103,12 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
   end
 
   it 'checks task with no-break space' do
-    toggler = described_class.new(markdown, markdown_html,
-                                  toggle_as_checked: true,
-                                  line_source: '+ [ ] No-break space (U+00A0)', line_number: 13)
+    toggler = described_class.new(
+      markdown, markdown_html,
+      toggle_as_checked: true,
+      line_source: '+ [ ] No-break space (U+00A0)',
+      line_number: 13
+    )
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[12]).to eq "+ [x] No-break space (U+00A0)\n"
@@ -104,9 +116,12 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
   end
 
   it 'checks Another item' do
-    toggler = described_class.new(markdown, markdown_html,
-                                  toggle_as_checked: true,
-                                  line_source: '2) [ ] Another item', line_number: 15)
+    toggler = described_class.new(
+      markdown, markdown_html,
+      toggle_as_checked: true,
+      line_source: '2) [ ] Another item',
+      line_number: 15
+    )
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[14]).to eq "2) [x] Another item"
@@ -114,18 +129,25 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
   end
 
   it 'returns false if line_source does not match the text' do
-    toggler = described_class.new(markdown, markdown_html,
-                                  toggle_as_checked: false,
-                                  line_source: '* [x] Task Added', line_number: 2)
+    toggler = described_class.new(
+      markdown, markdown_html,
+      toggle_as_checked: false,
+      line_source: '* [x] Task Added',
+      line_number: 2
+    )
 
     expect(toggler.execute).to be_falsey
   end
 
   it 'tolerates \r\n line endings' do
     rn_markdown = markdown.gsub("\n", "\r\n")
-    toggler = described_class.new(rn_markdown, markdown_html,
-                                  toggle_as_checked: true,
-                                  line_source: '* [ ] Task 1', line_number: 1)
+    toggler = described_class.new(
+      rn_markdown,
+      markdown_html,
+      toggle_as_checked: true,
+      line_source: '* [ ] Task 1',
+      line_number: 1
+    )
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[0]).to eq "* [x] Task 1\r\n"
@@ -133,17 +155,25 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
   end
 
   it 'returns false if markdown is nil' do
-    toggler = described_class.new(nil, markdown_html,
-                                  toggle_as_checked: false,
-                                  line_source: '* [x] Task Added', line_number: 2)
+    toggler = described_class.new(
+      nil,
+      markdown_html,
+      toggle_as_checked: false,
+      line_source: '* [x] Task Added',
+      line_number: 2
+    )
 
     expect(toggler.execute).to be_falsey
   end
 
   it 'returns false if markdown_html is nil' do
-    toggler = described_class.new(markdown, nil,
-                                  toggle_as_checked: false,
-                                  line_source: '* [x] Task Added', line_number: 2)
+    toggler = described_class.new(
+      markdown,
+      nil,
+      toggle_as_checked: false,
+      line_source: '* [x] Task Added',
+      line_number: 2
+    )
 
     expect(toggler.execute).to be_falsey
   end
@@ -156,9 +186,13 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
       EOT
 
     markdown_html = parse_markdown(markdown)
-    toggler = described_class.new(markdown, markdown_html,
-                                  toggle_as_checked: true,
-                                  line_source: '> > * [ ] Task 1', line_number: 1)
+    toggler = described_class.new(
+      markdown,
+      markdown_html,
+      toggle_as_checked: true,
+      line_source: '> > * [ ] Task 1',
+      line_number: 1
+    )
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[0]).to eq "> > * [x] Task 1\n"
@@ -177,9 +211,13 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
       EOT
 
     markdown_html = parse_markdown(markdown)
-    toggler = described_class.new(markdown, markdown_html,
-                                  toggle_as_checked: true,
-                                  line_source: '* [ ] Task 1', line_number: 5)
+    toggler = described_class.new(
+      markdown,
+      markdown_html,
+      toggle_as_checked: true,
+      line_source: '* [ ] Task 1',
+      line_number: 5
+    )
 
     expect(toggler.execute).to be_truthy
     expect(toggler.updated_markdown.lines[4]).to eq "* [x] Task 1\n"
@@ -195,9 +233,13 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
         EOT
 
       markdown_html = parse_markdown(markdown)
-      toggler = described_class.new(markdown, markdown_html,
-                                    toggle_as_checked: true,
-                                    line_source: '- - [ ] Task 1', line_number: 1)
+      toggler = described_class.new(
+        markdown,
+        markdown_html,
+        toggle_as_checked: true,
+        line_source: '- - [ ] Task 1',
+        line_number: 1
+      )
 
       expect(toggler.execute).to be_truthy
       expect(toggler.updated_markdown.lines[0]).to eq "- - [x] Task 1\n"
@@ -212,9 +254,13 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
         EOT
 
       markdown_html = parse_markdown(markdown)
-      toggler = described_class.new(markdown, markdown_html,
-                                    toggle_as_checked: true,
-                                    line_source: '1. - [ ] Task 1', line_number: 1)
+      toggler = described_class.new(
+        markdown,
+        markdown_html,
+        toggle_as_checked: true,
+        line_source: '1. - [ ] Task 1',
+        line_number: 1
+      )
 
       expect(toggler.execute).to be_truthy
       expect(toggler.updated_markdown.lines[0]).to eq "1. - [x] Task 1\n"

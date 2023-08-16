@@ -62,8 +62,7 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
 
   context 'adding a new note on a Merge Request' do
     let(:noteable) do
-      create(:merge_request, source_project: project,
-                             target_project: project, author: author)
+      create(:merge_request, source_project: project, target_project: project, author: author)
     end
 
     before do

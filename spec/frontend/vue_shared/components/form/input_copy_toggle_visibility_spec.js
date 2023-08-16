@@ -1,5 +1,4 @@
 import { nextTick } from 'vue';
-import { merge } from 'lodash';
 import { GlFormInputGroup } from '@gitlab/ui';
 
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
@@ -13,15 +12,14 @@ describe('InputCopyToggleVisibility', () => {
 
   const valueProp = 'hR8x1fuJbzwu5uFKLf9e';
 
-  const createComponent = (options = {}) => {
-    wrapper = mountExtended(
-      InputCopyToggleVisibility,
-      merge({}, options, {
-        directives: {
-          GlTooltip: createMockDirective('gl-tooltip'),
-        },
-      }),
-    );
+  const createComponent = ({ props, ...options } = {}) => {
+    wrapper = mountExtended(InputCopyToggleVisibility, {
+      propsData: props,
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
+      ...options,
+    });
   };
 
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
@@ -68,7 +66,7 @@ describe('InputCopyToggleVisibility', () => {
   describe('when `value` prop is passed', () => {
     beforeEach(() => {
       createComponent({
-        propsData: {
+        props: {
           value: valueProp,
         },
       });
@@ -116,7 +114,7 @@ describe('InputCopyToggleVisibility', () => {
     describe('visibility toggle button', () => {
       beforeEach(() => {
         createComponent({
-          propsData: {
+          props: {
             value: valueProp,
             readonly: true,
           },
@@ -170,7 +168,7 @@ describe('InputCopyToggleVisibility', () => {
       const label = 'My label';
       beforeEach(() => {
         createComponent({
-          propsData: {
+          props: {
             value: valueProp,
             initialVisibility: true,
             readonly: true,
@@ -215,7 +213,7 @@ describe('InputCopyToggleVisibility', () => {
     describe('and no `value` prop is passed', () => {
       beforeEach(() => {
         createComponent({
-          propsData: {
+          props: {
             value: '',
             readonly: false,
           },
@@ -237,7 +235,7 @@ describe('InputCopyToggleVisibility', () => {
     describe('and `value` prop is passed', () => {
       beforeEach(() => {
         createComponent({
-          propsData: {
+          props: {
             value: valueProp,
             readonly: false,
           },
@@ -328,7 +326,7 @@ describe('InputCopyToggleVisibility', () => {
   describe('when `showToggleVisibilityButton` is `false`', () => {
     beforeEach(() => {
       createComponent({
-        propsData: {
+        props: {
           value: valueProp,
           showToggleVisibilityButton: false,
         },
@@ -350,7 +348,7 @@ describe('InputCopyToggleVisibility', () => {
   describe('when `showCopyButton` is `false`', () => {
     beforeEach(() => {
       createComponent({
-        propsData: {
+        props: {
           showCopyButton: false,
         },
       });
@@ -361,9 +359,23 @@ describe('InputCopyToggleVisibility', () => {
     });
   });
 
+  describe('when `size` is used', () => {
+    it('passes no `size` prop', () => {
+      createComponent();
+
+      expect(findFormInput().props('size')).toBe(null);
+    });
+
+    it('passes `size` prop to the input', () => {
+      createComponent({ props: { size: 'md' } });
+
+      expect(findFormInput().props('size')).toBe('md');
+    });
+  });
+
   it('passes `formInputGroupProps` prop only to the input', () => {
     createComponent({
-      propsData: {
+      props: {
         formInputGroupProps: {
           name: 'Foo bar',
           'data-qa-selector': 'Foo bar',
@@ -389,7 +401,7 @@ describe('InputCopyToggleVisibility', () => {
 
   it('passes `copyButtonTitle` prop to `ClipboardButton`', () => {
     createComponent({
-      propsData: {
+      props: {
         copyButtonTitle: 'Copy token',
       },
     });

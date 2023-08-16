@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       = f.gitlab_ui_checkbox_component :throttle_protected_paths_enabled,
-        _('Enable rate limiting for POST requests to the specified paths'),
+        _('Enable rate limiting for requests to the specified paths'),
         help_text: _('Helps reduce request volume for protected paths.')
     .form-group
       = f.label :throttle_protected_paths_requests_per_period, 'Maximum requests per period per user', class: 'label-bold'
@@ -14,8 +14,12 @@
       = f.number_field :throttle_protected_paths_period_in_seconds, class: 'form-control gl-form-input'
     .form-group
       = f.label :protected_paths, class: 'label-bold' do
-        = _('Paths to protect with rate limiting')
+        = _('Paths with rate limiting for POST requests')
       = f.text_area :protected_paths_raw, placeholder: '/users/sign_in,/users/password', class: 'form-control gl-form-input', rows: 10
+    .form-group
+      = f.label :protected_paths_for_get_request, class: 'label-bold' do
+        = _('Paths with rate limiting for GET requests')
+      = f.text_area :protected_paths_for_get_request_raw, class: 'form-control gl-form-input', rows: 10
       %span.form-text.text-muted
         - relative_url_link = 'https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab'
         - relative_url_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: relative_url_link }

@@ -118,11 +118,13 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
       let!(:commit) { project.commit('ssh-signed-commit') }
 
       let!(:signature) do
-        create(:ssh_signature,
-               project: project,
-               key: key,
-               key_fingerprint_sha256: key.fingerprint_sha256,
-               commit_sha: commit.sha)
+        create(
+          :ssh_signature,
+          project: project,
+          key: key,
+          key_fingerprint_sha256: key.fingerprint_sha256,
+          commit_sha: commit.sha
+        )
       end
 
       before do

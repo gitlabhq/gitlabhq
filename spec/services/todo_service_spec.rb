@@ -1109,19 +1109,23 @@ RSpec.describe TodoService, feature_category: :team_planning do
     end
 
     let(:note) do
-      build(:diff_note_on_design,
-             noteable: design,
-             author: author,
-             note: "Hey #{john_doe.to_reference}")
+      build(
+        :diff_note_on_design,
+        noteable: design,
+        author: author,
+        note: "Hey #{john_doe.to_reference}"
+      )
     end
 
     it 'creates a todo for mentioned user on new diff note' do
       service.new_note(note, author)
 
-      should_create_todo(user: john_doe,
-                         target: design,
-                         action: Todo::MENTIONED,
-                         note: note)
+      should_create_todo(
+        user: john_doe,
+        target: design,
+        action: Todo::MENTIONED,
+        note: note
+      )
     end
   end
 

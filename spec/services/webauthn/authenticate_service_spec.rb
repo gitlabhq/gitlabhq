@@ -15,11 +15,13 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
 
     webauthn_credential = WebAuthn::Credential.from_create(create_result)
 
-    registration = WebauthnRegistration.new(credential_xid: Base64.strict_encode64(webauthn_credential.raw_id),
-                                            public_key: webauthn_credential.public_key,
-                                            counter: 0,
-                                            name: 'name',
-                                            user_id: user.id)
+    registration = WebauthnRegistration.new(
+      credential_xid: Base64.strict_encode64(webauthn_credential.raw_id),
+      public_key: webauthn_credential.public_key,
+      counter: 0,
+      name: 'name',
+      user_id: user.id
+    )
     registration.save!
   end
 

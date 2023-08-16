@@ -4,15 +4,25 @@
 module ClickHouse
   class QueryBuilder
     attr_reader :table
+    attr_accessor :conditions, :manager
+
+    VALID_NODES = [
+      Arel::Nodes::In,
+      Arel::Nodes::Equality,
+      Arel::Nodes::LessThan,
+      Arel::Nodes::LessThanOrEqual,
+      Arel::Nodes::GreaterThan,
+      Arel::Nodes::GreaterThanOrEqual
+    ].freeze
 
     def initialize(table_name)
       @table = Arel::Table.new(table_name)
-      @manager = Arel::SelectManager.new(Arel::Table.engine)
-      @manager.from(@table)
-      @manager.project(Arel.star)
+      @manager = Arel::SelectManager.new(Arel::Table.engine).from(@table).project(Arel.star)
+      @conditions = []
     end
 
-    # The `where` method currently does not support range queries like ActiveRecord.
+    # The `where` method currently does only supports IN and equal to queries along
+    # with above listed VALID_NODES.
     # For example, using a range (start_date..end_date) will result in incorrect SQL.
     # If you need to query a range, use greater than and less than conditions with Arel.
     #
@@ -24,41 +34,48 @@ module ClickHouse
     #   query.where(entity_id: [1,2,3]).to_sql
     #   "SELECT * FROM \"table\" WHERE \"table\".\"entity_id\" IN (1, 2, 3)"
     #
-    # Range support could be considered for future iterations.
+    # Range support and more `Arel::Nodes` could be considered for future iterations.
+    # @return [ClickHouse::QueryBuilder] New instance of query builder.
     def where(conditions)
+      validate_condition_type!(conditions)
+
+      new_instance = deep_clone
+
       if conditions.is_a?(Arel::Nodes::Node)
-        manager.where(conditions)
+        new_instance.conditions << conditions
       else
-        conditions.each do |key, value|
-          if value.is_a?(Array)
-            manager.where(table[key].in(value))
-          else
-            manager.where(table[key].eq(value))
-          end
-        end
+        add_conditions_to(new_instance, conditions)
       end
 
-      self
+      new_instance
     end
 
     def select(*fields)
-      manager.projections = []
-      fields.each do |field|
-        manager.project(table[field])
+      new_instance = deep_clone
+
+      existing_fields = new_instance.manager.projections.filter_map do |projection|
+        if projection.is_a?(Arel::Attributes::Attribute)
+          projection.name.to_s
+        elsif projection.to_s == '*'
+          nil
+        end
       end
 
-      self
+      new_projections = existing_fields + fields.map(&:to_s)
+
+      new_instance.manager.projections = new_projections.uniq.map { |field| new_instance.table[field] }
+      new_instance
     end
 
     def order(field, direction = :asc)
-      direction = direction.to_s.downcase
-      unless %w[asc desc].include?(direction)
-        raise ArgumentError, "Invalid order direction '#{direction}'. Must be :asc or :desc"
-      end
+      validate_order_direction!(direction)
 
-      manager.order(table[field].public_send(direction)) # rubocop:disable GitlabSecurity/PublicSend
+      new_instance = deep_clone
 
-      self
+      new_order = new_instance.table[field].public_send(direction.to_s.downcase) # rubocop:disable GitlabSecurity/PublicSend
+      new_instance.manager.order(new_order)
+
+      new_instance
     end
 
     def limit(count)
@@ -72,13 +89,49 @@ module ClickHouse
     end
 
     def to_sql
+      apply_conditions!
       manager.to_sql
+    end
+
+    def to_redacted_sql
+      ::ClickHouse::Redactor.redact(self)
     end
 
     private
 
-    attr_reader :manager
+    def validate_condition_type!(condition)
+      return unless condition.is_a?(Arel::Nodes::Node) && VALID_NODES.exclude?(condition.class)
+
+      raise ArgumentError, "Unsupported Arel node type for QueryBuilder: #{condition.class.name}"
+    end
+
+    def add_conditions_to(instance, conditions)
+      conditions.each do |key, value|
+        instance.conditions << if value.is_a?(Array)
+                                 instance.table[key].in(value)
+                               else
+                                 instance.table[key].eq(value)
+                               end
+      end
+    end
+
+    def deep_clone
+      new_instance = self.class.new(table.name)
+      new_instance.manager = manager.clone
+      new_instance.conditions = conditions.map(&:clone)
+      new_instance
+    end
+
+    def apply_conditions!
+      manager.constraints.clear
+      conditions.each { |condition| manager.where(condition) }
+    end
+
+    def validate_order_direction!(direction)
+      return if %w[asc desc].include?(direction.to_s.downcase)
+
+      raise ArgumentError, "Invalid order direction '#{direction}'. Must be :asc or :desc"
+    end
   end
 end
-
 # rubocop:enable CodeReuse/ActiveRecord

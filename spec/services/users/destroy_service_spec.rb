@@ -16,9 +16,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
         expect { service.execute(user) }
           .to(
             change do
-              Users::GhostUserMigration.where(user: user,
-                                              initiator_user: admin)
-                                       .exists?
+              Users::GhostUserMigration.where(user: user, initiator_user: admin).exists?
             end.from(false).to(true))
       end
 
@@ -112,8 +110,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
 
           it 'removes repository' do
             expect(
-              gitlab_shell.repository_exists?(project.repository_storage,
-                                              "#{project.disk_path}.git")
+              gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")
             ).to be_falsey
           end
         end
@@ -123,8 +120,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
 
           it 'removes repository' do
             expect(
-              gitlab_shell.repository_exists?(project.repository_storage,
-                                              "#{project.disk_path}.git")
+              gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")
             ).to be_falsey
           end
         end
@@ -137,8 +133,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
           end
 
           expect { service.execute(user) }
-            .to raise_error(Users::DestroyService::DestroyError,
-                            "Project #{project.id} can't be deleted")
+            .to raise_error(Users::DestroyService::DestroyError, "Project #{project.id} can't be deleted")
         end
       end
     end
@@ -217,9 +212,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
         expect { described_class.new(admin).execute(user) }
           .to(
             change do
-              Users::GhostUserMigration.where(user: user,
-                                              initiator_user: admin)
-                                       .exists?
+              Users::GhostUserMigration.where(user: user, initiator_user: admin).exists?
             end.from(false).to(true))
       end
     end
@@ -236,9 +229,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
       expect { described_class.new(user).execute(user) }
         .to(
           change do
-            Users::GhostUserMigration.where(user: user,
-                                            initiator_user: user)
-                                     .exists?
+            Users::GhostUserMigration.where(user: user, initiator_user: user).exists?
           end.from(false).to(true))
     end
 
@@ -250,9 +241,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
                        .execute(other_user, skip_authorization: true)
       end.to(
         change do
-          Users::GhostUserMigration.where(user: other_user,
-                                          initiator_user: user )
-                                   .exists?
+          Users::GhostUserMigration.where(user: other_user, initiator_user: user).exists?
         end.from(false).to(true))
     end
   end

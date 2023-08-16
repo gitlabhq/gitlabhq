@@ -40,7 +40,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
-    push_frontend_feature_flag(:ci_namespace_catalog_experimental, @project)
     push_frontend_feature_flag(:service_desk_custom_email, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)

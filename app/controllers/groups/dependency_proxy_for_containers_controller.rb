@@ -172,12 +172,6 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def manifest_header
-    accepted_types = ::DependencyProxy::Manifest::ACCEPTED_TYPES
-
-    if Feature.enabled?(:add_docker_distribution_manifest_list_v2_type_to_accept_header, group)
-      accepted_types += [ContainerRegistry::BaseClient::DOCKER_DISTRIBUTION_MANIFEST_LIST_V2_TYPE]
-    end
-
-    token_header.merge(Accept: accepted_types)
+    token_header.merge(Accept: ::DependencyProxy::Manifest::ACCEPTED_TYPES)
   end
 end

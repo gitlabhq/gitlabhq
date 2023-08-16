@@ -200,7 +200,7 @@ Example responses:
 ```
 
 Users on [GitLab Ultimate](https://about.gitlab.com/pricing/) also see the `new_epic`
-parameter:
+parameter for global and group-level notification settings:
 
 ```json
 {

@@ -12,8 +12,13 @@ RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService, feature_ca
   let(:params) { { description: 'updated description' } }
   let(:current_user) { author }
   let(:work_item) do
-    create(:work_item, author: author, project: project, description: 'old description',
-                       last_edited_at: Date.yesterday, last_edited_by: random_user
+    create(
+      :work_item,
+      author: author,
+      project: project,
+      description: 'old description',
+      last_edited_at: Date.yesterday,
+      last_edited_by: random_user
     )
   end
 

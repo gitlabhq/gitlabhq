@@ -10689,13 +10689,7 @@ msgstr ""
 msgid "Cluster cache cleared."
 msgstr ""
 
-msgid "Cluster is required for Stages::ClusterEndpointInserter"
-msgstr ""
-
 msgid "Cluster level"
-msgstr ""
-
-msgid "Cluster type must be specified for Stages::ClusterEndpointInserter"
 msgstr ""
 
 msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
@@ -17856,7 +17850,7 @@ msgstr ""
 msgid "Enable or disable version check and Service Ping."
 msgstr ""
 
-msgid "Enable rate limiting for POST requests to the specified paths"
+msgid "Enable rate limiting for requests to the specified paths"
 msgstr ""
 
 msgid "Enable reCAPTCHA"
@@ -20495,33 +20489,6 @@ msgid "Free top-level groups will soon be limited to %{free_users_limit} users a
 msgstr ""
 
 msgid "Free trial will expire in %{days}"
-msgstr ""
-
-msgid "FreeUserCap|Alternatively you can upgrade to GitLab Premium or GitLab Ultimate:"
-msgstr ""
-
-msgid "FreeUserCap|Explore paid plans"
-msgstr ""
-
-msgid "FreeUserCap|Explore paid plans:"
-msgstr ""
-
-msgid "FreeUserCap|It looks like you've reached your limit of %{free_user_limit} members for \"%{namespace_name}\", according to the check we ran on %{date_time}. You can't add any more, but you can manage your existing members, for example, by removing inactive members and replacing them with new members."
-msgstr ""
-
-msgid "FreeUserCap|Manage members"
-msgstr ""
-
-msgid "FreeUserCap|Manage members:"
-msgstr ""
-
-msgid "FreeUserCap|To get more members %{trial_link_start}start a trial %{trial_link_end} or %{upgrade_link_start}upgrade%{upgrade_link_end} to GitLab Premium or GitLab Ultimate."
-msgstr ""
-
-msgid "FreeUserCap|To get more members start a trial:"
-msgstr ""
-
-msgid "FreeUserCap|You've reached your member limit!"
 msgstr ""
 
 msgid "Freeze end"
@@ -25634,9 +25601,6 @@ msgid "Invalid tags"
 msgstr ""
 
 msgid "Invalid two-factor code."
-msgstr ""
-
-msgid "Invalid yaml"
 msgstr ""
 
 msgid "Invalidated"
@@ -33811,7 +33775,10 @@ msgstr ""
 msgid "Path:"
 msgstr ""
 
-msgid "Paths to protect with rate limiting"
+msgid "Paths with rate limiting for GET requests"
+msgstr ""
+
+msgid "Paths with rate limiting for POST requests"
 msgstr ""
 
 msgid "Pause"
@@ -56640,6 +56607,9 @@ msgid "must be specified"
 msgstr ""
 
 msgid "must be unique by status and elapsed time within a policy"
+msgstr ""
+
+msgid "must be unique. This CA has already been configured for another namespace."
 msgstr ""
 
 msgid "must belong to same project of its requirement object."

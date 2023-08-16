@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::BatchCount do
   let_it_be(:fallback) { ::Gitlab::Database::BatchCounter::FALLBACK }
   let_it_be(:small_batch_size) { calculate_batch_size(::Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE) }
+  let_it_be(:max_allowed_loops) { ::Gitlab::Database::BatchCounter::MAX_ALLOWED_LOOPS }
   let(:model) { Issue }
   let(:column) { :author_id }
 
@@ -34,7 +35,7 @@ RSpec.describe Gitlab::Database::BatchCount do
     end
 
     it 'returns fallback if loops more than allowed' do
-      large_finish = Gitlab::Database::BatchCounter::MAX_ALLOWED_LOOPS * default_batch_size + 1
+      large_finish = max_allowed_loops * default_batch_size + 1
       expect(described_class.public_send(method, *args, start: 1, finish: large_finish)).to eq(fallback)
     end
 
@@ -81,6 +82,7 @@ RSpec.describe Gitlab::Database::BatchCount do
           relation: model.table_name,
           operation: operation,
           operation_args: operation_args,
+          max_allowed_loops: max_allowed_loops,
           start: 0,
           mode: mode,
           query: batch_count_query,

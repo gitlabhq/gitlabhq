@@ -95,7 +95,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/mailers/ee/emails/merge_requests_spec.rb'
     - 'ee/spec/mailers/ee/emails/profile_spec.rb'
     - 'ee/spec/mailers/ee/emails/projects_spec.rb'
-    - 'ee/spec/mailers/emails/free_user_cap_spec.rb'
     - 'ee/spec/mailers/emails/group_memberships_spec.rb'
     - 'ee/spec/mailers/emails/in_product_marketing_spec.rb'
     - 'ee/spec/mailers/emails/merge_commits_spec.rb'

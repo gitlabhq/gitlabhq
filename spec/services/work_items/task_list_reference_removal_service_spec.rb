@@ -132,7 +132,7 @@ RSpec.describe WorkItems::TaskListReferenceRemovalService, feature_category: :te
       let(:line_number_end) { line_number_start - 1 }
 
       it_behaves_like 'failing work item task reference removal service',
-                      'line_number_end must be greater or equal to line_number_start'
+        'line_number_end must be greater or equal to line_number_start'
     end
 
     context 'when lock_version is older than current' do

@@ -29,8 +29,11 @@ RSpec.describe Users::MigrateRecordsToGhostUserInBatchesService, feature_categor
     end
 
     it 'process jobs ordered by the consume_after timestamp' do
-      older_ghost_user_migration = create(:ghost_user_migration, user: create(:user),
-                                                                 consume_after: 5.minutes.ago)
+      older_ghost_user_migration = create(
+        :ghost_user_migration,
+        user: create(:user),
+        consume_after: 5.minutes.ago
+      )
 
       # setup execution tracker to only allow a single job to be processed
       allow_next_instance_of(::Gitlab::Utils::ExecutionTracker) do |tracker|
@@ -38,9 +41,11 @@ RSpec.describe Users::MigrateRecordsToGhostUserInBatchesService, feature_categor
       end
 
       expect(Users::MigrateRecordsToGhostUserService).to(
-        receive(:new).with(older_ghost_user_migration.user,
-                           older_ghost_user_migration.initiator_user,
-                           any_args)
+        receive(:new).with(
+          older_ghost_user_migration.user,
+          older_ghost_user_migration.initiator_user,
+          any_args
+        )
       ).and_call_original
 
       service.execute
