@@ -12,10 +12,7 @@ module QA
       end
 
       let!(:group) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.path = "group-for-access-request-#{SecureRandom.hex(8)}"
-          group.api_client = admin_api_client
-        end
+        create(:group, path: "group-for-access-request-#{SecureRandom.hex(8)}", api_client: admin_api_client)
       end
 
       before do

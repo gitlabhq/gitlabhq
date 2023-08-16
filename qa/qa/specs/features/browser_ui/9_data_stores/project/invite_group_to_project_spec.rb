@@ -40,11 +40,7 @@ module QA
 
       context 'with a personal namespace project',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349223' do
-        let(:group) do
-          Resource::Group.fabricate_via_api! do |group|
-            group.path = "group-for-personal-project-#{SecureRandom.hex(8)}"
-          end
-        end
+        let(:group) { create(:group, path: "group-for-personal-project-#{SecureRandom.hex(8)}") }
 
         let(:project) do
           create(:project,
@@ -63,11 +59,7 @@ module QA
       end
 
       context 'with a group project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349340' do
-        let(:group) do
-          Resource::Group.fabricate_via_api! do |group|
-            group.path = "group-for-group-project-#{SecureRandom.hex(8)}"
-          end
-        end
+        let(:group) { create(:group, path: "group-for-group-project-#{SecureRandom.hex(8)}") }
 
         let(:project) { create(:project, :private, name: 'group-project', description: 'test group project') }
 

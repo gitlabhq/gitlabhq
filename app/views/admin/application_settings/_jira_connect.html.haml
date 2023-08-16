@@ -6,7 +6,7 @@
       = s_('JiraConnect|GitLab for Jira App')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = s_('JiraConnect|Configure your Jira Connect Application ID.')
       = link_to sprite_icon('question-o'),
           help_page_path('integration/jira/connect-app',

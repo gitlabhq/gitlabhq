@@ -674,6 +674,9 @@ variables:
   HTTPS_PROXY: "https://squid-proxy:3128"
 ```
 
+NOTE:
+Gradle projects require [an additional variable](#using-a-proxy-with-gradle-projects) setup to use a proxy.
+
 Alternatively we may use it in specific jobs, like Dependency Scanning:
 
 ```yaml
@@ -1113,6 +1116,17 @@ gemnasium-dependency_scanning:
   before_script:
     - mkdir $GEMNASIUM_DB_LOCAL_PATH
     - tar -xzf gemnasium_db.tar.gz -C $GEMNASIUM_DB_LOCAL_PATH
+```
+
+## Using a proxy with Gradle projects
+
+The Gradle wrapper script does not read the `HTTP(S)_PROXY` environment variables. See [this upstream issue](https://github.com/gradle/gradle/issues/11065).
+
+To make the Gradle wrapper script use a proxy, you can specify the options using the `GRADLE_CLI_OPTS` CI/CD variable:
+
+```yaml
+variables:
+  GRADLE_CLI_OPTS: "-Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts=localhost"
 ```
 
 ## Warnings

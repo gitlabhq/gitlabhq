@@ -10,7 +10,7 @@ module QA
       } do
       include Runtime::Fixtures
 
-      let(:group) { Resource::Group.fabricate_via_api! }
+      let(:group) { create(:group) }
 
       let(:imported_project) do
         Resource::ProjectImportedFromURL.fabricate_via_browser_ui! do |project|

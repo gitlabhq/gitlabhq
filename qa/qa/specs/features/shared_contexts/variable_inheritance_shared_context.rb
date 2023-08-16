@@ -5,12 +5,7 @@ module QA
     let(:key) { 'TEST_VAR' }
     let(:value) { 'This is great!' }
     let(:random_string) { Faker::Alphanumeric.alphanumeric(number: 8) }
-
-    let(:group) do
-      Resource::Group.fabricate_via_api! do |group|
-        group.path = "group-for-variable-inheritance-#{random_string}"
-      end
-    end
+    let(:group) { create(:group, path: "group-for-variable-inheritance-#{random_string}") }
 
     let(:upstream_project) do
       Resource::Project.fabricate_via_api! do |project|

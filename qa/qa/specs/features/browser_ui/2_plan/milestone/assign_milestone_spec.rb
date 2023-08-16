@@ -8,11 +8,7 @@ module QA
       let(:start_date) { current_date_yyyy_mm_dd }
       let(:due_date) { next_month_yyyy_mm_dd }
 
-      let(:group) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.name = "group-to-test-milestones-#{SecureRandom.hex(4)}"
-        end
-      end
+      let(:group) { create(:group, name: "group-to-test-milestones-#{SecureRandom.hex(4)}") }
 
       let(:project) { create(:project, name: "project-to-test-milestones-#{SecureRandom.hex(4)}", group: group) }
 

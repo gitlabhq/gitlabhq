@@ -3,23 +3,12 @@
 module QA
   RSpec.describe 'Data Stores' do
     describe 'Subgroup transfer', product_group: :tenant_scale do
-      let(:source_group) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.path = "source-group-for-transfer_#{SecureRandom.hex(8)}"
-        end
-      end
+      let(:source_group) { create(:group, path: "source-group-for-transfer_#{SecureRandom.hex(8)}") }
 
-      let!(:target_group) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.path = "target-group-for-transfer_#{SecureRandom.hex(8)}"
-        end
-      end
+      let!(:target_group) { create(:group, path: "target-group-for-transfer_#{SecureRandom.hex(8)}") }
 
       let(:sub_group_for_transfer) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.path = "subgroup-for-transfer_#{SecureRandom.hex(8)}"
-          group.sandbox = source_group
-        end
+        create(:group, path: "subgroup-for-transfer_#{SecureRandom.hex(8)}", sandbox: source_group)
       end
 
       before do

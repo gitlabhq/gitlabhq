@@ -5,7 +5,7 @@
       = _('Mailgun')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Configure the %{link} integration.').html_safe % { link: link_to(_('Mailgun events'), 'https://documentation.mailgun.com/en/latest/user_manual.html#webhooks', target: '_blank', rel: 'noopener noreferrer') }
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-mailgun-settings'), html: { class: 'fieldset-form', id: 'mailgun-settings' } do |f|

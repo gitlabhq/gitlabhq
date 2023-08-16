@@ -50,10 +50,12 @@ There is a feature proposal to add the ability to back up repositories directly 
      [a Praefect node cannot be used to back up Git data](https://gitlab.com/gitlab-org/gitlab/-/issues/396343#note_1385950340).
   1. Configure the node as another **GitLab Rails** node as defined in your [reference architecture](../reference_architectures/index.md). As with other GitLab Rails nodes, this node must have access to your main Postgres database as well as to Gitaly Cluster.
 
-The backup node will copy all of the environment's Git data, so ensure that it has enough attached storage. For example, you need at least as much storage as one node in a Gitaly Cluster. Without Gitaly Cluster, you need at least as much storage as all Gitaly nodes. Keep in mind that Git repository backups can be significantly larger than Gitaly storage usage because forks are deduplicated in Gitaly but not in backups.
-
 To back up the Git repositories:
 
+1. Ensure that the GitLab Rails node has enough attached storage to store Git repositories and an archive of the Git repositories. Additionally, the contents of forked repositories are duplicated into their forks during backup.
+   For example, if you have 5 GB worth of Git repositories and two forks of a 1 GB repository, then you require at least 14 GB of attached storage to account for:
+   - 7 GB of Git data.
+   - A 7 GB archive file of all Git data.
 1. SSH into the GitLab Rails node.
 1. [Configure uploading backups to remote cloud storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage).
 1. [Configure AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup-plan.html) for this bucket, or use a bucket in the same account and region as your production data object storage buckets, and ensure this bucket is included in your [preexisting AWS Backup](#configure-backup-of-postgresql-and-object-storage-data).

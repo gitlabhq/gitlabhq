@@ -5,52 +5,53 @@
         = _('Package Registry')
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded_by_default? ? _('Collapse') : _('Expand')
-      %p
+      %p.gl-text-secondary
         = s_('PackageRegistry|Configure package forwarding and package file size limits.')
 
-    = render_if_exists 'admin/application_settings/ee_package_registry'
-
     .settings-content
-      %h4
-        = _('Package file size limits')
-      %p
-        = _('Set limit to 0 to allow any file size.')
-      .scrolling-tabs-container.inner-page-scroll-tabs
-        - if @plans.size > 1
-          %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs.mb-3
+      = render_if_exists 'admin/application_settings/ee_package_registry'
+
+      .gl-mt-7
+        %h4
+          = _('Package file size limits')
+        %p
+          = _('Set limit to 0 to allow any file size.')
+        .scrolling-tabs-container.inner-page-scroll-tabs
+          - if @plans.size > 1
+            %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs.mb-3
+              - @plans.each_with_index do |plan, index|
+                %li
+                  = link_to admin_plan_limits_path(anchor: 'js-package-settings'), data: { target: "div#plan-package#{index}", action: "plan#{index}", toggle: 'tab'}, class: index == 0 ? 'active': '' do
+                    = plan.name.capitalize
+          .tab-content
             - @plans.each_with_index do |plan, index|
-              %li
-                = link_to admin_plan_limits_path(anchor: 'js-package-settings'), data: { target: "div#plan-package#{index}", action: "plan#{index}", toggle: 'tab'}, class: index == 0 ? 'active': '' do
-                  = plan.name.capitalize
-        .tab-content
-          - @plans.each_with_index do |plan, index|
-            .tab-pane{ :id => "plan-package#{index}", class: index == 0 ? 'active': '' }
-              = gitlab_ui_form_for plan.actual_limits, url: admin_plan_limits_path(anchor: 'js-package-settings'), html: { class: 'fieldset-form' }, method: :post do |f|
-                = form_errors(plan)
-                %fieldset
-                  = f.hidden_field(:plan_id, value: plan.id)
-                  .form-group
-                    = f.label :conan_max_file_size, _('Maximum Conan package file size in bytes'), class: 'label-bold'
-                    = f.number_field :conan_max_file_size, class: 'form-control gl-form-input'
-                  .form-group
-                    = f.label :helm_max_file_size, _('Maximum Helm chart file size in bytes'), class: 'label-bold'
-                    = f.number_field :helm_max_file_size, class: 'form-control gl-form-input'
-                  .form-group
-                    = f.label :maven_max_file_size, _('Maximum Maven package file size in bytes'), class: 'label-bold'
-                    = f.number_field :maven_max_file_size, class: 'form-control gl-form-input'
-                  .form-group
-                    = f.label :npm_max_file_size, _('Maximum npm package file size in bytes'), class: 'label-bold'
-                    = f.number_field :npm_max_file_size, class: 'form-control gl-form-input'
-                  .form-group
-                    = f.label :nuget_max_file_size, _('Maximum NuGet package file size in bytes'), class: 'label-bold'
-                    = f.number_field :nuget_max_file_size, class: 'form-control gl-form-input'
-                  .form-group
-                    = f.label :pypi_max_file_size, _('Maximum PyPI package file size in bytes'), class: 'label-bold'
-                    = f.number_field :pypi_max_file_size, class: 'form-control gl-form-input'
-                  .form-group
-                    = f.label :terraform_module_max_file_size, _('Maximum Terraform Module package file size in bytes'), class: 'label-bold'
-                    = f.number_field :terraform_module_max_file_size, class: 'form-control gl-form-input'
-                  .form-group
-                    = f.label :generic_packages_max_file_size, _('Generic package file size in bytes'), class: 'label-bold'
-                    = f.number_field :generic_packages_max_file_size, class: 'form-control gl-form-input'
-                  = f.submit _('Save %{name} size limits').html_safe % { name: plan.name.capitalize }, pajamas_button: true
+              .tab-pane{ :id => "plan-package#{index}", class: index == 0 ? 'active': '' }
+                = gitlab_ui_form_for plan.actual_limits, url: admin_plan_limits_path(anchor: 'js-package-settings'), html: { class: 'fieldset-form' }, method: :post do |f|
+                  = form_errors(plan)
+                  %fieldset
+                    = f.hidden_field(:plan_id, value: plan.id)
+                    .form-group
+                      = f.label :conan_max_file_size, _('Maximum Conan package file size in bytes'), class: 'label-bold'
+                      = f.number_field :conan_max_file_size, class: 'form-control gl-form-input'
+                    .form-group
+                      = f.label :helm_max_file_size, _('Maximum Helm chart file size in bytes'), class: 'label-bold'
+                      = f.number_field :helm_max_file_size, class: 'form-control gl-form-input'
+                    .form-group
+                      = f.label :maven_max_file_size, _('Maximum Maven package file size in bytes'), class: 'label-bold'
+                      = f.number_field :maven_max_file_size, class: 'form-control gl-form-input'
+                    .form-group
+                      = f.label :npm_max_file_size, _('Maximum npm package file size in bytes'), class: 'label-bold'
+                      = f.number_field :npm_max_file_size, class: 'form-control gl-form-input'
+                    .form-group
+                      = f.label :nuget_max_file_size, _('Maximum NuGet package file size in bytes'), class: 'label-bold'
+                      = f.number_field :nuget_max_file_size, class: 'form-control gl-form-input'
+                    .form-group
+                      = f.label :pypi_max_file_size, _('Maximum PyPI package file size in bytes'), class: 'label-bold'
+                      = f.number_field :pypi_max_file_size, class: 'form-control gl-form-input'
+                    .form-group
+                      = f.label :terraform_module_max_file_size, _('Maximum Terraform Module package file size in bytes'), class: 'label-bold'
+                      = f.number_field :terraform_module_max_file_size, class: 'form-control gl-form-input'
+                    .form-group
+                      = f.label :generic_packages_max_file_size, _('Generic package file size in bytes'), class: 'label-bold'
+                      = f.number_field :generic_packages_max_file_size, class: 'form-control gl-form-input'
+                    = f.submit _('Save %{name} size limits').html_safe % { name: plan.name.capitalize }, pajamas_button: true

@@ -7,11 +7,10 @@ module QA
     describe "Gitlab migration" do
       context 'with subgroups and labels' do
         let(:subgroup) do
-          Resource::Group.fabricate_via_api! do |group|
-            group.api_client = source_admin_api_client
-            group.sandbox = source_group
-            group.path = "subgroup-for-import-#{SecureRandom.hex(4)}"
-          end
+          create(:group,
+            path: "subgroup-for-import-#{SecureRandom.hex(4)}",
+            sandbox: source_group,
+            api_client: source_admin_api_client)
         end
 
         let(:imported_subgroup) do

@@ -87,7 +87,7 @@ module QA
       end
 
       context 'for group projects' do
-        let!(:group) { Resource::Group.fabricate_via_api! }
+        let!(:group) { create(:group) }
 
         let!(:project) do
           Resource::Project.fabricate_via_api! do |project|

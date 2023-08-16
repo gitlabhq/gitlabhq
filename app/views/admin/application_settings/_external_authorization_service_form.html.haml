@@ -4,7 +4,7 @@
       = s_('ExternalAuthorization|External authorization')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = s_('ExternalAuthorization|External classification policy authorization.')
       = link_to _('Learn more.'), help_page_path('administration/settings/external_authorization'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content

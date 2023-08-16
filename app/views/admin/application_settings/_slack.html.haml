@@ -7,7 +7,7 @@
       = s_('Integrations|GitLab for Slack app')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = s_('SlackIntegration|Configure your GitLab for Slack app.')
       = link_to(_('Learn more.'), help_page_path('administration/settings/slack_app'), target: '_blank', rel: 'noopener noreferrer')
 

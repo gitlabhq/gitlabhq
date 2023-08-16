@@ -5,9 +5,10 @@ module QA
     describe 'Pass dotenv variables to downstream via bridge' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:upstream_var) { Faker::Alphanumeric.alphanumeric(number: 8) }
-      let(:group) { Resource::Group.fabricate_via_api! }
+      let(:group) { create(:group) }
       let(:upstream_project) { create(:project, group: group, name: 'upstream-project-with-bridge') }
       let(:downstream_project) { create(:project, group: group, name: 'downstream-project-with-bridge') }
+
       let!(:runner) do
         Resource::GroupRunner.fabricate! do |runner|
           runner.name = executor

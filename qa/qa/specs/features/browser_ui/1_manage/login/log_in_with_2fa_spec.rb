@@ -22,11 +22,7 @@ module QA
       end
 
       let(:group) do
-        QA::Resource::Group.fabricate_via_api! do |group|
-          group.sandbox = sandbox_group
-          group.api_client = owner_api_client
-          group.path = "group-with-2fa-#{SecureRandom.hex(8)}"
-        end
+        create(:group, sandbox: sandbox_group, api_client: owner_api_client, path: "group-with-2fa-#{SecureRandom.hex(8)}")
       end
 
       let(:developer_user) do

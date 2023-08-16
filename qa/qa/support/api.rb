@@ -99,21 +99,13 @@ module QA
         url.sub(/private_token=[^&]*/, "private_token=[****]")
       end
 
-      # Returns the response body as a hash with secrets masked.
+      # Returns the response body with secrets masked.
       #
-      # @param [Hash] response the response body as a JSON string
-      # @param [Array<Symbol>] mask_secrets the keys (as symbols) of the response body whose values will be masked
-      # @return [Hash] the response body as a hash, with the specified secrets replaced with `****`
-      def masked_parsed_response(response, mask_secrets:)
-        unless mask_secrets.is_a?(Array)
-          raise(ArgumentError, "Expected `mask_secrets` to be an array, got #{mask_secrets.class}")
-        end
-
-        mask_secrets.all?(Symbol) || raise(ArgumentError, "Expected `mask_secrets` to be an array of symbols")
-
-        body = parse_body(response)
-        body.is_a?(Hash) || raise(ArgumentError, "Expected response body to be a hash, got #{body.class}")
-        body.each { |k, v| body[k] = mask_secrets.include?(k) ? '****' : v }
+      # @param [String] response the response body as the string value of a JSON hash
+      # @param [Array<Symbol>] mask_by_key the keys of the JSON parsed response body whose values will be masked
+      # @return [Hash] the response body with the specified secrets values replaced with `****`
+      def masked_parsed_response(response, mask_by_key:)
+        Helpers::Masker.mask(parse_body(response), by_key: Array(mask_by_key))
       end
 
       # Merges the gitlab_canary cookie into existing cookies for mixed environment testing.

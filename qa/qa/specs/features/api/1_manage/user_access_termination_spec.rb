@@ -13,15 +13,9 @@ module QA
 
         @user_api_client = Runtime::API::Client.new(:gitlab, user: @user)
 
-        @sandbox = Resource::Sandbox.fabricate! do |sandbox_group|
-          sandbox_group.path = "sandbox-for-access-termination-#{SecureRandom.hex(4)}"
-          sandbox_group.api_client = admin_api_client
-        end
+        @sandbox = create(:sandbox, path: "sandbox-for-access-termination-#{SecureRandom.hex(4)}", api_client: admin_api_client)
 
-        group = QA::Resource::Group.fabricate_via_api! do |group|
-          group.path = "group-to-test-access-termination-#{SecureRandom.hex(8)}"
-          group.sandbox = @sandbox
-        end
+        group = create(:group, path: "group-to-test-access-termination-#{SecureRandom.hex(8)}", sandbox: @sandbox)
 
         @sandbox.add_member(@user)
 

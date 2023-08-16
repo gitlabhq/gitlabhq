@@ -29,7 +29,7 @@ module QA
 
       it 'allows a project to be created via the CLI with a different default branch name', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347838' do
         project_name = "default-branch-name-via-cli-#{SecureRandom.hex(8)}"
-        group = Resource::Group.fabricate_via_api!
+        group = create(:group)
 
         Git::Repository.perform do |repository|
           repository.init_repository

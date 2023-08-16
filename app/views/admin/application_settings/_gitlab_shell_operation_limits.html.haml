@@ -4,7 +4,7 @@
       = s_('ShellOperations|Git SSH operations rate limit')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = s_('ShellOperations|Limit the number of Git operations a user can perform per minute, per repository.')
       = link_to _('Learn more.'), help_page_path('administration/settings/rate_limits_on_git_ssh_operations.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content

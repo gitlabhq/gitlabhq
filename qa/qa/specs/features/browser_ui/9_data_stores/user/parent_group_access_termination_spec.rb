@@ -11,11 +11,7 @@ module QA
         end
       end
 
-      let!(:group) do
-        QA::Resource::Group.fabricate_via_api! do |group|
-          group.path = "group-to-test-access-termination-#{SecureRandom.hex(8)}"
-        end
-      end
+      let!(:group) { create(:group, path: "group-to-test-access-termination-#{SecureRandom.hex(8)}") }
 
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|

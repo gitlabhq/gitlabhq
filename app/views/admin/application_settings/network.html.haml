@@ -9,7 +9,7 @@
       = _('Performance optimization')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Various settings that affect GitLab performance.')
   .settings-content
     = render 'performance'
@@ -20,7 +20,7 @@
       = _('User and IP rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set limits for web and API requests.')
       = link_to _('Learn more.'), help_page_path('administration/settings/user_and_ip_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -32,7 +32,7 @@
       = _('Package registry rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set rate limits for package registry API requests that supersede the general user and IP rate limits.')
       = link_to _('Learn more.'), help_page_path('administration/settings/package_registry_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -44,7 +44,7 @@
       = _('Files API Rate Limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Configure specific limits for Files API requests that supersede the general user and IP rate limits.')
   .settings-content
     = render partial: 'network_rate_limits', locals: { anchor: 'js-files-limits-settings', setting_fragment: 'files_api' }
@@ -55,7 +55,7 @@
       = _('Search rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set rate limits for searches performed by web or API requests.')
   .settings-content
     = render 'search_limits'
@@ -66,7 +66,7 @@
       = _('Deprecated API rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Configure specific limits for deprecated API requests that supersede the general user and IP rate limits.')
       = link_to _('Which API requests are affected?'), help_page_path('administration/settings/deprecated_api_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -78,7 +78,7 @@
       = _('Git LFS Rate Limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Configure specific limits for Git LFS requests that supersede the general user and IP rate limits.')
       = link_to _('Learn more.'), help_page_path('administration/settings/git_lfs_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -94,7 +94,7 @@
 
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = s_('OutboundRequests|Allow requests to the local network from hooks and integrations.')
       = link_to _('Learn more.'), help_page_path('security/webhooks.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -106,7 +106,7 @@
       = _('Protected paths')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Rate limit access to specified paths.')
       = link_to _('Learn more.'), help_page_path('administration/settings/protected_paths.md'), target: '_blank', rel: 'noopener noreferrer'
 
@@ -119,7 +119,7 @@
       = _('Issues Rate Limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Limit the number of issues and epics per minute a user can create through web and API requests.')
       = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_issues_creation.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -131,7 +131,7 @@
       = _('Notes rate limit')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set the per-user rate limit for notes created by web or API requests.')
       = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_notes_creation.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -143,7 +143,7 @@
       = _('Users API rate limit')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set the per-user rate limit for getting a user by ID via the API.')
       = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -157,7 +157,7 @@
       = _('Import and export rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set per-user rate limits for imports and exports of projects and groups.')
       = link_to _('Learn more.'), help_page_path('administration/settings/import_export_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -169,7 +169,7 @@
       = _('Pipeline creation rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Limit the number of pipeline creation requests per minute. This limit includes pipelines created through the UI, the API, and by background processing.')
       = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_pipelines_creation.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
