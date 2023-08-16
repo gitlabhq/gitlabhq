@@ -617,7 +617,7 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
 
-### Protect manual jobs **(PREMIUM)**
+### Protect manual jobs **(PREMIUM ALL)**
 
 Use [protected environments](../environments/protected_environments.md)
 to define a list of users authorized to run a manual job. You can authorize only

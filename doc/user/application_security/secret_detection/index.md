@@ -335,7 +335,7 @@ pipeline.
 
 To enable full history Secret Detection, set the variable `SECRET_DETECTION_HISTORIC_SCAN` to `true` in your `.gitlab-ci.yml` file.
 
-## Custom rulesets **(ULTIMATE)**
+## Custom rulesets **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for passthrough chains.

@@ -77,7 +77,7 @@ non-protected branches in the mirroring project are not mirrored and can diverge
 
 To use this option, select **Only mirror protected branches** when you create a repository mirror.
 
-### Mirror specific branches **(PREMIUM)**
+### Mirror specific branches **(PREMIUM ALL)**
 
 > - Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.

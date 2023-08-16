@@ -129,7 +129,7 @@ In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257),
 
 In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
-## Remove a group immediately **(PREMIUM)**
+## Remove a group immediately **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336985) in GitLab 14.2.
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
@@ -152,7 +152,7 @@ To immediately remove a group marked for deletion:
 Your group, its subgroups, projects, and all related resources, including issues and merge requests,
 are deleted.
 
-## Restore a group **(PREMIUM)**
+## Restore a group **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
 

@@ -87,7 +87,7 @@ Custom project templates are available at:
      change the **Visibility Level**.
 1. Select **Create project**.
 
-## Create a project from the HIPAA Audit Protocol template **(ULTIMATE)**
+## Create a project from the HIPAA Audit Protocol template **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
 

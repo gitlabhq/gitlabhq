@@ -4,7 +4,7 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Vulnerability Page **(ULTIMATE)**
+# Vulnerability Page **(ULTIMATE ALL)**
 
 Each vulnerability in a project has a vulnerability page containing details of the vulnerability,
 including:

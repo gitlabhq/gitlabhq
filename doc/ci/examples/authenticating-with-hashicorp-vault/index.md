@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Authenticating and reading secrets with HashiCorp Vault **(PREMIUM)**
+# Authenticating and reading secrets with HashiCorp Vault **(PREMIUM ALL)**
 
 WARNING:
 Authenticating with `CI_JOB_JWT` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)

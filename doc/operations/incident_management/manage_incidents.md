@@ -166,7 +166,7 @@ To change the status of an incident:
 
 **Triggered** is the default status for new incidents.
 
-### As an on-call responder **(PREMIUM)**
+### As an on-call responder **(PREMIUM ALL)**
 
 On-call responders can respond to [incident pages](paging.md#escalating-an-incident)
 by changing the status.
@@ -181,7 +181,7 @@ In GitLab 15.1 and earlier, changing the status of an [incident created from an 
 also changes the alert status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the alert status is independent and does not change when the incident status changes.
 
-## Change escalation policy **(PREMIUM)**
+## Change escalation policy **(PREMIUM ALL)**
 
 Prerequisites:
 

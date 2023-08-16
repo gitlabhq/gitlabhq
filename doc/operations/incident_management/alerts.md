@@ -153,7 +153,7 @@ When you [close an incident](manage_incidents.md#close-an-incident) that is link
 GitLab [changes the alert's status](#change-an-alerts-status) to **Resolved**.
 You are then credited with the alert's status change.
 
-#### As an on-call responder **(PREMIUM)**
+#### As an on-call responder **(PREMIUM ALL)**
 
 On-call responders can respond to [alert pages](paging.md#escalating-an-alert)
 by changing the alert status.

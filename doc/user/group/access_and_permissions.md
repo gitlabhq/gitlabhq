@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Configure your groups to control group permissions and access.
 
-## Group push rules **(PREMIUM)**
+## Group push rules **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in GitLab 12.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
@@ -52,7 +52,7 @@ To change the permitted Git access protocols for a group:
 1. Choose the permitted protocols from **Enabled Git access protocols**.
 1. Select **Save changes**.
 
-## Restrict group access by IP address **(PREMIUM)**
+## Restrict group access by IP address **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
@@ -103,7 +103,7 @@ Keep in mind that restricting group access by IP address has the following impli
   with [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
 - IP restriction is not applicable to shared resources belonging to a group. Any shared resource is accessible to a user even if that user is not able to access the group.
 
-## Restrict group access by domain **(PREMIUM)**
+## Restrict group access by domain **(PREMIUM ALL)**
 
 > - Support for specifying multiple email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1.
 > - Support for restricting access to projects in the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
@@ -193,7 +193,7 @@ your group.
 1. Clear the **Allow users to request access** checkbox.
 1. Select **Save changes**.
 
-## Prevent project forking outside group **(PREMIUM)**
+## Prevent project forking outside group **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
 
@@ -215,7 +215,7 @@ To prevent projects from being forked outside the group:
 
 Existing forks are not removed.
 
-## Prevent members from being added to projects in a group **(PREMIUM)**
+## Prevent members from being added to projects in a group **(PREMIUM ALL)**
 
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.

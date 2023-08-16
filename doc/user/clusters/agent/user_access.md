@@ -56,7 +56,7 @@ user_access:
     - id: group-3/subgroup
 ```
 
-## Configure access with user impersonation **(PREMIUM)**
+## Configure access with user impersonation **(PREMIUM ALL)**
 
 You can grant access to a Kubernetes cluster and transform
 requests into impersonation requests for authenticated users.

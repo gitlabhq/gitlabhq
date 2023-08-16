@@ -5,7 +5,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Compliance center **(ULTIMATE)**
+# Compliance center **(ULTIMATE ALL)**
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122931) from Compliance report in GitLab 16.3.
 

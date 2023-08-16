@@ -134,7 +134,7 @@ an `upstream` remote repository for your fork:
    git push origin main
    ```
 
-### With repository mirroring **(PREMIUM)**
+### With repository mirroring **(PREMIUM ALL)**
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 

@@ -269,7 +269,7 @@ To add a task to a milestone:
    If a task already belongs to a milestone, the dropdown list shows the current milestone.
 1. From the dropdown list, select the milestone to be associated with the task.
 
-## Set task weight **(PREMIUM)**
+## Set task weight **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.
 
@@ -287,7 +287,7 @@ To set issue weight of a task:
 1. Next to **Weight**, enter a whole, positive number.
 1. Select the close icon (**{close}**).
 
-## Add a task to an iteration **(PREMIUM)**
+## Add a task to an iteration **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) to feature flag named `work_items_mvc` in GitLab 15.7. Disabled by default.

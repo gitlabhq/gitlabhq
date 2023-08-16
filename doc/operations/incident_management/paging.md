@@ -35,7 +35,7 @@ a single email notification for new alerts.
 
 [Update the alert's status](alerts.md#change-an-alerts-status) to manage email notifications for an alert.
 
-## Paging **(PREMIUM)**
+## Paging **(PREMIUM ALL)**
 
 In projects that have an [escalation policy](escalation_policies.md) configured, on-call responders
 can be automatically paged about critical problems through email.

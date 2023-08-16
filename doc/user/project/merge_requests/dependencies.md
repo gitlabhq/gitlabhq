@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Merge request dependencies **(PREMIUM)**
+# Merge request dependencies **(PREMIUM ALL)**
 
 A single feature can span several merge requests, spread out across multiple projects,
 and the order in which the work merges can be significant. Use merge request dependencies

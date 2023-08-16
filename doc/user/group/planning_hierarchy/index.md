@@ -31,7 +31,7 @@ graph TD
     Group_epic --> Project2_Issue1
 ```
 
-### Hierarchies with multi-level epics **(ULTIMATE)**
+### Hierarchies with multi-level epics **(ULTIMATE ALL)**
 
 With the addition of [multi-level epics](../epics/manage_epics.md#multi-level-child-epics) and up to
 seven levels of nested epics, you can achieve the following hierarchy:

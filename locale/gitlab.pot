@@ -17874,7 +17874,7 @@ msgstr ""
 msgid "Enable or disable version check and Service Ping."
 msgstr ""
 
-msgid "Enable rate limiting for requests to the specified paths"
+msgid "Enable rate limiting for POST requests to the specified paths"
 msgstr ""
 
 msgid "Enable reCAPTCHA"
@@ -33799,10 +33799,7 @@ msgstr ""
 msgid "Path:"
 msgstr ""
 
-msgid "Paths with rate limiting for GET requests"
-msgstr ""
-
-msgid "Paths with rate limiting for POST requests"
+msgid "Paths to protect with rate limiting"
 msgstr ""
 
 msgid "Pause"

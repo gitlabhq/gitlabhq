@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Browser Performance Testing **(PREMIUM)**
+# Browser Performance Testing **(PREMIUM ALL)**
 
 If your application offers a web interface and you're using
 [GitLab CI/CD](../index.md), you can quickly determine the rendering performance

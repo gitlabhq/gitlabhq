@@ -429,7 +429,7 @@ nested groups if you have membership in one of its parents.
 For more information, see
 [subgroup memberships](group/subgroups/index.md#subgroup-membership).
 
-## Users with Minimal Access **(PREMIUM)**
+## Users with Minimal Access **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
 > - Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.

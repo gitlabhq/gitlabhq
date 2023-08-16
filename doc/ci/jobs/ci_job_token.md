@@ -195,7 +195,7 @@ To configure the job token scope:
 1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the Maintainer role in both projects.
 
-## Download an artifact from a different pipeline **(PREMIUM)**
+## Download an artifact from a different pipeline **(PREMIUM ALL)**
 
 > `CI_JOB_TOKEN` for artifacts download with the API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in GitLab 9.5.
 

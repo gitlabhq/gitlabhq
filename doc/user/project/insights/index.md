@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Insights for projects **(ULTIMATE)**
+# Insights for projects **(ULTIMATE ALL)**
 
 Configure project insights to explore data such as:
 

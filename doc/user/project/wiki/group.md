@@ -4,7 +4,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group wikis **(PREMIUM)**
+# Group wikis **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in GitLab 13.5.
 

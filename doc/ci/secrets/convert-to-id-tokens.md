@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Tutorial: Update HashiCorp Vault configuration to use ID Tokens **(PREMIUM)**
+# Tutorial: Update HashiCorp Vault configuration to use ID Tokens **(PREMIUM ALL)**
 
 This tutorial demonstrates how to convert your existing CI/CD secrets configuration to use [ID Tokens](../secrets/id_token_authentication.md).
 

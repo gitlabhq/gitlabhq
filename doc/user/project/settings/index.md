@@ -46,7 +46,7 @@ If you're an instance administrator, you can administer all project topics from 
 NOTE:
 The assigned topics are visible only to users with access to the project, but everyone can see which topics exist on the GitLab instance. Do not include sensitive information in the name of a topic.
 
-## Add a compliance framework to a project **(PREMIUM)**
+## Add a compliance framework to a project **(PREMIUM ALL)**
 
 You can
 [add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)
@@ -312,7 +312,7 @@ To delete a project:
 
 This action deletes the project and all associated resources (such as issues and merge requests).
 
-### Delayed project deletion **(PREMIUM)**
+### Delayed project deletion **(PREMIUM ALL)**
 
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
@@ -346,7 +346,7 @@ To immediately delete a project marked for deletion:
 1. In the **Delete this project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
-## Restore a project **(PREMIUM)**
+## Restore a project **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 

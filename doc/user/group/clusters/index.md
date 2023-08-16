@@ -106,7 +106,7 @@ the [Auto DevOps](../../../topics/autodevops/index.md) stages.
 
 The domain should have a wildcard DNS configured to the Ingress IP address. [More details](../../project/clusters/gitlab_managed_clusters.md#base-domain).
 
-## Environment scopes **(PREMIUM)**
+## Environment scopes **(PREMIUM ALL)**
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
@@ -162,7 +162,7 @@ The result is:
 - The Staging cluster is used for the `deploy to staging` job.
 - The Production cluster is used for the `deploy to production` job.
 
-## Cluster environments **(PREMIUM)**
+## Cluster environments **(PREMIUM ALL)**
 
 For a consolidated view of which CI [environments](../../../ci/environments/index.md)
 are deployed to the Kubernetes cluster, see the documentation for

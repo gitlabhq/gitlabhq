@@ -132,7 +132,7 @@ sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
 ```
 
-## 2FA for Git over SSH operations **(PREMIUM)**
+## 2FA for Git over SSH operations **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270554) in GitLab 13.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/299088) from GitLab Free to GitLab Premium in 13.9.

@@ -119,7 +119,7 @@ The following analyzers have multi-project support:
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
 the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
-## False positive detection **(ULTIMATE)**
+## False positive detection **(ULTIMATE ALL)**
 
 > - Introduced for Ruby in GitLab 14.2.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378622) for Go in GitLab 15.8.
@@ -134,7 +134,7 @@ False positive detection is available in a subset of the [supported languages](#
 
 ![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
 
-## Advanced vulnerability tracking **(ULTIMATE)**
+## Advanced vulnerability tracking **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
 
@@ -266,7 +266,7 @@ When downloading, you always receive the most recent SAST artifact available.
 You can enable and configure SAST by using the UI, either with the default settings or with customizations.
 The method you can use depends on your GitLab license tier.
 
-#### Configure SAST with customizations **(ULTIMATE)**
+#### Configure SAST with customizations **(ULTIMATE ALL)**
 
 > [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
 

@@ -267,7 +267,7 @@ Value stream analytics includes the following lifecycle metrics:
 - **New issues**: Number of new issues created.
 - **Deploys**: Total number of deployments to production.
 
-### DORA metrics **(ULTIMATE)**
+### DORA metrics **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) lead time for changes DORA metric in GitLab 14.5.
 > - DORA API-based deployment metrics for value stream analytics for groups were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in GitLab 14.3.

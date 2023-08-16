@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Insights for groups **(ULTIMATE)**
+# Insights for groups **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
 

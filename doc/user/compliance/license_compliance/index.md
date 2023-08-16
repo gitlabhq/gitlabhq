@@ -7,7 +7,7 @@ remove_date: '2023-08-22'
 redirect_to: '../license_approval_policies.md'
 ---
 
-# License Compliance (removed) **(ULTIMATE)**
+# License Compliance (removed) **(ULTIMATE ALL)**
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421363) in GitLab 16.3.

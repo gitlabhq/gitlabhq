@@ -1338,7 +1338,7 @@ target the upstream project by default.
 }
 ```
 
-### Templates for issues and merge requests **(PREMIUM)**
+### Templates for issues and merge requests **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55718) in GitLab 13.10.
 
@@ -2498,7 +2498,7 @@ DELETE /projects/:id
 | `permanently_remove` **(PREMIUM)** | boolean/string    | no                     | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11                                                                                                           |
 | `full_path` **(PREMIUM)**          | string            | no                     | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-single-project) |
 
-## Restore project marked for deletion **(PREMIUM)**
+## Restore project marked for deletion **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
@@ -2877,7 +2877,7 @@ POST /projects/:id/housekeeping
 | `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `task`   | string           | **{dotted-circle}** No | `prune` to trigger manual prune of unreachable objects or `eager` to trigger eager housekeeping. |
 
-## Push rules **(PREMIUM)**
+## Push rules **(PREMIUM ALL)**
 
 ### Get project push rules
 
@@ -3166,7 +3166,7 @@ Read more in the [Project members](members.md) documentation.
 
 Read more in the [Project vulnerabilities](project_vulnerabilities.md) documentation.
 
-## Get a project's pull mirror details **(PREMIUM)**
+## Get a project's pull mirror details **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.6.
 
@@ -3202,7 +3202,7 @@ Example response:
 }
 ```
 
-## Configure pull mirroring for a project **(PREMIUM)**
+## Configure pull mirroring for a project **(PREMIUM ALL)**
 
 > - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
@@ -3226,7 +3226,7 @@ with the API scope enabled.
 | `only_mirror_protected_branches`| boolean | **{dotted-circle}** No | Limits mirroring to only protected branches when set to `true`. |
 | `mirror_branch_regex`            | String  | **{dotted-circle}** No | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
 
-## Start the pull mirroring process for a Project **(PREMIUM)**
+## Start the pull mirroring process for a Project **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 

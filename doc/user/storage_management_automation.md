@@ -649,7 +649,7 @@ python3 get_all_cicd_config_artifacts_expiry.py
 
 The `get_all_cicd_config_artifacts_expiry.py` script is located in the [GitLab API with Python project](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/).
 
-Alternatively, you can use [advanced search](search/advanced_search.md) with API requests. The following example uses the [scope: blobs](../api/search.md#scope-blobs-premium-2) to searches for the string `artifacts` in all `*.yml` files:
+Alternatively, you can use [advanced search](search/advanced_search.md) with API requests. The following example uses the [scope: blobs](../api/search.md#scope-blobs-premium-all-2) to searches for the string `artifacts` in all `*.yml` files:
 
 ```shell
 # https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs

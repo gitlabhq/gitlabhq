@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Subscribe to GitLab **(PREMIUM)**
+# Subscribe to GitLab **(PREMIUM ALL)**
 
 Choose and manage the subscription that's right for you and your organization.
 

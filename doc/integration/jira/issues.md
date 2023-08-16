@@ -129,7 +129,7 @@ Consider this example:
    - GitLab adds a formatted comment to Jira, linking back to the commit that
      resolved the issue. You can [disable comments](#disable-comments-on-jira-issues).
 
-## View Jira issues **(PREMIUM)**
+## View Jira issues **(PREMIUM ALL)**
 
 You can view and search issues from a selected Jira project directly in GitLab,
 provided your GitLab administrator [has configured the integration](configure.md#configure-the-integration).
@@ -152,7 +152,7 @@ Issues are grouped into tabs based on their
 - **Closed** tab: All issues with a Jira status categorized as Done.
 - **All** tab: All issues of any status.
 
-### Search and filter the issue list **(PREMIUM)**
+### Search and filter the issue list **(PREMIUM ALL)**
 
 To refine the list of issues, use the search bar to search for any text
 contained in an issue summary (title) or description. Use any combination

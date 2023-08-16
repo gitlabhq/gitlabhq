@@ -150,7 +150,7 @@ the timeline header represent the days of the week.
 The timeline bar indicates the approximate position of an epic or milestone based on its start and
 due dates.
 
-## Blocked epics **(ULTIMATE)**
+## Blocked epics **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33587) in GitLab 15.5: View blocking epics when hovering over the "blocked" icon.
 

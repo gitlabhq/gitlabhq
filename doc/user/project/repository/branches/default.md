@@ -156,7 +156,7 @@ disable this privilege for group owners, enforcing the instance-level protection
 NOTE:
 GitLab administrators can still update the default branch protection of a group.
 
-### Group-level default branch protection **(PREMIUM)**
+### Group-level default branch protection **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
 > - [Settings moved and renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/340403) in GitLab 14.9.

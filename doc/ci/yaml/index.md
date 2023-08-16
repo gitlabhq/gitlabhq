@@ -2456,7 +2456,7 @@ In this example:
 - In GitLab 12.6 and later, you can't combine the [`dependencies`](#dependencies) keyword
   with `needs`.
 
-#### `needs:project` **(PREMIUM)**
+#### `needs:project` **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.7.
 
@@ -3915,7 +3915,7 @@ job2:
 - [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
   to simplify job log output.
 
-### `secrets` **(PREMIUM)**
+### `secrets` **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33014) in GitLab 13.4.
 

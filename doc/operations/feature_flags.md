@@ -216,7 +216,7 @@ To remove users from a user list:
 1. Select **Edit** (**{pencil}**) next to the list you want to change.
 1. Select **Remove** (**{remove}**) next to the ID you want to remove.
 
-## Search for Code References **(PREMIUM)**
+## Search for Code References **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
 
@@ -397,7 +397,7 @@ docker run \
 There is a limitation when using the Unleash Proxy where each proxy instance can request flags only for the environment named in `UNLEASH_APP_NAME`. The Proxy sends
 this to GitLab on behalf of the client, which means the client can't override it.
 
-## Feature flag related issues **(PREMIUM)**
+## Feature flag related issues **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.

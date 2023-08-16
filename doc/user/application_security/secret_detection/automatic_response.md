@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Automatic response to leaked secrets **(ULTIMATE)**
+# Automatic response to leaked secrets **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
 

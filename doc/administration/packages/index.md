@@ -196,6 +196,13 @@ To change the local storage path:
 
 ::EndTabs
 
+If you already had packages stored in the old storage path, move everything
+from the old to the new location to ensure existing packages stay accessible:
+
+```shell
+mv /var/opt/gitlab/gitlab-rails/shared/packages/* /mnt/packages/
+```
+
 Docker and Kubernetes do not use local storage.
 
 - For the Helm chart (Kubernetes): Use object storage instead.

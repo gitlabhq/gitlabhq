@@ -382,7 +382,7 @@ trigger_job:
 
 ::EndTabs
 
-### View multi-project pipelines in pipeline graphs **(PREMIUM)**
+### View multi-project pipelines in pipeline graphs **(PREMIUM ALL)**
 
 After you trigger a multi-project pipeline, the downstream pipeline displays
 to the right of the [pipeline graph](index.md#visualize-pipelines).
@@ -390,7 +390,7 @@ to the right of the [pipeline graph](index.md#visualize-pipelines).
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
 
-## Fetch artifacts from an upstream pipeline **(PREMIUM)**
+## Fetch artifacts from an upstream pipeline **(PREMIUM ALL)**
 
 ::Tabs
 
@@ -670,7 +670,7 @@ Upstream pipelines take precedence over downstream ones. If there are two
 variables with the same name defined in both upstream and downstream projects,
 the ones defined in the upstream project take precedence.
 
-### Pass dotenv variables created in a job **(PREMIUM)**
+### Pass dotenv variables created in a job **(PREMIUM ALL)**
 
 You can pass variables to a downstream job with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job)
 and [`needs:project`](../yaml/index.md#needsproject). These variables are only available in

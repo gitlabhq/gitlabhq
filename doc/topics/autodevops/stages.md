@@ -340,7 +340,7 @@ You can disable DAST:
 - Only on feature branches by setting `REVIEW_DISABLED` variable to
   `"true"`. This also disables the Review App.
 
-## Auto Browser Performance Testing **(PREMIUM)**
+## Auto Browser Performance Testing **(PREMIUM ALL)**
 
 > Introduced in GitLab 10.4.
 
@@ -361,7 +361,7 @@ file named `.gitlab-urls.txt` in the root directory, one file per line. For exam
 Any browser performance differences between the source and target branches are also
 [shown in the merge request widget](../../ci/testing/browser_performance_testing.md).
 
-## Auto Load Performance Testing **(PREMIUM)**
+## Auto Load Performance Testing **(PREMIUM ALL)**
 
 > Introduced in GitLab 13.2.
 

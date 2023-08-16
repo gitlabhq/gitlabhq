@@ -70,7 +70,7 @@ Due to the bi-directional relationship, the relationship no longer appears in ei
 
 Access our [permissions](../../permissions.md) page for more information.
 
-## Blocking issues **(PREMIUM)**
+## Blocking issues **(PREMIUM ALL)**
 
 When you [add a linked issue](#add-a-linked-issue), you can show that it **blocks** or
 **is blocked by** another issue.

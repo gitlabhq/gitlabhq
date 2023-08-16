@@ -349,7 +349,7 @@ Example response:
   }
 ```
 
-## Delete a group issue board **(PREMIUM)**
+## Delete a group issue board **(PREMIUM ALL)**
 
 Deletes a group issue board.
 

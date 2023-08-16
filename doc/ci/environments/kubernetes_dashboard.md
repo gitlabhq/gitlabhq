@@ -22,6 +22,10 @@ For Flux users, the synchronization status of a given environment is not display
 
 > - Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `kubernetes_namespace_for_environment`. Disabled by default.
 > - Filtering resources by namespace [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127043) in GitLab 16.3. Feature flag `kubernetes_namespace_for_environment` removed.
+> - Selecting the related Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default selecting a Flux resource is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `flux_resource_for_environment`. On GitLab.com, this feature is not available.
 
 Configure a dashboard to use it for a given environment.
 You can configure dashboard for an environment that already exists, or
@@ -40,6 +44,7 @@ Prerequisites:
 1. Select **Edit**.
 1. Select a GitLab agent for Kubernetes.
 1. Optional. From the **Kubernetes namespace** dropdown list, select a namespace.
+1. Optional. From the **Flux resource** dropdown list, select a Flux resource.
 1. Select **Save**.
 
 ### The environment doesn't exist
@@ -50,6 +55,7 @@ Prerequisites:
 1. Complete the **Name** field.
 1. Select a GitLab agent for Kubernetes.
 1. Optional. From the **Kubernetes namespace** dropdown list, select a namespace.
+1. Optional. From the **Flux resource** dropdown list, select a Flux resource.
 1. Select **Save**.
 
 ## View a dashboard
@@ -63,7 +69,8 @@ To view a configured dashboard:
 
 ### Flux sync status
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391581) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391581) in GitLab 16.3.
+> - Customizing the name of the Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`. Disabled by default.
 
 A dashboard displays the sync status of your Flux deployments.
 

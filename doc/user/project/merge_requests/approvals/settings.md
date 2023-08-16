@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request approval settings **(PREMIUM)**
+# Merge request approval settings **(PREMIUM ALL)**
 
 You can configure the settings for [merge request approvals](index.md) to
 ensure the approval rules meet your use case. You can also configure

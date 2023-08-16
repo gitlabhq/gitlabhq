@@ -79,7 +79,7 @@ handbook published with [GitLab Pages](../../user/project/pages/index.md).
 <!-- Idea for expanding this tutorial:
      Add steps for [creating a wiki page](../../user/project/wiki/index.md#create-a-new-wiki-page). -->
 
-## Create scoped labels **(PREMIUM)**
+## Create scoped labels **(PREMIUM ALL)**
 
 Next, you'll create labels to add to issues to categorize them.
 

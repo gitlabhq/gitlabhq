@@ -42,7 +42,7 @@ receive alert payloads in JSON format. You can always
    are available in the **View credentials** tab after you save the integration. You must also input
    the URL and Authorization Key in your external service.
 
-### HTTP Endpoints **(PREMIUM)**
+### HTTP Endpoints **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4442) in GitLab 13.6.
 
@@ -395,7 +395,7 @@ alert to confirm your integration works properly.
 
 GitLab displays an error or success message, depending on the outcome of your test.
 
-## Automatic grouping of identical alerts **(PREMIUM)**
+## Automatic grouping of identical alerts **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214557) in GitLab 13.2.
 
@@ -420,7 +420,7 @@ field is `end_time`. With custom mappings, you can select the expected field.
 
 You can also configure the associated [incident to be closed automatically](../incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
 
-## Link to your Opsgenie Alerts **(PREMIUM)**
+## Link to your Opsgenie Alerts **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
 

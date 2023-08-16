@@ -2263,7 +2263,7 @@ Returns:
 - `403 Forbidden` if not authenticated as an administrator.
 - `404 User Not Found` if user cannot be found.
 
-## Create a runner **(FREE)**
+## Create a runner **(FREE ALL)**
 
 Creates a runner linked to the current user.
 

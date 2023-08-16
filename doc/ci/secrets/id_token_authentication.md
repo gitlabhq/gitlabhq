@@ -138,7 +138,7 @@ manual_authentication:
     - my-authentication-script.sh $VAULT_TOKEN $PASSWORD
 ```
 
-## Automatic ID Token authentication with HashiCorp Vault **(PREMIUM)**
+## Automatic ID Token authentication with HashiCorp Vault **(PREMIUM ALL)**
 
 You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
 [`secrets`](../yaml/index.md#secrets) keyword.

@@ -311,7 +311,7 @@ These shortcuts are available when using a [filtered search input](search/index.
 | <kbd>Command</kbd>   | <kbd>Delete</kbd>                      | Clear entire search filter. |
 | <kbd>Option</kbd>    | <kbd>Control</kbd> + <kbd>Delete</kbd> | Clear one token at a time. |
 
-## Epics **(PREMIUM)**
+## Epics **(PREMIUM ALL)**
 
 These shortcuts are available when viewing [epics](group/epics/index.md):
 

@@ -566,7 +566,7 @@ As you type in the title text box of the **New issue** page, GitLab searches tit
 across all issues in the current project. Only issues you have access to are returned.
 Up to five similar issues, sorted by most recently updated, are displayed below the title text box.
 
-## Health status **(ULTIMATE)**
+## Health status **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab 12.10.
 > - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab 13.4 and later.
@@ -607,7 +607,7 @@ until the issue is reopened.
 You can also set and clear health statuses using the `/health_status` and `/clear_health_status`
 [quick actions](../quick_actions.md#issues-merge-requests-and-epics).
 
-## Publish an issue **(ULTIMATE)**
+## Publish an issue **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906) in GitLab 13.1.
 

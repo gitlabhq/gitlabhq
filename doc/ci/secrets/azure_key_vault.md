@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Use Azure Key Vault secrets in GitLab CI/CD **(PREMIUM)**
+# Use Azure Key Vault secrets in GitLab CI/CD **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3.
 

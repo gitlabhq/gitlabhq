@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, howto
 ---
 
-# GitLab CI/CD for external repositories **(PREMIUM)**
+# GitLab CI/CD for external repositories **(PREMIUM ALL)**
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in GitLab 10.6.
 

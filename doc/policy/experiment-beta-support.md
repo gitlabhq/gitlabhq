@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Support for Experiment, Beta, and Generally Available features **(PREMIUM)**
+# Support for Experiment, Beta, and Generally Available features **(PREMIUM ALL)**
 
 Some GitLab features are released as Experiment or Beta versions and are
 [not fully supported](https://about.gitlab.com/support/statement-of-support/#alpha-beta-features).

@@ -97,7 +97,7 @@ To create a tag from the GitLab UI:
    create a lightweight tag.
 1. Select **Create tag**.
 
-## Prevent tag deletion **(PREMIUM)**
+## Prevent tag deletion **(PREMIUM ALL)**
 
 To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
 

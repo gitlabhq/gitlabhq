@@ -55,7 +55,7 @@ GitLab can display the results of one or more reports in:
 - The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/api_fuzzing/index.md#security-dashboard).
 
-## `artifacts:reports:browser_performance` **(PREMIUM)**
+## `artifacts:reports:browser_performance` **(PREMIUM ALL)**
 
 > [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
 
@@ -258,7 +258,7 @@ the [new method of license scanning](../../user/compliance/license_scanning_of_c
 
 <!--- end_remove -->
 
-## `artifacts:reports:load_performance` **(PREMIUM)**
+## `artifacts:reports:load_performance` **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35260) in GitLab 13.2.
 > - Requires GitLab Runner 11.5 and above.
@@ -271,7 +271,7 @@ GitLab can display the results of only one report in the merge request
 
 GitLab cannot display the combined results of multiple `load_performance` reports.
 
-## `artifacts:reports:metrics` **(PREMIUM)**
+## `artifacts:reports:metrics` **(PREMIUM ALL)**
 
 The `metrics` report collects [Metrics](../testing/metrics_reports.md). The collected Metrics report uploads to GitLab as an
 artifact.

@@ -221,7 +221,7 @@ To change the activity sort order:
 1. On the right side of the page, from the **Sort or filter** dropdown list, select the sort order
    **Newest first** or **Oldest first** (default).
 
-## View description change history **(PREMIUM)**
+## View description change history **(PREMIUM ALL)**
 
 You can see changes to the description listed in the history.
 

@@ -4,7 +4,7 @@ group: Purchase
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Quarterly reconciliation and annual true-ups **(PREMIUM)**
+# Quarterly reconciliation and annual true-ups **(PREMIUM ALL)**
 
 GitLab reviews your seat usage and sends you an invoice for any overages.
 This review can occur:

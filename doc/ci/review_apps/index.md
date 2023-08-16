@@ -191,7 +191,7 @@ After you have the route mapping set up, it takes effect in the following locati
 - In the blob file view, by selecting **View** (**{external-link}**) next to the file.
 
 <!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
-## Visual Reviews (deprecated) **(PREMIUM)**
+## Visual Reviews (deprecated) **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab 12.0.
 > - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.

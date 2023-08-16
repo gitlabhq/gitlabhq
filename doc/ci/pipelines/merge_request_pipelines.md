@@ -126,7 +126,7 @@ Pipelines for forks display with the **fork** badge in the parent project:
 
 ![Pipeline ran in fork](img/pipeline_fork_v13_7.png)
 
-### Run pipelines in the parent project **(PREMIUM)**
+### Run pipelines in the parent project **(PREMIUM ALL)**
 
 Project members in the parent project can trigger a merge request pipeline
 for a merge request submitted from a fork project. This pipeline:

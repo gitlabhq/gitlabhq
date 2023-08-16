@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request approval rules **(PREMIUM)**
+# Merge request approval rules **(PREMIUM ALL)**
 
 Approval rules define how many [approvals](index.md) a merge request must receive before it can
 be merged, and which users should do the approving. They can be used in conjunction

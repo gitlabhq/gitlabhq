@@ -4,7 +4,7 @@ group: Composition analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Operational Container Scanning **(ULTIMATE)**
+# Operational Container Scanning **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive is scheduled for removal in GitLab 16.0.

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Advanced search **(PREMIUM)**
+# Advanced search **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 

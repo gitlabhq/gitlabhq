@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge trains **(PREMIUM)**
+# Merge trains **(PREMIUM ALL)**
 
 NOTE:
 [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train**

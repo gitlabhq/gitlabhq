@@ -196,7 +196,7 @@ To configure your client, do one of the following:
 - Place the certificates in an appropriate location in the job container by updating the container image or mounting via the runner.
 - Not recommended. Configure the Kubernetes client with `--insecure-skip-tls-verify=true`.
 
-## Restrict project and group access by using impersonation **(PREMIUM)**
+## Restrict project and group access by using impersonation **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/357934) in GitLab 15.5 to add impersonation support for environment tiers.

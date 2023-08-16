@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Push rules **(PREMIUM)**
+# Push rules **(PREMIUM ALL)**
 
 > Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
 
