@@ -50,6 +50,44 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
   end
 
+  describe 'GET /api/v4/projects/:id/packages/nuget/v2/$metadata' do
+    let(:url) { "/projects/#{target.id}/packages/nuget/v2/$metadata" }
+
+    subject(:api_request) { get api(url) }
+
+    it { is_expected.to have_request_urgency(:low) }
+
+    context 'with valid target' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:visibility_level, :user_role, :member, :expected_status) do
+        'PUBLIC'   | :developer  | true  | :success
+        'PUBLIC'   | :guest      | true  | :success
+        'PUBLIC'   | :developer  | false | :success
+        'PUBLIC'   | :guest      | false | :success
+        'PUBLIC'   | :anonymous  | false | :success
+        'PRIVATE'  | :developer  | true  | :success
+        'PRIVATE'  | :guest      | true  | :success
+        'PRIVATE'  | :developer  | false | :success
+        'PRIVATE'  | :guest      | false | :success
+        'PRIVATE'  | :anonymous  | false | :success
+        'INTERNAL' | :developer  | true  | :success
+        'INTERNAL' | :guest      | true  | :success
+        'INTERNAL' | :developer  | false | :success
+        'INTERNAL' | :guest      | false | :success
+        'INTERNAL' | :anonymous  | false | :success
+      end
+
+      with_them do
+        before do
+          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+        end
+
+        it_behaves_like 'process nuget v2 $metadata service request', params[:user_role], params[:expected_status], params[:member]
+      end
+    end
+  end
+
   describe 'GET /api/v4/projects/:id/packages/nuget/metadata/*package_name/index' do
     let(:url) { "/projects/#{target.id}/packages/nuget/metadata/#{package_name}/index.json" }
 

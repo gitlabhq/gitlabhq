@@ -15,22 +15,27 @@ module Gitlab
         # Uses rugged for raw objects
         #
         # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/320
-        def where(repository, sha, path = nil, recursive = false, skip_flat_paths = true, pagination_params = nil)
+        def where(
+          repository, sha, path = nil, recursive = false, skip_flat_paths = true, rescue_not_found = true,
+          pagination_params = nil)
           path = nil if path == '' || path == '/'
 
-          tree_entries(repository, sha, path, recursive, skip_flat_paths, pagination_params)
+          tree_entries(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, pagination_params)
         end
 
-        def tree_entries(repository, sha, path, recursive, skip_flat_paths, pagination_params = nil)
+        def tree_entries(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, pagination_params = nil)
           wrapped_gitaly_errors do
             repository.gitaly_commit_client.tree_entries(
               repository, sha, path, recursive, skip_flat_paths, pagination_params)
           end
 
         # Incorrect revision or path could lead to index error.
-        # We silently handle such errors by returning an empty set of entries and cursor.
-        rescue Gitlab::Git::Index::IndexError
-          [[], nil]
+        # We silently handle such errors by returning an empty set of entries and cursor
+        # unless the parameter rescue_not_found is set to false.
+        rescue Gitlab::Git::Index::IndexError => e
+          return [[], nil] if rescue_not_found
+
+          raise e
         end
 
         private

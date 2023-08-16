@@ -51,6 +51,34 @@ RSpec.shared_examples 'process nuget service index request' do |user_type, statu
   end
 end
 
+RSpec.shared_examples 'process nuget v2 $metadata service request' do |user_type, status, add_member = true|
+  context "for user type #{user_type}" do
+    before do
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    end
+
+    it_behaves_like 'returning response status', status
+
+    it 'returns a valid xml response' do
+      api_request
+
+      doc = Nokogiri::XML(body)
+
+      expect(response.media_type).to eq('application/xml')
+      expect(doc.at_xpath('//edmx:Edmx')).to be_present
+      expect(doc.at_xpath('//edmx:Edmx/edmx:DataServices')).to be_present
+      expect(doc.css('*').map(&:name)).to include(
+        'Schema', 'EntityType', 'Key', 'PropertyRef', 'EntityContainer', 'EntitySet', 'FunctionImport', 'Parameter'
+      )
+      expect(doc.css('*').select { |el| el.name == 'Property' }.map { |el| el.attribute_nodes.first.value })
+        .to match_array(%w[Id Version Authors Dependencies Description DownloadCount IconUrl Published ProjectUrl
+          Tags Title LicenseUrl]
+                       )
+      expect(doc.css('*').detect { |el| el.name == 'FunctionImport' }.attr('Name')).to eq('FindPackagesById')
+    end
+  end
+end
+
 RSpec.shared_examples 'returning nuget metadata json response with json schema' do |json_schema|
   it 'returns a valid json response' do
     subject

@@ -9,13 +9,14 @@ RSpec.describe Gitlab::Git::Tree do
   let(:repository) { project.repository.raw }
 
   shared_examples 'repo' do
-    subject(:tree) { Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, pagination_params) }
+    subject(:tree) { Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, pagination_params) }
 
     let(:sha) { SeedRepo::Commit::ID }
     let(:path) { nil }
     let(:recursive) { false }
     let(:pagination_params) { nil }
     let(:skip_flat_paths) { false }
+    let(:rescue_not_found) { true }
 
     let(:entries) { tree.first }
     let(:cursor) { tree.second }
@@ -30,8 +31,14 @@ RSpec.describe Gitlab::Git::Tree do
     context 'with an invalid ref' do
       let(:sha) { 'foobar-does-not-exist' }
 
-      it { expect(entries).to eq([]) }
-      it { expect(cursor).to be_nil }
+      context 'when handle_structured_gitaly_errors feature is disabled' do
+        before do
+          stub_feature_flags(handle_structured_gitaly_errors: false)
+        end
+
+        it { expect(entries).to eq([]) }
+        it { expect(cursor).to be_nil }
+      end
     end
 
     context 'when path is provided' do
@@ -162,11 +169,23 @@ RSpec.describe Gitlab::Git::Tree do
       end
 
       context 'and invalid reference is used' do
-        it 'returns no entries and nil cursor' do
+        before do
           allow(repository.gitaly_commit_client).to receive(:tree_entries).and_raise(Gitlab::Git::Index::IndexError)
+        end
 
-          expect(entries.count).to eq(0)
-          expect(cursor).to be_nil
+        context 'when rescue_not_found is set to false' do
+          let(:rescue_not_found) { false }
+
+          it 'raises an IndexError error' do
+            expect { entries }.to raise_error(Gitlab::Git::Index::IndexError)
+          end
+        end
+
+        context 'when rescue_not_found is set to true' do
+          it 'returns no entries and nil cursor' do
+            expect(entries.count).to eq(0)
+            expect(cursor).to be_nil
+          end
         end
       end
     end
@@ -196,7 +215,7 @@ RSpec.describe Gitlab::Git::Tree do
           let(:entries_count) { entries.count }
 
           it 'returns all entries without a cursor' do
-            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, { limit: entries_count, page_token: nil })
+            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, { limit: entries_count, page_token: nil })
 
             expect(cursor).to be_nil
             expect(result.entries.count).to eq(entries_count)
@@ -225,7 +244,7 @@ RSpec.describe Gitlab::Git::Tree do
           let(:entries_count) { entries.count }
 
           it 'returns all entries' do
-            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, { limit: -1, page_token: nil })
+            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, { limit: -1, page_token: nil })
 
             expect(result.count).to eq(entries_count)
             expect(cursor).to be_nil
@@ -236,7 +255,7 @@ RSpec.describe Gitlab::Git::Tree do
             let(:token) { entries.second.id }
 
             it 'returns all entries after token' do
-              result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, { limit: -1, page_token: token })
+              result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, { limit: -1, page_token: token })
 
               expect(result.count).to eq(entries.count - 2)
               expect(cursor).to be_nil
@@ -268,7 +287,7 @@ RSpec.describe Gitlab::Git::Tree do
           expected_entries = entries
 
           loop do
-            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, { limit: 5, page_token: token })
+            result, cursor = Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, { limit: 5, page_token: token })
 
             collected_entries += result.entries
             token = cursor&.next_cursor

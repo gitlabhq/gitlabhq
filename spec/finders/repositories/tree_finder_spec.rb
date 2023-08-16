@@ -26,10 +26,10 @@ RSpec.describe Repositories::TreeFinder do
     end
 
     it "accepts a gitaly_pagination argument" do
-      expect(repository).to receive(:tree).with(anything, anything, recursive: nil, pagination_params: { limit: 20, page_token: nil }).and_call_original
+      expect(repository).to receive(:tree).with(anything, anything, recursive: nil, rescue_not_found: nil, pagination_params: { limit: 20, page_token: nil }).and_call_original
       expect(tree_finder.execute(gitaly_pagination: true)).to be_an(Array)
 
-      expect(repository).to receive(:tree).with(anything, anything, recursive: nil).and_call_original
+      expect(repository).to receive(:tree).with(anything, anything, recursive: nil, rescue_not_found: nil).and_call_original
       expect(tree_finder.execute(gitaly_pagination: false)).to be_an(Array)
     end
 

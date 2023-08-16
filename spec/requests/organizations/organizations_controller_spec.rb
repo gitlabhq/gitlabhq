@@ -26,38 +26,40 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
   end
 
   shared_examples 'basic organization controller action' do
-    before do
-      sign_in(user)
-    end
-
-    context 'when the user does not have authorization' do
-      let_it_be(:user) { create(:user) }
-
-      it 'renders 404' do
-        gitlab_request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
-    end
-
-    context 'when the user is an admin', :enable_admin_mode do
-      let_it_be(:user) { create(:admin) }
-
+    context 'when the user is not logged in' do
       it_behaves_like 'successful response'
       it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
     end
 
-    context 'when the user is an organization user' do
-      let_it_be(:user) { create :user }
-
+    context 'when the user is logged in' do
       before do
-        create :organization_user, organization: organization, user: user
+        sign_in(user)
       end
 
-      it_behaves_like 'successful response'
-      it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+      context 'with no association to an organization' do
+        let_it_be(:user) { create(:user) }
+
+        it_behaves_like 'successful response'
+        it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+      end
+
+      context 'as as admin', :enable_admin_mode do
+        let_it_be(:user) { create(:admin) }
+
+        it_behaves_like 'successful response'
+        it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+      end
+
+      context 'as an organization user' do
+        let_it_be(:user) { create :user }
+
+        before do
+          create :organization_user, organization: organization, user: user
+        end
+
+        it_behaves_like 'successful response'
+        it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+      end
     end
   end
 

@@ -60,6 +60,22 @@ module API
                           .new(project_or_group_without_auth)
                           .xml
               end
+
+              # https://www.nuget.org/api/v2/$metadata
+              desc 'The NuGet V2 Feed Package $metadata endpoint' do
+                detail 'This feature was introduced in GitLab 16.3'
+                success code: 200
+                tags %w[nuget_packages]
+              end
+
+              get '$metadata', format: :xml, urgency: :low do
+                env['api.format'] = :xml
+                content_type 'application/xml; charset=utf-8'
+                # needed to allow browser default inline styles in xml response
+                header 'Content-Security-Policy', "nonce-#{SecureRandom.base64(16)}"
+
+                present ::Packages::Nuget::V2::MetadataIndexPresenter.new.xml
+              end
             end
           end
         end
