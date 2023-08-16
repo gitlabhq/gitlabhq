@@ -11,12 +11,12 @@ RSpec.describe 'cross-database foreign keys' do
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
     [
-      'routes.namespace_id',                    # https://gitlab.com/gitlab-org/gitlab/-/issues/420869
-      'group_import_states.user_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/421210
-      'user_group_callouts.user_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
-      'group_import_states.user_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/421210
-      'projects.creator_id',                    # https://gitlab.com/gitlab-org/gitlab/-/issues/421844
-      'projects.marked_for_deletion_by_user_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/421844
+      'group_import_states.user_id',              # https://gitlab.com/gitlab-org/gitlab/-/issues/421210
+      'project_authorizations.user_id',           # https://gitlab.com/gitlab-org/gitlab/-/issues/422044
+      'projects.creator_id',                      # https://gitlab.com/gitlab-org/gitlab/-/issues/421844
+      'projects.marked_for_deletion_by_user_id',  # https://gitlab.com/gitlab-org/gitlab/-/issues/421844
+      'routes.namespace_id',                      # https://gitlab.com/gitlab-org/gitlab/-/issues/420869
+      'user_group_callouts.user_id'               # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
     ]
   end
 

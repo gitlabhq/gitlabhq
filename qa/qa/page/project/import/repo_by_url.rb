@@ -6,12 +6,12 @@ module QA
       module Import
         class RepoByURL < Page::Base
           view 'app/assets/javascripts/projects/new/components/new_project_url_select.vue' do
-            element :select_namespace_dropdown
-            element :select_namespace_dropdown_search_field
+            element 'select-namespace-dropdown'
+            element 'select-namespace-dropdown-search-field'
           end
 
           view 'app/views/projects/_new_project_fields.html.haml' do
-            element :project_create_button
+            element 'project-create-button'
           end
 
           def import!(gitlab_repo_path, name)
@@ -39,14 +39,14 @@ module QA
 
           def choose_namespace(namespace)
             retry_on_exception do
-              click_element :select_namespace_dropdown
-              fill_element :select_namespace_dropdown_search_field, namespace
+              click_element 'select-namespace-dropdown'
+              fill_element 'select-namespace-dropdown-search-field', namespace
               click_button namespace
             end
           end
 
           def click_create_button
-            click_element(:project_create_button)
+            click_element('project-create-button')
           end
 
           def wait_for_success

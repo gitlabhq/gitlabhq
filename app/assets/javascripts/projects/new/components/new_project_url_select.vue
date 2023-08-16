@@ -157,7 +157,7 @@ export default {
     <gl-dropdown
       class="js-group-namespace-dropdown gl-flex-grow-1"
       :toggle-class="`gl-rounded-top-right-base! gl-rounded-bottom-right-base! gl-w-20 ${dropdownPlaceholderClass}`"
-      data-qa-selector="select_namespace_dropdown"
+      data-testid="select-namespace-dropdown"
       @show="trackDropdownShow"
       @shown="handleDropdownShown"
     >
@@ -173,7 +173,7 @@ export default {
         ref="search"
         v-model.trim="search"
         :is-loading="$apollo.queries.currentUser.loading"
-        data-qa-selector="select_namespace_dropdown_search_field"
+        data-testid="select-namespace-dropdown-search-field"
       />
       <template v-if="!$apollo.queries.currentUser.loading">
         <template v-if="hasGroupMatches">

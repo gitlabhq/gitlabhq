@@ -293,7 +293,7 @@ export default {
         required
         :name="fields.name.name"
         :placeholder="$options.i18n.inputs.name.placeholder"
-        data-qa-selector="group_name_field"
+        data-testid="group-name-field"
         :size="$options.inputSize"
         :state="nameFeedbackState"
         @invalid="handleInvalidName"
@@ -376,7 +376,7 @@ export default {
             :state="pathFeedbackState"
             :size="pathInputSize"
             required
-            data-qa-selector="group_path_field"
+            data-testid="group-path-field"
             :data-bind-in="mattermostEnabled ? $options.mattermostDataBindName : null"
             @input="handlePathInput"
             @invalid="handleInvalidPath"

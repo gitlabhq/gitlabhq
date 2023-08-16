@@ -23765,6 +23765,12 @@ msgstr ""
 msgid "IdentityVerification|Verify phone number"
 msgstr ""
 
+msgid "IdentityVerification|Verify with a credit card instead?"
+msgstr ""
+
+msgid "IdentityVerification|Verify with a phone number instead?"
+msgstr ""
+
 msgid "IdentityVerification|Verify your identity"
 msgstr ""
 

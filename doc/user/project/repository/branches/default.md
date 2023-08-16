@@ -94,7 +94,7 @@ Users with the Owner role of groups and subgroups can configure the default bran
 Projects created in this group after you change the setting use the custom branch name,
 unless a subgroup configuration overrides it.
 
-## Protect initial default branches **(FREE)**
+## Protect initial default branches **(FREE ALL)**
 
 > Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
 

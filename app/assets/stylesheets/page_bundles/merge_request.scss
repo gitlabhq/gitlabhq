@@ -198,7 +198,6 @@ $comparison-empty-state-height: 62px;
 .merge-request-tabs-holder {
   top: $calc-application-header-height;
   z-index: $tabs-holder-z-index;
-  background-color: var(--gray-10, $body-bg);
   border-bottom: 1px solid var(--border-color, $border-color);
 
   @include media-breakpoint-up(md) {

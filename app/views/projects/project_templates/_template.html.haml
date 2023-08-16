@@ -1,4 +1,4 @@
-.template-option.d-flex.align-items-center{ data: { qa_selector: 'template_option_container' } }
+.template-option.d-flex.align-items-center{ data: { testid: 'template-option-container' } }
   .logo.gl-mr-3.px-1
     = image_tag template.logo, size: 32, class: "btn-template-icon icon-#{template.name}"
   .description
@@ -13,5 +13,5 @@
     %label.btn.gl-button.btn-confirm.template-button.choose-template.gl-mb-0{ for: template.name,
       'data-testid': "use_template_#{template.name}" }
       %input{ type: "radio", autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name, data: { track_label: "template_use", track_property: template.name, track_action: "click_button", track_value: "" } }
-      %span{ data: { qa_selector: 'use_template_button' } }
+      %span{ data: { testid: 'use-template-button' } }
         = _("Use template")

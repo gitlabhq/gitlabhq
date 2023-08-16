@@ -30,6 +30,6 @@
         = recaptcha_tags nonce: content_security_policy_nonce
 .row
   .col-sm-12
-    = f.submit submit_label, pajamas_button: true, data: { qa_selector: 'create_group_button' }
+    = f.submit submit_label, pajamas_button: true, data: { testid: 'create-group-button' }
     = render Pajamas::ButtonComponent.new(href: @parent_group || dashboard_groups_path) do
       = _('Cancel')

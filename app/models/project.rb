@@ -316,7 +316,8 @@ class Project < ApplicationRecord
   has_many :designs, inverse_of: :project, class_name: 'DesignManagement::Design'
 
   has_many :project_authorizations
-  has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
+  has_many :authorized_users, -> { allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045') },
+    through: :project_authorizations, source: :user, class_name: 'User'
 
   has_many :project_members, -> { where(requested_at: nil) },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent

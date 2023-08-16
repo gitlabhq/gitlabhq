@@ -6,7 +6,10 @@ module Todos
       def execute
         return unless todos_to_remove?
 
-        without_authorized(todos).delete_all
+        ::Gitlab::Database.allow_cross_joins_across_databases(url:
+            'https://gitlab.com/gitlab-org/gitlab/-/issues/422045') do
+          without_authorized(todos).delete_all
+        end
       end
 
       private

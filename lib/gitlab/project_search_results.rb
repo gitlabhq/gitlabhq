@@ -50,6 +50,7 @@ module Gitlab
 
       if @project.is_a?(Array)
         team_members_for_projects = User.joins(:project_authorizations).where(project_authorizations: { project_id: @project })
+          .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045')
         results = results.where(id: team_members_for_projects)
       else
         results = results.where(id: @project.team.members)

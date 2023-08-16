@@ -467,7 +467,7 @@ only. For example:
 }
 ```
 
-## `audit_json.log` **(FREE)**
+## `audit_json.log` **(FREE ALL)**
 
 NOTE:
 GitLab Free tracks a small number of different audit events.

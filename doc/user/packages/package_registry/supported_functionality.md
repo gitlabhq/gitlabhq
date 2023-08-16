@@ -30,7 +30,7 @@ Packages can be published to your project, group, or instance.
 | [Go](../go_proxy/index.md)                            | Y       | N     | N        |
 | [Ruby gems](../rubygems_registry/index.md)            | Y       | N     | N        |
 
-## Pulling packages **(FREE)**
+## Pulling packages **(FREE ALL)**
 
 Packages can be pulled from your project, group, or instance.
 

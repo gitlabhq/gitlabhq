@@ -521,7 +521,11 @@ class User < MainClusterwide::ApplicationRecord
   scope :active, -> { with_state(:active).non_internal }
   scope :active_without_ghosts, -> { with_state(:active).without_ghosts }
   scope :deactivated, -> { with_state(:deactivated).non_internal }
-  scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
+  scope :without_projects, -> do
+    joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id')
+    .where(project_authorizations: { user_id: nil })
+    .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045')
+  end
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :by_name, -> (names) { iwhere(name: Array(names)) }
   scope :by_login, -> (login) do

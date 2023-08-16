@@ -7,7 +7,7 @@ module QA
         include Page::Component::GroupsFilter
 
         view 'app/views/dashboard/_groups_head.html.haml' do
-          element :new_group_button
+          element 'new-group-button'
         end
 
         def has_group?(name)
@@ -21,7 +21,7 @@ module QA
         end
 
         def click_new_group
-          click_element(:new_group_button)
+          click_element('new-group-button')
         end
       end
     end

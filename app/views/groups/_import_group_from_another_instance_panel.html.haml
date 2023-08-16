@@ -37,7 +37,7 @@
         required: true,
         title: s_('GroupsNew|Enter the URL for the source instance.'),
         id: 'import_gitlab_url',
-        data: { qa_selector: 'import_gitlab_url' }
+        data: { testid: 'import-gitlab-url' }
     .form-group.gl-display-flex.gl-flex-direction-column
       = f.label :bulk_import_gitlab_access_token, s_('GroupsNew|Personal access token'), for: 'import_gitlab_token'
       .gl-font-weight-normal
@@ -50,6 +50,6 @@
         autocomplete: 'off',
         title: s_('GroupsNew|Please fill in your personal access token.'),
         id: 'import_gitlab_token',
-        data: { qa_selector: 'import_gitlab_token' }
+        data: { testid: 'import-gitlab-token' }
   .gl-border-gray-100.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
-    = f.submit s_('GroupsNew|Connect instance'), disabled: bulk_imports_disabled, pajamas_button: true, data: { qa_selector: 'connect_instance_button' }
+    = f.submit s_('GroupsNew|Connect instance'), disabled: bulk_imports_disabled, pajamas_button: true, data: { testid: 'connect-instance-button' }
