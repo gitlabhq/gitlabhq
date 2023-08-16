@@ -46,7 +46,7 @@ all user can be disabled. Connect to the Rails console and run:
 Gitlab::CurrentSettings.update!('require_two_factor_authentication': false)
 ```
 
-## Enforce 2FA for all users in a group **(FREE)**
+## Enforce 2FA for all users in a group **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) in GitLab 12.0, 2FA settings for a group are also applied to subgroups.
 

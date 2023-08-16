@@ -13098,6 +13098,27 @@ CREATE SEQUENCE bulk_imports_id_seq
 
 ALTER SEQUENCE bulk_imports_id_seq OWNED BY bulk_imports.id;
 
+CREATE TABLE catalog_resource_components (
+    id bigint NOT NULL,
+    catalog_resource_id bigint NOT NULL,
+    version_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    resource_type smallint DEFAULT 1 NOT NULL,
+    inputs jsonb DEFAULT '{}'::jsonb NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_ddca729980 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE catalog_resource_components_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE catalog_resource_components_id_seq OWNED BY catalog_resource_components.id;
+
 CREATE TABLE catalog_resource_versions (
     id bigint NOT NULL,
     release_id bigint NOT NULL,
@@ -25412,6 +25433,8 @@ ALTER TABLE ONLY bulk_import_trackers ALTER COLUMN id SET DEFAULT nextval('bulk_
 
 ALTER TABLE ONLY bulk_imports ALTER COLUMN id SET DEFAULT nextval('bulk_imports_id_seq'::regclass);
 
+ALTER TABLE ONLY catalog_resource_components ALTER COLUMN id SET DEFAULT nextval('catalog_resource_components_id_seq'::regclass);
+
 ALTER TABLE ONLY catalog_resource_versions ALTER COLUMN id SET DEFAULT nextval('catalog_resource_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY catalog_resources ALTER COLUMN id SET DEFAULT nextval('catalog_resources_id_seq'::regclass);
@@ -27243,6 +27266,9 @@ ALTER TABLE ONLY bulk_import_trackers
 
 ALTER TABLE ONLY bulk_imports
     ADD CONSTRAINT bulk_imports_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY catalog_resource_components
+    ADD CONSTRAINT catalog_resource_components_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY catalog_resource_versions
     ADD CONSTRAINT catalog_resource_versions_pkey PRIMARY KEY (id);
@@ -30827,6 +30853,12 @@ CREATE INDEX index_bulk_import_failures_on_bulk_import_entity_id ON bulk_import_
 CREATE INDEX index_bulk_import_failures_on_correlation_id_value ON bulk_import_failures USING btree (correlation_id_value);
 
 CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id);
+
+CREATE INDEX index_catalog_resource_components_on_catalog_resource_id ON catalog_resource_components USING btree (catalog_resource_id);
+
+CREATE INDEX index_catalog_resource_components_on_project_id ON catalog_resource_components USING btree (project_id);
+
+CREATE INDEX index_catalog_resource_components_on_version_id ON catalog_resource_components USING btree (version_id);
 
 CREATE INDEX index_catalog_resource_versions_on_catalog_resource_id ON catalog_resource_versions USING btree (catalog_resource_id);
 
@@ -36480,6 +36512,9 @@ ALTER TABLE ONLY merge_request_diffs
 ALTER TABLE ONLY requirements
     ADD CONSTRAINT fk_85044baef0 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY catalog_resource_components
+    ADD CONSTRAINT fk_85bb1d1e79 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_build_pending_states
     ADD CONSTRAINT fk_861cd17da3_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -36506,6 +36541,9 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY ci_build_trace_chunks
     ADD CONSTRAINT fk_89e29fa5ee_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY catalog_resource_components
+    ADD CONSTRAINT fk_89fd1a3e33 FOREIGN KEY (version_id) REFERENCES catalog_resource_versions(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_8a3072ccb3 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
@@ -36935,6 +36973,9 @@ ALTER TABLE ONLY merge_request_diff_llm_summaries
 
 ALTER TABLE ONLY pages_domains
     ADD CONSTRAINT fk_ea2f6dfc6f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY catalog_resource_components
+    ADD CONSTRAINT fk_ec417536da FOREIGN KEY (catalog_resource_id) REFERENCES catalog_resources(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_ec881c1c6f FOREIGN KEY (violating_user_id) REFERENCES users(id) ON DELETE CASCADE;

@@ -8,6 +8,10 @@ module Gitlab
           Array.wrap(get_raw(Gitlab::Auth::Saml::Config.new(auth_hash.provider).groups))
         end
 
+        def azure_group_overage_claim?
+          get_raw('http://schemas.microsoft.com/claims/groups.link').present?
+        end
+
         def authn_context
           response_object = auth_hash.extra[:response_object]
           return if response_object.blank?

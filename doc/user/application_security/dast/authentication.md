@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# DAST authentication **(ULTIMATE)**
+# DAST authentication **(ULTIMATE ALL)**
 
 WARNING:
 **DO NOT** use credentials that are valid for production systems, production servers, or any that

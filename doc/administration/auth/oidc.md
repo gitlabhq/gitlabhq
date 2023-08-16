@@ -750,7 +750,7 @@ def sync_missing_provider(self, user: User, extern_uid: str)
 
 For more information, see the [GitLab API user method documentation](https://python-gitlab.readthedocs.io/en/stable/gl_objects/users.html#examples).
 
-## Configure users based on OIDC group membership **(PREMIUM)**
+## Configure users based on OIDC group membership **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
 

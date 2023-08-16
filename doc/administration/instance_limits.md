@@ -840,7 +840,7 @@ panel_groups:
       label: Legend Label
 ```
 
-## Environment Dashboard limits **(PREMIUM)**
+## Environment Dashboard limits **(PREMIUM ALL)**
 
 See [Environment Dashboard](../ci/environments/environments_dashboard.md#adding-a-project-to-the-dashboard) for the maximum number of displayed projects.
 

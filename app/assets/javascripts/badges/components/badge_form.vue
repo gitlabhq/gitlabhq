@@ -214,7 +214,7 @@ export default {
     novalidate
     @submit.prevent.stop="onSubmit"
   >
-    <gl-form-group :label="s__('Badges|Name')" label-for="badge-name">
+    <gl-form-group :label="s__('Badges|Name')" label-for="badge-name" class="gl-max-w-48">
       <gl-form-input id="badge-name" v-model="name" data-qa-selector="badge_name_field" />
     </gl-form-group>
 
@@ -226,7 +226,7 @@ export default {
         v-model="linkUrl"
         data-qa-selector="badge_link_url_field"
         type="URL"
-        class="form-control gl-form-input"
+        class="form-control gl-form-input gl-max-w-80"
         required
         @input="updatePreview"
       />
@@ -242,7 +242,7 @@ export default {
         v-model="imageUrl"
         data-qa-selector="badge_image_url_field"
         type="URL"
-        class="form-control gl-form-input"
+        class="form-control gl-form-input gl-max-w-80"
         required
         @input="updatePreview"
       />

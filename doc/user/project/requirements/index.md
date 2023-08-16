@@ -5,7 +5,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Requirements management **(ULTIMATE)**
+# Requirements management **(ULTIMATE ALL)**
 
 NOTE:
 In 14.4, Requirements was moved under **Issues**.

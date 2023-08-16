@@ -11,6 +11,7 @@ module Ci
         belongs_to :release, inverse_of: :catalog_resource_version
         belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :versions
         belongs_to :project, inverse_of: :catalog_resource_versions
+        has_many :components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :version
 
         validates :release, :catalog_resource, :project, presence: true
       end

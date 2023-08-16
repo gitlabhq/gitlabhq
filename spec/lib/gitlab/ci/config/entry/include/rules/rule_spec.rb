@@ -1,117 +1,132 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper' # Change this to fast spec helper when FF `ci_refactor_external_rules` is removed
 require_dependency 'active_model'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category: :pipeline_composition do
   let(:factory) do
-    Gitlab::Config::Entry::Factory.new(described_class)
-                                  .value(config)
+    Gitlab::Config::Entry::Factory.new(described_class).value(config)
   end
 
   subject(:entry) { factory.create! }
 
-  describe '.new' do
-    shared_examples 'an invalid config' do |error_message|
-      it { is_expected.not_to be_valid }
+  before do
+    entry.compose!
+  end
 
-      it 'has errors' do
-        expect(entry.errors).to include(error_message)
+  shared_examples 'a valid config' do
+    it { is_expected.to be_valid }
+
+    it 'returns the expected value' do
+      expect(entry.value).to eq(config.compact)
+    end
+
+    context 'when FF `ci_refactor_external_rules` is disabled' do
+      before do
+        stub_feature_flags(ci_refactor_external_rules: false)
+      end
+
+      it 'returns the expected value' do
+        expect(entry.value).to eq(config)
       end
     end
+  end
 
-    context 'when specifying an if: clause' do
-      let(:config) { { if: '$THIS || $THAT' } }
+  shared_examples 'an invalid config' do |error_message|
+    it { is_expected.not_to be_valid }
 
-      it { is_expected.to be_valid }
+    it 'has errors' do
+      expect(entry.errors).to include(error_message)
+    end
+  end
 
-      context 'with when:' do
-        let(:config) { { if: '$THIS || $THAT', when: 'never' } }
+  context 'when specifying an if: clause' do
+    let(:config) { { if: '$THIS || $THAT' } }
 
-        it { is_expected.to be_valid }
-      end
+    it_behaves_like 'a valid config'
+
+    context 'with when:' do
+      let(:config) { { if: '$THIS || $THAT', when: 'never' } }
+
+      it_behaves_like 'a valid config'
     end
 
-    context 'when specifying an exists: clause' do
-      let(:config) { { exists: './this.md' } }
+    context 'with when: <invalid string>' do
+      let(:config) { { if: '$THIS || $THAT', when: 'on_success' } }
 
-      it { is_expected.to be_valid }
+      it_behaves_like 'an invalid config', /when unknown value: on_success/
     end
 
-    context 'using a list of multiple expressions' do
-      let(:config) { { if: ['$MY_VAR == "this"', '$YOUR_VAR == "that"'] } }
+    context 'with when: null' do
+      let(:config) { { if: '$THIS || $THAT', when: nil } }
+
+      it_behaves_like 'a valid config'
+    end
+
+    context 'when if: clause is invalid' do
+      let(:config) { { if: '$MY_VAR ==' } }
 
       it_behaves_like 'an invalid config', /invalid expression syntax/
     end
 
-    context 'when specifying an invalid if: clause expression' do
-      let(:config) { { if: ['$MY_VAR =='] } }
+    context 'when if: clause has an integer operand' do
+      let(:config) { { if: '$MY_VAR == 123' } }
 
       it_behaves_like 'an invalid config', /invalid expression syntax/
     end
 
-    context 'when specifying an if: clause expression with an invalid token' do
-      let(:config) { { if: ['$MY_VAR == 123'] } }
+    context 'when if: clause has invalid regex' do
+      let(:config) { { if: '$MY_VAR =~ /some ( thing/' } }
 
       it_behaves_like 'an invalid config', /invalid expression syntax/
     end
 
-    context 'when using invalid regex in an if: clause' do
-      let(:config) { { if: ['$MY_VAR =~ /some ( thing/'] } }
-
-      it_behaves_like 'an invalid config', /invalid expression syntax/
-    end
-
-    context 'when using an if: clause with lookahead regex character "?"' do
+    context 'when if: clause has lookahead regex character "?"' do
       let(:config) { { if: '$CI_COMMIT_REF =~ /^(?!master).+/' } }
 
       it_behaves_like 'an invalid config', /invalid expression syntax/
     end
 
-    context 'when specifying unknown policy' do
-      let(:config) { { invalid: :something } }
+    context 'when if: clause has array of expressions' do
+      let(:config) { { if: ['$MY_VAR == "this"', '$YOUR_VAR == "that"'] } }
 
-      it_behaves_like 'an invalid config', /unknown keys: invalid/
-    end
-
-    context 'when clause is empty' do
-      let(:config) { {} }
-
-      it_behaves_like 'an invalid config', /can't be blank/
-    end
-
-    context 'when policy strategy does not match' do
-      let(:config) { 'string strategy' }
-
-      it_behaves_like 'an invalid config', /should be a hash/
+      it_behaves_like 'an invalid config', /invalid expression syntax/
     end
   end
 
-  describe '#value' do
-    subject(:value) { entry.value }
+  context 'when specifying an exists: clause' do
+    let(:config) { { exists: './this.md' } }
 
-    context 'when specifying an if: clause' do
-      let(:config) { { if: '$THIS || $THAT' } }
+    it_behaves_like 'a valid config'
 
-      it 'returns the config' do
-        expect(subject).to eq(if: '$THIS || $THAT')
-      end
+    context 'when array' do
+      let(:config) { { exists: ['./this.md', './that.md'] } }
 
-      context 'with when:' do
-        let(:config) { { if: '$THIS || $THAT', when: 'never' } }
-
-        it 'returns the config' do
-          expect(subject).to eq(if: '$THIS || $THAT', when: 'never')
-        end
-      end
+      it_behaves_like 'a valid config'
     end
 
-    context 'when specifying an exists: clause' do
-      let(:config) { { exists: './test.md' } }
+    context 'when null' do
+      let(:config) { { exists: nil } }
 
-      it 'returns the config' do
-        expect(subject).to eq(exists: './test.md')
-      end
+      it_behaves_like 'a valid config'
     end
+  end
+
+  context 'when specifying an unknown keyword' do
+    let(:config) { { invalid: :something } }
+
+    it_behaves_like 'an invalid config', /unknown keys: invalid/
+  end
+
+  context 'when config is blank' do
+    let(:config) { {} }
+
+    it_behaves_like 'an invalid config', /can't be blank/
+  end
+
+  context 'when config type is invalid' do
+    let(:config) { 'invalid' }
+
+    it_behaves_like 'an invalid config', /should be a hash/
   end
 end

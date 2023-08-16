@@ -17,12 +17,13 @@ Each VM uses the Google Container-Optimized OS (COS) and the latest version of D
 For the SaaS runners on Linux, GitLab offers a range of machine types for use.
 For Free, Premium, and Ultimate plan customers, jobs on these instances consume the compute quota allocated to your namespace.
 
-| Runner Tag                                   | vCPUs | Memory | Storage |
-|----------------------------------------------|-------|--------|---------|
-| `saas-linux-small-amd64`                     | 2     | 8 GB   | 25 GB   |
-| `saas-linux-medium-amd64`                    | 4     | 16 GB  | 50 GB   |
-| `saas-linux-large-amd64` **(PREMIUM SAAS)**  | 8     | 32 GB  | 100 GB  |
-| `saas-linux-xlarge-amd64` **(PREMIUM SAAS)** | 16    | 64 GB  | 200 GB  |
+| Runner Tag                                    | vCPUs | Memory | Storage |
+|-----------------------------------------------|-------|--------|---------|
+| `saas-linux-small-amd64`                      | 2     | 8 GB   | 25 GB   |
+| `saas-linux-medium-amd64`                     | 4     | 16 GB  | 50 GB   |
+| `saas-linux-large-amd64` **(PREMIUM SAAS)**   | 8     | 32 GB  | 100 GB  |
+| `saas-linux-xlarge-amd64` **(PREMIUM SAAS)**  | 16    | 64 GB  | 200 GB  |
+| `saas-linux-2xlarge-amd64` **(PREMIUM SAAS)** | 32    | 128 GB | 200 GB  |
 
 The `small` machine type is set as default. If no [tag](../../yaml/index.md#tags) keyword in your `.gitlab-ci.yml` file is specified,
 the jobs will run on this default runner.

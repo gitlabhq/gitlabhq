@@ -724,31 +724,44 @@ Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-
 ### Footnotes
 
 To indicate a footnote, use the HTML tag `<sup>` with a number.
-Put the tag at the end of the sentence or term.
-
-For the footnotes below the table, use a bold number followed by a sentence.
-
-For example:
+Put the tag at the end of the sentence or term. For example:
 
 ```markdown
 | App name | Description                    |
 |:---------|:-------------------------------|
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
-
-1. This is the footnote.
-1. This is the other footnote.
 ```
 
-This text renders this output:
+For the footnotes below the table, use the HTML tags `<small>`, `<ol>` and `<li>`.
+For example:
+
+```html
+<html>
+<small>Footnotes
+  <ol>
+    <li>This is the footnote.</li>
+    <li>This is the other footnote.</li>
+  </ol>
+</small>
+</html>
+```
+
+This text renders as this output:
 
 | App name | Description                    |
 |:---------|:-------------------------------|
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
 
-1. This is the footnote.
-1. This is the other footnote.
+<html>
+<small>Footnotes
+  <ol>
+    <li>This is the footnote.</li>
+    <li>This is the other footnote.</li>
+  </ol>
+</small>
+</html>
 
 ## Quotes
 
@@ -1676,6 +1689,7 @@ Some pages won't have a tier badge, because no obvious tier badge applies. For e
 
 - Tutorials.
 - Pages that compare features from different tiers.
+- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
 
 ##### Administrator documentation tier badges
 

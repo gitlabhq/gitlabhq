@@ -47,7 +47,7 @@ create only a single cross-reference back to that merge request in Jira.
 
 You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
-### Require associated Jira issue for merge requests to be merged **(ULTIMATE)**
+### Require associated Jira issue for merge requests to be merged **(ULTIMATE ALL)**
 
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enable this feature:

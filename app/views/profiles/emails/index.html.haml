@@ -33,7 +33,7 @@
           = gitlab_ui_form_for 'email', url: profile_emails_path do |f|
             .form-group
               = f.label :email, s_('Profiles|Email address'), class: 'label-bold'
-              = f.text_field :email, class: 'form-control gl-form-input', data: { qa_selector: 'email_address_field' }
+              = f.text_field :email, class: 'form-control gl-form-input gl-form-input-xl', data: { qa_selector: 'email_address_field' }
             .gl-mt-3
               = f.submit s_('Profiles|Add email address'), data: { qa_selector: 'add_email_address_button' }, pajamas_button: true
               = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do

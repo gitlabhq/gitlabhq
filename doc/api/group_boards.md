@@ -242,7 +242,7 @@ Example response:
   }
 ```
 
-## Create a group issue board **(PREMIUM)**
+## Create a group issue board **(PREMIUM ALL)**
 
 Creates a group issue board.
 

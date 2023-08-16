@@ -73,7 +73,7 @@ You can configure the following security controls:
 - [Coverage Fuzzing](../coverage_fuzzing/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Coverage Fuzzing](../../../user/application_security/coverage_fuzzing/index.md#enable-coverage-guided-fuzz-testing).
 
-## Compliance **(ULTIMATE)**
+## Compliance **(ULTIMATE ALL)**
 
 You can configure the following security controls:
 

@@ -166,7 +166,7 @@ For example, if you purchase a subscription for 10 users:
 
 Seats owed = 12 - 10 (Maximum users - users in subscription)
 
-### Free Guest users **(ULTIMATE)**
+### Free Guest users **(ULTIMATE ALL)**
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab SaaS.

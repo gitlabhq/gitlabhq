@@ -91,7 +91,7 @@ When a release is created, release evidence is automatically collected. To initi
 
 Evidence collection snapshots are visible on the Releases page, along with the timestamp the evidence was collected.
 
-## Include report artifacts as release evidence **(ULTIMATE)**
+## Include report artifacts as release evidence **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in GitLab 13.2.
 

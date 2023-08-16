@@ -1204,7 +1204,7 @@ GET /groups?search=foobar
 ]
 ```
 
-## List provisioned users **(PREMIUM)**
+## List provisioned users **(PREMIUM ALL)**
 
 > Introduced in GitLab 14.8.
 
@@ -1278,7 +1278,7 @@ Example response:
 ]
 ```
 
-## Service Accounts **(PREMIUM)**
+## Service Accounts **(PREMIUM ALL)**
 
 ### Create Service Account User
 
@@ -1362,7 +1362,7 @@ Example response:
 }
 ```
 
-## Hooks **(PREMIUM)**
+## Hooks **(PREMIUM ALL)**
 
 Also called Group Hooks and Webhooks.
 These are different from [System Hooks](system_hooks.md) that are system wide and [Project Hooks](projects.md#hooks) that are limited to one project.
@@ -1493,7 +1493,7 @@ DELETE /groups/:id/hooks/:hook_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `hook_id` | integer        | yes      | The ID of the group hook. |
 
-## Group Audit Events **(PREMIUM)**
+## Group Audit Events **(PREMIUM ALL)**
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
 
@@ -1591,7 +1591,7 @@ DELETE /groups/:id/ldap_group_links
 NOTE:
 To delete the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
-## SAML Group Links **(PREMIUM)**
+## SAML Group Links **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
 > - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
@@ -1796,7 +1796,7 @@ DELETE /groups/:id/share/:group_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 
-## Push Rules **(PREMIUM)**
+## Push Rules **(PREMIUM ALL)**
 
 > Introduced in GitLab 13.4.
 

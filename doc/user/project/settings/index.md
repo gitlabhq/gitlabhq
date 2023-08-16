@@ -381,7 +381,7 @@ Automatically [create](../../../operations/incident_management/alerts.md#trigger
 
 Configure Error Tracking to discover and view [Sentry errors within GitLab](../../../operations/error_tracking.md).
 
-### Status Page **(ULTIMATE)**
+### Status Page **(ULTIMATE ALL)**
 
 [Add Storage credentials](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
 to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#create-a-status-page-project).

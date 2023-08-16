@@ -206,7 +206,7 @@ from an alert, and view it later on your **To-Do List**.
 
 To add a to-do item, on the right sidebar, select **Add a to do**.
 
-### Trigger actions from alerts **(ULTIMATE)**
+### Trigger actions from alerts **(ULTIMATE ALL)**
 
 > - Introduced in GitLab 13.1: incidents are not created automatically by default.
 > - Mapping common severity values from the alert payload [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab 13.9.

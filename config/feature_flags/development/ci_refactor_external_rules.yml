@@ -1,0 +1,8 @@
+---
+name: ci_refactor_external_rules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129145
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/421731
+milestone: '16.3'
+type: development
+group: group::pipeline authoring
+default_enabled: false

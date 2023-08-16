@@ -188,6 +188,9 @@ export default {
         [STATUS_ALL]: allIssues?.count,
       };
     },
+    isLoading() {
+      return this.$apollo.queries.serviceDeskIssues.loading;
+    },
     isOpenTab() {
       return this.state === STATUS_OPEN;
     },
@@ -410,12 +413,13 @@ export default {
   <section>
     <info-banner v-if="isInfoBannerVisible" />
     <issuable-list
-      v-if="hasAnyServiceDeskIssues"
+      v-if="isLoading || hasAnyServiceDeskIssues"
       namespace="service-desk"
       recent-searches-storage-key="service-desk-issues"
       :error="issuesError"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
+      :issuables-loading="isLoading"
       :initial-filter-value="filterTokens"
       :show-filtered-search-friendly-text="hasOrFeature"
       :sort-options="sortOptions"

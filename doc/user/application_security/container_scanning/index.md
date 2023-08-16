@@ -430,7 +430,7 @@ container_scanning:
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
-### Vulnerability allowlisting **(ULTIMATE)**
+### Vulnerability allowlisting **(ULTIMATE ALL)**
 
 To allowlist specific vulnerabilities, follow these steps:
 
@@ -748,7 +748,7 @@ Database update information for other analyzers is available in the
 
 After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
 
-## Solutions for vulnerabilities (auto-remediation) **(ULTIMATE)**
+## Solutions for vulnerabilities (auto-remediation) **(ULTIMATE ALL)**
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.

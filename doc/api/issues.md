@@ -1945,7 +1945,7 @@ Example response:
 WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-## Promote an issue to an epic **(PREMIUM)**
+## Promote an issue to an epic **(PREMIUM ALL)**
 
 Promotes an issue to an epic by adding a comment with the `/promote`
 [quick action](../user/project/quick_actions.md).

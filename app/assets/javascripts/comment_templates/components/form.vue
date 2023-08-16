@@ -146,6 +146,7 @@ export default {
         v-model="updateCommentTemplate.name"
         :placeholder="__('Enter a name for your comment template')"
         data-testid="comment-template-name-input"
+        class="gl-form-input-xl"
       />
     </gl-form-group>
     <gl-form-group
@@ -153,6 +154,7 @@ export default {
       :state="isContentValid"
       :invalid-feedback="__('Please enter the comment template content.')"
       data-testid="comment-template-content-form-group"
+      class="gl-lg-max-w-80p"
     >
       <markdown-field
         :enable-preview="false"

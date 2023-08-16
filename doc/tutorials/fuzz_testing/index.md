@@ -4,7 +4,7 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Perform fuzz testing in GitLab **(ULTIMATE)**
+# Tutorial: Perform fuzz testing in GitLab **(ULTIMATE ALL)**
 
 [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md#coverage-guided-fuzz-testing-process) sends unexpected, malformed, or random data to your application, and then monitors
 your application for unstable behaviors and crashes.

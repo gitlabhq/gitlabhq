@@ -901,7 +901,7 @@ Get External wiki integration settings for a project.
 GET /projects/:id/integrations/external-wiki
 ```
 
-## GitHub **(PREMIUM)**
+## GitHub **(PREMIUM ALL)**
 
 Code collaboration software.
 

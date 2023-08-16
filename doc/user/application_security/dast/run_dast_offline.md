@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Run DAST in an offline environment **(ULTIMATE)**
+# Run DAST in an offline environment **(ULTIMATE ALL)**
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for the DAST job to

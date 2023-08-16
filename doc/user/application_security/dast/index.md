@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Dynamic Application Security Testing (DAST) **(ULTIMATE)**
+# Dynamic Application Security Testing (DAST) **(ULTIMATE ALL)**
 
 If you deploy your web application into a new environment, your application may
 become exposed to new types of attacks. For example, misconfigurations of your

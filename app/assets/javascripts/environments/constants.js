@@ -1,5 +1,6 @@
 import { __, s__ } from '~/locale';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 // These statuses are based on how the backend defines pod phases here
 // lib/gitlab/kubernetes/pod.rb
@@ -109,31 +110,45 @@ export const SYNC_STATUS_BADGES = {
     variant: 'success',
     icon: 'status_success',
     text: s__('Environment|Reconciled'),
+    popoverText: s__('Deployment|Flux sync reconciled successfully'),
   },
   reconciling: {
     variant: 'info',
     icon: 'status_running',
     text: s__('Environment|Reconciling'),
+    popoverText: s__('Deployment|Flux sync reconciling'),
   },
   stalled: {
     variant: 'warning',
     icon: 'status_pending',
     text: s__('Environment|Stalled'),
+    popoverTitle: s__('Deployment|Flux sync stalled'),
   },
   failed: {
     variant: 'danger',
     icon: 'status_failed',
     text: s__('Deployment|Failed'),
+    popoverTitle: s__('Deployment|Flux sync failed'),
   },
   unknown: {
     variant: 'neutral',
     icon: 'status_notfound',
     text: s__('Deployment|Unknown'),
+    popoverTitle: s__('Deployment|Flux sync status is unknown'),
+    popoverText: s__(
+      'Deployment|Unable to detect state. %{linkStart}How are states detected?%{linkEnd}',
+    ),
+    popoverLink: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419666#results',
   },
   unavailable: {
     variant: 'muted',
     icon: 'status_notfound',
     text: s__('Deployment|Unavailable'),
+    popoverTitle: s__('Deployment|Flux sync status is unavailable'),
+    popoverText: s__(
+      'Deployment|Sync status is unknown. %{linkStart}How do I configure Flux for my deployment?%{linkEnd}',
+    ),
+    popoverLink: helpPagePath('user/clusters/agent/gitops/flux_tutorial'),
   },
 };
 

@@ -68,7 +68,7 @@ When you [close an incident](#close-an-incident) linked to an alert, GitLab
 [changes the alert's status](alerts.md#change-an-alerts-status) to **Resolved**.
 You are then credited with the alert's status change.
 
-### Automatically, when an alert is triggered **(ULTIMATE)**
+### Automatically, when an alert is triggered **(ULTIMATE ALL)**
 
 In the project settings, you can turn on [creating an incident automatically](alerts.md#trigger-actions-from-alerts)
 whenever an alert is triggered.

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# DAST API analyzer **(ULTIMATE)**
+# DAST API analyzer **(ULTIMATE ALL)**
 
 > DAST API analyzer [became the default analyzer for on-demand DAST API scans](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6.
 

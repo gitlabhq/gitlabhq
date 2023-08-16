@@ -359,7 +359,7 @@ users with at least the Maintainer role
 to create, update, and delete releases by protecting the tag with a wildcard (`*`),
 and set **Maintainer** in the **Allowed to create** column.
 
-## Release Metrics **(ULTIMATE)**
+## Release Metrics **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
 

@@ -172,6 +172,7 @@ class Project < ApplicationRecord
   alias_attribute :parent_id, :namespace_id
 
   has_one :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :project
+  has_many :ci_components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :project
   has_many :catalog_resource_versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :project
 
   has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'

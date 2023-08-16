@@ -179,7 +179,7 @@ Parameters:
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
-## Get all burndown chart events for a single milestone **(PREMIUM)**
+## Get all burndown chart events for a single milestone **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
 > - Moved to GitLab Premium in 13.9.

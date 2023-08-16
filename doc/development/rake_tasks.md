@@ -46,7 +46,7 @@ bin/rake "gitlab:seed:issues[group-path/project-path]"
 By default, this seeds an average of 2 issues per week for the last 5 weeks per
 project.
 
-#### Seeding issues for Insights charts **(ULTIMATE)**
+#### Seeding issues for Insights charts **(ULTIMATE ALL)**
 
 You can seed issues specifically for working with the
 [Insights charts](../user/group/insights/index.md) with the

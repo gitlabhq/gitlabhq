@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import KubernetesStatusBar from '~/environments/components/kubernetes_status_bar.vue';
 import {
@@ -30,6 +30,7 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findHealthBadge = () => wrapper.findByTestId('health-badge');
   const findSyncBadge = () => wrapper.findByTestId('sync-badge');
+  const findPopover = () => wrapper.findComponent(GlPopover);
 
   const fluxKustomizationStatusQuery = jest.fn().mockReturnValue([]);
   const fluxHelmReleaseStatusQuery = jest.fn().mockReturnValue([]);
@@ -60,6 +61,7 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
         fluxResourcePath,
       },
       apolloProvider,
+      stubs: { GlSprintf },
     });
   };
 
@@ -185,7 +187,7 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
 
       describe('with Flux Kustomizations available', () => {
         const createApolloProviderWithKustomizations = ({
-          result = { status: 'True', type: 'Ready' },
+          result = { status: 'True', type: 'Ready', message: '' },
         } = {}) => {
           const mockResolvers = {
             Query: {
@@ -218,7 +220,9 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
           'renders $badgeType when status is $status and type is $type',
           async ({ status, type, badgeType }) => {
             createWrapper({
-              apolloProvider: createApolloProviderWithKustomizations({ result: { status, type } }),
+              apolloProvider: createApolloProviderWithKustomizations({
+                result: { status, type, message: '' },
+              }),
               namespace: 'my-namespace',
             });
             await waitForPromises();
@@ -232,6 +236,68 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
             });
           },
         );
+
+        it.each`
+          status     | type             | message             | popoverTitle                                     | popoverText
+          ${'True'}  | ${'Stalled'}     | ${'stalled reason'} | ${s__('Deployment|Flux sync stalled')}           | ${'stalled reason'}
+          ${'True'}  | ${'Reconciling'} | ${''}               | ${undefined}                                     | ${s__('Deployment|Flux sync reconciling')}
+          ${'True'}  | ${'Ready'}       | ${''}               | ${undefined}                                     | ${s__('Deployment|Flux sync reconciled successfully')}
+          ${'False'} | ${'Ready'}       | ${'failed reason'}  | ${s__('Deployment|Flux sync failed')}            | ${'failed reason'}
+          ${'True'}  | ${'Unknown'}     | ${''}               | ${s__('Deployment|Flux sync status is unknown')} | ${s__('Deployment|Unable to detect state. %{linkStart}How are states detected?%{linkEnd}')}
+        `(
+          'renders correct popover text when status is $status and type is $type',
+          async ({ status, type, message, popoverTitle, popoverText }) => {
+            createWrapper({
+              apolloProvider: createApolloProviderWithKustomizations({
+                result: { status, type, message },
+              }),
+              namespace: 'my-namespace',
+            });
+            await waitForPromises();
+
+            expect(findPopover().text()).toMatchInterpolatedText(popoverText);
+            expect(findPopover().props('title')).toBe(popoverTitle);
+          },
+        );
+      });
+
+      describe('when Flux API errored', () => {
+        const error = new Error('Error from the cluster_client API');
+        const createApolloProviderWithErrors = () => {
+          const mockResolvers = {
+            Query: {
+              fluxKustomizationStatus: jest.fn().mockRejectedValueOnce(error),
+              fluxHelmReleaseStatus: jest.fn().mockRejectedValueOnce(error),
+            },
+          };
+
+          return createMockApollo([], mockResolvers);
+        };
+
+        beforeEach(async () => {
+          createWrapper({
+            apolloProvider: createApolloProviderWithErrors(),
+            namespace: 'my-namespace',
+          });
+          await waitForPromises();
+        });
+
+        it('renders sync badge as unavailable', () => {
+          const badge = SYNC_STATUS_BADGES.unavailable;
+
+          expect(findSyncBadge().text()).toBe(badge.text);
+          expect(findSyncBadge().props()).toMatchObject({
+            icon: badge.icon,
+            variant: badge.variant,
+          });
+        });
+
+        it('renders popover with an API error message', () => {
+          expect(findPopover().text()).toBe(error.message);
+          expect(findPopover().props('title')).toBe(
+            s__('Deployment|Flux sync status is unavailable'),
+          );
+        });
       });
     });
   });

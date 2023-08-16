@@ -72,25 +72,25 @@ Suggestion quality for other languages and using natural language code comments 
 
 Editor support for languages is documented in the following table.
 
-| Language                        | VS Code                                                                                                        | JetBrains IDEs               | Visual Studio | Neovim |
-|---------------------------------|----------------------------------------------------------------------------------------------------------------|------------------------------|---------------|--------|
-| C++                             | ✓                                                                                                              |                              | ✓             |        |
-| C#                              | ✓                                                                                                              | ✓                            | ✓             |        |
-| Go                              | ✓                                                                                                              | ✓ (IDEA Ultimate / GoLand)   |               |        |
-| Google SQL                      |                                                                                                                |                              |               |        |
-| Java                            | ✓                                                                                                              | ✓                            |               |        |
-| JavaScript                      | ✓                                                                                                              | ✓                            |               |        |
-| Kotlin                          | ✓                                                                                                              | ✓                            |               |        |
-| PHP                             | ✓                                                                                                              | ✓ (IDEA Ultimate)            |               |        |
-| Python                          | ✓                                                                                                              | ✓                            |               | ✓      |
-| Ruby                            | ✓                                                                                                              | ✓ (IDEA Ultimate / RubyMine) |               | ✓      |
-| Rust                            | ✓                                                                                                              | ✓                            |               |        |
-| Scala                           | ✓                                                                                                              | ✓                            |               |        |
-| Swift                           | ✓                                                                                                              | ✓                            |               |        |
-| TypeScript                      | ✓                                                                                                              | ✓                            |               |        |
-| Google Cloud CLI                |                                                                                                                |                              |               |        |
-| Kubernetes Resource Model (KRM) |                                                                                                                |                              |               |        |
-| Terraform                       | [`gitlab-org/gitlab-vscode-extension#826`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/826) |                              |               |        |
+| Language                        | VS Code                                                      | JetBrains IDEs               | Visual Studio | Neovim |
+|---------------------------------|--------------------------------------------------------------|------------------------------|---------------|--------|
+| C++                             | ✓                                                            |                              | ✓             |        |
+| C#                              | ✓                                                            | ✓                            | ✓             |        |
+| Go                              | ✓                                                            | ✓ (IDEA Ultimate / GoLand)   |               |        |
+| Google SQL                      |                                                              |                              |               |        |
+| Java                            | ✓                                                            | ✓                            |               |        |
+| JavaScript                      | ✓                                                            | ✓                            |               |        |
+| Kotlin                          | ✓                                                            | ✓                            |               |        |
+| PHP                             | ✓                                                            | ✓ (IDEA Ultimate)            |               |        |
+| Python                          | ✓                                                            | ✓                            |               | ✓      |
+| Ruby                            | ✓                                                            | ✓ (IDEA Ultimate / RubyMine) |               | ✓      |
+| Rust                            | ✓                                                            | ✓                            |               |        |
+| Scala                           | ✓                                                            | ✓                            |               |        |
+| Swift                           | ✓                                                            | ✓                            |               |        |
+| TypeScript                      | ✓                                                            | ✓                            |               |        |
+| Google Cloud CLI                |                                                              |                              |               |        |
+| Kubernetes Resource Model (KRM) |                                                              |                              |               |        |
+| Terraform                       | ✓ (Requires 3rd party extension providing Terraform support) |                              |               |        |
 
 ## Supported editor extensions
 

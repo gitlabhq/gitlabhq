@@ -10,6 +10,7 @@ query getFluxHelmReleaseStatusQuery(
     environmentName: $environmentName
     fluxResourcePath: $fluxResourcePath
   ) @client {
+    message
     status
     type
   }

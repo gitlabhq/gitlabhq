@@ -63,13 +63,13 @@ faster to preview proposed modifications.
 
 [Read more about Review Apps](../../../ci/review_apps/index.md).
 
-## License compliance **(ULTIMATE)**
+## License compliance **(ULTIMATE ALL)**
 
 If you have configured [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/index.md) for your project, then you can view a list of licenses that are detected for your project's dependencies.
 
 ![Merge request pipeline](img/license_compliance_widget_v15_3.png)
 
-## External status checks **(ULTIMATE)**
+## External status checks **(ULTIMATE ALL)**
 
 If you have configured [external status checks](status_checks.md) you can
 see the status of these checks in merge requests

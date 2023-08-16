@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Web API Fuzz Testing **(ULTIMATE)**
+# Web API Fuzz Testing **(ULTIMATE ALL)**
 
 Web API fuzzing performs fuzz testing of API operation parameters. Fuzz testing sets operation
 parameters to unexpected values in an effort to cause unexpected behavior and errors in the API

@@ -40,7 +40,7 @@ GitLab can display the results of one or more reports in the merge request
 
 For more information, see [Accessibility testing](../testing/accessibility_testing.md).
 
-## `artifacts:reports:api_fuzzing` **(ULTIMATE)**
+## `artifacts:reports:api_fuzzing` **(ULTIMATE ALL)**
 
 > - Introduced in GitLab 13.4.
 > - Requires GitLab Runner 13.4 or later.
@@ -106,7 +106,7 @@ GitLab can display the results of one or more reports in:
 - The merge request [diff annotations](../testing/code_quality.md#merge-request-changes-view).
 - The [full report](../testing/metrics_reports.md).
 
-## `artifacts:reports:container_scanning` **(ULTIMATE)**
+## `artifacts:reports:container_scanning` **(ULTIMATE ALL)**
 
 The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md).
 The collected Container Scanning report uploads to GitLab as an artifact.
@@ -118,7 +118,7 @@ GitLab can display the results of one or more reports in:
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
-## `artifacts:reports:coverage_fuzzing` **(ULTIMATE)**
+## `artifacts:reports:coverage_fuzzing` **(ULTIMATE ALL)**
 
 > - Introduced in GitLab 13.4.
 > - Requires GitLab Runner 13.4 or later.
@@ -157,7 +157,7 @@ artifacts:
       - gl-sbom-bundler-gem.cdx.json
 ```
 
-## `artifacts:reports:dast` **(ULTIMATE)**
+## `artifacts:reports:dast` **(ULTIMATE ALL)**
 
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md). The collected DAST
 report uploads to GitLab as an artifact.
@@ -169,7 +169,7 @@ GitLab can display the results of one or more reports in:
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
-## `artifacts:reports:dependency_scanning` **(ULTIMATE)**
+## `artifacts:reports:dependency_scanning` **(ULTIMATE ALL)**
 
 The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md).
 The collected Dependency Scanning report uploads to GitLab as an artifact.
@@ -247,7 +247,7 @@ concatenate them into a single file. Use either:
 
 <!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
 
-## `artifacts:reports:license_scanning` **(ULTIMATE)**
+## `artifacts:reports:license_scanning` **(ULTIMATE ALL)**
 
 > Introduced in GitLab 12.8.
 
@@ -279,7 +279,7 @@ artifact.
 GitLab can display the results of one or more reports in the merge request
 [metrics reports widget](../testing/metrics_reports.md#metrics-reports).
 
-## `artifacts:reports:requirements` **(ULTIMATE)**
+## `artifacts:reports:requirements` **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
 

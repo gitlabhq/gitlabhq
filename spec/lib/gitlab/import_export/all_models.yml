@@ -520,6 +520,7 @@ container_repositories:
 project:
 - catalog_resource
 - catalog_resource_versions
+- ci_components
 - external_status_checks
 - base_tags
 - project_topics
@@ -1044,11 +1045,13 @@ iterations_cadence:
   - iterations
 catalog_resource:
   - project
+  - catalog_resource_components
   - catalog_resource_versions
 catalog_resource_versions:
   - project
   - release
   - catalog_resource
+  - catalog_resource_components
 approval_rules:
   - users
   - groups

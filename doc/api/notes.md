@@ -466,7 +466,7 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/7/notes/1602"
 ```
 
-## Epics **(PREMIUM)**
+## Epics **(PREMIUM ALL)**
 
 ### List all epic notes
 

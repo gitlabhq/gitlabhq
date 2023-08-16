@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge Trains API **(PREMIUM)**
+# Merge Trains API **(PREMIUM ALL)**
 
 Every API call for [merge train](../ci/pipelines/merge_trains.md) must be authenticated with at lease the Developer [role](../user/permissions.md).
 

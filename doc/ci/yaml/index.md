@@ -1554,7 +1554,7 @@ In this example:
   is not recorded or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
   for more details.
 
-### `dast_configuration` **(ULTIMATE)**
+### `dast_configuration` **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
 

@@ -221,7 +221,7 @@ curl --request POST \
 }'
 ```
 
-## Automate group and project import **(PREMIUM)**
+## Automate group and project import **(PREMIUM ALL)**
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](../user/project/import/index.md#automate-group-and-project-import).

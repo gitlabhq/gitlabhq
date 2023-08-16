@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlBadge } from '@gitlab/ui';
+import { GlLoadingIcon, GlBadge, GlPopover, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import {
   HEALTH_BADGES,
@@ -16,6 +16,9 @@ export default {
   components: {
     GlLoadingIcon,
     GlBadge,
+    GlPopover,
+    GlSprintf,
+    GlLink,
   },
   props: {
     clusterHealthStatus: {
@@ -61,6 +64,9 @@ export default {
           !this.namespace || this.fluxResourcePath?.includes(HELM_RELEASES_RESOURCE_TYPE),
         );
       },
+      error(err) {
+        this.fluxApiError = err.message;
+      },
     },
     fluxHelmReleaseStatus: {
       query: fluxHelmReleaseStatusQuery,
@@ -80,7 +86,15 @@ export default {
             this.fluxResourcePath?.includes(KUSTOMIZATIONS_RESOURCE_TYPE),
         );
       },
+      error(err) {
+        this.fluxApiError = err.message;
+      },
     },
+  },
+  data() {
+    return {
+      fluxApiError: '',
+    };
   },
   computed: {
     healthBadge() {
@@ -97,6 +111,9 @@ export default {
         this.$apollo.queries.fluxKustomizationStatus.loading ||
         this.$apollo.queries.fluxHelmReleaseStatus.loading
       );
+    },
+    fluxBadgeId() {
+      return `${this.environmentName}-flux-sync-badge`;
     },
     fluxCRD() {
       if (!this.hasKustomizations && !this.hasHelmReleases) {
@@ -126,12 +143,14 @@ export default {
       });
     },
     syncStatusBadge() {
-      if (!this.fluxCRD.length) {
+      if (!this.fluxCRD.length && this.fluxApiError) {
+        return { ...SYNC_STATUS_BADGES.unavailable, popoverText: this.fluxApiError };
+      } else if (!this.fluxCRD.length) {
         return SYNC_STATUS_BADGES.unavailable;
       } else if (this.fluxAnyFailed) {
-        return SYNC_STATUS_BADGES.failed;
+        return { ...SYNC_STATUS_BADGES.failed, popoverText: this.fluxAnyFailed.message };
       } else if (this.fluxAnyStalled) {
-        return SYNC_STATUS_BADGES.stalled;
+        return { ...SYNC_STATUS_BADGES.stalled, popoverText: this.fluxAnyStalled.message };
       } else if (this.fluxAnyReconciling) {
         return SYNC_STATUS_BADGES.reconciling;
       } else if (this.fluxAnyReconciled) {
@@ -160,13 +179,25 @@ export default {
     <div :class="$options.badgeContainerClasses">
       <span class="gl-mr-3">{{ $options.i18n.syncStatusLabel }}</span>
       <gl-loading-icon v-if="isLoading" size="sm" inline />
-      <gl-badge
-        v-else-if="syncStatusBadge"
-        :icon="syncStatusBadge.icon"
-        :variant="syncStatusBadge.variant"
-        data-testid="sync-badge"
-        >{{ syncStatusBadge.text }}</gl-badge
-      >
+      <template v-else-if="syncStatusBadge">
+        <gl-badge
+          :id="fluxBadgeId"
+          :icon="syncStatusBadge.icon"
+          :variant="syncStatusBadge.variant"
+          data-testid="sync-badge"
+          tabindex="0"
+          >{{ syncStatusBadge.text }}
+        </gl-badge>
+        <gl-popover :target="fluxBadgeId" :title="syncStatusBadge.popoverTitle">
+          <gl-sprintf :message="syncStatusBadge.popoverText">
+            <template #link="{ content }">
+              <gl-link :href="syncStatusBadge.popoverLink" class="gl-font-sm">{{
+                content
+              }}</gl-link></template
+            >
+          </gl-sprintf>
+        </gl-popover>
+      </template>
     </div>
   </div>
 </template>

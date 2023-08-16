@@ -62,6 +62,7 @@ describe('CE ServiceDeskListApp', () => {
     isServiceDeskSupported: true,
     hasAnyIssues: true,
     initialSort: '',
+    issuablesLoading: false,
   };
 
   let defaultQueryResponse = getServiceDeskIssuesQueryResponse;
@@ -128,6 +129,17 @@ describe('CE ServiceDeskListApp', () => {
     setWindowLocation(TEST_HOST);
     wrapper = createComponent();
     return waitForPromises();
+  });
+
+  it('renders the issuable list with skeletons while fetching service desk issues', async () => {
+    wrapper = createComponent();
+    await nextTick();
+
+    expect(findIssuableList().props('issuablesLoading')).toBe(true);
+
+    await waitForPromises();
+
+    expect(findIssuableList().props('issuablesLoading')).toBe(false);
   });
 
   it('fetches service desk issues and renders them in the issuable list', () => {

@@ -4,7 +4,7 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DAST browser-based crawler vulnerability checks **(ULTIMATE)**
+# DAST browser-based crawler vulnerability checks **(ULTIMATE ALL)**
 
 The [DAST browser-based crawler](../browser_based.md) provides a number of vulnerability checks that are used to scan for vulnerabilities in the site under test.
 

@@ -15,6 +15,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   let_it_be(:release3) { create(:release, project: project, released_at: Time.zone.now) }
 
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to have_many(:components).class_name('Ci::Catalog::Resources::Component') }
   it { is_expected.to have_many(:versions).class_name('Ci::Catalog::Resources::Version') }
 
   it { is_expected.to delegate_method(:avatar_path).to(:project) }

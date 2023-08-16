@@ -6,6 +6,7 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   it { is_expected.to belong_to(:release) }
   it { is_expected.to belong_to(:catalog_resource).class_name('Ci::Catalog::Resource') }
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to have_many(:components).class_name('Ci::Catalog::Resources::Component') }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:release) }

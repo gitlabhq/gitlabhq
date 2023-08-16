@@ -340,7 +340,7 @@ To delete a single or multiple group runners:
    - To delete all runners, select the checkbox at the top of the runner list and select **Delete selected**.
 1. Select **Permanently delete runner**.
 
-### Clean up stale group runners **(ULTIMATE)**
+### Clean up stale group runners **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
@@ -540,7 +540,7 @@ A runner can have one of the following statuses.
 | `stale`   | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
 | `never_contacted` | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
 
-## View statistics for runner performance **(ULTIMATE)**
+## View statistics for runner performance **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
 
@@ -558,7 +558,7 @@ median value.
 1. On the left sidebar, select **CI/CD > Runners**.
 1. Select **View metrics**.
 
-## Determine which runners need to be upgraded **(ULTIMATE)**
+## Determine which runners need to be upgraded **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
 

@@ -11,7 +11,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
   bundle exec rake gitlab:audit_event_types:compile_docs
 --->
 
-# Audit event types **(ULTIMATE)**
+# Audit event types **(ULTIMATE ALL)**
 
 Audit event types are used to [filter streamed audit events](index.md#update-event-filters).
 

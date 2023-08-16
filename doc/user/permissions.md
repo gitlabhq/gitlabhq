@@ -468,7 +468,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Release permissions](project/releases/index.md#release-permissions)
 - [Read-only namespaces](../user/read_only_namespaces.md)
 
-## Custom roles **(ULTIMATE)**
+## Custom roles **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.

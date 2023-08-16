@@ -109,7 +109,7 @@
                 .input-group-prepend
                   .input-group-text
                     #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
-                = f.text_field :path, class: 'form-control', data: { qa_selector: 'project_path_field' }
+                = f.text_field :path, class: 'form-control gl-form-input-xl', data: { qa_selector: 'project_path_field' }
           = f.submit _('Change path'), class: "btn-danger", data: { qa_selector: 'change_path_button' }, pajamas_button: true
 
     = render 'transfer', project: @project

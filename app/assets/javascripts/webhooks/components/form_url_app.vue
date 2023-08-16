@@ -170,6 +170,7 @@ export default {
         id="webhook-url"
         v-model="url"
         name="hook[url]"
+        class="gl-form-input-xl"
         :state="urlState"
         :placeholder="$options.i18n.urlPlaceholder"
         data-testid="form-url"

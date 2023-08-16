@@ -61,6 +61,26 @@ To view a configured dashboard:
 1. Expand the environment associated with GitLab agent for Kubernetes.
 1. Expand **Kubernetes overview**.
 
+### Flux sync status
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391581) in GitLab 16.3.
+
+A dashboard displays the sync status of your Flux deployments.
+
+| Status | Description |
+|---------|-------------|
+| **Reconciled** | The deployment successfully reconciled with its environment. |
+| **Reconciling** | A reconciliation is in progress. |
+| **Stalled** | A reconciliation is stuck because of an error that cannot be resolved without human intervention. |
+| **Failed** | The deployment couldn't reconcile because of an unrecoverable error. |
+| **Unknown** | The sync status of the deployment couldn't be retrieved. |
+| **Unavailable** | The `Kustomization` or `HelmRelease` resource couldn't be retrieved. |
+
+Deployments rely on Flux `Kustomization` and `HelmRelease` resources to gather
+the status of a given environment, which requires a namespace to be configured for the environment.
+By default, GitLab searches the `Kustomization` and `HelmRelease` resources for the name of the project slug.
+You can customize the name GitLab looks for in the environment settings.
+
 ## Troubleshooting
 
 When working with the Dashboard for Kubernetes, you might encounter the following issues.

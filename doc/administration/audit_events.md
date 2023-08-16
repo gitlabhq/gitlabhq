@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit events **(PREMIUM)**
+# Audit events **(PREMIUM ALL)**
 
 Use audit events to track important events, including who performed the related action and when.
 You can use audit events to track, for example:
@@ -406,7 +406,7 @@ The following user actions on a GitLab instance generate instance audit events:
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 
-#### Application settings **(PREMIUM)**
+#### Application settings **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282428) in GitLab 16.2.
 

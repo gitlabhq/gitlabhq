@@ -227,7 +227,7 @@ warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
 For more information, see [Secret Detection](../../user/application_security/secret_detection/index.md).
 
-## Auto Dependency Scanning **(ULTIMATE)**
+## Auto Dependency Scanning **(ULTIMATE ALL)**
 
 Dependency Scanning runs analysis on the project's dependencies and checks for potential security issues.
 The Auto Dependency Scanning stage is skipped on licenses other than
@@ -242,7 +242,7 @@ For more information, see
 
 <!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
 
-## Auto License Compliance (removed) **(ULTIMATE)**
+## Auto License Compliance (removed) **(ULTIMATE ALL)**
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421363) in 16.3.
@@ -299,7 +299,7 @@ deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed
 in the first place, and thus not realize that it needs to re-apply the old configuration.
 
-## Auto DAST **(ULTIMATE)**
+## Auto DAST **(ULTIMATE ALL)**
 
 Dynamic Application Security Testing (DAST) uses the popular open source tool
 [OWASP ZAProxy](https://github.com/zaproxy/zaproxy) to analyze the current code

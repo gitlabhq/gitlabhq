@@ -16350,6 +16350,24 @@ msgstr ""
 msgid "Deployment|Failed"
 msgstr ""
 
+msgid "Deployment|Flux sync failed"
+msgstr ""
+
+msgid "Deployment|Flux sync reconciled successfully"
+msgstr ""
+
+msgid "Deployment|Flux sync reconciling"
+msgstr ""
+
+msgid "Deployment|Flux sync stalled"
+msgstr ""
+
+msgid "Deployment|Flux sync status is unavailable"
+msgstr ""
+
+msgid "Deployment|Flux sync status is unknown"
+msgstr ""
+
 msgid "Deployment|Latest Deployed"
 msgstr ""
 
@@ -16365,10 +16383,16 @@ msgstr ""
 msgid "Deployment|Success"
 msgstr ""
 
+msgid "Deployment|Sync status is unknown. %{linkStart}How do I configure Flux for my deployment?%{linkEnd}"
+msgstr ""
+
 msgid "Deployment|This deployment was created using the API"
 msgstr ""
 
 msgid "Deployment|Triggerer"
+msgstr ""
+
+msgid "Deployment|Unable to detect state. %{linkStart}How are states detected?%{linkEnd}"
 msgstr ""
 
 msgid "Deployment|Unavailable"
@@ -47958,6 +47982,9 @@ msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 
 msgid "There was an summarizing your pending comments."
+msgstr ""
+
+msgid "These branches already have an open merge request: %{link_to_mr}. Select a different source or target branch."
 msgstr ""
 
 msgid "These dates affect how your epics appear in the roadmap. Set a fixed date or one inherited from the milestones assigned to issues in this epic."

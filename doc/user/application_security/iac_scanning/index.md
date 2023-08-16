@@ -128,7 +128,7 @@ To enable IaC Scanning in a project, you can create a merge request:
 
 Pipelines now include an IaC Scanning job.
 
-## Customize rulesets **(ULTIMATE)**
+## Customize rulesets **(ULTIMATE ALL)**
 
 > [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 

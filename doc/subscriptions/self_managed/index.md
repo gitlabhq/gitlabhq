@@ -87,7 +87,7 @@ If you add more users to your GitLab instance than you are licensed for, payment
 
 If you do not add these users during the renewal process, your license key will not work.
 
-### Free Guest users **(ULTIMATE)**
+### Free Guest users **(ULTIMATE ALL)**
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance.

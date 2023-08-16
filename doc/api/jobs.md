@@ -497,7 +497,7 @@ Example of response
 }
 ```
 
-## Get GitLab agent by `CI_JOB_TOKEN` **(PREMIUM)**
+## Get GitLab agent by `CI_JOB_TOKEN` **(PREMIUM ALL)**
 
 Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed
 [agents](../user/clusters/agent/index.md).

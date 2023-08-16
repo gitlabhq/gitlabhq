@@ -241,6 +241,7 @@ export default {
         data-testid="transfer-locations-dropdown"
         block
         toggle-class="gl-mb-0"
+        class="gl-form-input-xl"
         @show="handleShow"
       >
         <template #header>

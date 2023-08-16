@@ -729,7 +729,7 @@ or human error can cause major issues with an environment. Things like:
 You can use [incident management](../../operations/incident_management/index.md)
 to get alerts when there are critical issues that need immediate attention.
 
-#### View the latest alerts for environments **(ULTIMATE)**
+#### View the latest alerts for environments **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
 
@@ -745,7 +745,7 @@ longer visible on the environments page.
 If the alert requires a [rollback](#retry-or-roll-back-a-deployment), you can select the
 deployment tab from the environment page and select which deployment to roll back to.
 
-#### Auto Rollback **(ULTIMATE)**
+#### Auto Rollback **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
 

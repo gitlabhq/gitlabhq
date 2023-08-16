@@ -76,8 +76,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
         let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'on_success' }] }
 
         it 'raises an error' do
-          expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
-                                           'invalid include rule: {:if=>"$MY_VAR == \"hello\"", :when=>"on_success"}')
+          expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /when unknown value: on_success/)
         end
       end
 
@@ -105,8 +104,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
         let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'on_success' }] }
 
         it 'raises an error' do
-          expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
-                                           'invalid include rule: {:exists=>"Dockerfile", :when=>"on_success"}')
+          expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /when unknown value: on_success/)
         end
       end
 
@@ -121,8 +119,94 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       let(:rule_hashes) { [{ changes: ['$MY_VAR'] }] }
 
       it 'raises an error' do
-        expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
-                                         'invalid include rule: {:changes=>["$MY_VAR"]}')
+        expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /contains unknown keys: changes/)
+      end
+    end
+
+    context 'when FF `ci_refactor_external_rules` is disabled' do
+      before do
+        stub_feature_flags(ci_refactor_external_rules: false)
+      end
+
+      context 'when there is no rule' do
+        let(:rule_hashes) {}
+
+        it { is_expected.to eq(true) }
+      end
+
+      it_behaves_like 'when there is a rule with if'
+
+      context 'when there is a rule with exists' do
+        let(:rule_hashes) { [{ exists: 'Dockerfile' }] }
+
+        it_behaves_like 'when there is a rule with exists'
+      end
+
+      context 'when there is a rule with if and when' do
+        context 'with when: never' do
+          let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'never' }] }
+
+          it_behaves_like 'when there is a rule with if', false, false
+        end
+
+        context 'with when: always' do
+          let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'always' }] }
+
+          it_behaves_like 'when there is a rule with if'
+        end
+
+        context 'with when: <invalid string>' do
+          let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'on_success' }] }
+
+          it 'raises an error' do
+            expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
+                                             'invalid include rule: {:if=>"$MY_VAR == \"hello\"", :when=>"on_success"}')
+          end
+        end
+
+        context 'with when: null' do
+          let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: nil }] }
+
+          it_behaves_like 'when there is a rule with if'
+        end
+      end
+
+      context 'when there is a rule with exists and when' do
+        context 'with when: never' do
+          let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'never' }] }
+
+          it_behaves_like 'when there is a rule with exists', false, false
+        end
+
+        context 'with when: always' do
+          let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'always' }] }
+
+          it_behaves_like 'when there is a rule with exists'
+        end
+
+        context 'with when: <invalid string>' do
+          let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'on_success' }] }
+
+          it 'raises an error' do
+            expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
+                                             'invalid include rule: {:exists=>"Dockerfile", :when=>"on_success"}')
+          end
+        end
+
+        context 'with when: null' do
+          let(:rule_hashes) { [{ exists: 'Dockerfile', when: nil }] }
+
+          it_behaves_like 'when there is a rule with exists'
+        end
+      end
+
+      context 'when there is a rule with changes' do
+        let(:rule_hashes) { [{ changes: ['$MY_VAR'] }] }
+
+        it 'raises an error' do
+          expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
+                                           'invalid include rule: {:changes=>["$MY_VAR"]}')
+        end
       end
     end
   end

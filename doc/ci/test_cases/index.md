@@ -6,7 +6,7 @@ description: Test cases in GitLab can help your teams create testing scenarios i
 type: reference
 ---
 
-# Test cases **(ULTIMATE)**
+# Test cases **(ULTIMATE ALL)**
 
 Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
 

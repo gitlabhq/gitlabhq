@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, api
 ---
 
-# DevOps Research and Assessment (DORA) key metrics API **(ULTIMATE)**
+# DevOps Research and Assessment (DORA) key metrics API **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab 13.10.
 > - The legacy key/value pair `{ "<date>" => "<value>" }` was removed from the payload in GitLab 14.0.
