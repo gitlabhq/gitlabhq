@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The [PostgreSQL Server Exporter](https://github.com/prometheus-community/postgres_exporter) allows you to export various PostgreSQL metrics.
 
-For installations from source you must install and configure it yourself.
+For self-compiled installations, you must install and configure it yourself.
 
 To enable the PostgreSQL Server Exporter:
 

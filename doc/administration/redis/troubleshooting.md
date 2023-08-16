@@ -133,7 +133,7 @@ To make sure your configuration is correct:
    You should see a different port after a few seconds delay
    (the failover/reconnect time).
 
-## Troubleshooting a non-bundled Redis with an installation from source
+## Troubleshooting a non-bundled Redis with a self-compiled installation
 
 If you get an error in GitLab like `Redis::CannotConnectError: No sentinels available.`,
 there may be something wrong with your configuration files or it can be related

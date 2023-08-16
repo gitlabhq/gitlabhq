@@ -209,8 +209,9 @@ To trigger a child pipeline from a dynamically generated configuration file:
          - generated-config.yml
    ```
 
-1. Configure the trigger job to run after the job that generated the configuration file,
-   and set `include: artifact` to the generated artifact:
+1. Configure the trigger job to run after the job that generated the configuration file.
+   Set `include: artifact` to the generated artifact, and set `include: job` to
+   the job that created the artifact:
 
    ```yaml
    child-pipeline:

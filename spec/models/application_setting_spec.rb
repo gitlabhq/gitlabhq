@@ -49,8 +49,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           ci: 'WAL rate query ci'
         },
         wal_rate_slo: {
-          main: 0.99,
-          ci: 0.98
+          main: 7000,
+          ci: 7000
         }
       }
     end

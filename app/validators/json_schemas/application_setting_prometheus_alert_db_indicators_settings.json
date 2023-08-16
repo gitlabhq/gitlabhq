@@ -20,12 +20,32 @@
       "type": "object",
       "properties": {
         "main": {
-          "type": "number",
-          "format": "float"
+          "type": "number"
         },
         "ci": {
-          "type": "number",
-          "format": "float"
+          "type": "number"
+        }
+      }
+    },
+    "wal_rate_sli_query": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "string"
+        },
+        "ci": {
+          "type": "string"
+        }
+      }
+    },
+    "wal_rate_slo": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "integer"
+        },
+        "ci": {
+          "type": "integer"
         }
       }
     }

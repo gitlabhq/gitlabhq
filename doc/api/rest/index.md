@@ -200,7 +200,9 @@ header.
 
 By default, impersonation is enabled. To disable impersonation:
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit the `/etc/gitlab/gitlab.rb` file:
 
@@ -211,10 +213,7 @@ By default, impersonation is enabled. To disable impersonation:
 1. Save the file, and then [reconfigure](../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
-To re-enable impersonation, remove this configuration, and then reconfigure
-GitLab.
-
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit the `config/gitlab.yml` file:
 
@@ -226,7 +225,10 @@ GitLab.
 1. Save the file, and then [restart](../../administration/restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
 
-To re-enable impersonation, remove this configuration, and then restart GitLab.
+::EndTabs
+
+To re-enable impersonation, remove this configuration and reconfigure GitLab (Linux package installations) or restart
+GitLab (self-compiled installations).
 
 ### Sudo
 

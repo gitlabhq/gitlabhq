@@ -20,7 +20,7 @@ module Gitlab
 
             return yaml_result unless yaml_result.valid?
 
-            interpolator = Yaml::Interpolator.new(yaml_result, inputs)
+            interpolator = Interpolation::Interpolator.new(yaml_result, inputs)
 
             interpolator.interpolate!
 

@@ -179,7 +179,7 @@ list.
 
 Reply by email should now be working.
 
-### Installations from source
+### Self-compiled installations
 
 1. Go to the GitLab installation directory:
 

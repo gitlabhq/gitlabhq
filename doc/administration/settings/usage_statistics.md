@@ -141,9 +141,11 @@ The method to disable Service Ping in the GitLab configuration file does not wor
 GitLab versions 9.3 to 13.12.3. For more information about how to disable it, see [troubleshooting](../../development/internal_analytics/service_ping/troubleshooting.md#cannot-disable-service-ping-with-the-configuration-file).
 
 To disable Service Ping and prevent it from being configured in the future through
-the Admin Area:
+the Admin Area.
 
-**For installations using the Linux package:**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -157,7 +159,7 @@ the Admin Area:
    sudo gitlab-ctl reconfigure
    ```
 
-**For installations from source:**
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -174,6 +176,8 @@ the Admin Area:
    ```shell
    sudo service gitlab restart
    ```
+
+::EndTabs
 
 ## View the Service Ping payload
 

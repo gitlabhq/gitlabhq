@@ -5,6 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import EnvironmentForm from '~/environments/components/environment_form.vue';
 import getUserAuthorizedAgents from '~/environments/graphql/queries/user_authorized_agents.query.graphql';
+import EnvironmentFluxResourceSelector from '~/environments/components/environment_flux_resource_selector.vue';
 import createMockApollo from '../__helpers__/mock_apollo_helper';
 import { mockKasTunnelUrl } from './mock_data';
 
@@ -25,6 +26,16 @@ const userAccessAuthorizedAgents = [
   { agent: { id: '2', name: 'agent-2' } },
 ];
 
+const configuration = {
+  basePath: mockKasTunnelUrl.replace(/\/$/, ''),
+  baseOptions: {
+    headers: {
+      'GitLab-Agent-Id': 2,
+    },
+    withCredentials: true,
+  },
+};
+
 describe('~/environments/components/form.vue', () => {
   let wrapper;
 
@@ -42,7 +53,11 @@ describe('~/environments/components/form.vue', () => {
       },
     });
 
-  const createWrapperWithApollo = ({ propsData = {}, queryResult = null } = {}) => {
+  const createWrapperWithApollo = ({
+    propsData = {},
+    fluxResourceForEnvironment = false,
+    queryResult = null,
+  } = {}) => {
     Vue.use(VueApollo);
 
     const requestHandlers = [
@@ -68,6 +83,9 @@ describe('~/environments/components/form.vue', () => {
     return mountExtended(EnvironmentForm, {
       provide: {
         ...PROVIDE,
+        glFeatures: {
+          fluxResourceForEnvironment,
+        },
       },
       propsData: {
         ...DEFAULT_PROPS,
@@ -80,6 +98,7 @@ describe('~/environments/components/form.vue', () => {
   const findAgentSelector = () => wrapper.findByTestId('agent-selector');
   const findNamespaceSelector = () => wrapper.findByTestId('namespace-selector');
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findFluxResourceSelector = () => wrapper.findComponent(EnvironmentFluxResourceSelector);
 
   const selectAgent = async () => {
     findAgentSelector().vm.$emit('shown');
@@ -283,7 +302,15 @@ describe('~/environments/components/form.vue', () => {
       await selectAgent();
 
       expect(wrapper.emitted('change')).toEqual([
-        [{ name: '', externalUrl: '', clusterAgentId: '2', kubernetesNamespace: null }],
+        [
+          {
+            name: '',
+            externalUrl: '',
+            clusterAgentId: '2',
+            kubernetesNamespace: null,
+            fluxResourcePath: null,
+          },
+        ],
       ]);
     });
   });
@@ -307,16 +334,6 @@ describe('~/environments/components/form.vue', () => {
       });
 
       it('requests the kubernetes namespaces with the correct configuration', async () => {
-        const configuration = {
-          basePath: mockKasTunnelUrl.replace(/\/$/, ''),
-          baseOptions: {
-            headers: {
-              'GitLab-Agent-Id': 2,
-            },
-            withCredentials: true,
-          },
-        };
-
         await waitForPromises();
 
         expect(getNamespacesQueryResult).toHaveBeenCalledWith(
@@ -365,7 +382,7 @@ describe('~/environments/components/form.vue', () => {
         await findNamespaceSelector().vm.$emit('select', 'agent');
 
         expect(wrapper.emitted('change')[1]).toEqual([
-          { name: '', externalUrl: '', kubernetesNamespace: 'agent' },
+          { name: '', externalUrl: '', kubernetesNamespace: 'agent', fluxResourcePath: null },
         ]);
       });
 
@@ -400,6 +417,45 @@ describe('~/environments/components/form.vue', () => {
 
       it('renders an alert', () => {
         expect(findAlert().text()).toBe('Error from the cluster_client API');
+      });
+    });
+  });
+
+  describe('flux resource selector', () => {
+    it("doesn't render if `fluxResourceForEnvironment` feature flag is disabled", () => {
+      wrapper = createWrapperWithApollo();
+      expect(findFluxResourceSelector().exists()).toBe(false);
+    });
+
+    describe('when `fluxResourceForEnvironment` feature flag is enabled', () => {
+      beforeEach(() => {
+        wrapper = createWrapperWithApollo({
+          fluxResourceForEnvironment: true,
+        });
+      });
+
+      it("doesn't render flux resource selector by default", () => {
+        expect(findFluxResourceSelector().exists()).toBe(false);
+      });
+
+      describe('when the agent was selected', () => {
+        beforeEach(async () => {
+          await selectAgent();
+        });
+
+        it("doesn't render flux resource selector", () => {
+          expect(findFluxResourceSelector().exists()).toBe(false);
+        });
+
+        it('renders the flux resource selector when the namespace is selected', async () => {
+          await findNamespaceSelector().vm.$emit('select', 'agent');
+
+          expect(findFluxResourceSelector().props()).toEqual({
+            namespace: 'agent',
+            fluxResourcePath: '',
+            configuration,
+          });
+        });
       });
     });
   });
@@ -451,6 +507,27 @@ describe('~/environments/components/form.vue', () => {
     it('updates namespace selector with the name of the associated namespace', async () => {
       await waitForPromises();
       expect(findNamespaceSelector().props('toggleText')).toBe('default');
+    });
+  });
+
+  describe('when environment has an associated flux resource', () => {
+    const fluxResourcePath = 'path/to/flux/resource';
+    const environmentWithAgentAndNamespace = {
+      ...DEFAULT_PROPS.environment,
+      clusterAgent: { id: '1', name: 'agent-1' },
+      clusterAgentId: '1',
+      kubernetesNamespace: 'default',
+      fluxResourcePath,
+    };
+    beforeEach(() => {
+      wrapper = createWrapperWithApollo({
+        propsData: { environment: environmentWithAgentAndNamespace },
+        fluxResourceForEnvironment: true,
+      });
+    });
+
+    it('provides flux resource path to the flux resource selector component', () => {
+      expect(findFluxResourceSelector().props('fluxResourcePath')).toBe(fluxResourcePath);
     });
   });
 });

@@ -202,7 +202,7 @@ docker restart <name of container>
 docker exec -it <name of container> gitlab-rake gitlab:check SANITIZE=true
 ```
 
-## Restore for installation from source
+## Restore for self-compiled installations
 
 First, ensure your backup tar file is in the backup directory described in the
 `gitlab.yml` configuration:

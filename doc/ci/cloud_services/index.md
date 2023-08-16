@@ -95,9 +95,9 @@ The condition is validated against the JWT to create a trust specifically agains
 - Subject or `sub`: A concatenation of metadata describing the GitLab CI/CD workflow including the group, project, branch, and tag. The `sub` field is in the following format:
   - `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}`
 
-| Filter type                          | Example                                                      |
-| ------------------------------------ | ------------------------------------------------------------ |
-| Filter to main branch                | `project_path:mygroup/myproject:ref_type:branch:ref:main`   |
+| Filter type                          | Example |
+|--------------------------------------|---------|
+| Filter to main branch                | `project_path:mygroup/myproject:ref_type:branch:ref:main` |
 | Filter to any branch                 | Wildcard supported. `project_path:mygroup/myproject:ref_type:branch:ref:*` |
 | Filter to specific project           | `project_path:mygroup/myproject:ref_type:branch:ref:main` |
 | Filter to all projects under a group | Wildcard supported. `project_path:mygroup/*:ref_type:branch:ref:main` |

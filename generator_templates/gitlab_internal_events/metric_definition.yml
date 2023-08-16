@@ -15,3 +15,9 @@ data_category: optional
 instrumentation_class: <%= class_name %>
 distribution: <%= distributions %>
 tier: <%= tiers %>
+options:
+  events:
+    - <%= event %>
+events:
+  - name: <%= event %>
+    unique: <%= options.fetch(:unique) %>

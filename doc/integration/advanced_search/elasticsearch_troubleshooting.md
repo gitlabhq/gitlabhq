@@ -289,22 +289,26 @@ want to clear the **Search with Elasticsearch enabled** checkbox
 while the indexing is running.
 
 If you are sure you've read the above caveats and want to proceed, then you
-should run the following Rake task to recreate the entire index from scratch:
+should run the following Rake task to recreate the entire index from scratch.
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 ```shell
 # WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
 sudo gitlab-rake gitlab:elastic:index
 ```
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 ```shell
 # WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:index
 ```
+
+::EndTabs
 
 ### Troubleshooting performance
 

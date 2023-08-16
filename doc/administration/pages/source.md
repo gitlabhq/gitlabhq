@@ -384,7 +384,7 @@ world. Custom domains and TLS are supported.
 ## NGINX caveats
 
 NOTE:
-The following information applies only for installations from source.
+The following information applies only to self-compiled installations.
 
 Be extra careful when setting up the domain name in the NGINX configuration. You must
 not remove the backslashes.

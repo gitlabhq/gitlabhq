@@ -33,6 +33,11 @@ export default {
       type: String,
       default: '',
     },
+    fluxResourcePath: {
+      required: false,
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -105,6 +110,7 @@ export default {
           :configuration="k8sAccessConfiguration"
           :namespace="namespace"
           :environment-name="environmentName"
+          :flux-resource-path="fluxResourcePath"
           class="gl-mb-3" />
         <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-5" />
 

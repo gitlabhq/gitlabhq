@@ -6,7 +6,8 @@ module Gitlab
       DEFAULT_INIDICATORS = [
         Indicators::AutovacuumActiveOnTable,
         Indicators::WriteAheadLog,
-        Indicators::PatroniApdex
+        Indicators::PatroniApdex,
+        Indicators::WalRate
       ].freeze
 
       class << self

@@ -1,0 +1,21 @@
+query getEnvironmentClusterAgentWithFluxResource($projectFullPath: ID!, $environmentName: String) {
+  project(fullPath: $projectFullPath) {
+    id
+    environment(name: $environmentName) {
+      id
+      kubernetesNamespace
+      fluxResourcePath
+      clusterAgent {
+        id
+        name
+        webPath
+        tokens {
+          nodes {
+            id
+            lastUsedAt
+          }
+        }
+      }
+    }
+  }
+}

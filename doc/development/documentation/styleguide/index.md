@@ -649,10 +649,10 @@ To help keep tables easier to maintain, you can:
 - Add additional spaces to make the column widths consistent. For example:
 
   ```markdown
-  | App name | Description         | Requirements   |
-  |----------|---------------------|----------------|
-  | App 1    | Description text 1. | Requirements 1 |
-  | App 2    | Description text 2. | None           |
+  | App name | Description         | Requirements |
+  |----------|---------------------|--------------|
+  | App 1    | Description text 1. | A, B, and C. |
+  | App 2    | Description text 2. | None         |
   ```
 
 - Skip the additional spaces in the rightmost column for tables that are very wide.
@@ -666,11 +666,32 @@ To help keep tables easier to maintain, you can:
   | Setting 3 | `0`     | Another short description. |
   ```
 
-Consider installing a plugin or extension in your editor for formatting tables:
+### Editor extensions for table formatting
 
-- [Markdown Table Prettifier](https://marketplace.visualstudio.com/items?itemName=darkriszty.markdown-table-prettify) for Visual Studio Code
-- [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter) for Sublime Text
-- [Markdown Table Formatter](https://atom.io/packages/markdown-table-formatter) for Atom
+To ensure consistent table formatting across all Markdown files, consider formatting your tables
+with the VS Code [Markdown Table Formatter](https://github.com/fcrespo82/vscode-markdown-table-formatter).
+To configure this extension to follow the guidelines above, enable the **Follow header row length** setting.
+To enable the setting:
+
+- In the UI:
+
+  1. In the VS Code menu, go to **Code > Settings > Settings**.
+  1. Search for `Limit Last Column Length`.
+  1. In the **Limit Last Column Length** dropdown list, select **Follow header row length**.
+
+- In your VS Code `settings.json`, add a new line with:
+
+  ```json
+  {
+    "markdown-table-formatter.limitLastColumnLength": "Follow header row length"
+  }
+  ```
+
+To format a table with this extension, select the entire table, right-click the selection,
+and select **Format selection**.
+
+Alternatively, if you use Sublime Text you can try the [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter)
+plugin, but it does not have a **Follow header row length** setting.
 
 ### Updates to existing tables
 

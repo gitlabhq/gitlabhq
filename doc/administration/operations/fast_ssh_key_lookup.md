@@ -105,7 +105,7 @@ means that GitLab was able to find the key in the database,
 as it is not present in the file.
 
 NOTE:
-For Installations from source, the command would be located at
+For self-compiled installations, the command would be located at
 `/home/git/gitlab-shell/bin/gitlab-shell-authorized-keys-check` if [the install from source](../../install/installation.md#install-gitlab-shell) instructions were followed.
 You might want to consider creating a wrapper script somewhere else, as this command must be
 owned by `root` and not be writable by group or others. You could also consider changing the ownership of this command

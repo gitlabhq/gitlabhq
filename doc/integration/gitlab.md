@@ -37,13 +37,13 @@ GitLab.com generates an application ID and secret key for you to use.
    configuration.
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -56,7 +56,7 @@ GitLab.com generates an application ID and secret key for you to use.
    account provisioning for users who do not have an existing GitLab account.
 1. Add the provider configuration:
 
-   For Omnibus installations authenticating against **GitLab.com**:
+   For Linux package installations authenticating against **GitLab.com**:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -70,7 +70,7 @@ GitLab.com generates an application ID and secret key for you to use.
    ]
    ```
 
-   Or, for Omnibus installations authenticating against a different GitLab instance:
+   Or, for Linux package installations authenticating against a different GitLab instance:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -85,7 +85,7 @@ GitLab.com generates an application ID and secret key for you to use.
    ]
    ```
 
-   For installations from source authenticating against **GitLab.com**:
+   For self-compiled installations authenticating against **GitLab.com**:
 
    ```yaml
    - { name: 'gitlab',
@@ -94,7 +94,7 @@ GitLab.com generates an application ID and secret key for you to use.
        app_secret: 'YOUR_APP_SECRET',
    ```
 
-   Or, for installations from source to authenticate against a different GitLab instance:
+   Or, for self-compiled installations to authenticate against a different GitLab instance:
 
    ```yaml
    - { name: 'gitlab',

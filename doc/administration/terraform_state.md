@@ -102,8 +102,8 @@ This configuration relies on valid credentials to be configured already.
 
 The following settings are:
 
-- Nested under `terraform_state:` and then `object_store:` on source installations.
 - Prefixed by `terraform_state_object_store_` on Linux package installations.
+- Nested under `terraform_state:` and then `object_store:` on self-compiled installations.
 
 | Setting | Description | Default |
 |---------|-------------|---------|

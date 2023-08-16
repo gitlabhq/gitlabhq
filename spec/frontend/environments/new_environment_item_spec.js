@@ -13,7 +13,13 @@ import Deployment from '~/environments/components/deployment.vue';
 import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
 import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
 import getEnvironmentClusterAgent from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
-import { resolvedEnvironment, rolloutStatus, agent } from './graphql/mock_data';
+import getEnvironmentClusterAgentWithFluxResource from '~/environments/graphql/queries/environment_cluster_agent_with_flux_resource.query.graphql';
+import {
+  resolvedEnvironment,
+  rolloutStatus,
+  agent,
+  fluxResourcePathMock,
+} from './graphql/mock_data';
 import { mockKasTunnelUrl } from './mock_data';
 
 Vue.use(VueApollo);
@@ -21,6 +27,7 @@ Vue.use(VueApollo);
 describe('~/environments/components/new_environment_item.vue', () => {
   let wrapper;
   let queryResponseHandler;
+  let queryWithFluxResourceResponseHandler;
 
   const projectPath = '/1';
 
@@ -38,8 +45,21 @@ describe('~/environments/components/new_environment_item.vue', () => {
       },
     };
     queryResponseHandler = jest.fn().mockResolvedValue(response);
-
-    return createMockApollo([[getEnvironmentClusterAgent, queryResponseHandler]]);
+    queryWithFluxResourceResponseHandler = jest.fn().mockResolvedValue({
+      data: {
+        project: {
+          id: response.data.project.id,
+          environment: {
+            ...response.data.project.environment,
+            fluxResourcePath: fluxResourcePathMock,
+          },
+        },
+      },
+    });
+    return createMockApollo([
+      [getEnvironmentClusterAgent, queryResponseHandler],
+      [getEnvironmentClusterAgentWithFluxResource, queryWithFluxResourceResponseHandler],
+    ]);
   };
 
   const createWrapper = ({ propsData = {}, provideData = {}, apolloProvider } = {}) =>
@@ -534,6 +554,25 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
     });
 
+    it('should request agent data with Flux resource when `fluxResourceForEnvironment` feature flag is enabled', async () => {
+      wrapper = createWrapper({
+        propsData: { environment: resolvedEnvironment },
+        provideData: {
+          glFeatures: {
+            fluxResourceForEnvironment: true,
+          },
+        },
+        apolloProvider: createApolloProvider(agent),
+      });
+
+      await expandCollapsedSection();
+
+      expect(queryWithFluxResourceResponseHandler).toHaveBeenCalledWith({
+        environmentName: resolvedEnvironment.name,
+        projectFullPath: projectPath,
+      });
+    });
+
     it('should render if the environment has an agent associated', async () => {
       wrapper = createWrapper({
         propsData: { environment: resolvedEnvironment },
@@ -546,7 +585,28 @@ describe('~/environments/components/new_environment_item.vue', () => {
       expect(findKubernetesOverview().props()).toMatchObject({
         clusterAgent: agent,
         environmentName: resolvedEnvironment.name,
+      });
+    });
+
+    it('should render with the namespace if `fluxResourceForEnvironment` feature flag is enabled and the environment has an agent associated', async () => {
+      wrapper = createWrapper({
+        propsData: { environment: resolvedEnvironment },
+        provideData: {
+          glFeatures: {
+            fluxResourceForEnvironment: true,
+          },
+        },
+        apolloProvider: createApolloProvider(agent),
+      });
+
+      await expandCollapsedSection();
+      await waitForPromises();
+
+      expect(findKubernetesOverview().props()).toEqual({
+        clusterAgent: agent,
+        environmentName: resolvedEnvironment.name,
         namespace: 'default',
+        fluxResourcePath: fluxResourcePathMock,
       });
     });
 

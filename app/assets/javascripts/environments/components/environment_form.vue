@@ -17,9 +17,11 @@ import {
   ENVIRONMENT_EDIT_HELP_TEXT,
 } from 'ee_else_ce/environments/constants';
 import csrf from '~/lib/utils/csrf';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import getNamespacesQuery from '../graphql/queries/k8s_namespaces.query.graphql';
 import getUserAuthorizedAgents from '../graphql/queries/user_authorized_agents.query.graphql';
+import EnvironmentFluxResourceSelector from './environment_flux_resource_selector.vue';
 
 export default {
   components: {
@@ -31,7 +33,9 @@ export default {
     GlLink,
     GlSprintf,
     GlAlert,
+    EnvironmentFluxResourceSelector,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     protectedEnvironmentSettingsPath: { default: '' },
     projectPath: { default: '' },
@@ -177,6 +181,14 @@ export default {
     namespaceDropdownToggleText() {
       return this.selectedNamespace || this.$options.i18n.namespaceHelpText;
     },
+    isKasFluxResourceAvailable() {
+      return this.glFeatures?.fluxResourceForEnvironment;
+    },
+    showFluxResourceSelector() {
+      return Boolean(
+        this.isKasFluxResourceAvailable && this.selectedNamespace && this.selectedAgentId,
+      );
+    },
     k8sAccessConfiguration() {
       if (!this.showNamespaceSelector) {
         return null;
@@ -196,6 +208,7 @@ export default {
   watch: {
     environment(change) {
       this.selectedAgentId = change.clusterAgentId;
+      this.selectedNamespace = change.kubernetesNamespace;
     },
   },
   methods: {
@@ -224,7 +237,12 @@ export default {
     },
     onAgentChange($event) {
       this.selectedNamespace = null;
-      this.onChange({ ...this.environment, clusterAgentId: $event, kubernetesNamespace: null });
+      this.onChange({
+        ...this.environment,
+        clusterAgentId: $event,
+        kubernetesNamespace: null,
+        fluxResourcePath: null,
+      });
     },
     onNamespaceSearch(search) {
       this.namespaceSearchTerm = search;
@@ -343,10 +361,20 @@ export default {
             :reset-button-label="$options.i18n.reset"
             :searchable="true"
             @search="onNamespaceSearch"
-            @select="onChange({ ...environment, kubernetesNamespace: $event })"
+            @select="
+              onChange({ ...environment, kubernetesNamespace: $event, fluxResourcePath: null })
+            "
             @reset="onChange({ ...environment, kubernetesNamespace: null })"
           />
         </gl-form-group>
+
+        <environment-flux-resource-selector
+          v-if="showFluxResourceSelector"
+          :namespace="selectedNamespace"
+          :configuration="k8sAccessConfiguration"
+          :flux-resource-path="environment.fluxResourcePath"
+          @change="onChange({ ...environment, fluxResourcePath: $event })"
+        />
 
         <div class="gl-mr-6">
           <gl-button

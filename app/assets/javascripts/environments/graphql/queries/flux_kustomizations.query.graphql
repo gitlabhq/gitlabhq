@@ -1,0 +1,9 @@
+query getFluxKustomizationsQuery($configuration: LocalConfiguration, $namespace: String) {
+  fluxKustomizations(configuration: $configuration, namespace: $namespace) @client {
+    apiVersion
+    metadata {
+      name
+      namespace
+    }
+  }
+}

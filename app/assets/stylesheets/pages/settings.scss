@@ -51,22 +51,6 @@
 }
 
 .deploy-freeze-table {
-  table {
-    tr {
-      td,
-      th {
-        padding-left: 0;
-      }
-
-      // When tables are "stacked", restore td padding
-      @media(max-width: map-get($grid-breakpoints, lg)) {
-        td {
-          padding-left: $gl-spacing-scale-5;
-        }
-      }
-    }
-  }
-
   @media(max-width: map-get($grid-breakpoints, lg)-1) {
     .truncated-container {
       justify-content: flex-end;

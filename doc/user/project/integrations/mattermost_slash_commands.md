@@ -42,7 +42,7 @@ you can automatically configure Mattermost slash commands:
 To manually configure slash commands in Mattermost, you must:
 
 1. [Enable custom slash commands in Mattermost](#enable-custom-slash-commands-in-mattermost).
-   (This step is required only for installations from source.)
+   This step is required only for self-compiled installations.
 1. [Get configuration values from GitLab](#get-configuration-values-from-gitlab).
 1. [Create a slash command in Mattermost](#create-a-slash-command-in-mattermost).
 1. [Provide the Mattermost token to GitLab](#provide-the-mattermost-token-to-gitlab).

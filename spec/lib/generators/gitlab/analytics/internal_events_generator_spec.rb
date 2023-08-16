@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
   let(:section) { "analytics" }
   let(:mr) { "https://gitlab.com/some-group/some-project/-/merge_requests/123" }
   let(:event) { "view_analytics_dashboard" }
-  let(:unique) { "user_id" }
+  let(:unique) { "user.id" }
   let(:time_frames) { %w[7d] }
   let(:include_default_identifiers) { 'yes' }
   let(:options) do
@@ -31,7 +31,8 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     }.stringify_keys
   end
 
-  let(:key_path_7d) { "count_distinct_#{unique}_from_#{event}_7d" }
+  let(:key_path_without_time_frame) { "count_distinct_#{unique.sub('.', '_')}_from_#{event}" }
+  let(:key_path_7d) { "#{key_path_without_time_frame}_7d" }
   let(:metric_definition_path_7d) { Dir.glob(File.join(temp_dir, "metrics/counts_7d/#{key_path_7d}.yml")).first }
   let(:metric_definition_7d) do
     {
@@ -50,7 +51,11 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
       "data_category" => "optional",
       "instrumentation_class" => "RedisHLLMetric",
       "distribution" => %w[ce ee],
-      "tier" => %w[free premium ultimate]
+      "tier" => %w[free premium ultimate],
+      "options" => {
+        "events" => [event]
+      },
+      "events" => [{ "name" => event, "unique" => unique }]
     }
   end
 
@@ -247,7 +252,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
     context 'for multiple time frames' do
       let(:time_frames) { %w[7d 28d] }
-      let(:key_path_28d) { "count_distinct_#{unique}_from_#{event}_28d" }
+      let(:key_path_28d) { "#{key_path_without_time_frame}_28d" }
       let(:metric_definition_path_28d) { Dir.glob(File.join(temp_dir, "metrics/counts_28d/#{key_path_28d}.yml")).first }
       let(:metric_definition_28d) do
         metric_definition_7d.merge(
@@ -266,7 +271,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
     context 'with default time frames' do
       let(:time_frames) { nil }
-      let(:key_path_28d) { "count_distinct_#{unique}_from_#{event}_28d" }
+      let(:key_path_28d) { "#{key_path_without_time_frame}_28d" }
       let(:metric_definition_path_28d) { Dir.glob(File.join(temp_dir, "metrics/counts_28d/#{key_path_28d}.yml")).first }
       let(:metric_definition_28d) do
         metric_definition_7d.merge(

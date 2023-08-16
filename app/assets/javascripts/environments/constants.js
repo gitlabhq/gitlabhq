@@ -160,3 +160,16 @@ export const CLUSTER_AGENT_ERROR_MESSAGES = {
   [ERROR_NOT_FOUND]: s__('Environment|Cluster agent not found.'),
   [ERROR_OTHER]: s__('Environment|There was an error connecting to the cluster agent.'),
 };
+
+export const CLUSTER_FLUX_RECOURSES_ERROR_MESSAGES = {
+  [ERROR_UNAUTHORIZED]: s__(
+    'Environment|Unauthorized to access %{resourceType} from this environment.',
+  ),
+  [ERROR_OTHER]: s__('Environment|There was an error fetching %{resourceType}.'),
+};
+
+export const HELM_RELEASES_RESOURCE_TYPE = 'helmreleases';
+export const KUSTOMIZATIONS_RESOURCE_TYPE = 'kustomizations';
+
+export const KUSTOMIZATION = 'Kustomization';
+export const HELM_RELEASE = 'HelmRelease';

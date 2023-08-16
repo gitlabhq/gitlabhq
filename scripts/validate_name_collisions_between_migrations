@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require_relative './database/migration_collision_checker'
+
+result = MigrationCollisionChecker.new.check
+
+if result
+  puts result.error_message
+  exit result.error_code
+end

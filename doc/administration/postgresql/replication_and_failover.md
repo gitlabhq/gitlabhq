@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # PostgreSQL replication and failover for Linux package installations **(PREMIUM SELF)**
 
 If you're a Free user of GitLab self-managed, consider using a cloud-hosted solution.
-This document doesn't cover installations from source.
+This document doesn't cover self-compiled installations.
 
 If a setup with replication and failover isn't what you were looking for, see
 the [database configuration document](https://docs.gitlab.com/omnibus/settings/database.html)

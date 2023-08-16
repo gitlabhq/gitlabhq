@@ -135,7 +135,7 @@ For Linux package installations, the directory is set in `gitlab.rb` under `gita
 - Use the default suggestion of the `/var/opt/gitlab/gitaly/custom_hooks` directory by uncommenting it.
 - Add your own setting.
 
-For installations from source:
+For self-compiled installations:
 
 - The directory is set in a configuration file. The location of the configuration file depends on the GitLab version:
   - For GitLab 13.1 and later, the directory is set in `gitaly/config.toml` under the `[hooks]` section. However,

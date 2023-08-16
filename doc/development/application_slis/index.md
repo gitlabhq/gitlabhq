@@ -14,14 +14,6 @@ and their success close to the implementation and allows the people
 building features to easily define how these features should be
 monitored.
 
-Defining an SLI causes 2
-[Prometheus counters](https://prometheus.io/docs/concepts/metric_types/#counter)
-to be emitted from the rails application:
-
-- `gitlab_sli:<sli name>:total`: incremented for each operation.
-- `gitlab_sli:<sli_name>:success_total`: incremented for successful
-  operations.
-
 ## Existing SLIs
 
 1. [`rails_request`](rails_request.md)
@@ -32,22 +24,29 @@ to be emitted from the rails application:
 
 ## Defining a new SLI
 
-An SLI can be defined using the `Gitlab::Metrics::Sli::Apdex` or
-`Gitlab::Metrics::Sli::ErrorRate` class. These work in broadly the same way, but
-for clarity, they define different metric names:
+An SLI can be defined with the `Gitlab::Metrics::Sli::Apdex` or
+`Gitlab::Metrics::Sli::ErrorRate` class. When you define an SLI, two
+[Prometheus counters](https://prometheus.io/docs/concepts/metric_types/#counter)
+are emitted from the Rails application. Both counters work in broadly the same way and contain a total operation count. `Apdex` uses a success rate to calculate a success ratio, and `ErrorRate` uses an error rate to calculate an error ratio.
 
-1. `Gitlab::Metrics::Sli::Apdex.new('foo')` defines:
-    1. `gitlab_sli:foo_apdex:total` for the total number of measurements.
-    1. `gitlab_sli:foo_apdex:success_total` for the number of successful
+The following metrics are defined:
+
+- `Gitlab::Metrics::Sli::Apdex.new('foo')` defines:
+  - `gitlab_sli_foo_apdex_total` for the total number of measurements.
+  - `gitlab_sli_foo_apdex_success_total` for the number of successful
        measurements.
-1. `Gitlab::Metrics::Sli::ErrorRate.new('foo')` defines:
-    1. `gitlab_sli:foo:total` for the total number of measurements.
-    1. `gitlab_sli:foo:error_total` for the number of error
-       measurements - as this is an error rate, it's more natural to talk about
-       errors divided by the total.
+- `Gitlab::Metrics::Sli::ErrorRate.new('foo')` defines:
+  - `gitlab_sli_foo_total` for the total number of measurements.
+  - `gitlab_sli_foo_error_total` for the number of error
+    measurements. Because this metric is an error rate,
+    errors are divided by the total number.
 
 As shown in this example, they can share a base name (`foo` in this example). We
 recommend this when they refer to the same operation.
+
+You should use `Apdex` to measure the performance of successful operations. You don't have to measure the performance of a failing request because that performance should be tracked with `ErrorRate`. For example, you can measure whether a request is performing within a specified latency threshold.
+
+You should use `ErrorRate` to measure the rate of unsuccessful operations. For example, you can measure whether a failed request returns an HTTP status greater than or equal to `500`.
 
 Before the first scrape, it is important to have
 [initialized the SLI with all possible label-combinations](https://prometheus.io/docs/practices/instrumentation/#avoid-missing-metrics).

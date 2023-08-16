@@ -103,11 +103,11 @@ build_and_sign_artifact:
 
 **Command-line arguments**
 
-| Name                        | Value                                                                                                                                                                                                                                     |
-|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Name                        | Value |
+|-----------------------------|-------|
 | `--certificate-identity`    | The SAN of the signing certificate issued by Fulcio. Can be constructed with the following information from the project where the image/artifact was signed: GitLab instance URL + project path + `//` + CI config path + `@` + ref path. |
-| `--certificate-oidc-issuer` | The GitLab instance URL where the image/artifact was signed. For example, `https://gitlab.com`.                                                                                                                                           |
-| `--bundle`                  | The `bundle` file produced by `cosign sign-blob`. Only used for verifying build artifacts.                                                                                                                                                |
+| `--certificate-oidc-issuer` | The GitLab instance URL where the image/artifact was signed. For example, `https://gitlab.com`. |
+| `--bundle`                  | The `bundle` file produced by `cosign sign-blob`. Only used for verifying build artifacts. |
 
 To learn more about verifying signed images/artifacts, see [Cosign Verifying documentation](https://docs.sigstore.dev/cosign/verify/#keyless-verification-using-openid-connect).
 

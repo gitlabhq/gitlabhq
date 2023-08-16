@@ -98,7 +98,7 @@ You must stop GitLab before setting up multiple databases. This prevents
 split-brain situations, where `main` data is written to the `ci` database, and
 the other way around.
 
-### Installations from source
+### Self-compiled installations
 
 1. For existing installations,
    [migrate the data](#migrate-existing-installations) first.

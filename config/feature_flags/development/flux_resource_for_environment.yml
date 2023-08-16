@@ -1,0 +1,8 @@
+---
+name: flux_resource_for_environment
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/421416
+milestone: '16.3'
+type: development
+group: group::environments
+default_enabled: false

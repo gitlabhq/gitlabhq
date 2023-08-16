@@ -204,13 +204,13 @@ Alternatively, add the `User.Read.All` application permission.
 
 1. On your GitLab server, open the configuration file.
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      ```shell
      sudo editor /etc/gitlab/gitlab.rb
      ```
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      ```shell
      cd /home/git/gitlab
@@ -225,7 +225,7 @@ Alternatively, add the `User.Read.All` application permission.
 1. Add the provider configuration. Replace `<client_id>`, `<client_secret>`, and `<tenant_id>`
    with the values you got when you registered the Azure application.
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      For the v1.0 endpoint:
 
@@ -277,7 +277,7 @@ Alternatively, add the `User.Read.All` application permission.
      ]
      ```
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      For the v1.0 endpoint:
 

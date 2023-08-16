@@ -527,10 +527,10 @@ fails to work if the custom CA is not recognized.
 This usually results in this error:
 `Post /oauth/token: x509: certificate signed by unknown authority`.
 
-For installation from source, this can be fixed by installing the custom Certificate
-Authority (CA) in the system certificate store.
-
 For Linux package installations, this is fixed by [installing a custom CA](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates).
+
+For self-compiled installations, this can be fixed by installing the custom Certificate
+Authority (CA) in the system certificate store.
 
 ### ZIP serving and cache configuration
 

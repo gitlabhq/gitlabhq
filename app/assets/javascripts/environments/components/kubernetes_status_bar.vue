@@ -1,7 +1,14 @@
 <script>
 import { GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { HEALTH_BADGES, SYNC_STATUS_BADGES, STATUS_TRUE, STATUS_FALSE } from '../constants';
+import {
+  HEALTH_BADGES,
+  SYNC_STATUS_BADGES,
+  STATUS_TRUE,
+  STATUS_FALSE,
+  HELM_RELEASES_RESOURCE_TYPE,
+  KUSTOMIZATIONS_RESOURCE_TYPE,
+} from '../constants';
 import fluxKustomizationStatusQuery from '../graphql/queries/flux_kustomization_status.query.graphql';
 import fluxHelmReleaseStatusQuery from '../graphql/queries/flux_helm_release_status.query.graphql';
 
@@ -32,6 +39,11 @@ export default {
       type: String,
       default: '',
     },
+    fluxResourcePath: {
+      required: false,
+      type: String,
+      default: '',
+    },
   },
   apollo: {
     fluxKustomizationStatus: {
@@ -41,10 +53,13 @@ export default {
           configuration: this.configuration,
           namespace: this.namespace,
           environmentName: this.environmentName.toLowerCase(),
+          fluxResourcePath: this.fluxResourcePath,
         };
       },
       skip() {
-        return !this.namespace;
+        return Boolean(
+          !this.namespace || this.fluxResourcePath?.includes(HELM_RELEASES_RESOURCE_TYPE),
+        );
       },
     },
     fluxHelmReleaseStatus: {
@@ -54,13 +69,15 @@ export default {
           configuration: this.configuration,
           namespace: this.namespace,
           environmentName: this.environmentName.toLowerCase(),
+          fluxResourcePath: this.fluxResourcePath,
         };
       },
       skip() {
         return Boolean(
           !this.namespace ||
             this.$apollo.queries.fluxKustomizationStatus.loading ||
-            this.hasKustomizations,
+            this.hasKustomizations ||
+            this.fluxResourcePath?.includes(KUSTOMIZATIONS_RESOURCE_TYPE),
         );
       },
     },

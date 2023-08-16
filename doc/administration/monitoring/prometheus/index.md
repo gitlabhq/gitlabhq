@@ -13,7 +13,7 @@ GitLab provides out-of-the-box monitoring with Prometheus, providing access to h
 GitLab services.
 
 Prometheus and the various exporters listed in this page are bundled in Linux packages. Check each exporter's
-documentation for the timeline they got added. For installations from source you must install them
+documentation for the timeline they got added. For self-compiled installations, you must install them
 yourself. Over subsequent releases additional GitLab metrics are captured.
 
 Prometheus services are on by default.
@@ -31,7 +31,7 @@ dashboard tool like [Grafana](https://grafana.com).
 
 ## Configuring Prometheus
 
-For installations from source, you must install and configure it yourself.
+For self-compiled installations, you must install and configure it yourself.
 
 Prometheus and its exporters are on by default.
 Prometheus runs as the `gitlab-prometheus` user and listen on

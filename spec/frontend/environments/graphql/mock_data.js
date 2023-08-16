@@ -921,3 +921,5 @@ export const fluxKustomizationsMock = [
     type: 'Ready',
   },
 ];
+
+export const fluxResourcePathMock = 'path/to/flux/resource';

@@ -17691,6 +17691,9 @@ msgstr ""
 msgid "EmailParticipantsWarning|and %{moreCount} more"
 msgstr ""
 
+msgid "EmailVerification|Update your email to a valid permanent address. If you use a temporary email, you won't be able to sign in later."
+msgstr ""
+
 msgid "Emails"
 msgstr ""
 
@@ -18228,10 +18231,16 @@ msgstr ""
 msgid "Environments|GitLab agent"
 msgstr ""
 
+msgid "Environments|HelmReleases"
+msgstr ""
+
 msgid "Environments|Job"
 msgstr ""
 
 msgid "Environments|Kubernetes namespace (optional)"
+msgstr ""
+
+msgid "Environments|Kustomizations"
 msgstr ""
 
 msgid "Environments|Learn more about stopping environments"
@@ -18279,6 +18288,12 @@ msgstr ""
 msgid "Environments|Search by environment name"
 msgstr ""
 
+msgid "Environments|Select Flux resource"
+msgstr ""
+
+msgid "Environments|Select Flux resource (optional)"
+msgstr ""
+
 msgid "Environments|Select agent"
 msgstr ""
 
@@ -18313,6 +18328,9 @@ msgid "Environments|This action will %{docsStart}retry the latest deployment%{do
 msgstr ""
 
 msgid "Environments|This action will %{docsStart}roll back this environment%{docsEnd} to a previously successful deployment for commit %{commitId}. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|Unable to access the following resources from this environment. Check your authorization on the following and try again:"
 msgstr ""
 
 msgid "Environments|Upcoming"
@@ -18415,6 +18433,12 @@ msgid "Environment|Sync status"
 msgstr ""
 
 msgid "Environment|There was an error connecting to the cluster agent."
+msgstr ""
+
+msgid "Environment|There was an error fetching %{resourceType}."
+msgstr ""
+
+msgid "Environment|Unauthorized to access %{resourceType} from this environment."
 msgstr ""
 
 msgid "Environment|Unauthorized to access the cluster agent from this environment. Check your authentication and try again."

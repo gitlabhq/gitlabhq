@@ -36,8 +36,8 @@ Consider a monorepo as follows:
 
 It has a pipeline that looks like the following:
 
-| build | test | deploy |
-| ----- | ---- | ------ |
+| build     | test     | deploy |
+|-----------|----------|--------|
 | `build_a` | `test_a` | `deploy_a` |
 | `build_b` | `test_b` | `deploy_b` |
 | `build_c` | `test_c` | `deploy_c` |

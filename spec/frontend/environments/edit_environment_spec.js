@@ -7,6 +7,7 @@ import EditEnvironment from '~/environments/components/edit_environment.vue';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import getEnvironment from '~/environments/graphql/queries/environment.query.graphql';
+import getEnvironmentWithFluxResource from '~/environments/graphql/queries/environment_with_flux_resource.query.graphql';
 import updateEnvironment from '~/environments/graphql/mutations/update_environment.mutation.graphql';
 import { __ } from '~/locale';
 import createMockApollo from '../__helpers__/mock_apollo_helper';
@@ -20,6 +21,7 @@ const environment = {
   externalUrl: 'https://foo.example.com',
   clusterAgent: null,
   kubernetesNamespace: null,
+  fluxResourcePath: null,
 };
 const resolvedEnvironment = { project: { id: '1', environment } };
 const environmentUpdateSuccess = {
@@ -42,6 +44,9 @@ describe('~/environments/components/edit.vue', () => {
   let wrapper;
 
   const getEnvironmentQuery = jest.fn().mockResolvedValue({ data: resolvedEnvironment });
+  const getEnvironmentWithFluxResourceQuery = jest
+    .fn()
+    .mockResolvedValue({ data: resolvedEnvironment });
 
   const updateEnvironmentSuccess = jest
     .fn()
@@ -55,17 +60,24 @@ describe('~/environments/components/edit.vue', () => {
 
     const mocks = [
       [getEnvironment, getEnvironmentQuery],
+      [getEnvironmentWithFluxResource, getEnvironmentWithFluxResourceQuery],
       [updateEnvironment, mutationHandler],
     ];
 
     return createMockApollo(mocks);
   };
 
-  const createWrapperWithApollo = async ({ mutationHandler = updateEnvironmentSuccess } = {}) => {
+  const createWrapperWithApollo = async ({
+    mutationHandler = updateEnvironmentSuccess,
+    fluxResourceForEnvironment = false,
+  } = {}) => {
     wrapper = mountExtended(EditEnvironment, {
       propsData: { environment: {} },
       provide: {
         ...provide,
+        glFeatures: {
+          fluxResourceForEnvironment,
+        },
       },
       apolloProvider: createMockApolloProvider(mutationHandler),
     });
@@ -156,6 +168,13 @@ describe('~/environments/components/edit.vue', () => {
         expect(createAlert).toHaveBeenCalledWith({ message: 'uh oh!' });
         expect(showsLoading()).toBe(false);
       });
+    });
+  });
+
+  describe('when `fluxResourceForEnvironment` is enabled', () => {
+    it('calls the `getEnvironmentWithFluxResource` query', () => {
+      createWrapperWithApollo({ fluxResourceForEnvironment: true });
+      expect(getEnvironmentWithFluxResourceQuery).toHaveBeenCalled();
     });
   });
 });

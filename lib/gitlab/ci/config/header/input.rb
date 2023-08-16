@@ -17,7 +17,7 @@ module Gitlab
             validates :config, type: Hash, allowed_keys: [:default, :type]
             validates :key, alphanumeric: true
             validates :input_default, alphanumeric: true, allow_nil: true
-            validates :input_type, allow_nil: true, allowed_values: ::Gitlab::Ci::Interpolation::Inputs.input_types
+            validates :input_type, allow_nil: true, allowed_values: Interpolation::Inputs.input_types
           end
         end
       end

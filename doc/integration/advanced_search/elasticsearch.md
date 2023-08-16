@@ -51,8 +51,8 @@ Memory, CPU, and storage resource amounts vary depending on the amount of data y
 
 ## Install Elasticsearch
 
-Elasticsearch is *not* included in the Omnibus packages or when you install from
-source. You must [install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.16/install-elasticsearch.html "Elasticsearch 7.x installation documentation") and ensure you select your version. Detailed information on how to install Elasticsearch is out of the scope of this page.
+Elasticsearch is *not* included in the Linux package or when you self-compile your installation.
+You must [install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.16/install-elasticsearch.html "Elasticsearch 7.x installation documentation") and ensure you select your version. Detailed information on how to install Elasticsearch is out of the scope of this page.
 
 You can install Elasticsearch yourself, or use a cloud hosted offering such as [Elasticsearch Service](https://www.elastic.co/elasticsearch/service) (available on AWS, GCP, or Azure) or the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gsg.html)
 service.
@@ -79,21 +79,14 @@ To index Git repository data, GitLab uses an [indexer written in Go](https://git
 
 Depending on your GitLab version, there are different installation procedures for the Go indexer:
 
-- For Omnibus GitLab 11.8 and later, see [Omnibus GitLab](#omnibus-gitlab).
-- For installations from source or Omnibus GitLab 11.7 and earlier,
-  [install the indexer from source](#from-source).
+- For Linux package installations, the Go indexer is included.
+- For self-compiled installations, see [Install the indexer from source](#install-the-indexer-from-source).
 - If you're using the GitLab Development Kit, see [Elasticsearch in the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md).
 - If you're running a Helm deployment of GitLab 11.10 and later, [the indexer is already included](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/213).
 
-### Omnibus GitLab
+### Install the indexer from source
 
-Starting with GitLab 11.8, the Go indexer is included in Omnibus GitLab.
-The former Ruby-based indexer was removed in [GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/6481).
-
-### From source
-
-First, we need to install some dependencies, then we build and install
-the indexer itself.
+You first install some dependencies and then build and install the indexer itself.
 
 #### Install dependencies
 

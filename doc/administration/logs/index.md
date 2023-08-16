@@ -553,7 +553,7 @@ For Linux package installations, add the configuration option:
 sidekiq['log_format'] = 'json'
 ```
 
-For installations from source, edit the `gitlab.yml` and set the Sidekiq
+For self-compiled installations, edit the `gitlab.yml` and set the Sidekiq
 `log_format` configuration option:
 
 ```yaml

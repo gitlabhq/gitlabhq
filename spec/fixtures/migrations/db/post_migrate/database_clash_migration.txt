@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+class ::ClashMigration < Gitlab::Database::Migration[2.0]
+  def up
+    add_column :dast_site_profiles, :scan_file_path, :text
+  end
+
+  def down
+    remove_column :dast_site_profiles, :scan_file_path, :text
+  end
+end

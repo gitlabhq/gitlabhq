@@ -22,7 +22,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -581,7 +581,7 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-Example installations from source configuration (file path: `config/gitlab.yml`):
+Example configuration for self-compiled installations (file path: `config/gitlab.yml`):
 
 ```yaml
   - { name: 'openid_connect', # do not change this parameter
@@ -774,7 +774,9 @@ response to require users to be members of a certain group, configure GitLab to 
 
 If you do not set `required_groups` or leave the setting empty, any user authenticated by the IdP through OIDC can use GitLab.
 
-For Linux package installations:
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -808,7 +810,7 @@ For Linux package installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For self-compiled installations:
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -842,6 +844,8 @@ For self-compiled installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
    for the changes to take effect.
 
+::EndTabs
+
 ### External groups
 
 Your IdP must pass group information to GitLab in the OIDC response. To use this
@@ -853,7 +857,9 @@ based on group membership, configure GitLab to identify:
   [external user](../external_users.md), using the
  `external_groups` setting.
 
-For Linux package installations:
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -887,7 +893,7 @@ For Linux package installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For self-compiled installations:
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -921,6 +927,8 @@ For self-compiled installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
    for the changes to take effect.
 
+::EndTabs
+
 ### Auditor groups **(PREMIUM SELF)**
 
 Your IdP must pass group information to GitLab in the OIDC response. To use this
@@ -930,7 +938,9 @@ response to assign users as auditors based on group membership, configure GitLab
 - Which group memberships grant the user auditor access, using the `auditor_groups`
   setting.
 
-For Linux package installations:
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -964,7 +974,7 @@ For Linux package installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For self-compiled installations:
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -998,6 +1008,8 @@ For self-compiled installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
    for the changes to take effect.
 
+::EndTabs
+
 ### Administrator groups
 
 Your IdP must pass group information to GitLab in the OIDC response. To use this
@@ -1007,7 +1019,9 @@ response to assign users as administrator based on group membership, configure G
 - Which group memberships grant the user administrator access, using the
  `admin_groups` setting.
 
-For Linux package installations:
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1041,7 +1055,7 @@ For Linux package installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For self-compiled installations:
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -1074,6 +1088,8 @@ For self-compiled installations:
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
    for the changes to take effect.
+
+::EndTabs
 
 ## Troubleshooting
 

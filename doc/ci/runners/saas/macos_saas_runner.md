@@ -121,10 +121,10 @@ variables:
 
 If you use Cocoapods in a project, you should consider the following optimizations to improve CI performance.
 
-### Cocoapods CDN
+**Cocoapods CDN**
 
-You can use CDN access to download packages from the CDN instead of having to clone an entire
-project repository. CDN access is available in Cocoapods 1.8 or later.
+You can use content delivery network (CDN) access to download packages from the CDN instead of having to clone an entire
+project repository. CDN access is available in Cocoapods 1.8 or later and is supported by all GitLab SaaS runners on macOS.
 
 To enable CDN access, ensure your Podfile starts with:
 
@@ -132,10 +132,7 @@ To enable CDN access, ensure your Podfile starts with:
 source 'https://cdn.cocoapods.org/'
 ```
 
-NOTE:
-All GitLab SaaS runners include CDN support in Cocoapods.
-
-### Use GitLab caching
+**Use GitLab caching**
 
 Use caching in Cocoapods packages in GitLab to only run `pod install`
 when pods change, which can improve build performance.
@@ -160,7 +157,7 @@ To [configure caching](../../../ci/caching/index.md) for your project:
     bundle exec pod check || bundle exec pod install
     ```
 
-### Include pods in source control
+**Include pods in source control**
 
 You can also [include the pods directory in source control](https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control). This eliminates the need to install pods as part of the CI job,
 but it does increase the overall size of your project's repository.

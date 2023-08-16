@@ -12,7 +12,7 @@ The [GitLab exporter](https://gitlab.com/gitlab-org/gitlab-exporter) enables you
 measure various GitLab metrics pulled from Redis and the database in Linux package
 instances.
 
-For installations from source you must install and configure it yourself.
+For self-compiled installations, you must install and configure it yourself.
 
 To enable the GitLab exporter in a Linux package instance:
 

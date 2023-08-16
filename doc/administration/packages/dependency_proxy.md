@@ -211,7 +211,7 @@ to remote storage. The processing is done in a background worker and requires no
   sudo gitlab-rake "gitlab:dependency_proxy:migrate"
   ```
 
-- For installations from source:
+- For self-compiled installations:
 
   ```shell
   RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:dependency_proxy:migrate

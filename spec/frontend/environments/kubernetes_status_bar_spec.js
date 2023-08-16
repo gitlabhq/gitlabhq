@@ -49,9 +49,16 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
     apolloProvider = createApolloProvider(),
     clusterHealthStatus = '',
     namespace = '',
+    fluxResourcePath = '',
   } = {}) => {
     wrapper = shallowMountExtended(KubernetesStatusBar, {
-      propsData: { clusterHealthStatus, configuration, environmentName, namespace },
+      propsData: {
+        clusterHealthStatus,
+        configuration,
+        environmentName,
+        namespace,
+        fluxResourcePath,
+      },
       apolloProvider,
     });
   };
@@ -91,6 +98,65 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
 
       it('renders sync status as Unavailable', () => {
         expect(findSyncBadge().text()).toBe(s__('Deployment|Unavailable'));
+      });
+    });
+
+    describe('when flux resource path is provided', () => {
+      const namespace = 'my-namespace';
+      let fluxResourcePath;
+
+      describe('if the provided resource is a Kustomization', () => {
+        beforeEach(() => {
+          fluxResourcePath =
+            'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app';
+
+          createWrapper({ namespace, fluxResourcePath });
+        });
+
+        it('requests the Kustomization resource status', () => {
+          expect(fluxKustomizationStatusQuery).toHaveBeenCalledWith(
+            {},
+            expect.objectContaining({
+              configuration,
+              namespace,
+              environmentName,
+              fluxResourcePath,
+            }),
+            expect.any(Object),
+            expect.any(Object),
+          );
+        });
+
+        it("doesn't request HelmRelease resource status", () => {
+          expect(fluxHelmReleaseStatusQuery).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('if the provided resource is a helmRelease', () => {
+        beforeEach(() => {
+          fluxResourcePath =
+            'helm.toolkit.fluxcd.io/v2beta1/namespaces/my-namespace/helmreleases/app';
+
+          createWrapper({ namespace, fluxResourcePath });
+        });
+
+        it('requests the HelmRelease resource status', () => {
+          expect(fluxHelmReleaseStatusQuery).toHaveBeenCalledWith(
+            {},
+            expect.objectContaining({
+              configuration,
+              namespace,
+              environmentName,
+              fluxResourcePath,
+            }),
+            expect.any(Object),
+            expect.any(Object),
+          );
+        });
+
+        it("doesn't request Kustomization resource status", () => {
+          expect(fluxKustomizationStatusQuery).not.toHaveBeenCalled();
+        });
       });
     });
 

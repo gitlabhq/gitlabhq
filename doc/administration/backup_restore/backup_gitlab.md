@@ -706,7 +706,7 @@ if you see a `411 Length Required` error message after attempting to upload,
 you may need to downgrade the `aws_signature_version` value from the default
 value to `2`, [due to this issue](https://github.com/fog/fog-aws/issues/428).
 
-For installations from source:
+For self-compiled installations:
 
 1. Edit `home/git/gitlab/config/gitlab.yml`:
 
@@ -835,7 +835,7 @@ For the Linux package (Omnibus):
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
-For installations from source:
+For self-compiled installations:
 
 1. Edit `home/git/gitlab/config/gitlab.yml`:
 
@@ -1403,13 +1403,13 @@ after which users must reactivate 2FA.
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -1456,13 +1456,13 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -1505,13 +1505,13 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -1560,13 +1560,13 @@ You should verify that the secrets are the root cause before deleting any data.
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -1695,13 +1695,13 @@ Truncate the filenames in the `uploads` table:
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production

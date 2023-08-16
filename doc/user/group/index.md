@@ -249,6 +249,8 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 ## Add users to a group
 
+> Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
+
 You can give a user access to all projects in a group.
 
 Prerequisite:
@@ -260,8 +262,12 @@ Prerequisite:
 1. Select **Invite members**.
 1. Fill in the fields.
    - The role applies to all projects in the group. For more information, see [permissions](../permissions.md).
-   - On the **Access expiration date**, the user can no longer access projects in the group.
+   - Optional. Select an **Access expiration date**. From that date onward, the
+     user can no longer access the project.
 1. Select **Invite**.
+
+If you selected an access expiration date, the group member gets an email notification
+seven days before their access expires.
 
 Members that are not automatically added are displayed on the **Invited** tab.
 Users can be on this tab because they:

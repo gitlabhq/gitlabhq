@@ -5,6 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import {
   I18N_EMAIL,
   I18N_UPDATE_EMAIL,
+  I18N_UPDATE_EMAIL_GUIDANCE,
   I18N_CANCEL,
   I18N_EMAIL_INVALID,
   I18N_UPDATE_EMAIL_SUCCESS,
@@ -98,6 +99,7 @@ export default {
     email: I18N_EMAIL,
     updateEmail: I18N_UPDATE_EMAIL,
     cancel: I18N_CANCEL,
+    guidance: I18N_UPDATE_EMAIL_GUIDANCE,
   },
 };
 </script>
@@ -117,6 +119,7 @@ export default {
         autofocus
         :state="inputValidation.state"
       />
+      <p class="gl-mt-3 gl-text-secondary">{{ $options.i18n.guidance }}</p>
     </gl-form-group>
     <section class="gl-mt-5">
       <gl-button block variant="confirm" type="submit" :disabled="!inputValidation.state">{{
