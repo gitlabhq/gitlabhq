@@ -55,11 +55,13 @@ describe('JiraConnect API', () => {
 
   describe('fetchGroups', () => {
     const mockGroupsPath = 'groupsPath';
+    const mockMinAccessLevel = 30;
     const mockPage = 1;
     const mockPerPage = 10;
 
     const makeRequest = () =>
       fetchGroups(mockGroupsPath, {
+        minAccessLevel: mockMinAccessLevel,
         page: mockPage,
         perPage: mockPerPage,
       });
@@ -68,6 +70,7 @@ describe('JiraConnect API', () => {
       jest.spyOn(axiosInstance, 'get');
       axiosMock
         .onGet(mockGroupsPath, {
+          min_access_level: mockMinAccessLevel,
           page: mockPage,
           per_page: mockPerPage,
         })
@@ -78,6 +81,7 @@ describe('JiraConnect API', () => {
       expect(axiosInstance.get).toHaveBeenCalledWith(mockGroupsPath, {
         headers: {},
         params: {
+          min_access_level: mockMinAccessLevel,
           page: mockPage,
           per_page: mockPerPage,
           search: undefined,

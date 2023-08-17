@@ -111,7 +111,7 @@ you to use.
 
 1. Save the configuration file.
 1. For the changes to take effect, [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-   if you installed using the Linux package, or [restart](../administration/restart_gitlab.md#installations-from-source)
+   if you installed using the Linux package, or [restart](../administration/restart_gitlab.md#self-compiled-installations)
    if you self-compiled your installation.
 
 On the sign-in page there should now be a Bitbucket icon below the regular

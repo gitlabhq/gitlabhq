@@ -126,7 +126,7 @@ To see your new project in the list, refresh the page.
 1. Save the configuration file.
 1. For the changes to take effect:
    - If you installed using the Linux package, [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
-   - If you self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+   - If you self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations).
 
 On the sign in page there should now be a Google icon below the regular sign in
 form. Select the icon to begin the authentication process. Google asks the

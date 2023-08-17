@@ -210,7 +210,7 @@ For self-compiled installations:
              -----END PRIVATE KEY-----
    ```
 
-1. Save the file and [restart](../../restart_gitlab.md#installations-from-source) GitLab for the changes to take effect.
+1. Save the file and [restart](../../restart_gitlab.md#self-compiled-installations) GitLab for the changes to take effect.
 
 ## Using encrypted credentials
 

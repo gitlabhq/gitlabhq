@@ -67,6 +67,12 @@ class SnippetsFinder < UnionFinder
     return Snippet.none if project.nil? && params[:project].present?
     return Snippet.none if project && !project.feature_available?(:snippets, current_user)
 
+    filter_snippets.order_by(sort_param)
+  end
+
+  private
+
+  def filter_snippets
     if return_all_available_and_permited?
       snippets = all_snippets_for_admin
     else
@@ -75,11 +81,8 @@ class SnippetsFinder < UnionFinder
       snippets = snippets.with_optional_visibility(visibility_from_scope)
     end
 
-    snippets = by_created_at(snippets)
-    snippets.order_by(sort_param)
+    by_created_at(snippets)
   end
-
-  private
 
   def return_all_available_and_permited?
     # Currently limited to access_levels `admin` and `auditor`

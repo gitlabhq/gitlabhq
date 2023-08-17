@@ -222,7 +222,7 @@ By default, impersonation is enabled. To disable impersonation:
      impersonation_enabled: false
    ```
 
-1. Save the file, and then [restart](../../administration/restart_gitlab.md#installations-from-source)
+1. Save the file, and then [restart](../../administration/restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
 ::EndTabs

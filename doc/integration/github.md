@@ -110,7 +110,7 @@ your website could enable the covert redirect attack.
             args: { scope: 'user:email' } }
         ```
 
-     1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
+     1. Save the file and [restart](../administration/restart_gitlab.md#self-compiled-installations)
         GitLab.
 
 1. Refresh the GitLab sign-in page. A GitHub icon should display below the
@@ -188,7 +188,7 @@ To fix this issue, you must disable SSL verification:
      ```
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source)
+   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations)
    if you self-compiled your installation.
 
 ### Signing in using GitHub Enterprise returns a 500 error

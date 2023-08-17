@@ -77,7 +77,7 @@ JWT provides you with a secret key for you to use.
 1. Save the configuration file.
 1. For changes to take effect, if you:
    - Used the Linux package to install GitLab, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-   - Self-compiled your GitLab installation, [restart GitLab](../restart_gitlab.md#installations-from-source).
+   - Self-compiled your GitLab installation, [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 On the sign in page there should now be a JWT icon below the regular sign in form.
 Select the icon to begin the authentication process. JWT asks the user to

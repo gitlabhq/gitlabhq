@@ -1032,6 +1032,58 @@ after :all do
 end
 ```
 
+#### Timestamp truncation
+
+Active Record timestamps are [set by the Rails’ `ActiveRecord::Timestamp`](https://github.com/rails/rails/blob/1eb5cc13a2ed8922b47df4ae47faf5f23faf3d35/activerecord/lib/active_record/timestamp.rb#L105)
+module [using `Time.now`](https://github.com/rails/rails/blob/1eb5cc13a2ed8922b47df4ae47faf5f23faf3d35/activerecord/lib/active_record/timestamp.rb#L78).
+Time precision is [OS-dependent](https://ruby-doc.org/core-2.6.3/Time.html#method-c-new),
+and as the docs state, may include fractional seconds.
+
+When Rails models are saved to the database,
+any timestamps they have are stored using a type in PostgreSQL called `timestamp without time zone`,
+which has microsecond resolution—i.e., six digits after the decimal.
+So if `1577987974.6472975` is sent to PostgreSQL,
+it truncates the last digit of the fractional part and instead saves `1577987974.647297`.
+
+The results of this can be a simple test like:
+
+```ruby
+let_it_be(:contact) { create(:contact) }
+
+data = Gitlab::HookData::IssueBuilder.new(issue).build
+
+expect(data).to include('customer_relations_contacts' => [contact.hook_attrs])
+```
+
+Failing with an error along the lines of:
+
+```shell
+expected {
+"assignee_id" => nil, "...1 +0000 } to include {"customer_relations_contacts" => [{:created_at => "2023-08-04T13:30:20Z", :first_name => "Sidney Jones3" }]}
+       
+Diff:
+       @@ -1,35 +1,69 @@
+       -"customer_relations_contacts" => [{:created_at=>"2023-08-04T13:30:20Z", :first_name=>"Sidney Jones3" }],
+       +"customer_relations_contacts" => [{"created_at"=>2023-08-04 13:30:20.245964000 +0000, "first_name"=>"Sidney Jones3" }],
+```
+
+The fix is to ensure we `.reload` the object from the database to get the timestamp with correct precision:
+
+```ruby
+let_it_be(:contact) { create(:contact) }
+
+data = Gitlab::HookData::IssueBuilder.new(issue).build
+
+expect(data).to include('customer_relations_contacts' => [contact.reload.hook_attrs])
+```
+
+This explanation was taken from [a blog post](https://www.toptal.com/ruby-on-rails/timestamp-truncation-rails-activerecord-tale)
+by Maciek Rząsa.
+
+You can see a [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126530#note_1500580985)
+where this problem arose and the [backend pairing session](https://www.youtube.com/watch?v=nMCjEeuYFDA)
+where it was discussed.
+
 ### Feature flags in tests
 
 This section was moved to [developing with feature flags](../feature_flags/index.md).

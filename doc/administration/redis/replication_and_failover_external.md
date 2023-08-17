@@ -236,7 +236,7 @@ which ideally should not have Redis or Sentinels in the same machine:
          port: 26379  # point to sentinel, not to redis port
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Example of minimal configuration with 1 primary, 2 replicas and 3 sentinels
 
@@ -361,7 +361,7 @@ or a failover promotes a different **Primary** node.
          port: 26379  # point to sentinel, not to redis port
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Troubleshooting
 

@@ -968,7 +968,7 @@ See [the available connection settings for different providers](../object_storag
          region: eu-central-1
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 1. [Migrate existing Pages deployments to object storage.](#migrate-pages-deployments-to-object-storage)

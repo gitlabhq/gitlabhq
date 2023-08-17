@@ -78,7 +78,7 @@ this provider also allows Crowd authentication for Git-over-https requests.
 1. Change `YOUR_APP_PASSWORD` to the application password you've set.
 1. Save the configuration file.
 1. [Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) (Linux package installations) or
-   [restart](../restart_gitlab.md#installations-from-source) (self-compiled installations) for the changes to take effect.
+   [restart](../restart_gitlab.md#self-compiled-installations) (self-compiled installations) for the changes to take effect.
 
 On the sign in page there should now be a Crowd tab in the sign in form.
 

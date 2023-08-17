@@ -95,6 +95,16 @@ job2:
     - echo "This job also runs in merge request pipelines"
 ```
 
+A common `workflow` configuration is to have pipelines run for merge requests, tags, and the default branch. For example:
+
+```yaml
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+```
+
 ## Use `only` to add jobs
 
 [`rules`](#use-rules-to-add-jobs) is the preferred method, but you can also use

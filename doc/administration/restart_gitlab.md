@@ -97,10 +97,10 @@ If you manually edit any files in `/var/opt/gitlab` that are managed by Chef,
 running `reconfigure` reverts the changes and restarts the services that
 depend on those files.
 
-## Installations from source
+## Self-compiled installations
 
 If you have followed the official installation guide to
-[install GitLab from source](../install/installation.md), run the following command to restart GitLab:
+[self-compile your installation](../install/installation.md), run the following command to restart GitLab:
 
 ```shell
 # For systems running systemd

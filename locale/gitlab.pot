@@ -26634,6 +26634,9 @@ msgstr ""
 msgid "JiraConnect|No linked groups"
 msgstr ""
 
+msgid "JiraConnect|Not seeing your groups? Only groups you have access to appear here."
+msgstr ""
+
 msgid "JiraConnect|Not seeing your groups? Only groups you have at least the Maintainer role for appear here."
 msgstr ""
 

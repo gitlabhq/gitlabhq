@@ -61,7 +61,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
         before do
           visit user_path(abusive_user)
-          find('[data-testid="base-dropdown-toggle"').click
+          find_by_testid('base-dropdown-toggle').click
         end
 
         it_behaves_like 'reports the user with an abuse category'
@@ -69,7 +69,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
         it 'allows the reporter to report the same user for different abuse categories' do
           visit user_path(abusive_user)
 
-          find('[data-testid="base-dropdown-toggle"').click
+          find_by_testid('base-dropdown-toggle').click
           fill_and_submit_abuse_category_form
           fill_and_submit_report_abuse_form
 
@@ -77,7 +77,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
           visit user_path(abusive_user)
 
-          find('[data-testid="base-dropdown-toggle"').click
+          find_by_testid('base-dropdown-toggle').click
           fill_and_submit_abuse_category_form("They're being offensive or abusive.")
           fill_and_submit_report_abuse_form
 
@@ -95,7 +95,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
           visit user_path(abusive_user)
 
-          find('[data-testid="base-dropdown-toggle"').click
+          find_by_testid('base-dropdown-toggle').click
           fill_and_submit_abuse_category_form
           fill_and_submit_report_abuse_form
 
@@ -159,7 +159,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
       before do
         visit project_merge_request_path(project, merge_request)
-        find('[data-testid="merge-request-actions"]').click
+        find_by_testid('merge-request-actions').click
       end
 
       it_behaves_like 'reports the user with an abuse category'

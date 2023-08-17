@@ -118,7 +118,7 @@ For self-compiled installations:
          path: /mnt/storage2/repositories
    ```
 
-1. [Restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 1. [Configure where new repositories are stored](#configure-where-new-repositories-are-stored).
 

@@ -746,7 +746,7 @@ For self-compiled installations:
          #   server_side_encryption_kms_key_id: 'arn:aws:kms:YOUR-KEY-ID-HERE'
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect
 
 If you're uploading your backups to S3, you should create a new
@@ -849,7 +849,7 @@ For self-compiled installations:
          remote_directory: 'my.google.bucket'
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect
 
 ##### Using Azure Blob storage
@@ -889,7 +889,7 @@ For self-compiled installations:
          remote_directory: '<AZURE BLOB CONTAINER>'
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect
 
 ::EndTabs
@@ -998,7 +998,7 @@ remaining after the failed upload attempt.
        remote_directory: 'gitlab_backups'
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -1033,7 +1033,7 @@ setting.
      archive_permissions: 0644 # Makes the backup archives world-readable
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -1124,7 +1124,7 @@ storage (for example, [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/user-
      keep_time: 604800
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs

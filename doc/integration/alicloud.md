@@ -89,5 +89,5 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
 1. Save the configuration file.
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source)
+   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations)
    if you installed from source.

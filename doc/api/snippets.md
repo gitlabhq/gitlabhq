@@ -475,6 +475,7 @@ Parameters:
 | `created_before` | datetime | no       | Return snippets created before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `page`           | integer  | no       | Page to retrieve.                      |
 | `per_page`       | integer  | no       | Number of snippets to return per page. |
+| `repository_storage` | string            | no       | Filter by repository storage used by the snippet _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419640) in GitLab 16.3 |
 
 Example request:
 
@@ -505,7 +506,8 @@ Example response:
     "web_url": "http://example.com/tim_kreiger/internal_project/-/snippets/113",
     "raw_url": "http://example.com/tim_kreiger/internal_project/-/snippets/113/raw",
     "file_name": "",
-    "files": []
+    "files": [],
+    "repository_storage": "default"
   },
   {
     "id": 112,
@@ -526,7 +528,8 @@ Example response:
     "web_url": "http://example.com/-/snippets/112",
     "raw_url": "http://example.com/-/snippets/112/raw",
     "file_name": "",
-    "files": []
+    "files": [],
+    "repository_storage": "default"
   },
   {
     "id": 111,
@@ -547,7 +550,8 @@ Example response:
     "web_url": "http://example.com/-/snippets/111",
     "raw_url": "http://example.com/-/snippets/111/raw",
     "file_name": "",
-    "files": []
+    "files": [],
+    "repository_storage": "default"
   },
 ]
 ```

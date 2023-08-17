@@ -14,6 +14,7 @@ module Approvable
       with_approvals
         .merge(Approval.with_user)
         .where(users: { id: user_ids })
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422085')
         .group(:id)
         .having("COUNT(users.id) = ?", user_ids.size)
     end
@@ -21,6 +22,7 @@ module Approvable
       with_approvals
         .merge(Approval.with_user)
         .where(users: { username: usernames })
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422085')
         .group(:id)
         .having("COUNT(users.id) = ?", usernames.size)
     end
@@ -34,7 +36,7 @@ module Approvable
         .where(app_table[:merge_request_id].eq(arel_table[:id]))
         .select('true')
         .arel.exists.not
-      )
+      ).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422085')
     end
   end
 

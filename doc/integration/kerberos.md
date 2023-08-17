@@ -66,7 +66,7 @@ For self-compiled installations, make sure the `kerberos` gem group
      keytab: /etc/http.keytab
    ```
 
-1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 #### Linux package installations
 
@@ -209,7 +209,7 @@ ignored and an LDAP identity is not linked.
      simple_ldap_linking_allowed_realms: ['example.com','kerberos.example.com']
    ```
 
-1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
+1. Save the file and [restart](../administration/restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
 ::EndTabs
@@ -290,7 +290,7 @@ this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token
      https: true
    ```
 
-1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) and NGINX for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) and NGINX for the changes to take effect.
 
 ::EndTabs
 
@@ -342,7 +342,7 @@ To disable password-based Kerberos sign-ins, remove the OmniAuth provider
        - { name: 'kerberos' }  # <-- remove this line
    ```
 
-1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 

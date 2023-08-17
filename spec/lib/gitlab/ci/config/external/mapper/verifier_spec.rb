@@ -364,5 +364,77 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         end
       end
     end
+
+    describe '#verify_max_total_pipeline_size' do
+      let(:files) do
+        [
+          Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
+          Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file2.yml' }, context)
+        ]
+      end
+
+      let(:project_files) do
+        {
+          'myfolder/file1.yml' => <<~YAML,
+            build:
+              script: echo Hello World
+          YAML
+          'myfolder/file2.yml' => <<~YAML
+            include:
+              - local: myfolder/file1.yml
+            build:
+              script: echo Hello from the other file
+          YAML
+        }
+      end
+
+      context 'when pipeline tree size is within the limit' do
+        before do
+          stub_application_setting(ci_max_total_yaml_size_bytes: 10000)
+        end
+
+        it 'passes the verification' do
+          expect(process.all?(&:valid?)).to be_truthy
+        end
+      end
+
+      context 'when pipeline tree size is larger then the limit' do
+        before do
+          stub_application_setting(ci_max_total_yaml_size_bytes: 50)
+        end
+
+        let(:expected_error_class) { Gitlab::Ci::Config::External::Mapper::TooMuchDataInPipelineTreeError }
+
+        it 'raises a limit error' do
+          expect { process }.to raise_error(expected_error_class)
+        end
+      end
+
+      context 'when introduce_ci_max_total_yaml_size_bytes is disabled' do
+        before do
+          stub_feature_flags(introduce_ci_max_total_yaml_size_bytes: false)
+        end
+
+        context 'when pipeline tree size is within the limit' do
+          before do
+            stub_application_setting(ci_max_total_yaml_size_bytes: 10000)
+          end
+
+          it 'passes the verification' do
+            expect(process.all?(&:valid?)).to be_truthy
+          end
+        end
+
+        context 'when pipeline tree size is larger then the limit' do
+          before do
+            stub_application_setting(ci_max_total_yaml_size_bytes: 100)
+          end
+
+          it 'passes the verification' do
+            expect(process.all?(&:valid?)).to be_truthy
+          end
+        end
+      end
+    end
   end
 end

@@ -105,7 +105,7 @@ Twitter. Twitter generates a client ID and secret key for you to use.
 
 1. For the changes to take effect:
    - For Linux package installations, [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
-   - For self-compiled installations, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+   - For self-compiled installations, [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations).
 
 On the sign-in page, find the Twitter option below the regular sign-in form. Select the option to begin the authentication process. Twitter asks you to sign in and authorize the GitLab application. After authorization,
 you are returned to GitLab and signed in.

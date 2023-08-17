@@ -3,10 +3,12 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+
 import { fetchGroups } from '~/jira_connect/subscriptions/api';
 import GroupsList from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list.vue';
 import GroupsListItem from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list_item.vue';
 import { DEFAULT_GROUPS_PER_PAGE } from '~/jira_connect/subscriptions/constants';
+import createStore from '~/jira_connect/subscriptions/store';
 import { mockGroup1, mockGroup2 } from '../../mock_data';
 
 const createMockGroup = (groupId) => {
@@ -26,24 +28,30 @@ jest.mock('~/jira_connect/subscriptions/api', () => {
   };
 });
 
-const mockGroupsPath = '/groups';
-const mockAccessToken = '123';
-
 describe('GroupsList', () => {
   let wrapper;
+  let store;
 
-  const mockEmptyResponse = { data: [] };
+  const mockGroupsPath = '/groups';
+  const mockAccessToken = '123';
+  const mockUser = {
+    name: 'test user',
+    is_admin: false,
+  };
 
-  const createComponent = (options = {}) => {
+  const createComponent = ({ initialState } = {}) => {
+    store = createStore({
+      accessToken: mockAccessToken,
+      currentUser: mockUser,
+      ...initialState,
+    });
+
     wrapper = extendedWrapper(
       shallowMount(GroupsList, {
+        store,
         provide: {
           groupsPath: mockGroupsPath,
         },
-        computed: {
-          accessToken: () => mockAccessToken,
-        },
-        ...options,
       }),
     );
   };
@@ -82,6 +90,8 @@ describe('GroupsList', () => {
   });
 
   describe('with no groups returned', () => {
+    const mockEmptyResponse = { data: [] };
+
     it('renders empty state', async () => {
       fetchGroups.mockResolvedValue(mockEmptyResponse);
       createComponent();
@@ -151,6 +161,7 @@ describe('GroupsList', () => {
           expect(fetchGroups).toHaveBeenLastCalledWith(
             mockGroupsPath,
             {
+              minAccessLevel: 40,
               page: 1,
               perPage: DEFAULT_GROUPS_PER_PAGE,
               search: mockSearchTeam,
@@ -229,6 +240,7 @@ describe('GroupsList', () => {
               expect(fetchGroups).toHaveBeenCalledWith(
                 mockGroupsPath,
                 {
+                  minAccessLevel: 40,
                   page: 1,
                   perPage: DEFAULT_GROUPS_PER_PAGE,
                   search: expectedSearchValue,
@@ -268,6 +280,7 @@ describe('GroupsList', () => {
         expect(fetchGroups).toHaveBeenLastCalledWith(
           mockGroupsPath,
           {
+            minAccessLevel: 40,
             page: 2,
             perPage: DEFAULT_GROUPS_PER_PAGE,
             search: '',
@@ -289,6 +302,7 @@ describe('GroupsList', () => {
           expect(fetchGroups).toHaveBeenLastCalledWith(
             mockGroupsPath,
             {
+              minAccessLevel: 40,
               page: expectedPage,
               perPage: DEFAULT_GROUPS_PER_PAGE,
               search: expectedSearchTerm,
@@ -296,6 +310,36 @@ describe('GroupsList', () => {
             mockAccessToken,
           );
         },
+      );
+    });
+  });
+
+  describe('when user is admin', () => {
+    const mockAdmin = {
+      name: 'test admin',
+      is_admin: true,
+    };
+
+    beforeEach(async () => {
+      fetchGroups.mockResolvedValue();
+      createComponent({
+        initialState: {
+          currentUser: mockAdmin,
+        },
+      });
+
+      await waitForPromises();
+    });
+
+    it('calls `fetchGroups` without `min_access_level`', () => {
+      expect(fetchGroups).toHaveBeenLastCalledWith(
+        mockGroupsPath,
+        {
+          page: 1,
+          perPage: DEFAULT_GROUPS_PER_PAGE,
+          search: '',
+        },
+        mockAccessToken,
       );
     });
   });
@@ -336,13 +380,14 @@ describe('GroupsList', () => {
         await waitForPromises();
       });
 
-      it('executes `fetchGroups` with correct arguments', () => {
+      it('calls `fetchGroups` with correct arguments', () => {
         const paginationEl = findPagination();
         paginationEl.vm.$emit('input', 2);
 
         expect(fetchGroups).toHaveBeenLastCalledWith(
           mockGroupsPath,
           {
+            minAccessLevel: 40,
             page: 2,
             perPage: DEFAULT_GROUPS_PER_PAGE,
             search: '',

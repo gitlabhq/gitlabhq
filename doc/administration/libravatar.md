@@ -52,7 +52,7 @@ For self-compiled installations:
        ssl_url: https://seccdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
    ```
 
-1. Save the file, and then [restart](restart_gitlab.md#installations-from-source)
+1. Save the file, and then [restart](restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
 ## Set the Libravatar service to default (Gravatar)
@@ -65,7 +65,7 @@ For Linux package installations:
 For self-compiled installations:
 
 1. Remove `gravatar:` section from `config/gitlab.yml`.
-1. Save the file, then [restart](restart_gitlab.md#installations-from-source)
+1. Save the file, then [restart](restart_gitlab.md#self-compiled-installations)
    GitLab to apply the changes.
 
 ## Disable Gravatar service
@@ -91,7 +91,7 @@ For self-compiled installations:
        enabled: false
    ```
 
-1. Save the file, then [restart](restart_gitlab.md#installations-from-source)
+1. Save the file, then [restart](restart_gitlab.md#self-compiled-installations)
    GitLab to apply the changes.
 
 ### Your own Libravatar server

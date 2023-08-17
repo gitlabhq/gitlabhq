@@ -7,7 +7,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab 16 changes
 
 This page contains upgrade information for minor and patch versions of GitLab 16.
-Ensure you review these instructions and any specific instructions for your installation type.
+Ensure you review these instructions for:
+
+- Your installation type.
+- All versions between your current version and your target version.
+
+Some GitLab installations must upgrade to GitLab 16.0 before upgrading to any other version. For more information, see
+[Long-running user type data change](#long-running-user-type-data-change).
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 7.0](https://docs.gitlab.com/charts/releases/7_0.html).
 
@@ -24,9 +30,6 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)
   for any of the applications above before
   upgrading.
-- Large instances with 30,000 users or more must include 16.0 on the upgrade path and wait for
-  database migrations to complete before upgrading to a later release. [Read more](#long-running-user-type-data-change)
-  about the reason for this, and how to assess whether your GitLab instance is affected.
 
 ### Linux package installations
 
@@ -59,7 +62,6 @@ Specific information applies to Linux package installations:
   in the `tls_options` hash, or use the legacy `gitlab_rails['ldap_host']` option.
   See the [configuration workarounds](https://gitlab.com/gitlab-org/gitlab/-/issues/419485#workarounds)
   for more details.
-- Git 2.41.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 - New job artifacts are not replicated if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
   16.2.3, 16.3.0, and later.
   - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
@@ -83,7 +85,7 @@ Specific information applies to Linux package installations:
 
 - In 16.2, we are upgrading Redis from 6.2.11 to 7.0.12. This upgrade is expected to be fully backwards compatible.
 
-  Redis will not be automatically restarted as part of `gitlab-ctl reconfigure`.
+  Redis is not automatically restarted as part of `gitlab-ctl reconfigure`.
   Hence, users are manually required to run `sudo gitlab-ctl restart redis` after
   the reconfigure run so that the new Redis version gets used. A warning
   mentioning that the installed Redis version is different than the one running is
@@ -92,12 +94,13 @@ Specific information applies to Linux package installations:
   If your instance has Redis HA with Sentinel, follow the upgrade steps mentioned in
   [Zero Downtime documentation](../zero_downtime.md#redis-ha-using-sentinel).
 
+### Self-compiled installations
+
+- Git 2.41.0 and later is required by Gitaly. You should use the [Git version provided by Gitaly](../../install/installation.md#git).
+
 ## 16.1.0
 
-- Large instances with 30,000 users or more must include 16.0 on the upgrade path and wait for
-  database migrations to complete before upgrading to a later release. [Read more](#long-running-user-type-data-change)
-  about the reason for this, and how to assess whether your GitLab instance is affected.
-- A `BackfillPreparedAtMergeRequests` background migration will be finalized with
+- A `BackfillPreparedAtMergeRequests` background migration is finalized with
   the `FinalizeBackFillPreparedAtMergeRequests` post-deploy migration.
   GitLab 15.10.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
   [backfill `prepared_at` values on the `merge_requests` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865). This
@@ -111,7 +114,7 @@ Specific information applies to Linux package installations:
 
 ### Self-compiled installations
 
-- You must remove any settings related to Puma worker killer from the `puma.rb` configuration file, since those have been
+- You must remove any settings related to Puma worker killer from the `puma.rb` configuration file, because those have been
   [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the
   [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
 
@@ -119,15 +122,15 @@ Specific information applies to Linux package installations:
 
 Specific information applies to installations using Geo:
 
-- Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to
+- Some project imports do not initialize wiki repositories on project creation. Because of the migration of project wikis to
   SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704).
-  This is not a result of an actual replication/verification failure but an invalid internal state for these missing
+  This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing
   repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for
   these wiki repositories. If you have not imported projects you are not impacted by this issue.
   - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
   - Versions containing fix: GitLab 16.1.3 and later.
-- Since the migration of project designs to SSF, [missing design repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/414279).
-  This is not a result of an actual replication/verification failure but an invalid internal state for these missing
+- Because of the migration of project designs to SSF, [missing design repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/414279).
+  This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing
   repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for
   these design repositories. You could be impacted by this issue even if you have not imported projects.
   - Impacted versions: GitLab versions 16.1.x.
@@ -135,9 +138,6 @@ Specific information applies to installations using Geo:
 
 ## 16.0.0
 
-- Large instances with 30,000 users or more must include 16.0 on the upgrade path and wait for
-  database migrations to complete before upgrading to a later release. [Read more](#long-running-user-type-data-change)
-  about the reason for this, and how to assess whether your GitLab instance is affected.
 - Sidekiq crashes if there are non-ASCII characters in the `/etc/gitlab/gitlab.rb` file. You can fix this
   by following the workaround in [issue 412767](https://gitlab.com/gitlab-org/gitlab/-/issues/412767#note_1404507549).
 - Sidekiq jobs are only routed to `default` and `mailers` queues by default, and as a result,
@@ -163,8 +163,8 @@ Specific information applies to Linux package installations:
 
 - This upgrades `openssh-server` to `1:8.9p1-3`.
 
-  Using `ssh-keyscan -t rsa` with older OpenSSH clients to obtain public key information will no longer
-  be viable due to deprecations listed in [OpenSSH 8.7 Release Notes](https://www.openssh.com/txt/release-8.7).
+  Using `ssh-keyscan -t rsa` with older OpenSSH clients to obtain public key information is no longer viable because of
+  the deprecations listed in [OpenSSH 8.7 Release Notes](https://www.openssh.com/txt/release-8.7).
 
   Workaround is to make use of a different key type, or upgrade the client OpenSSH to a version >= 8.7.
 
@@ -172,9 +172,9 @@ Specific information applies to Linux package installations:
 
 Specific information applies to installations using Geo:
 
-- Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to
+- Some project imports do not initialize wiki repositories on project creation. Because of the migration of project wikis to
   SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704).
-  This is not a result of an actual replication/verification failure but an invalid internal state for these missing
+  This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing
   repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for
   these wiki repositories. If you have not imported projects you are not impacted by this issue.
 
@@ -215,7 +215,7 @@ Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
 [There is a fix-forward workaround for this issue](../package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
 
 While the workaround is completing the database changes, GitLab is likely to be in
-an unusuable state, generating `500` errors. The errors are caused by Sidekiq and Puma running
+an unusable state, generating `500` errors. The errors are caused by Sidekiq and Puma running
 application code that is incompatible with the database schema.
 
 At the end of the workaround process, Sidekiq and Puma are restarted to resolve that issue.

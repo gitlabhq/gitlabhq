@@ -65,7 +65,7 @@ For self-compiled installations:
      ca_certs_file: /etc/pki/smime/certs/gitlab_cas.crt
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 The key must be readable by the GitLab system user (`git` by default).
 

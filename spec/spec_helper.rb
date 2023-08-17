@@ -181,6 +181,7 @@ RSpec.configure do |config|
   config.include SearchHelpers, type: :feature
   config.include WaitHelpers, type: :feature
   config.include WaitForRequests, type: :feature
+  config.include Features::DomHelpers, type: :feature
   config.include EmailHelpers, :mailer, type: :mailer
   config.include Warden::Test::Helpers, type: :request
   config.include Gitlab::Routing, type: :routing

@@ -183,8 +183,8 @@ The Pages daemon doesn't listen to the outside world.
    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
    ```
 
-1. Restart NGINX
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. Restart NGINX.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ### Wildcard domains with TLS support
 
@@ -240,8 +240,8 @@ outside world.
    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
    ```
 
-1. Restart NGINX
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. Restart NGINX.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ## Advanced configuration
 
@@ -310,8 +310,8 @@ world. Custom domains are supported, but no TLS.
 1. Edit all GitLab related configurations in `/etc/nginx/site-available/` and replace
    `0.0.0.0` with `192.0.2.1`, where `192.0.2.1` the primary IP where GitLab
    listens to.
-1. Restart NGINX
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. Restart NGINX.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ### Custom domains with TLS support
 
@@ -378,8 +378,8 @@ world. Custom domains and TLS are supported.
 1. Edit all GitLab related configurations in `/etc/nginx/site-available/` and replace
    `0.0.0.0` with `192.0.2.1`, where `192.0.2.1` the primary IP where GitLab
    listens to.
-1. Restart NGINX
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. Restart NGINX.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ## NGINX caveats
 
@@ -438,7 +438,7 @@ Pages access control is disabled by default. To enable it:
      access_control: true
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source).
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Create a new [system OAuth application](../../integration/oauth_provider.md#create-a-user-owned-application).
    This should be called `GitLab Pages` and have a `Redirect URL` of
    `https://projects.example.io/auth`. It does not need to be a "trusted"
@@ -471,7 +471,7 @@ are stored.
      path: /mnt/storage/pages
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ## Set maximum Pages size
 

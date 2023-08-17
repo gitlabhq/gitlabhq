@@ -59,7 +59,7 @@ For self-compiled installations:
      enabled: false
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Using local storage
 
@@ -88,7 +88,7 @@ For self-compiled installations:
      storage_path: /mnt/storage/terraform_state
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Using object storage **(FREE SELF)**
 
@@ -230,7 +230,7 @@ See [the available connection settings for different providers](object_storage.m
          region: eu-central-1
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
 
 ::EndTabs

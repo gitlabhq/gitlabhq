@@ -149,7 +149,7 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 
 1. Save the configuration file.
 1. [Reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-   (Linux package installations) or [restart](../../../administration/restart_gitlab.md#installations-from-source)
+   (Linux package installations) or [restart](../../../administration/restart_gitlab.md#self-compiled-installations)
    (self-compiled installations).
 
 ### Enable one-time password using Duo
@@ -214,7 +214,7 @@ On your GitLab server:
 
 1. Save the configuration file.
 1. For Linux package installations, [reconfigure GitLab](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
-   For self-compiled installations, [restart GitLab](../../../administration/restart_gitlab.md#installations-from-source).
+   For self-compiled installations, [restart GitLab](../../../administration/restart_gitlab.md#self-compiled-installations).
 
 ### Enable one-time password using FortiToken Cloud
 
@@ -271,7 +271,7 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 
 1. Save the configuration file.
 1. [Reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) (Linux package installations) or
-   [restart](../../../administration/restart_gitlab.md#installations-from-source) (self-compiled installations).
+   [restart](../../../administration/restart_gitlab.md#self-compiled-installations) (self-compiled installations).
 
 ### Set up a WebAuthn device
 

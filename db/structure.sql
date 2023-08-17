@@ -11930,6 +11930,7 @@ CREATE TABLE application_settings (
     sentry_clientside_traces_sample_rate double precision DEFAULT 0.0 NOT NULL,
     protected_paths_for_get_request text[] DEFAULT '{}'::text[] NOT NULL,
     max_decompressed_archive_size integer DEFAULT 25600 NOT NULL,
+    ci_max_total_yaml_size_bytes integer DEFAULT 157286400 NOT NULL,
     prometheus_alert_db_indicators_settings jsonb,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),

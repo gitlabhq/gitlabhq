@@ -245,7 +245,7 @@ Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use the following rspecs to validate answers to some predefined questions:
 
 ```ruby
-export OPENAP_API_KEY='<key>'
+export OPENAI_API_KEY='<key>'
 export ANTHROPIC_API_KEY='<key>'
 REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
 ```

@@ -1,0 +1,8 @@
+---
+name: introduce_ci_max_total_yaml_size_bytes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123129
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419561
+milestone: '16.3'
+type: development
+group: group::pipeline authoring
+default_enabled: false

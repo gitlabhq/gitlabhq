@@ -2,7 +2,7 @@
 
 return if helper.stable_branch?
 
-data_testids = /testid|data-testid/
+data_testids = /testid|data-testid|find_by_testid|within_testid/
 
 deprecated_qa_selectors = /(?=qa_selector|data-qa-selector)|(?!.*\bdata-qa-)(?=class=.*qa-.*|class: .*qa-.*)/
 

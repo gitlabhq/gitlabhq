@@ -32,7 +32,7 @@ relative URL is:
 - `/home/git/gitlab-shell/config.yml`
 - `/etc/default/gitlab`
 
-After all the changes, you must recompile the assets and [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+After all the changes, you must recompile the assets and [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations).
 
 ## Relative URL requirements
 
@@ -115,7 +115,7 @@ Make sure to follow all steps below:
    If you are using a custom init script, make sure to edit the above
    GitLab Workhorse setting as needed.
 
-1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Disable relative URL in GitLab
 

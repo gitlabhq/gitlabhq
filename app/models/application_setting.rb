@@ -441,6 +441,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :max_yaml_size_bytes, numericality: { only_integer: true, greater_than: 0 }, presence: true
   validates :max_yaml_depth, numericality: { only_integer: true, greater_than: 0 }, presence: true
 
+  validates :ci_max_total_yaml_size_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, presence: true
+
   validates :ci_max_includes, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, presence: true
 
   validates :email_restrictions, untrusted_regexp: true

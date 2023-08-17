@@ -75,7 +75,7 @@ Where:
 | `issuer`  | This should be the same value as configured in Registry's `issuer`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
 
 A Registry init file is not shipped with GitLab if you install it from source.
-Hence, [restarting GitLab](../restart_gitlab.md#installations-from-source) does not restart the Registry should
+Hence, [restarting GitLab](../restart_gitlab.md#self-compiled-installations) does not restart the Registry should
 you modify its settings. Read the upstream documentation on how to achieve that.
 
 At the **absolute** minimum, make sure your [Registry configuration](https://docs.docker.com/registry/configuration/#auth)
@@ -187,7 +187,7 @@ registry_nginx['listen_port'] = 5678
      port: 5050
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
 
 ::EndTabs
@@ -256,7 +256,7 @@ registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
      host: registry.gitlab.example.com
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
 
 ::EndTabs
@@ -296,7 +296,7 @@ Registry application itself.
      enabled: false
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -334,7 +334,7 @@ the Container Registry by themselves, follow the steps below.
      container_registry: false
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -427,7 +427,7 @@ The default location where images are stored in self-compiled installations is
      path: shared/registry
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -726,7 +726,7 @@ However, this behavior is undesirable for registries used by internal hosts that
        enabled: true
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -777,7 +777,7 @@ on how you installed GitLab. Follow the instructions here that match your instal
        encrypt: true
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -932,7 +932,7 @@ You can use GitLab as an auth endpoint with an external container registry.
 
    [Read more](#enable-the-container-registry) about what these parameters mean.
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Configure Container Registry notifications
 
@@ -1507,7 +1507,7 @@ Start with a value between `25000000` (25 MB) and `50000000` (50 MB).
        chunksize: 25000000
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -1593,7 +1593,7 @@ and a simple solution would be to enable relative URLs in the Registry.
        relativeurls: true
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 

@@ -14,7 +14,9 @@ module Gitlab
           include ::Gitlab::Utils::StrongMemoize
 
           attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config
-          attr_reader :expandset, :execution_deadline, :logger, :max_includes
+          attr_reader :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes
+
+          attr_accessor :total_file_size_in_bytes
 
           delegate :instrument, to: :logger
 
@@ -32,6 +34,9 @@ module Gitlab
             @execution_deadline = 0
             @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
             @max_includes = Gitlab::CurrentSettings.current_application_settings.ci_max_includes
+            @max_total_yaml_size_bytes =
+              Gitlab::CurrentSettings.current_application_settings.ci_max_total_yaml_size_bytes
+            @total_file_size_in_bytes = 0
             yield self if block_given?
           end
 
@@ -59,6 +64,7 @@ module Gitlab
               ctx.execution_deadline = execution_deadline
               ctx.logger = logger
               ctx.max_includes = max_includes
+              ctx.max_total_yaml_size_bytes = max_total_yaml_size_bytes
             end
           end
 
@@ -100,7 +106,7 @@ module Gitlab
 
           protected
 
-          attr_writer :expandset, :execution_deadline, :logger, :max_includes
+          attr_writer :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes
 
           private
 

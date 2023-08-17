@@ -282,6 +282,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(10.5).for(:ci_max_includes) }
     it { is_expected.not_to allow_value(-1).for(:ci_max_includes) }
 
+    it { is_expected.to allow_value(0).for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.to allow_value(200).for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.not_to allow_value('abc').for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.not_to allow_value(nil).for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.not_to allow_value(10.5).for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.not_to allow_value(-1).for(:ci_max_total_yaml_size_bytes) }
+
     it { is_expected.to allow_value([true, false]).for(:remember_me_enabled) }
     it { is_expected.not_to allow_value(nil).for(:remember_me_enabled) }
 

@@ -88,4 +88,4 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
 
 1. For the changes to take effect, if you:
    - Installed using the Linux package, [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
-   - Self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+   - Self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations).

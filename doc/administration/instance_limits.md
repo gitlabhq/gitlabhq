@@ -760,6 +760,26 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
   ApplicationSetting.update(max_yaml_depth: 125)
   ```
 
+### Maximum size of the entire CI/CD configuration
+
+The maximum amount of memory, in bytes, that can be allocated for the full pipeline configuration,
+with all included YAML configuration files.
+
+For new self-managed instances, the default is `157286400` bytes (150 MB).
+
+For existing self-managed instances that upgrade to GitLab 16.3 or later, the default is calculated
+by multiplying [`max_yaml_size_bytes` (default 1 MB)](#maximum-size-and-depth-of-cicd-configuration-yaml-files)
+with [`ci_max_includes` (default 150)](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+If both limits are unmodified, the default is set to 1 MB x 150 = `157286400` bytes (150 MB).
+
+You can change this limit via the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+To update the maximum memory that can be allocated for the CI/CD configuration,
+update `ci_max_total_yaml_size_bytes` with the new value. For example, to set it to 20 MB:
+
+```ruby
+ApplicationSetting.update(ci_max_total_yaml_size_bytes: 20.megabytes)
+```
+
 ### Limit dotenv variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321552) in GitLab 14.5.

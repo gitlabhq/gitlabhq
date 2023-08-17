@@ -11,7 +11,7 @@ Use the [GitLab SAML integration](saml.md) to integrate specific Shibboleth iden
 
 To enable Shibboleth support in GitLab, use Apache instead of NGINX. Apache uses the `mod_shib2` module for Shibboleth authentication, and can pass attributes as headers to the OmniAuth Shibboleth provider.
 
-You can use the bundled NGINX provided in the Omnibus GitLab package to run a Shibboleth service provider on a different instance using a reverse proxy setup. However if you are not doing this, the bundled NGINX is difficult to configure.
+You can use the bundled NGINX provided in the Linux package to run a Shibboleth service provider on a different instance using a reverse proxy setup. However if you are not doing this, the bundled NGINX is difficult to configure.
 
 To enable the Shibboleth OmniAuth provider, you must:
 
@@ -86,6 +86,6 @@ To enable Shibboleth:
    If some of your users appear to be authenticated by Shibboleth and Apache, but GitLab rejects their account with a URI that contains "e-mail is invalid" then your Shibboleth Identity Provider or Attribute Authority may be asserting multiple email addresses. In this instance, consider setting the `multi_values` argument to `first`.
 1. For the changes to take effect:
    - For Linux package installations, [reconfigure](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab.
-   - For self-compiled installations, [restart](../administration/restart_gitlab.md#installations-from-source) GitLab.
+   - For self-compiled installations, [restart](../administration/restart_gitlab.md#self-compiled-installations) GitLab.
 
 On the sign in page, there should now be a **Sign in with: Shibboleth** icon below the regular sign-in form. Select the icon to begin the authentication process. You are redirected to the appropriate IdP server for your Shibboleth module configuration. If everything goes well, you are returned to GitLab and signed in.

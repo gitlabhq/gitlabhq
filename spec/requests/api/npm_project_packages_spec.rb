@@ -71,6 +71,27 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         it_behaves_like 'enqueue a worker to sync a metadata cache'
       end
     end
+
+    context 'when user is not authorized after exception was raised' do
+      let(:exception) { Rack::Timeout::RequestTimeoutException.new('Request ran for longer than 60000ms') }
+
+      subject { get(url) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'correctly reports an exception', :aggregate_failures do
+        allow_next_instance_of(Packages::Npm::GenerateMetadataService) do |instance|
+          allow(instance).to receive(:execute).and_raise(exception)
+        end
+
+        allow(Gitlab::Auth::UniqueIpsLimiter).to receive(:limit_user!)
+          .and_invoke(-> { nil }, -> { raise Gitlab::Auth::UnauthorizedError })
+
+        subject
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/npm/-/package/*package_name/dist-tags' do

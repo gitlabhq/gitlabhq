@@ -316,7 +316,7 @@ Alternatively, add the `User.Read.All` application permission.
 1. Save the configuration file.
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source)
+   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations)
    if you self-compiled your installation.
 
 1. Refresh the GitLab sign-in page. A Microsoft icon should display below the

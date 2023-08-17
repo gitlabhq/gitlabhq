@@ -187,7 +187,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
 1. For changes to take effect, if you:
 
    - Used the Linux package to install GitLab, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-   - Self-compiled your GitLab installation, [restart GitLab](../restart_gitlab.md#installations-from-source).
+   - Self-compiled your GitLab installation, [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 On the sign in page, you have an OpenID Connect option below the regular sign in form.
 Select this option to begin the authentication process. The OpenID Connect provider
@@ -841,7 +841,7 @@ If you do not set `required_groups` or leave the setting empty, any user authent
        }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -924,7 +924,7 @@ based on group membership, configure GitLab to identify:
        }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -1005,7 +1005,7 @@ response to assign users as auditors based on group membership, configure GitLab
        }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -1086,7 +1086,7 @@ response to assign users as administrator based on group membership, configure G
        }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs

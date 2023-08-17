@@ -757,6 +757,9 @@ module API
         @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! }
       rescue Gitlab::Auth::UnauthorizedError
         unauthorized!
+
+        # Explicitly return `nil`, otherwise an instance of `Rack::Response` is returned when reporting an error
+        nil
       end
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
