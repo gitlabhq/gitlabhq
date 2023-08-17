@@ -1,0 +1,20 @@
+query usersAutocomplete($fullPath: ID!, $search: String, $isProject: Boolean = false) {
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
+    autocompleteUsers(search: $search) {
+      id
+      avatarUrl
+      name
+      username
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
+    id
+    autocompleteUsers(search: $search) {
+      id
+      avatarUrl
+      name
+      username
+    }
+  }
+}

@@ -21,6 +21,7 @@ import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_coun
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
+import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
@@ -648,6 +649,15 @@ export default {
         .then(({ data }) => data[this.namespace]?.milestones.nodes);
     },
     fetchUsers(search) {
+      if (gon.features?.newGraphqlUsersAutocomplete) {
+        return this.$apollo
+          .query({
+            query: usersAutocompleteQuery,
+            variables: { fullPath: this.fullPath, search, isProject: this.isProject },
+          })
+          .then(({ data }) => data[this.namespace]?.autocompleteUsers);
+      }
+
       return this.$apollo
         .query({
           query: searchUsersQuery,

@@ -531,9 +531,8 @@ module Ci
 
     def google_play_variables
       return [] unless google_play_integration.try(:activated?)
-      return [] unless pipeline.protected_ref?
 
-      Gitlab::Ci::Variables::Collection.new(google_play_integration.ci_variables)
+      Gitlab::Ci::Variables::Collection.new(google_play_integration.ci_variables(protected_ref: pipeline.protected_ref?))
     end
 
     def features

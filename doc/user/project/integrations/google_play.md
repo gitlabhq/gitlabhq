@@ -32,9 +32,11 @@ To enable the Google Play integration in GitLab:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Google Play**.
-1. Under **Enable integration**, select the **Active** checkbox.
+1. In **Enable integration**, select the **Active** checkbox.
 1. In **Package name**, enter the package name of the app (for example, `com.gitlab.app_name`).
+1. Optional. Under **Protected branches and tags only**, select the **Only set variables on protected branches and tags** checkbox.
 1. In **Service account key (.JSON)**, drag or upload your key file.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 After you enable the integration, the global variables `$SUPPLY_PACKAGE_NAME` and `$SUPPLY_JSON_KEY_DATA` are created for CI/CD use.

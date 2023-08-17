@@ -62,6 +62,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action only: [:index, :service_desk] do
     push_frontend_feature_flag(:or_issuable_queries, project)
     push_frontend_feature_flag(:frontend_caching, project&.group)
+    push_frontend_feature_flag(:new_graphql_users_autocomplete, project)
   end
 
   before_action only: :show do

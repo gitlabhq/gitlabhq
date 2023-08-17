@@ -13,7 +13,7 @@ export default {
   },
   data() {
     return {
-      dropzoneAllowList: ['.json'],
+      dropzoneAllowList: ['.JSON'],
     };
   },
   i18n: {
@@ -24,7 +24,7 @@ export default {
       "GooglePlay|Error: The file you're trying to upload is not a service account key.",
     ),
     dropzoneConfirmMessage: s__('GooglePlay|Drag your key file to start the upload.'),
-    dropzoneEmptyInputName: s__('GooglePlay|Service account key (.json)'),
+    dropzoneEmptyInputName: s__('GooglePlay|Service account key (.JSON)'),
     dropzoneNonEmptyInputName: s__(
       'GooglePlay|Upload a new service account key (replace %{currentFileName})',
     ),

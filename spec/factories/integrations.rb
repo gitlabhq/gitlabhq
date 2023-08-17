@@ -326,6 +326,7 @@ FactoryBot.define do
     package_name { 'com.gitlab.foo.bar' }
     service_account_key_file_name { 'service_account.json' }
     service_account_key { File.read('spec/fixtures/service_account.json') }
+    google_play_protected_refs { true }
   end
 
   factory :squash_tm_integration, class: 'Integrations::SquashTm' do

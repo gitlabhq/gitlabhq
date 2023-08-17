@@ -384,7 +384,7 @@ If your tests require `window.location.href` to take a particular value, use
 the `setWindowLocation` helper:
 
 ```javascript
-import setWindowLocation from 'helpers/set_window_location';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 it('passes', () => {
   setWindowLocation('https://gitlab.test/foo?bar=true');

@@ -92,6 +92,8 @@ RSpec.shared_context 'with integration' do
         hash.merge!(k => File.read('spec/fixtures/service_account.json'))
       elsif integration == 'google_play' && k == :service_account_key_file_name
         hash.merge!(k => 'service_account.json')
+      elsif integration == 'google_play' && k == :google_play_protected_refs # rubocop:disable Lint/DuplicateBranch
+        hash.merge!(k => true)
       else
         hash.merge!(k => "someword")
       end

@@ -3216,41 +3216,79 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'for the google_play integration' do
-      let_it_be(:google_play_integration) { create(:google_play_integration) }
+      before do
+        allow(build.pipeline).to receive(:protected_ref?).and_return(pipeline_protected_ref)
+      end
 
       let(:google_play_variables) do
         [
-          { key: 'SUPPLY_JSON_KEY_DATA', value: google_play_integration.service_account_key, masked: true, public: false }
+          { key: "SUPPLY_JSON_KEY_DATA", value: google_play_integration.service_account_key, masked: true, public: false },
+          { key: "SUPPLY_PACKAGE_NAME", value: google_play_integration.package_name, masked: false, public: false }
         ]
       end
 
+      shared_examples 'does not include the google_play_variables' do
+        specify do
+          expect(subject.find { |v| v[:key] == "SUPPLY_JSON_KEY_DATA" }).to be_nil
+          expect(subject.find { |v| v[:key] == "SUPPLY_PACKAGE_NAME" }).to be_nil
+        end
+      end
+
+      shared_examples 'includes google_play_variables' do
+        specify do
+          expect(subject).to include(*google_play_variables)
+        end
+      end
+
       context 'when the google_play integration exists' do
-        context 'when a build is protected' do
-          before do
-            allow(build.pipeline).to receive(:protected_ref?).and_return(true)
-            build.project.update!(google_play_integration: google_play_integration)
+        let_it_be(:google_play_integration) do
+          create(:google_play_integration, project: project)
+        end
+
+        context 'when google_play_protected_refs is true' do
+          context 'when a build is protected' do
+            let(:pipeline_protected_ref) { true }
+
+            include_examples 'includes google_play_variables'
           end
 
-          it 'includes google_play variables' do
-            is_expected.to include(*google_play_variables)
+          context 'when a build is not protected' do
+            let(:pipeline_protected_ref) { false }
+
+            include_examples 'does not include the google_play_variables'
           end
         end
 
-        context 'when a build is not protected' do
+        context 'when google_play_protected_refs is false' do
           before do
-            allow(build.pipeline).to receive(:protected_ref?).and_return(false)
-            build.project.update!(google_play_integration: google_play_integration)
+            google_play_integration.update!(google_play_protected_refs: false)
           end
 
-          it 'does not include the google_play variable' do
-            expect(subject[:key] == 'SUPPLY_JSON_KEY_DATA').to eq(false)
+          context 'when a build is protected' do
+            let(:pipeline_protected_ref) { true }
+
+            include_examples 'includes google_play_variables'
+          end
+
+          context 'when a build is not protected' do
+            let(:pipeline_protected_ref) { false }
+
+            include_examples 'includes google_play_variables'
           end
         end
       end
 
-      context 'when the googel_play integration does not exist' do
-        it 'does not include google_play variable' do
-          expect(subject[:key] == 'SUPPLY_JSON_KEY_DATA').to eq(false)
+      context 'when the google_play integration does not exist' do
+        context 'when a build is protected' do
+          let(:pipeline_protected_ref) { true }
+
+          include_examples 'does not include the google_play_variables'
+        end
+
+        context 'when a build is not protected' do
+          let(:pipeline_protected_ref) { false }
+
+          include_examples 'does not include the google_play_variables'
         end
       end
     end

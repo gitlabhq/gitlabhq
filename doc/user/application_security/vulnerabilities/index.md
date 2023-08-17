@@ -35,6 +35,29 @@ GitLab can help you with a vulnerability by using a large language model to:
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
 
+### Explain a vulnerability
+
+Use the explain this vulnerability feature to better understand a vulnerability and its possible
+mitigation.
+
+Prerequisites:
+
+- You must have the GitLab Ultimate subscription tier.
+- You must be a member of the project.
+- The vulnerability must be a SAST finding.
+
+Learn more about [how to enable all AI features](../../ai_features.md#enable-aiml-features).
+
+To explain the vulnerability:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Security and Compliance > Vulnerability report**.
+1. In the **Tool** dropdown list, select **SAST**.
+1. Select the SAST vulnerability you want explained.
+1. At the bottom of the vulnerability's page, select **Try it out**.
+
+The response is shown on the right side of the page.
+
 ![Explain this vulnerability](img/explain_this_vulnerability_beta_v16_3.png)
 
 On GitLab.com this feature is available. By default, it is powered by Google's `text-bison-001`
@@ -53,27 +76,6 @@ The following data is shared with third-party AI APIs:
 - Code block, but only if the "Send code with prompt" checkbox is selected (single and multi-line as instructed by the vulnerability
   record).
 - Filename.
-
-### Explain a vulnerability
-
-Use the explain this vulnerability feature to better understand a vulnerability and its possible
-mitigation.
-
-Prerequisites:
-
-- You must have the GitLab Ultimate subscription tier.
-- You must be a member of the project.
-- The vulnerability must be a SAST finding.
-
-To explain the vulnerability:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Security and Compliance > Vulnerability report**.
-1. In the **Tool** dropdown list, select **SAST**.
-1. Select the SAST vulnerability you want explained.
-1. At the bottom of the vulnerability's page, select **Try it out**.
-
-The response is shown on the right side of the page.
 
 ## Vulnerability status values
 

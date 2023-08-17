@@ -22079,6 +22079,12 @@ msgstr ""
 msgid "GoogleCloud|Revoke authorizations granted to GitLab. This does not invalidate service accounts."
 msgstr ""
 
+msgid "GooglePlayStore|Only set variables on protected branches and tags"
+msgstr ""
+
+msgid "GooglePlayStore|Protected branches and tags only"
+msgstr ""
+
 msgid "GooglePlay|Drag your key file here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
@@ -22094,7 +22100,7 @@ msgstr ""
 msgid "GooglePlay|Leave empty to use your current service account key."
 msgstr ""
 
-msgid "GooglePlay|Service account key (.json)"
+msgid "GooglePlay|Service account key (.JSON)"
 msgstr ""
 
 msgid "GooglePlay|Upload a new service account key (replace %{currentFileName})"
@@ -52563,7 +52569,7 @@ msgstr ""
 msgid "Vulnerability|There was an unexpected error. %{linkStart}Please try again%{linkEnd}."
 msgstr ""
 
-msgid "Vulnerability|This is an experimental feature that uses AI to explain the vulnerability and provide recommendations. Use this feature with caution as we continue to iterate. Please provide your feedback and ideas in %{linkStart}this issue%{linkEnd}."
+msgid "Vulnerability|This is a beta feature that uses AI to explain the vulnerability and provide recommendations. Use this feature with caution as we continue to iterate. Please provide your feedback and ideas in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
 msgid "Vulnerability|Tool"

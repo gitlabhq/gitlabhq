@@ -528,6 +528,12 @@ module API
               name: :service_account_key_file_name,
               type: String,
               desc: 'The filename of the Google Play service account key'
+            },
+            {
+              required: false,
+              name: :google_play_protected_refs,
+              type: ::Grape::API::Boolean,
+              desc: 'Only enable for protected refs'
             }
           ],
           'hangouts-chat' => [

@@ -63,9 +63,10 @@ The steps required are:
 
 1. Release `N.M` (current release)
 
-   - Ensure the constraint is enforced at the application level (that is, add a model validation).
-   - Add a post-deployment migration to add the `NOT NULL` constraint with `validate: false`.
-   - Add a post-deployment migration to fix the existing records.
+   1. Ensure $ATTRIBUTE value is being set at the application level.
+      1. If the attribute has a default value, add the default value to the model so the default value is set for new records.
+      1. Update all places in the code where the attribute is being set to `nil`, if any, for new and existing records.
+   1. Add a post-deployment migration to fix the existing records.
 
      NOTE:
      Depending on the size of the table, a background migration for cleanup could be required in the next release.
@@ -75,22 +76,16 @@ The steps required are:
 
 1. Release `N.M+1` (next release)
 
-   - Validate the `NOT NULL` constraint using a post-deployment migration.
+   1. Make sure all existing records on GitLab.com have attribute set. If not, go back to step 1 from Release `N.M`.
+   1. If step 1 seems fine and the backfill from Release `N.M` was done via a batched background migration then add a
+      post-deployment migration to
+      [finalize the background migration](batched_background_migrations.md#depending-on-migrated-data).
+   1. Add a validation for the attribute in the model to prevent records with `nil` attribute as now all existing and new records should be valid.
+   1. Add a post-deployment migration to add the `NOT NULL` constraint.
 
 ### Example
 
-Considering a given release milestone, such as 13.0, a model validation has been added into `epic.rb`
-to require a description:
-
-```ruby
-class Epic < ApplicationRecord
-  validates :description, presence: true
-end
-```
-
-The same constraint should be added at the database level for consistency purposes.
-We only want to enforce the `NOT NULL` constraint without setting a default, as we have decided
-that all epics should have a user-generated description.
+Considering a given release milestone, such as 13.0.
 
 After checking our production database, we know that there are `epics` with `NULL` descriptions,
 so we cannot add and validate the constraint in one step.
@@ -101,33 +96,16 @@ such records, so we would follow the same process either way.
 
 #### Prevent new invalid records (current release)
 
-We first add the `NOT NULL` constraint with a `NOT VALID` parameter, which enforces consistency
-when new records are inserted or current records are updated.
+Update all the code paths where the attribute is being set to `nil`, if any, to set the attribute to non-nil value
+for new and existing records.
 
-In the example above, the existing epics with a `NULL` description are not affected and you are
-still able to update records in the `epics` table. However, when you try to update or insert
-an epic without providing a description, the constraint causes a database error.
-
-Adding or removing a `NOT NULL` clause requires that any application changes are deployed _first_.
-Thus, adding a `NOT NULL` constraint to an existing column should happen in a post-deployment migration.
-
-Still in our example, for the 13.0 milestone example (current), we add the `NOT NULL` constraint
-with `validate: false` in a post-deployment migration,
-`db/post_migrate/20200501000001_add_not_null_constraint_to_epics_description.rb`:
+An attribute with default using the
+[Rails attributes API](https://api.rubyonrails.org/classes/ActiveRecord/Attributes/ClassMethods.html) has been added in
+`epic.rb` so that default value is set for new records:
 
 ```ruby
-class AddNotNullConstraintToEpicsDescription < Gitlab::Database::Migration[2.1]
-  disable_ddl_transaction!
-
-  def up
-    # This will add the `NOT NULL` constraint WITHOUT validating it
-    add_not_null_constraint :epics, :description, validate: false
-  end
-
-  def down
-    # Down is required as `add_not_null_constraint` is not reversible
-    remove_not_null_constraint :epics, :description
-  end
+class Epic < ApplicationRecord
+  attribute :description, default: 'No description'
 end
 ```
 
@@ -176,24 +154,47 @@ class CleanupEpicsWithNullDescription < Gitlab::Database::Migration[2.1]
 end
 ```
 
-#### Validate the `NOT NULL` constraint (next release)
+#### Check if all records are fixed (next release)
 
-Validating the `NOT NULL` constraint scans the whole table and make sure that each record is correct.
+Use postgres.ai to [create a thin clone](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/doc/gitlab-com-database.html#use-postgresai-to-work-with-a-thin-clone-of-the-database-includes-direct-psql-access-to-the-thin-clone)
+of the production database and check if all records on GitLab.com have the attribute set.
+If not go back to [Prevent new invalid records](#prevent-new-invalid-records-current-release) step and figure out where
+in the code the attribute is explicitly set to `nil`. Fix the code path then reschedule the migration to fix the existing
+records and wait for the next release to do the following steps.
 
-Still in our example, for the 13.1 milestone (next), we run the `validate_not_null_constraint`
-migration helper in a final post-deployment migration,
-`db/post_migrate/20200601000001_validate_not_null_constraint_on_epics_description.rb`:
+#### Finalize the background migration (next release)
+
+If the migration was done using a background migration then [finalize the migration](batched_background_migrations.md#depending-on-migrated-data).
+
+#### Add validation to the model (next release)
+
+Add a validation for the attribute to the model to prevent records with `nil` attribute as now all existing and new records should be valid.
 
 ```ruby
-class ValidateNotNullConstraintOnEpicsDescription < Gitlab::Database::Migration[2.1]
+class Epic < ApplicationRecord
+  validates :description, presence: true
+end
+```
+
+#### Add the `NOT NULL` constraint (next release)
+
+Adding the `NOT NULL` constraint scans the whole table and make sure that each record is correct.
+
+Still in our example, for the 13.1 milestone (next), we run the `add_not_null_constraint`
+migration helper in a final post-deployment migration:
+
+```ruby
+class AddNotNullConstraintToEpicsDescription < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
-    validate_not_null_constraint :epics, :description
+    # This will add the `NOT NULL` constraint and validate it
+    add_not_null_constraint :epics, :description
   end
 
   def down
-    # no-op
+    # Down is required as `add_not_null_constraint` is not reversible
+    remove_not_null_constraint :epics, :description
   end
 end
 ```

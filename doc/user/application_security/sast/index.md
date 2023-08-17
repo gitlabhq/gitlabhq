@@ -147,11 +147,12 @@ GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately
 
 Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
-- C, in the Semgrep-based analyzer only
+- C, in the Semgrep-based and Flawfinder analyzers
+- C++, in the Flawfinder analyzer only
 - C#, in the Semgrep-based analyzer only
 - Go, in the Semgrep-based analyzer only
-- Java, in the Semgrep-based analyzer only
-- JavaScript, in the Semgrep-based analyzer only
+- Java, in the Semgrep-based and mobsf analyzers
+- JavaScript, in the Semgrep-based and NodeJS-Scan analyzers
 - Python, in the Semgrep-based analyzer only
 - Ruby, in the Brakeman-based analyzer
 
