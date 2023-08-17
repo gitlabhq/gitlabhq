@@ -7,11 +7,13 @@ import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
 import store from '~/mr_notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
+import { clearDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { noteableDataMock } from 'jest/notes/mock_data';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
+jest.mock('~/lib/utils/autosave');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 jest.mock('~/alert');
@@ -115,6 +117,17 @@ describe('DiffLineNoteForm', () => {
           lineCode: diffLines[1].line_code,
           fileHash: diffFile.file_hash,
         });
+      });
+
+      it('should clear the autosaved draft', async () => {
+        findNoteForm().vm.$emit('cancelForm', true, true);
+        await nextTick();
+        expect(confirmAction).toHaveBeenCalled();
+        await nextTick();
+
+        expect(clearDraft).toHaveBeenCalledWith(
+          `Note/Issue/${noteableDataMock.id}//DiffNote//${diffLines[1].line_code}`,
+        );
       });
     });
 

@@ -72,7 +72,7 @@ You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnib
 ### PostgreSQL Requirements
 
 The server running PostgreSQL should have _at least_ 5-10 GB of storage
-available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md).
+available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md). For Ultimate customers the server should have _at least_ 12 GB of storage available, as 1 GB of vulnerability data needs to be imported.
 
 We highly recommend using at least the minimum PostgreSQL versions (as specified in
 the following table) as these were used for development and testing:

@@ -1094,14 +1094,14 @@
     axios "^0.24.0"
     core-js "^3.29.1"
 
-"@gitlab/eslint-plugin@19.0.0":
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-19.0.0.tgz#bbf5b535876421f000255f0e9ac8f971b8aa6042"
-  integrity sha512-clAN/hIs3fVWIJtGLUJy4cL/cXP0jOPCLHOFhlPyYCUpEZXIka73FtPYfaC3NJoRheLA3u2Ue5KKOAj6pi1ZrA==
+"@gitlab/eslint-plugin@19.0.1":
+  version "19.0.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-19.0.1.tgz#f3efe2ef4cd7a7a7a1a55316fbf9fd86173e8667"
+  integrity sha512-PTZktq3UeCZpLBKAcfIa3VtQseBlYwbYUVN0WY/0ntvpEHyJpKvJ0vZ161LluhQ4EnDGyPyx265XLUcLigChSg==
   dependencies:
     eslint-config-airbnb-base "^15.0.0"
     eslint-config-prettier "^6.10.0"
-    eslint-plugin-import "^2.26.0"
+    eslint-plugin-import "^2.28.0"
     eslint-plugin-jest "^27.2.1"
     eslint-plugin-promise "^6.0.1"
     eslint-plugin-unicorn "^40.1.0"
@@ -5802,7 +5802,7 @@ eslint-module-utils@^2.8.0:
   dependencies:
     debug "^3.2.7"
 
-eslint-plugin-import@^2.26.0, eslint-plugin-import@^2.28.0:
+eslint-plugin-import@^2.28.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.28.0.tgz#8d66d6925117b06c4018d491ae84469eb3cb1005"
   integrity sha512-B8s/n+ZluN7sxj9eUf7/pRFERX0r5bnFA2dCaLHy2ZeaQEAz0k+ZZkFWRFHJAqxfxQDx6KLv9LeIki7cFdwW+Q==

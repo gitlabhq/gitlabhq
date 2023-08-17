@@ -111,7 +111,7 @@ To protect a branch:
 
 The protected branch displays in the list of protected branches.
 
-### For all projects in a group **(PREMIUM)**
+### For all projects in a group **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 
@@ -312,7 +312,7 @@ Force push settings for a branch at the project level are overridden by group le
 if the `group_protected_branches` feature flag is enabled and a group owner has set
 [group level protection for the same branch](#for-all-projects-in-a-group).
 
-## Require Code Owner approval on a protected branch **(PREMIUM)**
+## Require Code Owner approval on a protected branch **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in GitLab 13.5, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
 

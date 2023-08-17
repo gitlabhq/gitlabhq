@@ -5,7 +5,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage epics **(PREMIUM)**
+# Manage epics **(PREMIUM ALL)**
 
 This page collects instructions for all the things you can do with [epics](index.md) or in relation
 to them.

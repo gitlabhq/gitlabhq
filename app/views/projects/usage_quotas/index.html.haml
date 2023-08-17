@@ -15,9 +15,10 @@
 
 .row
   .col-sm-12
-    = s_('UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project').html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, project_name: @project.name } + '.'
-    %a{ href: help_page_path('user/usage_quotas.md'), target: '_blank', rel: 'noopener noreferrer' }
-      = s_('UsageQuota|Learn more about usage quotas') + '.'
+    %p.gl-text-secondary
+      = s_('UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project').html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, project_name: @project.name } + '.'
+      %a{ href: help_page_path('user/usage_quotas.md'), target: '_blank', rel: 'noopener noreferrer' }
+        = s_('UsageQuota|Learn more about usage quotas') + '.'
 
 = gl_tabs_nav({ id: 'js-project-usage-quotas-tabs' }) do
   = gl_tab_link_to '#storage-quota-tab', item_active: true do

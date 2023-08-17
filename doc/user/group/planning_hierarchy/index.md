@@ -5,7 +5,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Planning hierarchies **(PREMIUM)**
+# Planning hierarchies **(PREMIUM ALL)**
 
 Planning hierarchies are an integral part of breaking down your work in GitLab.
 To understand how you can use epics and issues together in hierarchies, remember the following:

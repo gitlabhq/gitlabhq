@@ -17,7 +17,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = _('Collapse')
-    %p= _('Update your project name, topics, description, and avatar.')
+    %p.gl-text-secondary= _('Update your project name, topics, description, and avatar.')
   .settings-content= render 'projects/settings/general'
 
 %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { qa_selector: 'visibility_features_permissions_content' } }
@@ -25,7 +25,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default emoji reactions.')
+    %p.gl-text-secondary= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default emoji reactions.')
 
   .settings-content
     = form_for @project, html: { multipart: true, class: "sharing-permissions-form", id: reduce_visibility_form_id }, authenticity_token: true do |f|
@@ -46,7 +46,7 @@
       = s_('ProjectSettings|Badges')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary.gl-mb-0
+    %p.gl-text-secondary
       = s_('ProjectSettings|Customize this project\'s badges.')
       = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges')
   .settings-content
@@ -63,7 +63,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p= s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
+    %p.gl-text-secondary= s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
 
   .settings-content
     = render_if_exists 'projects/settings/restore', project: @project

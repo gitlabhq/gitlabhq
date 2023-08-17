@@ -151,7 +151,7 @@ To delete a project:
 1. Select **Delete project**.
 1. Confirm this action by completing the field.
 
-## View projects pending deletion **(PREMIUM)**
+## View projects pending deletion **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.

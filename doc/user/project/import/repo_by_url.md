@@ -30,7 +30,7 @@ You can import your existing repositories by providing the Git URL.
 
 Your newly created project is displayed.
 
-## Automate group and project import **(PREMIUM)**
+## Automate group and project import **(PREMIUM ALL)**
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](index.md#automate-group-and-project-import).

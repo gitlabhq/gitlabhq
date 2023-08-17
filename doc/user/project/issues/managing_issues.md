@@ -73,7 +73,7 @@ When bulk editing issues in a project, you can edit the following attributes:
 - [Iteration](../../group/iterations/index.md)
 - [Confidentiality](confidential_issues.md)
 
-### Bulk edit issues from a group **(PREMIUM)**
+### Bulk edit issues from a group **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
 > - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
@@ -389,7 +389,7 @@ Alternatively:
 1. Select **Edit title and description** (**{pencil}**).
 1. Select **Delete issue**.
 
-## Promote an issue to an epic **(PREMIUM)**
+## Promote an issue to an epic **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab 11.6.
 > - Moved from GitLab Ultimate to GitLab Premium in 12.8.
@@ -415,7 +415,7 @@ Read more about [promoting an issues to epics](../../group/epics/manage_epics.md
 
 You can use the `/promote_to_incident` [quick action](../quick_actions.md) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
 
-## Add an issue to an iteration **(PREMIUM)**
+## Add an issue to an iteration **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in GitLab 13.2.
 > - Moved to GitLab Premium in 13.9.

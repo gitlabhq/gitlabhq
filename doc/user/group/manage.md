@@ -215,7 +215,7 @@ To disable group mentions:
 1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
-## Export members as CSV **(PREMIUM)**
+## Export members as CSV **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
@@ -310,7 +310,7 @@ To ensure that the user cap applies when groups, subgroups, or projects are shar
 
 User cap doesn’t consider whether users are billable or not (e.g., Free Guest Users in Ultimate). In other words, if you set a cap of 500, user caps block new sign-ups after 500 users, regardless of whether those are all consuming paid seats or not.
 
-## Group file templates **(PREMIUM)**
+## Group file templates **(PREMIUM ALL)**
 
 Use group file templates to share a set of templates for common file
 types with every project in a group. It is analogous to the
@@ -332,7 +332,7 @@ To learn how to create templates for issues and merge requests, see
 Define project templates at a group level by setting a group as the template source.
 For more information, see [group-level project templates](custom_project_templates.md).
 
-### Enable group file template **(PREMIUM)**
+### Enable group file template **(PREMIUM ALL)**
 
 To enable group file templates:
 
@@ -342,7 +342,7 @@ To enable group file templates:
 1. Choose a project to act as the template repository.
 1. Select **Save changes**.
 
-## Group merge checks settings **(PREMIUM)**
+## Group merge checks settings **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 
@@ -413,7 +413,7 @@ To enable this setting:
 1. Under **Merge checks**, select **All threads must be resolved**.
 1. Select **Save changes**.
 
-## Group merge request approval settings **(PREMIUM)**
+## Group merge request approval settings **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
@@ -505,7 +505,7 @@ To disable third-party AI features for a group:
 When Code Suggestions are enabled and disabled, an
 [audit event](../../administration/audit_events.md#view-audit-events) is created.
 
-## Group activity analytics **(PREMIUM)**
+## Group activity analytics **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
 

@@ -8,7 +8,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Branch rules')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Define rules for who can push, merge, and the required approvals for each branch.')
       = link_to(_('Leave feedback.'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/388149', target: '_blank', rel: 'noopener noreferrer')
 

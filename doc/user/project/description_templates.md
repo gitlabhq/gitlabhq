@@ -113,7 +113,7 @@ You can also use the instance template repository for file templates.
 You might also be interested [project templates](../admin_area/custom_project_templates.md)
 that you can use when creating a new project in the instance.
 
-### Set group-level description templates **(PREMIUM)**
+### Set group-level description templates **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.

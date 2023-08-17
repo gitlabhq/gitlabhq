@@ -398,7 +398,7 @@ For example, an email with the reason `assigned` has this sentence in the footer
 
 > You are receiving this email because you have been assigned an item on \<configured GitLab hostname>.
 
-#### On-call alerts notifications **(PREMIUM)**
+#### On-call alerts notifications **(PREMIUM ALL)**
 
 An [on-call alert](../../operations/incident_management/oncall_schedules.md)
 notification email can have one of [the alert's](../../operations/incident_management/alerts.md) statuses:
@@ -408,7 +408,7 @@ notification email can have one of [the alert's](../../operations/incident_manag
 - `alert_resolved`
 - `alert_ignored`
 
-#### Incident escalation notifications **(PREMIUM)**
+#### Incident escalation notifications **(PREMIUM ALL)**
 
 An [incident escalation](../../operations/incident_management/escalation_policies.md)
 notification email can have one of [the incident's](../../operations/incident_management/incidents.md) status:

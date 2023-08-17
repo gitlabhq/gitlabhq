@@ -5,7 +5,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Branch defaults')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = s_('ProjectSettings|Select the default branch for this project, and configure the template for branch names.')
 
   .settings-content

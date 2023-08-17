@@ -203,7 +203,7 @@ After imports are completed, they can be in one of three states:
 
 Expand **Details** to see a list of [repository entities](#imported-data) that failed to import.
 
-## Mirror a repository and share pipeline status **(PREMIUM)**
+## Mirror a repository and share pipeline status **(PREMIUM ALL)**
 
 Depending on your GitLab tier, [repository mirroring](../repository/mirror/index.md) can be set up to keep
 your imported repository in sync with its GitHub copy.
@@ -425,7 +425,7 @@ LoadModule ssl_module lib/httpd/modules/mod_ssl.so
 </VirtualHost>
 ```
 
-## Automate group and project import **(PREMIUM)**
+## Automate group and project import **(PREMIUM ALL)**
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](index.md#automate-group-and-project-import).

@@ -51,7 +51,7 @@ Packages can be pulled from your project, group, or instance.
 | [Go](../go_proxy/index.md)                            | Y       | N     | Y        |
 | [Ruby gems](../rubygems_registry/index.md)            | Y       | N     | N        |
 
-## Forwarding requests **(PREMIUM)**
+## Forwarding requests **(PREMIUM ALL)**
 
 Requests for packages not found in your GitLab project are forwarded to the public registry. For example, Maven Central, npmjs, or PyPI.
 

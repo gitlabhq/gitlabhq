@@ -645,7 +645,7 @@ To help avoid abuse, by default, users are rate limited to:
 | Download export  | 1 download per group per minute  |
 | Import           | 6 groups per minute                |
 
-## Automate group and project import **(PREMIUM)**
+## Automate group and project import **(PREMIUM ALL)**
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](../../project/import/index.md#automate-group-and-project-import).

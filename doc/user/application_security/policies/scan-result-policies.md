@@ -27,6 +27,23 @@ The following video gives you an overview of GitLab scan result policies:
   <iframe src="https://www.youtube-nocookie.com/embed/w5I9gcUgr9U" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
+## Merge request with multiple pipelines
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379108) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `multi_pipeline_scan_result_policies`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/409482) in GitLab 16.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `multi_pipeline_scan_result_policies`. On GitLab.com, this feature is available.
+
+A project can have multiple pipeline types configured. A single commit can initiate multiple
+pipelines, each of which may contain a security scan.
+
+- In GitLab 16.3 and later, the results of all completed pipelines for the latest commit in
+the MR's source and target branch are evaluated and used to enforce the scan result policy.
+Parent-child pipelines and on-demand DAST pipelines are not considered.
+- In GitLab 16.2 and earlier, only the results of the latest completed pipeline were evaluated
+when enforcing scan result policies.
+
 ## Scan result policy editor
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.

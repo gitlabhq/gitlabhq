@@ -1575,7 +1575,7 @@ Payload example:
 }
 ```
 
-## Group member events **(PREMIUM)**
+## Group member events **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260347) in GitLab 13.7.
 
@@ -1670,7 +1670,7 @@ Payload example:
 }
 ```
 
-## Subgroup events **(PREMIUM)**
+## Subgroup events **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260419) in GitLab 13.9.
 

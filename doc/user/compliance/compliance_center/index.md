@@ -11,6 +11,61 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 See report and manage standards adherence, violations, and compliance frameworks for the group
 
+## Standards adherence dashboard
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125875) GraphQL APIs in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `compliance_adherence_report`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125444) standards adherence dashboard in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `adherence_report_ui`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire
+instance, an administrator can [enable the feature flags](../../../administration/feature_flags.md) named
+`compliance_adherence_report` and `adherence_report_ui`. On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Standards adherence dashboard lists the adherence status of projects complying to GitLab standard.
+
+### View the standards adherence dashboard
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To view the standards adherence dashboard for a group:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance center**.
+
+### GitLab standard
+
+GitLab standard consists of three rules:
+
+- Prevent authors as approvers.
+- Prevent committers as approvers.
+- At least two approvals.
+
+#### Prevent authors as approvers
+
+To comply with GitLab standard, you must prevent users from approving their own merge requests. For more information,
+see [Prevent approval by author](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).
+
+On self-managed GitLab, when instance-level setting for [prevent approval by author](../../../administration/merge_requests_approvals.md)
+is updated, the adherence status for all the projects on the instance is not updated automatically.
+To update the adherence status for these projects, the group-level or the project-level setting must be updated.
+
+#### Prevent committers as approvers
+
+To comply with GitLab standard, you must prevent users from approving merge requests where they've added commits. For
+more information, see [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
+
+On self-managed GitLab, when instance-level setting for [prevent approvals by users who add commits](../../../administration/merge_requests_approvals.md)
+is updated, the adherence status for all the projects on the instance is not updated automatically.
+To update the adherence status for these projects, the group-level or the project-level setting must be updated.
+
+#### At least two approvals
+
+To comply with GitLab standard, you must have at least two users approve a merge request to get it merged. For more
+information, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).
+
 ## Compliance violations report
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in GitLab 12.8 as Compliance Dashboard.

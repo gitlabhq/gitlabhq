@@ -4,7 +4,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Deploy keys')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary.gl-mb-0
+    %p.gl-text-secondary
       - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/deploy_keys/index') }
       = _("Add deploy keys to grant read/write access to this repository. %{link_start}What are deploy keys?%{link_end}").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   .settings-content

@@ -41,7 +41,11 @@ module QA
           repository.push_changes('trunk')
         end
 
-        project = create(:project, name: project_name, group: group, add_name_uuid: false)
+        project = Resource::Project.fabricate_via_api! do |project|
+          project.add_name_uuid = false
+          project.name = project_name
+          project.group = group
+        end
 
         expect(project.default_branch).to eq('trunk')
         expect(project).to have_file('README.md')

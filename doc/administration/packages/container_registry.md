@@ -443,7 +443,9 @@ GitLab does not back up Docker images that are not stored on the
 file system. Enable backups with your object storage provider if
 desired.
 
-#### Linux package installations
+#### Configure `s3` and `gcs` storage drivers for Linux package installations
+
+The following configuration steps are for the `s3` and `gcs` storage drivers. Other [storage drivers](#configure-storage-for-the-container-registry) are supported.
 
 To configure the `s3` storage driver for a Linux package installation:
 
@@ -512,6 +514,25 @@ To configure the `s3` storage driver for a Linux package installation:
       }
     }
    ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+To configure the `gcs` storage driver for a Linux package installation:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+      registry['storage'] = {
+      'gcs' => {
+        'bucket' => 'BUCKET_NAME',
+        'keyfile' => 'PATH/TO/KEYFILE',
+        # If you have the bucket shared with other apps beyond the registry, uncomment the following:
+        # 'rootdirectory' => '/gcs/object/name/prefix'
+      }
+    }
+   ```
+
+   GitLab supports all [available parameters](https://docs.docker.com/registry/storage-drivers/gcs/).
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 

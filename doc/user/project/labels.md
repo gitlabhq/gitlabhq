@@ -153,7 +153,7 @@ To create a group label:
    a specific color in the **Background color** field.
 1. Select **Create label**.
 
-### Create a group label from an epic **(PREMIUM)**
+### Create a group label from an epic **(PREMIUM ALL)**
 
 You can also create a new group label from an epic.
 Labels you create this way belong to the same group as the epic.
@@ -317,7 +317,7 @@ The following labels are created:
 - `suggestion`
 - `support`
 
-## Scoped labels **(PREMIUM)**
+## Scoped labels **(PREMIUM ALL)**
 
 Teams can use scoped labels to annotate issues, merge requests, and epics with mutually exclusive
 labels. By preventing certain labels from being used together, you can create more complex workflows.

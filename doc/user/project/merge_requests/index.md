@@ -164,7 +164,7 @@ a merge request, or:
 
 The merge request is added to the user's assigned merge request list.
 
-### Assign multiple users **(PREMIUM)**
+### Assign multiple users **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 

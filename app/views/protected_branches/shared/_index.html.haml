@@ -7,7 +7,7 @@
       = s_("ProtectedBranch|Protected branches")
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary.gl-mb-0
+    %p.gl-text-secondary
       = s_("ProtectedBranch|Keep stable branches secure and force developers to use merge requests.")
       = link_to s_("ProtectedBranch|What are protected branches?"), help_page_path("user/project/protected_branches")
   .settings-content

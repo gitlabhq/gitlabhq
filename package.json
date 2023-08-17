@@ -231,7 +231,7 @@
     "yaml": "^2.0.0-10"
   },
   "devDependencies": {
-    "@gitlab/eslint-plugin": "19.0.0",
+    "@gitlab/eslint-plugin": "19.0.1",
     "@gitlab/stylelint-config": "4.1.0",
     "@graphql-eslint/eslint-plugin": "3.20.1",
     "@testing-library/dom": "^7.16.2",

@@ -1,9 +1,11 @@
 <script>
+import { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { s__, __, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import { clearDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -208,6 +210,9 @@ export default {
       this.cancelCommentForm({
         lineCode: this.line.line_code,
         fileHash: this.diffFileHash,
+      });
+      nextTick(() => {
+        clearDraft(this.autosaveKey);
       });
     }),
     handleSaveNote(note, parentElement, errorCallback) {

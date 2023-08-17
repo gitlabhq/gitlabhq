@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Operations Dashboard **(PREMIUM)**
+# Operations Dashboard **(PREMIUM ALL)**
 
 The Operations Dashboard provides a summary of each project's operational health,
 including pipeline and alert status.

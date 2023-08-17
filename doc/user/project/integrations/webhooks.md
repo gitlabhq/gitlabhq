@@ -37,7 +37,7 @@ including:
 - The maximum number of webhooks and their size, both per project and per group.
 - The number of webhook calls per minute.
 
-## Group webhooks **(PREMIUM)**
+## Group webhooks **(PREMIUM ALL)**
 
 You can configure a group webhook, which is triggered by events
 that occur across all projects in the group. If you configure identical webhooks
