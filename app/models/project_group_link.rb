@@ -3,6 +3,7 @@
 class ProjectGroupLink < ApplicationRecord
   include Expirable
   include EachBatch
+  include AfterCommitQueue
 
   belongs_to :project
   belongs_to :group

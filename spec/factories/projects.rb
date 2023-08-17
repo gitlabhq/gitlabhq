@@ -114,7 +114,9 @@ FactoryBot.define do
       end
 
       if project.group
-        AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
+        project.run_after_commit_or_now do
+          AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
+        end
       end
 
       # assign the delegated `#ci_cd_settings` attributes after create

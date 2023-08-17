@@ -35473,9 +35473,6 @@ msgstr ""
 msgid "Preferences|Must be a number between %{min} and %{max}"
 msgstr ""
 
-msgid "Preferences|Note: You have the new navigation enabled, so only Dark Mode theme significantly changes GitLab's appearance."
-msgstr ""
-
 msgid "Preferences|Preview"
 msgstr ""
 

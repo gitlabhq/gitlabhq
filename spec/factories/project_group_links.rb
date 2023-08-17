@@ -12,8 +12,10 @@ FactoryBot.define do
     trait(:developer) { group_access { Gitlab::Access::DEVELOPER } }
     trait(:maintainer) { group_access { Gitlab::Access::MAINTAINER } }
 
-    after(:create) do |project_group_link, evaluator|
-      AuthorizedProjectUpdate::ProjectRecalculateService.new(project_group_link.project).execute
+    after(:create) do |project_group_link|
+      project_group_link.run_after_commit_or_now do
+        AuthorizedProjectUpdate::ProjectRecalculateService.new(project_group_link.project).execute
+      end
     end
   end
 end

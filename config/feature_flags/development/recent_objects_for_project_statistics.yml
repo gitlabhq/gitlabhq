@@ -1,8 +1,0 @@
----
-name: recent_objects_for_project_statistics
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127867
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/420125
-milestone: '16.3'
-type: development
-group: group::utilization
-default_enabled: false
