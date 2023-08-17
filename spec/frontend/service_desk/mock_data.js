@@ -134,6 +134,22 @@ export const getServiceDeskIssuesCountsQueryResponse = {
   },
 };
 
+export const setSortPreferenceMutationResponse = {
+  data: {
+    userPreferencesUpdate: {
+      errors: [],
+    },
+  },
+};
+
+export const setSortPreferenceMutationResponseWithErrors = {
+  data: {
+    userPreferencesUpdate: {
+      errors: ['oh no!'],
+    },
+  },
+};
+
 export const filteredTokens = [
   { type: FILTERED_SEARCH_TERM, value: { data: 'find issues', operator: 'undefined' } },
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'bart', operator: OPERATOR_IS } },

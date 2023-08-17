@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import axios from '~/lib/utils/axios_utils';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
@@ -15,6 +15,8 @@ import {
   getInitialPageParams,
   getFilterTokens,
   isSortKey,
+  getSortOptions,
+  getSortKey,
 } from '~/issues/list/utils';
 import {
   OPERATORS_IS_NOT,
@@ -31,19 +33,25 @@ import {
   PARAM_SORT,
   CREATED_DESC,
   UPDATED_DESC,
+  RELATIVE_POSITION_ASC,
   urlSortParams,
 } from '~/issues/list/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { createAlert, VARIANT_INFO } from '~/alert';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import searchProjectMembers from '~/graphql_shared/queries/project_user_members_search.query.graphql';
 import getServiceDeskIssuesQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues.query.graphql';
 import getServiceDeskIssuesCounts from 'ee_else_ce/service_desk/queries/get_service_desk_issues_counts.query.graphql';
 import searchProjectLabelsQuery from '../queries/search_project_labels.query.graphql';
 import searchProjectMilestonesQuery from '../queries/search_project_milestones.query.graphql';
+import setSortingPreferenceMutation from '../queries/set_sorting_preference.mutation.graphql';
+import reorderServiceDeskIssuesMutation from '../queries/reorder_service_desk_issues.mutation.graphql';
 import {
   errorFetchingCounts,
   errorFetchingIssues,
   searchPlaceholder,
+  issueRepositioningMessage,
+  reorderError,
   SERVICE_DESK_BOT_USERNAME,
   STATUS_OPEN,
   STATUS_CLOSED,
@@ -69,6 +77,8 @@ export default {
     errorFetchingCounts,
     errorFetchingIssues,
     searchPlaceholder,
+    issueRepositioningMessage,
+    reorderError,
   },
   issuableListTabs,
   components: {
@@ -81,6 +91,7 @@ export default {
   inject: [
     'releasesPath',
     'autocompleteAwardEmojisPath',
+    'hasBlockedIssuesFeature',
     'hasIterationsFeature',
     'hasIssueWeightsFeature',
     'hasIssuableHealthStatusFeature',
@@ -92,6 +103,7 @@ export default {
     'isServiceDeskSupported',
     'hasAnyIssues',
     'initialSort',
+    'isIssueRepositioningDisabled',
   ],
   props: {
     eeSearchTokens: {
@@ -104,7 +116,6 @@ export default {
     return {
       serviceDeskIssues: [],
       serviceDeskIssuesCounts: {},
-      sortOptions: [],
       filterTokens: [],
       pageInfo: {},
       pageParams: {},
@@ -179,6 +190,13 @@ export default {
     },
     shouldSkipQuery() {
       return !this.hasAnyIssues || isEmpty(this.pageParams);
+    },
+    sortOptions() {
+      return getSortOptions({
+        hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
+        hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
+        hasIssueWeightsFeature: this.hasIssueWeightsFeature,
+      });
     },
     tabCounts() {
       const { openedIssues, closedIssues, allIssues } = this.serviceDeskIssuesCounts;
@@ -296,6 +314,9 @@ export default {
 
       return tokens;
     },
+    isManualOrdering() {
+      return this.sortKey === RELATIVE_POSITION_ASC;
+    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -383,15 +404,91 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
+    handleSort(sortKey) {
+      if (this.sortKey === sortKey) {
+        return;
+      }
+
+      if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+        this.showIssueRepositioningMessage();
+        return;
+      }
+
+      this.sortKey = sortKey;
+      this.pageParams = getInitialPageParams(this.pageSize);
+
+      if (this.isSignedIn) {
+        this.saveSortPreference(sortKey);
+      }
+
+      this.$router.push({ query: this.urlParams });
+    },
+    saveSortPreference(sortKey) {
+      this.$apollo
+        .mutate({
+          mutation: setSortingPreferenceMutation,
+          variables: { input: { issuesSort: sortKey } },
+        })
+        .then(({ data }) => {
+          if (data.userPreferencesUpdate.errors.length) {
+            throw new Error(data.userPreferencesUpdate.errors);
+          }
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+        });
+    },
+    handleReorder({ newIndex, oldIndex }) {
+      const issueToMove = this.serviceDeskIssues[oldIndex];
+      const isDragDropDownwards = newIndex > oldIndex;
+      const isMovingToBeginning = newIndex === 0;
+      const isMovingToEnd = newIndex === this.serviceDeskIssues.length - 1;
+
+      let moveBeforeId;
+      let moveAfterId;
+
+      if (isDragDropDownwards) {
+        const afterIndex = isMovingToEnd ? newIndex : newIndex + 1;
+        moveBeforeId = this.serviceDeskIssues[newIndex].id;
+        moveAfterId = this.serviceDeskIssues[afterIndex].id;
+      } else {
+        const beforeIndex = isMovingToBeginning ? newIndex : newIndex - 1;
+        moveBeforeId = this.serviceDeskIssues[beforeIndex].id;
+        moveAfterId = this.serviceDeskIssues[newIndex].id;
+      }
+
+      return axios
+        .put(joinPaths(issueToMove.webPath, 'reorder'), {
+          move_before_id: isMovingToBeginning ? null : getIdFromGraphQLId(moveBeforeId),
+          move_after_id: isMovingToEnd ? null : getIdFromGraphQLId(moveAfterId),
+        })
+        .then(() => {
+          const serializedVariables = JSON.stringify(this.queryVariables);
+          return this.$apollo.mutate({
+            mutation: reorderServiceDeskIssuesMutation,
+            variables: { oldIndex, newIndex, namespace: this.namespace, serializedVariables },
+          });
+        })
+        .catch((error) => {
+          this.issuesError = this.$options.i18n.reorderError;
+          Sentry.captureException(error);
+        });
+    },
     updateData(sortValue) {
       const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
       const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
+      const dashboardSortKey = getSortKey(sortValue);
       const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
 
-      const sortKey = graphQLSortKey || defaultSortKey;
+      let sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
+
+      if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+        this.showIssueRepositioningMessage();
+        sortKey = defaultSortKey;
+      }
 
       this.filterTokens = getFilterTokens(window.location.search);
 
@@ -404,6 +501,12 @@ export default {
       );
       this.sortKey = sortKey;
       this.state = state || STATUS_OPEN;
+    },
+    showIssueRepositioningMessage() {
+      createAlert({
+        message: this.$options.i18n.issueRepositioningMessage,
+        variant: VARIANT_INFO,
+      });
     },
   },
 };
@@ -424,6 +527,7 @@ export default {
       :show-filtered-search-friendly-text="hasOrFeature"
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
+      :is-manual-ordering="isManualOrdering"
       :issuables="serviceDeskIssues"
       :tabs="$options.issuableListTabs"
       :tab-counts="tabCounts"
@@ -432,6 +536,8 @@ export default {
       sync-filter-and-sort
       @click-tab="handleClickTab"
       @filter="handleFilter"
+      @sort="handleSort"
+      @reorder="handleReorder"
     >
       <template #empty-state>
         <empty-state-with-any-issues :has-search="hasSearch" :is-open-tab="isOpenTab" />

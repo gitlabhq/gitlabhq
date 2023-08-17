@@ -45,14 +45,15 @@ Here are some problems with current issues usage and why we are looking into wor
 
 ## Work item terminology
 
-To avoid confusion and ensure communication is efficient, we will use the following terms exclusively when discussing work items.
+To avoid confusion and ensure [communication is efficient](https://handbook.gitlab.com/handbook/communication/#mecefu-terms), we will use the following terms exclusively when discussing work items. This list is the [single source of truth (SSoT)](https://handbook.gitlab.com/handbook/values/#single-source-of-truth) for Work Item terminology.
 
 | Term              | Description | Example of misuse | Should be |
 | ---               | ---         | ---               | ---       |
 | work item type    | Classes of work item; for example: issue, requirement, test case, incident, or task | _Epics will eventually become issues_ | _Epics will eventually become a **work item type**_ |
 | work item         | An instance of a work item type | | |
-| work item view    | The new frontend view that renders work items of any type |  | |
-| legacy issue view | The existing view used to render issues and incidents | | |
+| work item view    | The new frontend view that renders work items of any type | _This should be rendered in the new view_ | _This should be rendered in the work item view_ |
+| legacy object     | An object that has been or will be converted to a Work Item Type | _Epics will be migrated from a standalone/old/former object to a work item type_ | _Epics will be converted from a legacy object to a work item type_ |
+| legacy issue view | The existing view used to render issues and incidents | _Issues continue to be rendered in the old view_ | _Issues continue to be rendered in the legacy issue view_ |
 | issue             | The existing issue model | | |
 | issuable          | Any model currently using the issuable module (issues, epics and MRs) | _Incidents are an **issuable**_ | _Incidents are a **work item type**_ |
 | widget            | A UI element to present or allow interaction with specific work item data | | |

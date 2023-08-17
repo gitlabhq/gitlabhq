@@ -503,7 +503,9 @@
   - "tests.yml"
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  # Auto-generated files
+  - "doc/api/graphql/reference/*"
+  - "doc/administration/audit_event_streaming/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"

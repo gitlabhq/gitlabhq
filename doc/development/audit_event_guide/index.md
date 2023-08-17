@@ -55,7 +55,7 @@ With `Gitlab::Audit::Auditor` service, we can instrument audit events in two way
 
 ### Using block to record multiple events
 
-This method is useful when events are emitted deep in the call stack.
+You can use this method when events are emitted deep in the call stack.
 
 For example, we can record multiple audit events when the user updates a merge
 request approval rule. As part of this user flow, we would like to audit changes
@@ -118,7 +118,7 @@ end
 ### Data volume considerations
 
 Because every audit event is persisted to the database, consider the amount of data we expect to generate, and the rate of generation, for new
-audit events. For new audit events that will produce a lot of data in the database, consider adding a
+audit events. For new audit events that produce a lot of data in the database, consider adding a
 [streaming-only audit event](#event-streaming) instead. If you have questions about this, feel free to ping
 `@gitlab-org/govern/compliance/backend` in an issue or merge request.
 
@@ -225,6 +225,22 @@ To add a new audit event type:
 | `saved_to_database` | yes | Indicate whether to persist events to database and JSON logs |
 | `streamed` | yes | Indicate that events should be streamed to external services (if configured) |
 
+### Generate documentation
+
+Audit event types documentation is automatically generated and [published](../../administration/audit_event_streaming/audit_event_types.md)
+to the GitLab documentation site.
+
+If you add a new audit event type, run the
+[`gitlab:audit_event_types:compile_docs` Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/audit_event_types/audit_event_types.rake)
+to update the documentation:
+
+```shell
+bundle exec rake gitlab:audit_event_types:compile_docs
+```
+
+Run the [`gitlab:audit_event_types:check_docs` Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/audit_event_types/audit_event_types.rake)
+to check if the documentation is up-to-date.
+
 ## Event streaming
 
 All events where the entity is a `Group` or `Project` are recorded in the audit log, and also streamed to one or more
@@ -233,7 +249,7 @@ All events where the entity is a `Group` or `Project` are recorded in the audit 
 - `Group`, events are streamed to the group's root ancestor's event streaming destinations.
 - `Project`, events are streamed to the project's root ancestor's event streaming destinations.
 
-You can add streaming-only events that are not stored in the GitLab database. This is primarily intended to be used for actions that generate
+You can add streaming-only events that are not stored in the GitLab database. Streaming-only events are primarily intended to be used for actions that generate
 a large amount of data. See [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76719/diffs#d56e47632f0384722d411ed3ab5b15e947bd2265_26_36)
 for an example.
 This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/epics/5925) for updates on feature
@@ -243,5 +259,5 @@ development.
 
 We intentionally do not translate audit event messages because translated messages would be saved in the database and served to users, regardless of their locale settings.
 
-This could mean, for example, that we use the locale for the currently authenticated user to record an audit event message and stream the message to an external streaming
+For example, this could mean that we use the locale for the authenticated user to record an audit event message and stream the message to an external streaming
 destination in the wrong language for that destination. Users could find that confusing.

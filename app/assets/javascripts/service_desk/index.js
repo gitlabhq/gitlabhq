@@ -15,6 +15,7 @@ export async function mountServiceDeskListApp() {
   const {
     projectDataReleasesPath,
     projectDataAutocompleteAwardEmojisPath,
+    projectDataHasBlockedIssuesFeature,
     projectDataHasIterationsFeature,
     projectDataHasIssueWeightsFeature,
     projectDataHasIssuableHealthStatusFeature,
@@ -26,6 +27,7 @@ export async function mountServiceDeskListApp() {
     projectDataSignInPath,
     projectDataHasAnyIssues,
     projectDataInitialSort,
+    projectDataIsIssueRepositioningDisabled,
     serviceDeskEmailAddress,
     canAdminIssues,
     canEditProjectSettings,
@@ -53,6 +55,7 @@ export async function mountServiceDeskListApp() {
     provide: {
       releasesPath: projectDataReleasesPath,
       autocompleteAwardEmojisPath: projectDataAutocompleteAwardEmojisPath,
+      hasBlockedIssuesFeature: parseBoolean(projectDataHasBlockedIssuesFeature),
       hasIterationsFeature: parseBoolean(projectDataHasIterationsFeature),
       hasIssueWeightsFeature: parseBoolean(projectDataHasIssueWeightsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(projectDataHasIssuableHealthStatusFeature),
@@ -72,6 +75,7 @@ export async function mountServiceDeskListApp() {
       signInPath: projectDataSignInPath,
       hasAnyIssues: parseBoolean(projectDataHasAnyIssues),
       initialSort: projectDataInitialSort,
+      isIssueRepositioningDisabled: parseBoolean(projectDataIsIssueRepositioningDisabled),
     },
     render: (createComponent) => createComponent(ServiceDeskListApp),
   });

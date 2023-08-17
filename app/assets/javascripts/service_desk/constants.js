@@ -236,6 +236,10 @@ export const noSearchResultsDescription = __(
 );
 export const noSearchResultsTitle = __('Sorry, your filter produced no results');
 export const searchPlaceholder = __('Search or filter results...');
+export const issueRepositioningMessage = __(
+  'Issues are being rebalanced at the moment, so manual reordering is disabled.',
+);
+export const reorderError = __('An error occurred while reordering issues.');
 export const infoBannerTitle = s__(
   'ServiceDesk|Use Service Desk to connect with your users and offer customer support through email right inside GitLab',
 );

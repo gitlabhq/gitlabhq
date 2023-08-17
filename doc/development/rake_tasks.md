@@ -520,6 +520,11 @@ The following command combines the intent of [Update GraphQL documentation and s
 bundle exec rake gitlab:graphql:update_all
 ```
 
+## Update audit event types documentation
+
+For information on updating audit event types documentation, see
+[Generate documentation](audit_event_guide/index.md#generate-documentation).
+
 ## Update OpenAPI client for Error Tracking feature
 
 NOTE:

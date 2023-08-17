@@ -25,9 +25,16 @@ Write code more efficiently by using generative AI to suggest code while you're 
 
 Code Suggestions are available:
 
-- To users of GitLab SaaS (by default) and self-managed GitLab Enterprise Edition (when requested). Code Suggestions are not available for GitLab Community Edition.
+- To users of:
+  - GitLab SaaS (by default).
+  - Self-managed GitLab Enterprise Edition. Cloud licensing is required:
+    - Only Premium and Ultimate tiers support cloud licensing.
+  Code Suggestions are not available for GitLab Community Edition.
 - In VS Code, Microsoft Visual Studio, JetBrains IDEs, and Neovim. You must have the corresponding GitLab extension installed.
 - In the GitLab WebIDE.
+
+WARNING:
+Self-managed customers on GitLab 16.2 and earlier with a GitLab Free subscription will lose access to Code Suggestions when they [update to GitLab 16.3 or later](#update-gitlab).
 
 <div class="video-fallback">
   <a href="https://www.youtube.com/watch?v=WnxBYxN2-p4">View an end-to-end demo of Code Suggestions in VS Code</a>.
@@ -135,11 +142,45 @@ This setting controls Code Suggestions for all IDEs. Support for [more granular 
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../policy/experiment-beta-support.md#beta).
 
-To enable Code Suggestions on a self-managed GitLab EE instance, you must:
+When you enable Code Suggestions for your self-managed instance, you:
 
-- Be an administrator.
-- Have a [GitLab SaaS account](https://gitlab.com/users/sign_up).
-You do not need to have a GitLab SaaS subscription.
+- Agree to the [GitLab testing agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+- Acknowledge that GitLab sends data from the instance, including personal data, to GitLab.com infrastructure.
+
+How you enable Code Suggestions differs depending on your version of GitLab.
+
+### GitLab 16.3 and later
+
+Prerequisites:
+
+- You are a new Code Suggestions customer as of GitLab 16.3.
+- All of the users in your instance have the latest version of their IDE extension.
+- You are an administrator.
+
+To enable Code Suggestions for your self-managed GitLab instance:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Code Suggestions** and select **Turn on Code Suggestions for this instance**.
+   You do not need to enter anything into the **Personal access token** field.
+1. Select **Save changes**.
+
+This setting is visible only in self-managed GitLab instances.
+
+WARNING:
+In GitLab 16.2 and earlier, if you clear the **Turn on code suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
+
+To make sure Code Suggestions works immediately, you must [manually synchronize your subscription](#manually-synchronize-your-subscription).
+
+The users in your instance can now use Code Suggestions.
+
+### GitLab 16.2 and earlier
+
+Prerequisites:
+
+- You are an administrator.
+- You have a [GitLab SaaS account](https://gitlab.com/users/sign_up). You do not need to have a GitLab SaaS subscription.
 
 Then, you will:
 
@@ -147,7 +188,7 @@ Then, you will:
 1. Enable Code Suggestions for the instance.
 1. [Request early access](#request-access-to-code-suggestions) to the Code Suggestions Beta.
 
-### Enable Code Suggestions for your SaaS account
+#### Enable Code Suggestions for your SaaS account
 
 To enable Code Suggestions for your GitLab SaaS account:
 
@@ -158,13 +199,7 @@ To enable Code Suggestions for your GitLab SaaS account:
 1. In the **Code Suggestions** section, select **Enable Code Suggestions**.
 1. Select **Save changes**.
 
-### Enable Code Suggestions for the instance
-
-You must enable Code Suggestions for the instance. When you do this, you:
-
-- Agree to the [GitLab testing agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
-- Acknowledge that GitLab:
-  - Sends data from the instance, including personal data, to GitLab.com infrastructure.
+#### Enable Code Suggestions for the instance
 
 To enable Code Suggestions for your self-managed GitLab instance:
 
@@ -181,7 +216,7 @@ This setting is visible only in self-managed GitLab instances.
 WARNING:
 If you clear the **Turn on code suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
 
-### Request access to Code Suggestions
+#### Request access to Code Suggestions
 
 GitLab provisions access on a customer-by-customer basis for Code Suggestions
 on self-managed instances. To request access:
@@ -192,6 +227,29 @@ on self-managed instances. To request access:
 
 After GitLab has provisioned access to Code Suggestions for your instance,
 the users in your instance can now enable Code Suggestions.
+
+### Update GitLab
+
+In GitLab 16.3 and later, GitLab is enforcing the cloud licensing requirement for Code Suggestions:
+
+- The Premium and Ultimate subscription tiers support cloud Licensing.
+- GitLab Free does not have cloud licensing support.
+
+If you have a GitLab Free subscription and update to GitLab 16.3 or later,
+to continue having early access to Code Suggestions, you must:
+
+1. Have a [subscription that supports cloud licensing](https://about.gitlab.com/pricing/).
+1. Make sure you have the latest version of your [IDE extension](#supported-editor-extensions).
+1. [Manually synchronize your subscription](#manually-synchronize-your-subscription).
+
+#### Manually synchronize your subscription
+
+You must [manually synchronize your subscription](../../../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details) if either:
+
+- You have already updated to GitLab 16.3 and have just bought a Premium or Ultimate tier subscription.
+- You already have a Premium or Ultimate tier subscription and have just updated to GitLab 16.3.
+
+Without the manual synchronization, it might take up to 24 hours to active Code Suggestions on your instance.
 
 ## Use Code Suggestions
 

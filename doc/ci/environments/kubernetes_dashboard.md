@@ -25,7 +25,7 @@ For Flux users, the synchronization status of a given environment is not display
 > - Selecting the related Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default selecting a Flux resource is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `flux_resource_for_environment`. On GitLab.com, this feature is not available.
+On self-managed GitLab, by default selecting a Flux resource is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `flux_resource_for_environment`. On GitLab.com, this feature is available.
 
 Configure a dashboard to use it for a given environment.
 You can configure dashboard for an environment that already exists, or
