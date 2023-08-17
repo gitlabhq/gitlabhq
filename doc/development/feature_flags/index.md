@@ -573,6 +573,25 @@ stub_feature_flags(ci_live_trace: false)
 Feature.enabled?(:ci_live_trace) # => false
 ```
 
+A common pattern of testing both paths looks like:
+
+```ruby
+it 'ci_live_trace works' do
+  # tests assuming ci_live_trace is enabled in tests by default
+  Feature.enabled?(:ci_live_trace) # => true 
+end
+
+context 'when ci_live_trace is disabled' do
+  before do
+    stub_feature_flags(ci_live_trace: false)
+  end
+
+  it 'ci_live_trace does not work' do
+    Feature.enabled?(:ci_live_trace) # => false
+  end
+end
+```
+
 If you wish to set up a test where a feature flag is enabled only
 for some actors and not others, you can specify this in options
 passed to the helper. For example, to enable the `ci_live_trace`

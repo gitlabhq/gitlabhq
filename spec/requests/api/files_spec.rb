@@ -342,6 +342,23 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      context 'when a project is moved' do
+        let_it_be(:redirect_route) { 'new/project/location' }
+        let_it_be(:file_path) { 'files%2Fruby%2Fpopen.rb' }
+
+        it 'redirects to the new project location' do
+          project.route.create_redirect(redirect_route)
+
+          url = "/projects/#{CGI.escape(redirect_route)}/repository/files/#{file_path}"
+          get api(url, api_user, **options), params: params
+
+          expect(response).to have_gitlab_http_status(:moved_permanently)
+          expect(response.headers['Location']).to start_with(
+            "#{request.base_url}/api/v4/projects/#{project.id}/repository/files/#{file_path}"
+          )
+        end
+      end
+
       it 'sets inline content disposition by default' do
         url = route(file_path) + '/raw'
 

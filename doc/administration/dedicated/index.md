@@ -37,7 +37,7 @@ To request the creation of a new GitLab Dedicated environment for your organizat
 
 When onboarding, you must also specify your preference for the weekly four-hour time slot that GitLab uses to perform routine maintenance and upgrade operations on all tenant instances.
 
-Available scheduled mainenance windows, performed outside standard working hours:
+Available scheduled maintenance windows, performed outside standard working hours:
 
 - APAC: Wednesday 1 AM - 5 AM UTC
 - EU: Tuesday 1 AM - 5 AM UTC
@@ -46,9 +46,9 @@ Available scheduled mainenance windows, performed outside standard working hours
 
 Consider the following notes:
 
-- Some downtime might be incurred during this window. This downtime does not count toward
-  [the system SLA](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/).
-- The weekly scheduled mainenance window can be postponed into another window within the same week.
+- In case of a performance degradation or downtime during the scheduled maintenance window,
+  the impact to [the system SLA](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/) is not counted.
+- The weekly scheduled maintenance window can be postponed into another window within the same week.
   This option needs to be agreed with the assigned Customer Success Manager at least one week in advance.
 - The scheduled weekly maintenance window is different from
   [emergency maintenance](#emergency-maintenance).

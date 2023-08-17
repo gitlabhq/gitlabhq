@@ -351,6 +351,44 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
     end
 
+    context 'when creating a group with `default_branch_protection_defaults` attribute' do
+      before do
+        sign_in(user)
+      end
+
+      context 'when user has ability to write update_default_branch_protection' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, an_instance_of(Group)).and_return(true)
+        end
+
+        subject do
+          post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys } }, as: :json
+        end
+
+        context 'for users who have the ability to create a group with `default_branch_protection_defaults`' do
+          it 'creates group with the specified default branch protection level' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(Group.last.default_branch_protection_defaults).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
+          end
+        end
+      end
+
+      context 'for users who do not have the ability to create a group with `default_branch_protection`' do
+        it 'does not create the group with the specified branch protection level' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection) { false }
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(Group.last.default_branch_protection_defaults).not_to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
+        end
+      end
+    end
+
     context 'when creating a group with captcha protection' do
       before do
         sign_in(user)

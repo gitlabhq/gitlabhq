@@ -60,7 +60,11 @@ module Groups
     end
 
     def remove_unallowed_params
-      params.delete(:default_branch_protection) unless can?(current_user, :create_group_with_default_branch_protection)
+      unless can?(current_user, :create_group_with_default_branch_protection)
+        params.delete(:default_branch_protection)
+        params.delete(:default_branch_protection_defaults)
+      end
+
       params.delete(:allow_mfa_for_subgroups)
     end
 

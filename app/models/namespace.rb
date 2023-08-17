@@ -137,6 +137,7 @@ class Namespace < ApplicationRecord
     :pypi_package_requests_forwarding,
     :npm_package_requests_forwarding,
     to: :package_settings
+  delegate :default_branch_protection_defaults, to: :namespace_settings, allow_nil: true
 
   before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
   before_create :sync_share_with_group_lock_with_parent

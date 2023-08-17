@@ -41,6 +41,9 @@ This section has screenshots for the elements of Azure Active Directory configur
 
 ![Azure AD user claims](img/AzureAD-claims.png)
 
+NOTE:
+Attribute names starting with phrases such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are not supported.
+
 ### SCIM mapping
 
 Provisioning:

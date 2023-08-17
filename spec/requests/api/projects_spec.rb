@@ -2770,6 +2770,45 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['name']).to eq(project.name)
       end
 
+      context 'when a project is moved' do
+        let(:redirect_route) { 'new/project/location' }
+        let(:perform_request) { get api("/projects/#{CGI.escape(redirect_route)}", user), params: { license: true } }
+
+        before do
+          project.route.create_redirect(redirect_route)
+        end
+
+        it 'redirects to the new project location' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:moved_permanently)
+
+          url = response.headers['Location']
+          expect(url).to start_with("#{request.base_url}/api/v4/projects/#{project.id}")
+          expect(CGI.parse(URI(url).query)).to include({ 'license' => ['true'] })
+        end
+
+        context 'when a user do not have access' do
+          let(:user) { create(:user) }
+
+          it 'returns a 404 error' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when api_redirect_moved_projects is disabled' do
+          it 'returns a 404 error' do
+            stub_feature_flags(api_redirect_moved_projects: false)
+
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
       it 'returns a 404 error if not found' do
         get api("/projects/#{non_existing_record_id}", user)
         expect(response).to have_gitlab_http_status(:not_found)
@@ -4452,6 +4491,29 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api(path, user3)
 
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when a project is moved' do
+      let_it_be(:redirect_route) { 'new/project/location' }
+      let_it_be(:path) { "/projects/#{CGI.escape(redirect_route)}/archive" }
+
+      before do
+        project.route.create_redirect(redirect_route)
+      end
+
+      it 'returns 405 error' do
+        post api(path, user)
+
+        expect(response).to have_gitlab_http_status(:method_not_allowed)
+      end
+
+      context 'when user do not have access to the project' do
+        it 'returns 404 error' do
+          post api(path, create(:user))
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end

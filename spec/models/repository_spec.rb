@@ -297,6 +297,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'with a commit with invalid UTF-8 path' do
+      let(:project) { create(:project, :empty_repo) }
+
       it 'does not raise an error' do
         response = create_file_in_repo(project, 'master', 'master', "hello\x80world", 'some contents')
 
@@ -319,6 +321,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'with filename with pathspec characters' do
+      let(:project) { create(:project, :empty_repo) }
       let(:filename) { ':wq' }
       let(:newrev) { project.repository.commit('master').sha }
 
@@ -358,6 +361,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'with filename with pathspec characters' do
+      let(:project) { create(:project, :empty_repo) }
       let(:filename) { ':wq' }
       let(:newrev) { project.repository.commit('master').sha }
 
@@ -1105,7 +1109,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe "#delete_file" do
-    let_it_be(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository) }
 
     it 'removes file successfully' do
       expect do
@@ -3806,6 +3810,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#get_patch_id' do
+    let(:project) { create(:project, :repository) }
+
     it 'returns patch_id of given revisions' do
       expect(repository.get_patch_id('HEAD~', 'HEAD')).to eq('45435e5d7b339dd76d939508c7687701d0c17fff')
     end

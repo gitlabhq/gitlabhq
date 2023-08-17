@@ -15,6 +15,18 @@ module API
     LOG_FORMATTER = Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new
     LOGGER = Logger.new(LOG_FILENAME)
 
+    class MovedPermanentlyError < StandardError
+      MSG_PREFIX = 'This resource has been moved permanently to'
+
+      attr_reader :location_url
+
+      def initialize(location_url)
+        @location_url = location_url
+
+        super("#{MSG_PREFIX} #{location_url}")
+      end
+    end
+
     insert_before Grape::Middleware::Error,
                   GrapeLogging::Middleware::RequestLogger,
                   logger: LOGGER,
@@ -140,6 +152,10 @@ module API
 
     rescue_from Grape::Exceptions::Base do |e|
       error! e.message, e.status, e.headers
+    end
+
+    rescue_from MovedPermanentlyError do |e|
+      rack_response(e.message, 301, { 'Location' => e.location_url })
     end
 
     rescue_from Gitlab::Auth::TooManyIps do |e|

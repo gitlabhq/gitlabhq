@@ -461,7 +461,11 @@ The DAST job does not require the project's repository to be present when runnin
 
 ## On-demand scans
 
-> Auditing for DAST profile management [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
+> - Auditing for DAST profile management [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
+> - Scheduled on-demand DAST scans [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3 [with a flag](../../../administration/feature_flags.md) named  `dast_on_demand_scans_scheduler`. Disabled by default.
+> - Scheduled on-demand DAST scans [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.5. Feature flag `dast_on_demand_scans_scheduler` removed.
+> - Runner tags selection [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345430) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md)  named `on_demand_scans_runner_tags. Disabled by default.
+> - Runner tags selection [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
 
 An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
 the scan. You must either start it manually, or schedule it to run. For on-demand DAST scans,
@@ -510,28 +514,26 @@ The on-demand DAST scan runs, and the project's dashboard shows the results.
 
 #### Create an on-demand scan
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3. [Deployed behind the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md), disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.4.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.4.
-> - [Feature flag `dast_on_demand_scans_scheduler` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.5.
-
-After you create an on-demand scan, you can:
+Create an on-demand scan to:
 
 - Run it immediately.
 - Save it to be run in the future.
 - Schedule it to be run at a specified schedule.
+
+To create an on-demand DAST scan:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
 1. Select **Secure > On-demand scans**.
 1. Select **New scan**.
 1. Complete the **Scan name** and **Description** fields.
 1. In the **Branch** dropdown list, select the desired branch.
+1. Optional. Select the runner tags.
 1. Select **Select scanner profile** or **Change scanner profile** to open the drawer, and either:
    - Select a scanner profile from the drawer, **or**
    - Select **New profile**, create a [scanner profile](#scanner-profile), then select **Save profile**.
 1. Select **Select site profile** or **Change site profile** to open the drawer, and either:
    - Select a site profile from the **Site profile library** drawer, or
-   - Select **New profile** create a [site profile](#site-profile), then select **Save profile**.
+   - Select **New profile**, create a [site profile](#site-profile), then select **Save profile**.
 1. To run the on-demand scan:
 
    - Immediately, select **Save and run scan**.

@@ -147,7 +147,7 @@ module API
       if id.is_a?(Integer) || id =~ INTEGER_ID_REGEX
         projects.find_by(id: id)
       elsif id.include?("/")
-        projects.find_by_full_path(id)
+        projects.find_by_full_path(id, follow_redirects: Feature.enabled?(:api_redirect_moved_projects))
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -157,10 +157,23 @@ module API
 
       return forbidden! unless authorized_project_scope?(project)
 
-      return project if can?(current_user, :read_project, project)
-      return unauthorized! if authenticate_non_public?
+      unless can?(current_user, read_project_ability, project)
+        return unauthorized! if authenticate_non_public?
 
-      not_found!('Project')
+        return not_found!('Project')
+      end
+
+      if project_moved?(id, project)
+        return not_allowed!('Non GET methods are not allowed for moved projects') unless request.get?
+
+        return redirect!(url_with_project_id(project))
+      end
+
+      project
+    end
+
+    def read_project_ability
+      :read_project
     end
 
     def authorized_project_scope?(project)
@@ -436,6 +449,13 @@ module API
       order_options = { order_by => params[:sort] }
       order_options['id'] ||= params[:sort] || 'asc'
       order_options
+    end
+
+    # An error is raised to interrupt user's request and redirect them to the right route.
+    # The error! helper behaves similarly, but it cannot be used because it formats the
+    # response message.
+    def redirect!(location_url)
+      raise ::API::API::MovedPermanentlyError, location_url
     end
 
     # error helpers
@@ -836,6 +856,24 @@ module API
 
     def sanitize_id_param(id)
       id.present? ? id.to_i : nil
+    end
+
+    def project_moved?(id, project)
+      return false unless Feature.enabled?(:api_redirect_moved_projects)
+      return false unless id.is_a?(String) && id.include?('/')
+      return false if project.blank? || id == project.full_path
+      return false unless params[:id] == id
+
+      true
+    end
+
+    def url_with_project_id(project)
+      new_params = params.merge(id: project.id.to_s).transform_values { |v| v.is_a?(String) ? CGI.escape(v) : v }
+      new_path = GrapePathHelpers::DecoratedRoute.new(route).path_segments_with_values(new_params).join('/')
+
+      Rack::Request.new(env).tap do |r|
+        r.path_info = "/#{new_path}"
+      end.url
     end
   end
 end

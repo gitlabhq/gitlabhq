@@ -59,6 +59,33 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     end
   end
 
+  context 'creating a group with `default_branch_protection_defaults` attribute' do
+    let(:branch_protection) { ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys }
+    let(:params) { group_params.merge(default_branch_protection_defaults: branch_protection) }
+    let(:service) { described_class.new(user, params) }
+    let(:created_group) { service.execute }
+
+    context 'for users who have the ability to create a group with `default_branch_protection`' do
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, an_instance_of(Group)).and_return(true)
+      end
+
+      it 'creates group with the specified default branch protection settings' do
+        expect(created_group.default_branch_protection_defaults).to eq(branch_protection)
+      end
+    end
+
+    context 'for users who do not have the ability to create a group with `default_branch_protection_defaults`' do
+      it 'does not create the group with the specified default branch protection settings' do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection) { false }
+
+        expect(created_group.default_branch_protection_defaults).not_to eq(Gitlab::Access::PROTECTION_NONE)
+      end
+    end
+  end
+
   context 'creating a group with `allow_mfa_for_subgroups` attribute' do
     let(:params) { group_params.merge(allow_mfa_for_subgroups: false) }
     let(:service) { described_class.new(user, params) }

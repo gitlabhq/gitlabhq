@@ -316,6 +316,7 @@ The following table shows the possible return codes for API requests.
 | `201 Created`             | The `POST` request was successful, and the resource is returned as JSON.                                                                                 |
 | `202 Accepted`            | The `GET`, `PUT` or `DELETE` request was successful, and the resource is scheduled for processing.                                                       |
 | `204 No Content`          | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body.                              |
+| `301 Moved Permanently`   | The resource has been definitively moved to the URL given by the `Location` headers.                                                                     |
 | `304 Not Modified`        | The resource hasn't been modified since the last request.                                                                                                |
 | `400 Bad Request`         | A required attribute of the API request is missing. For example, the title of an issue is not given.                                                     |
 | `401 Unauthorized`        | The user isn't authenticated. A valid [user token](#authentication) is necessary.                                                                        |
@@ -328,6 +329,33 @@ The following table shows the possible return codes for API requests.
 | `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits).                                                    |
 | `500 Server Error`        | While handling the request, something went wrong on the server.                                                                                          |
 | `503 Service Unavailable` | The server cannot handle the request because the server is temporarily overloaded.                                                                               |
+
+## Redirects
+
+> Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
+
+FLAG:
+On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../user/feature_flags.md) named `api_redirect_moved_projects`.
+
+REST API can respond with a redirect and users should be able to handle such responses.
+The users should follow the redirect and repeat the request to the URI specified in the `Location` header.
+
+Example of a project moved to a different path:
+
+```shell
+curl --verbose "https://gitlab.example.com/api/v4/projects/gitlab-org%2Fold-path-project"
+```
+
+The response is:
+
+```plaintext
+...
+< Location: http://gitlab.example.com/api/v4/projects/81
+...
+This resource has been moved permanently to https://gitlab.example.com/api/v4/projects/81
+```
 
 ## Pagination
 

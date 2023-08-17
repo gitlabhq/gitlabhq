@@ -27,6 +27,10 @@ module NamespaceSettings
         param_key: :default_branch_protection,
         user_policy: :update_default_branch_protection
       )
+      validate_settings_param_for_root_group(
+        param_key: :default_branch_protection_defaults,
+        user_policy: :update_default_branch_protection
+      )
 
       handle_default_branch_protection unless settings_params[:default_branch_protection].blank?
 

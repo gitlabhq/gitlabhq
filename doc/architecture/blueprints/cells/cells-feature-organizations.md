@@ -31,12 +31,6 @@ With the introduction of Organizations this will be forbidden.
 This problem definition aims to answer effort and implications required to add strong isolation between Organizations to the system, including features affected and their data processing flow.
 The purpose is to ensure that our solution when implemented consistently avoids data leakage between Organizations residing on a single Cell.
 
-## 2. Data flow
+## 2. Proposal
 
-## 3. Proposal
-
-## 4. Evaluation
-
-## 4.1. Pros
-
-## 4.2. Cons
+See the [Organization blueprint](../organization/index.md).

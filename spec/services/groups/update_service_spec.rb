@@ -490,6 +490,32 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
+  context 'updating default_branch_protection_defaults' do
+    let(:branch_protection) { ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys }
+
+    let(:service) do
+      described_class.new(internal_group, user, default_branch_protection_defaults: branch_protection)
+    end
+
+    let(:settings) { internal_group.namespace_settings }
+    let(:expected_settings) { branch_protection }
+
+    context 'for users who have the ability to update default_branch_protection_defaults' do
+      it 'updates default_branch_protection attribute' do
+        internal_group.add_owner(user)
+
+        expect { service.execute }.to change { internal_group.default_branch_protection_defaults }.from({}).to(expected_settings)
+      end
+    end
+
+    context 'for users who do not have the ability to update default_branch_protection_defaults' do
+      it 'does not update the attribute' do
+        expect { service.execute }.not_to change { internal_group.default_branch_protection_defaults }
+        expect { service.execute }.not_to change { internal_group.namespace_settings.default_branch_protection_defaults }
+      end
+    end
+  end
+
   context 'EventStore' do
     let(:service) { described_class.new(group, user, **params) }
     let(:root_group) { create(:group, path: 'root') }

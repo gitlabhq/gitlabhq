@@ -247,7 +247,7 @@ Redis stores all user sessions and the background task queue.
 
 The requirements for Redis are as follows:
 
-- Redis 6.0 is required from GitLab 16.0 and later.
+- Redis 6.x or 7.x is required in GitLab 16.0 and later.
 - Redis Cluster mode is not supported. Redis Standalone must be used.
 - Storage requirements for Redis are minimal, about 25 kB per user on average.
 

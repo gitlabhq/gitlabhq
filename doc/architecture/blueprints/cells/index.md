@@ -313,10 +313,9 @@ This section links all different technical proposals that are being evaluated.
 ## Impacted features
 
 The Cells architecture will impact many features requiring some of them to be rewritten, or changed significantly.
-This is the list of known affected features with proposed solutions.
+Below is a list of known affected features with preliminary proposed solutions.
 
 - [Cells: Admin Area](cells-feature-admin-area.md)
-- [Cells: Agent for Kubernetes](cells-feature-agent-for-kubernetes.md)
 - [Cells: Backups](cells-feature-backups.md)
 - [Cells: CI Runners](cells-feature-ci-runners.md)
 - [Cells: Container Registry](cells-feature-container-registry.md)
@@ -325,18 +324,26 @@ This is the list of known affected features with proposed solutions.
 - [Cells: Data Migration](cells-feature-data-migration.md)
 - [Cells: Explore](cells-feature-explore.md)
 - [Cells: Git Access](cells-feature-git-access.md)
-- [Cells: GitLab Pages](cells-feature-gitlab-pages.md)
 - [Cells: Global Search](cells-feature-global-search.md)
 - [Cells: GraphQL](cells-feature-graphql.md)
 - [Cells: Organizations](cells-feature-organizations.md)
+- [Cells: Secrets](cells-feature-secrets.md)
+- [Cells: Snippets](cells-feature-snippets.md)
+- [Cells: User Profile](cells-feature-user-profile.md)
+- [Cells: Your Work](cells-feature-your-work.md)
+
+### Impacted features: Placeholders
+
+The following list of impacted features only represents placeholders that still require work to estimate the impact of Cells and develop solution proposals.
+
+- [Cells: Agent for Kubernetes](cells-feature-agent-for-kubernetes.md)
+- [Cells: GitLab Pages](cells-feature-gitlab-pages.md)
+- [Cells: Personal Access Tokens](cells-feature-personal-access-tokens.md)
 - [Cells: Personal Namespaces](cells-feature-personal-namespaces.md)
 - [Cells: Router Endpoints Classification](cells-feature-router-endpoints-classification.md)
 - [Cells: Schema changes (Postgres and Elasticsearch migrations)](cells-feature-schema-changes.md)
-- [Cells: Secrets](cells-feature-secrets.md)
-- [Cells: Snippets](cells-feature-snippets.md)
 - [Cells: Uploads](cells-feature-uploads.md)
-- [Cells: User Profile](cells-feature-user-profile.md)
-- [Cells: Your Work](cells-feature-your-work.md)
+- ...
 
 ## Frequently Asked Questions
 

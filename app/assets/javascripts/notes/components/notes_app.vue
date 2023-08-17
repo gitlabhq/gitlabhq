@@ -232,7 +232,7 @@ export default {
       :ai-loading="aiLoading"
       @set-ai-loading="setAiLoading"
     />
-    <ai-summary v-if="aiLoading !== null" @set-ai-loading="setAiLoading" />
+    <ai-summary v-if="aiLoading !== null" :ai-loading="aiLoading" @set-ai-loading="setAiLoading" />
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
         <comment-form
