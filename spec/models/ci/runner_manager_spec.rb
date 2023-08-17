@@ -375,4 +375,42 @@ RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model 
       it { is_expected.to contain_exactly build }
     end
   end
+
+  describe '.with_upgrade_status' do
+    subject(:scope) { described_class.with_upgrade_status(upgrade_status) }
+
+    let_it_be(:runner_manager_14_0_0) { create(:ci_runner_machine, version: '14.0.0') }
+    let_it_be(:runner_manager_14_1_0) { create(:ci_runner_machine, version: '14.1.0') }
+    let_it_be(:runner_manager_14_1_1) { create(:ci_runner_machine, version: '14.1.1') }
+
+    before_all do
+      create(:ci_runner_version, version: '14.0.0', status: :available)
+      create(:ci_runner_version, version: '14.1.0', status: :recommended)
+      create(:ci_runner_version, version: '14.1.1', status: :unavailable)
+    end
+
+    context 'as :unavailable' do
+      let(:upgrade_status) { :unavailable }
+
+      it 'returns runners with runner managers whose version is assigned :unavailable' do
+        is_expected.to contain_exactly(runner_manager_14_1_1)
+      end
+    end
+
+    context 'as :available' do
+      let(:upgrade_status) { :available }
+
+      it 'returns runners with runner managers whose version is assigned :available' do
+        is_expected.to contain_exactly(runner_manager_14_0_0)
+      end
+    end
+
+    context 'as :recommended' do
+      let(:upgrade_status) { :recommended }
+
+      it 'returns runners with runner managers whose version is assigned :recommended' do
+        is_expected.to contain_exactly(runner_manager_14_1_0)
+      end
+    end
+  end
 end

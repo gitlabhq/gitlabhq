@@ -60,10 +60,14 @@ RSpec.describe Issues::ResolveDiscussions, feature_category: :team_planning do
       end
 
       it "contains all discussions when only a merge request is passed" do
-        second_discussion = Discussion.new([create(:diff_note_on_merge_request,
-                                                  noteable: merge_request,
-                                                  project: merge_request.target_project,
-                                                  line_number: 15)])
+        second_discussion = Discussion.new([
+          create(
+            :diff_note_on_merge_request,
+            noteable: merge_request,
+            project: merge_request.target_project,
+            line_number: 15
+          )
+        ])
         service = DummyService.new(
           container: project,
           current_user: user,
@@ -77,11 +81,15 @@ RSpec.describe Issues::ResolveDiscussions, feature_category: :team_planning do
       end
 
       it "contains only unresolved discussions" do
-        _second_discussion = Discussion.new([create(:diff_note_on_merge_request, :resolved,
-                                                   noteable: merge_request,
-                                                   project: merge_request.target_project,
-                                                   line_number: 15
-        )])
+        _second_discussion = Discussion.new([
+          create(
+            :diff_note_on_merge_request,
+            :resolved,
+            noteable: merge_request,
+            project: merge_request.target_project,
+            line_number: 15
+          )
+        ])
         service = DummyService.new(
           container: project,
           current_user: user,

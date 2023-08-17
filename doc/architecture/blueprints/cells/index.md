@@ -374,7 +374,6 @@ In iteration 4 we are going to evaluate the option of Cells calling each other v
 ## Links
 
 - [Internal Pods presentation](https://docs.google.com/presentation/d/1x1uIiN8FR9fhL7pzFh9juHOVcSxEY7d2_q4uiKKGD44/edit#slide=id.ge7acbdc97a_0_155)
-- [Internal link to all diagrams](https://drive.google.com/file/d/13NHzbTrmhUM-z_Bf0RjatUEGw5jWHSLt/view?usp=sharing)
 - [Cells Epic](https://gitlab.com/groups/gitlab-org/-/epics/7582)
 - [Database group investigation](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/doc/root-namespace-sharding.html)
 - [Shopify Pods architecture](https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale)

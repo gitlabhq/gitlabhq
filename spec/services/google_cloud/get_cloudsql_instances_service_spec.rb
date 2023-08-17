@@ -39,24 +39,26 @@ RSpec.describe GoogleCloud::GetCloudsqlInstancesService, feature_category: :depl
     end
 
     it 'result is grouped by environment', :aggregate_failures do
-      expect(service.execute).to contain_exactly({
-                                                   ref: '*',
-                                                   gcp_project: 'value-GCP_PROJECT_ID-*',
-                                                   instance_name: 'value-GCP_CLOUDSQL_INSTANCE_NAME-*',
-                                                   version: 'value-GCP_CLOUDSQL_VERSION-*'
-                                                 },
-                                                 {
-                                                   ref: 'STG',
-                                                   gcp_project: 'value-GCP_PROJECT_ID-STG',
-                                                   instance_name: 'value-GCP_CLOUDSQL_INSTANCE_NAME-STG',
-                                                   version: 'value-GCP_CLOUDSQL_VERSION-STG'
-                                                 },
-                                                 {
-                                                   ref: 'PRD',
-                                                   gcp_project: 'value-GCP_PROJECT_ID-PRD',
-                                                   instance_name: 'value-GCP_CLOUDSQL_INSTANCE_NAME-PRD',
-                                                   version: 'value-GCP_CLOUDSQL_VERSION-PRD'
-                                                 })
+      expect(service.execute).to contain_exactly(
+        {
+          ref: '*',
+          gcp_project: 'value-GCP_PROJECT_ID-*',
+          instance_name: 'value-GCP_CLOUDSQL_INSTANCE_NAME-*',
+          version: 'value-GCP_CLOUDSQL_VERSION-*'
+        },
+        {
+          ref: 'STG',
+          gcp_project: 'value-GCP_PROJECT_ID-STG',
+          instance_name: 'value-GCP_CLOUDSQL_INSTANCE_NAME-STG',
+          version: 'value-GCP_CLOUDSQL_VERSION-STG'
+        },
+        {
+          ref: 'PRD',
+          gcp_project: 'value-GCP_PROJECT_ID-PRD',
+          instance_name: 'value-GCP_CLOUDSQL_INSTANCE_NAME-PRD',
+          version: 'value-GCP_CLOUDSQL_VERSION-PRD'
+        }
+      )
     end
   end
 end

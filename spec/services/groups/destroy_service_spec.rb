@@ -44,8 +44,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
         destroy_group(group, user, async)
 
         expect(
-          Users::GhostUserMigration.where(user: bot,
-                                          initiator_user: user)
+          Users::GhostUserMigration.where(user: bot, initiator_user: user)
         ).to be_exists
       end
     end

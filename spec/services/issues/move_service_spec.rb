@@ -390,8 +390,7 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
         let(:moved_to_issue) { create(:issue) }
 
         let(:old_issue) do
-          create(:issue, project: old_project, author: author,
-                         moved_to: moved_to_issue)
+          create(:issue, project: old_project, author: author, moved_to: moved_to_issue)
         end
 
         it { expect { move }.to raise_error(StandardError, /permissions/) }

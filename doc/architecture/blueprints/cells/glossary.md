@@ -14,7 +14,7 @@ We use the following terms to describe components and properties of the Cells ar
 
 A Cell is a set of infrastructure components that contains multiple top-level groups that belong to different organizations. The components include both datastores (PostgreSQL, Redis etc.) and stateless services (web etc.). The infrastructure components provided within a Cell are shared among organizations and their top-level groups but not shared with other Cells. This isolation of infrastructure components means that Cells are independent from each other.
 
-<img src="images/term-cell.png" height="200">
+<img src="diagrams/term-cell.drawio.png" height="200">
 
 ### Cell properties
 
@@ -32,7 +32,7 @@ Discouraged synonyms: GitLab instance, cluster, shard
 
 A cluster is a collection of Cells.
 
-<img src="images/term-cluster.png" height="300">
+<img src="diagrams/term-cluster.drawio.png" height="300">
 
 ### Cluster properties
 
@@ -56,7 +56,7 @@ Organizations work under the following assumptions:
 1. Users understand that the majority of pages they view are only scoped to a single organization at a time.
 1. Organizations are located on a single cell.
 
-![Term Organization](images/term-organization.png)
+![Term Organization](diagrams/term-organization.drawio.png)
 
 ### Organization properties
 
@@ -83,7 +83,7 @@ Over time there won't be a distinction between a top-level group and a group. Al
 
 Discouraged synonyms: Root-level namespace
 
-![Term Top-level Group](images/term-top-level-group.png)
+![Term Top-level Group](diagrams/term-top-level-group.drawio.png)
 
 ### Top-level group properties
 

@@ -25232,7 +25232,8 @@ CREATE TABLE zoekt_indexed_namespaces (
     zoekt_shard_id bigint NOT NULL,
     namespace_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    search boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE zoekt_indexed_namespaces_id_seq

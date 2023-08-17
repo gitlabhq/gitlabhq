@@ -21,18 +21,15 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
       let(:issue_d) { create :issue, project: project }
 
       let!(:issue_link_c) do
-        create(:issue_link, source: issue_d,
-                            target: issue)
+        create(:issue_link, source: issue_d, target: issue)
       end
 
       let!(:issue_link_b) do
-        create(:issue_link, source: issue,
-                            target: issue_c)
+        create(:issue_link, source: issue, target: issue_c)
       end
 
       let!(:issue_link_a) do
-        create(:issue_link, source: issue,
-                            target: issue_b)
+        create(:issue_link, source: issue, target: issue_b)
       end
 
       it 'ensures no N+1 queries are made' do
@@ -53,26 +50,32 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
       it 'returns related issues JSON' do
         expect(subject.size).to eq(3)
 
-        expect(subject).to include(include(id: issue_b.id,
-                                           title: issue_b.title,
-                                           state: issue_b.state,
-                                           reference: issue_b.to_reference(project),
-                                           path: "/#{project.full_path}/-/issues/#{issue_b.iid}",
-                                           relation_path: "/#{project.full_path}/-/issues/#{issue.iid}/links/#{issue_link_a.id}"))
+        expect(subject).to include(include(
+          id: issue_b.id,
+          title: issue_b.title,
+          state: issue_b.state,
+          reference: issue_b.to_reference(project),
+          path: "/#{project.full_path}/-/issues/#{issue_b.iid}",
+          relation_path: "/#{project.full_path}/-/issues/#{issue.iid}/links/#{issue_link_a.id}"
+        ))
 
-        expect(subject).to include(include(id: issue_c.id,
-                                           title: issue_c.title,
-                                           state: issue_c.state,
-                                           reference: issue_c.to_reference(project),
-                                           path: "/#{project.full_path}/-/issues/#{issue_c.iid}",
-                                           relation_path: "/#{project.full_path}/-/issues/#{issue.iid}/links/#{issue_link_b.id}"))
+        expect(subject).to include(include(
+          id: issue_c.id,
+          title: issue_c.title,
+          state: issue_c.state,
+          reference: issue_c.to_reference(project),
+          path: "/#{project.full_path}/-/issues/#{issue_c.iid}",
+          relation_path: "/#{project.full_path}/-/issues/#{issue.iid}/links/#{issue_link_b.id}"
+        ))
 
-        expect(subject).to include(include(id: issue_d.id,
-                                           title: issue_d.title,
-                                           state: issue_d.state,
-                                           reference: issue_d.to_reference(project),
-                                           path: "/#{project.full_path}/-/issues/#{issue_d.iid}",
-                                           relation_path: "/#{project.full_path}/-/issues/#{issue.iid}/links/#{issue_link_c.id}"))
+        expect(subject).to include(include(
+          id: issue_d.id,
+          title: issue_d.title,
+          state: issue_d.state,
+          reference: issue_d.to_reference(project),
+          path: "/#{project.full_path}/-/issues/#{issue_d.iid}",
+          relation_path: "/#{project.full_path}/-/issues/#{issue.iid}/links/#{issue_link_c.id}"
+        ))
       end
     end
 

@@ -56,9 +56,10 @@ RSpec.describe Files::DeleteService, feature_category: :source_code_management d
       let(:last_commit_sha) { Gitlab::Git::Commit.last_for_path(project.repository, project.default_branch, file_path).parent_id }
 
       it "returns a hash with the correct error message and a :error status" do
-        expect { subject.execute }
-          .to raise_error(Files::UpdateService::FileChangedError,
-                         "You are attempting to delete a file that has been previously updated.")
+        expect { subject.execute }.to raise_error(
+          Files::UpdateService::FileChangedError,
+          "You are attempting to delete a file that has been previously updated."
+        )
       end
     end
 

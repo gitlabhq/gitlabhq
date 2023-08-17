@@ -43,18 +43,20 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
       # so create these first.
       issue.timelogs.create!(time_spent: 360, user: user)
       issue.timelogs.create!(time_spent: 200, user: user)
-      issue.update!(milestone: milestone,
-                    assignees: [user],
-                    description: 'Issue with details',
-                    state: :opened,
-                    due_date: DateTime.new(2014, 3, 2),
-                    created_at: DateTime.new(2015, 4, 3, 2, 1, 0),
-                    updated_at: DateTime.new(2016, 5, 4, 3, 2, 1),
-                    closed_at: DateTime.new(2017, 6, 5, 4, 3, 2),
-                    weight: 4,
-                    discussion_locked: true,
-                    labels: [feature_label, idea_label],
-                    time_estimate: 72000)
+      issue.update!(
+        milestone: milestone,
+        assignees: [user],
+        description: 'Issue with details',
+        state: :opened,
+        due_date: DateTime.new(2014, 3, 2),
+        created_at: DateTime.new(2015, 4, 3, 2, 1, 0),
+        updated_at: DateTime.new(2016, 5, 4, 3, 2, 1),
+        closed_at: DateTime.new(2017, 6, 5, 4, 3, 2),
+        weight: 4,
+        discussion_locked: true,
+        labels: [feature_label, idea_label],
+        time_estimate: 72000
+      )
     end
 
     shared_examples 'exports CSVs for issues' do
@@ -158,9 +160,9 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
       context 'with issues filtered by labels and project' do
         subject do
           described_class.new(
-            IssuesFinder.new(user,
-                            project_id: project.id,
-                            label_name: %w(Idea Feature)).execute, project)
+            IssuesFinder.new(user, project_id: project.id, label_name: %w(Idea Feature)).execute,
+            project
+          )
         end
 
         it 'returns only filtered objects' do

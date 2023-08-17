@@ -84,11 +84,13 @@ test-java:
   stage: test
   script: mvn clean test
 EOF
-        project.repository.create_file(maintainer,
-                                       file_name,
-                                       file_content,
-                                       message: 'Pipeline with three stages and two jobs',
-                                       branch_name: project.default_branch)
+        project.repository.create_file(
+          maintainer,
+          file_name,
+          file_content,
+          message: 'Pipeline with three stages and two jobs',
+          branch_name: project.default_branch
+        )
       end
 
       it 'introduces a `deploy` stage and includes the deploy-to-cloud-run job' do
@@ -138,11 +140,13 @@ test-java:
   stage: test
   script: mvn clean test
 EOF
-        project.repository.create_file(maintainer,
-                                       file_name,
-                                       file_content,
-                                       message: 'Pipeline with three stages and two jobs',
-                                       branch_name: project.default_branch)
+        project.repository.create_file(
+          maintainer,
+          file_name,
+          file_content,
+          message: 'Pipeline with three stages and two jobs',
+          branch_name: project.default_branch
+        )
       end
 
       it 'includes the deploy-to-cloud-run job' do
@@ -178,11 +182,13 @@ stages:
 include:
   local: 'some-pipeline.yml'
 EOF
-        project.repository.create_file(maintainer,
-                                       file_name,
-                                       file_content,
-                                       message: 'Pipeline with three stages and two jobs',
-                                       branch_name: project.default_branch)
+        project.repository.create_file(
+          maintainer,
+          file_name,
+          file_content,
+          message: 'Pipeline with three stages and two jobs',
+          branch_name: project.default_branch
+        )
       end
 
       it 'includes the deploy-to-cloud-run job' do
@@ -309,11 +315,13 @@ stages:
 include:
   local: 'some-pipeline.yml'
 EOF
-        project.repository.create_file(maintainer,
-                                       file_name,
-                                       file_content,
-                                       message: 'Pipeline with three stages and two jobs',
-                                       branch_name: project.default_branch)
+        project.repository.create_file(
+          maintainer,
+          file_name,
+          file_content,
+          message: 'Pipeline with three stages and two jobs',
+          branch_name: project.default_branch
+        )
       end
 
       it 'includes the vision ai pipeline' do

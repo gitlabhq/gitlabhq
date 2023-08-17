@@ -137,8 +137,12 @@ If either API produces files larger than the maximum relation size limit, group 
 After migration:
 
 - Private groups and projects stay private.
+- Internal groups and projects:
+  - Stay internal when copied into an internal group unless internal visibility is [restricted](../../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels). In that case, the groups and projects become private.
+  - Become private when copied into a private group.
 - Public groups and projects:
-  - Stay public when copied into a public group.
+  - Stay public when copied into a public group unless public visibility is [restricted](../../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels). In that case, the groups and projects become internal.
+  - Become internal when copied into an internal group unless internal visibility is [restricted](../../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels). In that case, the groups and projects become private.
   - Become private when copied into a private group.
 
 If you used a private network on your source instance to hide content from the general public,

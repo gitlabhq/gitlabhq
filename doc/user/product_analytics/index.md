@@ -66,7 +66,7 @@ flowchart TB
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards` and `product_analytics_admin_settings`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards`, `product_analytics_admin_settings`, `product_analytics_snowplow_support`, and `combined_analytics_dashboards`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -93,6 +93,7 @@ Prerequisites:
 
 - Product analytics must be enabled at the instance-level.
 - You must have at least the Maintainer role for the project or group the project belongs to.
+- The project must be in a group namespace.
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Analytics**.

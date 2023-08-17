@@ -62,6 +62,10 @@ module Ci
 
     scope :order_id_desc, -> { order(id: :desc) }
 
+    scope :with_upgrade_status, ->(upgrade_status) do
+      joins(:runner_version).where(runner_version: { status: upgrade_status })
+    end
+
     def self.online_contact_time_deadline
       Ci::Runner.online_contact_time_deadline
     end

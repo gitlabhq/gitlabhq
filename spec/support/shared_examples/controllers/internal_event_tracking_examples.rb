@@ -22,13 +22,14 @@ RSpec.shared_examples 'internal event tracking' do
     subject
 
     project = try(:project)
+    user = try(:user)
     namespace = try(:namespace)
 
     expect(Gitlab::Tracking::StandardContext)
       .to have_received(:new)
         .with(
           project_id: project&.id,
-          user_id: user.id,
+          user_id: user&.id,
           namespace_id: namespace&.id,
           plan_name: namespace&.actual_plan_name
         ).at_least(:once)

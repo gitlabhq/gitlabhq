@@ -15,11 +15,14 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
   let_it_be(:milestone) { create(:milestone, project: project) }
 
   let(:issue) do
-    create(:issue, title: 'Old title',
-                   description: "for #{user2.to_reference}",
-                   assignee_ids: [user3.id],
-                   project: project,
-                   author: create(:user))
+    create(
+      :issue,
+      title: 'Old title',
+      description: "for #{user2.to_reference}",
+      assignee_ids: [user3.id],
+      project: project,
+      author: create(:user)
+    )
   end
 
   before_all do
