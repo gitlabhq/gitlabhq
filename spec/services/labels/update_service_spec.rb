@@ -99,6 +99,14 @@ RSpec.describe Labels::UpdateService, feature_category: :team_planning do
           expect(label.reload.lock_on_merge).to be_truthy
         end
 
+        it 'does not allow lock_on_merge to be unset' do
+          label_locked = Labels::CreateService.new(title: 'Initial', lock_on_merge: true).execute(project: project)
+          label = described_class.new(title: 'test', lock_on_merge: false).execute(label_locked)
+
+          expect(label.reload.lock_on_merge).to be_truthy
+          expect(label.reload.title).to eq 'test'
+        end
+
         it 'does not allow setting lock_on_merge for templates' do
           template_label = Labels::CreateService.new(title: 'Initial').execute(template: true)
           label = described_class.new(params).execute(template_label)

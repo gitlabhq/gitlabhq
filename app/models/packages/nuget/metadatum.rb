@@ -15,8 +15,7 @@ class Packages::Nuget::Metadatum < ApplicationRecord
   validates :icon_url, public_url: { allow_blank: true }, length: { maximum: MAX_URL_LENGTH }
   validates :authors, presence: true, length: { maximum: MAX_AUTHORS_LENGTH }
   validates :description, presence: true, length: { maximum: MAX_DESCRIPTION_LENGTH }
-  validates :normalized_version, presence: true,
-    if: -> { Feature.enabled?(:nuget_normalized_version, package&.project) }
+  validates :normalized_version, presence: true
 
   validate :ensure_nuget_package_type
 

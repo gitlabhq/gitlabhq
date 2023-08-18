@@ -119,7 +119,7 @@ module API
       end
 
       def format_filename(package)
-        return "#{params[:package_filename]}.#{params[:format]}" if Feature.disabled?(:nuget_normalized_version, project_or_group) || package.version == params[:package_version]
+        return "#{params[:package_filename]}.#{params[:format]}" if package.version == params[:package_version]
         return "#{params[:package_filename].sub(params[:package_version], package.version)}.#{params[:format]}" if package.normalized_nuget_version == params[:package_version]
       end
     end

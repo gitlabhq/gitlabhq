@@ -121,4 +121,35 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
       end
     end
   end
+
+  describe 'PUT #update' do
+    context 'when updating lock_on_merge' do
+      let_it_be(:params) { { lock_on_merge: true } }
+      let_it_be_with_reload(:label) { create(:group_label, group: group) }
+
+      subject(:update_request) { put :update, params: { group_id: group.to_param, id: label.to_param, label: params } }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: false)
+        end
+
+        it 'does not allow setting lock_on_merge' do
+          update_request
+
+          expect(response).to redirect_to(group_labels_path)
+          expect(label.reload.lock_on_merge).to be_falsey
+        end
+      end
+
+      context 'when feature flag is enabled' do
+        it 'allows setting lock_on_merge' do
+          update_request
+
+          expect(response).to redirect_to(group_labels_path)
+          expect(label.reload.lock_on_merge).to be_truthy
+        end
+      end
+    end
+  end
 end

@@ -1038,15 +1038,41 @@ However, enabling the bundled Grafana will no longer work from GitLab 16.3.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387561).
 </div>
 
-**Update:** We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/) we will do this change in 16.3 instead.
+**Update:** We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/) we will do this in 16.3 instead.
 
-The GitLab [License Compliance](https://docs.gitlab.com/ee/user/compliance/license_compliance/) CI template is now deprecated and is scheduled for removal in the GitLab 16.1 release. Users who wish to continue using GitLab for License Compliance should remove the License Compliance template from their CI pipeline and add the [Dependency Scanning template](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuration). The Dependency Scanning template is now capable of gathering the required license information so it is no longer necessary to run a separate License Compliance job. The License Compliance CI template should not be removed prior to verifying that the `license_scanning_sbom_scanner` and `package_metadata_synchronization` flags are enabled for the instance and that the instance has been upgraded to a version that supports [the new method of license scanning](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/).
+The GitLab [**License Compliance**](https://docs.gitlab.com/ee/user/compliance/license_compliance/) CI/CD template is now deprecated and is scheduled for removal in the GitLab 16.3 release.
+
+To continue using GitLab for license compliance, remove the **License Compliance** template from your CI/CD pipeline and add the **Dependency Scanning** template. The **Dependency Scanning** template is now capable of gathering the required license information, so it is no longer necessary to run a separate license compliance job.
+
+Before you remove the **License Compliance** CI/CD template, verify that the `license_scanning_sbom_scanner` and `package_metadata_synchronization` flags are enabled for the instance and that the instance has been upgraded to a version that supports the new method of license scanning.
+
+To begin using the Dependency Scanner quickly at scale, you may set up a scan execution policy at the group level to enforce the SBOM-based license scan for all projects in the group. Then, you may remove the inclusion of the `Jobs/License-Scanning.gitlab-ci.yml` template from your CI/CD configuration.
+
+If you wish to continue using the legacy license compliance feature, you can do so by setting the `LICENSE_MANAGEMENT_VERSION CI` variable to `4`. This variable can be set at the project, group, or instance level. This configuration change will allow you to continue using an existing version of license compliance without having to adopt the new approach.
+
+Bugs and vulnerabilities in this legacy analyzer will no longer be fixed.
 
 | CI Pipeline Includes | GitLab <= 15.8 | 15.9 <= GitLab < 16.3 | GitLab >= 16.3 |
 | ------------- | ------------- | ------------- | ------------- |
 | Both DS and LS templates | License data from LS job is used | License data from LS job is used | License data from DS job is used |
 | DS template is included but LS template is not | No license data | License data from DS job is used | License data from DS job is used |
 | LS template is included but DS template is not | License data from LS job is used | License data from LS job is used | No license data |
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.3">
+
+### RSA key size limits
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">16.3</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/11186).
+</div>
+
+Go versions 1.20.7 and later add a `maxRSAKeySize` constant that limits RSA keys to a maximum of 8192 bits. As a result, RSA keys larger than 8192 bits will no longer work with GitLab. Any RSA keys larger than 8192 bits must be regenerated at a smaller size.
+
+You might notice this issue because your logs include an error like `tls: server sent certificate containing RSA key larger than 8192 bits`. To test the length of your key, use this command: `openssl rsa -in <your-key-file> -text -noout | grep "Key:"`.
 
 </div>
 

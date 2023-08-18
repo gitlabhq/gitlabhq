@@ -1,0 +1,12 @@
+- title: "RSA key size limits"
+  removal_milestone: "16.3"
+  announcement_milestone: "16.3"
+  breaking_change: true
+  reporter: derekferguson
+  stage: Create
+  issue_url: https://gitlab.com/groups/gitlab-org/-/epics/11186
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Go versions 1.20.7 and later add a `maxRSAKeySize` constant that limits RSA keys to a maximum of 8192 bits. As a result, RSA keys larger than 8192 bits will no longer work with GitLab. Any RSA keys larger than 8192 bits must be regenerated at a smaller size.
+
+    You might notice this issue because your logs include an error like `tls: server sent certificate containing RSA key larger than 8192 bits`. To test the length of your key, use this command: `openssl rsa -in <your-key-file> -text -noout | grep "Key:"`.
+  documentation_url: https://docs.gitlab.com/ee/user/ssh.html

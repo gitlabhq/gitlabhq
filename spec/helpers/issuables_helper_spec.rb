@@ -134,109 +134,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#issuable_meta', time_travel_to: '2022-08-05 00:00:00 +0000' do
-    let(:user) { create(:user) }
-
-    let_it_be(:project) { create(:project) }
-
-    describe 'Issuable created status text' do
-      subject { helper.issuable_meta(issuable, project) }
-
-      context 'when issuable is a work item and flag is off' do
-        using RSpec::Parameterized::TableSyntax
-
-        before do
-          stub_feature_flags(work_items: false)
-        end
-
-        where(:issuable_type, :text) do
-          :issue            | 'Issue created Aug 05, 2022 by'
-          :incident         | 'Incident created Aug 05, 2022 by'
-        end
-
-        let(:issuable) { build_stubbed(:work_item, issuable_type, created_at: Date.current) }
-
-        with_them do
-          it { is_expected.to have_content(text) }
-        end
-      end
-
-      context 'when issuable is a work item and flag is on' do
-        using RSpec::Parameterized::TableSyntax
-
-        where(:issuable_type, :text) do
-          :issue            | 'Issue created Aug 05, 2022 by'
-          :incident         | 'Incident created Aug 05, 2022 by'
-        end
-
-        let(:issuable) { build_stubbed(:work_item, issuable_type, created_at: Date.current) }
-
-        with_them do
-          it { is_expected.to have_content(text) }
-        end
-      end
-
-      context 'when issuable is not a work item' do
-        let(:issuable) { build_stubbed(:merge_request, created_at: Date.current) }
-
-        it { is_expected.to have_content('Created Aug 05, 2022') }
-      end
-    end
-
-    describe 'author status' do
-      let(:issuable) { build(:merge_request, source_project: project, author: user, created_at: '2020-01-30') }
-
-      it 'displays an emoji if the user status is set' do
-        user.status = UserStatus.new(message: 'lol')
-        content = helper.issuable_meta(issuable, project)
-        expect(content).to match('<span class="user-status-emoji has-tooltip" title="lol" data-html="true" data-placement="top">')
-        expect(content).to match('<gl-emoji title="speech balloon" data-name="speech_balloon" data-unicode-version="6.0">')
-      end
-
-      it 'does not displays an emoji if the user status is not set' do
-        user.status = UserStatus.new
-        content = helper.issuable_meta(issuable, project)
-        expect(content).not_to match('class="user-status-emoji has-tooltip"')
-        expect(content).not_to match('gl-emoji')
-      end
-    end
-
-    describe 'service desk reply to email address' do
-      let(:email) { 'user@example.com' }
-      let(:obfuscated_email) { 'us*****@e*****.c**' }
-      let(:service_desk_issue) { build_stubbed(:issue, project: project, author: User.support_bot, service_desk_reply_to: email) }
-
-      subject { helper.issuable_meta(service_desk_issue, project) }
-
-      context 'with anonymous user' do
-        before do
-          allow(helper).to receive(:current_user).and_return(nil)
-        end
-
-        it { is_expected.to have_content(obfuscated_email) }
-      end
-
-      context 'with signed in user' do
-        context 'when user has no role in project' do
-          before do
-            allow(helper).to receive(:current_user).and_return(user)
-          end
-
-          it { is_expected.to have_content(obfuscated_email) }
-        end
-
-        context 'when user has reporter role in project' do
-          before do
-            project.add_reporter(user)
-            allow(helper).to receive(:current_user).and_return(user)
-          end
-
-          it { is_expected.to have_content(email) }
-        end
-      end
-    end
-  end
-
   describe '#issuables_state_counter_text' do
     let_it_be(:user) { create(:user) }
 
@@ -613,38 +510,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#reviewer_sidebar_data' do
-    let(:user) { create(:user) }
-
-    subject { helper.reviewer_sidebar_data(user, merge_request: merge_request) }
-
-    context 'without merge_request' do
-      let(:merge_request) { nil }
-
-      it 'returns hash of reviewer data' do
-        is_expected.to eql({
-          avatar_url: user.avatar_url,
-          name: user.name,
-          username: user.username
-        })
-      end
-    end
-
-    context 'with merge_request' do
-      let(:merge_request) { build(:merge_request) }
-
-      where(can_merge: [true, false])
-
-      with_them do
-        before do
-          allow(merge_request).to receive(:can_be_merged_by?).and_return(can_merge)
-        end
-
-        it { is_expected.to include({ can_merge: can_merge }) }
-      end
-    end
-  end
-
   describe '#issuable_squash_option?' do
     using RSpec::Parameterized::TableSyntax
 
@@ -719,16 +584,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
       subject { helper.issuable_display_type(issuable) }
 
       it { is_expected.to eq(issuable_display_type) }
-    end
-  end
-
-  describe '#sidebar_milestone_tooltip_label' do
-    it 'escapes HTML in the milestone title' do
-      milestone = build(:milestone, title: '&lt;img onerror=alert(1)&gt;', due_date: Date.new(2022, 6, 26))
-
-      expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq(
-        '&lt;img onerror=alert(1)&gt;<br/>Jun 26, 2022 (<strong>Past due</strong>)'
-      )
     end
   end
 

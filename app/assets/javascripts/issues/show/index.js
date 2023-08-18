@@ -7,7 +7,6 @@ import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import IssueApp from './components/app.vue';
-import HeaderActions from './components/header_actions.vue';
 import IncidentTabs from './components/incidents/incident_tabs.vue';
 import SentryErrorStackTrace from './components/sentry_error_stack_trace.vue';
 import { issueState } from './constants';
@@ -196,49 +195,6 @@ export function initIssueApp(issueData, store) {
         },
       });
     },
-  });
-}
-
-export function initHeaderActions(store, type = '') {
-  const el = document.querySelector('.js-issue-header-actions');
-
-  if (!el) {
-    return undefined;
-  }
-
-  bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
-
-  const canCreate =
-    type === TYPE_INCIDENT ? el.dataset.canCreateIncident : el.dataset.canCreateIssue;
-
-  return new Vue({
-    el,
-    name: 'HeaderActionsRoot',
-    apolloProvider,
-    store,
-    provide: {
-      canCreateIssue: parseBoolean(canCreate),
-      canDestroyIssue: parseBoolean(el.dataset.canDestroyIssue),
-      canPromoteToEpic: parseBoolean(el.dataset.canPromoteToEpic),
-      canReopenIssue: parseBoolean(el.dataset.canReopenIssue),
-      canReportSpam: parseBoolean(el.dataset.canReportSpam),
-      canUpdateIssue: parseBoolean(el.dataset.canUpdateIssue),
-      iid: el.dataset.iid,
-      issuableId: el.dataset.issuableId,
-      isIssueAuthor: parseBoolean(el.dataset.isIssueAuthor),
-      issuePath: el.dataset.issuePath,
-      issueType: el.dataset.issueType,
-      newIssuePath: el.dataset.newIssuePath,
-      projectPath: el.dataset.projectPath,
-      projectId: el.dataset.projectId,
-      reportAbusePath: el.dataset.reportAbusePath,
-      reportedUserId: parseInt(el.dataset.reportedUserId, 10),
-      reportedFromUrl: el.dataset.reportedFromUrl,
-      submitAsSpamPath: el.dataset.submitAsSpamPath,
-      issuableEmailAddress: el.dataset.issuableEmailAddress,
-      fullPath: el.dataset.projectPath,
-    },
-    render: (createElement) => createElement(HeaderActions),
   });
 }
 

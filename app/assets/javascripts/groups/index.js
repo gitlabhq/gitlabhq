@@ -13,7 +13,7 @@ import GroupsStore from './store/groups_store';
 
 Vue.use(Translate);
 
-export default () => {
+export default (EmptyStateComponent) => {
   const el = document.getElementById('js-groups-tree');
 
   // eslint-disable-next-line no-new
@@ -36,16 +36,19 @@ export default () => {
     components: {
       GroupsApp,
     },
+    provide() {
+      const { groupsEmptyStateIllustration } = dataset;
+
+      return { groupsEmptyStateIllustration };
+    },
     data() {
       const showSchemaMarkup = parseBoolean(dataset.showSchemaMarkup);
-      const renderEmptyState = parseBoolean(dataset.renderEmptyState);
       const service = new GroupsService(dataset.endpoint);
       const store = new GroupsStore({ hideProjects: true, showSchemaMarkup });
 
       return {
         store,
         service,
-        renderEmptyState,
         loading: true,
       };
     },
@@ -74,7 +77,9 @@ export default () => {
         props: {
           store: this.store,
           service: this.service,
-          renderEmptyState: this.renderEmptyState,
+        },
+        scopedSlots: {
+          'empty-state': () => createElement(EmptyStateComponent),
         },
       });
     },

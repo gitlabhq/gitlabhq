@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.code_review.i_code_review_saved_replies_use_in_other_weekly
+description: Count of unique users who used the saved replies feature over a week
+product_section: dev
+product_stage: create
+product_group: code_review
+value_type: number
+status: active
+milestone: "16.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128822
+time_frame: 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+options:
+  events:
+  - i_code_review_saved_replies_use_in_other

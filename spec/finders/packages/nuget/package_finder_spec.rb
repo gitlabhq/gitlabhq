@@ -114,16 +114,6 @@ RSpec.describe Packages::Nuget::PackageFinder, feature_category: :package_regist
 
         it_behaves_like 'calling with_nuget_version_or_normalized_version scope', with_normalized: true
       end
-
-      context 'when nuget_normalized_version feature flag is disabled' do
-        let(:package_version) { '2.0.0+abc' }
-
-        before do
-          stub_feature_flags(nuget_normalized_version: false)
-        end
-
-        it_behaves_like 'calling with_nuget_version_or_normalized_version scope', with_normalized: false
-      end
     end
 
     context 'with a project' do

@@ -35,15 +35,6 @@ module IssuesHelper
     end
   end
 
-  def issue_status_visibility(issue, status_box:)
-    case status_box
-    when :open
-      'hidden' if issue.closed?
-    when :closed
-      'hidden' unless issue.closed?
-    end
-  end
-
   def confidential_icon(issue)
     sprite_icon('eye-slash', css_class: 'gl-vertical-align-text-bottom') if issue.confidential?
   end
@@ -126,24 +117,6 @@ module IssuesHelper
   def can_create_confidential_merge_request?
     @issue.confidential? && !@project.private? &&
       can?(current_user, :create_merge_request_in, @project)
-  end
-
-  def issue_closed_link(issue, current_user, css_class: '')
-    if issue.moved? && can?(current_user, :read_issue, issue.moved_to)
-      link_to(s_('IssuableStatus|moved'), issue.moved_to, class: css_class)
-    elsif issue.duplicated? && can?(current_user, :read_issue, issue.duplicated_to)
-      link_to(s_('IssuableStatus|duplicated'), issue.duplicated_to, class: css_class)
-    end
-  end
-
-  def issue_closed_text(issue, current_user)
-    link = issue_closed_link(issue, current_user, css_class: 'text-underline gl-reset-color!')
-
-    if link
-      s_('IssuableStatus|Closed (%{link})').html_safe % { link: link }
-    else
-      s_('IssuableStatus|Closed')
-    end
   end
 
   def show_moved_service_desk_issue_warning?(issue)

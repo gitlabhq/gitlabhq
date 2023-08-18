@@ -33,22 +33,6 @@ module IssuablesHelper
     end
   end
 
-  def sidebar_milestone_tooltip_label(milestone)
-    return _('Milestone') unless milestone.present?
-
-    [escape_once(milestone[:title]), sidebar_milestone_remaining_days(milestone) || _('Milestone')].join('<br/>')
-  end
-
-  def sidebar_milestone_remaining_days(milestone)
-    due_date_with_remaining_days(milestone[:due_date], milestone[:start_date])
-  end
-
-  def due_date_with_remaining_days(due_date, start_date = nil)
-    return unless due_date
-
-    "#{due_date.to_fs(:medium)} (#{remaining_days_in_words(due_date, start_date)})"
-  end
-
   def multi_label_name(current_labels, default_label)
     return default_label if current_labels.blank?
 
@@ -130,46 +114,6 @@ module IssuablesHelper
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def issuable_meta_author_status(author)
-    return "" unless author&.status&.customized? && status = user_status(author)
-
-    status.to_s.html_safe
-  end
-
-  def issuable_meta(issuable, project)
-    output = []
-
-    if issuable.respond_to?(:work_item_type) && WorkItems::Type::WI_TYPES_WITH_CREATED_HEADER.include?(issuable.issue_type)
-      output << content_tag(:span, sprite_icon(issuable.work_item_type.icon_name.to_s, css_class: 'gl-icon gl-vertical-align-middle gl-text-gray-500'), class: 'gl-mr-2', aria: { hidden: 'true' })
-      output << content_tag(:span, s_('IssuableStatus|%{wi_type} created %{created_at} by ').html_safe % { wi_type: IntegrationsHelper.integration_issue_type(issuable.issue_type), created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
-    else
-      output << content_tag(:span, s_('IssuableStatus|Created %{created_at} by').html_safe % { created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
-    end
-
-    if issuable.is_a?(Issue) && issuable.service_desk_reply_to
-      output << "#{html_escape(issuable.present(current_user: current_user).service_desk_reply_to)} via "
-    end
-
-    output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline-block")
-      author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-inline d-sm-none")
-
-      author_output << issuable_meta_author_status(issuable.author)
-
-      author_output
-    end
-
-    if access = project.team.human_max_access(issuable.author_id)
-      output << content_tag(:span, access, class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3 ", title: _("This user has the %{access} role in the %{name} project.") % { access: access.downcase, name: project.name })
-    elsif project.team.contributor?(issuable.author_id)
-      output << content_tag(:span, _("Contributor"), class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3", title: _("This user has previously committed to the %{name} project.") % { name: project.name })
-    end
-
-    output << content_tag(:span, (sprite_icon('first-contribution', css_class: 'gl-icon gl-vertical-align-middle') if issuable.first_contribution?), class: 'has-tooltip gl-ml-2', title: _('1st contribution!'))
-
-    output.join.html_safe
-  end
 
   def issuables_state_counter_text(issuable_type, state, display_count)
     titles = {
@@ -353,12 +297,6 @@ module IssuablesHelper
     end
   end
 
-  def reviewer_sidebar_data(reviewer, merge_request: nil)
-    { avatar_url: reviewer.avatar_url, name: reviewer.name, username: reviewer.username }.tap do |data|
-      data[:can_merge] = merge_request.can_be_merged_by?(reviewer) if merge_request
-    end
-  end
-
   def issuable_squash_option?(issuable, project)
     if issuable.persisted?
       issuable.squash
@@ -426,27 +364,6 @@ module IssuablesHelper
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'
-  end
-
-  def issuable_todo_button_data(issuable, is_collapsed)
-    {
-      todo_text: _('Add a to do'),
-      mark_text: _('Mark as done'),
-      todo_icon: sprite_icon('todo-add'),
-      mark_icon: sprite_icon('todo-done', css_class: 'todo-undone'),
-      issuable_id: issuable[:id],
-      issuable_type: issuable[:type],
-      create_path: issuable[:create_todo_path],
-      delete_path: issuable.dig(:current_user, :todo, :delete_path),
-      placement: is_collapsed ? 'left' : nil,
-      container: is_collapsed ? 'body' : nil,
-      boundary: 'viewport',
-      is_collapsed: is_collapsed,
-      track_label: "right_sidebar",
-      track_property: "update_todo",
-      track_action: "click_button",
-      track_value: ""
-    }
   end
 
   def close_reopen_params(issuable, action)

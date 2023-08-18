@@ -1,3 +1,5 @@
+- show_lock_on_merge = local_assigns.fetch(:show_lock_on_merge, false)
+
 = gitlab_ui_form_for @label, as: :label, url: url, html: { class: 'label-form js-quick-submit js-requires-input' } do |f|
   = form_errors(@label)
 
@@ -21,6 +23,13 @@
       .form-text.text-muted
         = _('Select a color from the color picker or from the presets below.')
       = render_suggested_colors
+  - if show_lock_on_merge
+    .form-group.row
+      .col-12
+        = f.gitlab_ui_checkbox_component :lock_on_merge,
+          _('Lock label after a merge request is merged'),
+          help_text: label_lock_on_merge_help_text,
+          checkbox_options: { disabled: @label.lock_on_merge }
   .gl-display-flex.gl-justify-content-space-between
     %div
       - if @label.persisted?

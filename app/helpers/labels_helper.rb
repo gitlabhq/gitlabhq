@@ -220,6 +220,12 @@ module LabelsHelper
     project || group&.subgroup?
   end
 
+  def label_lock_on_merge_help_text
+    _('IMPORTANT: Use this setting only for VERY strict auditing purposes. ' \
+      'When turned on, nobody will be able to remove the label from any merge requests after they are merged. ' \
+      'In addition, nobody will be able to turn off this setting or delete this label.')
+  end
+
   private
 
   def render_label_link(label_html, link:, title:, dataset:)

@@ -4,7 +4,11 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
 import { InternalEvents } from '~/tracking';
 import savedRepliesQuery from './saved_replies.query.graphql';
-import { TRACKING_SAVED_REPLIES_USE, TRACKING_SAVED_REPLIES_USE_IN_MR } from './constants';
+import {
+  TRACKING_SAVED_REPLIES_USE,
+  TRACKING_SAVED_REPLIES_USE_IN_MR,
+  TRACKING_SAVED_REPLIES_USE_IN_OTHER,
+} from './constants';
 
 export default {
   apollo: {
@@ -61,9 +65,9 @@ export default {
       if (savedReply) {
         this.$emit('select', savedReply.content);
         this.track_event(TRACKING_SAVED_REPLIES_USE);
-        if (isInMr) {
-          this.track_event(TRACKING_SAVED_REPLIES_USE_IN_MR);
-        }
+        this.track_event(
+          isInMr ? TRACKING_SAVED_REPLIES_USE_IN_MR : TRACKING_SAVED_REPLIES_USE_IN_OTHER,
+        );
       }
     },
   },

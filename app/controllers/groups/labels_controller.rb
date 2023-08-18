@@ -93,7 +93,10 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def label_params
-    params.require(:label).permit(:title, :description, :color)
+    allowed = [:title, :description, :color]
+    allowed << :lock_on_merge if Feature.enabled?(:enforce_locked_labels_on_merge, @project, type: :ops)
+
+    params.require(:label).permit(allowed)
   end
 
   def redirect_back_or_group_labels_path(options = {})

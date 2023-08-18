@@ -21,8 +21,12 @@ module Labels
     def allow_lock_on_merge?(label)
       return if label.template?
       return unless label.respond_to?(:parent_container)
+      return unless Feature.enabled?(:enforce_locked_labels_on_merge, label.parent_container, type: :ops)
 
-      Feature.enabled?(:enforce_locked_labels_on_merge, label.parent_container, type: :ops)
+      # If we've made it here, then we're allowed to turn it on. However, we do _not_
+      # want to allow it to be turned off. So if it's already set, then don't allow the possibility
+      # that it could be turned off.
+      !label.lock_on_merge
     end
   end
 end

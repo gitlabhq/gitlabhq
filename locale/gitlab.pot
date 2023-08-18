@@ -22844,7 +22844,7 @@ msgstr ""
 msgid "GroupsDropdown|Toggle edit mode"
 msgstr ""
 
-msgid "GroupsEmptyState|A group is a collection of several projects."
+msgid "GroupsEmptyState|A group is a collection of several projects"
 msgstr ""
 
 msgid "GroupsEmptyState|Create new project"
@@ -22856,7 +22856,7 @@ msgstr ""
 msgid "GroupsEmptyState|Groups are the best way to manage multiple projects and members."
 msgstr ""
 
-msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder."
+msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group."
 msgstr ""
 
 msgid "GroupsEmptyState|No archived projects."
@@ -22872,9 +22872,6 @@ msgid "GroupsEmptyState|No subgroups or projects."
 msgstr ""
 
 msgid "GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of Gitlab."
-msgstr ""
-
-msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
 msgstr ""
 
 msgid "GroupsEmptyState|You do not have necessary permissions to create a subgroup or project in this group. Please contact an owner of this group to create a new subgroup or project."
@@ -23601,6 +23598,9 @@ msgid "IDE|This option is disabled because you are not allowed to create merge r
 msgstr ""
 
 msgid "IDE|This option is disabled because you don't have write permissions for the current branch."
+msgstr ""
+
+msgid "IMPORTANT: Use this setting only for VERY strict auditing purposes. When turned on, nobody will be able to remove the label from any merge requests after they are merged. In addition, nobody will be able to turn off this setting or delete this label."
 msgstr ""
 
 msgid "INFO: Your SSH key has expired. Please generate a new key."
@@ -25965,16 +25965,10 @@ msgstr ""
 msgid "IssuableEvents|unassigned"
 msgstr ""
 
-msgid "IssuableStatus|%{wi_type} created %{created_at} by "
-msgstr ""
-
 msgid "IssuableStatus|Closed"
 msgstr ""
 
 msgid "IssuableStatus|Closed (%{link})"
-msgstr ""
-
-msgid "IssuableStatus|Created %{created_at} by"
 msgstr ""
 
 msgid "IssuableStatus|duplicated"
@@ -28347,6 +28341,9 @@ msgstr ""
 msgid "Lock File?"
 msgstr ""
 
+msgid "Lock label after a merge request is merged"
+msgstr ""
+
 msgid "Lock memberships to LDAP synchronization"
 msgstr ""
 
@@ -28354,6 +28351,9 @@ msgid "Lock memberships to SAML Group Links synchronization"
 msgstr ""
 
 msgid "Lock not found"
+msgstr ""
+
+msgid "Lock on merge"
 msgstr ""
 
 msgid "Lock status"
@@ -39226,6 +39226,9 @@ msgid "Remove secondary email"
 msgstr ""
 
 msgid "Remove spent time"
+msgstr ""
+
+msgid "Remove summary"
 msgstr ""
 
 msgid "Remove time estimate"

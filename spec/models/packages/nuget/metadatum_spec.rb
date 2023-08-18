@@ -16,18 +16,7 @@ RSpec.describe Packages::Nuget::Metadatum, type: :model, feature_category: :pack
     it { is_expected.to validate_length_of(:authors).is_at_most(described_class::MAX_AUTHORS_LENGTH) }
     it { is_expected.to validate_presence_of(:description) }
     it { is_expected.to validate_length_of(:description).is_at_most(described_class::MAX_DESCRIPTION_LENGTH) }
-
-    context 'for normalized_version presence' do
-      it { is_expected.to validate_presence_of(:normalized_version) }
-
-      context 'when nuget_normalized_version feature flag is disabled' do
-        before do
-          stub_feature_flags(nuget_normalized_version: false)
-        end
-
-        it { is_expected.not_to validate_presence_of(:normalized_version) }
-      end
-    end
+    it { is_expected.to validate_presence_of(:normalized_version) }
 
     %i[license_url project_url icon_url].each do |url|
       describe "##{url}" do
@@ -86,16 +75,6 @@ RSpec.describe Packages::Nuget::Metadatum, type: :model, feature_category: :pack
           nuget_metadatum.save!
 
           expect(nuget_metadatum.normalized_version).to eq(normalized_version)
-        end
-
-        context 'when the nuget_normalized_version feature flag is disabled' do
-          before do
-            stub_feature_flags(nuget_normalized_version: false)
-          end
-
-          it 'does not save the normalized version' do
-            expect(nuget_metadatum.normalized_version).not_to eq(normalized_version)
-          end
         end
       end
     end

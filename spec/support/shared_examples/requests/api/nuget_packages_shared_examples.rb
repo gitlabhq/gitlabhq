@@ -373,14 +373,6 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
       end
 
       it_behaves_like 'bumping the package last downloaded at field'
-
-      context 'when nuget_normalized_version feature flag is disabled' do
-        before do
-          stub_feature_flags(nuget_normalized_version: false)
-        end
-
-        it_behaves_like 'returning response status', :not_found
-      end
     end
   end
 end

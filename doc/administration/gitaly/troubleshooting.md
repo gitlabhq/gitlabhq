@@ -556,6 +556,9 @@ You can retrieve a repository's metadata by its Praefect-assigned repository ID:
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml metadata -repository-id <repository-id>
 ```
 
+When the physical path on the physical storage starts with `@cluster`, you can
+[find the repository ID in the physical path](index.md#praefect-generated-replica-paths-gitlab-150-and-later).
+
 You can also retrieve a repository's metadata by its virtual storage and relative path:
 
 ```shell
