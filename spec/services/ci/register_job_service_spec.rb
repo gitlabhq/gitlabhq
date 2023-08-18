@@ -948,8 +948,8 @@ module Ci
         let(:runner) { create(:ci_runner, :instance, tag_list: %w(tag1 tag2)) }
         let(:expected_shared_runner) { true }
         let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
-        let(:expected_jobs_running_for_project_first_job) { 0 }
-        let(:expected_jobs_running_for_project_third_job) { 2 }
+        let(:expected_jobs_running_for_project_first_job) { '0' }
+        let(:expected_jobs_running_for_project_third_job) { '2' }
 
         it_behaves_like 'metrics collector'
 
@@ -969,7 +969,7 @@ module Ci
 
         context 'when max running jobs bucket size is exceeded' do
           before do
-            stub_const('Gitlab::Ci::Queue::Metrics::JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET', 1)
+            stub_const('Project::INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET', 1)
           end
 
           let(:expected_jobs_running_for_project_third_job) { '1+' }

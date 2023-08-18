@@ -12,6 +12,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
+import { scrollUp } from '~/lib/utils/scroll_utils';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -56,6 +57,7 @@ import {
 
 jest.mock('@sentry/browser');
 jest.mock('~/alert');
+jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 
 describe('CE ServiceDeskListApp', () => {
   let wrapper;
@@ -82,6 +84,10 @@ describe('CE ServiceDeskListApp', () => {
     initialSort: CREATED_DESC,
     isIssueRepositioningDisabled: false,
     issuablesLoading: false,
+    showPaginationControls: true,
+    useKeysetPagination: true,
+    hasPreviousPage: getServiceDeskIssuesQueryResponse.data.project.issues.pageInfo.hasPreviousPage,
+    hasNextPage: getServiceDeskIssuesQueryResponse.data.project.issues.pageInfo.hasNextPage,
   };
 
   let defaultQueryResponse = getServiceDeskIssuesQueryResponse;
@@ -584,6 +590,37 @@ describe('CE ServiceDeskListApp', () => {
       });
     });
 
+    describe.each`
+      event              | params
+      ${'next-page'}     | ${{ page_after: 'endcursor', page_before: undefined, first_page_size: 20, last_page_size: undefined }}
+      ${'previous-page'} | ${{ page_after: undefined, page_before: 'startcursor', first_page_size: undefined, last_page_size: 20 }}
+    `('when "$event" event is emitted by IssuableList', ({ event, params }) => {
+      beforeEach(async () => {
+        wrapper = createComponent({
+          data: {
+            pageInfo: {
+              endCursor: 'endCursor',
+              startCursor: 'startCursor',
+            },
+          },
+        });
+        await waitForPromises();
+        router.push = jest.fn();
+
+        findIssuableList().vm.$emit(event);
+      });
+
+      it('scrolls to the top', () => {
+        expect(scrollUp).toHaveBeenCalled();
+      });
+
+      it('updates url', () => {
+        expect(router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining(params),
+        });
+      });
+    });
+
     describe('when "filter" event is emitted by IssuableList', () => {
       it('updates IssuableList with url params', async () => {
         wrapper = createComponent();
@@ -595,6 +632,22 @@ describe('CE ServiceDeskListApp', () => {
 
         expect(router.push).toHaveBeenCalledWith({
           query: expect.objectContaining(urlParams),
+        });
+      });
+    });
+
+    describe('when "page-size-change" event is emitted by IssuableList', () => {
+      it('updates url params with new page size', async () => {
+        wrapper = createComponent();
+        router.push = jest.fn();
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('page-size-change', 50);
+        await nextTick();
+
+        expect(router.push).toHaveBeenCalledTimes(1);
+        expect(router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining({ first_page_size: 50 }),
         });
       });
     });

@@ -9,6 +9,9 @@ module Mutations
 
         argument :link_type, ::Types::WorkItems::RelatedLinkTypeEnum,
           required: false, description: 'Type of link. Defaults to `RELATED`.'
+        argument :work_items_ids, [::Types::GlobalIDType[::WorkItem]],
+          required: true,
+          description: "Global IDs of the items to link. Maximum number of IDs you can provide: #{MAX_WORK_ITEMS}."
 
         private
 

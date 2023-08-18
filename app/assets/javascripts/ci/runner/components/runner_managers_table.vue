@@ -6,6 +6,7 @@ import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { tableField } from '../utils';
 import { I18N_STATUS_NEVER_CONTACTED } from '../constants';
 import RunnerStatusBadge from './runner_status_badge.vue';
+import RunnerJobStatusBadge from './runner_job_status_badge.vue';
 
 export default {
   name: 'RunnerManagersTable',
@@ -15,6 +16,7 @@ export default {
     HelpPopover,
     GlIntersperse,
     RunnerStatusBadge,
+    RunnerJobStatusBadge,
     RunnerUpgradeStatusIcon: () =>
       import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
   },
@@ -52,7 +54,15 @@ export default {
       </help-popover>
     </template>
     <template #cell(status)="{ item = {} }">
-      <runner-status-badge :contacted-at="item.contactedAt" :status="item.status" />
+      <runner-status-badge
+        class="gl-vertical-align-middle"
+        :contacted-at="item.contactedAt"
+        :status="item.status"
+      />
+      <runner-job-status-badge
+        class="gl-vertical-align-middle"
+        :job-status="item.jobExecutionStatus"
+      />
     </template>
     <template #cell(version)="{ item = {} }">
       {{ item.version }}

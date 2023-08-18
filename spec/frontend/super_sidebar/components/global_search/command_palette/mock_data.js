@@ -69,24 +69,41 @@ export const TRANSFORMED_LINKS = [
     icon: 'users',
     keywords: 'Manage',
     text: 'Manage',
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'item_without_id',
+      'data-track-extra': '{"title":"Manage"}',
+    },
   },
   {
     href: '/flightjs/Flight/activity',
     icon: 'users',
     keywords: 'Activity',
     text: 'Manage > Activity',
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'activity',
+    },
   },
   {
     href: '/flightjs/Flight/-/project_members',
     icon: 'users',
     keywords: 'Members',
     text: 'Manage > Members',
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'members',
+    },
   },
   {
     href: '/flightjs/Flight/-/labels',
     icon: 'users',
     keywords: 'Labels',
     text: 'Manage > Labels',
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'labels',
+    },
   },
 ];
 

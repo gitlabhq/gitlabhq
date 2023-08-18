@@ -66,29 +66,46 @@ the setup and maintenance of the registry database for new and existing deploys.
 
 For the registry, we need to develop and validate import tooling which
 coordinates with the core import functionality which was used to migrate all
-container images on GitLab.com. Additionally, we must validate that each supported
-storage driver works as expected with the import process and provide estimated
-import times for admins.
+container images on GitLab.com. Additionally, we should provide estimated import
+times for admins for each supported storage driver.
 
-We can structure our work to meet the standards outlined in support for
-Experiment, Beta, and Alpha features. Doing so will help to prioritize core
-functionality and to allow users who wish to be early adopters to begin using
-the database and providing us with invaluable feedback.
+During the beta phase, we can highlight key features of our work to provide a
+quick reference for what features we have now, are planning, their statuses, and
+an excutive summary of the overall state of the migration experience.
+This could be advertised to self-managed users via a simple chart, allowing them
+to tell at a glance the status of this project and determine if it is feature-
+complete enough for their needs and level of risk tolerance. 
 
-These levels of support could be advertised to self-managed users via a simple
-chart, allowing them to tell at a glance the status of this project as it relates
-to their situation.
+This should be documented in the container registry administration documentation,
+rather than in this blueprint. Providing this information there will place it in
+a familiar place for self-managed admins, will allow for logical cross-linking
+from other sections of the same document, such as from the garbage collection
+section.
 
-| Installation | GCS | AWS | Filesystem | Azure | OSS | Swift|
-| ------ | ------ |------ | ------ | ------ |------ | ------ |
-| Omnibus |  GA | GA | Beta  | Experimental | Experimental | Experimental |
-| Charts | GA | GA |Beta | Experimental | Experimental | Experimental |
+For example:
 
-### Justification of Structuring Support by Driver
+The metadata database is in early beta for self-managed users. The core migration
+process for existing registries has been implemented, and online garbage collection
+is fully implemented. Certain database enabled features are only enabled for GitLab.com 
+and automatic database provisioning for the registry database is not available.
+Please see the table below for the status of features related to the container
+registry database.
 
-It's possible that we could simplify the proposed support matrix by structuring
-it only by deployment environment and not differentiate by storage driver. The
-following two sections briefly summarize several points for and against.
+| Feature                     | Description                                                         | Status             | Link                                                                                           |
+| --------------------------- | ------------------------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------- |
+| Import Tool                 | Allows existing deployments to migrate to the database.             | Completed          | [Import Tool](https://gitlab.com/gitlab-org/container-registry/-/issues/884)                   |
+| Automatic Import Validation | Tests that the import maintained data integrity of imported images. | Backlog            | [Validate self-managed imports](https://gitlab.com/gitlab-org/container-registry/-/issues/938) |
+| Foo Bar                     | Lorem ipsum dolor sit amet.                                         | Scheduled for 16.5 | <LINK>                                                                                         |
+
+### Structuring Support by Driver
+
+The import operation heavily relies on the object storage driver implementation
+to iterate over all registry metadata so that it can be stored in the database.
+It's possible that implementation differences in the driver will make a
+meaningful impact on the performance and reliability of the import process.
+
+The following two sections briefly summarize several points for and against
+structuring support by driver.
 
 #### Arguments Opposed to Structuring Support by Driver
 

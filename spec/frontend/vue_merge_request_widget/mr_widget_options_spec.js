@@ -1111,6 +1111,67 @@ describe('MrWidgetOptions', () => {
       registeredExtensions.extensions = [];
     });
 
+    describe('component name tier suffixes', () => {
+      let extension;
+
+      beforeEach(() => {
+        extension = workingExtension();
+      });
+
+      it('reports events without a CE suffix', () => {
+        extension.name = `${extension.name}CE`;
+
+        registerExtension(extension);
+        createComponent({ mountFn: mountExtended });
+
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_view',
+        );
+        expect(api.trackRedisHllUserEvent).not.toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_c_e_view',
+        );
+      });
+
+      it('reports events without a EE suffix', () => {
+        extension.name = `${extension.name}EE`;
+
+        registerExtension(extension);
+        createComponent({ mountFn: mountExtended });
+
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_view',
+        );
+        expect(api.trackRedisHllUserEvent).not.toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_e_e_view',
+        );
+      });
+
+      it('leaves non-CE & non-EE all caps suffixes intact', () => {
+        extension.name = `${extension.name}HI`;
+
+        registerExtension(extension);
+        createComponent({ mountFn: mountExtended });
+
+        expect(api.trackRedisHllUserEvent).not.toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_view',
+        );
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_extension_h_i_view',
+        );
+      });
+
+      it("doesn't remove CE or EE from the middle of a widget name", () => {
+        extension.name = 'TestCEExtensionEETest';
+
+        registerExtension(extension);
+        createComponent({ mountFn: mountExtended });
+
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_code_review_merge_request_widget_test_c_e_extension_e_e_test_view',
+        );
+      });
+    });
+
     it('triggers view events when mounted', () => {
       registerExtension(workingExtension());
       createComponent({ mountFn: mountExtended });

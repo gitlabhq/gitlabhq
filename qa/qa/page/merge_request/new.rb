@@ -11,15 +11,15 @@ module QA
         end
 
         view 'app/views/projects/merge_requests/creations/_new_compare.html.haml' do
-          element :compare_branches_button
+          element 'compare-branches-button'
         end
 
         view 'app/assets/javascripts/merge_requests/components/compare_dropdown.vue' do
           element :source_branch_dropdown, ':data-qa-selector="qaSelector"' # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/projects/merge_requests/_page.html.haml' do
-          element :diffs_tab
+        view 'app/views/projects/merge_requests/creations/_new_submit.html.haml' do
+          element 'diffs-tab'
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
@@ -34,7 +34,7 @@ module QA
         end
 
         def click_compare_branches_and_continue
-          click_element(:compare_branches_button)
+          click_element('compare-branches-button')
         end
 
         def create_merge_request
@@ -42,7 +42,7 @@ module QA
         end
 
         def click_diffs_tab
-          click_element(:diffs_tab)
+          click_element('diffs-tab')
         end
 
         def has_file?(file_name)

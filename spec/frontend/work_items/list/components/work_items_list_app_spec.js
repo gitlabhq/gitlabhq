@@ -2,6 +2,8 @@ import * as Sentry from '@sentry/browser';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { STATUS_OPEN } from '~/issues/constants';
@@ -20,6 +22,8 @@ describe('WorkItemsListApp component', () => {
   const defaultQueryHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponse);
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
+  const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
+  const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
 
   const mountComponent = ({ queryHandler = defaultQueryHandler } = {}) => {
     wrapper = shallowMount(WorkItemsListApp, {
@@ -37,6 +41,7 @@ describe('WorkItemsListApp component', () => {
       currentTab: STATUS_OPEN,
       error: '',
       issuables: [],
+      issuablesLoading: true,
       namespace: 'work-items',
       recentSearchesStorageKey: 'issues',
       searchInputPlaceholder: 'Search or filter results...',
@@ -45,6 +50,18 @@ describe('WorkItemsListApp component', () => {
       sortOptions: [],
       tabs: WorkItemsListApp.issuableListTabs,
     });
+  });
+
+  it('renders IssueCardStatistics component', () => {
+    mountComponent();
+
+    expect(findIssueCardStatistics().exists()).toBe(true);
+  });
+
+  it('renders IssueCardTimeInfo component', () => {
+    mountComponent();
+
+    expect(findIssueCardTimeInfo().exists()).toBe(true);
   });
 
   it('renders work items', async () => {

@@ -1,5 +1,7 @@
 <script>
 import * as Sentry from '@sentry/browser';
+import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import { STATUS_OPEN } from '~/issues/constants';
 import { __, s__ } from '~/locale';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
@@ -14,6 +16,8 @@ export default {
   issuableListTabs,
   components: {
     IssuableList,
+    IssueCardStatistics,
+    IssueCardTimeInfo,
   },
   inject: ['fullPath'],
   data() {
@@ -57,6 +61,7 @@ export default {
     :current-tab="state"
     :error="error"
     :issuables="workItems"
+    :issuables-loading="$apollo.queries.workItems.loading"
     namespace="work-items"
     recent-searches-storage-key="issues"
     :search-input-placeholder="$options.i18n.searchPlaceholder"
@@ -66,8 +71,16 @@ export default {
     :tabs="$options.issuableListTabs"
     @dismiss-alert="error = undefined"
   >
+    <template #timeframe="{ issuable = {} }">
+      <issue-card-time-info :issue="issuable" />
+    </template>
+
     <template #status="{ issuable }">
       {{ getStatus(issuable) }}
+    </template>
+
+    <template #statistics="{ issuable = {} }">
+      <issue-card-statistics :issue="issuable" />
     </template>
   </issuable-list>
 </template>

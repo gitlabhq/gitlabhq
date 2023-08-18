@@ -50,7 +50,7 @@
                   = _("Pipelines")
                   = gl_badge_tag @pipelines.size, { size: :sm }, { class: 'gl-tab-counter-badge' }
             %li.diffs-tab
-              = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tabvue', qa_selector: 'diffs_tab'} do
+              = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tabvue', testid: 'diffs-tab'} do
                 = _("Changes")
                 = gl_badge_tag @merge_request.diff_size, { size: :sm }, { class: 'gl-tab-counter-badge' }
 

@@ -21,4 +21,18 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       )
     end
   end
+
+  describe '#work_items_list_data' do
+    let_it_be(:group) { build(:group) }
+
+    subject(:work_items_list_data) { helper.work_items_list_data(group) }
+
+    it 'returns expected data' do
+      expect(work_items_list_data).to include(
+        {
+          full_path: group.full_path
+        }
+      )
+    end
+  end
 end

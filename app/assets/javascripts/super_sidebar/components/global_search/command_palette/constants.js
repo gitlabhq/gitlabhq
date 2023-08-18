@@ -6,6 +6,16 @@ export const PROJECT_HANDLE = ':';
 export const ISSUE_HANDLE = '#';
 export const PATH_HANDLE = '/';
 
+export const TRACKING_ACTIVATE_COMMAND_PALETTE = 'activate_command_palette';
+export const TRACKING_CLICK_COMMAND_PALETTE_ITEM = 'click_command_palette_item';
+export const TRACKING_HANDLE_LABEL_MAP = {
+  [COMMAND_HANDLE]: 'command',
+  [USER_HANDLE]: 'user',
+  [PROJECT_HANDLE]: 'project',
+  [PATH_HANDLE]: 'path',
+  // No ISSUE_HANDLE. See https://gitlab.com/gitlab-org/gitlab/-/issues/417434.
+};
+
 export const COMMON_HANDLES = [COMMAND_HANDLE, USER_HANDLE, PROJECT_HANDLE];
 export const SEARCH_OR_COMMAND_MODE_PLACEHOLDER = sprintf(
   s__(

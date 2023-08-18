@@ -1,8 +1,24 @@
-import { WIDGET_TYPE_ASSIGNEES, WIDGET_TYPE_HIERARCHY, WIDGET_TYPE_LABELS } from './constants';
+import {
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_HEALTH_STATUS,
+  WIDGET_TYPE_HIERARCHY,
+  WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_START_AND_DUE_DATE,
+  WIDGET_TYPE_WEIGHT,
+} from './constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
 
+export const isHealthStatusWidget = (widget) => widget.type === WIDGET_TYPE_HEALTH_STATUS;
+
 export const isLabelsWidget = (widget) => widget.type === WIDGET_TYPE_LABELS;
+
+export const isMilestoneWidget = (widget) => widget.type === WIDGET_TYPE_MILESTONE;
+
+export const isStartAndDueDateWidget = (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE;
+
+export const isWeightWidget = (widget) => widget.type === WIDGET_TYPE_WEIGHT;
 
 export const findHierarchyWidgets = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);

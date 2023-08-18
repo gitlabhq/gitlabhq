@@ -1,6 +1,6 @@
 .gl-md-ml-3.dropdown.gl-dropdown{ class: "gl-display-none! gl-md-display-flex!" }
   #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
-  = button_tag type: 'button', class: "btn dropdown-toggle btn-confirm gl-button gl-dropdown-toggle", data: { toggle: 'dropdown', qa_selector: 'mr_code_dropdown' } do
+  = button_tag type: 'button', class: "btn dropdown-toggle btn-confirm gl-button gl-dropdown-toggle", data: { toggle: 'dropdown', testid: 'mr-code-dropdown' } do
     %span.gl-dropdown-button-text= _('Code')
     = sprite_icon "chevron-down", size: 16, css_class: "dropdown-icon gl-icon gl-ml-2 gl-mr-0!"
   .dropdown-menu.dropdown-menu-right
@@ -16,7 +16,7 @@
                 = _('Check out branch')
           - if current_user
             %li.gl-dropdown-item
-              = link_to ide_merge_request_path(@merge_request), class: 'dropdown-item', target: '_blank', data: { qa_selector: 'open_in_web_ide_button' } do
+              = link_to ide_merge_request_path(@merge_request), class: 'dropdown-item', target: '_blank', data: { testid: 'open-in-web-ide-button' } do
                 .gl-dropdown-item-text-wrapper
                   = _('Open in Web IDE')
           - if Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
@@ -30,10 +30,10 @@
             %header.dropdown-header
               = _('Download')
           %li.gl-dropdown-item
-            = link_to merge_request_path(@merge_request, format: :patch), class: 'dropdown-item', download: '', data: { qa_selector: 'download_email_patches_menu_item' } do
+            = link_to merge_request_path(@merge_request, format: :patch), class: 'dropdown-item', download: '', data: { testid: 'download-email-patches-menu-item' } do
               .gl-dropdown-item-text-wrapper
                 = _('Patches')
           %li.gl-dropdown-item
-            = link_to merge_request_path(@merge_request, format: :diff), class: 'dropdown-item', download: '', data: { qa_selector: 'download_plain_diff_menu_item' } do
+            = link_to merge_request_path(@merge_request, format: :diff), class: 'dropdown-item', download: '', data: { testid: 'download-plain-diff-menu-item' } do
               .gl-dropdown-item-text-wrapper
                 = _('Plain diff')

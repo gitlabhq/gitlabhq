@@ -10,7 +10,7 @@ module Ci
 
     TEMPORARY_LOCK_TIMEOUT = 3.seconds
 
-    Result = Struct.new(:build, :build_json, :valid?)
+    Result = Struct.new(:build, :build_json, :build_presented, :valid?)
 
     ##
     # The queue depth limit number has been determined by observing 95
@@ -43,7 +43,7 @@ module Ci
       if !db_all_caught_up && !result.build
         metrics.increment_queue_operation(:queue_replication_lag)
 
-        ::Ci::RegisterJobService::Result.new(nil, nil, false) # rubocop:disable Cop/AvoidReturnFromBlocks
+        ::Ci::RegisterJobService::Result.new(nil, nil, nil, false) # rubocop:disable Cop/AvoidReturnFromBlocks
       else
         result
       end
@@ -86,7 +86,7 @@ module Ci
         next unless result
 
         if result.valid?
-          @metrics.register_success(result.build)
+          @metrics.register_success(result.build_presented)
           @metrics.observe_queue_depth(:found, depth)
 
           return result # rubocop:disable Cop/AvoidReturnFromBlocks
@@ -102,7 +102,7 @@ module Ci
       @metrics.observe_queue_depth(:not_found, depth) if valid
       @metrics.register_failure
 
-      Result.new(nil, nil, valid)
+      Result.new(nil, nil, nil, valid)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -159,7 +159,7 @@ module Ci
         # this operation.
         #
         if ::Ci::UpdateBuildQueueService.new.remove!(build)
-          return Result.new(nil, nil, false)
+          return Result.new(nil, nil, nil, false)
         end
 
         return
@@ -190,11 +190,11 @@ module Ci
       # to make sure that this is properly handled by runner.
       @metrics.increment_queue_operation(:build_conflict_lock)
 
-      Result.new(nil, nil, false)
+      Result.new(nil, nil, nil, false)
     rescue StateMachines::InvalidTransition
       @metrics.increment_queue_operation(:build_conflict_transition)
 
-      Result.new(nil, nil, false)
+      Result.new(nil, nil, nil, false)
     rescue StandardError => ex
       @metrics.increment_queue_operation(:build_conflict_exception)
 
@@ -221,7 +221,7 @@ module Ci
       log_build_dependencies_size(presented_build)
 
       build_json = Gitlab::Json.dump(::API::Entities::Ci::JobRequest::Response.new(presented_build))
-      Result.new(build, build_json, true)
+      Result.new(build, build_json, presented_build, true)
     end
 
     def log_build_dependencies_size(presented_build)

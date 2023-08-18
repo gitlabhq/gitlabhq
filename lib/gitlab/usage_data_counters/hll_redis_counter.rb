@@ -18,6 +18,7 @@ module Gitlab
       class << self
         include Gitlab::Utils::UsageData
         include Gitlab::Usage::TimeFrame
+        include Gitlab::Usage::TimeSeriesStorable
 
         # Track unique events
         #
@@ -78,13 +79,6 @@ module Gitlab
           redis_usage_data { Gitlab::Redis::HLL.count(keys: keys) }
         end
 
-        def keys_for_aggregation(events:, start_date:, end_date:)
-          end_date = end_date.end_of_week - 1.week
-          (start_date.to_date..end_date.to_date).map do |date|
-            events.map { |event| redis_key(event, date) }
-          end.flatten.uniq
-        end
-
         def load_events
           events = Gitlab::Usage::MetricDefinition.all.map do |d|
             next unless d.available?
@@ -109,7 +103,6 @@ module Gitlab
           known_events.select { |event| event_names.include?(event[:name]) }
         end
 
-        # Compose the key in order to store events daily or weekly
         def redis_key(event, time)
           raise UnknownEvent, "Unknown event #{event[:name]}" unless known_events_names.include?(event[:name].to_s)
 

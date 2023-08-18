@@ -1039,6 +1039,13 @@ module Ci
       end
     end
 
+    def time_in_queue_seconds
+      return if queued_at.nil?
+
+      (::Time.current - queued_at).seconds.to_i
+    end
+    strong_memoize_attr :time_in_queue_seconds
+
     protected
 
     def run_status_commit_hooks!

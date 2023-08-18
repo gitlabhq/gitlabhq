@@ -81,6 +81,8 @@ class Project < ApplicationRecord
   MAX_SUGGESTIONS_TEMPLATE_LENGTH = 255
   MAX_COMMIT_TEMPLATE_LENGTH = 500
 
+  INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET = 5
+
   DEFAULT_MERGE_COMMIT_TEMPLATE = <<~MSG.rstrip.freeze
     Merge branch '%{source_branch}' into '%{target_branch}'
 
@@ -3269,6 +3271,13 @@ class Project < ApplicationRecord
 
     errors.add(:path, s_('Project|already in use'))
   end
+
+  def instance_runner_running_jobs_count
+    # excluding currently started job
+    ::Ci::RunningBuild.instance_type.where(project_id: self.id)
+                      .limit(INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET + 1).count - 1
+  end
+  strong_memoize_attr :instance_runner_running_jobs_count
 
   private
 

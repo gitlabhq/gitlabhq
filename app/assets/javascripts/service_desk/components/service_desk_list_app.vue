@@ -6,6 +6,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import axios from '~/lib/utils/axios_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
+import { scrollUp } from '~/lib/utils/scroll_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
@@ -206,6 +207,18 @@ export default {
         [STATUS_ALL]: allIssues?.count,
       };
     },
+    currentTabCount() {
+      return this.tabCounts[this.state] ?? 0;
+    },
+    showPaginationControls() {
+      return (
+        this.serviceDeskIssues.length > 0 &&
+        (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage)
+      );
+    },
+    showPageSizeControls() {
+      return this.currentTabCount > DEFAULT_PAGE_SIZE;
+    },
     isLoading() {
       return this.$apollo.queries.serviceDeskIssues.loading;
     },
@@ -404,6 +417,32 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
+    handleNextPage() {
+      this.pageParams = {
+        afterCursor: this.pageInfo.endCursor,
+        firstPageSize: this.pageSize,
+      };
+      scrollUp();
+
+      this.$router.push({ query: this.urlParams });
+    },
+    handlePreviousPage() {
+      this.pageParams = {
+        beforeCursor: this.pageInfo.startCursor,
+        lastPageSize: this.pageSize,
+      };
+      scrollUp();
+
+      this.$router.push({ query: this.urlParams });
+    },
+    handlePageSizeChange(newPageSize) {
+      const pageParam = getParameterByName(PARAM_LAST_PAGE_SIZE) ? 'lastPageSize' : 'firstPageSize';
+      this.pageParams[pageParam] = newPageSize;
+      this.pageSize = newPageSize;
+      scrollUp();
+
+      this.$router.push({ query: this.urlParams });
+    },
     handleSort(sortKey) {
       if (this.sortKey === sortKey) {
         return;
@@ -525,6 +564,8 @@ export default {
       :issuables-loading="isLoading"
       :initial-filter-value="filterTokens"
       :show-filtered-search-friendly-text="hasOrFeature"
+      :show-pagination-controls="showPaginationControls"
+      :show-page-size-change-controls="showPageSizeControls"
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :is-manual-ordering="isManualOrdering"
@@ -533,11 +574,17 @@ export default {
       :tab-counts="tabCounts"
       :current-tab="state"
       :default-page-size="pageSize"
+      :has-next-page="pageInfo.hasNextPage"
+      :has-previous-page="pageInfo.hasPreviousPage"
       sync-filter-and-sort
+      use-keyset-pagination
       @click-tab="handleClickTab"
       @filter="handleFilter"
       @sort="handleSort"
       @reorder="handleReorder"
+      @next-page="handleNextPage"
+      @previous-page="handlePreviousPage"
+      @page-size-change="handlePageSizeChange"
     >
       <template #empty-state>
         <empty-state-with-any-issues :has-search="hasSearch" :is-open-tab="isOpenTab" />

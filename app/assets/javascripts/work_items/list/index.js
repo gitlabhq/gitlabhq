@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import WorkItemsListApp from './components/work_items_list_app.vue';
 
 export const mountWorkItemsListApp = () => {
@@ -12,6 +13,8 @@ export const mountWorkItemsListApp = () => {
 
   Vue.use(VueApollo);
 
+  const { fullPath, hasIssuableHealthStatusFeature, hasIssueWeightsFeature } = el.dataset;
+
   return new Vue({
     el,
     name: 'WorkItemsListRoot',
@@ -19,7 +22,9 @@ export const mountWorkItemsListApp = () => {
       defaultClient: createDefaultClient(),
     }),
     provide: {
-      fullPath: el.dataset.fullPath,
+      fullPath,
+      hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
+      hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
     },
     render: (createComponent) => createComponent(WorkItemsListApp),
   });

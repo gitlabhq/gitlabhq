@@ -57,14 +57,10 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363348'
         ) do
           expect do
-            Resource::File.fabricate_via_api! do |file|
-              file.api_client = parent_group_user_api_client
-              file.project = sub_group_project
-              file.branch = "new_branch_#{SecureRandom.hex(8)}"
-              file.commit_message = 'Add new file'
-              file.name = 'test.txt'
-              file.content = "New file"
-            end
+            create(:file,
+              api_client: parent_group_user_api_client,
+              project: sub_group_project,
+              branch: "new_branch_#{SecureRandom.hex(8)}")
           end.not_to raise_error
         end
 
@@ -138,14 +134,10 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363343'
         ) do
           expect do
-            Resource::File.fabricate_via_api! do |file|
-              file.api_client = sub_group_user_api_client
-              file.project = parent_group_project
-              file.branch = "new_branch_#{SecureRandom.hex(8)}"
-              file.commit_message = 'Add new file'
-              file.name = 'test.txt'
-              file.content = "New file"
-            end
+            create(:file,
+              api_client: sub_group_user_api_client,
+              project: parent_group_project,
+              branch: "new_branch_#{SecureRandom.hex(8)}")
           end.to raise_error(Resource::ApiFabricator::ResourceFabricationFailedError, /403 Forbidden/)
         end
 

@@ -260,7 +260,9 @@ export default {
       </gl-intersection-observer>
     </td>
     <td class="tree-time-ago text-right cursor-default gl-text-secondary">
-      <timeago-tooltip v-if="commitData" :time="commitData.committedDate" />
+      <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
+        <timeago-tooltip v-if="commitData" :time="commitData.committedDate" />
+      </gl-intersection-observer>
       <gl-skeleton-loader v-if="showSkeletonLoader" :lines="1" />
     </td>
   </tr>

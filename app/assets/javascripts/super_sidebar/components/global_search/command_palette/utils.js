@@ -1,6 +1,11 @@
 import { isNil, omitBy } from 'lodash';
 import { objectToQuery, joinPaths } from '~/lib/utils/url_utility';
-import { SEARCH_SCOPE, GLOBAL_COMMANDS_GROUP_TITLE } from './constants';
+import { TRACKING_UNKNOWN_ID } from '~/super_sidebar/constants';
+import {
+  SEARCH_SCOPE,
+  GLOBAL_COMMANDS_GROUP_TITLE,
+  TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+} from './constants';
 
 export const commandMapper = ({ name, items }) => {
   // TODO: we filter out invite_members for now, because it is complicated to add the invite members modal here
@@ -12,18 +17,34 @@ export const commandMapper = ({ name, items }) => {
 };
 
 export const linksReducer = (acc, menuItem) => {
+  const trackingAttrs = ({ id, title }) => {
+    return {
+      extraAttrs: {
+        'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+        'data-track-label': id || TRACKING_UNKNOWN_ID,
+        ...(id
+          ? {}
+          : {
+              'data-track-extra': JSON.stringify({ title }),
+            }),
+      },
+    };
+  };
+
   acc.push({
     text: menuItem.title,
     keywords: menuItem.title,
     icon: menuItem.icon,
     href: menuItem.link,
+    ...trackingAttrs(menuItem),
   });
   if (menuItem.items?.length) {
-    const items = menuItem.items.map(({ title, link }) => ({
-      keywords: title,
-      text: [menuItem.title, title].join(' > '),
-      href: link,
+    const items = menuItem.items.map((item) => ({
+      keywords: item.title,
+      text: [menuItem.title, item.title].join(' > '),
+      href: item.link,
       icon: menuItem.icon,
+      ...trackingAttrs(item),
     }));
 
     /* eslint-disable-next-line no-param-reassign */
@@ -37,6 +58,10 @@ export const fileMapper = (projectBlobPath, file) => {
     icon: 'doc-code',
     text: file,
     href: joinPaths(projectBlobPath, file),
+    extraAttrs: {
+      'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+      'data-track-label': 'file',
+    },
   };
 };
 

@@ -53,10 +53,10 @@ module QA
         end
 
         view 'app/views/projects/merge_requests/_code_dropdown.html.haml' do
-          element :mr_code_dropdown
-          element :download_email_patches_menu_item
-          element :download_plain_diff_menu_item
-          element :open_in_web_ide_button
+          element 'mr-code-dropdown'
+          element 'download-email-patches-menu-item'
+          element 'download-plain-diff-menu-item'
+          element 'open-in-web-ide-button'
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_pipeline.vue' do
@@ -124,9 +124,9 @@ module QA
         end
 
         view 'app/views/projects/merge_requests/_page.html.haml' do
-          element :notes_tab, required: true
-          element :commits_tab, required: true
-          element :diffs_tab, required: true
+          element 'notes-tab', required: true
+          element 'commits-tab', required: true
+          element 'diffs-tab', required: true
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue' do
@@ -190,18 +190,18 @@ module QA
         end
 
         def click_discussions_tab
-          click_element(:notes_tab)
+          click_element('notes-tab')
 
           wait_for_requests
         end
 
         def click_commits_tab
-          click_element(:commits_tab)
+          click_element('commits-tab')
         end
 
         def click_diffs_tab
           # Do not wait for spinner due to https://gitlab.com/gitlab-org/gitlab/-/issues/398584
-          click_element(:diffs_tab, skip_finished_loading_check: true)
+          click_element('diffs-tab', skip_finished_loading_check: true)
         end
 
         def click_pipeline_link
@@ -395,16 +395,16 @@ module QA
           # Click by JS is needed to bypass the Moved MR actions popover
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element(:mr_code_dropdown))
-          visit_link_in_element(:download_email_patches_menu_item)
+          click_by_javascript(find_element('mr-code-dropdown'))
+          visit_link_in_element('download-email-patches-menu-item')
         end
 
         def view_plain_diff
           # Click by JS is needed to bypass the Moved MR actions popover
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element(:mr_code_dropdown))
-          visit_link_in_element(:download_plain_diff_menu_item)
+          click_by_javascript(find_element('mr-code-dropdown'))
+          visit_link_in_element('download-plain-diff-menu-item')
         end
 
         def wait_for_merge_request_error_message
@@ -417,8 +417,8 @@ module QA
           # Click by JS is needed to bypass the Moved MR actions popover
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element(:mr_code_dropdown))
-          click_element(:open_in_web_ide_button)
+          click_by_javascript(find_element('mr-code-dropdown'))
+          click_element('open-in-web-ide-button')
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
           wait_for_requests
         end

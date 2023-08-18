@@ -525,20 +525,20 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       namespace :prometheus do
-        resources :alerts, constraints: { id: /\d+/ }, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
-          post :notify, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
-          member do
-            get :metrics_dashboard # rubocop:todo Cop/PutProjectRoutesUnderScope
-          end
-        end
-
         resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           get :active_common, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
           post :validate_query, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
         end
       end
 
-      post 'alerts/notify', to: 'alerting/notifications#create' # rubocop:todo Cop/PutProjectRoutesUnderScope
+      scope :prometheus, as: :prometheus do
+        resources :alerts, constraints: { id: /\d+/ }, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+          post :notify, on: :collection, to: 'alerting/notifications#create', defaults: { endpoint_identifier: 'legacy-prometheus' } # rubocop: disable Cop/PutProjectRoutesUnderScope
+          get :metrics_dashboard, on: :member # rubocop:todo Cop/PutProjectRoutesUnderScope
+        end
+      end
+
+      post 'alerts/notify', to: 'alerting/notifications#create', defaults: { endpoint_identifier: 'legacy' } # rubocop:todo Cop/PutProjectRoutesUnderScope
       post 'alerts/notify/:name/:endpoint_identifier', # rubocop:todo Cop/PutProjectRoutesUnderScope
         to: 'alerting/notifications#create',
         as: :alert_http_integration,

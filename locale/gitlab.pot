@@ -796,6 +796,12 @@ msgstr ""
 msgid "%{italic_start}What's new%{italic_end} is inactive and cannot be viewed."
 msgstr ""
 
+msgid "%{item_ids} could not be removed due to insufficient permissions"
+msgstr ""
+
+msgid "%{item_ids} could not be removed due to not being linked"
+msgstr ""
+
 msgid "%{itemsCount} issues with a limit of %{maxIssueCount}"
 msgstr ""
 
@@ -23603,6 +23609,9 @@ msgstr ""
 msgid "IDE|This option is disabled because you don't have write permissions for the current branch."
 msgstr ""
 
+msgid "IDs with errors: %{error_messages}."
+msgstr ""
+
 msgid "IMPORTANT: Use this setting only for VERY strict auditing purposes. When turned on, nobody will be able to remove the label from any merge requests after they are merged. In addition, nobody will be able to turn off this setting or delete this label."
 msgstr ""
 
@@ -31419,7 +31428,7 @@ msgstr ""
 msgid "No more than %{max_issues} issues can be updated at the same time"
 msgstr ""
 
-msgid "No more than %{max_work_items} work items can be linked at the same time."
+msgid "No more than %{max_work_items} work items can be modified at the same time."
 msgstr ""
 
 msgid "No other labels with such name or description"
@@ -31534,6 +31543,12 @@ msgid "No webhook events"
 msgstr ""
 
 msgid "No webhooks enabled. Select trigger events above."
+msgstr ""
+
+msgid "No work item IDs provided."
+msgstr ""
+
+msgid "No work item found."
 msgstr ""
 
 msgid "No worries, you can still use all the %{strong}%{plan_name}%{strong_close} features for now. You have %{remaining_days} day to renew your subscription."
@@ -38854,36 +38869,6 @@ msgstr ""
 msgid "RegistrationFeatures|use this feature"
 msgstr ""
 
-msgid "RegistrationVerification|Are you sure you want to skip this step?"
-msgstr ""
-
-msgid "RegistrationVerification|Enable free compute minutes"
-msgstr ""
-
-msgid "RegistrationVerification|GitLab will not charge your card, it will only be used for validation."
-msgstr ""
-
-msgid "RegistrationVerification|Pipelines using shared GitLab runners will fail until you validate your account."
-msgstr ""
-
-msgid "RegistrationVerification|Skip this for now"
-msgstr ""
-
-msgid "RegistrationVerification|To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method, such as a debit or credit card. Until then, you can't use free compute minutes to build your application."
-msgstr ""
-
-msgid "RegistrationVerification|Validate account"
-msgstr ""
-
-msgid "RegistrationVerification|Verify your identity"
-msgstr ""
-
-msgid "RegistrationVerification|Yes, I'd like to skip"
-msgstr ""
-
-msgid "RegistrationVerification|You can alway verify your account at a later time."
-msgstr ""
-
 msgid "Registry entry enqueued to be resynced"
 msgstr ""
 
@@ -45956,6 +45941,9 @@ msgstr ""
 msgid "Successfully unblocked"
 msgstr ""
 
+msgid "Successfully unlinked IDs: %{item_ids}."
+msgstr ""
+
 msgid "Successfully unlocked"
 msgstr ""
 
@@ -52212,16 +52200,19 @@ msgstr ""
 msgid "VulnerabilityExport|Vulnerability"
 msgstr ""
 
-msgid "VulnerabilityManagement|%{statusStart}Confirmed%{statusEnd} %{timeago} by %{user}"
+msgid "VulnerabilityManagement|%{statusStart}Confirmed%{statusEnd} · %{timeago} by %{user}"
 msgstr ""
 
-msgid "VulnerabilityManagement|%{statusStart}Detected%{statusEnd} %{timeago} in pipeline %{pipelineLink}"
+msgid "VulnerabilityManagement|%{statusStart}Detected%{statusEnd} · %{timeago} in pipeline %{pipelineLink}"
 msgstr ""
 
-msgid "VulnerabilityManagement|%{statusStart}Dismissed%{statusEnd} %{timeago} by %{user}"
+msgid "VulnerabilityManagement|%{statusStart}Dismissed%{statusEnd} · %{timeago} by %{user}"
 msgstr ""
 
-msgid "VulnerabilityManagement|%{statusStart}Resolved%{statusEnd} %{timeago} by %{user}"
+msgid "VulnerabilityManagement|%{statusStart}Dismissed%{statusEnd}: %{dismissalReason} · %{timeago} by %{user}"
+msgstr ""
+
+msgid "VulnerabilityManagement|%{statusStart}Resolved%{statusEnd} · %{timeago} by %{user}"
 msgstr ""
 
 msgid "VulnerabilityManagement|(optional) Include the solution to the vulnerability if available."
@@ -54801,9 +54792,6 @@ msgid "Your applications"
 msgstr ""
 
 msgid "Your authorized applications"
-msgstr ""
-
-msgid "Your browser does not support iFrames"
 msgstr ""
 
 msgid "Your browser doesn't support WebAuthn. Please use a supported browser, e.g. Chrome (67+) or Firefox (60+)."

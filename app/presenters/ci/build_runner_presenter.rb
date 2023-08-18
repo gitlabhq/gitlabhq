@@ -61,6 +61,16 @@ module Ci
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    def project_jobs_running_on_instance_runners_count
+      # if not instance runner we don't care about that value and present `+Inf` as a placeholder for Prometheus
+      return '+Inf' unless runner.instance_type?
+
+      return project.instance_runner_running_jobs_count.to_s if
+        project.instance_runner_running_jobs_count < Project::INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET
+
+      "#{Project::INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET}+"
+    end
+
     private
 
     def create_archive(artifacts)

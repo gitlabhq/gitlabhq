@@ -20,14 +20,13 @@ module QA
         # add second file to repo to enable diff from initial commit
         @commit_message = 'Add second file'
 
-        Resource::File.fabricate_via_api! do |file|
-          file.project = @project
-          file.name = 'second'
-          file.content = 'second file content'
-          file.commit_message = @commit_message
-          file.author_name = @user.name
-          file.author_email = @user.public_email
-        end
+        create(:file,
+          project: @project,
+          name: 'second',
+          content: 'second file content',
+          commit_message: @commit_message,
+          author_name: @user.name,
+          author_email: @user.public_email)
       end
 
       def view_commit

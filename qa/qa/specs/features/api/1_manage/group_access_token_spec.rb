@@ -18,14 +18,10 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367064'
       ) do
         expect do
-          Resource::File.fabricate_via_api! do |file|
-            file.api_client = api_client
-            file.project = project
-            file.branch = "new_branch_#{SecureRandom.hex(8)}"
-            file.commit_message = 'Add new file'
-            file.name = "text-#{SecureRandom.hex(8)}.txt"
-            file.content = 'New file'
-          end
+          create(:file,
+            api_client: api_client,
+            project: project,
+            branch: "new_branch_#{SecureRandom.hex(8)}")
         rescue StandardError => e
           QA::Runtime::Logger.error("Full failure message: #{e.message}")
           raise

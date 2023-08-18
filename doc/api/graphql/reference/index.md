@@ -3750,6 +3750,7 @@ Input type: `GoogleCloudLoggingConfigurationCreateInput`
 | <a id="mutationgooglecloudloggingconfigurationcreategoogleprojectidname"></a>`googleProjectIdName` | [`String!`](#string) | Unique identifier of the Google Cloud project to which the logging configuration belongs. |
 | <a id="mutationgooglecloudloggingconfigurationcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
 | <a id="mutationgooglecloudloggingconfigurationcreatelogidname"></a>`logIdName` | [`String`](#string) | Unique identifier used to distinguish and manage different logs within the same Google Cloud project.(defaults to `audit_events`). |
+| <a id="mutationgooglecloudloggingconfigurationcreatename"></a>`name` | [`String`](#string) | Destination name. |
 | <a id="mutationgooglecloudloggingconfigurationcreateprivatekey"></a>`privateKey` | [`String!`](#string) | Private Key associated with the service account. This key is used to authenticate the service account and authorize it to interact with the Google Cloud Logging service. |
 
 #### Fields
@@ -3791,6 +3792,7 @@ Input type: `GoogleCloudLoggingConfigurationUpdateInput`
 | <a id="mutationgooglecloudloggingconfigurationupdategoogleprojectidname"></a>`googleProjectIdName` | [`String`](#string) | Unique identifier of the Google Cloud project to which the logging configuration belongs. |
 | <a id="mutationgooglecloudloggingconfigurationupdateid"></a>`id` | [`AuditEventsGoogleCloudLoggingConfigurationID!`](#auditeventsgooglecloudloggingconfigurationid) | ID of the google Cloud configuration to update. |
 | <a id="mutationgooglecloudloggingconfigurationupdatelogidname"></a>`logIdName` | [`String`](#string) | Unique identifier used to distinguish and manage different logs within the same Google Cloud project. |
+| <a id="mutationgooglecloudloggingconfigurationupdatename"></a>`name` | [`String`](#string) | Destination name. |
 | <a id="mutationgooglecloudloggingconfigurationupdateprivatekey"></a>`privateKey` | [`String`](#string) | Private Key associated with the service account. This key is used to authenticate the service account and authorize it to interact with the Google Cloud Logging service. |
 
 #### Fields
@@ -7471,6 +7473,33 @@ Input type: `WorkItemExportInput`
 | <a id="mutationworkitemexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemexporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemexportmessage"></a>`message` | [`String`](#string) | Export request result message. |
+
+### `Mutation.workItemRemoveLinkedItems`
+
+Remove items linked to the work item.
+
+WARNING:
+**Introduced** in 16.3.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `WorkItemRemoveLinkedItemsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemremovelinkeditemsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemremovelinkeditemsid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+| <a id="mutationworkitemremovelinkeditemsworkitemsids"></a>`workItemsIds` | [`[WorkItemID!]!`](#workitemid) | Global IDs of the items to unlink. Maximum number of IDs you can provide: 3. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemremovelinkeditemsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemremovelinkeditemserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemremovelinkeditemsmessage"></a>`message` | [`String`](#string) | Linked items update result message. |
+| <a id="mutationworkitemremovelinkeditemsworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
 ### `Mutation.workItemSubscribe`
 
@@ -16583,6 +16612,7 @@ Stores Google Cloud Logging configurations associated with IAM service accounts,
 | <a id="googlecloudloggingconfigurationtypegroup"></a>`group` | [`Group!`](#group) | Group the configuration belongs to. |
 | <a id="googlecloudloggingconfigurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
 | <a id="googlecloudloggingconfigurationtypelogidname"></a>`logIdName` | [`String!`](#string) | Log ID. |
+| <a id="googlecloudloggingconfigurationtypename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 | <a id="googlecloudloggingconfigurationtypeprivatekey"></a>`privateKey` | [`String!`](#string) | Private key. |
 
 ### `GpgSignature`

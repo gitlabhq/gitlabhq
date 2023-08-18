@@ -14,7 +14,6 @@ module Gitlab
 
         METRICS_SHARD_TAG_PREFIX = 'metrics_shard::'
         DEFAULT_METRICS_SHARD = 'default'
-        JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5
 
         OPERATION_COUNTERS = [
           :build_can_pick,
@@ -57,7 +56,7 @@ module Gitlab
 
         def register_success(job)
           labels = { shared_runner: runner.instance_type?,
-                     jobs_running_for_project: jobs_running_for_project(job),
+                     jobs_running_for_project: job.project_jobs_running_on_instance_runners_count,
                      shard: DEFAULT_METRICS_SHARD }
 
           if runner.instance_type?
@@ -65,7 +64,7 @@ module Gitlab
             labels[:shard] = shard.gsub(METRICS_SHARD_TAG_PREFIX, '') if shard
           end
 
-          self.class.job_queue_duration_seconds.observe(labels, Time.current - job.queued_at) unless job.queued_at.nil?
+          self.class.job_queue_duration_seconds.observe(labels, job.time_in_queue_seconds) unless job.queued_at.nil?
           self.class.attempt_counter.increment
         end
 
@@ -231,28 +230,6 @@ module Gitlab
             Gitlab::Metrics.histogram(name, comment, labels, buckets)
           end
         end
-
-        private
-
-        # rubocop: disable CodeReuse/ActiveRecord
-        def jobs_running_for_project(job)
-          return '+Inf' unless runner.instance_type?
-
-          # excluding currently started job
-          running_jobs_count = running_jobs_relation(job)
-            .limit(JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET + 1).count - 1
-
-          if running_jobs_count < JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET
-            running_jobs_count
-          else
-            "#{JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET}+"
-          end
-        end
-
-        def running_jobs_relation(job)
-          ::Ci::RunningBuild.instance_type.where(project_id: job.project_id)
-        end
-        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

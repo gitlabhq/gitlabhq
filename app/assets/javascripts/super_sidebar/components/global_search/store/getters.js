@@ -14,6 +14,7 @@ import {
   SEARCH_RESULTS_ORDER,
 } from '~/vue_shared/global_search/constants';
 import { getFormattedItem } from '../utils';
+import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from '../command_palette/constants';
 
 import {
   ICON_GROUP,
@@ -172,6 +173,10 @@ export const scopedSearchOptions = (state, getters) => {
       scopeCategory: PROJECTS_CATEGORY,
       icon: ICON_PROJECT,
       href: getters.projectUrl,
+      extraAttrs: {
+        'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+        'data-track-label': 'scoped_in_project',
+      },
     });
   }
 
@@ -182,6 +187,10 @@ export const scopedSearchOptions = (state, getters) => {
       scopeCategory: GROUPS_CATEGORY,
       icon: state.searchContext.group?.full_name?.includes('/') ? ICON_SUBGROUP : ICON_GROUP,
       href: getters.groupUrl,
+      extraAttrs: {
+        'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+        'data-track-label': 'scoped_in_group',
+      },
     });
   }
 
@@ -189,6 +198,10 @@ export const scopedSearchOptions = (state, getters) => {
     text: 'scoped-in-all',
     description: MSG_IN_ALL_GITLAB,
     href: getters.allUrl,
+    extraAttrs: {
+      'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+      'data-track-label': 'scoped_in_all',
+    },
   });
 
   return items;

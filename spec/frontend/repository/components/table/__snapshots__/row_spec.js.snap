@@ -54,12 +54,14 @@ exports[`Repository table row component renders a symlink table row 1`] = `
   <td
     class="tree-time-ago text-right cursor-default gl-text-secondary"
   >
-    <timeago-tooltip-stub
-      cssclass=""
-      datetimeformat="DATE_WITH_TIME_FORMAT"
-      time="2019-01-01"
-      tooltipplacement="top"
-    />
+    <gl-intersection-observer-stub>
+      <timeago-tooltip-stub
+        cssclass=""
+        datetimeformat="DATE_WITH_TIME_FORMAT"
+        time="2019-01-01"
+        tooltipplacement="top"
+      />
+    </gl-intersection-observer-stub>
      
     <!---->
   </td>
@@ -120,12 +122,14 @@ exports[`Repository table row component renders table row 1`] = `
   <td
     class="tree-time-ago text-right cursor-default gl-text-secondary"
   >
-    <timeago-tooltip-stub
-      cssclass=""
-      datetimeformat="DATE_WITH_TIME_FORMAT"
-      time="2019-01-01"
-      tooltipplacement="top"
-    />
+    <gl-intersection-observer-stub>
+      <timeago-tooltip-stub
+        cssclass=""
+        datetimeformat="DATE_WITH_TIME_FORMAT"
+        time="2019-01-01"
+        tooltipplacement="top"
+      />
+    </gl-intersection-observer-stub>
      
     <!---->
   </td>
@@ -186,12 +190,14 @@ exports[`Repository table row component renders table row for path with special 
   <td
     class="tree-time-ago text-right cursor-default gl-text-secondary"
   >
-    <timeago-tooltip-stub
-      cssclass=""
-      datetimeformat="DATE_WITH_TIME_FORMAT"
-      time="2019-01-01"
-      tooltipplacement="top"
-    />
+    <gl-intersection-observer-stub>
+      <timeago-tooltip-stub
+        cssclass=""
+        datetimeformat="DATE_WITH_TIME_FORMAT"
+        time="2019-01-01"
+        tooltipplacement="top"
+      />
+    </gl-intersection-observer-stub>
      
     <!---->
   </td>

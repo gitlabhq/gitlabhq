@@ -78,5 +78,16 @@ RSpec.shared_examples 'includes LinkableItem concern' do
         expect(described_class.for_items(item, item2)).to contain_exactly(target_link)
       end
     end
+
+    describe '.for_source_and_target' do
+      let_it_be(:item3) { create(:work_item, project: project) }
+      let_it_be(:link1) { create(link_factory, source: item, target: item1) }
+      let_it_be(:link2) { create(link_factory, source: item, target: item2) }
+      let_it_be(:link3) { create(link_factory, source: item, target: item3) }
+
+      it 'includes links for provided source and target' do
+        expect(described_class.for_source_and_target(item, [item1, item2])).to contain_exactly(link1, link2)
+      end
+    end
   end
 end
