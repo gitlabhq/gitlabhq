@@ -92,9 +92,9 @@ To filter the list of merge requests:
    - [**By environment or deployment date**](#by-environment-or-deployment-date).
    - **ID**: Enter filter `#30` to return only merge request 30.
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
-     - **Approved-By**, for merge requests already approved by a user. **(PREMIUM)**.
+     - **Approved-By**, for merge requests already approved by a user. **(PREMIUM ALL)**.
      - **Approver**, for merge requests that this user is eligible to approve.
-       (For more information, read about [Code owners](../codeowners/index.md)). **(PREMIUM)**
+       (For more information, read about [Code owners](../codeowners/index.md)). **(PREMIUM ALL)**
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:

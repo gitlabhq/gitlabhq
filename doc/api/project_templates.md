@@ -20,7 +20,7 @@ It deprecates these endpoints, which are scheduled for removal in API version 5.
 In addition to templates common to the entire instance, project-specific
 templates are also available from this API endpoint.
 
-Support is also available for [group-level file templates](../user/group/manage.md#group-file-templates). **(PREMIUM)**
+Support is also available for [group-level file templates](../user/group/manage.md#group-file-templates). **(PREMIUM ALL)**
 
 ## Get all templates of a particular type
 

@@ -56,14 +56,14 @@ The following API resources are available in the project context:
 | [Issue links](issue_links.md)                                           | `/projects/:id/issues/.../links`                                                                                                                                                                      |
 | [Issues Statistics](issues_statistics.md)                               | `/projects/:id/issues_statistics` (also available for groups and standalone)                                                                                                                          |
 | [Issues](issues.md)                                                     | `/projects/:id/issues` (also available for groups and standalone)                                                                                                                                     |
-| [Iterations](iterations.md) **(PREMIUM)**                               | `/projects/:id/iterations` (also available for groups)                                                                                                                                                |
+| [Iterations](iterations.md) **(PREMIUM ALL)**                               | `/projects/:id/iterations` (also available for groups)                                                                                                                                                |
 | [Project CI/CD job token scope](project_job_token_scopes.md)            | `/projects/:id/job_token_scope`                                                                                                                                              |
 | [Jobs](jobs.md)                                                         | `/projects/:id/jobs`, `/projects/:id/pipelines/.../jobs`                                                                                                                                              |
 | [Jobs Artifacts](job_artifacts.md)                                      | `/projects/:id/jobs/:job_id/artifacts`                                                                                                                                                                |
 | [Labels](labels.md)                                                     | `/projects/:id/labels`                                                                                                                                                                                |
 | [Maven repository](packages/maven.md)                                   | `/projects/:id/packages/maven` (also available for groups and standalone)                                                                                                                             |
 | [Members](members.md)                                                   | `/projects/:id/members` (also available for groups)                                                                                                                                                   |
-| [Merge request approvals](merge_request_approvals.md) **(PREMIUM)**     | `/projects/:id/approvals`, `/projects/:id/merge_requests/.../approvals`                                                                                                                               |
+| [Merge request approvals](merge_request_approvals.md) **(PREMIUM ALL)**     | `/projects/:id/approvals`, `/projects/:id/merge_requests/.../approvals`                                                                                                                               |
 | [Merge requests](merge_requests.md)                                     | `/projects/:id/merge_requests` (also available for groups and standalone)                                                                                                                             |
 | [Merge trains](merge_trains.md)                                         | `/projects/:id/merge_trains`                                                                                                                                                                          |
 | [Metadata](metadata.md)                                                 | `/metadata`                                                                                                                                                                                           |
@@ -103,7 +103,7 @@ The following API resources are available in the project context:
 | [Tags](tags.md)                                                         | `/projects/:id/repository/tags`                                                                                                                                                                       |
 | [Terraform modules](packages/terraform-modules.md)                      | `/projects/:id/packages/terraform/modules` (also available standalone)                                                                                                                                |
 | [User-starred metrics dashboards](metrics_user_starred_dashboards.md )  | `/projects/:id/metrics/user_starred_dashboards`                                                                                                                                                       |
-| [Visual Review discussions](visual_review_discussions.md) **(PREMIUM)** | `/projects/:id/merge_requests/:merge_request_id/visual_review_discussions`                                                                                                                            |
+| [Visual Review discussions](visual_review_discussions.md) **(PREMIUM ALL)** | `/projects/:id/merge_requests/:merge_request_id/visual_review_discussions`                                                                                                                            |
 | [Vulnerabilities](vulnerabilities.md) **(ULTIMATE ALL)**                    | `/vulnerabilities/:id`                                                                                                                                                                                |
 | [Vulnerability exports](vulnerability_exports.md) **(ULTIMATE ALL)**        | `/projects/:id/vulnerability_exports`                                                                                                                                                                 |
 | [Vulnerability findings](vulnerability_findings.md) **(ULTIMATE ALL)**      | `/projects/:id/vulnerability_findings`                                                                                                                                                                |
@@ -120,18 +120,18 @@ The following API resources are available in the group context:
 | [Debian distributions](packages/debian_group_distributions.md)   | `/groups/:id/-/packages/debian` (also available for projects) |
 | [Deploy tokens](deploy_tokens.md)                                | `/groups/:id/deploy_tokens` (also available for projects and standalone) |
 | [Discussions](discussions.md) (comments and threads)             | `/groups/:id/epics/.../discussions` (also available for projects) |
-| [Epic issues](epic_issues.md) **(PREMIUM)**                      | `/groups/:id/epics/.../issues` |
-| [Epic links](epic_links.md) **(PREMIUM)**                        | `/groups/:id/epics/.../epics` |
-| [Epics](epics.md) **(PREMIUM)**                                  | `/groups/:id/epics` |
+| [Epic issues](epic_issues.md) **(PREMIUM ALL)**                      | `/groups/:id/epics/.../issues` |
+| [Epic links](epic_links.md) **(PREMIUM ALL)**                        | `/groups/:id/epics/.../epics` |
+| [Epics](epics.md) **(PREMIUM ALL)**                                  | `/groups/:id/epics` |
 | [Groups](groups.md)                                              | `/groups`, `/groups/.../subgroups` |
 | [Group badges](group_badges.md)                                  | `/groups/:id/badges` |
 | [Group issue boards](group_boards.md)                            | `/groups/:id/boards` |
-| [Group iterations](group_iterations.md) **(PREMIUM)**            | `/groups/:id/iterations` (also available for projects) |
+| [Group iterations](group_iterations.md) **(PREMIUM ALL)**            | `/groups/:id/iterations` (also available for projects) |
 | [Group labels](group_labels.md)                                  | `/groups/:id/labels` |
 | [Group-level variables](group_level_variables.md)                | `/groups/:id/variables` |
 | [Group milestones](group_milestones.md)                          | `/groups/:id/milestones` |
 | [Group releases](group_releases.md)                              | `/groups/:id/releases`|
-| [Group wikis](group_wikis.md) **(PREMIUM)**                      | `/groups/:id/wikis` |
+| [Group wikis](group_wikis.md) **(PREMIUM ALL)**                      | `/groups/:id/wikis` |
 | [Invitations](invitations.md)                                    | `/groups/:id/invitations` (also available for projects) |
 | [Issues](issues.md)                                              | `/groups/:id/issues` (also available for projects and standalone) |
 | [Issues Statistics](issues_statistics.md)                        | `/groups/:id/issues_statistics` (also available for projects and standalone) |

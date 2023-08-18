@@ -228,10 +228,10 @@ PUT /projects/:id/boards/:board_id
 | `id`                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id`                   | integer        | yes      | The ID of a board |
 | `name`                       | string         | no       | The new name of the board |
-| `assignee_id` **(PREMIUM)**  | integer        | no       | The assignee the board should be scoped to |
-| `milestone_id` **(PREMIUM)** | integer        | no       | The milestone the board should be scoped to |
-| `labels` **(PREMIUM)**       | string         | no       | Comma-separated list of label names which the board should be scoped to |
-| `weight` **(PREMIUM)**       | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
+| `assignee_id` **(PREMIUM ALL)**  | integer        | no       | The assignee the board should be scoped to |
+| `milestone_id` **(PREMIUM ALL)** | integer        | no       | The milestone the board should be scoped to |
+| `labels` **(PREMIUM ALL)**       | string         | no       | Comma-separated list of label names which the board should be scoped to |
+| `weight` **(PREMIUM ALL)**       | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4"
@@ -421,8 +421,8 @@ POST /projects/:id/boards/:board_id/lists
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 | `label_id` | integer | no | The ID of a label |
-| `assignee_id` **(PREMIUM)** | integer | no | The ID of a user |
-| `milestone_id` **(PREMIUM)** | integer | no | The ID of a milestone |
+| `assignee_id` **(PREMIUM ALL)** | integer | no | The ID of a user |
+| `milestone_id` **(PREMIUM ALL)** | integer | no | The ID of a milestone |
 
 NOTE:
 Label, assignee and milestone arguments are mutually exclusive,

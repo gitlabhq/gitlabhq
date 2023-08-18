@@ -179,7 +179,7 @@ Parameters:
 | `platform_kubernetes_attributes[token]`              | string         | yes      | The token to authenticate against Kubernetes                                                        |
 | `platform_kubernetes_attributes[ca_cert]`            | string         | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                            |
 | `platform_kubernetes_attributes[authorization_type]` | string         | no       | The cluster authorization type: `rbac`, `abac` or `unknown_authorization`. Defaults to `rbac`.      |
-| `environment_scope`                                  | string         | no       | The associated environment to the cluster. Defaults to `*` **(PREMIUM)**                            |
+| `environment_scope`                                  | string         | no       | The associated environment to the cluster. Defaults to `*` **(PREMIUM ALL)**                            |
 
 Example request:
 
@@ -250,7 +250,7 @@ Parameters:
 | `platform_kubernetes_attributes[api_url]` | string         | no       | The URL to access the Kubernetes API                                                       |
 | `platform_kubernetes_attributes[token]`   | string         | no       | The token to authenticate against Kubernetes                                               |
 | `platform_kubernetes_attributes[ca_cert]` | string         | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |
-| `environment_scope`                       | string         | no       | The associated environment to the cluster **(PREMIUM)**                                    |
+| `environment_scope`                       | string         | no       | The associated environment to the cluster **(PREMIUM ALL)**                                    |
 
 NOTE:
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added

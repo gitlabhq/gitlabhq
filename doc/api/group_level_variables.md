@@ -94,7 +94,7 @@ POST /groups/:id/variables
 | `protected`                       | boolean        | No       | Whether the variable is protected |
 | `masked`                          | boolean        | No       | Whether the variable is masked |
 | `raw`                             | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
-| `environment_scope` **(PREMIUM)** | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
+| `environment_scope` **(PREMIUM ALL)** | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
 | `description`                     | string         | No       | The `description` of the variable. Default: `null` |
 
 ```shell
@@ -132,7 +132,7 @@ PUT /groups/:id/variables/:key
 | `protected`                       | boolean        | No       | Whether the variable is protected |
 | `masked`                          | boolean        | No       | Whether the variable is masked |
 | `raw`                             | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
-| `environment_scope` **(PREMIUM)** | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
+| `environment_scope` **(PREMIUM ALL)** | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
 | `description`                     | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
 
 ```shell
