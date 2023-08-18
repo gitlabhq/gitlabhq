@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const VISIBILITY_LEVEL_PRIVATE_STRING = 'private';
 export const VISIBILITY_LEVEL_INTERNAL_STRING = 'internal';
@@ -42,6 +42,12 @@ export const PROJECT_VISIBILITY_TYPE = {
   ),
   [VISIBILITY_LEVEL_PRIVATE_STRING]: __(
     'Private - Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.',
+  ),
+};
+
+export const ORGANIZATION_VISIBILITY_TYPE = {
+  [VISIBILITY_LEVEL_PUBLIC_STRING]: s__(
+    'Organization|Public - The organization can be accessed without any authentication.',
   ),
 };
 

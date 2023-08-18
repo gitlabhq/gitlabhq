@@ -2,7 +2,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DiffInlineFindings from '~/diffs/components/diff_inline_findings.vue';
 import DiffInlineFindingsItem from '~/diffs/components/diff_inline_findings_item.vue';
 import { NEW_CODE_QUALITY_FINDINGS } from '~/diffs/i18n';
-import { multipleCodeQualityNoSast } from '../mock_data/inline_findings';
+import { multipleFindingsArrCodeQualityScale } from '../mock_data/inline_findings';
 
 let wrapper;
 const heading = () => wrapper.findByTestId('diff-inline-findings-heading');
@@ -13,7 +13,7 @@ describe('DiffInlineFindings', () => {
     return shallowMountExtended(DiffInlineFindings, {
       propsData: {
         title: NEW_CODE_QUALITY_FINDINGS,
-        findings: multipleCodeQualityNoSast.codeQuality,
+        findings: multipleFindingsArrCodeQualityScale,
       },
     });
   };
@@ -25,7 +25,7 @@ describe('DiffInlineFindings', () => {
 
   it('renders the correct number of DiffInlineFindingsItem components with correct props', () => {
     wrapper = createWrapper();
-    expect(diffInlineFindingsItems()).toHaveLength(multipleCodeQualityNoSast.codeQuality.length);
+    expect(diffInlineFindingsItems()).toHaveLength(multipleFindingsArrCodeQualityScale.length);
     expect(diffInlineFindingsItems().wrappers[0].props('finding')).toEqual(
       wrapper.props('findings')[0],
     );

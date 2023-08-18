@@ -31,9 +31,8 @@ module Gitlab
       "#{Gitlab::Observability.observability_url}/query/#{project.group.id}/#{project.id}/v1/traces"
     end
 
-    def provisioning_url(_project)
-      # TODO Change to correct endpoint when API is ready
-      Gitlab::Observability.observability_url.to_s
+    def provisioning_url(project)
+      "#{Gitlab::Observability.observability_url}/v3/tenant/#{project.id}"
     end
 
     # Returns true if the GitLab Observability UI (GOUI) feature flag is enabled

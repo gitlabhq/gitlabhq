@@ -130,7 +130,7 @@ RSpec.describe BlobPresenter do
 
   describe '#pipeline_editor_path' do
     context 'when blob is .gitlab-ci.yml' do
-      before do
+      before_all do
         project.repository.create_file(
           user,
           '.gitlab-ci.yml',
@@ -144,6 +144,16 @@ RSpec.describe BlobPresenter do
       let(:path) { '.gitlab-ci.yml' }
 
       it { expect(presenter.pipeline_editor_path).to eq("/#{project.full_path}/-/ci/editor?branch_name=#{ref}") }
+
+      context 'when ref includes the qualifier' do
+        let(:ref) { 'refs/heads/main' }
+
+        it 'returns path to unqualified ref' do
+          allow(blob).to receive(:ref_type).and_return('heads')
+
+          expect(presenter.pipeline_editor_path).to eq("/#{project.full_path}/-/ci/editor?branch_name=main")
+        end
+      end
     end
   end
 

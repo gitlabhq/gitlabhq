@@ -67,7 +67,7 @@ must disable the **primary** site.
   - Physically disconnect a machine.
 
   If you plan to [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
-  you may wish to lower the TTL now to speed up propagation.
+  you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
 
 ### Step 3. Promoting a **secondary** site
 

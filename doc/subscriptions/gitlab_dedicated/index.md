@@ -129,7 +129,8 @@ The following GitLab application features are not available:
 The following features will not be supported:
 
 - Mattermost
-- Server-side Git hooks. Use [push rules](../../user/project/repository/push_rules.md) instead.
+- [Server-side Git hooks](../../administration/server_hooks.md).
+  GitLab Dedicated is a SaaS service, and access to the underlying infrastructure is only available to GitLab Inc. team members. Due to the nature of server side configuration, there is a possible security concern of running arbitrary code on Dedicated services, as well as the possible impact that can have on the service SLA. Use the alternative [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) instead.
 
 ### GitLab Dedicated service features
 

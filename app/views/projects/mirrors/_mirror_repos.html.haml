@@ -35,7 +35,7 @@
               %div= form_errors(@project)
               .form-group.has-feedback
                 = label_tag :url, _('Git repository URL'), class: 'label-light'
-                = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { qa_selector: 'mirror_repository_url_field' }
+                = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url gl-form-input-xl', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { qa_selector: 'mirror_repository_url_field' }
 
               = render 'projects/mirrors/instructions'
 

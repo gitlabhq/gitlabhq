@@ -1,6 +1,13 @@
 import * as testingLibrary from '@testing-library/dom';
-import { createWrapper, WrapperArray, ErrorWrapper, mount, shallowMount } from '@vue/test-utils';
-import { isArray, upperFirst } from 'lodash';
+import {
+  createWrapper,
+  Wrapper, // eslint-disable-line no-unused-vars
+  ErrorWrapper,
+  mount,
+  shallowMount,
+  WrapperArray,
+} from '@vue/test-utils';
+import { compose } from 'lodash/fp';
 
 const vNodeContainsText = (vnode, text) =>
   (vnode.text && vnode.text.includes(text)) ||
@@ -14,7 +21,7 @@ const vNodeContainsText = (vnode, text) =>
  *
  * @param {HTMLElement} element
  * @param {Object} options
- * @returns VTU wrapper
+ * @returns {Wrapper} VTU wrapper
  */
 const createWrapperFromElement = (element, options) =>
   // eslint-disable-next-line no-underscore-dangle
@@ -52,19 +59,84 @@ export const waitForMutation = (store, expectedMutationType) =>
     });
   });
 
+/**
+ * Query function type
+ * @callback FindFunction
+ * @param text
+ * @returns {Wrapper}
+ */
+
+/**
+ * Query all function type
+ * @callback FindAllFunction
+ * @param text
+ * @returns {WrapperArray}
+ */
+
+/**
+ * Query find with options functions type
+ * @callback FindWithOptionsFunction
+ * @param text
+ * @param options
+ * @returns {Wrapper}
+ */
+
+/**
+ * Query find all with options functions type
+ * @callback FindAllWithOptionsFunction
+ * @param text
+ * @param options
+ * @returns {WrapperArray}
+ */
+
+/**
+ * Extended Wrapper queries
+ * @typedef { {
+ *   findByTestId: FindFunction,
+ *   findAllByTestId: FindAllFunction,
+ *   findComponentByTestId: FindFunction,
+ *   findAllComponentsByTestId: FindAllFunction,
+ *   findByRole: FindWithOptionsFunction,
+ *   findAllByRole: FindAllWithOptionsFunction,
+ *   findByLabelText: FindWithOptionsFunction,
+ *   findAllByLabelText: FindAllWithOptionsFunction,
+ *   findByPlaceholderText: FindWithOptionsFunction,
+ *   findAllByPlaceholderText: FindAllWithOptionsFunction,
+ *   findByText: FindWithOptionsFunction,
+ *   findAllByText: FindAllWithOptionsFunction,
+ *   findByDisplayValue: FindWithOptionsFunction,
+ *   findAllByDisplayValue: FindAllWithOptionsFunction,
+ *   findByAltText: FindWithOptionsFunction,
+ *   findAllByAltText: FindAllWithOptionsFunction,
+ *   findByTitle: FindWithOptionsFunction,
+ *   findAllByTitle: FindAllWithOptionsFunction
+ * } } ExtendedQueries
+ */
+
+/**
+ * Extended Wrapper
+ * @typedef {(Wrapper & ExtendedQueries)} ExtendedWrapper
+ */
+
+/**
+ * Creates a Wrapper {@link https://v1.test-utils.vuejs.org/api/wrapper/} with
+ * Additional Queries {@link https://testing-library.com/docs/queries/about}.
+ * @param { Wrapper } wrapper
+ * @returns { ExtendedWrapper }
+ */
 export const extendedWrapper = (wrapper) => {
   // https://testing-library.com/docs/queries/about
   const AVAILABLE_QUERIES = [
-    'byRole',
-    'byLabelText',
-    'byPlaceholderText',
-    'byText',
-    'byDisplayValue',
-    'byAltText',
-    'byTitle',
+    'ByRole',
+    'ByLabelText',
+    'ByPlaceholderText',
+    'ByText',
+    'ByDisplayValue',
+    'ByAltText',
+    'ByTitle',
   ];
 
-  if (isArray(wrapper) || !wrapper?.find) {
+  if (Array.isArray(wrapper) || !wrapper?.find) {
     // eslint-disable-next-line no-console
     console.warn(
       '[vue-test-utils-helper]: you are trying to extend an object that is not a VueWrapper.',
@@ -74,11 +146,13 @@ export const extendedWrapper = (wrapper) => {
 
   return Object.defineProperties(wrapper, {
     findByTestId: {
+      /** @this { Wrapper } */
       value(id) {
         return this.find(`[data-testid="${id}"]`);
       },
     },
     findAllByTestId: {
+      /** @this { Wrapper } */
       value(id) {
         return this.findAll(`[data-testid="${id}"]`);
       },
@@ -88,6 +162,7 @@ export const extendedWrapper = (wrapper) => {
      * with CSS selectors: https://v1.test-utils.vuejs.org/api/wrapper/#findcomponent
      */
     findComponentByTestId: {
+      /** @this { Wrapper } */
       value(id) {
         return this.findComponent(`[data-testid="${id}"]`);
       },
@@ -97,6 +172,7 @@ export const extendedWrapper = (wrapper) => {
      * with CSS selectors: https://v1.test-utils.vuejs.org/api/wrapper/#findallcomponents
      */
     findAllComponentsByTestId: {
+      /** @this { Wrapper } */
       value(id) {
         return this.findAllComponents(`[data-testid="${id}"]`);
       },
@@ -105,13 +181,10 @@ export const extendedWrapper = (wrapper) => {
     ...AVAILABLE_QUERIES.reduce((accumulator, query) => {
       return {
         ...accumulator,
-        [`find${upperFirst(query)}`]: {
+        [`find${query}`]: {
+          /** @this { Wrapper } */
           value(text, options = {}) {
-            const elements = testingLibrary[`queryAll${upperFirst(query)}`](
-              wrapper.element,
-              text,
-              options,
-            );
+            const elements = testingLibrary[`queryAll${query}`](this.element, text, options);
 
             // Element not found, return an `ErrorWrapper`
             if (!elements.length) {
@@ -126,13 +199,10 @@ export const extendedWrapper = (wrapper) => {
     ...AVAILABLE_QUERIES.reduce((accumulator, query) => {
       return {
         ...accumulator,
-        [`findAll${upperFirst(query)}`]: {
+        [`findAll${query}`]: {
+          /** @this { Wrapper } */
           value(text, options = {}) {
-            const elements = testingLibrary[`queryAll${upperFirst(query)}`](
-              wrapper.element,
-              text,
-              options,
-            );
+            const elements = testingLibrary[`queryAll${query}`](this.element, text, options);
 
             const wrappers = elements.map((element) => {
               const elementWrapper = createWrapperFromElement(element, this.options);
@@ -152,6 +222,5 @@ export const extendedWrapper = (wrapper) => {
   });
 };
 
-export const shallowMountExtended = (...args) => extendedWrapper(shallowMount(...args));
-
-export const mountExtended = (...args) => extendedWrapper(mount(...args));
+export const shallowMountExtended = compose(extendedWrapper, shallowMount);
+export const mountExtended = compose(extendedWrapper, mount);

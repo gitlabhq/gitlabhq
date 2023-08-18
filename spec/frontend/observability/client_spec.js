@@ -1,15 +1,19 @@
 import MockAdapter from 'axios-mock-adapter';
+import * as Sentry from '@sentry/browser';
 import { buildClient } from '~/observability/client';
 import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/lib/utils/axios_utils');
+jest.mock('@sentry/browser');
 
 describe('buildClient', () => {
   let client;
   let axiosMock;
 
   const tracingUrl = 'https://example.com/tracing';
-  const EXPECTED_ERROR_MESSAGE = 'traces are missing/invalid in the response';
+  const provisioningUrl = 'https://example.com/provisioning';
+
+  const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
@@ -17,12 +21,83 @@ describe('buildClient', () => {
 
     client = buildClient({
       tracingUrl,
-      provisioningUrl: 'https://example.com/provisioning',
+      provisioningUrl,
     });
   });
 
   afterEach(() => {
     axiosMock.restore();
+  });
+
+  describe('isTracingEnabled', () => {
+    it('returns true if requests succeedes', async () => {
+      axiosMock.onGet(provisioningUrl).reply(200, {
+        status: 'ready',
+      });
+
+      const enabled = await client.isTracingEnabled();
+
+      expect(enabled).toBe(true);
+    });
+
+    it('returns false if response is 404', async () => {
+      axiosMock.onGet(provisioningUrl).reply(404);
+
+      const enabled = await client.isTracingEnabled();
+
+      expect(enabled).toBe(false);
+    });
+
+    // we currently ignore the 'status' payload and just check if the request was successful
+    // We might improve this as part of https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2315
+    it('returns true for any status', async () => {
+      axiosMock.onGet(provisioningUrl).reply(200, {
+        status: 'not ready',
+      });
+
+      const enabled = await client.isTracingEnabled();
+
+      expect(enabled).toBe(true);
+    });
+
+    it('throws in case of any non-404 error', async () => {
+      axiosMock.onGet(provisioningUrl).reply(500);
+
+      const e = 'Request failed with status code 500';
+      await expect(client.isTracingEnabled()).rejects.toThrow(e);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+    });
+
+    it('throws in case of unexpected response', async () => {
+      axiosMock.onGet(provisioningUrl).reply(200, {});
+
+      const e = 'Failed to check provisioning';
+      await expect(client.isTracingEnabled()).rejects.toThrow(e);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+    });
+  });
+
+  describe('enableTraces', () => {
+    it('makes a PUT request to the provisioning URL', async () => {
+      let putConfig;
+      axiosMock.onPut(provisioningUrl).reply((config) => {
+        putConfig = config;
+        return [200];
+      });
+
+      await client.enableTraces();
+
+      expect(putConfig.withCredentials).toBe(true);
+    });
+
+    it('reports an error if the req fails', async () => {
+      axiosMock.onPut(provisioningUrl).reply(401);
+
+      const e = 'Request failed with status code 401';
+
+      await expect(client.enableTraces()).rejects.toThrow(e);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(e));
+    });
   });
 
   describe('fetchTrace', () => {
@@ -53,16 +128,18 @@ describe('buildClient', () => {
       return expect(client.fetchTrace()).rejects.toThrow('traceId is required.');
     });
 
-    it('rejects if traces are empty', () => {
+    it('rejects if traces are empty', async () => {
       axiosMock.onGet(tracingUrl).reply(200, { traces: [] });
 
-      return expect(client.fetchTrace('trace-1')).rejects.toThrow(EXPECTED_ERROR_MESSAGE);
+      await expect(client.fetchTrace('trace-1')).rejects.toThrow(FETCHING_TRACES_ERROR);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
     });
 
-    it('rejects if traces are invalid', () => {
+    it('rejects if traces are invalid', async () => {
       axiosMock.onGet(tracingUrl).reply(200, { traces: 'invalid' });
 
-      return expect(client.fetchTraces()).rejects.toThrow(EXPECTED_ERROR_MESSAGE);
+      await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
     });
   });
 
@@ -91,16 +168,18 @@ describe('buildClient', () => {
       expect(result).toEqual(mockTraces);
     });
 
-    it('rejects if traces are missing', () => {
+    it('rejects if traces are missing', async () => {
       axiosMock.onGet(tracingUrl).reply(200, {});
 
-      return expect(client.fetchTraces()).rejects.toThrow(EXPECTED_ERROR_MESSAGE);
+      await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
     });
 
-    it('rejects if traces are invalid', () => {
+    it('rejects if traces are invalid', async () => {
       axiosMock.onGet(tracingUrl).reply(200, { traces: 'invalid' });
 
-      return expect(client.fetchTraces()).rejects.toThrow(EXPECTED_ERROR_MESSAGE);
+      await expect(client.fetchTraces()).rejects.toThrow(FETCHING_TRACES_ERROR);
+      expect(Sentry.captureException).toHaveBeenCalledWith(new Error(FETCHING_TRACES_ERROR));
     });
 
     describe('query filter', () => {

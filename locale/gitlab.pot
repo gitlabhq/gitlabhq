@@ -25163,6 +25163,16 @@ msgstr ""
 msgid "Inline math"
 msgstr ""
 
+msgid "InlineFindings|1 Code Quality finding detected"
+msgid_plural "InlineFindings|%d Code Quality findings detected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "InlineFindings|1 SAST finding detected"
+msgid_plural "InlineFindings|%d SAST findings detected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Input host keys manually"
 msgstr ""
 
@@ -32957,10 +32967,19 @@ msgstr ""
 msgid "Organization|An error occurred loading the projects. Please refresh the page to try again."
 msgstr ""
 
+msgid "Organization|Copy organization ID"
+msgstr ""
+
+msgid "Organization|Org ID"
+msgstr ""
+
 msgid "Organization|Organization navigation"
 msgstr ""
 
 msgid "Organization|Organization overview"
+msgstr ""
+
+msgid "Organization|Public - The organization can be accessed without any authentication."
 msgstr ""
 
 msgid "Organization|Search or filter list"
@@ -33677,6 +33696,9 @@ msgid "Pages"
 msgstr ""
 
 msgid "Pages Domain"
+msgstr ""
+
+msgid "PagesDomain|Certificate Key is too long. (Max %d bytes)"
 msgstr ""
 
 msgid "Pagination|First"

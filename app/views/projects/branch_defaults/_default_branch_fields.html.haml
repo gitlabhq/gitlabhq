@@ -6,7 +6,8 @@
     .form-group
       = f.label :default_branch, _("Default branch"), class: 'label-bold'
       %p= s_('ProjectSettings|All merge requests and commits are made against this branch unless you specify a different one.')
-      .js-select-default-branch{ data: { default_branch: @project.default_branch, project_id: @project.id } }
+      .gl-form-input-xl
+        .js-select-default-branch{ data: { default_branch: @project.default_branch, project_id: @project.id } }
 
   .form-group
     - help_text = _("When merge requests and commits in the default branch close, any issues they reference also close.")

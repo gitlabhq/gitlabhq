@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
   describe '.provisioning_url' do
     subject { described_class.provisioning_url(project) }
 
-    it { is_expected.to eq(described_class.observability_url.to_s) }
+    it { is_expected.to eq("#{described_class.observability_url}/v3/tenant/#{project.id}") }
   end
 
   describe '.build_full_url' do

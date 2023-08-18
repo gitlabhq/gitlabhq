@@ -24,8 +24,8 @@ import * as utils from './diff_row_utils';
 
 export default {
   DiffGutterAvatars,
-  InlineFindingsGutterIcon: () =>
-    import('ee_component/diffs/components/inline_findings_gutter_icon.vue'),
+  InlineFindingsFlagSwitcher: () =>
+    import('ee_component/diffs/components/inline_findings_flag_switcher.vue'),
 
   // Temporary mixin for migration from Vue.js 2 to @vue/compat
   mixins: [compatFunctionalMixin],
@@ -338,10 +338,11 @@ export default {
           :class="$options.parallelViewLeftLineType(props)"
         >
           <component
-            :is="$options.InlineFindingsGutterIcon"
+            :is="$options.InlineFindingsFlagSwitcher"
             v-if="$options.showCodequalityLeft(props) || $options.showSecurityLeft(props)"
             :inline-findings-expanded="props.inlineFindingsExpanded"
-            :codequality="props.line.left.codequality"
+            :code-quality="props.line.left.codequality"
+            :sast="props.line.left.sast"
             :file-path="props.filePath"
             @showInlineFindings="
               listeners.toggleCodeQualityFindings(
@@ -479,9 +480,10 @@ export default {
           :class="$options.classNameMapCellRight(props)"
         >
           <component
-            :is="$options.InlineFindingsGutterIcon"
+            :is="$options.InlineFindingsFlagSwitcher"
             v-if="$options.showCodequalityRight(props) || $options.showSecurityRight(props)"
-            :codequality="props.line.right.codequality"
+            :code-quality="props.line.right.codequality"
+            :sast="props.line.right.sast"
             :file-path="props.filePath"
             data-testid="inlineFindingsIcon"
             @showInlineFindings="

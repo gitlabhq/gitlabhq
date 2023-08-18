@@ -90,6 +90,11 @@ gitlab-ctl promotion-preflight-checks
 
 Each step is described in more detail below.
 
+### DNS TTL
+
+If you plan to [update the primary domain DNS record](index.md#step-4-optional-updating-the-primary-domain-dns-record),
+you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
+
 ### Object storage
 
 If you have a large GitLab installation or cannot tolerate downtime, consider

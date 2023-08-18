@@ -328,34 +328,34 @@ In the Cells architecture there will be more Postgres instances because of which
 The Cells architecture will impact many features requiring some of them to be rewritten, or changed significantly.
 Below is a list of known affected features with preliminary proposed solutions.
 
-- [Cells: Admin Area](cells-feature-admin-area.md)
-- [Cells: Backups](cells-feature-backups.md)
-- [Cells: CI Runners](cells-feature-ci-runners.md)
-- [Cells: Container Registry](cells-feature-container-registry.md)
-- [Cells: Contributions: Forks](cells-feature-contributions-forks.md)
-- [Cells: Database Sequences](cells-feature-database-sequences.md)
-- [Cells: Data Migration](cells-feature-data-migration.md)
-- [Cells: Explore](cells-feature-explore.md)
-- [Cells: Git Access](cells-feature-git-access.md)
-- [Cells: Global Search](cells-feature-global-search.md)
-- [Cells: GraphQL](cells-feature-graphql.md)
-- [Cells: Organizations](cells-feature-organizations.md)
-- [Cells: Secrets](cells-feature-secrets.md)
-- [Cells: Snippets](cells-feature-snippets.md)
-- [Cells: User Profile](cells-feature-user-profile.md)
-- [Cells: Your Work](cells-feature-your-work.md)
+- [Cells: Admin Area](impacted_features/admin-area.md)
+- [Cells: Backups](impacted_features/backups.md)
+- [Cells: CI Runners](impacted_features/ci-runners.md)
+- [Cells: Container Registry](impacted_features/container-registry.md)
+- [Cells: Contributions: Forks](impacted_features/contributions-forks.md)
+- [Cells: Database Sequences](impacted_features/database-sequences.md)
+- [Cells: Data Migration](impacted_features/data-migration.md)
+- [Cells: Explore](impacted_features/explore.md)
+- [Cells: Git Access](impacted_features/git-access.md)
+- [Cells: Global Search](impacted_features/global-search.md)
+- [Cells: GraphQL](impacted_features/graphql.md)
+- [Cells: Organizations](impacted_features/organizations.md)
+- [Cells: Secrets](impacted_features/secrets.md)
+- [Cells: Snippets](impacted_features/snippets.md)
+- [Cells: User Profile](impacted_features/user-profile.md)
+- [Cells: Your Work](impacted_features/your-work.md)
 
 ### Impacted features: Placeholders
 
 The following list of impacted features only represents placeholders that still require work to estimate the impact of Cells and develop solution proposals.
 
-- [Cells: Agent for Kubernetes](cells-feature-agent-for-kubernetes.md)
-- [Cells: GitLab Pages](cells-feature-gitlab-pages.md)
-- [Cells: Personal Access Tokens](cells-feature-personal-access-tokens.md)
-- [Cells: Personal Namespaces](cells-feature-personal-namespaces.md)
-- [Cells: Router Endpoints Classification](cells-feature-router-endpoints-classification.md)
-- [Cells: Schema changes (Postgres and Elasticsearch migrations)](cells-feature-schema-changes.md)
-- [Cells: Uploads](cells-feature-uploads.md)
+- [Cells: Agent for Kubernetes](impacted_features/agent-for-kubernetes.md)
+- [Cells: GitLab Pages](impacted_features/gitlab-pages.md)
+- [Cells: Personal Access Tokens](impacted_features/personal-access-tokens.md)
+- [Cells: Personal Namespaces](impacted_features/personal-namespaces.md)
+- [Cells: Router Endpoints Classification](impacted_features/router-endpoints-classification.md)
+- [Cells: Schema changes (Postgres and Elasticsearch migrations)](impacted_features/schema-changes.md)
+- [Cells: Uploads](impacted_features/uploads.md)
 - ...
 
 ## Frequently Asked Questions
